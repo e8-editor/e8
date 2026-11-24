@@ -111,11 +111,7 @@ Each entry says whether the difference is **deliberate**, which keeps it, or **n
   - JavaScript has no `c-indent-new-comment-line`, which js-mode sets as its `comment-line-break-function`: `M-j` in a `/* */` comment continues it with `/*` rather than ` *`, indents code after it as the line was rather than as the mode says, and takes `fill-prefix` in a `//` comment.
 - **Auto Fill** (not yet): a line Auto Fill breaks is not justified when `default-justification` is `full`.
 - **`RET` and `C-j` in Org** (not yet): in a source block's body the new line is not indented as Org's edit buffer indents it.
-- **Org comments** (not yet):
-  - `M-q` with a region over a drawer's paragraph or a comment block fills nothing, where Org fills it.
-  - `M-;` on a block's `#+end_src` line puts the comment at the margin, where Org's edit buffer indents the blank line first. In a block whose language E8 has no mode for, `M-;` does nothing, where Org says "Not in a sub-editing buffer".
-  - Undoing a comment made in a source block leaves point where it was, not where Org's write-back puts it.
-  - Two of Org's own oddities are not copied: a region over a source block's body uncomments on a second `M-;`, where Org's offset overshoots and comments again; and a region of only blank lines with `comment-empty-lines` comments at the margin, where Org starts at a column as wide as the buffer.
+- **Org comments** (deliberate): two of Org's own oddities are not copied: a region over a source block's body uncomments on a second `M-;`, where Org's offset overshoots and comments again; and a region of only blank lines with `comment-empty-lines` comments at the margin, where Org starts at a column as wide as the buffer.
 - **Breaking a comment after code** (not yet): `M-j` and Auto Fill in a comment that follows code on its line line the new line up under the comment, where Emacs's `comment-indent-new-line` indents it as code, with the comment start after.
 - **Filling an active region** (not yet) that the fill leaves as it was keeps the region active, where Emacs rewrites the text all the same and so deactivates it.
 - **Org lists**: `org-list-allow-alphabetical` takes as soon as it is set (deliberate), where Org's parser takes it only if it is set before Org loads or after `org-element-update-syntax`, so set later without that, Org's lists see lettered items in some commands and not in others. `C-c ^` on a lettered list sorts its items by their whole text, bullet included, so leaves them in order, where Org's fails with a wrong type argument.

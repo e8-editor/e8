@@ -1,0 +1,318 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "drawer-all",
+      "input": {
+        "text": "* H\n:NOTES:\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n:END:\n",
+        "point": 0,
+        "keys": "C-x h M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 30
+        }
+      },
+      "text": "* H\n:NOTES:\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n:END:\n",
+      "visible": "* H\n:NOTES:\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n:END:\n",
+      "point": 0,
+      "mark": 74,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "drawer-region",
+      "input": {
+        "text": "* H\n:NOTES:\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n:END:\n",
+        "point": 12,
+        "keys": "C-SPC C-n C-e M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 30
+        }
+      },
+      "text": "* H\n:NOTES:\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n:END:\n",
+      "visible": "* H\n:NOTES:\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n:END:\n",
+      "point": 73,
+      "mark": 12,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "drawer-point",
+      "input": {
+        "text": "* H\n:NOTES:\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n:END:\n",
+        "point": 20,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 30
+        }
+      },
+      "text": "* H\n:NOTES:\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n:END:\n",
+      "visible": "* H\n:NOTES:\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n:END:\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "comment-block-all",
+      "input": {
+        "text": "* H\n#+begin_comment\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n#+end_comment\n",
+        "point": 0,
+        "keys": "C-x h M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 30
+        }
+      },
+      "text": "* H\n#+begin_comment\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n#+end_comment\n",
+      "visible": "* H\n#+begin_comment\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n#+end_comment\n",
+      "point": 0,
+      "mark": 90,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "comment-block-region",
+      "input": {
+        "text": "* H\n#+begin_comment\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n#+end_comment\n",
+        "point": 20,
+        "keys": "C-SPC C-n C-e M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 30
+        }
+      },
+      "text": "* H\n#+begin_comment\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n#+end_comment\n",
+      "visible": "* H\n#+begin_comment\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n#+end_comment\n",
+      "point": 89,
+      "mark": 20,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "comment-block-point",
+      "input": {
+        "text": "* H\n#+begin_comment\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n#+end_comment\n",
+        "point": 28,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 30
+        }
+      },
+      "text": "* H\n#+begin_comment\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n#+end_comment\n",
+      "visible": "* H\n#+begin_comment\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n#+end_comment\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "quote-block-all",
+      "input": {
+        "text": "* H\n#+begin_quote\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n#+end_quote\n",
+        "point": 0,
+        "keys": "C-x h M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 30
+        }
+      },
+      "text": "* H\n#+begin_quote\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n#+end_quote\n",
+      "visible": "* H\n#+begin_quote\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n#+end_quote\n",
+      "point": 0,
+      "mark": 86,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "example-block-all",
+      "input": {
+        "text": "* H\n#+begin_example\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n#+end_example\n",
+        "point": 0,
+        "keys": "C-x h M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 30
+        }
+      },
+      "text": "* H\n#+begin_example\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n#+end_example\n",
+      "visible": "* H\n#+begin_example\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n#+end_example\n",
+      "point": 0,
+      "mark": 90,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "mixed-all",
+      "input": {
+        "text": "aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n\n:NOTES:\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n:END:\n\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n",
+        "point": 0,
+        "keys": "C-x h M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 30
+        }
+      },
+      "text": "aaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n\n:NOTES:\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n:END:\n\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n",
+      "visible": "aaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n\n:NOTES:\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n:END:\n\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n",
+      "point": 0,
+      "mark": 184,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "mixed-from-drawer",
+      "input": {
+        "text": "aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n\n:NOTES:\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n:END:\n\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n",
+        "point": 57,
+        "keys": "C-SPC M-> M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 30
+        }
+      },
+      "text": "aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n\n:NOTES:\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n:END:\n\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n",
+      "visible": "aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n\n:NOTES:\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n:END:\n\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n",
+      "point": 184,
+      "mark": 57,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "property-drawer-all",
+      "input": {
+        "text": "* H\n:PROPERTIES:\n:A: 1\n:END:\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n",
+        "point": 0,
+        "keys": "C-x h M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 30
+        }
+      },
+      "text": "* H\n:PROPERTIES:\n:A: 1\n:END:\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n",
+      "visible": "* H\n:PROPERTIES:\n:A: 1\n:END:\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n",
+      "point": 0,
+      "mark": 85,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "drawer-two-paragraphs",
+      "input": {
+        "text": "* H\n:NOTES:\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n:END:\n",
+        "point": 0,
+        "keys": "C-x h M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 30
+        }
+      },
+      "text": "* H\n:NOTES:\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n:END:\n",
+      "visible": "* H\n:NOTES:\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n:END:\n",
+      "point": 0,
+      "mark": 131,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "comment-block-two",
+      "input": {
+        "text": "* H\n#+begin_comment\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n#+end_comment\n",
+        "point": 0,
+        "keys": "C-x h M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 30
+        }
+      },
+      "text": "* H\n#+begin_comment\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n#+end_comment\n",
+      "visible": "* H\n#+begin_comment\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n\naaa bbb ccc ddd eee fff ggg\nhhh iii jjj kkk lll mmm nnn\n#+end_comment\n",
+      "point": 0,
+      "mark": 147,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

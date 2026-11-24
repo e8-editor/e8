@@ -2820,11 +2820,29 @@ function orgFillParagraph(justify: string | undefined, region: boolean): void {
       e8.gotoChar(Math.max(mark, e8.point()));
       e8.skipCharsBackward(" \t\n");
       while (e8.point() > start) {
+        // On a drawer's or block's closing line, into what it holds first, as org-backward-paragraph goes, so its paragraphs are filled.
+        const closing = lineAt();
+        const holder = elementAt(e8.lineStart(closing));
+        if (
+          holder !== undefined &&
+          /^[ \t]*(?::END:|#\+end_\S+)[ \t]*$/i.test(e8.lineText(closing)) &&
+          holder.begin < e8.lineStart(closing) &&
+          lineAt(holder.begin) + 1 < closing
+        ) {
+          e8.gotoChar(e8.lineEnd(closing - 1));
+          e8.skipCharsBackward(" \t\n");
+          continue;
+        }
         orgFillElement(justify);
         // Back to the start of the element, as org-backward-paragraph goes, so a
-        // comment's blank # lines and its other paragraphs are passed over.
+        // comment's blank # lines and its other paragraphs are passed over; in a
+        // comment block, to the start of its paragraph, its others filled in turn.
         const el = elementAt(e8.lineStart(lineAt()));
-        e8.gotoChar(Math.max(start, el?.begin ?? e8.lineStart(lineAt())));
+        if (el?.type === "comment-block" && lineAt() > lineAt(el.begin)) {
+          let l = lineAt();
+          while (l - 1 > lineAt(el.begin) && !/^[ \t]*$/.test(e8.lineText(l - 1))) l--;
+          e8.gotoChar(e8.lineStart(l));
+        } else e8.gotoChar(Math.max(start, el?.begin ?? e8.lineStart(lineAt())));
         e8.gotoChar(e8.lineStart(lineAt()));
         e8.skipCharsBackward(" \t\n");
       }
@@ -3018,7 +3036,8 @@ export function indentLine(line: number): void {
         // As Org's ignore-errors, for a language with no proper mode.
       }
     }
-    if (!preservesIndentation(el) && e8.lineText(line) === "" && e8.point() === ls) {
+    // The line's start as it is now, as putting the code back may have indented the lines before it.
+    if (!preservesIndentation(el) && e8.lineText(line) === "" && e8.point() === e8.lineStart(line)) {
       const ind = textIndentation(e8.lineText(lineAt(affiliatedBegin(el.begin)))) + Number(e8.variable("org-edit-src-content-indentation") ?? 2);
       indentLineTo(line, ind);
       e8.gotoChar(e8.lineEnd(line));

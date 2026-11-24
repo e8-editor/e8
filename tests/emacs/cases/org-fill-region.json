@@ -1,0 +1,158 @@
+[
+ {
+  "name": "drawer-all",
+  "text": "* H\n:NOTES:\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n:END:\n",
+  "point": 0,
+  "keys": "C-x h M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "vars": {
+   "fill-column": 30
+  }
+ },
+ {
+  "name": "drawer-region",
+  "text": "* H\n:NOTES:\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n:END:\n",
+  "point": 12,
+  "keys": "C-SPC C-n C-e M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "vars": {
+   "fill-column": 30
+  }
+ },
+ {
+  "name": "drawer-point",
+  "text": "* H\n:NOTES:\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n:END:\n",
+  "point": 20,
+  "keys": "M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "vars": {
+   "fill-column": 30
+  }
+ },
+ {
+  "name": "comment-block-all",
+  "text": "* H\n#+begin_comment\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n#+end_comment\n",
+  "point": 0,
+  "keys": "C-x h M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "vars": {
+   "fill-column": 30
+  }
+ },
+ {
+  "name": "comment-block-region",
+  "text": "* H\n#+begin_comment\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n#+end_comment\n",
+  "point": 20,
+  "keys": "C-SPC C-n C-e M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "vars": {
+   "fill-column": 30
+  }
+ },
+ {
+  "name": "comment-block-point",
+  "text": "* H\n#+begin_comment\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n#+end_comment\n",
+  "point": 28,
+  "keys": "M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "vars": {
+   "fill-column": 30
+  }
+ },
+ {
+  "name": "quote-block-all",
+  "text": "* H\n#+begin_quote\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n#+end_quote\n",
+  "point": 0,
+  "keys": "C-x h M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "vars": {
+   "fill-column": 30
+  }
+ },
+ {
+  "name": "example-block-all",
+  "text": "* H\n#+begin_example\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n#+end_example\n",
+  "point": 0,
+  "keys": "C-x h M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "vars": {
+   "fill-column": 30
+  }
+ },
+ {
+  "name": "mixed-all",
+  "text": "aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n\n:NOTES:\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n:END:\n\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n",
+  "point": 0,
+  "keys": "C-x h M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "vars": {
+   "fill-column": 30
+  }
+ },
+ {
+  "name": "mixed-from-drawer",
+  "text": "aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n\n:NOTES:\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n:END:\n\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n",
+  "point": 57,
+  "keys": "C-SPC M-> M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "vars": {
+   "fill-column": 30
+  }
+ },
+ {
+  "name": "property-drawer-all",
+  "text": "* H\n:PROPERTIES:\n:A: 1\n:END:\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n",
+  "point": 0,
+  "keys": "C-x h M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "vars": {
+   "fill-column": 30
+  }
+ },
+ {
+  "name": "drawer-two-paragraphs",
+  "text": "* H\n:NOTES:\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n:END:\n",
+  "point": 0,
+  "keys": "C-x h M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "vars": {
+   "fill-column": 30
+  }
+ },
+ {
+  "name": "comment-block-two",
+  "text": "* H\n#+begin_comment\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n\naaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn\n#+end_comment\n",
+  "point": 0,
+  "keys": "C-x h M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "vars": {
+   "fill-column": 30
+  }
+ }
+]
