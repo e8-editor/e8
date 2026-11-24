@@ -390,5 +390,507 @@
   "globals": {
    "org-last-set-property": "Color"
   }
+ },
+ {
+  "name": "sched",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "keys": "C-c C-x p",
+  "point": 0,
+  "answers": [
+   "SCHEDULED",
+   "<2026-11-25 Wed>"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  },
+  "today": "2026-11-24"
+ },
+ {
+  "name": "deadline-later",
+  "text": "* H\nDEADLINE: <2026-11-25 Wed>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "keys": "C-c C-x p",
+  "point": 0,
+  "answers": [
+   "DEADLINE",
+   "later"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  },
+  "today": "2026-11-24"
+ },
+ {
+  "name": "lower-todo",
+  "text": "* TODO H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "keys": "C-c C-x p",
+  "point": 0,
+  "answers": [
+   "todo",
+   "DONE"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "name": "lower-priority",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "keys": "C-c C-x p",
+  "point": 0,
+  "answers": [
+   "priority",
+   "A"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "name": "prio-default",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "keys": "C-c C-x p",
+  "point": 0,
+  "answers": [
+   "PRIORITY",
+   "B"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "name": "prio-same",
+  "text": "* [#A] H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "keys": "C-c C-x p",
+  "point": 0,
+  "answers": [
+   "PRIORITY",
+   "A"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "name": "todo-same",
+  "text": "* TODO H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "keys": "C-c C-x p",
+  "point": 0,
+  "answers": [
+   "TODO",
+   "TODO"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "name": "cblank-tab",
+  "text": "# c\n\n:PROPERTIES:\n:a: 1\n:END:\ntext\n* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "keys": "TAB",
+  "point": 18,
+  "answers": [],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "name": "cblank-default",
+  "text": "# c\n\n:PROPERTIES:\n:a: 1\n:END:\ntext\n* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "keys": "C-c C-x p",
+  "point": 18,
+  "answers": [
+   "",
+   "2"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "name": "cblank-set",
+  "text": "# c\n\n:PROPERTIES:\n:a: 1\n:END:\ntext\n* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "keys": "C-c C-x p",
+  "point": 30,
+  "answers": [
+   "b",
+   "2"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "name": "c-tab",
+  "text": "# c\n:PROPERTIES:\n:a: 1\n:END:\ntext\n* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "keys": "TAB",
+  "point": 17,
+  "answers": [],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "name": "blank-tab",
+  "text": "\n\n:PROPERTIES:\n:a: 1\n:END:\n* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "keys": "TAB",
+  "point": 15,
+  "answers": [],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "name": "blank-c-tab",
+  "text": "\n# c\n:PROPERTIES:\n:a: 1\n:END:\n* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "keys": "TAB",
+  "point": 18,
+  "answers": [],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "name": "blank-set",
+  "text": "\n:PROPERTIES:\n:a: 1\n:END:\n* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "keys": "C-c C-x p",
+  "point": 0,
+  "answers": [
+   "a",
+   "2"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "name": "blank-c-set",
+  "text": "\n# c\n:PROPERTIES:\n:a: 1\n:END:\n* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "keys": "C-c C-x p",
+  "point": 0,
+  "answers": [
+   "a",
+   "2"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "name": "only-comment",
+  "text": "# c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "keys": "C-c C-x p",
+  "point": 0,
+  "answers": [
+   "b",
+   "2"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "name": "comment-text",
+  "text": "# c\n# d\nSome text\n* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "keys": "C-c C-x p",
+  "point": 8,
+  "answers": [
+   "b",
+   "2"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "name": "text-only",
+  "text": "Some text\n* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "keys": "C-c C-x p",
+  "point": 0,
+  "answers": [
+   "b",
+   "2"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "name": "misplaced-default",
+  "text": "* H\nbody\n:PROPERTIES:\n:a: 1\n:END:\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "keys": "C-c C-x p",
+  "point": 22,
+  "answers": [
+   "",
+   "2"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "name": "colon-name-default",
+  "text": "* H\n:PROPERTIES:\n:a:b: c\n:END:\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "keys": "C-c C-x p",
+  "point": 17,
+  "answers": [
+   "",
+   "d"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "name": "colon-name-put",
+  "text": "* H\n:PROPERTIES:\n:a:b: c\n:END:\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "keys": "C-c C-x p",
+  "point": 0,
+  "answers": [
+   "a",
+   "1"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "name": "plus-default",
+  "text": "* H\n:PROPERTIES:\n:a: 1\n:a+: 2\n:END:\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "keys": "C-c C-x p",
+  "point": 23,
+  "answers": [
+   "",
+   "3"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "name": "category-default",
+  "text": "#+CATEGORY: work\n* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "keys": "C-c C-x p",
+  "point": 17,
+  "answers": [
+   "CATEGORY",
+   ""
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "name": "item-default",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "keys": "C-c C-x p",
+  "point": 0,
+  "answers": [
+   "ITEM",
+   ""
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "name": "prio-before-heading",
+  "text": "Text\n* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "keys": "C-c C-x p",
+  "point": 0,
+  "answers": [
+   "PRIORITY",
+   "A"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "name": "todo-before-heading",
+  "text": "Text\n* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "keys": "C-c C-x p",
+  "point": 0,
+  "answers": [
+   "TODO",
+   "DONE"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "name": "logbook-default",
+  "text": "* H\n:PROPERTIES:\n:a: 1\n:END:\n:LOGBOOK:\n:x: y\n:END:\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "keys": "C-c C-x p",
+  "point": 39,
+  "answers": [
+   "",
+   "2"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "name": "example-default",
+  "text": "* H\n#+begin_example\n:PROPERTIES:\n:a: 1\n:END:\n#+end_example\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "keys": "C-c C-x p",
+  "point": 33,
+  "answers": [
+   "",
+   "2"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "name": "top-indent",
+  "text": "# c\nText\n* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "keys": "C-c C-x p",
+  "point": 4,
+  "answers": [
+   "b",
+   "2"
+  ],
+  "globals": {
+   "org-last-set-property": false,
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "tags-prio",
+  "text": "* H                                                              :tag:\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "keys": "C-c C-x p",
+  "point": 0,
+  "answers": [
+   "PRIORITY",
+   "A"
+  ],
+  "globals": {
+   "org-last-set-property": false,
+   "org-auto-align-tags": true
+  }
  }
 ]

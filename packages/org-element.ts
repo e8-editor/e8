@@ -229,11 +229,13 @@ function parseElements(
     if (afterHeadline && previous === undefined && afterHeading && PLANNING.test(text)) {
       e = elem("planning", p, Math.min(next, to), parent);
     } else if (
-      (afterHeadline || (firstSection && (p === 0 || topComment))) &&
-      // Right after the heading, or the planning line with no blank line between, or in the first section the comment it starts with, as Org's parser has it.
-      ((previous === undefined && (afterHeading || !afterHeadline)) ||
-        (previous === "planning" && line > 0 && !isBlank(e8.lineText(line - 1))) ||
-        (topComment && previous === "comment")) &&
+      (afterHeadline || firstSection) &&
+      // Right after the heading, or the planning line with no blank line between, as Org's parser has it; in the first
+      // section, at its start after blank lines only, or right after the comment it starts with, as its top-comment mode.
+      ((afterHeadline && previous === undefined && afterHeading) ||
+        (afterHeadline && previous === "planning" && line > 0 && !isBlank(e8.lineText(line - 1))) ||
+        (firstSection && previous === undefined && isBlank(e8.bufferText(0, p))) ||
+        (firstSection && topComment && previous === "comment" && line > 0 && !isBlank(e8.lineText(line - 1)))) &&
       /^[ \t]*:PROPERTIES:[ \t]*$/i.test(text) &&
       drawerEnd(line, to) !== undefined &&
       // As org-property-drawer-re has it, every line inside is a property.

@@ -97,6 +97,8 @@ import {
   radioButtonsHere,
   toggleRadioButton,
   topGet,
+  ownDrawer,
+  propertyDrawerEnd,
   topLocalValues,
   setLineIndenter,
   twoSpacesAfter,
@@ -8313,7 +8315,7 @@ e8.defineCommand({
  */
 export function allowedValues(h: Heading | undefined, property: string): { values: string[]; restricted: boolean } {
   // Before the first heading, the file's own, as org-entry-get finds them at point-min.
-  const all = h === undefined ? topGet(`${property}_ALL`) ?? keywordProperty(`${property}_ALL`) : entryGetInherited(h, `${property}_ALL`, false);
+  const all = h === undefined ? topGet(`${property}_ALL`) ?? globalProperty(`${property}_ALL`) : entryGetInherited(h, `${property}_ALL`, false);
   const values: string[] = [];
   let restricted = true;
   for (const m of allMatches(/"((?:[^"\\]|\\.)*)"|(\S+)/g, all ?? "")) {
@@ -11961,29 +11963,46 @@ function propertyNamesToComplete(): string[] {
     const m = /^#\+PROPERTY:[ \t]*(\S+)/i.exec(text);
     if (m) props.push(m[1]);
   }
+  const columns: string[] = [];
+  for (const [, , text] of keywordLines()) {
+    const m = /^#\+COLUMNS:[ \t]*(.*)$/i.exec(text);
+    if (m) columns.push(m[1]);
+  }
   e8.saveRestriction(() => {
     e8.widen();
-    let inDrawer = false;
-    for (let l = 0; l < e8.lineCount(); l++) {
-      const text = e8.lineText(l);
-      if (/^[ \t]*:PROPERTIES:[ \t]*$/i.test(text)) inDrawer = true;
-      else if (/^[ \t]*:END:[ \t]*$/i.test(text)) inDrawer = false;
-      else if (inDrawer) {
-        const m = /^[ \t]*:(\S+?):/.exec(text);
-        if (m) props.push(m[1].replace(/\+$/, ""));
+    // The keys of the real property drawers, the file's and each entry's, as org-get-property-block finds them, each pushed, so later first.
+    const found: string[] = [];
+    const drawerKeys = (open: number, close: number) => {
+      for (let l = open + 1; l < close; l++) {
+        const m = PROPERTY_LINE.exec(e8.lineText(l));
+        if (!m) continue;
+        found.unshift(m[1].replace(/\+$/, ""));
+        if (/^COLUMNS$/i.test(m[1])) columns.push(e8.lineText(l).replace(/^[ \t]*:\S+?:[ \t]*/, ""));
       }
-      const columns = /^[ \t]*(?:#\+|:)COLUMNS:[ \t]*(.*)$/i.exec(text);
-      if (columns) {
-        for (const m of allMatches(/%[0-9]*([\p{L}\p{N}_-]+)(\([^)]+\))?(?:\{[^}]+\})?/gu, columns[1])) {
-          if (!SPECIAL_PROPERTIES.some((x) => x.toLowerCase() === m[1].toLowerCase())) props.push(m[1]);
-        }
-      }
+    };
+    const top = e8.saveExcursion(() => (e8.gotoChar(0), headings().length > 0 && headings()[0].start === 0 ? undefined : ownDrawer()));
+    if (top) drawerKeys(...top);
+    for (const h of headings()) {
+      let line = h.line + 1;
+      if (line < e8.lineCount() && PLANNING.test(e8.lineText(line))) line++;
+      const close = propertyDrawerEnd(line);
+      if (close !== undefined) drawerKeys(line, close);
     }
+    props.unshift(...found);
   });
+  // The names COLUMNS formats give, from keywords and drawers, as org-buffer-property-keys takes them.
+  for (const value of columns) {
+    for (const m of allMatches(/%[0-9]*([\p{L}\p{N}_-]+)(\([^)]+\))?(?:\{[^}]+\})?/gu, value)) {
+      if (!SPECIAL_PROPERTIES.some((x) => x.toLowerCase() === m[1].toLowerCase())) props.unshift(m[1]);
+    }
+  }
   const all = [...new Set([...props, ...props.filter((x) => /._ALL$/.test(x)).map((x) => x.slice(0, -4))])];
   const up = (x: string) => x.toUpperCase();
   return all.sort((a, b) => (up(a) < up(b) ? -1 : up(a) > up(b) ? 1 : 0));
 }
+
+/** Trims the whitespace org-trim does: spaces, tabs and newlines at either end. */
+const orgTrim = (s: string): string => s.replace(/^[ \t\n\r]+|[ \t\n\r]+$/g, "");
 
 /** Completing-read as org-completing-read calls it, case ignored, or with SET, a function of org-property-set-functions-alist. */
 function readCompleting(set: e8.Value | undefined, prompt: string, collection: string[], requireMatch: boolean, def: string | undefined): string {
@@ -12004,17 +12023,15 @@ function alistValue(name: string, key: string, fold = false): e8.Value | undefin
   return Array.isArray(e) ? e[1] : undefined;
 }
 
-/** The property named on point's line in a property drawer, as org-at-property-p finds one. */
+/** A property line, its name the shortest followed by a colon and a space or the line's end, as org-property-re matches it. */
+const PROPERTY_LINE = /^[ \t]*:(\S+?):(?:[ \t]+.*?)?[ \t]*$/;
+
+/** The property named on point's line in the entry's own drawer, as org-at-property-p finds one. */
 function propertyAtPoint(): string | undefined {
-  const m = /^[ \t]*:([^:\s]+):/.exec(e8.lineText(lineAt()));
-  if (!m || /^(PROPERTIES|END)$/i.test(m[1])) return undefined;
-  // Inside a drawer: its opening line above, with no :END: between.
-  for (let l = lineAt() - 1; l >= 0; l--) {
-    const text = e8.lineText(l);
-    if (/^[ \t]*:END:[ \t]*$/i.test(text) || /^\*+ /.test(text)) return undefined;
-    if (/^[ \t]*:PROPERTIES:[ \t]*$/i.test(text)) return m[1];
-  }
-  return undefined;
+  const drawer = ownDrawer();
+  const line = lineAt();
+  if (drawer === undefined || line <= drawer[0] || line >= drawer[1]) return undefined;
+  return PROPERTY_LINE.exec(e8.lineText(line))?.[1];
 }
 
 /** Reads a property's name, offering the buffer's and Org's, the one on point's line or the last set the default, as org-read-property-name. */
@@ -12050,15 +12067,17 @@ function allowedAtPoint(property: string): { values: string[]; restricted: boole
   return allowed.values.length === 0 ? undefined : allowed;
 }
 
-/** The entry's own value of PROPERTY at point, as org-entry-get without inheritance: its TODO state and priority for those. */
+/** The entry's own value of PROPERTY at point, as org-entry-get without inheritance: the category and special properties worked out, their names in any case. */
 function currentPropertyValue(property: string): string | undefined {
   const all = headings();
   const i = headingIndex(all, lineAt());
-  if (i === undefined) return property === "TODO" || property === "PRIORITY" ? undefined : topGet(property);
-  if (property === "TODO") return all[i].todo;
-  if (property === "PRIORITY") return all[i].priority ?? String(e8.variable("org-priority-default") ?? "B");
+  const upper = property.toUpperCase();
+  if (upper === "CATEGORY") return i === undefined ? category() : matchContexts(all)(i).category();
+  if (SPECIAL_PROPERTIES.includes(upper)) return i === undefined ? undefined : entryGetAt(matchContexts(all)(i), upper, false);
+  if (i === undefined) return topGet(property);
   return entryGet(all[i].line, property);
 }
+e8.defun("org--entry-get-here", (property: string) => currentPropertyValue(property) ?? null);
 
 /**
  * Reads a value for PROPERTY, as org-read-property-value: one of its
@@ -12073,7 +12092,7 @@ function readPropertyValue(property: string): string {
   const answer = allowed
     ? readCompleting(set, prompt, allowed.values, allowed.restricted, undefined)
     : readCompleting(set, prompt, propertyValues(property), false, current);
-  return answer.trim();
+  return orgTrim(answer);
 }
 e8.defun("org-read-property-value", (property: string) => readPropertyValue(property));
 

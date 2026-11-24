@@ -690,6 +690,894 @@
       "modified": true,
       "error": null,
       "message": null
+    },
+    {
+      "name": "sched",
+      "input": {
+        "text": "* H\n",
+        "point": 0,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-24",
+        "answers": [
+          "SCHEDULED",
+          "<2026-11-25 Wed>"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "* H\nSCHEDULED: <2026-11-25 Wed>\n",
+      "visible": "* H\nSCHEDULED: <2026-11-25 Wed>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Scheduled to <2026-11-25 Wed>"
+    },
+    {
+      "name": "deadline-later",
+      "input": {
+        "text": "* H\nDEADLINE: <2026-11-25 Wed>\n",
+        "point": 0,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-24",
+        "answers": [
+          "DEADLINE",
+          "later"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "* H\nDEADLINE: <2026-11-26 Thu>\n",
+      "visible": "* H\nDEADLINE: <2026-11-26 Thu>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "lower-todo",
+      "input": {
+        "text": "* TODO H\n",
+        "point": 0,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "todo",
+          "DONE"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "* TODO H\n:PROPERTIES:\n:todo:     DONE\n:END:\n",
+      "visible": "* TODO H\n:PROPERTIES:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "lower-priority",
+      "input": {
+        "text": "* H\n",
+        "point": 0,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "priority",
+          "A"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "* H\n:PROPERTIES:\n:priority: A\n:END:\n",
+      "visible": "* H\n:PROPERTIES:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "prio-default",
+      "input": {
+        "text": "* H\n",
+        "point": 0,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "PRIORITY",
+          "B"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "* H\n",
+      "visible": "* H\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "prio-same",
+      "input": {
+        "text": "* [#A] H\n",
+        "point": 0,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "PRIORITY",
+          "A"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "* [#A] H\n",
+      "visible": "* [#A] H\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "todo-same",
+      "input": {
+        "text": "* TODO H\n",
+        "point": 0,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "TODO",
+          "TODO"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "* TODO H\n",
+      "visible": "* TODO H\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cblank-tab",
+      "input": {
+        "text": "# c\n\n:PROPERTIES:\n:a: 1\n:END:\ntext\n* H\n",
+        "point": 18,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "# c\n\n:PROPERTIES:\n:a: 1\n:END:\ntext\n* H\n",
+      "visible": "# c\n\n:PROPERTIES:\n:a: 1\n:END:\ntext\n* H\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cblank-default",
+      "input": {
+        "text": "# c\n\n:PROPERTIES:\n:a: 1\n:END:\ntext\n* H\n",
+        "point": 18,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "",
+          "2"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "# c\n\n:PROPERTIES:\n:a: 1\n:END:\ntext\n* H\n",
+      "visible": "# c\n\n:PROPERTIES:\n:a: 1\n:END:\ntext\n* H\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Invalid property name: \"\"",
+      "message": null
+    },
+    {
+      "name": "cblank-set",
+      "input": {
+        "text": "# c\n\n:PROPERTIES:\n:a: 1\n:END:\ntext\n* H\n",
+        "point": 30,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "b",
+          "2"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "# c\n:PROPERTIES:\n:b:        2\n:END:\n\n:PROPERTIES:\n:a: 1\n:END:\ntext\n* H\n",
+      "visible": "# c\n:PROPERTIES:\n\n:PROPERTIES:\n:a: 1\n:END:\ntext\n* H\n",
+      "point": 62,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "c-tab",
+      "input": {
+        "text": "# c\n:PROPERTIES:\n:a: 1\n:END:\ntext\n* H\n",
+        "point": 17,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "# c\n:PROPERTIES:\n:a:        1\n:END:\ntext\n* H\n",
+      "visible": "# c\n:PROPERTIES:\n:a:        1\n:END:\ntext\n* H\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "blank-tab",
+      "input": {
+        "text": "\n\n:PROPERTIES:\n:a: 1\n:END:\n* H\n",
+        "point": 15,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "\n\n:PROPERTIES:\n:a:        1\n:END:\n* H\n",
+      "visible": "\n\n:PROPERTIES:\n:a:        1\n:END:\n* H\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "blank-c-tab",
+      "input": {
+        "text": "\n# c\n:PROPERTIES:\n:a: 1\n:END:\n* H\n",
+        "point": 18,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "\n# c\n:PROPERTIES:\n:a:        1\n:END:\n* H\n",
+      "visible": "\n# c\n:PROPERTIES:\n:a:        1\n:END:\n* H\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "blank-set",
+      "input": {
+        "text": "\n:PROPERTIES:\n:a: 1\n:END:\n* H\n",
+        "point": 0,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a",
+          "2"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": ":PROPERTIES:\n:a:        2\n:END:\n\n:PROPERTIES:\n:a: 1\n:END:\n* H\n",
+      "visible": ":PROPERTIES:\n\n:PROPERTIES:\n:a: 1\n:END:\n* H\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "blank-c-set",
+      "input": {
+        "text": "\n# c\n:PROPERTIES:\n:a: 1\n:END:\n* H\n",
+        "point": 0,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a",
+          "2"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": ":PROPERTIES:\n:a:        2\n:END:\n\n# c\n:PROPERTIES:\n:a: 1\n:END:\n* H\n",
+      "visible": ":PROPERTIES:\n\n# c\n:PROPERTIES:\n:a: 1\n:END:\n* H\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "only-comment",
+      "input": {
+        "text": "# c",
+        "point": 0,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "b",
+          "2"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "# c\n:PROPERTIES:\n:b:        2\n:END:\n",
+      "visible": "# c\n:PROPERTIES:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "comment-text",
+      "input": {
+        "text": "# c\n# d\nSome text\n* H\n",
+        "point": 8,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "b",
+          "2"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "# c\n# d\n:PROPERTIES:\n:b:        2\n:END:\nSome text\n* H\n",
+      "visible": "# c\n# d\n:PROPERTIES:\nSome text\n* H\n",
+      "point": 40,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "text-only",
+      "input": {
+        "text": "Some text\n* H\n",
+        "point": 0,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "b",
+          "2"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": ":PROPERTIES:\n:b:        2\n:END:\nSome text\n* H\n",
+      "visible": ":PROPERTIES:\nSome text\n* H\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "misplaced-default",
+      "input": {
+        "text": "* H\nbody\n:PROPERTIES:\n:a: 1\n:END:\n",
+        "point": 22,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "",
+          "2"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "* H\nbody\n:PROPERTIES:\n:a: 1\n:END:\n",
+      "visible": "* H\nbody\n:PROPERTIES:\n:a: 1\n:END:\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Invalid property name: \"\"",
+      "message": null
+    },
+    {
+      "name": "colon-name-default",
+      "input": {
+        "text": "* H\n:PROPERTIES:\n:a:b: c\n:END:\n",
+        "point": 17,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "",
+          "d"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "* H\n:PROPERTIES:\n:a:b:      d\n:END:\n",
+      "visible": "* H\n:PROPERTIES:\n:a:b:      d\n:END:\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "colon-name-put",
+      "input": {
+        "text": "* H\n:PROPERTIES:\n:a:b: c\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a",
+          "1"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "* H\n:PROPERTIES:\n:a:b: c\n:a:        1\n:END:\n",
+      "visible": "* H\n:PROPERTIES:\n:a:b: c\n:a:        1\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plus-default",
+      "input": {
+        "text": "* H\n:PROPERTIES:\n:a: 1\n:a+: 2\n:END:\n",
+        "point": 23,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "",
+          "3"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "* H\n:PROPERTIES:\n:a: 1\n:a+:       3\n:END:\n",
+      "visible": "* H\n:PROPERTIES:\n:a: 1\n:a+:       3\n:END:\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "category-default",
+      "input": {
+        "text": "#+CATEGORY: work\n* H\n",
+        "point": 17,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "CATEGORY",
+          ""
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "#+CATEGORY: work\n* H\n",
+      "visible": "#+CATEGORY: work\n* H\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "item-default",
+      "input": {
+        "text": "* H\n",
+        "point": 0,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "ITEM",
+          ""
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "* H\n",
+      "visible": "* H\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "prio-before-heading",
+      "input": {
+        "text": "Text\n* H\n",
+        "point": 0,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "PRIORITY",
+          "A"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "Text\n* H\n",
+      "visible": "Text\n* H\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Before first headline at position 1 in buffer *e8-oracle*",
+      "message": null
+    },
+    {
+      "name": "todo-before-heading",
+      "input": {
+        "text": "Text\n* H\n",
+        "point": 0,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "TODO",
+          "DONE"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "Text\n* H\n",
+      "visible": "Text\n* H\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Before first headline at position 1 in buffer *e8-oracle*",
+      "message": null
+    },
+    {
+      "name": "logbook-default",
+      "input": {
+        "text": "* H\n:PROPERTIES:\n:a: 1\n:END:\n:LOGBOOK:\n:x: y\n:END:\n",
+        "point": 39,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "",
+          "2"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "* H\n:PROPERTIES:\n:a: 1\n:END:\n:LOGBOOK:\n:x: y\n:END:\n",
+      "visible": "* H\n:PROPERTIES:\n:a: 1\n:END:\n:LOGBOOK:\n:x: y\n:END:\n",
+      "point": 39,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Invalid property name: \"\"",
+      "message": null
+    },
+    {
+      "name": "example-default",
+      "input": {
+        "text": "* H\n#+begin_example\n:PROPERTIES:\n:a: 1\n:END:\n#+end_example\n",
+        "point": 33,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "",
+          "2"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "* H\n#+begin_example\n:PROPERTIES:\n:a: 1\n:END:\n#+end_example\n",
+      "visible": "* H\n#+begin_example\n:PROPERTIES:\n:a: 1\n:END:\n#+end_example\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Invalid property name: \"\"",
+      "message": null
+    },
+    {
+      "name": "top-indent",
+      "input": {
+        "text": "# c\nText\n* H\n",
+        "point": 4,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "b",
+          "2"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false,
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "# c\n:PROPERTIES:\n:b:        2\n:END:\nText\n* H\n",
+      "visible": "# c\n:PROPERTIES:\nText\n* H\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "tags-prio",
+      "input": {
+        "text": "* H                                                              :tag:\n",
+        "point": 0,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "PRIORITY",
+          "A"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false,
+          "org-auto-align-tags": true
+        }
+      },
+      "text": "* [#A] H                                                                :tag:\n",
+      "visible": "* [#A] H                                                                :tag:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Priority of current item set to A"
     }
   ]
 }

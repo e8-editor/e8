@@ -1560,7 +1560,7 @@ export function endOfMetaData(h: Heading, full: boolean | "logbook" = false): nu
 }
 
 /** The closing line of a property drawer starting at a line, as org-property-drawer-re matches one. */
-function propertyDrawerEnd(line: number): number | undefined {
+export function propertyDrawerEnd(line: number): number | undefined {
   if (line >= e8.lineCount() || !/^[ \t]*:PROPERTIES:[ \t]*$/i.test(e8.lineText(line))) return undefined;
   for (let l = line + 1; l < e8.lineCount(); l++) {
     const text = e8.lineText(l);
@@ -1604,7 +1604,8 @@ export function entryPut(headingLine: number, property: string, value: string): 
       });
     }
     const close = propertyDrawerEnd(line) as number;
-    const re = new RegExp(`^[ \\t]*:${escapeRegExp(property)}:`, "i");
+    // The property's own line, its name followed by a space or the line's end, as org-re-property matches it.
+    const re = new RegExp(`^[ \\t]*:${escapeRegExp(property)}:(?:[ \\t]|$)`, "i");
     let at: number | undefined;
     for (let l = line + 1; l < close; l++) {
       if (re.test(e8.lineText(l))) {
@@ -1723,6 +1724,21 @@ export function entryHeading(): Heading | undefined {
   return i === undefined ? undefined : all[i];
 }
 
+/** The line of the drawer of the entry at point, its opening and closing, as org-get-property-block finds it: after the heading and planning, or before the first heading after the comments. */
+export function ownDrawer(): [number, number] | undefined {
+  const h = entryHeading();
+  let line: number;
+  if (h) {
+    line = h.line + 1;
+    if (line < e8.lineCount() && PLANNING.test(e8.lineText(line))) line++;
+  } else {
+    line = 0;
+    while (line < e8.lineCount() && /^[ \t]*#(?: |$)/.test(e8.lineText(line))) line++;
+  }
+  const close = propertyDrawerEnd(line);
+  return close === undefined ? undefined : [line, close];
+}
+
 export const setProperty = e8.defineCommand({
   name: "org-set-property",
   doc: "In the current entry, set a property to a value, adding a property drawer if there is none.",
@@ -1744,25 +1760,48 @@ export const setProperty = e8.defineCommand({
     e8.setVariable("org-last-set-property", property);
     e8.setVariable("org-last-set-property-value", `${property}: ${value}`);
     value = String(e8.funcall("org--postprocess-property-value", property, value));
+    // Nothing to do when it has the value already, as org-entry-get gives it, special properties worked out.
+    if (e8.funcall("org--entry-get-here", property) === value) return;
     const h = entryHeading();
-    const upper = property.toUpperCase();
+    // Case matters from here, as org-entry-put compares with equal.
+    const upper = property;
     // Before the first heading, the file's own drawer, as org-entry-put goes to point-min there.
     if (!h && !["TODO", "PRIORITY"].includes(upper)) {
       if (SPECIAL_PROPERTIES.includes(upper)) e8.signal("error", `The ${property} property cannot be set with \u2018org-entry-put\u2019`);
-      if (topGet(property) === value) return;
       const p = marker(e8.point());
       entryPut(-1, property, value);
       e8.gotoChar(p.pos);
       dropMarker(p);
+      e8.runHooks("org-property-changed-functions", property, value);
       return;
     }
     if (!h) throw new Error("Before first headline at position 1 in buffer " + e8.bufferName());
+    if (upper === "SCHEDULED" || upper === "DEADLINE") {
+      // As org-entry-put: earlier and later move the date there a day, empty removes it, any other is the date.
+      const command = upper === "SCHEDULED" ? "org-schedule" : "org-deadline";
+      e8.saveExcursion(() => {
+        const next = h.line + 1;
+        const m = next < e8.lineCount() && PLANNING.test(e8.lineText(next)) ? new RegExp(`${upper}: *<`).exec(e8.lineText(next)) : null;
+        e8.gotoChar(h.start);
+        if (m) {
+          if (value === "earlier" || value === "later") {
+            e8.gotoChar(e8.lineStart(next) + m.index + m[0].length - 1);
+            e8.call(value === "later" ? "org-timestamp-up-day" : "org-timestamp-down-day");
+          } else if (value === "") e8.callWithPrefix([4], command, "");
+          else e8.call(command, value);
+        } else if (["earlier", "later", ""].includes(value)) e8.callInteractively(command);
+        else e8.call(command, value);
+      });
+      e8.runHooks("org-property-changed-functions", property, value);
+      return;
+    }
     if (upper === "PRIORITY") {
       // As org-priority with the value's first character, or a space to remove it, as org-entry-put does.
       e8.saveExcursion(() => {
         e8.gotoChar(h.start);
         e8.callWithPrefix(/\S/.test(value) ? value.codePointAt(0)! : 32, "org-priority");
       });
+      e8.runHooks("org-property-changed-functions", property, value);
       return;
     }
     if (upper === "TODO") {
@@ -1772,16 +1811,18 @@ export const setProperty = e8.defineCommand({
         e8.gotoChar(h.start);
         e8.call("org-todo-set", value);
       });
+      e8.runHooks("org-property-changed-functions", property, value);
       return;
     }
     if (SPECIAL_PROPERTIES.includes(upper)) e8.signal("error", `The ${property} property cannot be set with \u2018org-entry-put\u2019`);
-    if (entryGet(h.line, property) === value) return;
     const p = marker(e8.point());
     entryPut(h.line, property, value);
     e8.gotoChar(p.pos);
     dropMarker(p);
+    e8.runHooks("org-property-changed-functions", property, value);
   },
 });
+e8.defineHook("org-property-changed-functions", "Functions given a property's name and new value after org-set-property sets it.");
 
 e8.defineCommand({
   name: "org-delete-property",
