@@ -457,7 +457,7 @@ function agendaLine(
   const tags = displayedTags(h);
   if (tags === "") return line;
   const width = (e8.windowSize()?.width ?? 80) - 1;
-  return line + " ".repeat(Math.max(1, width - charCount(line) - charCount(tags))) + tags;
+  return line + " ".repeat(Math.max(1, width - charCount(visibleText(line)) - charCount(tags))) + tags;
 }
 
 /**
@@ -921,15 +921,26 @@ function insertHabitGraphs(lines: { text: string; item?: AgendaItem }[]): void {
 }
 
 /** Puts lines into the agenda buffer and shows it, as org-agenda-prepare and org-agenda-finalize do. */
-/** An agenda's lines: each line's text, its item, and whether its links show only their descriptions, as a clock report's fontified table does. */
-type AgendaLines = { text: string; item?: AgendaItem; links?: boolean }[];
+/** An agenda's lines: each line's text and its item. */
+type AgendaLines = { text: string; item?: AgendaItem }[];
 
-/** Hides a line's link brackets and targets, as Org mode's fontification makes them invisible, leaving descriptions. */
+/** A bracket link, its target and its description up to the ]] that ends it, as org-link-bracket-re. */
+const AGENDA_LINK = /\[\[((?:[^\][\\]|\\.)+)\](?:\[([\s\S]+?)\])?\]/g;
+
+/** Whether links show only their descriptions, as org-link-descriptive says. */
+const linksDescriptive = (): boolean => truthy(e8.variable("org-link-descriptive") ?? null);
+
+/** Text as it shows with its links' descriptions, or their targets, alone, for lining up tags, as Emacs's widths leave out invisible text. */
+function visibleText(text: string): string {
+  return linksDescriptive() ? text.replace(AGENDA_LINK, (_m, link: string, desc?: string) => desc ?? link) : text;
+}
+
+/** Hides a line's link brackets and targets, as org-agenda-finalize's org-activate-links makes them invisible, leaving descriptions. */
 function hideLinksOn(line: number): void {
   const text = e8.lineText(line);
   const ls = e8.lineStart(line);
   const pos = (k: number) => ls + charCount(text.slice(0, k));
-  for (const m of allMatches(/\[\[((?:[^\][\\]|\\.)+)\](?:\[([^\]]+)\])?\]/g, text)) {
+  for (const m of allMatches(AGENDA_LINK, text)) {
     const start = m.index ?? 0;
     const end = start + m[0].length;
     const shown = m[2] === undefined ? [start + 2, start + 2 + m[1].length] : [start + 2 + m[1].length + 2, end - 2];
@@ -954,7 +965,8 @@ function showAgenda(given: AgendaLines | ((maxChars: number) => AgendaLines), po
     if (e8.variable("major-mode") !== "org-agenda-mode") e8.call("org-agenda-mode");
     setModeName();
     lines.forEach((l, line) => dimLine(line, l.item));
-    lines.forEach((l, line) => l.links && hideLinksOn(line));
+    // Every line's links, as org-agenda-finalize activates them in the whole buffer.
+    if (linksDescriptive()) lines.forEach((_l, line) => hideLinksOn(line));
     e8.setReadOnly(true);
     e8.gotoChar(e8.lineStart(pointLine));
   });
@@ -1153,7 +1165,7 @@ function agendaList(arg: e8.PrefixArg | null, startDay?: number, spanArg?: Span,
     const header = e8.variable("org-agenda-clock-report-header");
     if (typeof header === "string") for (const l of header.replace(/\n$/, "").split("\n")) lines.push({ text: l });
     const table = clockReport(start, last + 1);
-    for (const l of table.replace(/\n$/, "").split("\n")) if (table !== "") lines.push({ text: l, links: true });
+    for (const l of table.replace(/\n$/, "").split("\n")) if (table !== "") lines.push({ text: l });
   }
   agendaView = { kind: "agenda", arg, startDay, span };
   startingDay = start;
@@ -2577,7 +2589,7 @@ e8.defineMajorMode({
     e8.setVariable("line-move-visual", null);
     // Lines hidden as filtered, blocked tasks among them, as org-agenda-mode adds org-filtered.
     e8.addToInvisibilitySpec("org-filtered");
-    // The clock report's links, as Org mode shows them.
+    // Links show their descriptions, as org-agenda-finalize activates them.
     e8.addToInvisibilitySpec("org-link");
   },
   bindings: {

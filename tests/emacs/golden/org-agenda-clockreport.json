@@ -608,6 +608,128 @@
         }
       ],
       "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "cr-links",
+      "input": {
+        "text": "* Read [[https://example.com][the docs]]\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:00] =>  1:00\n:END:\n* Check [x] list\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 08:00]--[2026-10-27 Tue 09:00] =>  1:00\n:END:\n* TODO [#A] Fix [1/2] cookie :a:b:\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 10:00]--[2026-10-27 Tue 10:20] =>  0:20\n:END:\n* See [[https://example.org]]\n:LOGBOOK:\nCLOCK: [2026-10-29 Thu 10:00]--[2026-10-29 Thu 10:10] =>  0:10\n:END:\n* a]b [c] d\n:LOGBOOK:\nCLOCK: [2026-10-29 Thu 11:00]--[2026-10-29 Thu 11:10] =>  0:10\n:END:\n",
+        "point": 0,
+        "keys": "R",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-clockreport-mode": false,
+          "org-agenda-clock-report-header": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n| File          | Headline                |   Time |\n|---------------+-------------------------+--------|\n|               | ALL *Total time*        | *2:40* |\n|---------------+-------------------------+--------|\n| e8-agenda.org | *File time*             | *2:40* |\n|               | [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Read \\[\\[https://example.com\\]\\[the docs\\]\\]][Read the docs]]           |   1:00 |\n|               | [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Check \\[x\\] list][Check [x] list]]          |   1:00 |\n|               | [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Fix cookie][Fix  cookie]]             |   0:20 |\n|               | [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*See \\[\\[https://example.org\\]\\]][See https://example.org]] |   0:10 |\n|               | [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*a\\]b \\[c\\] d][a]b [c] d]]               |   0:10 |\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n| File          | Headline                |   Time |\n|---------------+-------------------------+--------|\n|               | ALL *Total time*        | *2:40* |\n|---------------+-------------------------+--------|\n| e8-agenda.org | *File time*             | *2:40* |\n|               | Read the docs           |   1:00 |\n|               | Check [x] list          |   1:00 |\n|               | Fix  cookie             |   0:20 |\n|               | See https://example.org |   0:10 |\n|               | a]b [c] d               |   0:10 |\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Clocktable mode is on"
+    },
+    {
+      "name": "item-links",
+      "input": {
+        "text": "* TODO Read [[https://example.com][the docs]] :tag:\nSCHEDULED: <2026-10-28 Wed>\n* Meet [[https://example.org]] <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-clockreport-mode": false,
+          "org-agenda-clock-report-header": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Read [[https://example.com][the docs]]                              :tag:\nThursday   29 October 2026\n  e8-agenda:  10:00...... Meet [[https://example.org]] \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Read the docs                              :tag:\nThursday   29 October 2026\n  e8-agenda:  10:00...... Meet https://example.org \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "clocktable-link-widths",
+      "input": {
+        "text": "* Read [[https://example.com][the docs]]\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:00] =>  1:00\n:END:\n* Check [x] list\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 08:00]--[2026-10-27 Tue 09:00] =>  1:00\n:END:\n* TODO [#A] Fix [1/2] cookie :a:b:\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 10:00]--[2026-10-27 Tue 10:20] =>  0:20\n:END:\n* See [[https://example.org]]\n:LOGBOOK:\nCLOCK: [2026-10-29 Thu 10:00]--[2026-10-29 Thu 10:10] =>  0:10\n:END:\n* a]b [c] d\n:LOGBOOK:\nCLOCK: [2026-10-29 Thu 11:00]--[2026-10-29 Thu 11:10] =>  0:10\n:END:\n#+BEGIN: clocktable :link t :scope file\n#+END:\n",
+        "point": 530,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* Read [[https://example.com][the docs]]\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:00] =>  1:00\n:END:\n* Check [x] list\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 08:00]--[2026-10-27 Tue 09:00] =>  1:00\n:END:\n* TODO [#A] Fix [1/2] cookie :a:b:\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 10:00]--[2026-10-27 Tue 10:20] =>  0:20\n:END:\n* See [[https://example.org]]\n:LOGBOOK:\nCLOCK: [2026-10-29 Thu 10:00]--[2026-10-29 Thu 10:10] =>  0:10\n:END:\n* a]b [c] d\n:LOGBOOK:\nCLOCK: [2026-10-29 Thu 11:00]--[2026-10-29 Thu 11:10] =>  0:10\n:END:\n#+BEGIN: clocktable :link t :scope file\n#+CAPTION: Clock summary at [2026-10-28 Wed 12:00]\n| Headline                |   Time |\n|-------------------------+--------|\n| *Total time*            | *2:40* |\n|-------------------------+--------|\n| [[*Read \\[\\[https://example.com\\]\\[the docs\\]\\]][Read the docs]]           |   1:00 |\n| [[*Check \\[x\\] list][Check [x] list]]          |   1:00 |\n| [[*Fix cookie][Fix  cookie]]             |   0:20 |\n| [[*See \\[\\[https://example.org\\]\\]][See https://example.org]] |   0:10 |\n| [[*a\\]b \\[c\\] d][a]b [c] d]]               |   0:10 |\n#+END:\n",
+      "visible": "* Read the docs\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:00] =>  1:00\n:END:\n* Check [x] list\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 08:00]--[2026-10-27 Tue 09:00] =>  1:00\n:END:\n* TODO [#A] Fix [1/2] cookie :a:b:\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 10:00]--[2026-10-27 Tue 10:20] =>  0:20\n:END:\n* See https://example.org\n:LOGBOOK:\nCLOCK: [2026-10-29 Thu 10:00]--[2026-10-29 Thu 10:10] =>  0:10\n:END:\n* a]b [c] d\n:LOGBOOK:\nCLOCK: [2026-10-29 Thu 11:00]--[2026-10-29 Thu 11:10] =>  0:10\n:END:\n#+BEGIN: clocktable :link t :scope file\n#+CAPTION: Clock summary at [2026-10-28 Wed 12:00]\n| Headline                |   Time |\n|-------------------------+--------|\n| *Total time*            | *2:40* |\n|-------------------------+--------|\n| Read the docs           |   1:00 |\n| Check [x] list          |   1:00 |\n| Fix  cookie             |   0:20 |\n| See https://example.org |   0:10 |\n| a]b [c] d               |   0:10 |\n#+END:\n",
+      "point": 530,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }
