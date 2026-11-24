@@ -76,6 +76,7 @@ mod menus;
 mod mouse_positions;
 mod org;
 mod org_agenda_archive;
+mod org_agenda_bulk;
 mod org_agenda_dates;
 mod org_agenda_entry_text;
 mod org_agenda_filters;

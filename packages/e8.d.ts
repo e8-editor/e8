@@ -5226,6 +5226,68 @@ declare global {
        */
       "org-agenda-archives-mode": [withFiles?: PrefixArg | boolean];
       /**
+       * Act on each agenda line marked with m: $ archives, A moves to the archive sibling, r refiles, t sets a TODO state, + and - add and remove a tag, s and d schedule and set a deadline, S scatters over the next days, f calls a function, and p keeps the marks or not; with no mark, the line at point. The prefix argument goes to s, d and S.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-bulk-action": [arg?: PrefixArg | boolean];
+      /**
+       * Mark the agenda line at point for a bulk action with B, and go to the next; with a count, that many lines; with the region active, its lines.
+       *
+       * @param arg prefix count
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-bulk-mark": [arg?: number];
+      /**
+       * Mark every agenda line of an entry for a bulk action with B.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-bulk-mark-all": [];
+      /**
+       * Mark the agenda lines whose entries' text matches a regexp for a bulk action with B.
+       *
+       * @param regexp text
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-bulk-mark-regexp": [regexp: string];
+      /**
+       * Remove the marks the agenda shows, the entries staying marked.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-bulk-remove-overlays": [];
+      /**
+       * Mark the agenda line at point for a bulk action, or unmark it if it is marked.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-bulk-toggle": [];
+      /**
+       * Mark each agenda line of an entry that is not marked, and unmark each that is.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-bulk-toggle-all": [];
+      /**
+       * Unmark the agenda line at point and go to the next; with a prefix argument, unmark every line.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-bulk-unmark": [arg?: PrefixArg | boolean];
+      /**
+       * Unmark every agenda line marked for a bulk action.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-bulk-unmark-all": [];
+      /**
        * Cancel the running clock, from the agenda.
        *
        * Defined in packages/org-agenda.ts.
@@ -14002,6 +14064,18 @@ declare global {
        */
       "org-agenda-auto-exclude-function": Value;
       /**
+       * More bulk actions, a list of (CHAR FUNCTION) or (CHAR FUNCTION ARG-FUNCTION): B and CHAR call FUNCTION at each marked line, with the list of arguments ARG-FUNCTION returns, called once first, and the agenda is made again after.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-bulk-custom-functions": Value;
+      /**
+       * The string a line marked for a bulk action shows in place of its first two characters.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-bulk-mark-char": Value;
+      /**
        * A category filter every agenda starts with, a list of strings each starting with + or -, as agenda custom commands bind it.
        *
        * Defined in packages/org-agenda.ts.
@@ -14113,6 +14187,12 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-persistent-filter": Value;
+      /**
+       * Whether the lines marked for a bulk action stay marked after B acts on them; p at B's prompt toggles it for that action.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-persistent-marks": Value;
       /**
        * A regexp filter every agenda starts with, a list of strings each starting with + or -, as agenda custom commands bind it.
        *
@@ -15145,6 +15225,12 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-inhibit-highlight-removal": Value;
+      /**
+       * Whether a change of TODO state logs nothing (t), or only a time where it would take a note (note), as code binds it.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-inhibit-logging": Value;
       /**
        * Whether org-mode leaves out its startup visibility and indentation.
        *
