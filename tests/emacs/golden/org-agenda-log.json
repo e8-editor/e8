@@ -945,6 +945,517 @@
         }
       ],
       "message": null
+    },
+    {
+      "name": "log-src-comment",
+      "input": {
+        "text": "* TODO Task\n# CLOSED: [2026-10-28 Wed 09:00]\n#+begin_src emacs-lisp\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:00] =>  1:00\n#+end_src\n#+begin_example\nCLOCK: [2026-10-28 Wed 12:00]--[2026-10-28 Wed 13:00] =>  1:00\n#+end_example\n",
+        "point": 0,
+        "keys": "l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true,
+          "org-agenda-span": "'day"
+        }
+      },
+      "text": "Day-agenda (W44):\nWednesday  28 October 2026\n               8:00...... ----------------\n              10:00...... ----------------\n  e8-agenda:  12:00-13:00 Clocked:   (1:00) TODO Task\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "visible": "Day-agenda (W44):\nWednesday  28 October 2026\n               8:00...... ----------------\n              10:00...... ----------------\n  e8-agenda:  12:00-13:00 Clocked:   (1:00) TODO Task\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Log mode is on"
+    },
+    {
+      "name": "log-two-per-line",
+      "input": {
+        "text": "* Notes\nWe CLOSED: [2026-10-28 Wed 09:00] and CLOSED: [2026-10-28 Wed 10:00] twice.\n",
+        "point": 0,
+        "keys": "l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true,
+          "org-agenda-span": "'day"
+        }
+      },
+      "text": "Day-agenda (W44):\nWednesday  28 October 2026\n               8:00...... ----------------\n  e8-agenda:   9:00...... Closed:     Notes\n              10:00...... ----------------\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "visible": "Day-agenda (W44):\nWednesday  28 October 2026\n               8:00...... ----------------\n  e8-agenda:   9:00...... Closed:     Notes\n              10:00...... ----------------\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Log mode is on"
+    },
+    {
+      "name": "log-states",
+      "input": {
+        "text": "#+TODO: TODO WAIT(w@) | DONE CANCELLED\n* WAIT Thing :tag:\n:LOGBOOK:\n- State \"WAIT\"       from \"TODO\"       [2026-10-28 Wed 09:00] \\\\\n  Waiting on Bob\n  and Alice\n- State \"FOO\"        from \"TODO\"       [2026-10-28 Wed 09:30]\n- State \"CANCELLED\"  from \"WAIT\"       [2026-10-27 Tue 10:00] retried [2026-10-28 Wed 10:15]\n- State \"DONE\"       from \"WAIT\"       [2026-10-28 Wed 11:00] \\\\\n  - a dash note\n:END:\n",
+        "point": 0,
+        "keys": "C-u l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true,
+          "org-agenda-span": "'day"
+        }
+      },
+      "text": "Day-agenda (W44):\nWednesday  28 October 2026\n               8:00...... ----------------\n  e8-agenda:   9:00...... State:     (WAIT) WAIT Thing - Waiting on Bob   :tag:\n  e8-agenda:  10:00...... State:     (CANCELLED) WAIT Thing               :tag:\n              10:00...... ----------------\n  e8-agenda:  11:00...... State:     (DONE) WAIT Thing                    :tag:\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "visible": "Day-agenda (W44):\nWednesday  28 October 2026\n               8:00...... ----------------\n  e8-agenda:   9:00...... State:     (WAIT) WAIT Thing - Waiting on Bob   :tag:\n  e8-agenda:  10:00...... State:     (CANCELLED) WAIT Thing               :tag:\n              10:00...... ----------------\n  e8-agenda:  11:00...... State:     (DONE) WAIT Thing                    :tag:\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": "Log mode is on"
+    },
+    {
+      "name": "log-underscore",
+      "input": {
+        "text": "* Notes\nfoo_CLOSED: [2026-10-28 Wed 09:00]\nbar-CLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 10:30] =>  0:30\n",
+        "point": 0,
+        "keys": "l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true,
+          "org-agenda-span": "'day"
+        }
+      },
+      "text": "Day-agenda (W44):\nWednesday  28 October 2026\n               8:00...... ----------------\n  e8-agenda:   9:00...... Closed:     Notes\n  e8-agenda:  10:00-10:30 Clocked:   (0:30) Notes\n              10:00...... ----------------\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "visible": "Day-agenda (W44):\nWednesday  28 October 2026\n               8:00...... ----------------\n  e8-agenda:   9:00...... Closed:     Notes\n  e8-agenda:  10:00-10:30 Clocked:   (0:30) Notes\n              10:00...... ----------------\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Log mode is on"
+    },
+    {
+      "name": "log-items-empty",
+      "input": {
+        "text": "* DONE Task\nCLOSED: [2026-10-28 Wed 11:00]\n",
+        "point": 0,
+        "keys": "l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": false,
+          "org-agenda-log-mode-add-notes": true,
+          "org-agenda-span": "'day"
+        }
+      },
+      "text": "Day-agenda (W44):\n",
+      "visible": "Day-agenda (W44):\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "‘org-agenda-log-mode-items’ is empty",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer..."
+    },
+    {
+      "name": "log-start-clockcheck",
+      "input": {
+        "text": "* DONE Task\nCLOSED: [2026-10-28 Wed 11:00] SCHEDULED: <2026-10-28 Wed>\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:00] =>  1:00\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": "'clockcheck",
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true,
+          "org-agenda-span": "'day"
+        }
+      },
+      "text": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:   8:00-9:00  Clocked:   (1:00) DONE Task\n               8:00...... ----------------\n              10:00...... ----------------\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "visible": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:   8:00-9:00  Clocked:   (1:00) DONE Task\n               8:00...... ----------------\n              10:00...... ----------------\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "point": 88,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 88,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "log-view-clockcheck",
+      "input": {
+        "text": "* DONE Task\nCLOSED: [2026-10-28 Wed 11:00] SCHEDULED: <2026-10-28 Wed>\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:00] =>  1:00\n",
+        "point": 0,
+        "keys": "v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "c"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true,
+          "org-agenda-span": "'day"
+        }
+      },
+      "text": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:   8:00-9:00  Clocked:   (1:00) DONE Task\n               8:00...... ----------------\n              10:00...... ----------------\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "visible": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:   8:00-9:00  Clocked:   (1:00) DONE Task\n               8:00...... ----------------\n              10:00...... ----------------\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Log mode is on"
+    },
+    {
+      "name": "log-view-clockcheck-twice",
+      "input": {
+        "text": "* DONE Task\nCLOSED: [2026-10-28 Wed 11:00] SCHEDULED: <2026-10-28 Wed>\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:00] =>  1:00\n",
+        "point": 0,
+        "keys": "v v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "c",
+          "c"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true,
+          "org-agenda-span": "'day"
+        }
+      },
+      "text": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  DONE Task\n",
+      "visible": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  DONE Task\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Log mode is off"
+    },
+    {
+      "name": "log-clockcheck-then-log",
+      "input": {
+        "text": "* DONE Task\nCLOSED: [2026-10-28 Wed 11:00] SCHEDULED: <2026-10-28 Wed>\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:00] =>  1:00\n",
+        "point": 0,
+        "keys": "v l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "c"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true,
+          "org-agenda-span": "'day"
+        }
+      },
+      "text": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  DONE Task\n",
+      "visible": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  DONE Task\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Log mode is off"
     }
   ]
 }

@@ -449,5 +449,255 @@
   "answers": [
    "l"
   ]
+ },
+ {
+  "text": "* TODO Task\n# CLOSED: [2026-10-28 Wed 09:00]\n#+begin_src emacs-lisp\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:00] =>  1:00\n#+end_src\n#+begin_example\nCLOCK: [2026-10-28 Wed 12:00]--[2026-10-28 Wed 13:00] =>  1:00\n#+end_example\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "log-src-comment",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": true,
+   "org-agenda-show-current-time-in-grid": false,
+   "org-agenda-start-with-log-mode": false,
+   "org-agenda-log-mode-items": [
+    "'closed",
+    "'clock"
+   ],
+   "org-agenda-log-mode-add-notes": true,
+   "org-agenda-span": "'day"
+  },
+  "keys": "l"
+ },
+ {
+  "text": "* Notes\nWe CLOSED: [2026-10-28 Wed 09:00] and CLOSED: [2026-10-28 Wed 10:00] twice.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "log-two-per-line",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": true,
+   "org-agenda-show-current-time-in-grid": false,
+   "org-agenda-start-with-log-mode": false,
+   "org-agenda-log-mode-items": [
+    "'closed",
+    "'clock"
+   ],
+   "org-agenda-log-mode-add-notes": true,
+   "org-agenda-span": "'day"
+  },
+  "keys": "l"
+ },
+ {
+  "text": "#+TODO: TODO WAIT(w@) | DONE CANCELLED\n* WAIT Thing :tag:\n:LOGBOOK:\n- State \"WAIT\"       from \"TODO\"       [2026-10-28 Wed 09:00] \\\\\n  Waiting on Bob\n  and Alice\n- State \"FOO\"        from \"TODO\"       [2026-10-28 Wed 09:30]\n- State \"CANCELLED\"  from \"WAIT\"       [2026-10-27 Tue 10:00] retried [2026-10-28 Wed 10:15]\n- State \"DONE\"       from \"WAIT\"       [2026-10-28 Wed 11:00] \\\\\n  - a dash note\n:END:\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "log-states",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": true,
+   "org-agenda-show-current-time-in-grid": false,
+   "org-agenda-start-with-log-mode": false,
+   "org-agenda-log-mode-items": [
+    "'closed",
+    "'clock"
+   ],
+   "org-agenda-log-mode-add-notes": true,
+   "org-agenda-span": "'day"
+  },
+  "keys": "C-u l"
+ },
+ {
+  "text": "* Notes\nfoo_CLOSED: [2026-10-28 Wed 09:00]\nbar-CLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 10:30] =>  0:30\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "log-underscore",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": true,
+   "org-agenda-show-current-time-in-grid": false,
+   "org-agenda-start-with-log-mode": false,
+   "org-agenda-log-mode-items": [
+    "'closed",
+    "'clock"
+   ],
+   "org-agenda-log-mode-add-notes": true,
+   "org-agenda-span": "'day"
+  },
+  "keys": "l"
+ },
+ {
+  "text": "* DONE Task\nCLOSED: [2026-10-28 Wed 11:00]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "log-items-empty",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": true,
+   "org-agenda-show-current-time-in-grid": false,
+   "org-agenda-start-with-log-mode": false,
+   "org-agenda-log-mode-items": false,
+   "org-agenda-log-mode-add-notes": true,
+   "org-agenda-span": "'day"
+  },
+  "keys": "l"
+ },
+ {
+  "text": "* DONE Task\nCLOSED: [2026-10-28 Wed 11:00] SCHEDULED: <2026-10-28 Wed>\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:00] =>  1:00\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "log-start-clockcheck",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": true,
+   "org-agenda-show-current-time-in-grid": false,
+   "org-agenda-start-with-log-mode": "'clockcheck",
+   "org-agenda-log-mode-items": [
+    "'closed",
+    "'clock"
+   ],
+   "org-agenda-log-mode-add-notes": true,
+   "org-agenda-span": "'day"
+  },
+  "keys": ""
+ },
+ {
+  "text": "* DONE Task\nCLOSED: [2026-10-28 Wed 11:00] SCHEDULED: <2026-10-28 Wed>\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:00] =>  1:00\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "log-view-clockcheck",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": true,
+   "org-agenda-show-current-time-in-grid": false,
+   "org-agenda-start-with-log-mode": false,
+   "org-agenda-log-mode-items": [
+    "'closed",
+    "'clock"
+   ],
+   "org-agenda-log-mode-add-notes": true,
+   "org-agenda-span": "'day"
+  },
+  "keys": "v",
+  "answers": [
+   "c"
+  ]
+ },
+ {
+  "text": "* DONE Task\nCLOSED: [2026-10-28 Wed 11:00] SCHEDULED: <2026-10-28 Wed>\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:00] =>  1:00\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "log-view-clockcheck-twice",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": true,
+   "org-agenda-show-current-time-in-grid": false,
+   "org-agenda-start-with-log-mode": false,
+   "org-agenda-log-mode-items": [
+    "'closed",
+    "'clock"
+   ],
+   "org-agenda-log-mode-add-notes": true,
+   "org-agenda-span": "'day"
+  },
+  "keys": "v v",
+  "answers": [
+   "c",
+   "c"
+  ]
+ },
+ {
+  "text": "* DONE Task\nCLOSED: [2026-10-28 Wed 11:00] SCHEDULED: <2026-10-28 Wed>\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:00] =>  1:00\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "log-clockcheck-then-log",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": true,
+   "org-agenda-show-current-time-in-grid": false,
+   "org-agenda-start-with-log-mode": false,
+   "org-agenda-log-mode-items": [
+    "'closed",
+    "'clock"
+   ],
+   "org-agenda-log-mode-add-notes": true,
+   "org-agenda-span": "'day"
+  },
+  "keys": "v l",
+  "answers": [
+   "c"
+  ]
  }
 ]
