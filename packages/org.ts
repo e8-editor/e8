@@ -2662,13 +2662,6 @@ function fillAsParagraph(beg: number, end: number, justify: string | undefined):
   e8.letBind({ "fill-prefix": prefix ?? null, "adaptive-fill-mode": prefix === undefined || prefix !== "" ? true : null }, () => fillRegionAsParagraph(beg, end, justify));
 }
 
-/** Whether a paragraph is a LaTeX environment, \\begin{X} to \\end{X}, which org-element makes its own element and Org never fills. */
-function latexEnvironment(beg: number, end: number): boolean {
-  const text = e8.bufferText(beg, end).replace(/\s+$/, "");
-  const m = /^[ \t]*\\begin\{([A-Za-z0-9*]+)\}/.exec(text);
-  return m !== null && new RegExp(`\\\\end\\{${m[1]!.replace(/\*/g, "\\*")}\\}[ \t]*$`).test(text);
-}
-
 /**
  * Fills the element at point where Org fills, as org-fill-element: a
  * paragraph, cut at its line breaks (\\\\ at a line's end); a comment's
@@ -2702,7 +2695,6 @@ function orgFillElement(justify: string | undefined): void {
       let end = Math.min(e8.pointMax(), element.contentsEnd ?? endBeforeBlank(element));
       // At an affiliated keyword, nothing.
       if (lineEndHere < beg) return;
-      if (latexEnvironment(element.begin, end)) return;
       e8.saveExcursion(() => {
         const cuts = [beg];
         const text = e8.bufferText(beg, end);
@@ -2972,8 +2964,9 @@ export function indentLine(line: number): void {
     (el?.type === "headline" || (el !== undefined && el.begin > 0 && (isHeadingLine(e8.lineText(lineAt(el.begin - 1))) || atHeadlineData(el.begin - 1))))
   )
     return;
-  // A LaTeX environment's lines are left as they are, as Org leaves a latex-environment's.
-  if (el?.type === "paragraph" && latexEnvironment(el.begin, el.end)) return;
+  // A LaTeX environment's lines are left as they are, as Org leaves a
+  // latex-environment's, but not the blank lines after it.
+  if (el?.type === "latex-environment" && ls < lineStartOrEnd(lineAt(endBeforeBlank(el)) + 1)) return;
   // A source block's code, with org-src-tab-acts-natively; without it, its lines are indented as any other.
   if (el?.type === "src-block" && truthy(e8.variable("org-src-tab-acts-natively")) && line > lineAt(el.begin) && line < lineAt(endBeforeBlank(el))) {
     // Indented in the language's mode, as indent-according-to-mode does
@@ -3107,8 +3100,8 @@ function indentRegionElements(start: number, end: number): void {
     const type = el.type;
     const elementEnd = marker(el.end);
     const ind = expectedIndent(el, false, line);
-    // A LaTeX environment, as Org's latex-environment, moves as a whole too.
-    if (type === "export-block" || (type === "example-block" && !preservesIndentation(el)) || (type === "paragraph" && latexEnvironment(el.begin, el.end))) {
+    // A LaTeX environment moves as a whole too.
+    if (type === "export-block" || type === "latex-environment" || (type === "example-block" && !preservesIndentation(el))) {
       // Indented as a whole, keeping the lines' indentation relative to each other.
       const offset = ind - textIndentation(e8.lineText(lineAt(p)));
       if (offset !== 0) indentRigidly(el.begin, el.end, offset);
@@ -3687,6 +3680,7 @@ function orgReturnWith(electric: boolean, prefixless: boolean): void {
     return;
   }
   // On a link or a timestamp, RET follows it, as org-return-follows-link says.
+  // As org-return, by the text alone: in a LaTeX environment too, where C-c C-o then finds no link.
   if (e8.variable("org-return-follows-link") === true && (linkHere() !== undefined || onTimestamp())) {
     e8.callInteractively("org-open-at-point");
     return;
@@ -3874,14 +3868,16 @@ function markElement(): void {
   const mark = e8.mark();
   const again = e8.lastCommand() === e8.thisCommand() && mark !== undefined;
   if (e8.calledInteractively() && (again || (e8.regionActive() && mark !== undefined))) {
-    e8.setMark(elementAt(mark as number)?.end ?? (mark as number));
+    e8.setMark(elementWithAffiliated(mark as number)?.[0].end ?? (mark as number));
     return;
   }
-  const e = elementAt(e8.point());
-  if (!e) return;
+  // With its affiliated keywords, as #+NAME: above it, which are its in Org's parse.
+  const found = elementWithAffiliated(e8.point());
+  if (!found) return;
+  const [e, begin] = found;
   e8.gotoChar(e8.lineEnd(lineAt()));
   e8.pushMark(Math.min(e8.pointMax(), e.end), { activate: true });
-  e8.gotoChar(e.begin);
+  e8.gotoChar(begin);
 }
 
 e8.defineCommand({
@@ -7650,8 +7646,16 @@ const openAtPoint = e8.defineCommand({
  * entry Org's context is the heading: it follows the entry's only link,
  * found searching on from point, or says there are none.
  */
+/** Elements whose text is raw, with no links in it for C-c C-o, as org-element-context finds none there. */
+const RAW_TEXT = ["example-block", "export-block", "fixed-width", "latex-environment"];
+
+/** The link point is on, where Org's parser finds links: not in an element whose text is raw. */
+function linkAtPoint(): Link | undefined {
+  return RAW_TEXT.includes(elementAt(e8.point())?.type ?? "") ? undefined : linkHere();
+}
+
 function openAtPoint_(): void {
-  const link = linkHere();
+  const link = linkAtPoint();
   if (link) {
     openLink(link);
     return;
@@ -7674,7 +7678,7 @@ function openAtPoint_(): void {
     e8.funcall("org-follow-timestamp-link");
     return;
   }
-  if (!["example-block", "export-block", "fixed-width", "src-block"].includes(type ?? "")) {
+  if (!["example-block", "export-block", "fixed-width", "latex-environment", "src-block"].includes(type ?? "")) {
     if (timestampDatesAt(p0, false) !== undefined) {
       e8.funcall("org-follow-timestamp-link");
       return;
@@ -7722,6 +7726,10 @@ function linksIn(from: number, to: number): { links: string[]; last: number } {
     for (const m of found) {
       if (m.index < after) continue;
       after = m.index + m.text.length;
+      // Only links Org's parser finds, as org-offer-links-in-entry asks
+      // org-element-context: none in raw text or a source block's code.
+      const type = elementAt(at(l, text, m.index))?.type ?? "";
+      if (RAW_TEXT.includes(type) || type === "src-block") continue;
       last = at(l, text, m.index);
       if (!out.includes(m.text)) out.push(m.text);
     }
@@ -9303,6 +9311,9 @@ const ctrlCCtrlC = e8.defineCommand({
       e8.callInteractively("org-footnote-action");
       return;
     }
+    // A LaTeX environment's text is raw: a table row or a checkbox in it is
+    // no table or item, as Org's context there is the environment.
+    if (elementAt(e8.point())?.type === "latex-environment") nothingUseful();
     if (elementAt(e8.point())?.type === "table") {
       // At the table's start, Org recalculates every row and does not align.
       e8.call("org-table-recalculate");
@@ -9337,7 +9348,7 @@ const ctrlCCtrlC = e8.defineCommand({
           });
           return;
         }
-        const nothing = ["paragraph", "quote-block", "center-block", "special-block", "verse-block", "example-block", "export-block", "comment-block", "drawer", "fixed-width"];
+        const nothing = ["paragraph", "quote-block", "center-block", "special-block", "verse-block", "example-block", "export-block", "comment-block", "drawer", "fixed-width", "latex-environment"];
         if (nothing.includes(next.type)) nothingUseful();
       }
     }
@@ -11331,7 +11342,7 @@ function reTimestamp(type: string | null): string {
 }
 
 /** Elements whose timestamps org-element-context does not find as timestamp objects: a planning line's are its own, and the others hold only characters. */
-const NO_OBJECTS = ["planning", "src-block", "example-block", "export-block", "fixed-width", "comment", "comment-block", "keyword", "node-property", "property-drawer", "clock"];
+const NO_OBJECTS = ["planning", "src-block", "example-block", "export-block", "fixed-width", "latex-environment", "comment", "comment-block", "keyword", "node-property", "property-drawer", "clock"];
 
 /**
  * Whether a position is in verbatim or code text (=...=, ~...~) or a

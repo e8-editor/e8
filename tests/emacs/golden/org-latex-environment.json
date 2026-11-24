@@ -1,0 +1,1202 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "latex-forward-paragraph",
+      "input": {
+        "text": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+        "point": 0,
+        "keys": "M-} M-} M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+      "visible": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+      "point": 60,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-backward-paragraph",
+      "input": {
+        "text": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+        "point": 60,
+        "keys": "M-{ M-{ M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+      "visible": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-forward-element",
+      "input": {
+        "text": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+        "point": 0,
+        "keys": "C-<down> C-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+      "visible": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+      "point": 53,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-backward-element",
+      "input": {
+        "text": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+        "point": 53,
+        "keys": "C-<up> C-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+      "visible": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-mark-element",
+      "input": {
+        "text": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+        "point": 32,
+        "keys": "M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+      "visible": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+      "point": 8,
+      "mark": 53,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-mark-element-at-begin",
+      "input": {
+        "text": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+        "point": 11,
+        "keys": "M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+      "visible": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+      "point": 8,
+      "mark": 53,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-drag-forward-paragraph",
+      "input": {
+        "text": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+        "point": 2,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nBefore.\nAfter.\n",
+      "visible": "\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nBefore.\nAfter.\n",
+      "point": 47,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "latex-drag-backward-paragraph",
+      "input": {
+        "text": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+        "point": 55,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Before.\nAfter.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\n",
+      "visible": "Before.\nAfter.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "latex-drag-forward-env",
+      "input": {
+        "text": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+        "point": 32,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Before.\nAfter.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\n",
+      "visible": "Before.\nAfter.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\n",
+      "point": 39,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "latex-drag-backward-env",
+      "input": {
+        "text": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+        "point": 25,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nBefore.\nAfter.\n",
+      "visible": "\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nBefore.\nAfter.\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "latex-fill-inside",
+      "input": {
+        "text": "\\begin{x}\nccc ddd eee fff\n\\end{x}\n",
+        "point": 12,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 8
+        }
+      },
+      "text": "\\begin{x}\nccc ddd eee fff\n\\end{x}\n",
+      "visible": "\\begin{x}\nccc ddd eee fff\n\\end{x}\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-fill-before",
+      "input": {
+        "text": "aaa bbb ccc\n\\begin{x}\nccc ddd eee fff\n\\end{x}\nggg hhh iii\n",
+        "point": 1,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 8
+        }
+      },
+      "text": "aaa bbb\nccc\n\\begin{x}\nccc ddd eee fff\n\\end{x}\nggg hhh iii\n",
+      "visible": "aaa bbb\nccc\n\\begin{x}\nccc ddd eee fff\n\\end{x}\nggg hhh iii\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "latex-fill-after",
+      "input": {
+        "text": "aaa bbb ccc\n\\begin{x}\nccc ddd eee fff\n\\end{x}\nggg hhh iii\n",
+        "point": 46,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 8
+        }
+      },
+      "text": "aaa bbb ccc\n\\begin{x}\nccc ddd eee fff\n\\end{x}\nggg hhh\niii\n",
+      "visible": "aaa bbb ccc\n\\begin{x}\nccc ddd eee fff\n\\end{x}\nggg hhh\niii\n",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "latex-tab-inside",
+      "input": {
+        "text": "* H\n  \\begin{x}\n      a\n  \\end{x}\n",
+        "point": 22,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* H\n  \\begin{x}\n      a\n  \\end{x}\n",
+      "visible": "* H\n  \\begin{x}\n      a\n  \\end{x}\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-tab-begin",
+      "input": {
+        "text": "* H\n  \\begin{x}\n      a\n  \\end{x}\n",
+        "point": 6,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* H\n  \\begin{x}\n      a\n  \\end{x}\n",
+      "visible": "* H\n  \\begin{x}\n      a\n  \\end{x}\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-indent-region",
+      "input": {
+        "text": "* H\n\\begin{x}\n  a\n\\end{x}\n\n\ntext\n",
+        "point": 0,
+        "keys": "C-x h C-M-\\",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* H\n  \\begin{x}\n    a\n  \\end{x}\n\n\n  text\n",
+      "visible": "* H\n  \\begin{x}\n    a\n  \\end{x}\n\n\n  text\n",
+      "point": 0,
+      "mark": 41,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "latex-tab-blank-after",
+      "input": {
+        "text": "* H\n\\begin{x}\n  a\n\\end{x}\n\n\ntext\n",
+        "point": 27,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* H\n\\begin{x}\n  a\n\\end{x}\n\n\ntext\n",
+      "visible": "* H\n\\begin{x}\n  a\n\\end{x}\n\n\ntext\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-splits-paragraph",
+      "input": {
+        "text": "a\n\\begin{x}\nb\n\\end{x}\nc\n",
+        "point": 0,
+        "keys": "M-} M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "a\n\\begin{x}\nb\n\\end{x}\nc\n",
+      "visible": "a\n\\begin{x}\nb\n\\end{x}\nc\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-splits-paragraph-elements",
+      "input": {
+        "text": "a\n\\begin{x}\nb\n\\end{x}\nc\n",
+        "point": 0,
+        "keys": "C-<down> C-<down> C-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "a\n\\begin{x}\nb\n\\end{x}\nc\n",
+      "visible": "a\n\\begin{x}\nb\n\\end{x}\nc\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-incomplete",
+      "input": {
+        "text": "a\n\\begin{x}\nb\n\nc\n",
+        "point": 0,
+        "keys": "M-} M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "a\n\\begin{x}\nb\n\nc\n",
+      "visible": "a\n\\begin{x}\nb\n\nc\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-incomplete-mark",
+      "input": {
+        "text": "a\n\\begin{x}\nb\n\nc\n",
+        "point": 2,
+        "keys": "M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "a\n\\begin{x}\nb\n\nc\n",
+      "visible": "a\n\\begin{x}\nb\n\nc\n",
+      "point": 0,
+      "mark": 15,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-mismatched",
+      "input": {
+        "text": "\\begin{x}\nb\n\\end{y}\n\nz\n",
+        "point": 0,
+        "keys": "M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "\\begin{x}\nb\n\\end{y}\n\nz\n",
+      "visible": "\\begin{x}\nb\n\\end{y}\n\nz\n",
+      "point": 0,
+      "mark": 21,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-case",
+      "input": {
+        "text": "\\BEGIN{Abc}\nb\n\\END{aBC}\n\nz\n",
+        "point": 0,
+        "keys": "M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "\\BEGIN{Abc}\nb\n\\END{aBC}\n\nz\n",
+      "visible": "\\BEGIN{Abc}\nb\n\\END{aBC}\n\nz\n",
+      "point": 0,
+      "mark": 25,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-one-line",
+      "input": {
+        "text": "a\n\n\\begin{x} y \\end{x}\nb\n",
+        "point": 0,
+        "keys": "C-<down> C-<down> C-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "a\n\n\\begin{x} y \\end{x}\nb\n",
+      "visible": "a\n\n\\begin{x} y \\end{x}\nb\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-one-line-mark",
+      "input": {
+        "text": "a\n\n\\begin{x} y \\end{x}\nb\n",
+        "point": 13,
+        "keys": "M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "a\n\n\\begin{x} y \\end{x}\nb\n",
+      "visible": "a\n\n\\begin{x} y \\end{x}\nb\n",
+      "point": 3,
+      "mark": 23,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-end-not-at-eol",
+      "input": {
+        "text": "\\begin{x}\nb\n\\end{x} tail\nmore\n\\end{x}\n\nz\n",
+        "point": 0,
+        "keys": "M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "\\begin{x}\nb\n\\end{x} tail\nmore\n\\end{x}\n\nz\n",
+      "visible": "\\begin{x}\nb\n\\end{x} tail\nmore\n\\end{x}\n\nz\n",
+      "point": 0,
+      "mark": 39,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-star",
+      "input": {
+        "text": "\\begin{align*}\na &= b\n\\end{align*}\n\nz\n",
+        "point": 0,
+        "keys": "M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "\\begin{align*}\na &= b\n\\end{align*}\n\nz\n",
+      "visible": "\\begin{align*}\na &= b\n\\end{align*}\n\nz\n",
+      "point": 0,
+      "mark": 36,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-indented",
+      "input": {
+        "text": "text\n  \\begin{x}\n  b\n  \\end{x}   \nz\n",
+        "point": 0,
+        "keys": "C-<down> C-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "text\n  \\begin{x}\n  b\n  \\end{x}   \nz\n",
+      "visible": "text\n  \\begin{x}\n  b\n  \\end{x}   \nz\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-in-item-mark",
+      "input": {
+        "text": "- item\n  \\begin{x}\n  b\n\n  c\n  \\end{x}\n- two\n",
+        "point": 26,
+        "keys": "M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- item\n  \\begin{x}\n  b\n\n  c\n  \\end{x}\n- two\n",
+      "visible": "- item\n  \\begin{x}\n  b\n\n  c\n  \\end{x}\n- two\n",
+      "point": 7,
+      "mark": 38,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-in-item-forward",
+      "input": {
+        "text": "- item\n  \\begin{x}\n  b\n\n  c\n  \\end{x}\n- two\n",
+        "point": 0,
+        "keys": "M-} M-} M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- item\n  \\begin{x}\n  b\n\n  c\n  \\end{x}\n- two\n",
+      "visible": "- item\n  \\begin{x}\n  b\n\n  c\n  \\end{x}\n- two\n",
+      "point": 44,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move further down"
+    },
+    {
+      "name": "latex-heading-ends",
+      "input": {
+        "text": "* A\n\\begin{x}\nb\n* B\n\\end{x}\n",
+        "point": 4,
+        "keys": "M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n\\begin{x}\nb\n* B\n\\end{x}\n",
+      "visible": "* A\n\\begin{x}\nb\n* B\n\\end{x}\n",
+      "point": 4,
+      "mark": 16,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-affiliated-mark",
+      "input": {
+        "text": "#+NAME: eq\n\\begin{x}\nb\n\\end{x}\n\nz\n",
+        "point": 2,
+        "keys": "M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+NAME: eq\n\\begin{x}\nb\n\\end{x}\n\nz\n",
+      "visible": "#+NAME: eq\n\\begin{x}\nb\n\\end{x}\n\nz\n",
+      "point": 0,
+      "mark": 32,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-affiliated-forward",
+      "input": {
+        "text": "#+NAME: eq\n\\begin{x}\nb\n\\end{x}\n\nz\n",
+        "point": 0,
+        "keys": "C-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+NAME: eq\n\\begin{x}\nb\n\\end{x}\n\nz\n",
+      "visible": "#+NAME: eq\n\\begin{x}\nb\n\\end{x}\n\nz\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-affiliated-c-c-c-c",
+      "input": {
+        "text": "#+NAME: eq\n\\begin{x}\nb\n\\end{x}\n\nz\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+NAME: eq\n\\begin{x}\nb\n\\end{x}\n\nz\n",
+      "visible": "#+NAME: eq\n\\begin{x}\nb\n\\end{x}\n\nz\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here"
+    },
+    {
+      "name": "latex-table-row-c-c-c-c",
+      "input": {
+        "text": "\\begin{x}\n| a |  b |\n\\end{x}\n",
+        "point": 12,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "\\begin{x}\n| a |  b |\n\\end{x}\n",
+      "visible": "\\begin{x}\n| a |  b |\n\\end{x}\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here"
+    },
+    {
+      "name": "latex-checkbox-c-c-c-c",
+      "input": {
+        "text": "\\begin{x}\n- [ ] a\n\\end{x}\n",
+        "point": 14,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "\\begin{x}\n- [ ] a\n\\end{x}\n",
+      "visible": "\\begin{x}\n- [ ] a\n\\end{x}\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here"
+    },
+    {
+      "name": "latex-c-c-c-c",
+      "input": {
+        "text": "\\begin{x}\nb\n\\end{x}\n",
+        "point": 11,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "\\begin{x}\nb\n\\end{x}\n",
+      "visible": "\\begin{x}\nb\n\\end{x}\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here"
+    },
+    {
+      "name": "latex-timestamp-open",
+      "input": {
+        "text": "* H\n\\begin{x}\n<2026-11-24 Tue> [[*H]]\n\\end{x}\n",
+        "point": 17,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{x}\n<2026-11-24 Tue> [[*H]]\n\\end{x}\n",
+      "visible": "* H\n\\begin{x}\n<2026-11-24 Tue> *H\n\\end{x}\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "No links"
+    },
+    {
+      "name": "latex-link-open",
+      "input": {
+        "text": "* H\n\\begin{x}\n<2026-11-24 Tue> [[*H]]\n\\end{x}\n",
+        "point": 34,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{x}\n<2026-11-24 Tue> [[*H]]\n\\end{x}\n",
+      "visible": "* H\n\\begin{x}\n<2026-11-24 Tue> *H\n\\end{x}\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "No links"
+    },
+    {
+      "name": "latex-timestamp-shift",
+      "input": {
+        "text": "* H\n\\begin{x}\n<2026-11-24 Tue> [[*H]]\n\\end{x}\n",
+        "point": 17,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{x}\n<2027-11-24 Wed> [[*H]]\n\\end{x}\n",
+      "visible": "* H\n\\begin{x}\n<2027-11-24 Wed> *H\n\\end{x}\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "latex-footnote-c-c-c-c",
+      "input": {
+        "text": "\\begin{x}\na[fn:1]\n\\end{x}\n\n[fn:1] def\n",
+        "point": 13,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "\\begin{x}\na[fn:1]\n\\end{x}\n\n[fn:1] def\n",
+      "visible": "\\begin{x}\na[fn:1]\n\\end{x}\n\n[fn:1] def\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    },
+    {
+      "name": "latex-footnote-action",
+      "input": {
+        "text": "\\begin{x}\na[fn:1]\n\\end{x}\n\n[fn:1] def\n",
+        "point": 13,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "q"
+        ],
+        "message": true
+      },
+      "text": "\\begin{x}\na[fn:1]\n\\end{x}\n\n[fn:1] def\n",
+      "visible": "\\begin{x}\na[fn:1]\n\\end{x}\n\n[fn:1] def\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No such footnote command q",
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "latex-in-drawer",
+      "input": {
+        "text": ":DRAWER:\n\\begin{x}\nb\n\n\\end{x}\n:END:\nz\n",
+        "point": 20,
+        "keys": "M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": ":DRAWER:\n\\begin{x}\nb\n\n\\end{x}\n:END:\nz\n",
+      "visible": ":DRAWER:\n\\begin{x}\nb\n\n\\end{x}\n:END:\nz\n",
+      "point": 9,
+      "mark": 30,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-in-quote",
+      "input": {
+        "text": "#+begin_quote\n\\begin{x}\nb\n\n\\end{x}\n#+end_quote\n",
+        "point": 25,
+        "keys": "M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+begin_quote\n\\begin{x}\nb\n\n\\end{x}\n#+end_quote\n",
+      "visible": "#+begin_quote\n\\begin{x}\nb\n\n\\end{x}\n#+end_quote\n",
+      "point": 14,
+      "mark": 35,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-twice",
+      "input": {
+        "text": "\\begin{a}\n\\end{a}\n\\begin{b}\nx\n\\end{b}\n",
+        "point": 0,
+        "keys": "C-<down> C-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "\\begin{a}\n\\end{a}\n\\begin{b}\nx\n\\end{b}\n",
+      "visible": "\\begin{a}\n\\end{a}\n\\begin{b}\nx\n\\end{b}\n",
+      "point": 38,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-nested",
+      "input": {
+        "text": "\\begin{a}\n\\begin{b}\n\\end{b}\n\n\\end{a}\nz\n",
+        "point": 20,
+        "keys": "M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "\\begin{a}\n\\begin{b}\n\\end{b}\n\n\\end{a}\nz\n",
+      "visible": "\\begin{a}\n\\begin{b}\n\\end{b}\n\n\\end{a}\nz\n",
+      "point": 0,
+      "mark": 37,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-ret-link",
+      "input": {
+        "text": "* H\n\\begin{x}\n<2026-11-24 Tue> [[*H]]\n\\end{x}\n",
+        "point": 34,
+        "keys": "RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-return-follows-link": true
+        }
+      },
+      "text": "* H\n\\begin{x}\n<2026-11-24 Tue> [[*H]]\n\\end{x}\n",
+      "visible": "* H\n\\begin{x}\n<2026-11-24 Tue> *H\n\\end{x}\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-ret-timestamp",
+      "input": {
+        "text": "* H\n\\begin{x}\n<2026-11-24 Tue> [[*H]]\n\\end{x}\n",
+        "point": 17,
+        "keys": "RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-return-follows-link": true
+        }
+      },
+      "text": "* H\n\\begin{x}\n<2026-11-24 Tue> [[*H]]\n\\end{x}\n",
+      "visible": "* H\n\\begin{x}\n<2026-11-24 Tue> *H\n\\end{x}\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-affiliated-mark-on-env",
+      "input": {
+        "text": "#+NAME: eq\n\\begin{x}\nb\n\\end{x}\n\nz\n",
+        "point": 21,
+        "keys": "M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+NAME: eq\n\\begin{x}\nb\n\\end{x}\n\nz\n",
+      "visible": "#+NAME: eq\n\\begin{x}\nb\n\\end{x}\n\nz\n",
+      "point": 0,
+      "mark": 32,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-affiliated-mark-again",
+      "input": {
+        "text": "#+NAME: eq\n\\begin{x}\nb\n\\end{x}\n\nz\n",
+        "point": 2,
+        "keys": "M-h M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+NAME: eq\n\\begin{x}\nb\n\\end{x}\n\nz\n",
+      "visible": "#+NAME: eq\n\\begin{x}\nb\n\\end{x}\n\nz\n",
+      "point": 0,
+      "mark": 34,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "example-link-open",
+      "input": {
+        "text": "* H\n#+begin_example\n[[*H]]\n#+end_example\n",
+        "point": 23,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_example\n[[*H]]\n#+end_example\n",
+      "visible": "* H\n#+begin_example\n[[*H]]\n#+end_example\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "No links"
+    },
+    {
+      "name": "entry-links-skip-example",
+      "input": {
+        "text": "* H\nText [[*H]].\n#+begin_example\n[[*Other]]\n#+end_example\n",
+        "point": 1,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nText [[*H]].\n#+begin_example\n[[*Other]]\n#+end_example\n",
+      "visible": "* H\nText *H.\n#+begin_example\n[[*Other]]\n#+end_example\n",
+      "point": 0,
+      "mark": 9,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "affiliated-table-mark",
+      "input": {
+        "text": "#+NAME: tbl\n| a |\n\nz\n",
+        "point": 14,
+        "keys": "M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+NAME: tbl\n| a |\n\nz\n",
+      "visible": "#+NAME: tbl\n| a |\n\nz\n",
+      "point": 12,
+      "mark": 18,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "affiliated-paragraph-mark",
+      "input": {
+        "text": "#+CAPTION: c\n#+NAME: p\nSome text.\n\nz\n",
+        "point": 28,
+        "keys": "M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+CAPTION: c\n#+NAME: p\nSome text.\n\nz\n",
+      "visible": "#+CAPTION: c\n#+NAME: p\nSome text.\n\nz\n",
+      "point": 0,
+      "mark": 35,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "affiliated-paragraph-mark-on-keyword",
+      "input": {
+        "text": "#+CAPTION: c\n#+NAME: p\nSome text.\n\nz\n",
+        "point": 3,
+        "keys": "M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+CAPTION: c\n#+NAME: p\nSome text.\n\nz\n",
+      "visible": "#+CAPTION: c\n#+NAME: p\nSome text.\n\nz\n",
+      "point": 0,
+      "mark": 35,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    }
+  ]
+}

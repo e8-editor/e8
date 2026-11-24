@@ -1,0 +1,531 @@
+[
+ {
+  "name": "latex-forward-paragraph",
+  "text": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "keys": "M-} M-} M-}"
+ },
+ {
+  "name": "latex-backward-paragraph",
+  "text": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 60,
+  "keys": "M-{ M-{ M-{"
+ },
+ {
+  "name": "latex-forward-element",
+  "text": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "keys": "C-<down> C-<down>"
+ },
+ {
+  "name": "latex-backward-element",
+  "text": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 53,
+  "keys": "C-<up> C-<up>"
+ },
+ {
+  "name": "latex-mark-element",
+  "text": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 32,
+  "keys": "M-h"
+ },
+ {
+  "name": "latex-mark-element-at-begin",
+  "text": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 11,
+  "keys": "M-h"
+ },
+ {
+  "name": "latex-drag-forward-paragraph",
+  "text": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 2,
+  "keys": "M-<down>"
+ },
+ {
+  "name": "latex-drag-backward-paragraph",
+  "text": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 55,
+  "keys": "M-<up>"
+ },
+ {
+  "name": "latex-drag-forward-env",
+  "text": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 32,
+  "keys": "M-<down>"
+ },
+ {
+  "name": "latex-drag-backward-env",
+  "text": "Before.\n\\begin{equation}\nx = 1\n\ny = 2\n\\end{equation}\nAfter.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 25,
+  "keys": "M-<up>"
+ },
+ {
+  "name": "latex-fill-inside",
+  "text": "\\begin{x}\nccc ddd eee fff\n\\end{x}\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 12,
+  "keys": "M-q",
+  "vars": {
+   "fill-column": 8
+  }
+ },
+ {
+  "name": "latex-fill-before",
+  "text": "aaa bbb ccc\n\\begin{x}\nccc ddd eee fff\n\\end{x}\nggg hhh iii\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 1,
+  "keys": "M-q",
+  "vars": {
+   "fill-column": 8
+  }
+ },
+ {
+  "name": "latex-fill-after",
+  "text": "aaa bbb ccc\n\\begin{x}\nccc ddd eee fff\n\\end{x}\nggg hhh iii\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 46,
+  "keys": "M-q",
+  "vars": {
+   "fill-column": 8
+  }
+ },
+ {
+  "name": "latex-tab-inside",
+  "text": "* H\n  \\begin{x}\n      a\n  \\end{x}\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 22,
+  "keys": "TAB"
+ },
+ {
+  "name": "latex-tab-begin",
+  "text": "* H\n  \\begin{x}\n      a\n  \\end{x}\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "TAB",
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "latex-indent-region",
+  "text": "* H\n\\begin{x}\n  a\n\\end{x}\n\n\ntext\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "keys": "C-x h C-M-\\",
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "latex-tab-blank-after",
+  "text": "* H\n\\begin{x}\n  a\n\\end{x}\n\n\ntext\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 27,
+  "keys": "TAB",
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "latex-splits-paragraph",
+  "text": "a\n\\begin{x}\nb\n\\end{x}\nc\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "keys": "M-} M-}"
+ },
+ {
+  "name": "latex-splits-paragraph-elements",
+  "text": "a\n\\begin{x}\nb\n\\end{x}\nc\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "keys": "C-<down> C-<down> C-<down>"
+ },
+ {
+  "name": "latex-incomplete",
+  "text": "a\n\\begin{x}\nb\n\nc\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "keys": "M-} M-}"
+ },
+ {
+  "name": "latex-incomplete-mark",
+  "text": "a\n\\begin{x}\nb\n\nc\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 2,
+  "keys": "M-h"
+ },
+ {
+  "name": "latex-mismatched",
+  "text": "\\begin{x}\nb\n\\end{y}\n\nz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "keys": "M-h"
+ },
+ {
+  "name": "latex-case",
+  "text": "\\BEGIN{Abc}\nb\n\\END{aBC}\n\nz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "keys": "M-h"
+ },
+ {
+  "name": "latex-one-line",
+  "text": "a\n\n\\begin{x} y \\end{x}\nb\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "keys": "C-<down> C-<down> C-<down>"
+ },
+ {
+  "name": "latex-one-line-mark",
+  "text": "a\n\n\\begin{x} y \\end{x}\nb\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 13,
+  "keys": "M-h"
+ },
+ {
+  "name": "latex-end-not-at-eol",
+  "text": "\\begin{x}\nb\n\\end{x} tail\nmore\n\\end{x}\n\nz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "keys": "M-h"
+ },
+ {
+  "name": "latex-star",
+  "text": "\\begin{align*}\na &= b\n\\end{align*}\n\nz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "keys": "M-h"
+ },
+ {
+  "name": "latex-indented",
+  "text": "text\n  \\begin{x}\n  b\n  \\end{x}   \nz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "keys": "C-<down> C-<down>"
+ },
+ {
+  "name": "latex-in-item-mark",
+  "text": "- item\n  \\begin{x}\n  b\n\n  c\n  \\end{x}\n- two\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 26,
+  "keys": "M-h"
+ },
+ {
+  "name": "latex-in-item-forward",
+  "text": "- item\n  \\begin{x}\n  b\n\n  c\n  \\end{x}\n- two\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "keys": "M-} M-} M-}"
+ },
+ {
+  "name": "latex-heading-ends",
+  "text": "* A\n\\begin{x}\nb\n* B\n\\end{x}\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "M-h"
+ },
+ {
+  "name": "latex-affiliated-mark",
+  "text": "#+NAME: eq\n\\begin{x}\nb\n\\end{x}\n\nz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 2,
+  "keys": "M-h"
+ },
+ {
+  "name": "latex-affiliated-forward",
+  "text": "#+NAME: eq\n\\begin{x}\nb\n\\end{x}\n\nz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "keys": "C-<down>"
+ },
+ {
+  "name": "latex-affiliated-c-c-c-c",
+  "text": "#+NAME: eq\n\\begin{x}\nb\n\\end{x}\n\nz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 2,
+  "keys": "C-c C-c"
+ },
+ {
+  "name": "latex-table-row-c-c-c-c",
+  "text": "\\begin{x}\n| a |  b |\n\\end{x}\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 12,
+  "keys": "C-c C-c"
+ },
+ {
+  "name": "latex-checkbox-c-c-c-c",
+  "text": "\\begin{x}\n- [ ] a\n\\end{x}\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 14,
+  "keys": "C-c C-c"
+ },
+ {
+  "name": "latex-c-c-c-c",
+  "text": "\\begin{x}\nb\n\\end{x}\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 11,
+  "keys": "C-c C-c"
+ },
+ {
+  "name": "latex-timestamp-open",
+  "text": "* H\n\\begin{x}\n<2026-11-24 Tue> [[*H]]\n\\end{x}\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 17,
+  "keys": "C-c C-o",
+  "message": true
+ },
+ {
+  "name": "latex-link-open",
+  "text": "* H\n\\begin{x}\n<2026-11-24 Tue> [[*H]]\n\\end{x}\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 34,
+  "keys": "C-c C-o",
+  "message": true
+ },
+ {
+  "name": "latex-timestamp-shift",
+  "text": "* H\n\\begin{x}\n<2026-11-24 Tue> [[*H]]\n\\end{x}\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 17,
+  "keys": "S-<up>",
+  "message": true
+ },
+ {
+  "name": "latex-footnote-c-c-c-c",
+  "text": "\\begin{x}\na[fn:1]\n\\end{x}\n\n[fn:1] def\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 13,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "latex-footnote-action",
+  "text": "\\begin{x}\na[fn:1]\n\\end{x}\n\n[fn:1] def\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 13,
+  "keys": "C-c C-x f",
+  "message": true,
+  "answers": [
+   "q"
+  ]
+ },
+ {
+  "name": "latex-in-drawer",
+  "text": ":DRAWER:\n\\begin{x}\nb\n\n\\end{x}\n:END:\nz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 20,
+  "keys": "M-h"
+ },
+ {
+  "name": "latex-in-quote",
+  "text": "#+begin_quote\n\\begin{x}\nb\n\n\\end{x}\n#+end_quote\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 25,
+  "keys": "M-h"
+ },
+ {
+  "name": "latex-twice",
+  "text": "\\begin{a}\n\\end{a}\n\\begin{b}\nx\n\\end{b}\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "keys": "C-<down> C-<down>"
+ },
+ {
+  "name": "latex-nested",
+  "text": "\\begin{a}\n\\begin{b}\n\\end{b}\n\n\\end{a}\nz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 20,
+  "keys": "M-h"
+ },
+ {
+  "name": "latex-ret-link",
+  "text": "* H\n\\begin{x}\n<2026-11-24 Tue> [[*H]]\n\\end{x}\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 34,
+  "keys": "RET",
+  "globals": {
+   "org-return-follows-link": true
+  }
+ },
+ {
+  "name": "latex-ret-timestamp",
+  "text": "* H\n\\begin{x}\n<2026-11-24 Tue> [[*H]]\n\\end{x}\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 17,
+  "keys": "RET",
+  "globals": {
+   "org-return-follows-link": true
+  }
+ },
+ {
+  "name": "latex-affiliated-mark-on-env",
+  "text": "#+NAME: eq\n\\begin{x}\nb\n\\end{x}\n\nz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 21,
+  "keys": "M-h"
+ },
+ {
+  "name": "latex-affiliated-mark-again",
+  "text": "#+NAME: eq\n\\begin{x}\nb\n\\end{x}\n\nz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 2,
+  "keys": "M-h M-h"
+ },
+ {
+  "name": "example-link-open",
+  "text": "* H\n#+begin_example\n[[*H]]\n#+end_example\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 23,
+  "keys": "C-c C-o",
+  "message": true
+ },
+ {
+  "name": "entry-links-skip-example",
+  "text": "* H\nText [[*H]].\n#+begin_example\n[[*Other]]\n#+end_example\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 1,
+  "keys": "C-c C-o",
+  "message": true
+ },
+ {
+  "name": "affiliated-table-mark",
+  "text": "#+NAME: tbl\n| a |\n\nz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 14,
+  "keys": "M-h"
+ },
+ {
+  "name": "affiliated-paragraph-mark",
+  "text": "#+CAPTION: c\n#+NAME: p\nSome text.\n\nz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 28,
+  "keys": "M-h"
+ },
+ {
+  "name": "affiliated-paragraph-mark-on-keyword",
+  "text": "#+CAPTION: c\n#+NAME: p\nSome text.\n\nz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 3,
+  "keys": "M-h"
+ }
+]
