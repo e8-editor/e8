@@ -5182,6 +5182,18 @@ declare global {
        */
       "org-agenda": [];
       /**
+       * Leave the agenda, killing its buffer, as q does.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-Quit": [];
+      /**
+       * Add a note to the entry the agenda line at point shows, written in *Org Note*, as org-add-note does.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-add-note": [];
+      /**
        * Archive the subtree of the agenda line at point, with org-archive-subtree.
        *
        * Defined in packages/org-agenda.ts.
@@ -5243,6 +5255,12 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-clockreport-mode": [];
+      /**
+       * Set the tags of the entry the agenda line at point shows, as : does.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-ctrl-c-ctrl-c": [];
       /**
        * Move the timestamp of the agenda line at point a day earlier, or with a number that many.
        *
@@ -5349,6 +5367,12 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-entry-text-mode": [arg?: PrefixArg | boolean];
+      /**
+       * Leave the agenda, killing the Org buffers it visited that were not open, asking to save those that changed.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-exit": [];
       /**
        * Filter the agenda by a string of +category, +tag, +<effort and +/regexp/, each with - instead to hide what matches. With C-u, the other way round; with C-u C-u, or a string starting with + and + or -, added to the filters in force; with C-u C-u C-u, hide the tags org-agenda-auto-exclude-function names.
        *
@@ -5578,7 +5602,7 @@ declare global {
        */
       "org-agenda-priority-up": [];
       /**
-       * Leave the agenda: its window goes, or another buffer takes its place.
+       * Leave the agenda: its window goes, or with org-agenda-restore-windows-after-quit the windows are put back as they were, and its buffer is killed.
        *
        * Defined in packages/org-agenda.ts.
        */
@@ -5617,6 +5641,18 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-schedule": [];
+      /**
+       * Set the effort of the entry the agenda line at point shows, as org-set-effort does.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-set-effort": [];
+      /**
+       * Set a property of the entry the agenda line at point shows, as org-set-property does.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-set-property": [];
       /**
        * Set the tags of the entry the agenda line at point shows.
        *
@@ -14071,6 +14107,12 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-regexp-filter-preset": Value;
+      /**
+       * Whether leaving the agenda puts back the windows as they were before it was shown.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-restore-windows-after-quit": Value;
       /**
        * The strings searched for in the search view, most recent first.
        *
