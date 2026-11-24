@@ -1,0 +1,1602 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "todo",
+      "input": {
+        "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+        "point": 0,
+        "keys": "N C-SPC N N t C-x o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-restore-windows-after-quit": false,
+          "org-log-into-drawer": false,
+          "org-agenda-loop-over-headlines-in-active-region": true
+        }
+      },
+      "text": "* DONE Report                                                          :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* TODO Meeting <2026-10-28 Wed 10:00>\n",
+      "visible": "* DONE Report                                                          :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* TODO Meeting <2026-10-28 Wed 10:00>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 10,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 224,
+          "width": 80,
+          "height": 14,
+          "selected": false
+        }
+      ]
+    },
+    {
+      "name": "todo-agenda",
+      "input": {
+        "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+        "point": 0,
+        "keys": "N C-SPC N N t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-restore-windows-after-quit": false,
+          "org-log-into-drawer": false,
+          "org-agenda-loop-over-headlines-in-active-region": true
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... TODO Meeting \n  e8-agenda:  Scheduled:  DONE Report                                    :work:\n  e8-agenda:  In   2 d.:  TODO Pay\nThursday   29 October 2026\n  e8-agenda:  Scheduled:  TODO Call Bob                                  :home:\nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Pay\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... TODO Meeting \n  e8-agenda:  Scheduled:  DONE Report                                    :work:\n  e8-agenda:  In   2 d.:  TODO Pay\nThursday   29 October 2026\n  e8-agenda:  Scheduled:  TODO Call Bob                                  :home:\nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Pay\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 224,
+      "mark": 104,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 10,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 224,
+          "width": 80,
+          "height": 14,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "todo-three",
+      "input": {
+        "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+        "point": 0,
+        "keys": "N C-SPC N N N t C-x o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-restore-windows-after-quit": false,
+          "org-log-into-drawer": false,
+          "org-agenda-loop-over-headlines-in-active-region": true
+        }
+      },
+      "text": "* DONE Report                                                          :work:\nSCHEDULED: <2026-10-28 Wed>\n* DONE Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* TODO Meeting <2026-10-28 Wed 10:00>\n",
+      "visible": "* DONE Report                                                          :work:\nSCHEDULED: <2026-10-28 Wed>\n* DONE Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* TODO Meeting <2026-10-28 Wed 10:00>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 10,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 286,
+          "width": 80,
+          "height": 14,
+          "selected": false
+        }
+      ]
+    },
+    {
+      "name": "todo-backward",
+      "input": {
+        "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+        "point": 0,
+        "keys": "N N N C-SPC P P t C-x o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-restore-windows-after-quit": false,
+          "org-log-into-drawer": false,
+          "org-agenda-loop-over-headlines-in-active-region": true
+        }
+      },
+      "text": "* DONE Report                                                          :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* TODO Meeting <2026-10-28 Wed 10:00>\n",
+      "visible": "* DONE Report                                                          :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* TODO Meeting <2026-10-28 Wed 10:00>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 10,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 104,
+          "width": 80,
+          "height": 14,
+          "selected": false
+        }
+      ]
+    },
+    {
+      "name": "todo-from-header",
+      "input": {
+        "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+        "point": 0,
+        "keys": "C-SPC N N t C-x o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-restore-windows-after-quit": false,
+          "org-log-into-drawer": false,
+          "org-agenda-loop-over-headlines-in-active-region": true
+        }
+      },
+      "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+      "visible": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Command not allowed in this line",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 10,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 139,
+          "width": 80,
+          "height": 14,
+          "selected": false
+        }
+      ]
+    },
+    {
+      "name": "todo-default",
+      "input": {
+        "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+        "point": 0,
+        "keys": "N C-SPC N N t C-x o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-restore-windows-after-quit": false,
+          "org-log-into-drawer": false
+        }
+      },
+      "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* DONE Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+      "visible": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* DONE Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 10,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 219,
+          "width": 80,
+          "height": 14,
+          "selected": false
+        }
+      ]
+    },
+    {
+      "name": "todo-loop-off",
+      "input": {
+        "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+        "point": 0,
+        "keys": "N C-SPC N N t C-x o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-restore-windows-after-quit": false,
+          "org-log-into-drawer": false,
+          "org-agenda-loop-over-headlines-in-active-region": false
+        }
+      },
+      "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* DONE Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+      "visible": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* DONE Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 10,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 219,
+          "width": 80,
+          "height": 14,
+          "selected": false
+        }
+      ]
+    },
+    {
+      "name": "todo-start-level",
+      "input": {
+        "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+        "point": 0,
+        "keys": "N C-SPC N N t C-x o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-restore-windows-after-quit": false,
+          "org-log-into-drawer": false,
+          "org-agenda-loop-over-headlines-in-active-region": "'start-level"
+        }
+      },
+      "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* TODO Meeting <2026-10-28 Wed 10:00>\n",
+      "visible": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* TODO Meeting <2026-10-28 Wed 10:00>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 10,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 224,
+          "width": 80,
+          "height": 14,
+          "selected": false
+        }
+      ]
+    },
+    {
+      "name": "todo-regexp",
+      "input": {
+        "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+        "point": 0,
+        "keys": "N C-SPC N N N t C-x o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-restore-windows-after-quit": false,
+          "org-log-into-drawer": false,
+          "org-agenda-loop-over-headlines-in-active-region": ".*Report"
+        }
+      },
+      "text": "* DONE Report                                                          :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+      "visible": "* DONE Report                                                          :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 10,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 281,
+          "width": 80,
+          "height": 14,
+          "selected": false
+        }
+      ]
+    },
+    {
+      "name": "todo-mx",
+      "input": {
+        "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+        "point": 0,
+        "keys": "N C-SPC N N M-x C-x o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "org-agenda-todo"
+        ],
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-restore-windows-after-quit": false,
+          "org-log-into-drawer": false,
+          "org-agenda-loop-over-headlines-in-active-region": true
+        }
+      },
+      "text": "* DONE Report                                                          :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* TODO Meeting <2026-10-28 Wed 10:00>\n",
+      "visible": "* DONE Report                                                          :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* TODO Meeting <2026-10-28 Wed 10:00>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 10,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 224,
+          "width": 80,
+          "height": 14,
+          "selected": false
+        }
+      ]
+    },
+    {
+      "name": "todo-list",
+      "input": {
+        "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+        "point": 0,
+        "keys": "N C-SPC N N t C-x o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-restore-windows-after-quit": false,
+          "org-log-into-drawer": false,
+          "org-agenda-loop-over-headlines-in-active-region": true
+        }
+      },
+      "text": "* DONE Report                                                          :work:\nSCHEDULED: <2026-10-28 Wed>\n* DONE Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+      "visible": "* DONE Report                                                          :work:\nSCHEDULED: <2026-10-28 Wed>\n* DONE Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 209,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        }
+      ]
+    },
+    {
+      "name": "todo-list-agenda",
+      "input": {
+        "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+        "point": 0,
+        "keys": "N C-SPC N N t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-restore-windows-after-quit": false,
+          "org-log-into-drawer": false,
+          "org-agenda-loop-over-headlines-in-active-region": true
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda:  DONE Report                                                :work:\n  e8-agenda:  DONE Pay\n  e8-agenda:  TODO Call Bob                                              :home:\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda:  DONE Report                                                :work:\n  e8-agenda:  DONE Pay\n  e8-agenda:  TODO Call Bob                                              :home:\n",
+      "point": 209,
+      "mark": 106,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 209,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "schedule",
+      "input": {
+        "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+        "point": 0,
+        "keys": "N C-SPC N N C-c C-s C-x o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-02",
+          "2026-11-03"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-restore-windows-after-quit": false,
+          "org-log-into-drawer": false,
+          "org-agenda-loop-over-headlines-in-active-region": true
+        }
+      },
+      "text": "* TODO Report :work:\nSCHEDULED: <2026-11-03 Tue>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\nSCHEDULED: <2026-11-02 Mon>\n",
+      "visible": "* TODO Report :work:\nSCHEDULED: <2026-11-03 Tue>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\nSCHEDULED: <2026-11-02 Mon>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 10,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 228,
+          "width": 80,
+          "height": 14,
+          "selected": false
+        }
+      ],
+      "message": "Scheduled to <2026-11-03 Tue> [2 times]"
+    },
+    {
+      "name": "schedule-agenda",
+      "input": {
+        "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+        "point": 0,
+        "keys": "N C-SPC N N C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-02",
+          "2026-11-03"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-restore-windows-after-quit": false,
+          "org-log-into-drawer": false,
+          "org-agenda-loop-over-headlines-in-active-region": true
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting          \n  e8-agenda:  Scheduled:  TODO Report                                    :work:\n  e8-agenda:  In   2 d.:  TODO Pay\nThursday   29 October 2026\n  e8-agenda:  Scheduled:  TODO Call Bob                                  :home:\nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Pay\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting          \n  e8-agenda:  Scheduled:  TODO Report                                    :work:\n  e8-agenda:  In   2 d.:  TODO Pay\nThursday   29 October 2026\n  e8-agenda:  Scheduled:  TODO Call Bob                                  :home:\nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Pay\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 228,
+      "mark": 104,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 10,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 228,
+          "width": 80,
+          "height": 14,
+          "selected": true
+        }
+      ],
+      "message": "Scheduled to <2026-11-03 Tue> [2 times]"
+    },
+    {
+      "name": "unschedule",
+      "input": {
+        "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+        "point": 0,
+        "keys": "N C-SPC N N C-u C-c C-s C-x o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-restore-windows-after-quit": false,
+          "org-log-into-drawer": false,
+          "org-agenda-loop-over-headlines-in-active-region": true
+        }
+      },
+      "text": "* TODO Report :work:\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+      "visible": "* TODO Report :work:\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 10,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 234,
+          "width": 80,
+          "height": 14,
+          "selected": false
+        }
+      ],
+      "message": "Entry is no longer scheduled. [2 times]"
+    },
+    {
+      "name": "deadline",
+      "input": {
+        "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+        "point": 0,
+        "keys": "N C-SPC N N C-c C-d C-x o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-05",
+          "2026-11-06"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-restore-windows-after-quit": false,
+          "org-log-into-drawer": false,
+          "org-agenda-loop-over-headlines-in-active-region": true
+        }
+      },
+      "text": "* TODO Report :work:\nDEADLINE: <2026-11-06 Fri> SCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\nDEADLINE: <2026-11-05 Thu>\n",
+      "visible": "* TODO Report :work:\nDEADLINE: <2026-11-06 Fri> SCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\nDEADLINE: <2026-11-05 Thu>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 10,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 229,
+          "width": 80,
+          "height": 14,
+          "selected": false
+        }
+      ],
+      "message": "Deadline on <2026-11-06 Fri> [2 times]"
+    },
+    {
+      "name": "date-prompt",
+      "input": {
+        "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+        "point": 0,
+        "keys": "N C-SPC N N > C-x o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-02",
+          "2026-11-03"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-restore-windows-after-quit": false,
+          "org-log-into-drawer": false,
+          "org-agenda-loop-over-headlines-in-active-region": true
+        }
+      },
+      "text": "* TODO Report :work:\nSCHEDULED: <2026-11-03 Tue>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-11-02 Mon>\n",
+      "visible": "* TODO Report :work:\nSCHEDULED: <2026-11-03 Tue>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-11-02 Mon>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 10,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 243,
+          "width": 80,
+          "height": 14,
+          "selected": false
+        }
+      ],
+      "message": "Time stamp changed to <2026-11-03 Tue>"
+    },
+    {
+      "name": "date-prompt-agenda",
+      "input": {
+        "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+        "point": 0,
+        "keys": "N C-SPC N N >",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-02",
+          "2026-11-03"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-restore-windows-after-quit": false,
+          "org-log-into-drawer": false,
+          "org-agenda-loop-over-headlines-in-active-region": true
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                         \n  e8-agenda:  Scheduled:  TODO Report                                    :work:\n  e8-agenda:  In   2 d.:  TODO Pay\nThursday   29 October 2026\n  e8-agenda:  Scheduled:  TODO Call Bob                                  :home:\nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Pay\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                         \n  e8-agenda:  Scheduled:  TODO Report                                    :work:\n  e8-agenda:  In   2 d.:  TODO Pay\nThursday   29 October 2026\n  e8-agenda:  Scheduled:  TODO Call Bob                                  :home:\nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Pay\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 243,
+      "mark": 104,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 10,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 243,
+          "width": 80,
+          "height": 14,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-11-03 Tue>"
+    },
+    {
+      "name": "effort",
+      "input": {
+        "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+        "point": 0,
+        "keys": "N C-SPC N N e C-x o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "1:00",
+          "2:00"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-restore-windows-after-quit": false,
+          "org-log-into-drawer": false,
+          "org-agenda-loop-over-headlines-in-active-region": true
+        }
+      },
+      "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort:   2:00\n:END:\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n:PROPERTIES:\n:Effort:   1:00\n:END:\n",
+      "visible": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n:PROPERTIES:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 10,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 219,
+          "width": 80,
+          "height": 14,
+          "selected": false
+        }
+      ],
+      "message": "Effort is now 2:00"
+    },
+    {
+      "name": "property",
+      "input": {
+        "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+        "point": 0,
+        "keys": "N C-SPC N N C-c C-x p C-x o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "Owner",
+          "me",
+          "Owner",
+          "you"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-restore-windows-after-quit": false,
+          "org-log-into-drawer": false,
+          "org-agenda-loop-over-headlines-in-active-region": true
+        }
+      },
+      "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Owner:    you\n:END:\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n:PROPERTIES:\n:Owner:    me\n:END:\n",
+      "visible": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n:PROPERTIES:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 10,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 219,
+          "width": 80,
+          "height": 14,
+          "selected": false
+        }
+      ],
+      "message": "Mark set"
+    },
+    {
+      "name": "archive-tag",
+      "input": {
+        "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+        "point": 0,
+        "keys": "N C-SPC N N C-c C-x a C-x o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-restore-windows-after-quit": false,
+          "org-log-into-drawer": false,
+          "org-agenda-loop-over-headlines-in-active-region": true
+        }
+      },
+      "text": "* TODO Report                                                  :work:ARCHIVE:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>                                    :ARCHIVE:\n",
+      "visible": "* TODO Report                                                  :work:ARCHIVE:\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>                                    :ARCHIVE:",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 10,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 264,
+          "width": 80,
+          "height": 14,
+          "selected": false
+        }
+      ],
+      "message": "Subtree archived [2 times]"
+    },
+    {
+      "name": "kill",
+      "input": {
+        "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+        "point": 0,
+        "keys": "N C-SPC N N C-k C-x o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "y",
+          "y"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-restore-windows-after-quit": false,
+          "org-log-into-drawer": false,
+          "org-agenda-loop-over-headlines-in-active-region": true
+        }
+      },
+      "text": "* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n",
+      "visible": "* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 10,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 104,
+          "width": 80,
+          "height": 14,
+          "selected": false
+        }
+      ],
+      "message": "Agenda item and source killed [2 times]"
+    },
+    {
+      "name": "kill-agenda",
+      "input": {
+        "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+        "point": 0,
+        "keys": "N C-SPC N N C-k",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "y",
+          "y"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-restore-windows-after-quit": false,
+          "org-log-into-drawer": false,
+          "org-agenda-loop-over-headlines-in-active-region": true
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  In   2 d.:  TODO Pay\nThursday   29 October 2026\n  e8-agenda:  Scheduled:  TODO Call Bob                                  :home:\nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Pay\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  In   2 d.:  TODO Pay\nThursday   29 October 2026\n  e8-agenda:  Scheduled:  TODO Call Bob                                  :home:\nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Pay\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 104,
+      "mark": 104,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 10,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 104,
+          "width": 80,
+          "height": 14,
+          "selected": true
+        }
+      ],
+      "message": "Agenda item and source killed [2 times]"
+    },
+    {
+      "name": "archive",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* TODO A\nSCHEDULED: <2026-10-28 Wed>\n** TODO A1\nSCHEDULED: <2026-10-28 Wed>\n* TODO B\nSCHEDULED: <2026-10-28 Wed>\n* TODO C\nSCHEDULED: <2026-10-29 Thu>\n",
+        "point": 0,
+        "keys": "N C-SPC N N N $ C-x o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-restore-windows-after-quit": false,
+          "org-log-into-drawer": false,
+          "org-agenda-loop-over-headlines-in-active-region": true
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* TODO A\nSCHEDULED: <2026-10-28 Wed>\n** TODO A1\nSCHEDULED: <2026-10-28 Wed>\n* TODO B\nSCHEDULED: <2026-10-28 Wed>\n* Archive\n\n** TODO C\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:ARCHIVE_TIME: 2026-10-28 Wed 12:00\n:ARCHIVE_FILE: /var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org\n:ARCHIVE_CATEGORY: e8-agenda\n:ARCHIVE_TODO: TODO\n:END:\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* TODO A\nSCHEDULED: <2026-10-28 Wed>\n** TODO A1\nSCHEDULED: <2026-10-28 Wed>\n* TODO B\nSCHEDULED: <2026-10-28 Wed>\n* Archive\n\n** TODO C\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* TODO C\nSCHEDULED: <2026-10-29 Thu>\n\n",
+        "* TODO C\nSCHEDULED: <2026-10-29 Thu>\n"
+      ],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 231,
+          "width": 80,
+          "height": 13,
+          "selected": false
+        }
+      ],
+      "message": "Subtree archived under heading: * Archive"
+    },
+    {
+      "name": "archive-agenda",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* TODO A\nSCHEDULED: <2026-10-28 Wed>\n** TODO A1\nSCHEDULED: <2026-10-28 Wed>\n* TODO B\nSCHEDULED: <2026-10-28 Wed>\n* TODO C\nSCHEDULED: <2026-10-29 Thu>\n",
+        "point": 0,
+        "keys": "N C-SPC N N N $",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-restore-windows-after-quit": false,
+          "org-log-into-drawer": false,
+          "org-agenda-loop-over-headlines-in-active-region": true
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO A\n  e8-agenda:  Scheduled:  TODO A1\n  e8-agenda:  Scheduled:  TODO B\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO A\n  e8-agenda:  Scheduled:  TODO A1\n  e8-agenda:  Scheduled:  TODO B\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 231,
+      "mark": 104,
+      "mark_active": false,
+      "kill_ring": [
+        "* TODO C\nSCHEDULED: <2026-10-29 Thu>\n\n",
+        "* TODO C\nSCHEDULED: <2026-10-29 Thu>\n"
+      ],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 231,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": "Subtree archived under heading: * Archive"
+    },
+    {
+      "name": "archive-sibling",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* TODO A\nSCHEDULED: <2026-10-28 Wed>\n** TODO A1\nSCHEDULED: <2026-10-28 Wed>\n* TODO B\nSCHEDULED: <2026-10-28 Wed>\n* TODO C\nSCHEDULED: <2026-10-29 Thu>\n",
+        "point": 0,
+        "keys": "N C-SPC N N N C-c C-x A C-x o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-restore-windows-after-quit": false,
+          "org-log-into-drawer": false,
+          "org-agenda-loop-over-headlines-in-active-region": true
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* TODO A\nSCHEDULED: <2026-10-28 Wed>\n** TODO A1\nSCHEDULED: <2026-10-28 Wed>\n* TODO B\nSCHEDULED: <2026-10-28 Wed>\n* Archive                                                           :ARCHIVE:\n** TODO C\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:ARCHIVE_TIME: 2026-10-28 Wed 12:00\n:END:\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* TODO A\nSCHEDULED: <2026-10-28 Wed>\n** TODO A1\nSCHEDULED: <2026-10-28 Wed>\n* TODO B\nSCHEDULED: <2026-10-28 Wed>\n* Archive                                                           :ARCHIVE:",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* TODO C\nSCHEDULED: <2026-10-29 Thu>\n"
+      ],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 231,
+          "width": 80,
+          "height": 13,
+          "selected": false
+        }
+      ],
+      "message": "Cut: Subtree(s) with 37 characters"
+    },
+    {
+      "name": "archive-confirm",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* TODO A\nSCHEDULED: <2026-10-28 Wed>\n** TODO A1\nSCHEDULED: <2026-10-28 Wed>\n* TODO B\nSCHEDULED: <2026-10-28 Wed>\n* TODO C\nSCHEDULED: <2026-10-29 Thu>\n",
+        "point": 0,
+        "keys": "N C-SPC N N N a C-x o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "y",
+          "y"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-restore-windows-after-quit": false,
+          "org-log-into-drawer": false,
+          "org-agenda-loop-over-headlines-in-active-region": true
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* TODO A\nSCHEDULED: <2026-10-28 Wed>\n** TODO A1\nSCHEDULED: <2026-10-28 Wed>\n* TODO B\nSCHEDULED: <2026-10-28 Wed>\n* Archive\n\n** TODO C\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:ARCHIVE_TIME: 2026-10-28 Wed 12:00\n:ARCHIVE_FILE: /var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org\n:ARCHIVE_CATEGORY: e8-agenda\n:ARCHIVE_TODO: TODO\n:END:\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* TODO A\nSCHEDULED: <2026-10-28 Wed>\n** TODO A1\nSCHEDULED: <2026-10-28 Wed>\n* TODO B\nSCHEDULED: <2026-10-28 Wed>\n* Archive\n\n** TODO C\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* TODO C\nSCHEDULED: <2026-10-29 Thu>\n\n",
+        "* TODO C\nSCHEDULED: <2026-10-29 Thu>\n"
+      ],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 231,
+          "width": 80,
+          "height": 13,
+          "selected": false
+        }
+      ],
+      "message": "Subtree archived under heading: * Archive"
+    },
+    {
+      "name": "archive-todo-list",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* TODO A\nSCHEDULED: <2026-10-28 Wed>\n** TODO A1\nSCHEDULED: <2026-10-28 Wed>\n* TODO B\nSCHEDULED: <2026-10-28 Wed>\n* TODO C\nSCHEDULED: <2026-10-29 Thu>\n",
+        "point": 0,
+        "keys": "N C-SPC N N N $",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-restore-windows-after-quit": false,
+          "org-log-into-drawer": false,
+          "org-agenda-loop-over-headlines-in-active-region": true
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda:  TODO A\n  e8-agenda:  TODO A1\n  e8-agenda:  TODO B\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda:  TODO A\n  e8-agenda:  TODO A1\n  e8-agenda:  TODO B\n",
+      "point": 170,
+      "mark": 106,
+      "mark_active": false,
+      "kill_ring": [
+        "* TODO C\nSCHEDULED: <2026-10-29 Thu>\n\n",
+        "* TODO C\nSCHEDULED: <2026-10-29 Thu>\n"
+      ],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 170,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Subtree archived under heading: * Archive"
+    },
+    {
+      "name": "empty-region",
+      "input": {
+        "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+        "point": 0,
+        "keys": "N C-SPC t C-x o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-restore-windows-after-quit": false,
+          "org-log-into-drawer": false,
+          "org-agenda-loop-over-headlines-in-active-region": true
+        }
+      },
+      "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* TODO Meeting <2026-10-28 Wed 10:00>\n",
+      "visible": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* TODO Meeting <2026-10-28 Wed 10:00>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 10,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 104,
+          "width": 80,
+          "height": 14,
+          "selected": false
+        }
+      ]
+    },
+    {
+      "name": "region-then-bulk",
+      "input": {
+        "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* TODO Call Bob :home:\nSCHEDULED: <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed 10:00>\n",
+        "point": 0,
+        "keys": "N C-SPC N N m B",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "t",
+          "DONE"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-restore-windows-after-quit": false,
+          "org-log-into-drawer": false,
+          "org-agenda-loop-over-headlines-in-active-region": true
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... DONE Meeting \n  e8-agenda:  Scheduled:  DONE Report                                     :work:\n  e8-agenda:  In   2 d.:  TODO Pay\nThursday   29 October 2026\n  e8-agenda:  Scheduled:  TODO Call Bob                                  :home:\nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Pay\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... DONE Meeting \n  e8-agenda:  Scheduled:  DONE Report                                     :work:\n  e8-agenda:  In   2 d.:  TODO Pay\nThursday   29 October 2026\n  e8-agenda:  Scheduled:  TODO Call Bob                                  :home:\nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Pay\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 104,
+      "mark": 104,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 10,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 104,
+          "width": 80,
+          "height": 14,
+          "selected": true
+        }
+      ],
+      "message": "Acted on 2 entries"
+    }
+  ]
+}

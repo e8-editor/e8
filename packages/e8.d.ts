@@ -14175,6 +14175,12 @@ declare global {
        */
       "org-agenda-log-mode-items": Value;
       /**
+       * Whether the agenda's commands that change an entry act on each line of an active region: t every line, start-level the line the region starts on, a regexp the lines it matches, nil only the line at point. Nil to start with, as in Org, whose defcustom says t but whose earlier defvar makes it nil.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-loop-over-headlines-in-active-region": Value;
+      /**
        * Keymap org-agenda-mode-map.
        */
       "org-agenda-mode-map": Value;

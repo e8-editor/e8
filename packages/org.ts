@@ -4857,9 +4857,10 @@ function levelHere(): number {
  * point, as org-paste-subtree does: before the heading point is at the
  * start of, or else before the next visible heading. With forYank, as
  * org-yank calls it, point goes to the pasted text's end and nothing is
- * folded, which org-yank decides.
+ * folded, which org-yank decides. It says what it did for a yank or when
+ * INTERACTIVE, the command's own call.
  */
-export function pasteSubtree(level: e8.PrefixArg, forYank = false): void {
+export function pasteSubtree(level: e8.PrefixArg, forYank = false, interactive = false): void {
   const txt = e8.currentKill();
   if (!killIsSubtree(txt)) throw new Error("The kill is not a (set of) tree(s).  Use \u2018C-y\u2019 to yank anyway");
   const visible = !e8.invisibleAt(e8.point());
@@ -4927,7 +4928,8 @@ export function pasteSubtree(level: e8.PrefixArg, forYank = false): void {
   const newEnd = endMark.pos;
   dropMarker(endMark);
   e8.gotoChar(beg);
-  e8.message(`Clipboard pasted as level ${fresh} subtree`);
+  // Said only for a yank or the command itself, as Org's checks called-interactively-p, so not when archiving or refiling.
+  if (forYank || interactive) e8.message(`Clipboard pasted as level ${fresh} subtree`);
   if (forYank) {
     e8.gotoChar(newEnd);
     return;
@@ -5058,7 +5060,7 @@ function visible_(h: Heading): boolean {
 e8.defineCommand({
   name: "org-paste-subtree",
   doc: "Paste the last kill as a subtree, its levels changed to fit the headings around point.",
-  run: () => pasteSubtree(e8.prefixArg()),
+  run: () => pasteSubtree(e8.prefixArg(), false, true),
 });
 
 e8.defineCommand({

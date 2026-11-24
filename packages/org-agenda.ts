@@ -2042,21 +2042,74 @@ function atEntryShown(command: e8.CommandName | (() => void), opts: { atMarker?:
   if (opts.redraw) redrawEntry(item);
 }
 
+e8.defineVariable({
+  name: "org-agenda-loop-over-headlines-in-active-region",
+  doc:
+    "Whether the agenda's commands that change an entry act on each line of an active region: t every line, start-level " +
+    "the line the region starts on, a regexp the lines it matches, nil only the line at point. Nil to start with, as " +
+    "in Org, whose defcustom says t but whose earlier defvar makes it nil.",
+  value: null,
+});
+
+/**
+ * Runs BODY on the agenda line at point, or, when the command was called
+ * interactively with the region active, on each line in the region that
+ * org-agenda-loop-over-headlines-in-active-region picks, as
+ * org-agenda-maybe-loop and org-agenda-do-in-region: t every line,
+ * start-level the line the region starts on, a regexp the lines it matches
+ * at point. Each line acted on is left for the next entry's, unless DEL
+ * says BODY takes it away; point is put back after.
+ */
+function maybeLoop(del: boolean, body: () => void): void {
+  const option = e8.variable("org-agenda-loop-over-headlines-in-active-region") ?? null;
+  const mark = e8.mark();
+  if (!e8.calledInteractively() || !truthy(option) || !e8.regionActive() || mark === undefined || mark === e8.point()) {
+    body();
+    return;
+  }
+  const beg = Math.min(mark, e8.point());
+  const mend = e8.makeMarker(Math.max(mark, e8.point()));
+  // As (eq level (org-get-at-bol 'level)): each line's level is a string of its own, so only the first line's matches it, or, from a line with none, every line with none.
+  const first = agendaLines[e8.lineOf(beg)];
+  try {
+    e8.saveExcursion(() => {
+      e8.gotoChar(beg);
+      while (e8.point() < (e8.markerPosition(mend) ?? 0)) {
+        const item = agendaLines[e8.lineOf(e8.point())];
+        const picked = option === true || (option === "start-level" ? item === first : typeof option === "string" && e8.lookingAt(option));
+        const [line, lines] = [e8.lineOf(e8.point()), e8.lineCount()];
+        if (!picked) nextItems(1);
+        else {
+          body();
+          if (!del) nextItems(1);
+        }
+        // Where Org's would go round for ever, at the last entry, it stops: no other line reached, none taken away.
+        if (e8.lineOf(e8.point()) === line && e8.lineCount() === lines) break;
+      }
+    });
+  } finally {
+    e8.deleteMarker(mend);
+  }
+}
+
 e8.defineCommand({
   name: "org-agenda-set-effort",
   doc: "Set the effort of the entry the agenda line at point shows, as org-set-effort does.",
-  run: () => atEntryShown("org-set-effort", { redraw: true }),
+  run: () => maybeLoop(false, () => atEntryShown("org-set-effort", { redraw: true })),
 });
 e8.defineCommand({
   name: "org-agenda-set-property",
   doc: "Set a property of the entry the agenda line at point shows, as org-set-property does.",
   // Its property and value read here, in the entry's buffer, where org-set-property then sets them.
-  run: () => atEntryShown(() => {
-    const property = String(e8.funcall("org-read-property-name"));
-    if (property === "" || /\s/.test(property)) e8.userError(`Invalid property name: "${property}"`);
-    const value = String(e8.funcall("org-read-property-value", property));
-    e8.call("org-set-property", property, value);
-  }),
+  run: () =>
+    maybeLoop(false, () =>
+      atEntryShown(() => {
+        const property = String(e8.funcall("org-read-property-name"));
+        if (property === "" || /\s/.test(property)) e8.userError(`Invalid property name: "${property}"`);
+        const value = String(e8.funcall("org-read-property-value", property));
+        e8.call("org-set-property", property, value);
+      }),
+    ),
 });
 e8.defineCommand({
   name: "org-agenda-add-note",
@@ -3285,24 +3338,26 @@ e8.defineCommand({
   doc: "Change the timestamp of the agenda line at point to a date read as org-timestamp reads it; with C-u, with the time too.",
   run: () => {
     checkAgendaType();
-    const item = agendaItemHere();
-    const stamp = e8.withCurrentBuffer(item.buffer, () => {
-      e8.widen();
-      const pos = posOf(item);
-      e8.gotoChar(pos);
-      const old = timestampTextAt(pos);
-      if (old === undefined) e8.signal("error", "Cannot find time stamp");
-      // The prefix argument passed on, as Org gives org-timestamp its ARG, an inactive one kept so.
-      // Called as a function, with the prefix argument, this-command still the agenda's, as Org calls it, so a second > is not taken for C-c . twice, which makes a range.
-      const arg = e8.prefixArg() ?? null;
-      const date = isUniversal(arg, 2) ? "" : readDateAnswer("Date: ");
-      e8.callWithPrefix(arg, old.startsWith("[") ? "org-timestamp-inactive" : "org-timestamp", date);
-      const stamp = timestampTextAt(pos) ?? "";
-      // An inactive one with a repeater said with > at its end, as org-timestamp writes org-last-changed-timestamp so.
-      return /^\[.*[.+-]+[0-9]+[hdwmy]/.test(stamp) ? `${stamp.slice(0, -1)}>` : stamp;
+    maybeLoop(false, () => {
+      const item = agendaItemHere();
+      const stamp = e8.withCurrentBuffer(item.buffer, () => {
+        e8.widen();
+        const pos = posOf(item);
+        e8.gotoChar(pos);
+        const old = timestampTextAt(pos);
+        if (old === undefined) e8.signal("error", "Cannot find time stamp");
+        // The prefix argument passed on, as Org gives org-timestamp its ARG, an inactive one kept so.
+        // Called as a function, with the prefix argument, this-command still the agenda's, as Org calls it, so a second > is not taken for C-c . twice, which makes a range.
+        const arg = e8.prefixArg() ?? null;
+        const date = isUniversal(arg, 2) ? "" : readDateAnswer("Date: ");
+        e8.callWithPrefix(arg, old.startsWith("[") ? "org-timestamp-inactive" : "org-timestamp", date);
+        const stamp = timestampTextAt(pos) ?? "";
+        // An inactive one with a repeater said with > at its end, as org-timestamp writes org-last-changed-timestamp so.
+        return /^\[.*[.+-]+[0-9]+[hdwmy]/.test(stamp) ? `${stamp.slice(0, -1)}>` : stamp;
+      });
+      showNewTime(item, stamp);
+      e8.message(`Time stamp changed to ${stamp}`);
     });
-    showNewTime(item, stamp);
-    e8.message(`Time stamp changed to ${stamp}`);
   },
 });
 
@@ -3330,12 +3385,12 @@ function agendaPlan(command: "org-schedule" | "org-deadline", prefix: string, ar
 e8.defineCommand({
   name: "org-agenda-schedule",
   doc: "Schedule the entry of the agenda line at point, as org-schedule does; with C-u, unschedule it.",
-  run: () => agendaPlan("org-schedule", " S"),
+  run: () => maybeLoop(false, () => agendaPlan("org-schedule", " S")),
 });
 e8.defineCommand({
   name: "org-agenda-deadline",
   doc: "Give the entry of the agenda line at point a deadline, as org-deadline does; with C-u, remove it.",
-  run: () => agendaPlan("org-deadline", " D"),
+  run: () => maybeLoop(false, () => agendaPlan("org-deadline", " D")),
 });
 
 /**
@@ -3471,24 +3526,26 @@ e8.defineCommand({
   doc: "Delete the entry, with its subtree, the agenda line at point shows, and its lines in the agenda, asking first as org-agenda-confirm-kill says.",
   run: () => {
     if (e8.variable("major-mode") !== "org-agenda-mode") e8.userError("Not in agenda");
-    const item = agendaLines[e8.lineOf(e8.point())];
-    if (item === undefined) e8.userError("Command not allowed in this line");
-    const [beg, end, n] = e8.withCurrentBuffer(item.buffer, () => widened(() => {
-      const all = headings();
-      const i = headingIndex(all, e8.lineOf(posOf(item)));
-      if (i === undefined) return [e8.lineStart(e8.lineOf(posOf(item))), Math.min(e8.pointMax(), e8.lineEnd(e8.lineOf(posOf(item))) + 1), 1];
-      const [b, e] = subtreeRegion(all, i);
-      let count = 0;
-      for (let l = e8.lineOf(b); l < e8.lineCount() && e8.lineStart(l) < e; l++) if (/^[ \t]*\S/.test(e8.lineText(l))) count++;
-      return [b, e, count];
-    }));
-    const confirm = e8.variable("org-agenda-confirm-kill");
-    if (confirm === true || (typeof confirm === "number" && n > confirm)) {
-      if (!e8.yOrNP(`Delete entry with ${n} lines in buffer "${item.buffer}"? `)) e8.signal("error", "Abort");
-    }
-    removeSubtreeEntries(item.buffer, beg, end);
-    e8.withCurrentBuffer(item.buffer, () => widened(() => e8.deleteRegion(beg, end)));
-    e8.message("Agenda item and source killed");
+    maybeLoop(true, () => {
+      const item = agendaLines[e8.lineOf(e8.point())];
+      if (item === undefined) e8.userError("Command not allowed in this line");
+      const [beg, end, n] = e8.withCurrentBuffer(item.buffer, () => widened(() => {
+        const all = headings();
+        const i = headingIndex(all, e8.lineOf(posOf(item)));
+        if (i === undefined) return [e8.lineStart(e8.lineOf(posOf(item))), Math.min(e8.pointMax(), e8.lineEnd(e8.lineOf(posOf(item))) + 1), 1];
+        const [b, e] = subtreeRegion(all, i);
+        let count = 0;
+        for (let l = e8.lineOf(b); l < e8.lineCount() && e8.lineStart(l) < e; l++) if (/^[ \t]*\S/.test(e8.lineText(l))) count++;
+        return [b, e, count];
+      }));
+      const confirm = e8.variable("org-agenda-confirm-kill");
+      if (confirm === true || (typeof confirm === "number" && n > confirm)) {
+        if (!e8.yOrNP(`Delete entry with ${n} lines in buffer "${item.buffer}"? `)) e8.signal("error", "Abort");
+      }
+      removeSubtreeEntries(item.buffer, beg, end);
+      e8.withCurrentBuffer(item.buffer, () => widened(() => e8.deleteRegion(beg, end)));
+      e8.message("Agenda item and source killed");
+    });
   },
 });
 
@@ -3605,7 +3662,7 @@ const agendaTodo = e8.defineCommand({
   name: "org-agenda-todo",
   doc: "Change the TODO state of the entry the agenda line at point shows, as C-c C-t does there.",
   // Interactively, with the agenda's prefix argument, as Org's call-interactively: a blocked change is then an error.
-  run: () => agendaTodoWith(() => e8.funcallInteractively("org-todo")),
+  run: () => maybeLoop(false, () => agendaTodoWith(() => e8.funcallInteractively("org-todo"))),
 });
 
 const agendaRedo = e8.defineCommand({
@@ -4019,6 +4076,7 @@ function removeSubtreeEntries(buffer: string, beg: number, end: number): void {
  */
 function archiveWith(command: e8.CommandName, confirm: boolean): void {
   if (e8.variable("major-mode") !== "org-agenda-mode") e8.userError("Not in agenda");
+  // The line at point only, region or not: Org's org-agenda-maybe-loop here never loops, as org-agenda-archive-with is called as a function.
   const item = agendaItemHere();
   const pos = posOf(item);
   e8.withCurrentBuffer(item.buffer, () => {
@@ -4063,7 +4121,7 @@ for (const [name, command, confirm, doc] of [
 e8.defineCommand({
   name: "org-agenda-toggle-archive-tag",
   doc: "Toggle the ARCHIVE tag of the entry the agenda line at point shows.",
-  run: () => atEntry("org-toggle-archive-tag"),
+  run: () => maybeLoop(false, () => atEntry("org-toggle-archive-tag")),
 });
 
 // Marking entries for a bulk action, as org-agenda.el's
