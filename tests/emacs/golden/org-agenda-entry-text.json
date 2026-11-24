@@ -1,0 +1,662 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "etxt-key",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\nSome text.\nMore text.\n* Meeting <2026-10-28 Wed 10:00>\nNotes.\n",
+        "point": 0,
+        "keys": "E",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-entry-text-mode": false,
+          "org-agenda-entry-text-maxlines": 5
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Entry text mode is on (maximum number of lines is 5)"
+    },
+    {
+      "name": "etxt-twice",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\nSome text.\nMore text.\n* Meeting <2026-10-28 Wed 10:00>\nNotes.\n",
+        "point": 0,
+        "keys": "E E",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-entry-text-mode": false,
+          "org-agenda-entry-text-maxlines": 5
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Entry text mode is off"
+    },
+    {
+      "name": "etxt-view",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\nSome text.\nMore text.\n* Meeting <2026-10-28 Wed 10:00>\nNotes.\n",
+        "point": 0,
+        "keys": "v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "E"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-entry-text-mode": false,
+          "org-agenda-entry-text-maxlines": 5
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Entry text mode is on (maximum number of lines is 5)"
+    },
+    {
+      "name": "etxt-view-lower",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\nSome text.\nMore text.\n* Meeting <2026-10-28 Wed 10:00>\nNotes.\n",
+        "point": 0,
+        "keys": "v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "e"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-entry-text-mode": false,
+          "org-agenda-entry-text-maxlines": 5
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Entry text mode is on (maximum number of lines is 5)"
+    },
+    {
+      "name": "etxt-number",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\nSome text.\nMore text.\n* Meeting <2026-10-28 Wed 10:00>\nNotes.\n",
+        "point": 0,
+        "keys": "C-u 2 E",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-entry-text-mode": false,
+          "org-agenda-entry-text-maxlines": 5
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Entry text mode is on (maximum number of lines is 2)"
+    },
+    {
+      "name": "etxt-number-when-on",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\nSome text.\nMore text.\n* Meeting <2026-10-28 Wed 10:00>\nNotes.\n",
+        "point": 0,
+        "keys": "E C-u 3 E",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-entry-text-mode": false,
+          "org-agenda-entry-text-maxlines": 5
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Entry text mode is on (maximum number of lines is 3)"
+    },
+    {
+      "name": "etxt-universal",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\nSome text.\nMore text.\n* Meeting <2026-10-28 Wed 10:00>\nNotes.\n",
+        "point": 0,
+        "keys": "C-u E",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-entry-text-mode": false,
+          "org-agenda-entry-text-maxlines": 5
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Entry text mode is on (maximum number of lines is 5)"
+    },
+    {
+      "name": "etxt-then-redo",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\nSome text.\nMore text.\n* Meeting <2026-10-28 Wed 10:00>\nNotes.\n",
+        "point": 0,
+        "keys": "E g",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-entry-text-mode": false,
+          "org-agenda-entry-text-maxlines": 5
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "etxt-then-later",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\nSome text.\nMore text.\n* Meeting <2026-10-28 Wed 10:00>\nNotes.\n",
+        "point": 0,
+        "keys": "E f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-entry-text-mode": false,
+          "org-agenda-entry-text-maxlines": 5
+        }
+      },
+      "text": "Week-agenda (W45):\nMonday      2 November 2026 W45\nTuesday     3 November 2026\nWednesday   4 November 2026\nThursday    5 November 2026\nFriday      6 November 2026\nSaturday    7 November 2026\nSunday      8 November 2026\n",
+      "visible": "Week-agenda (W45):\nMonday      2 November 2026 W45\nTuesday     3 November 2026\nWednesday   4 November 2026\nThursday    5 November 2026\nFriday      6 November 2026\nSaturday    7 November 2026\nSunday      8 November 2026\n",
+      "point": 79,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 79,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "etxt-todo-list",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\nSome text.\nMore text.\n* Meeting <2026-10-28 Wed 10:00>\nNotes.\n",
+        "point": 0,
+        "keys": "E",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-entry-text-mode": false,
+          "org-agenda-entry-text-maxlines": 5
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda:  TODO Write report\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda:  TODO Write report\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Entry text mode is on (maximum number of lines is 5)"
+    },
+    {
+      "name": "etxt-start-with",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\nSome text.\nMore text.\n* Meeting <2026-10-28 Wed 10:00>\nNotes.\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-entry-text-mode": true,
+          "org-agenda-entry-text-maxlines": 5
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "etxt-start-with-then-off",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\nSome text.\nMore text.\n* Meeting <2026-10-28 Wed 10:00>\nNotes.\n",
+        "point": 0,
+        "keys": "E",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-entry-text-mode": true,
+          "org-agenda-entry-text-maxlines": 5
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Entry text mode is off"
+    },
+    {
+      "name": "etxt-maxlines",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\nSome text.\nMore text.\n* Meeting <2026-10-28 Wed 10:00>\nNotes.\n",
+        "point": 0,
+        "keys": "E",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-entry-text-mode": false,
+          "org-agenda-entry-text-maxlines": 1
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Entry text mode is on (maximum number of lines is 1)"
+    }
+  ]
+}

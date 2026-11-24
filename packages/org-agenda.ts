@@ -107,6 +107,27 @@ e8.defineVariable({
   value: null,
 });
 e8.defineVariable({
+  name: "org-agenda-entry-text-maxlines",
+  doc: "How many lines of each entry's text entry text mode (E) shows under its agenda line.",
+  value: 5,
+});
+e8.defineVariable({
+  name: "org-agenda-entry-text-exclude-regexps",
+  doc: "Regexps whose matches are taken out of the entry text entry text mode shows.",
+  value: null,
+});
+e8.defineVariable({
+  name: "org-agenda-entry-text-leaders",
+  doc: "The text before each line of entry text in the agenda.",
+  value: "    > ",
+});
+e8.defineVariable({
+  name: "org-agenda-start-with-entry-text-mode",
+  doc: "Whether a new agenda starts in entry text mode, showing some of each entry's text under its line.",
+  value: null,
+});
+e8.defineHook("org-agenda-entry-text-cleanup-hook", "Functions run in a buffer holding an entry's text, before entry text mode shows it, to clean it up.");
+e8.defineVariable({
   name: "org-agenda-start-with-follow-mode",
   doc: "Whether a new agenda starts in follow mode, showing each line's entry in another window as point moves.",
   value: null,
@@ -922,6 +943,11 @@ function showAgenda(given: AgendaLines | ((maxChars: number) => AgendaLines), po
       };
     }
   }
+  // Each line's entry text, in entry text mode, as org-agenda-finalize shows it again.
+  if (entryTextMode) {
+    entryTextHide();
+    entryTextShow(entryTextMaxlines());
+  }
   placeAgendaWindow();
   const setup = e8.variable("org-agenda-window-setup");
   if (setup === undefined || setup === null || setup === "reorganize-frame") fitAgendaWindow(lines.length);
@@ -1007,7 +1033,7 @@ function setModeName(): void {
   const log = Array.isArray(showLog) ? " LogAll" : showLog === "clockcheck" ? " ClkCk" : showLog !== null ? " Log" : "";
   e8.makeLocalVariable("mode-name");
   const ddl = truthy(e8.variable("org-agenda-include-deadlines") ?? null) ? " Ddl" : "";
-  const follow = followMode ? " Follow" : "";
+  const follow = `${followMode ? " Follow" : ""}${entryTextMode ? " ETxt" : ""}`;
   e8.setVariable("mode-name", `Org-Agenda ${span}${follow}${ddl}${grid}${habit}${log}${archives}`);
 }
 
@@ -1596,6 +1622,7 @@ function redoView(): void {
 /** A new agenda's archives mode, org-agenda-start-with-archives-mode, as org-agenda-mode sets it for each new agenda but not when it is made again. */
 function freshAgenda(): void {
   followMode = truthy(e8.variable("org-agenda-start-with-follow-mode") ?? null);
+  entryTextMode = truthy(e8.variable("org-agenda-start-with-entry-text-mode") ?? null);
   startLogMode();
   const start = e8.variable("org-agenda-start-with-archives-mode") ?? null;
   archivesMode = start === true ? true : truthy(start) ? "trees" : null;
@@ -1922,6 +1949,125 @@ function agendaItemHere(): AgendaItem {
   if (!item) e8.userError("Command not allowed in this line");
   return item;
 }
+
+/** Whether the agenda shows some of each entry's text under its line, as org-agenda-entry-text-mode. */
+let entryTextMode = false;
+
+/** A line's columns with its tabs made spaces, as untabify makes them with a tab-width of 8. */
+function untabify(line: string): string {
+  let out = "";
+  for (const c of line) out += c === "\t" ? " ".repeat(8 - (charCount(out) % 8)) : c;
+  return out;
+}
+
+/** A line's indentation, as current-indentation counts it. */
+const indentationOf = (line: string): number => charCount(/^[ \t]*/.exec(untabify(line))![0]);
+
+/**
+ * Up to N_LINES lines of an entry's text, each after INDENT, as
+ * org-agenda-get-some-entry-text gives them: from the line after its
+ * heading to the next heading, without drawers, planning and clock lines
+ * or what org-agenda-entry-text-exclude-regexps matches, the blank lines
+ * at its end and the indentation its lines share.
+ */
+function someEntryText(heading: number, nLines: number, indent: string): string {
+  const headLine = e8.lineOf(heading);
+  const all = headings();
+  const next = all.find((h) => h.line > headLine);
+  const from = Math.min(e8.lineEnd(headLine) + 1, e8.bufferSize());
+  let txt = e8.bufferText(from, next ? next.start : e8.bufferSize());
+  // Drawers, to their :END: or the text's end.
+  txt = txt.replace(/^[ \t]*:[-_\p{L}\p{N}]+:[ \t]*$[^]*?(?:^[ \t]*:END:.*\n?|(?![^]))/gimu, "");
+  // Planning and clock lines, whatever their case, as the search in Org's temporary buffer has it.
+  txt = txt.replace(/^[ \t]*(?<![\p{L}\p{N}])(?:CLOCK:|CLOSED:|DEADLINE:|SCHEDULED:) *[[<][^\]>]+[\]>].*\n?/gimu, "");
+  const excluded = e8.variable("org-agenda-entry-text-exclude-regexps");
+  if (Array.isArray(excluded)) {
+    for (const re of excluded) {
+      if (typeof re !== "string") continue;
+      const r = e8.emacsRegexp(re, { caseFold: true });
+      txt = txt.replace(new RegExp(r.source, r.flags.includes("g") ? r.flags : `${r.flags}g`), "");
+    }
+  }
+  txt = txt.replace(/[ \t\n]+$/, "");
+  let lines = txt.split("\n").map(untabify);
+  // The indentation the lines share, counting the first line's even if it is blank, as Org starts from it.
+  let ind = indentationOf(lines[0] ?? "");
+  for (const l of lines) if (!/^[ \t]*$/.test(l)) ind = Math.min(ind, indentationOf(l));
+  lines = lines.map((l) => (/^[ \t]*$/.test(l) ? l : l.slice(ind)));
+  txt = lines.join("\n");
+  if (e8.isHook("org-agenda-entry-text-cleanup-hook")) {
+    txt = withTempBuffer(() => {
+      e8.insert(txt);
+      e8.runHooks("org-agenda-entry-text-cleanup-hook");
+      return e8.bufferText(e8.pointMin(), e8.pointMax());
+    });
+  }
+  // Each line after the leader, then at most N_LINES of them.
+  if (txt !== "") txt = txt.split("\n").map((l) => indent + l).join("\n");
+  txt = txt.replace(/^(?:[ \t]*\n)+/, "");
+  const kept = txt.split("\n");
+  return kept.length > nLines ? kept.slice(0, nLines).join("\n") : txt;
+}
+
+/** A buffer of its own for F, killed after, as with-temp-buffer gives. */
+function withTempBuffer<T>(f: () => T): T {
+  const name = e8.generateNewBufferName(" *temp*");
+  e8.getBufferCreate(name);
+  try {
+    return e8.withCurrentBuffer(name, f);
+  } finally {
+    e8.call("kill-buffer", name);
+  }
+}
+
+/** Puts some of each line's entry text under it, as org-agenda-entry-text-show does, MAX_LINES each. */
+function entryTextShow(maxLines: number): void {
+  const leaders = e8.variable("org-agenda-entry-text-leaders");
+  const indent = typeof leaders === "string" ? leaders : "";
+  e8.withCurrentBuffer(agendaBuffer, () => {
+    agendaLines.forEach((item, line) => {
+      if (item === undefined) return;
+      const text = `\n${e8.withCurrentBuffer(item.buffer, () => widened(() => someEntryText(headingOf(item), maxLines, indent)))}`;
+      if (!/\S/.test(text)) return;
+      const o = e8.makeOverlay(e8.lineStart(line), e8.lineEnd(line));
+      e8.overlayPut(o, "evaporate", true);
+      e8.overlayPut(o, "org-overlay-type", e8.intern("agenda-entry-content"));
+      e8.overlayPut(o, "after-string", text);
+    });
+  });
+}
+
+/** Takes away the entry text shown, as org-agenda-entry-text-hide. */
+function entryTextHide(): void {
+  e8.withCurrentBuffer(agendaBuffer, () => {
+    for (const o of e8.overlaysIn(e8.pointMin(), e8.pointMax())) {
+      const type = e8.overlayGet(o, "org-overlay-type");
+      if (typeof type === "symbol" && e8.symbolName(type) === "agenda-entry-content") e8.deleteOverlay(o);
+    }
+  });
+}
+
+/** The maximum lines of entry text, org-agenda-entry-text-maxlines. */
+function entryTextMaxlines(): number {
+  const v = e8.variable("org-agenda-entry-text-maxlines");
+  return typeof v === "number" ? v : 5;
+}
+
+const entryTextModeCommand = e8.defineCommand({
+  name: "org-agenda-entry-text-mode",
+  doc:
+    "Toggle entry text mode: under each agenda line, some of its entry's text, at most org-agenda-entry-text-maxlines lines. " +
+    "With a number, turn it on with that many lines.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg) => {
+    const n = typeof arg === "number" ? arg : undefined;
+    entryTextMode = n !== undefined || !entryTextMode;
+    entryTextHide();
+    if (entryTextMode) entryTextShow(n ?? entryTextMaxlines());
+    setModeName();
+    e8.message(`Entry text mode is ${entryTextMode ? "on" : "off"}${entryTextMode ? ` (maximum number of lines is ${n ?? entryTextMaxlines()})` : ""}`);
+  },
+});
 
 /** Whether the agenda shows each line's entry in another window as point moves, as org-agenda-follow-mode. */
 let followMode = false;
@@ -2328,6 +2474,7 @@ e8.defineMajorMode({
     G: "org-agenda-toggle-time-grid",
     F: "org-agenda-follow-mode",
     l: "org-agenda-log-mode",
+    E: "org-agenda-entry-text-mode",
     "!": "org-agenda-toggle-deadlines",
     "#": "org-agenda-dim-blocked-tasks",
     ...Object.fromEntries(queryCommands),
@@ -2487,7 +2634,7 @@ e8.defineCommand({
 });
 
 /** The view modes org-agenda-view-mode-dispatch offers that E8 does not have yet. */
-const VIEW_MODES_NOT_YET = "RrEeD";
+const VIEW_MODES_NOT_YET = "RrD";
 
 /** Rebuilds the agenda with its inactive timestamps too, this once, as [ and v [ do. */
 function includeInactiveOnce(): void {
@@ -2547,6 +2694,7 @@ e8.defineCommand({
     else if (char === "G") e8.callInteractively(toggleTimeGrid);
     else if (char === "f" || char === "F") e8.callInteractively("org-agenda-follow-mode");
     else if (char === "l") e8.callInteractively(logModeCommand);
+    else if (char === "E" || char === "e") e8.callInteractively(entryTextModeCommand);
     else if (char === "L") e8.callWithPrefix([4], logModeCommand);
     else if (char === "c") setLogMode("clockcheck");
     else if (char === "!") e8.callInteractively(toggleDeadlines);
