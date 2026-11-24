@@ -199,6 +199,9 @@ function writeBack(edit: Edit, text: string): void {
       e8.saveExcursion(() =>
         e8.saveRestriction(() => {
           e8.widen();
+          // From the block's start after an undo boundary, as org-edit-src-exit puts one there, so undoing it comes back there.
+          e8.gotoChar(beg);
+          e8.undoBoundary();
           e8.narrowToRegion(beg, end);
           e8.replaceBufferContents(scratch, 0.1);
         }),
@@ -383,21 +386,40 @@ e8.defun("org-src-font-lock-fontify-block", (lang: e8.Value, start: e8.Value, en
 });
 
 /**
- * Fills the source block at point in its language's mode, in its edit
- * buffer, as org-fill-element does for a src-block: the paragraph there,
- * or the region if it is active there.
+ * Whether the block at point has a language whose mode E8 has. Without one,
+ * Org's edit buffer does not open and its org-edit-src-exit then says
+ * "Not in a sub-editing buffer", which the comment commands signal too.
  */
+function editableHere(): boolean {
+  const block = blockAt();
+  if (!block || block.kind !== "src") return true;
+  const mode = langMode(block.lang ?? "");
+  return mode === undefined || e8.commandNames().includes(mode);
+}
+
 // M-; and the region's comments in a source block, as its language comments, as Org's comment functions do it in the edit buffer.
 e8.defun("org-src--comment-dwim", () => {
+  // Point at the line's end first, as comment-dwim's comment-indent goes there before Org fails.
+  if (!editableHere()) {
+    e8.gotoChar(e8.lineEnd(e8.lineOf(e8.point())));
+    e8.signal("error", "Not in a sub-editing buffer");
+  }
   doInEditBuffer(() => e8.funcallInteractively("comment-dwim"));
   return true;
 });
 e8.defun("org-src--comment-or-uncomment-region", (offset: number) => {
+  if (!editableHere()) e8.signal("error", "Not in a sub-editing buffer");
   doInEditBuffer(() => commentOrUncommentRegion(e8.point(), e8.point() + offset, null));
   return true;
 });
 
+/**
+ * Fills the source block at point in its language's mode, in its edit
+ * buffer, as org-fill-element does for a src-block: the paragraph there,
+ * or the region if it is active there.
+ */
 e8.defun("org-src--fill-paragraph", (justify?: e8.Value) => {
+  if (!editableHere()) e8.signal("error", "Not in a sub-editing buffer");
   doInEditBuffer(() => e8.callWithPrefix(justify === null || justify === undefined || justify === false ? null : 4, "fill-paragraph"));
   return true;
 });
