@@ -1,0 +1,1156 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "cc-ts-paragraph",
+      "input": {
+        "text": "Some <2026-11-24 Mon> text.\n",
+        "point": 8,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Some <2026-11-24 Tue> text.\n",
+      "visible": "Some <2026-11-24 Tue> text.\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cc-ts-heading",
+      "input": {
+        "text": "* H <2026-11-24 Mon>\n",
+        "point": 7,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H <2026-11-24 Tue>\n",
+      "visible": "* H <2026-11-24 Tue>\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cc-ts-item",
+      "input": {
+        "text": "- an item <2026-11-24 Mon>\n",
+        "point": 13,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- an item <2026-11-24 Tue>\n",
+      "visible": "- an item <2026-11-24 Tue>\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cc-ts-table-cell",
+      "input": {
+        "text": "| a | <2026-11-24 Mon> |\n| b | c |\n",
+        "point": 9,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | <2026-11-24 Tue> |\n| b | c |\n",
+      "visible": "| a | <2026-11-24 Tue> |\n| b | c |\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cc-ts-table-cell-misaligned",
+      "input": {
+        "text": "| a | <2026-11-24 Mon>   |\n| bbb | c |\n",
+        "point": 9,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | <2026-11-24 Tue>   |\n| bbb | c |\n",
+      "visible": "| a | <2026-11-24 Tue>   |\n| bbb | c |\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cc-ts-table-first-cell",
+      "input": {
+        "text": "| <2026-11-24 Mon> | x |\n",
+        "point": 5,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| <2026-11-24 Tue> | x |\n",
+      "visible": "| <2026-11-24 Tue> | x |\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cc-ts-caption",
+      "input": {
+        "text": "#+CAPTION: Made <2026-11-24 Mon>\n| a |\n",
+        "point": 19,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+CAPTION: Made <2026-11-24 Tue>\n| a |\n",
+      "visible": "#+CAPTION: Made <2026-11-24 Tue>\n| a |\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cc-ts-caption-alone",
+      "input": {
+        "text": "#+CAPTION: Made <2026-11-24 Mon>\n",
+        "point": 19,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+CAPTION: Made <2026-11-24 Mon>\n",
+      "visible": "#+CAPTION: Made <2026-11-24 Mon>\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Local setup has been refreshed"
+    },
+    {
+      "name": "cc-ts-date-keyword",
+      "input": {
+        "text": "#+DATE: <2026-11-24 Mon>\n",
+        "point": 11,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+DATE: <2026-11-24 Mon>\n",
+      "visible": "#+DATE: <2026-11-24 Mon>\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Local setup has been refreshed"
+    },
+    {
+      "name": "cc-ts-title-keyword",
+      "input": {
+        "text": "#+TITLE: Notes <2026-11-24 Mon>\n",
+        "point": 18,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+TITLE: Notes <2026-11-24 Mon>\n",
+      "visible": "#+TITLE: Notes <2026-11-24 Mon>\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Local setup has been refreshed"
+    },
+    {
+      "name": "cc-ts-author-keyword",
+      "input": {
+        "text": "#+AUTHOR: Me <2026-11-24 Mon>\n",
+        "point": 16,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+AUTHOR: Me <2026-11-24 Mon>\n",
+      "visible": "#+AUTHOR: Me <2026-11-24 Mon>\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Local setup has been refreshed"
+    },
+    {
+      "name": "cc-ts-other-keyword",
+      "input": {
+        "text": "#+FOO: <2026-11-24 Mon>\n",
+        "point": 10,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+FOO: <2026-11-24 Mon>\n",
+      "visible": "#+FOO: <2026-11-24 Mon>\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Local setup has been refreshed"
+    },
+    {
+      "name": "cc-ts-name-keyword",
+      "input": {
+        "text": "#+NAME: <2026-11-24 Mon>\n| a |\n",
+        "point": 11,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: <2026-11-24 Mon>\n| a |\n",
+      "visible": "#+NAME: <2026-11-24 Mon>\n| a |\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cc-ts-comment",
+      "input": {
+        "text": "# A comment <2026-11-24 Mon>\n",
+        "point": 15,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "# A comment <2026-11-24 Mon>\n",
+      "visible": "# A comment <2026-11-24 Mon>\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    },
+    {
+      "name": "cc-ts-fixed-width",
+      "input": {
+        "text": ": fixed <2026-11-24 Mon>\n",
+        "point": 11,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": ": fixed <2026-11-24 Mon>\n",
+      "visible": ": fixed <2026-11-24 Mon>\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    },
+    {
+      "name": "cc-ts-example-block",
+      "input": {
+        "text": "#+begin_example\n<2026-11-24 Mon>\n#+end_example\n",
+        "point": 19,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+begin_example\n<2026-11-24 Mon>\n#+end_example\n",
+      "visible": "#+begin_example\n<2026-11-24 Mon>\n#+end_example\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    },
+    {
+      "name": "cc-ts-export-block",
+      "input": {
+        "text": "#+begin_export html\n<2026-11-24 Mon>\n#+end_export\n",
+        "point": 23,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+begin_export html\n<2026-11-24 Mon>\n#+end_export\n",
+      "visible": "#+begin_export html\n<2026-11-24 Mon>\n#+end_export\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    },
+    {
+      "name": "cc-ts-comment-block",
+      "input": {
+        "text": "#+begin_comment\n<2026-11-24 Mon>\n#+end_comment\n",
+        "point": 19,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+begin_comment\n<2026-11-24 Mon>\n#+end_comment\n",
+      "visible": "#+begin_comment\n<2026-11-24 Mon>\n#+end_comment\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    },
+    {
+      "name": "cc-ts-verse-block",
+      "input": {
+        "text": "#+begin_verse\n<2026-11-24 Mon>\n#+end_verse\n",
+        "point": 17,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+begin_verse\n<2026-11-24 Tue>\n#+end_verse\n",
+      "visible": "#+begin_verse\n<2026-11-24 Tue>\n#+end_verse\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cc-ts-quote-block",
+      "input": {
+        "text": "#+begin_quote\n<2026-11-24 Mon>\n#+end_quote\n",
+        "point": 17,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+begin_quote\n<2026-11-24 Tue>\n#+end_quote\n",
+      "visible": "#+begin_quote\n<2026-11-24 Tue>\n#+end_quote\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cc-ts-verbatim",
+      "input": {
+        "text": "Text =<2026-11-24 Mon>= here.\n",
+        "point": 9,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text =<2026-11-24 Mon>= here.\n",
+      "visible": "Text =<2026-11-24 Mon>= here.\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    },
+    {
+      "name": "cc-ts-code",
+      "input": {
+        "text": "Text ~<2026-11-24 Mon>~ here.\n",
+        "point": 9,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text ~<2026-11-24 Mon>~ here.\n",
+      "visible": "Text ~<2026-11-24 Mon>~ here.\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    },
+    {
+      "name": "cc-ts-link-description",
+      "input": {
+        "text": "Text [[https://example.com][<2026-11-24 Mon>]] here.\n",
+        "point": 31,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text [[https://example.com][<2026-11-24 Mon>]] here.\n",
+      "visible": "Text <2026-11-24 Mon> here.\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    },
+    {
+      "name": "cc-ts-drawer",
+      "input": {
+        "text": ":NOTES:\n<2026-11-24 Mon>\n:END:\n",
+        "point": 11,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": ":NOTES:\n<2026-11-24 Tue>\n:END:\n",
+      "visible": ":NOTES:\n<2026-11-24 Tue>\n:END:\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cc-ts-latex-environment",
+      "input": {
+        "text": "\\begin{x}\n<2026-11-24 Mon>\n\\end{x}\n",
+        "point": 13,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "\\begin{x}\n<2026-11-24 Mon>\n\\end{x}\n",
+      "visible": "\\begin{x}\n<2026-11-24 Mon>\n\\end{x}\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    },
+    {
+      "name": "cc-ts-footnote-definition",
+      "input": {
+        "text": "[fn:1] Note <2026-11-24 Mon>\n",
+        "point": 15,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:1] Note <2026-11-24 Tue>\n",
+      "visible": "[fn:1] Note <2026-11-24 Tue>\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cc-ts-inactive-comment",
+      "input": {
+        "text": "# A comment <2026-11-24 Mon>\n",
+        "point": 15,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "# A comment <2026-11-24 Mon>\n",
+      "visible": "# A comment <2026-11-24 Mon>\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    },
+    {
+      "name": "cc-ts-row-no-bar-after",
+      "input": {
+        "text": "| a | <2026-11-24 Mon>\n| bbb | c |\n",
+        "point": 22,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a   | <2026-11-24 Mon> |\n| bbb | c                |\n",
+      "visible": "| a   | <2026-11-24 Mon> |\n| bbb | c                |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cc-ts-row-no-bar-spaces-after",
+      "input": {
+        "text": "| a | <2026-11-24 Mon>  \n| bbb | c |\n",
+        "point": 22,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a   | <2026-11-24 Mon> |\n| bbb | c                |\n",
+      "visible": "| a   | <2026-11-24 Mon> |\n| bbb | c                |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cc-ts-row-no-bar-end-of-buffer",
+      "input": {
+        "text": "| a | <2026-11-24 Mon>",
+        "point": 22,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | <2026-11-24 Tue>",
+      "visible": "| a | <2026-11-24 Tue>",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cc-ts-verbatim-at-bars",
+      "input": {
+        "text": "|=<2026-11-24 Mon>=|\n",
+        "point": 5,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| =<2026-11-24 Mon>= |\n",
+      "visible": "| =<2026-11-24 Mon>= |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cc-ts-verbatim-across-cells",
+      "input": {
+        "text": "| =a | <2026-11-24 Mon> b= |\n",
+        "point": 10,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| =a | <2026-11-24 Tue> b= |\n",
+      "visible": "| =a | <2026-11-24 Tue> b= |\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cc-ts-caption-before-comment",
+      "input": {
+        "text": "#+CAPTION: <2026-11-24 Mon>\n# c\n",
+        "point": 14,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+CAPTION: <2026-11-24 Mon>\n# c\n",
+      "visible": "#+CAPTION: <2026-11-24 Mon>\n# c\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Local setup has been refreshed"
+    },
+    {
+      "name": "cc-ts-caption-before-clock",
+      "input": {
+        "text": "* H\n#+CAPTION: <2026-11-24 Mon>\nCLOCK: [2026-11-24 Mon 10:00]--[2026-11-24 Mon 11:00] =>  1:00\n",
+        "point": 18,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+CAPTION: <2026-11-24 Mon>\nCLOCK: [2026-11-24 Mon 10:00]--[2026-11-24 Mon 11:00] =>  1:00\n",
+      "visible": "* H\n#+CAPTION: <2026-11-24 Mon>\nCLOCK: [2026-11-24 Mon 10:00]--[2026-11-24 Mon 11:00] =>  1:00\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Local setup has been refreshed"
+    },
+    {
+      "name": "cc-ts-row-in-example",
+      "input": {
+        "text": "#+begin_example\n| a | <2026-11-24 Mon> |\n#+end_example\n",
+        "point": 22,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+begin_example\n| a | <2026-11-24 Mon> |\n#+end_example\n",
+      "visible": "#+begin_example\n| a | <2026-11-24 Mon> |\n#+end_example\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    },
+    {
+      "name": "cc-ts-row-in-export",
+      "input": {
+        "text": "#+begin_export html\n| a | <2026-11-24 Mon> |\n#+end_export\n",
+        "point": 26,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+begin_export html\n| a | <2026-11-24 Mon> |\n#+end_export\n",
+      "visible": "#+begin_export html\n| a | <2026-11-24 Mon> |\n#+end_export\n",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    },
+    {
+      "name": "cc-ts-row-in-comment-block",
+      "input": {
+        "text": "#+begin_comment\n| a | <2026-11-24 Mon> |\n#+end_comment\n",
+        "point": 22,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+begin_comment\n| a | <2026-11-24 Mon> |\n#+end_comment\n",
+      "visible": "#+begin_comment\n| a | <2026-11-24 Mon> |\n#+end_comment\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    },
+    {
+      "name": "cc-ts-table-el",
+      "input": {
+        "text": "+------------------+\n| <2026-11-24 Mon> |\n+------------------+\n",
+        "point": 23,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+------------------+\n| <2026-11-24 Mon> |\n+------------------+\n",
+      "visible": "+------------------+\n| <2026-11-24 Mon> |\n+------------------+\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Use ‘C-c '’ to edit table.el tables"
+    },
+    {
+      "name": "cc-ts-table-el-no-timestamp",
+      "input": {
+        "text": "+-----+\n| a  |\n+-----+\n",
+        "point": 11,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+-----+\n| a  |\n+-----+\n",
+      "visible": "+-----+\n| a  |\n+-----+\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Use ‘C-c '’ to edit table.el tables"
+    },
+    {
+      "name": "cc-ts-diary-sexp",
+      "input": {
+        "text": "%%(diary-float t 4 2) <2026-11-24 Mon>\n",
+        "point": 25,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "%%(diary-float t 4 2) <2026-11-24 Mon>\n",
+      "visible": "%%(diary-float t 4 2) <2026-11-24 Mon>\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    },
+    {
+      "name": "cc-ts-range-dashes-cell",
+      "input": {
+        "text": "| <2026-11-24 Mon>--<2026-11-25 Tue> |\n| x |\n",
+        "point": 19,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| <2026-11-24 Mon>--<2026-11-25 Tue> |\n| x |\n",
+      "visible": "| <2026-11-24 Mon>--<2026-11-25 Tue> |\n| x |\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not at a timestamp",
+      "message": null
+    },
+    {
+      "name": "cc-ts-range-dashes-caption",
+      "input": {
+        "text": "#+CAPTION: <2026-11-24 Mon>--<2026-11-25 Tue>\n| x |\n",
+        "point": 28,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+CAPTION: <2026-11-24 Mon>--<2026-11-25 Tue>\n| x |\n",
+      "visible": "#+CAPTION: <2026-11-24 Mon>--<2026-11-25 Tue>\n| x |\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not at a timestamp",
+      "message": null
+    },
+    {
+      "name": "cc-ts-range-first-dash-cell",
+      "input": {
+        "text": "| <2026-11-24 Mon>--<2026-11-25 Tue> |\n| x |\n",
+        "point": 18,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| <2026-11-24 Tue>--<2026-11-25 Tue> |\n| x |\n",
+      "visible": "| <2026-11-24 Tue>--<2026-11-25 Tue> |\n| x |\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cc-ts-range-second-in-cell",
+      "input": {
+        "text": "| <2026-11-24 Mon>--<2026-11-25 Tue> |\n| x |\n",
+        "point": 23,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| <2026-11-24 Mon>--<2026-11-25 Wed> |\n| x |\n",
+      "visible": "| <2026-11-24 Mon>--<2026-11-25 Wed> |\n| x |\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cc-ts-caption-short",
+      "input": {
+        "text": "#+CAPTION[<2026-11-24 Mon>]: long\n| a |\n",
+        "point": 13,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+CAPTION[<2026-11-24 Tue>]: long\n| a |\n",
+      "visible": "#+CAPTION[<2026-11-24 Tue>]: long\n| a |\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cc-ts-cell-link",
+      "input": {
+        "text": "| [[*H][x]] <2026-11-24 Mon> |\n",
+        "point": 15,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| [[*H][x]] <2026-11-24 Tue> |\n",
+      "visible": "| x <2026-11-24 Tue> |\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cc-ts-bold-cell",
+      "input": {
+        "text": "| *<2026-11-24 Mon>* |\n",
+        "point": 6,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| *<2026-11-24 Tue>* |\n",
+      "visible": "| *<2026-11-24 Tue>* |\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cc-ts-tblfm",
+      "input": {
+        "text": "| a | <2026-11-24 Mon> |\n#+TBLFM: $1=1\n",
+        "point": 9,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | <2026-11-24 Tue> |\n#+TBLFM: $1=1\n",
+      "visible": "| a | <2026-11-24 Tue> |\n#+TBLFM: $1=1\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cc-ts-item-table",
+      "input": {
+        "text": "- item\n  | <2026-11-24 Mon> |\n",
+        "point": 14,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- item\n  | <2026-11-24 Tue> |\n",
+      "visible": "- item\n  | <2026-11-24 Tue> |\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cc-ts-drawer-table",
+      "input": {
+        "text": ":D:\n| <2026-11-24 Mon> |\n:END:\n",
+        "point": 9,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": ":D:\n| <2026-11-24 Tue> |\n:END:\n",
+      "visible": ":D:\n| <2026-11-24 Tue> |\n:END:\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    }
+  ]
+}
