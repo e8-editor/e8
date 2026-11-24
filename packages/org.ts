@@ -2932,7 +2932,8 @@ function expectedIndentWide(el: Elem | undefined, contentsp: boolean, line: numb
       (isHeadingLine(e8.lineText(lineAt(start - 1))) || atHeadlineData(start - 1, previous))
     )
       return 0;
-    if (previous.begin === e8.lineStart(lineAt(previous.begin))) return indentOf(previous.begin);
+    // From its affiliated keywords, as Org's previous element begins at them.
+    if (previous.begin === e8.lineStart(lineAt(previous.begin))) return indentOf(NO_AFFILIATED.includes(previous.type) ? previous.begin : affiliatedBegin(previous.begin));
     return expectedIndentWide(previous.parent, true, line);
   }
   let q = bol;
@@ -2950,6 +2951,11 @@ function expectedIndentWide(el: Elem | undefined, contentsp: boolean, line: numb
   return indentOf(q);
 }
 
+/** Whether org-indent-region moves an element as a whole: an export block, a LaTeX environment, or an example block that does not keep its indentation. */
+function indentedAsWhole(el: Elem): boolean {
+  return el.type === "export-block" || el.type === "latex-environment" || (el.type === "example-block" && !preservesIndentation(el));
+}
+
 /** Indents a line as org-indent-line does, keeping point in the text or after the indentation. */
 export function indentLine(line: number): void {
   const text = e8.lineText(line);
@@ -2965,8 +2971,11 @@ export function indentLine(line: number): void {
   )
     return;
   // A LaTeX environment's lines are left as they are, as Org leaves a
-  // latex-environment's, but not the blank lines after it.
-  if (el?.type === "latex-environment" && ls < lineStartOrEnd(lineAt(endBeforeBlank(el)) + 1)) return;
+  // latex-environment's, but not the blank lines after it. Org compares
+  // point, which at the end of a buffer with no final newline is not before
+  // the line after the environment's last, so that line is indented.
+  const here = lineAt() === line ? e8.point() : ls;
+  if (el?.type === "latex-environment" && here < lineStartOrEnd(lineAt(endBeforeBlank(el)) + 1)) return;
   // A source block's code, with org-src-tab-acts-natively; without it, its lines are indented as any other.
   if (el?.type === "src-block" && truthy(e8.variable("org-src-tab-acts-natively")) && line > lineAt(el.begin) && line < lineAt(endBeforeBlank(el))) {
     // Indented in the language's mode, as indent-according-to-mode does
@@ -3090,7 +3099,14 @@ function indentRegionElements(start: number, end: number): void {
   };
   while (p < endM.pos) {
     const line = lineAt(p);
-    const el = isHeadingLine(e8.lineText(line)) ? undefined : elementAt(p);
+    let el = isHeadingLine(e8.lineText(line)) ? undefined : elementAt(p);
+    // Affiliated keywords are the element's, as #+NAME: above it, so they
+    // move with one indented as a whole, from where they start.
+    let begin = el?.begin;
+    if (el?.type === "keyword") {
+      const found = elementWithAffiliated(p);
+      if (found && found[1] === e8.lineStart(line) && indentedAsWhole(found[0])) [el, begin] = found;
+    }
     // A blank line after a heading is the headline's: Org indents it, which
     // leaves it blank, then the section, as the lines after it come.
     if (!el || el.type === "headline") {
@@ -3100,11 +3116,10 @@ function indentRegionElements(start: number, end: number): void {
     const type = el.type;
     const elementEnd = marker(el.end);
     const ind = expectedIndent(el, false, line);
-    // A LaTeX environment moves as a whole too.
-    if (type === "export-block" || type === "latex-environment" || (type === "example-block" && !preservesIndentation(el))) {
+    if (indentedAsWhole(el)) {
       // Indented as a whole, keeping the lines' indentation relative to each other.
       const offset = ind - textIndentation(e8.lineText(lineAt(p)));
-      if (offset !== 0) indentRigidly(el.begin, el.end, offset);
+      if (offset !== 0) indentRigidly(begin as number, el.end, offset);
       p = elementEnd.pos;
     } else if (type === "src-block" || type === "example-block") {
       // A source block's code is indented in its edit buffer, as its

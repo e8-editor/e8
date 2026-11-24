@@ -1197,6 +1197,120 @@
       "kill_ring": [],
       "modified": false,
       "error": null
+    },
+    {
+      "name": "latex-tab-eob-end",
+      "input": {
+        "text": "* H\n\\begin{x}\na\n  \\end{x}",
+        "point": 25,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* H\n\\begin{x}\na\n\\end{x}",
+      "visible": "* H\n\\begin{x}\na\n\\end{x}",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "latex-tab-eob-end-bol",
+      "input": {
+        "text": "* H\n\\begin{x}\na\n  \\end{x}",
+        "point": 15,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* H\n\\begin{x}\na\n  \\end{x}",
+      "visible": "* H\n\\begin{x}\na\n  \\end{x}",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-indent-region-affiliated",
+      "input": {
+        "text": "* H\n #+NAME: eq\n   \\begin{x}\n     a\n   \\end{x}\n",
+        "point": 0,
+        "keys": "C-x h C-M-\\",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* H\n  #+NAME: eq\n    \\begin{x}\n      a\n    \\end{x}\n",
+      "visible": "* H\n  #+NAME: eq\n    \\begin{x}\n      a\n    \\end{x}\n",
+      "point": 0,
+      "mark": 51,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "export-indent-region-affiliated",
+      "input": {
+        "text": "* H\n #+NAME: ex\n   #+begin_export html\n     <b>\n   #+end_export\n\ntext\n",
+        "point": 0,
+        "keys": "C-x h C-M-\\",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* H\n  #+NAME: ex\n    #+begin_export html\n      <b>\n    #+end_export\n\n  text\n",
+      "visible": "* H\n  #+NAME: ex\n    #+begin_export html\n      <b>\n    #+end_export\n\n  text\n",
+      "point": 0,
+      "mark": 76,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "latex-indent-region-two-keywords",
+      "input": {
+        "text": "* H\n#+CAPTION: c\n   #+NAME: eq\n\\begin{x}\n  a\n\\end{x}\n",
+        "point": 0,
+        "keys": "C-x h C-M-\\",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* H\n  #+CAPTION: c\n     #+NAME: eq\n  \\begin{x}\n    a\n  \\end{x}\n",
+      "visible": "* H\n  #+CAPTION: c\n     #+NAME: eq\n  \\begin{x}\n    a\n  \\end{x}\n",
+      "point": 0,
+      "mark": 63,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }

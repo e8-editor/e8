@@ -527,5 +527,59 @@
   ],
   "point": 3,
   "keys": "M-h"
+ },
+ {
+  "name": "latex-tab-eob-end",
+  "text": "* H\n\\begin{x}\na\n  \\end{x}",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 25,
+  "keys": "TAB"
+ },
+ {
+  "name": "latex-tab-eob-end-bol",
+  "text": "* H\n\\begin{x}\na\n  \\end{x}",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 15,
+  "keys": "TAB"
+ },
+ {
+  "name": "latex-indent-region-affiliated",
+  "text": "* H\n #+NAME: eq\n   \\begin{x}\n     a\n   \\end{x}\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "keys": "C-x h C-M-\\",
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "export-indent-region-affiliated",
+  "text": "* H\n #+NAME: ex\n   #+begin_export html\n     <b>\n   #+end_export\n\ntext\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "keys": "C-x h C-M-\\",
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "latex-indent-region-two-keywords",
+  "text": "* H\n#+CAPTION: c\n   #+NAME: eq\n\\begin{x}\n  a\n\\end{x}\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "keys": "C-x h C-M-\\",
+  "globals": {
+   "org-adapt-indentation": true
+  }
  }
 ]
