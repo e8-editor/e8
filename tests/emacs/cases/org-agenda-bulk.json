@@ -1577,7 +1577,16 @@
   "keys": "* B C-x o",
   "answers": [
    "$"
-  ]
+  ],
+  "vars": {
+   "org-archive-save-context-info": [
+    "'time",
+    "'olpath",
+    "'category",
+    "'todo",
+    "'itags"
+   ]
+  }
  },
  {
   "text": "#+ARCHIVE: ::* Archive\n* TODO A\nSCHEDULED: <2026-10-28 Wed>\n** TODO A1\nSCHEDULED: <2026-10-28 Wed>\n* TODO B\nSCHEDULED: <2026-10-29 Thu>\n",
