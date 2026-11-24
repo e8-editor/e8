@@ -124,6 +124,48 @@ function dynamicBlockEnd(line: number, limit: number): number | undefined {
 }
 
 /**
+ * What latexEnvironmentEnd last found for each environment name, while
+ * the text is as it was: from line `from` on, before `limit`, the first
+ * line closing it, or none. Each environment left open would otherwise
+ * search to the section's end again, many of them in one section taking
+ * the square of its length.
+ */
+let latexEnds: { buffer: number; tick: number; found: Map<string, { from: number; limit: number; close: number | undefined }> } | undefined;
+
+/**
+ * The line that closes a LaTeX environment a line opens, as
+ * org-element-latex-environment-parser finds it: `\begin{NAME}`, then
+ * `\end{NAME}` at the end of a line, the same one or one after, before
+ * limit, as its search runs to the section's end. Both are matched
+ * whatever their case, as Org's case-fold-search has them.
+ */
+export function latexEnvironmentEnd(line: number, limit: number): number | undefined {
+  const text = e8.lineText(line);
+  const m = /^[ \t]*\\begin\{([A-Za-z0-9*]+)\}/i.exec(text);
+  if (!m) return undefined;
+  if (e8.lineStart(line) + m[0].length >= limit) return undefined;
+  const close = new RegExp(`\\\\end\\{${escapeRegExp(m[1])}\\}[ \\t]*$`, "i");
+  // The match ends at the line's end, which must not be past limit.
+  if (close.test(text.slice(m[0].length))) return e8.lineEnd(line) <= limit ? line : undefined;
+  const buffer = e8.currentBuffer().id;
+  const tick = e8.bufferCharsModifiedTick();
+  if (latexEnds?.buffer !== buffer || latexEnds.tick !== tick) latexEnds = { buffer, tick, found: new Map() };
+  const key = m[1].toLowerCase();
+  const start = line + 1;
+  const known = latexEnds.found.get(key);
+  if (known && known.limit === limit && known.from <= start && (known.close === undefined || start <= known.close)) return known.close;
+  let found: number | undefined;
+  for (let l = start; l < e8.lineCount() && e8.lineEnd(l) <= limit; l++) {
+    if (close.test(e8.lineText(l))) {
+      found = l;
+      break;
+    }
+  }
+  latexEnds.found.set(key, { from: start, limit, close: found });
+  return found;
+}
+
+/**
  * An affiliated keyword's line, as org-element--affiliated-re: CAPTION
  * and RESULTS with an optional [secondary value], the other keywords
  * Org lists, and export attributes.
@@ -159,7 +201,8 @@ export function startsElement(line: number, limit: number): boolean {
     /^[ \t]*\+(?:-+\+)+[ \t]*$/.test(text) ||
     CLOCK_LINE.test(text) ||
     (DRAWER_RE.test(text) && drawerEnd(line, limit) !== undefined) ||
-    blockAt(line, limit) !== undefined
+    blockAt(line, limit) !== undefined ||
+    latexEnvironmentEnd(line, limit) !== undefined
   );
 }
 
@@ -237,6 +280,10 @@ function parseElements(
         const start = cb ?? lineStartOrEnd(lineAt(pos) + 1);
         if (start < contentsEnd) parseElements(item, start, contentsEnd, false, [struct, prevs, parents]);
       }
+    } else if (p === e8.lineStart(line) && latexEnvironmentEnd(line, to) !== undefined) {
+      // Its text, raw, with no elements or objects in it.
+      const close = latexEnvironmentEnd(line, to) as number;
+      e = elem("latex-environment", p, Math.min(lineStartOrEnd(close + 1), to), parent);
     } else if (p === e8.lineStart(line) && DRAWER_RE.test(text) && drawerEnd(line, to) !== undefined) {
       const close = drawerEnd(line, to) as number;
       e = elem("drawer", p, Math.min(lineStartOrEnd(close + 1), to), parent, lineStartOrEnd(line + 1));
