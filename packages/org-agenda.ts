@@ -2046,8 +2046,9 @@ e8.defineCommand({
   doc: "Set a property of the entry the agenda line at point shows, as org-set-property does.",
   // Its property and value read here, in the entry's buffer, where org-set-property then sets them.
   run: () => atEntryShown(() => {
-    const property = e8.readString("Property: ");
-    const value = e8.readString("Value: ");
+    const property = String(e8.funcall("org-read-property-name"));
+    if (property === "" || /\s/.test(property)) e8.userError(`Invalid property name: "${property}"`);
+    const value = String(e8.funcall("org-read-property-value", property));
     e8.call("org-set-property", property, value);
   }),
 });
