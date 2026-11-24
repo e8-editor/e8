@@ -1,0 +1,1461 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "log-key",
+      "input": {
+        "text": "#+TODO: TODO NEXT | DONE\n* DONE Write report :work:\nCLOSED: [2026-10-28 Wed 11:00] SCHEDULED: <2026-10-27 Tue>\n:LOGBOOK:\n- State \"DONE\"       from \"TODO\"       [2026-10-28 Wed 11:00] \\\\\n  Finally done.\n- State \"NEXT\"       from \"TODO\"       [2026-10-27 Tue 09:15]\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:30] =>  1:30\n- worked on it\nCLOCK: [2026-10-27 Tue 14:00]--[2026-10-27 Tue 15:00] =>  1:00\n:END:\n* TODO Running clock\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:15]\n:END:\n* Meeting <2026-10-28 Wed 10:00>\n* DONE Old\nCLOSED: [2026-10-20 Tue 10:00]\n* Notes\nWe CLOSED: [2026-10-29 Thu 16:00] the deal.\n",
+        "point": 0,
+        "keys": "l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\n  e8-agenda:  14:00-15:00 Clocked:   (1:00) DONE Write report            :work:\n  e8-agenda:  Scheduled:  DONE Write report                              :work:\nWednesday  28 October 2026\n  e8-agenda:   8:00-9:30  Clocked:   (1:30) DONE Write report - worked on it :work:\n               8:00...... ----------------\n  e8-agenda:  10:00...... Meeting \n              10:00...... ----------------\n  e8-agenda:  10:15...... Clocked:   (-) TODO Running clock\n  e8-agenda:  11:00...... Closed:     DONE Write report                  :work:\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\nThursday   29 October 2026\n  e8-agenda:  16:00...... Closed:     Notes\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\n  e8-agenda:  14:00-15:00 Clocked:   (1:00) DONE Write report            :work:\n  e8-agenda:  Scheduled:  DONE Write report                              :work:\nWednesday  28 October 2026\n  e8-agenda:   8:00-9:30  Clocked:   (1:30) DONE Write report - worked on it :work:\n               8:00...... ----------------\n  e8-agenda:  10:00...... Meeting \n              10:00...... ----------------\n  e8-agenda:  10:15...... Clocked:   (-) TODO Running clock\n  e8-agenda:  11:00...... Closed:     DONE Write report                  :work:\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\nThursday   29 October 2026\n  e8-agenda:  16:00...... Closed:     Notes\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 157,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 157,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Log mode is on"
+    },
+    {
+      "name": "log-twice",
+      "input": {
+        "text": "#+TODO: TODO NEXT | DONE\n* DONE Write report :work:\nCLOSED: [2026-10-28 Wed 11:00] SCHEDULED: <2026-10-27 Tue>\n:LOGBOOK:\n- State \"DONE\"       from \"TODO\"       [2026-10-28 Wed 11:00] \\\\\n  Finally done.\n- State \"NEXT\"       from \"TODO\"       [2026-10-27 Tue 09:15]\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:30] =>  1:30\n- worked on it\nCLOCK: [2026-10-27 Tue 14:00]--[2026-10-27 Tue 15:00] =>  1:00\n:END:\n* TODO Running clock\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:15]\n:END:\n* Meeting <2026-10-28 Wed 10:00>\n* DONE Old\nCLOSED: [2026-10-20 Tue 10:00]\n* Notes\nWe CLOSED: [2026-10-29 Thu 16:00] the deal.\n",
+        "point": 0,
+        "keys": "l l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\n  e8-agenda:  Scheduled:  DONE Write report                              :work:\nWednesday  28 October 2026\n               8:00...... ----------------\n  e8-agenda:  10:00...... Meeting \n              10:00...... ----------------\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\n  e8-agenda:  Scheduled:  DONE Write report                              :work:\nWednesday  28 October 2026\n               8:00...... ----------------\n  e8-agenda:  10:00...... Meeting \n              10:00...... ----------------\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 157,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 157,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Log mode is off"
+    },
+    {
+      "name": "log-view",
+      "input": {
+        "text": "#+TODO: TODO NEXT | DONE\n* DONE Write report :work:\nCLOSED: [2026-10-28 Wed 11:00] SCHEDULED: <2026-10-27 Tue>\n:LOGBOOK:\n- State \"DONE\"       from \"TODO\"       [2026-10-28 Wed 11:00] \\\\\n  Finally done.\n- State \"NEXT\"       from \"TODO\"       [2026-10-27 Tue 09:15]\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:30] =>  1:30\n- worked on it\nCLOCK: [2026-10-27 Tue 14:00]--[2026-10-27 Tue 15:00] =>  1:00\n:END:\n* TODO Running clock\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:15]\n:END:\n* Meeting <2026-10-28 Wed 10:00>\n* DONE Old\nCLOSED: [2026-10-20 Tue 10:00]\n* Notes\nWe CLOSED: [2026-10-29 Thu 16:00] the deal.\n",
+        "point": 0,
+        "keys": "v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "l"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\n  e8-agenda:  14:00-15:00 Clocked:   (1:00) DONE Write report            :work:\n  e8-agenda:  Scheduled:  DONE Write report                              :work:\nWednesday  28 October 2026\n  e8-agenda:   8:00-9:30  Clocked:   (1:30) DONE Write report - worked on it :work:\n               8:00...... ----------------\n  e8-agenda:  10:00...... Meeting \n              10:00...... ----------------\n  e8-agenda:  10:15...... Clocked:   (-) TODO Running clock\n  e8-agenda:  11:00...... Closed:     DONE Write report                  :work:\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\nThursday   29 October 2026\n  e8-agenda:  16:00...... Closed:     Notes\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\n  e8-agenda:  14:00-15:00 Clocked:   (1:00) DONE Write report            :work:\n  e8-agenda:  Scheduled:  DONE Write report                              :work:\nWednesday  28 October 2026\n  e8-agenda:   8:00-9:30  Clocked:   (1:30) DONE Write report - worked on it :work:\n               8:00...... ----------------\n  e8-agenda:  10:00...... Meeting \n              10:00...... ----------------\n  e8-agenda:  10:15...... Clocked:   (-) TODO Running clock\n  e8-agenda:  11:00...... Closed:     DONE Write report                  :work:\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\nThursday   29 October 2026\n  e8-agenda:  16:00...... Closed:     Notes\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 157,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 157,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Log mode is on"
+    },
+    {
+      "name": "log-all-view",
+      "input": {
+        "text": "#+TODO: TODO NEXT | DONE\n* DONE Write report :work:\nCLOSED: [2026-10-28 Wed 11:00] SCHEDULED: <2026-10-27 Tue>\n:LOGBOOK:\n- State \"DONE\"       from \"TODO\"       [2026-10-28 Wed 11:00] \\\\\n  Finally done.\n- State \"NEXT\"       from \"TODO\"       [2026-10-27 Tue 09:15]\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:30] =>  1:30\n- worked on it\nCLOCK: [2026-10-27 Tue 14:00]--[2026-10-27 Tue 15:00] =>  1:00\n:END:\n* TODO Running clock\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:15]\n:END:\n* Meeting <2026-10-28 Wed 10:00>\n* DONE Old\nCLOSED: [2026-10-20 Tue 10:00]\n* Notes\nWe CLOSED: [2026-10-29 Thu 16:00] the deal.\n",
+        "point": 0,
+        "keys": "v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "L"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\n  e8-agenda:   9:15...... State:     (NEXT) DONE Write report            :work:\n  e8-agenda:  14:00-15:00 Clocked:   (1:00) DONE Write report            :work:\n  e8-agenda:  Scheduled:  DONE Write report                              :work:\nWednesday  28 October 2026\n  e8-agenda:   8:00-9:30  Clocked:   (1:30) DONE Write report - worked on it :work:\n               8:00...... ----------------\n  e8-agenda:  10:00...... Meeting \n              10:00...... ----------------\n  e8-agenda:  10:15...... Clocked:   (-) TODO Running clock\n  e8-agenda:  11:00...... Closed:     DONE Write report                  :work:\n  e8-agenda:  11:00...... State:     (DONE) DONE Write report - Finally done. :work:\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\nThursday   29 October 2026\n  e8-agenda:  16:00...... Closed:     Notes\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\n  e8-agenda:   9:15...... State:     (NEXT) DONE Write report            :work:\n  e8-agenda:  14:00-15:00 Clocked:   (1:00) DONE Write report            :work:\n  e8-agenda:  Scheduled:  DONE Write report                              :work:\nWednesday  28 October 2026\n  e8-agenda:   8:00-9:30  Clocked:   (1:30) DONE Write report - worked on it :work:\n               8:00...... ----------------\n  e8-agenda:  10:00...... Meeting \n              10:00...... ----------------\n  e8-agenda:  10:15...... Clocked:   (-) TODO Running clock\n  e8-agenda:  11:00...... Closed:     DONE Write report                  :work:\n  e8-agenda:  11:00...... State:     (DONE) DONE Write report - Finally done. :work:\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\nThursday   29 October 2026\n  e8-agenda:  16:00...... Closed:     Notes\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 157,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 157,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Log mode is on"
+    },
+    {
+      "name": "log-all-prefix",
+      "input": {
+        "text": "#+TODO: TODO NEXT | DONE\n* DONE Write report :work:\nCLOSED: [2026-10-28 Wed 11:00] SCHEDULED: <2026-10-27 Tue>\n:LOGBOOK:\n- State \"DONE\"       from \"TODO\"       [2026-10-28 Wed 11:00] \\\\\n  Finally done.\n- State \"NEXT\"       from \"TODO\"       [2026-10-27 Tue 09:15]\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:30] =>  1:30\n- worked on it\nCLOCK: [2026-10-27 Tue 14:00]--[2026-10-27 Tue 15:00] =>  1:00\n:END:\n* TODO Running clock\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:15]\n:END:\n* Meeting <2026-10-28 Wed 10:00>\n* DONE Old\nCLOSED: [2026-10-20 Tue 10:00]\n* Notes\nWe CLOSED: [2026-10-29 Thu 16:00] the deal.\n",
+        "point": 0,
+        "keys": "C-u l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\n  e8-agenda:   9:15...... State:     (NEXT) DONE Write report            :work:\n  e8-agenda:  14:00-15:00 Clocked:   (1:00) DONE Write report            :work:\n  e8-agenda:  Scheduled:  DONE Write report                              :work:\nWednesday  28 October 2026\n  e8-agenda:   8:00-9:30  Clocked:   (1:30) DONE Write report - worked on it :work:\n               8:00...... ----------------\n  e8-agenda:  10:00...... Meeting \n              10:00...... ----------------\n  e8-agenda:  10:15...... Clocked:   (-) TODO Running clock\n  e8-agenda:  11:00...... Closed:     DONE Write report                  :work:\n  e8-agenda:  11:00...... State:     (DONE) DONE Write report - Finally done. :work:\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\nThursday   29 October 2026\n  e8-agenda:  16:00...... Closed:     Notes\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\n  e8-agenda:   9:15...... State:     (NEXT) DONE Write report            :work:\n  e8-agenda:  14:00-15:00 Clocked:   (1:00) DONE Write report            :work:\n  e8-agenda:  Scheduled:  DONE Write report                              :work:\nWednesday  28 October 2026\n  e8-agenda:   8:00-9:30  Clocked:   (1:30) DONE Write report - worked on it :work:\n               8:00...... ----------------\n  e8-agenda:  10:00...... Meeting \n              10:00...... ----------------\n  e8-agenda:  10:15...... Clocked:   (-) TODO Running clock\n  e8-agenda:  11:00...... Closed:     DONE Write report                  :work:\n  e8-agenda:  11:00...... State:     (DONE) DONE Write report - Finally done. :work:\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\nThursday   29 October 2026\n  e8-agenda:  16:00...... Closed:     Notes\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 157,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 157,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Log mode is on"
+    },
+    {
+      "name": "log-only",
+      "input": {
+        "text": "#+TODO: TODO NEXT | DONE\n* DONE Write report :work:\nCLOSED: [2026-10-28 Wed 11:00] SCHEDULED: <2026-10-27 Tue>\n:LOGBOOK:\n- State \"DONE\"       from \"TODO\"       [2026-10-28 Wed 11:00] \\\\\n  Finally done.\n- State \"NEXT\"       from \"TODO\"       [2026-10-27 Tue 09:15]\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:30] =>  1:30\n- worked on it\nCLOCK: [2026-10-27 Tue 14:00]--[2026-10-27 Tue 15:00] =>  1:00\n:END:\n* TODO Running clock\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:15]\n:END:\n* Meeting <2026-10-28 Wed 10:00>\n* DONE Old\nCLOSED: [2026-10-20 Tue 10:00]\n* Notes\nWe CLOSED: [2026-10-29 Thu 16:00] the deal.\n",
+        "point": 0,
+        "keys": "C-u C-u l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\n  e8-agenda:  14:00-15:00 Clocked:   (1:00) DONE Write report            :work:\nWednesday  28 October 2026\n  e8-agenda:   8:00-9:30  Clocked:   (1:30) DONE Write report - worked on it :work:\n               8:00...... ----------------\n              10:00...... ----------------\n  e8-agenda:  10:15...... Clocked:   (-) TODO Running clock\n  e8-agenda:  11:00...... Closed:     DONE Write report                  :work:\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\nThursday   29 October 2026\n  e8-agenda:  16:00...... Closed:     Notes\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\n  e8-agenda:  14:00-15:00 Clocked:   (1:00) DONE Write report            :work:\nWednesday  28 October 2026\n  e8-agenda:   8:00-9:30  Clocked:   (1:30) DONE Write report - worked on it :work:\n               8:00...... ----------------\n              10:00...... ----------------\n  e8-agenda:  10:15...... Clocked:   (-) TODO Running clock\n  e8-agenda:  11:00...... Closed:     DONE Write report                  :work:\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\nThursday   29 October 2026\n  e8-agenda:  16:00...... Closed:     Notes\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 157,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 157,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Log mode is on"
+    },
+    {
+      "name": "log-day",
+      "input": {
+        "text": "#+TODO: TODO NEXT | DONE\n* DONE Write report :work:\nCLOSED: [2026-10-28 Wed 11:00] SCHEDULED: <2026-10-27 Tue>\n:LOGBOOK:\n- State \"DONE\"       from \"TODO\"       [2026-10-28 Wed 11:00] \\\\\n  Finally done.\n- State \"NEXT\"       from \"TODO\"       [2026-10-27 Tue 09:15]\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:30] =>  1:30\n- worked on it\nCLOCK: [2026-10-27 Tue 14:00]--[2026-10-27 Tue 15:00] =>  1:00\n:END:\n* TODO Running clock\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:15]\n:END:\n* Meeting <2026-10-28 Wed 10:00>\n* DONE Old\nCLOSED: [2026-10-20 Tue 10:00]\n* Notes\nWe CLOSED: [2026-10-29 Thu 16:00] the deal.\n",
+        "point": 0,
+        "keys": "l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true,
+          "org-agenda-span": "'day"
+        }
+      },
+      "text": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:   8:00-9:30  Clocked:   (1:30) DONE Write report - worked on it :work:\n               8:00...... ----------------\n  e8-agenda:  10:00...... Meeting \n              10:00...... ----------------\n  e8-agenda:  10:15...... Clocked:   (-) TODO Running clock\n  e8-agenda:  11:00...... Closed:     DONE Write report                  :work:\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "visible": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:   8:00-9:30  Clocked:   (1:30) DONE Write report - worked on it :work:\n               8:00...... ----------------\n  e8-agenda:  10:00...... Meeting \n              10:00...... ----------------\n  e8-agenda:  10:15...... Clocked:   (-) TODO Running clock\n  e8-agenda:  11:00...... Closed:     DONE Write report                  :work:\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 10,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 14,
+          "selected": true
+        }
+      ],
+      "message": "Log mode is on"
+    },
+    {
+      "name": "log-no-grid",
+      "input": {
+        "text": "#+TODO: TODO NEXT | DONE\n* DONE Write report :work:\nCLOSED: [2026-10-28 Wed 11:00] SCHEDULED: <2026-10-27 Tue>\n:LOGBOOK:\n- State \"DONE\"       from \"TODO\"       [2026-10-28 Wed 11:00] \\\\\n  Finally done.\n- State \"NEXT\"       from \"TODO\"       [2026-10-27 Tue 09:15]\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:30] =>  1:30\n- worked on it\nCLOCK: [2026-10-27 Tue 14:00]--[2026-10-27 Tue 15:00] =>  1:00\n:END:\n* TODO Running clock\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:15]\n:END:\n* Meeting <2026-10-28 Wed 10:00>\n* DONE Old\nCLOSED: [2026-10-20 Tue 10:00]\n* Notes\nWe CLOSED: [2026-10-29 Thu 16:00] the deal.\n",
+        "point": 0,
+        "keys": "l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\n  e8-agenda:  14:00-15:00 Clocked:   (1:00) DONE Write report            :work:\n  e8-agenda:  Scheduled:  DONE Write report                              :work:\nWednesday  28 October 2026\n  e8-agenda:   8:00-9:30  Clocked:   (1:30) DONE Write report - worked on it :work:\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  10:15...... Clocked:   (-) TODO Running clock\n  e8-agenda:  11:00...... Closed:     DONE Write report                  :work:\nThursday   29 October 2026\n  e8-agenda:  16:00...... Closed:     Notes\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\n  e8-agenda:  14:00-15:00 Clocked:   (1:00) DONE Write report            :work:\n  e8-agenda:  Scheduled:  DONE Write report                              :work:\nWednesday  28 October 2026\n  e8-agenda:   8:00-9:30  Clocked:   (1:30) DONE Write report - worked on it :work:\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  10:15...... Clocked:   (-) TODO Running clock\n  e8-agenda:  11:00...... Closed:     DONE Write report                  :work:\nThursday   29 October 2026\n  e8-agenda:  16:00...... Closed:     Notes\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 157,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 8,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 157,
+          "width": 80,
+          "height": 16,
+          "selected": true
+        }
+      ],
+      "message": "Log mode is on"
+    },
+    {
+      "name": "log-no-notes",
+      "input": {
+        "text": "#+TODO: TODO NEXT | DONE\n* DONE Write report :work:\nCLOSED: [2026-10-28 Wed 11:00] SCHEDULED: <2026-10-27 Tue>\n:LOGBOOK:\n- State \"DONE\"       from \"TODO\"       [2026-10-28 Wed 11:00] \\\\\n  Finally done.\n- State \"NEXT\"       from \"TODO\"       [2026-10-27 Tue 09:15]\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:30] =>  1:30\n- worked on it\nCLOCK: [2026-10-27 Tue 14:00]--[2026-10-27 Tue 15:00] =>  1:00\n:END:\n* TODO Running clock\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:15]\n:END:\n* Meeting <2026-10-28 Wed 10:00>\n* DONE Old\nCLOSED: [2026-10-20 Tue 10:00]\n* Notes\nWe CLOSED: [2026-10-29 Thu 16:00] the deal.\n",
+        "point": 0,
+        "keys": "C-u l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\n  e8-agenda:   9:15...... State:     (NEXT) DONE Write report            :work:\n  e8-agenda:  14:00-15:00 Clocked:   (1:00) DONE Write report            :work:\n  e8-agenda:  Scheduled:  DONE Write report                              :work:\nWednesday  28 October 2026\n  e8-agenda:   8:00-9:30  Clocked:   (1:30) DONE Write report            :work:\n               8:00...... ----------------\n  e8-agenda:  10:00...... Meeting \n              10:00...... ----------------\n  e8-agenda:  10:15...... Clocked:   (-) TODO Running clock\n  e8-agenda:  11:00...... Closed:     DONE Write report                  :work:\n  e8-agenda:  11:00...... State:     (DONE) DONE Write report            :work:\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\nThursday   29 October 2026\n  e8-agenda:  16:00...... Closed:     Notes\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\n  e8-agenda:   9:15...... State:     (NEXT) DONE Write report            :work:\n  e8-agenda:  14:00-15:00 Clocked:   (1:00) DONE Write report            :work:\n  e8-agenda:  Scheduled:  DONE Write report                              :work:\nWednesday  28 October 2026\n  e8-agenda:   8:00-9:30  Clocked:   (1:30) DONE Write report            :work:\n               8:00...... ----------------\n  e8-agenda:  10:00...... Meeting \n              10:00...... ----------------\n  e8-agenda:  10:15...... Clocked:   (-) TODO Running clock\n  e8-agenda:  11:00...... Closed:     DONE Write report                  :work:\n  e8-agenda:  11:00...... State:     (DONE) DONE Write report            :work:\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\nThursday   29 October 2026\n  e8-agenda:  16:00...... Closed:     Notes\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 157,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 157,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Log mode is on"
+    },
+    {
+      "name": "log-items-state",
+      "input": {
+        "text": "#+TODO: TODO NEXT | DONE\n* DONE Write report :work:\nCLOSED: [2026-10-28 Wed 11:00] SCHEDULED: <2026-10-27 Tue>\n:LOGBOOK:\n- State \"DONE\"       from \"TODO\"       [2026-10-28 Wed 11:00] \\\\\n  Finally done.\n- State \"NEXT\"       from \"TODO\"       [2026-10-27 Tue 09:15]\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:30] =>  1:30\n- worked on it\nCLOCK: [2026-10-27 Tue 14:00]--[2026-10-27 Tue 15:00] =>  1:00\n:END:\n* TODO Running clock\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:15]\n:END:\n* Meeting <2026-10-28 Wed 10:00>\n* DONE Old\nCLOSED: [2026-10-20 Tue 10:00]\n* Notes\nWe CLOSED: [2026-10-29 Thu 16:00] the deal.\n",
+        "point": 0,
+        "keys": "l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": [
+            "'state"
+          ],
+          "org-agenda-log-mode-add-notes": true
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\n  e8-agenda:   9:15...... State:     (NEXT) DONE Write report            :work:\n  e8-agenda:  Scheduled:  DONE Write report                              :work:\nWednesday  28 October 2026\n               8:00...... ----------------\n  e8-agenda:  10:00...... Meeting \n              10:00...... ----------------\n  e8-agenda:  11:00...... State:     (DONE) DONE Write report - Finally done. :work:\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\n  e8-agenda:   9:15...... State:     (NEXT) DONE Write report            :work:\n  e8-agenda:  Scheduled:  DONE Write report                              :work:\nWednesday  28 October 2026\n               8:00...... ----------------\n  e8-agenda:  10:00...... Meeting \n              10:00...... ----------------\n  e8-agenda:  11:00...... State:     (DONE) DONE Write report - Finally done. :work:\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 157,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 157,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Log mode is on"
+    },
+    {
+      "name": "log-start-with",
+      "input": {
+        "text": "#+TODO: TODO NEXT | DONE\n* DONE Write report :work:\nCLOSED: [2026-10-28 Wed 11:00] SCHEDULED: <2026-10-27 Tue>\n:LOGBOOK:\n- State \"DONE\"       from \"TODO\"       [2026-10-28 Wed 11:00] \\\\\n  Finally done.\n- State \"NEXT\"       from \"TODO\"       [2026-10-27 Tue 09:15]\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:30] =>  1:30\n- worked on it\nCLOCK: [2026-10-27 Tue 14:00]--[2026-10-27 Tue 15:00] =>  1:00\n:END:\n* TODO Running clock\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:15]\n:END:\n* Meeting <2026-10-28 Wed 10:00>\n* DONE Old\nCLOSED: [2026-10-20 Tue 10:00]\n* Notes\nWe CLOSED: [2026-10-29 Thu 16:00] the deal.\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": true,
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\n  e8-agenda:  14:00-15:00 Clocked:   (1:00) DONE Write report            :work:\n  e8-agenda:  Scheduled:  DONE Write report                              :work:\nWednesday  28 October 2026\n  e8-agenda:   8:00-9:30  Clocked:   (1:30) DONE Write report - worked on it :work:\n               8:00...... ----------------\n  e8-agenda:  10:00...... Meeting \n              10:00...... ----------------\n  e8-agenda:  10:15...... Clocked:   (-) TODO Running clock\n  e8-agenda:  11:00...... Closed:     DONE Write report                  :work:\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\nThursday   29 October 2026\n  e8-agenda:  16:00...... Closed:     Notes\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\n  e8-agenda:  14:00-15:00 Clocked:   (1:00) DONE Write report            :work:\n  e8-agenda:  Scheduled:  DONE Write report                              :work:\nWednesday  28 October 2026\n  e8-agenda:   8:00-9:30  Clocked:   (1:30) DONE Write report - worked on it :work:\n               8:00...... ----------------\n  e8-agenda:  10:00...... Meeting \n              10:00...... ----------------\n  e8-agenda:  10:15...... Clocked:   (-) TODO Running clock\n  e8-agenda:  11:00...... Closed:     DONE Write report                  :work:\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\nThursday   29 October 2026\n  e8-agenda:  16:00...... Closed:     Notes\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 237,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 237,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "log-start-with-then-off",
+      "input": {
+        "text": "#+TODO: TODO NEXT | DONE\n* DONE Write report :work:\nCLOSED: [2026-10-28 Wed 11:00] SCHEDULED: <2026-10-27 Tue>\n:LOGBOOK:\n- State \"DONE\"       from \"TODO\"       [2026-10-28 Wed 11:00] \\\\\n  Finally done.\n- State \"NEXT\"       from \"TODO\"       [2026-10-27 Tue 09:15]\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:30] =>  1:30\n- worked on it\nCLOCK: [2026-10-27 Tue 14:00]--[2026-10-27 Tue 15:00] =>  1:00\n:END:\n* TODO Running clock\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:15]\n:END:\n* Meeting <2026-10-28 Wed 10:00>\n* DONE Old\nCLOSED: [2026-10-20 Tue 10:00]\n* Notes\nWe CLOSED: [2026-10-29 Thu 16:00] the deal.\n",
+        "point": 0,
+        "keys": "l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": true,
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\n  e8-agenda:  Scheduled:  DONE Write report                              :work:\nWednesday  28 October 2026\n               8:00...... ----------------\n  e8-agenda:  10:00...... Meeting \n              10:00...... ----------------\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\n  e8-agenda:  Scheduled:  DONE Write report                              :work:\nWednesday  28 October 2026\n               8:00...... ----------------\n  e8-agenda:  10:00...... Meeting \n              10:00...... ----------------\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 184,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 184,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Log mode is off"
+    },
+    {
+      "name": "log-later",
+      "input": {
+        "text": "#+TODO: TODO NEXT | DONE\n* DONE Write report :work:\nCLOSED: [2026-10-28 Wed 11:00] SCHEDULED: <2026-10-27 Tue>\n:LOGBOOK:\n- State \"DONE\"       from \"TODO\"       [2026-10-28 Wed 11:00] \\\\\n  Finally done.\n- State \"NEXT\"       from \"TODO\"       [2026-10-27 Tue 09:15]\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:30] =>  1:30\n- worked on it\nCLOCK: [2026-10-27 Tue 14:00]--[2026-10-27 Tue 15:00] =>  1:00\n:END:\n* TODO Running clock\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:15]\n:END:\n* Meeting <2026-10-28 Wed 10:00>\n* DONE Old\nCLOSED: [2026-10-20 Tue 10:00]\n* Notes\nWe CLOSED: [2026-10-29 Thu 16:00] the deal.\n",
+        "point": 0,
+        "keys": "l f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true
+        }
+      },
+      "text": "Week-agenda (W45):\nMonday      2 November 2026 W45\nTuesday     3 November 2026\nWednesday   4 November 2026\nThursday    5 November 2026\nFriday      6 November 2026\nSaturday    7 November 2026\nSunday      8 November 2026\n",
+      "visible": "Week-agenda (W45):\nMonday      2 November 2026 W45\nTuesday     3 November 2026\nWednesday   4 November 2026\nThursday    5 November 2026\nFriday      6 November 2026\nSaturday    7 November 2026\nSunday      8 November 2026\n",
+      "point": 51,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 51,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "log-earlier",
+      "input": {
+        "text": "#+TODO: TODO NEXT | DONE\n* DONE Write report :work:\nCLOSED: [2026-10-28 Wed 11:00] SCHEDULED: <2026-10-27 Tue>\n:LOGBOOK:\n- State \"DONE\"       from \"TODO\"       [2026-10-28 Wed 11:00] \\\\\n  Finally done.\n- State \"NEXT\"       from \"TODO\"       [2026-10-27 Tue 09:15]\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:30] =>  1:30\n- worked on it\nCLOCK: [2026-10-27 Tue 14:00]--[2026-10-27 Tue 15:00] =>  1:00\n:END:\n* TODO Running clock\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:15]\n:END:\n* Meeting <2026-10-28 Wed 10:00>\n* DONE Old\nCLOSED: [2026-10-20 Tue 10:00]\n* Notes\nWe CLOSED: [2026-10-29 Thu 16:00] the deal.\n",
+        "point": 0,
+        "keys": "l b",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true
+        }
+      },
+      "text": "Week-agenda (W43):\nMonday     19 October 2026 W43\nTuesday    20 October 2026\n  e8-agenda:  10:00...... Closed:     DONE Old\nWednesday  21 October 2026\nThursday   22 October 2026\nFriday     23 October 2026\nSaturday   24 October 2026\nSunday     25 October 2026\n",
+      "visible": "Week-agenda (W43):\nMonday     19 October 2026 W43\nTuesday    20 October 2026\n  e8-agenda:  10:00...... Closed:     DONE Old\nWednesday  21 October 2026\nThursday   22 October 2026\nFriday     23 October 2026\nSaturday   24 October 2026\nSunday     25 October 2026\n",
+      "point": 50,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 50,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "log-redo",
+      "input": {
+        "text": "#+TODO: TODO NEXT | DONE\n* DONE Write report :work:\nCLOSED: [2026-10-28 Wed 11:00] SCHEDULED: <2026-10-27 Tue>\n:LOGBOOK:\n- State \"DONE\"       from \"TODO\"       [2026-10-28 Wed 11:00] \\\\\n  Finally done.\n- State \"NEXT\"       from \"TODO\"       [2026-10-27 Tue 09:15]\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:30] =>  1:30\n- worked on it\nCLOCK: [2026-10-27 Tue 14:00]--[2026-10-27 Tue 15:00] =>  1:00\n:END:\n* TODO Running clock\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:15]\n:END:\n* Meeting <2026-10-28 Wed 10:00>\n* DONE Old\nCLOSED: [2026-10-20 Tue 10:00]\n* Notes\nWe CLOSED: [2026-10-29 Thu 16:00] the deal.\n",
+        "point": 0,
+        "keys": "l g",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\n  e8-agenda:  14:00-15:00 Clocked:   (1:00) DONE Write report            :work:\n  e8-agenda:  Scheduled:  DONE Write report                              :work:\nWednesday  28 October 2026\n  e8-agenda:   8:00-9:30  Clocked:   (1:30) DONE Write report - worked on it :work:\n               8:00...... ----------------\n  e8-agenda:  10:00...... Meeting \n              10:00...... ----------------\n  e8-agenda:  10:15...... Clocked:   (-) TODO Running clock\n  e8-agenda:  11:00...... Closed:     DONE Write report                  :work:\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\nThursday   29 October 2026\n  e8-agenda:  16:00...... Closed:     Notes\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\n  e8-agenda:  14:00-15:00 Clocked:   (1:00) DONE Write report            :work:\n  e8-agenda:  Scheduled:  DONE Write report                              :work:\nWednesday  28 October 2026\n  e8-agenda:   8:00-9:30  Clocked:   (1:30) DONE Write report - worked on it :work:\n               8:00...... ----------------\n  e8-agenda:  10:00...... Meeting \n              10:00...... ----------------\n  e8-agenda:  10:15...... Clocked:   (-) TODO Running clock\n  e8-agenda:  11:00...... Closed:     DONE Write report                  :work:\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\nThursday   29 October 2026\n  e8-agenda:  16:00...... Closed:     Notes\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 157,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 157,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "log-in-todo",
+      "input": {
+        "text": "#+TODO: TODO NEXT | DONE\n* DONE Write report :work:\nCLOSED: [2026-10-28 Wed 11:00] SCHEDULED: <2026-10-27 Tue>\n:LOGBOOK:\n- State \"DONE\"       from \"TODO\"       [2026-10-28 Wed 11:00] \\\\\n  Finally done.\n- State \"NEXT\"       from \"TODO\"       [2026-10-27 Tue 09:15]\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:30] =>  1:30\n- worked on it\nCLOCK: [2026-10-27 Tue 14:00]--[2026-10-27 Tue 15:00] =>  1:00\n:END:\n* TODO Running clock\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:15]\n:END:\n* Meeting <2026-10-28 Wed 10:00>\n* DONE Old\nCLOSED: [2026-10-20 Tue 10:00]\n* Notes\nWe CLOSED: [2026-10-29 Thu 16:00] the deal.\n",
+        "point": 0,
+        "keys": "l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)NEXT (3)TODO\n  e8-agenda:  TODO Running clock\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)NEXT (3)TODO\n  e8-agenda:  TODO Running clock\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Not allowed in ’todo’-type agenda buffer or component",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "log-view-in-todo",
+      "input": {
+        "text": "#+TODO: TODO NEXT | DONE\n* DONE Write report :work:\nCLOSED: [2026-10-28 Wed 11:00] SCHEDULED: <2026-10-27 Tue>\n:LOGBOOK:\n- State \"DONE\"       from \"TODO\"       [2026-10-28 Wed 11:00] \\\\\n  Finally done.\n- State \"NEXT\"       from \"TODO\"       [2026-10-27 Tue 09:15]\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:30] =>  1:30\n- worked on it\nCLOCK: [2026-10-27 Tue 14:00]--[2026-10-27 Tue 15:00] =>  1:00\n:END:\n* TODO Running clock\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:15]\n:END:\n* Meeting <2026-10-28 Wed 10:00>\n* DONE Old\nCLOSED: [2026-10-20 Tue 10:00]\n* Notes\nWe CLOSED: [2026-10-29 Thu 16:00] the deal.\n",
+        "point": 0,
+        "keys": "v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "l"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)NEXT (3)TODO\n  e8-agenda:  TODO Running clock\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)NEXT (3)TODO\n  e8-agenda:  TODO Running clock\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Not allowed in ’todo’-type agenda buffer or component",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "log-src-comment",
+      "input": {
+        "text": "* TODO Task\n# CLOSED: [2026-10-28 Wed 09:00]\n#+begin_src emacs-lisp\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:00] =>  1:00\n#+end_src\n#+begin_example\nCLOCK: [2026-10-28 Wed 12:00]--[2026-10-28 Wed 13:00] =>  1:00\n#+end_example\n",
+        "point": 0,
+        "keys": "l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true,
+          "org-agenda-span": "'day"
+        }
+      },
+      "text": "Day-agenda (W44):\nWednesday  28 October 2026\n               8:00...... ----------------\n              10:00...... ----------------\n  e8-agenda:  12:00-13:00 Clocked:   (1:00) TODO Task\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "visible": "Day-agenda (W44):\nWednesday  28 October 2026\n               8:00...... ----------------\n              10:00...... ----------------\n  e8-agenda:  12:00-13:00 Clocked:   (1:00) TODO Task\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Log mode is on"
+    },
+    {
+      "name": "log-two-per-line",
+      "input": {
+        "text": "* Notes\nWe CLOSED: [2026-10-28 Wed 09:00] and CLOSED: [2026-10-28 Wed 10:00] twice.\n",
+        "point": 0,
+        "keys": "l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true,
+          "org-agenda-span": "'day"
+        }
+      },
+      "text": "Day-agenda (W44):\nWednesday  28 October 2026\n               8:00...... ----------------\n  e8-agenda:   9:00...... Closed:     Notes\n              10:00...... ----------------\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "visible": "Day-agenda (W44):\nWednesday  28 October 2026\n               8:00...... ----------------\n  e8-agenda:   9:00...... Closed:     Notes\n              10:00...... ----------------\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Log mode is on"
+    },
+    {
+      "name": "log-states",
+      "input": {
+        "text": "#+TODO: TODO WAIT(w@) | DONE CANCELLED\n* WAIT Thing :tag:\n:LOGBOOK:\n- State \"WAIT\"       from \"TODO\"       [2026-10-28 Wed 09:00] \\\\\n  Waiting on Bob\n  and Alice\n- State \"FOO\"        from \"TODO\"       [2026-10-28 Wed 09:30]\n- State \"CANCELLED\"  from \"WAIT\"       [2026-10-27 Tue 10:00] retried [2026-10-28 Wed 10:15]\n- State \"DONE\"       from \"WAIT\"       [2026-10-28 Wed 11:00] \\\\\n  - a dash note\n:END:\n",
+        "point": 0,
+        "keys": "C-u l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true,
+          "org-agenda-span": "'day"
+        }
+      },
+      "text": "Day-agenda (W44):\nWednesday  28 October 2026\n               8:00...... ----------------\n  e8-agenda:   9:00...... State:     (WAIT) WAIT Thing - Waiting on Bob   :tag:\n  e8-agenda:  10:00...... State:     (CANCELLED) WAIT Thing               :tag:\n              10:00...... ----------------\n  e8-agenda:  11:00...... State:     (DONE) WAIT Thing                    :tag:\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "visible": "Day-agenda (W44):\nWednesday  28 October 2026\n               8:00...... ----------------\n  e8-agenda:   9:00...... State:     (WAIT) WAIT Thing - Waiting on Bob   :tag:\n  e8-agenda:  10:00...... State:     (CANCELLED) WAIT Thing               :tag:\n              10:00...... ----------------\n  e8-agenda:  11:00...... State:     (DONE) WAIT Thing                    :tag:\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": "Log mode is on"
+    },
+    {
+      "name": "log-underscore",
+      "input": {
+        "text": "* Notes\nfoo_CLOSED: [2026-10-28 Wed 09:00]\nbar-CLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 10:30] =>  0:30\n",
+        "point": 0,
+        "keys": "l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true,
+          "org-agenda-span": "'day"
+        }
+      },
+      "text": "Day-agenda (W44):\nWednesday  28 October 2026\n               8:00...... ----------------\n  e8-agenda:   9:00...... Closed:     Notes\n  e8-agenda:  10:00-10:30 Clocked:   (0:30) Notes\n              10:00...... ----------------\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "visible": "Day-agenda (W44):\nWednesday  28 October 2026\n               8:00...... ----------------\n  e8-agenda:   9:00...... Closed:     Notes\n  e8-agenda:  10:00-10:30 Clocked:   (0:30) Notes\n              10:00...... ----------------\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Log mode is on"
+    },
+    {
+      "name": "log-items-empty",
+      "input": {
+        "text": "* DONE Task\nCLOSED: [2026-10-28 Wed 11:00]\n",
+        "point": 0,
+        "keys": "l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": false,
+          "org-agenda-log-mode-add-notes": true,
+          "org-agenda-span": "'day"
+        }
+      },
+      "text": "Day-agenda (W44):\n",
+      "visible": "Day-agenda (W44):\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "‘org-agenda-log-mode-items’ is empty",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer..."
+    },
+    {
+      "name": "log-start-clockcheck",
+      "input": {
+        "text": "* DONE Task\nCLOSED: [2026-10-28 Wed 11:00] SCHEDULED: <2026-10-28 Wed>\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:00] =>  1:00\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": "'clockcheck",
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true,
+          "org-agenda-span": "'day"
+        }
+      },
+      "text": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:   8:00-9:00  Clocked:   (1:00) DONE Task\n               8:00...... ----------------\n              10:00...... ----------------\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "visible": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:   8:00-9:00  Clocked:   (1:00) DONE Task\n               8:00...... ----------------\n              10:00...... ----------------\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "point": 88,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 88,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "log-view-clockcheck",
+      "input": {
+        "text": "* DONE Task\nCLOSED: [2026-10-28 Wed 11:00] SCHEDULED: <2026-10-28 Wed>\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:00] =>  1:00\n",
+        "point": 0,
+        "keys": "v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "c"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true,
+          "org-agenda-span": "'day"
+        }
+      },
+      "text": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:   8:00-9:00  Clocked:   (1:00) DONE Task\n               8:00...... ----------------\n              10:00...... ----------------\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "visible": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:   8:00-9:00  Clocked:   (1:00) DONE Task\n               8:00...... ----------------\n              10:00...... ----------------\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Log mode is on"
+    },
+    {
+      "name": "log-view-clockcheck-twice",
+      "input": {
+        "text": "* DONE Task\nCLOSED: [2026-10-28 Wed 11:00] SCHEDULED: <2026-10-28 Wed>\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:00] =>  1:00\n",
+        "point": 0,
+        "keys": "v v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "c",
+          "c"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true,
+          "org-agenda-span": "'day"
+        }
+      },
+      "text": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  DONE Task\n",
+      "visible": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  DONE Task\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Log mode is off"
+    },
+    {
+      "name": "log-clockcheck-then-log",
+      "input": {
+        "text": "* DONE Task\nCLOSED: [2026-10-28 Wed 11:00] SCHEDULED: <2026-10-28 Wed>\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:00] =>  1:00\n",
+        "point": 0,
+        "keys": "v l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "c"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": true,
+          "org-agenda-show-current-time-in-grid": false,
+          "org-agenda-start-with-log-mode": false,
+          "org-agenda-log-mode-items": [
+            "'closed",
+            "'clock"
+          ],
+          "org-agenda-log-mode-add-notes": true,
+          "org-agenda-span": "'day"
+        }
+      },
+      "text": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  DONE Task\n",
+      "visible": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  DONE Task\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Log mode is off"
+    }
+  ]
+}

@@ -5310,6 +5310,14 @@ declare global {
        */
       "org-agenda-list": [arg?: PrefixArg | boolean];
       /**
+       * Toggle log mode: the agenda shows what was closed and clocked each day, as org-agenda-log-mode-items says. With C-u, every kind, state changes too; with C-u C-u, only what was logged.
+       *
+       * @param special raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-log-mode": [special?: PrefixArg | boolean];
+      /**
        * Add a word to the search view's string, and ask for it again.
        *
        * Defined in packages/org-agenda.ts.
@@ -13746,6 +13754,18 @@ declare global {
        */
       "org-agenda-include-inactive-timestamps": Value;
       /**
+       * Whether log mode adds the first line of a state change's or a clock's note to its line.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-log-mode-add-notes": Value;
+      /**
+       * What log mode shows: closed for entries closed, clock for clocked time, state for changes of TODO state logged.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-log-mode-items": Value;
+      /**
        * Keymap org-agenda-mode-map.
        */
       "org-agenda-mode-map": Value;
@@ -13833,6 +13853,12 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-start-with-follow-mode": Value;
+      /**
+       * Whether a new agenda starts in log mode: t for org-agenda-log-mode-items, only for nothing else, or a list of kinds.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-start-with-log-mode": Value;
       /**
        * Whether tags-todo views and TODO-only tag matches leave out entries as the TODO list's ignore options say.
        *
