@@ -5260,6 +5260,12 @@ declare global {
        */
       "org-agenda-earlier": [arg?: number];
       /**
+       * Toggle follow mode: moving to a line with n or p shows its entry in another window. Turning it off puts the windows back.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-follow-mode": [];
+      /**
        * Show two weeks' agenda, from point's week. With a prefix argument, from that ISO week, as org-agenda-week-view reads it.
        *
        * @param isoWeek raw prefix argument
@@ -5342,13 +5348,13 @@ declare global {
        */
       "org-agenda-month-view": [month?: PrefixArg | boolean];
       /**
-       * Move to the next line of the agenda.
+       * Move to the next line of the agenda, showing its entry in follow mode.
        *
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-next-line": [];
       /**
-       * Move to the previous line of the agenda.
+       * Move to the previous line of the agenda, showing its entry in follow mode.
        *
        * Defined in packages/org-agenda.ts.
        */
@@ -5405,6 +5411,14 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-set-tags": [];
+      /**
+       * Show the entry the agenda line at point shows in another window, staying in the agenda; with C-u, all of the entry.
+       *
+       * @param fullEntry raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-show": [fullEntry?: PrefixArg | boolean];
       /**
        * Go to the entry the agenda line at point shows, in this window.
        *
@@ -13813,6 +13827,12 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-start-with-archives-mode": Value;
+      /**
+       * Whether a new agenda starts in follow mode, showing each line's entry in another window as point moves.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-start-with-follow-mode": Value;
       /**
        * Whether tags-todo views and TODO-only tag matches leave out entries as the TODO list's ignore options say.
        *

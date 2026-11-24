@@ -1,0 +1,944 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "follow-on",
+      "input": {
+        "text": "* Work\n** TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n",
+        "point": 0,
+        "keys": "F",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Follow mode is on"
+    },
+    {
+      "name": "follow-on-next",
+      "input": {
+        "text": "* Work\n** TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n",
+        "point": 0,
+        "keys": "F n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 104,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 59,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 104,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Mark set"
+    },
+    {
+      "name": "follow-next-twice",
+      "input": {
+        "text": "* Work\n** TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n",
+        "point": 0,
+        "keys": "F n n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 139,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 15,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 139,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Mark set [2 times]"
+    },
+    {
+      "name": "follow-next-previous",
+      "input": {
+        "text": "* Work\n** TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n",
+        "point": 0,
+        "keys": "F n n p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 104,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 59,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 104,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Mark set [3 times]"
+    },
+    {
+      "name": "follow-off-restores",
+      "input": {
+        "text": "* Work\n** TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n",
+        "point": 0,
+        "keys": "F n n F",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 139,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 139,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Follow mode is off"
+    },
+    {
+      "name": "follow-view-f",
+      "input": {
+        "text": "* Work\n** TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n",
+        "point": 0,
+        "keys": "v n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "f"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 104,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 59,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 104,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Mark set"
+    },
+    {
+      "name": "follow-view-capital",
+      "input": {
+        "text": "* Work\n** TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n",
+        "point": 0,
+        "keys": "v n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "F"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 104,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 59,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 104,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Mark set"
+    },
+    {
+      "name": "follow-on-an-item",
+      "input": {
+        "text": "* Work\n** TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n",
+        "point": 0,
+        "keys": "n F",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 104,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 59,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 104,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Follow mode is on"
+    },
+    {
+      "name": "follow-start-with",
+      "input": {
+        "text": "* Work\n** TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n",
+        "point": 0,
+        "keys": "n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": true
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 104,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 59,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 104,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Mark set"
+    },
+    {
+      "name": "next-without-follow",
+      "input": {
+        "text": "* Work\n** TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n",
+        "point": 0,
+        "keys": "n n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 139,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 139,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "next-without-outline-path",
+      "input": {
+        "text": "* Work\n** TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n",
+        "point": 0,
+        "keys": "n n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-outline-path": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 139,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 139,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "follow-todo-list",
+      "input": {
+        "text": "* Work\n** TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n",
+        "point": 0,
+        "keys": "F n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda:  TODO Write report\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda:  TODO Write report\n",
+      "point": 39,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 39,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Follow mode is on"
+    },
+    {
+      "name": "follow-past-the-end",
+      "input": {
+        "text": "* Work\n** TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n",
+        "point": 0,
+        "keys": "F n n n n n n n n n n n n n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 325,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "End of buffer",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 100,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 325,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Mark set [3 times]"
+    },
+    {
+      "name": "follow-folded-show",
+      "input": {
+        "text": "* Work\n** TODO Write report\nSCHEDULED: <2026-10-28 Wed>\nReport body.\n** Meeting <2026-10-28 Wed 10:00>\nMeeting body.\n*** Sub\nsub body\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n",
+        "point": 0,
+        "keys": "C-x o <backtab> C-x o F n C-x o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false
+        }
+      },
+      "text": "* Work\n** TODO Write report\nSCHEDULED: <2026-10-28 Wed>\nReport body.\n** Meeting <2026-10-28 Wed 10:00>\nMeeting body.\n*** Sub\nsub body\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n",
+      "visible": "* Work\n** Meeting <2026-10-28 Wed 10:00>\nMeeting body.\n*** Sub\n* Home",
+      "point": 72,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 72,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 104,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        }
+      ],
+      "message": "Mark set"
+    },
+    {
+      "name": "goto-folded-show",
+      "input": {
+        "text": "* Work\n** TODO Write report\nSCHEDULED: <2026-10-28 Wed>\nReport body.\n** Meeting <2026-10-28 Wed 10:00>\nMeeting body.\n*** Sub\nsub body\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n",
+        "point": 0,
+        "keys": "C-x o <backtab> C-x o n TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false
+        }
+      },
+      "text": "* Work\n** TODO Write report\nSCHEDULED: <2026-10-28 Wed>\nReport body.\n** Meeting <2026-10-28 Wed 10:00>\nMeeting body.\n*** Sub\nsub body\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n",
+      "visible": "* Work\n** Meeting <2026-10-28 Wed 10:00>\nMeeting body.\n*** Sub\n* Home",
+      "point": 72,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 72,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 104,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        }
+      ],
+      "message": "Mark set"
+    },
+    {
+      "name": "follow-c-n",
+      "input": {
+        "text": "* Work\n** TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n",
+        "point": 0,
+        "keys": "F C-n C-n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 139,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 15,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 139,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Mark set [2 times]"
+    },
+    {
+      "name": "follow-c-p",
+      "input": {
+        "text": "* Work\n** TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n",
+        "point": 0,
+        "keys": "F C-n C-n C-p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 104,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 59,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 104,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Mark set [3 times]"
+    },
+    {
+      "name": "follow-down",
+      "input": {
+        "text": "* Work\n** TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n",
+        "point": 0,
+        "keys": "F <down> <down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 139,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 15,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 139,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Mark set [2 times]"
+    },
+    {
+      "name": "follow-up",
+      "input": {
+        "text": "* Work\n** TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n",
+        "point": 0,
+        "keys": "F <down> <down> <up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 104,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 59,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 104,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Mark set [3 times]"
+    }
+  ]
+}
