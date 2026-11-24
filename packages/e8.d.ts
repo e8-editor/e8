@@ -5308,6 +5308,12 @@ declare global {
        */
       "org-agenda-goto-today": [];
       /**
+       * Delete the entry, with its subtree, the agenda line at point shows, and its lines in the agenda, asking first as org-agenda-confirm-kill says.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-kill": [];
+      /**
        * Show the agenda for the days after it, by its span. With a prefix argument, that many spans on.
        *
        * @param arg prefix count
@@ -5370,11 +5376,51 @@ declare global {
        */
       "org-agenda-month-view": [month?: PrefixArg | boolean];
       /**
+       * Move to the next line of the agenda that starts a day.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-next-date-line": [n?: number];
+      /**
+       * Move to the next line of the agenda that shows an entry, keeping the column.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-next-item": [n?: number];
+      /**
        * Move to the next line of the agenda, showing its entry in follow mode.
        *
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-next-line": [];
+      /**
+       * Open the link of the entry the agenda line at point shows: the one in the line, or the only one in the entry.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-open-link": [arg?: PrefixArg | boolean];
+      /**
+       * Move to the previous line of the agenda that starts a day.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-previous-date-line": [n?: number];
+      /**
+       * Move to the previous line of the agenda that shows an entry, keeping the column.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-previous-item": [n?: number];
       /**
        * Move to the previous line of the agenda, showing its entry in follow mode.
        *
@@ -5407,6 +5453,14 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-quit": [];
+      /**
+       * Show the entry the agenda line at point shows in another window, with its line in the middle of it.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-recenter": [arg?: PrefixArg | boolean];
       /**
        * Rebuild the agenda from the files, as they are now.
        *
@@ -5441,6 +5495,26 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-show": [fullEntry?: PrefixArg | boolean];
+      /**
+       * Show the entry the agenda line at point shows in another window, all of it, drawers too; pressed again, scroll that window. With C-u, its drawers folded.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-show-and-scroll-up": [arg?: PrefixArg | boolean];
+      /**
+       * Scroll back the window SPC showed an entry in.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-show-scroll-down": [];
+      /**
+       * Say the tags of the entry the agenda line at point shows, inherited ones too as the agenda shows them.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-show-tags": [];
       /**
        * Go to the entry the agenda line at point shows, in this window.
        *
@@ -6684,6 +6758,12 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-return-and-maybe-indent": [];
+      /**
+       * Save every Org buffer visiting a file, without asking.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-save-all-org-buffers": [];
       /**
        * Schedule the heading point is under for a date read as org-timestamp reads it. With C-u, unschedule it, asking for no date. With the region active, every heading in it, asking for each (org-loop-over-headlines-in-active-region).
        *
@@ -13744,6 +13824,12 @@ declare global {
        */
       "org-agenda-clockreport-parameter-plist": Value;
       /**
+       * Whether C-k in the agenda asks first: t always, a number when the entry has more lines than that, nil never.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-confirm-kill": Value;
+      /**
        * What the time grid's line for the time now says.
        *
        * Defined in packages/org-agenda.ts.
@@ -13969,6 +14055,12 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-todo-list-sublevels": Value;
+      /**
+       * Which agenda views take the tags their items inherit: a list of agenda, todo and search, or t for all.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-use-tag-inheritance": Value;
       /**
        * Whether today's agenda draws a time grid among the entries with times, as org-agenda-time-grid says.
        *

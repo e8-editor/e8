@@ -7797,6 +7797,11 @@ export interface LinkParameters {
 }
 const linkTypes = new Map<string, LinkParameters>();
 
+/** Whether a link type is one Org knows, as org-link-any-re matches only those. */
+export function linkTypeKnown(type: string): boolean {
+  return linkTypes.has(type.toLowerCase());
+}
+
 /** Sets what links of TYPE do, as org-link-set-parameters: id: links, as org-id.ts does, or a package's own; other parameters are kept. */
 export function linkSetParameters(type: string, parameters: LinkParameters): void {
   linkTypes.set(type, { ...linkTypes.get(type), ...parameters });
@@ -7867,7 +7872,21 @@ function followInternal(path: string): void {
   showContext(pos);
 }
 
-function openLink(link: Link): void {
+e8.defineCommand({
+  name: "org-save-all-org-buffers",
+  doc: "Save every Org buffer visiting a file, without asking.",
+  run: () => {
+    e8.message("Saving all Org buffers...");
+    for (const b of e8.bufferList()) {
+      e8.withCurrentBuffer(b, () => {
+        if (e8.derivedModeP("org-mode") && e8.bufferFileName() !== undefined && e8.bufferModifiedP()) e8.call("save-buffer");
+      });
+    }
+    e8.message("Saving all Org buffers... done");
+  },
+});
+
+export function openLink(link: Link): void {
   const path = link.path;
   const type = /^([a-z][a-z0-9+.-]*):(.*)$/is.exec(path);
   const handler = type ? linkTypes.get(type[1].toLowerCase()) : undefined;
@@ -7977,7 +7996,7 @@ function openAtPoint_(): void {
  * The different links between two positions, in order, as
  * org-offer-links-in-entry finds them, and where the last one found starts.
  */
-function linksIn(from: number, to: number): { links: string[]; last: number } {
+export function linksIn(from: number, to: number): { links: string[]; last: number } {
   const out: string[] = [];
   let last = from;
   for (let l = lineAt(from); l < e8.lineCount() && e8.lineStart(l) < to; l++) {
@@ -11030,7 +11049,7 @@ function removeUninheritedTags(tags: string[]): string[] {
  * Each heading's tags, the file's and those above it first, as org-get-tags
  * gives them: a tag once, where it comes last.
  */
-function allTagsOf(all: Heading[]): string[][] {
+export function allTagsOf(all: Heading[]): string[][] {
   const file = fileTags();
   const stack: Heading[] = [];
   const inherit = truthy(e8.variable("org-use-tag-inheritance"));
