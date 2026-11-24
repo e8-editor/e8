@@ -268,5 +268,235 @@
   "point": 15,
   "keys": "C-c C-c",
   "message": true
+ },
+ {
+  "name": "cc-ts-row-no-bar-after",
+  "text": "| a | <2026-11-24 Mon>\n| bbb | c |\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 22,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-row-no-bar-spaces-after",
+  "text": "| a | <2026-11-24 Mon>  \n| bbb | c |\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 22,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-row-no-bar-end-of-buffer",
+  "text": "| a | <2026-11-24 Mon>",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 22,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-verbatim-at-bars",
+  "text": "|=<2026-11-24 Mon>=|\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 5,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-verbatim-across-cells",
+  "text": "| =a | <2026-11-24 Mon> b= |\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 10,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-caption-before-comment",
+  "text": "#+CAPTION: <2026-11-24 Mon>\n# c\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 14,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-caption-before-clock",
+  "text": "* H\n#+CAPTION: <2026-11-24 Mon>\nCLOCK: [2026-11-24 Mon 10:00]--[2026-11-24 Mon 11:00] =>  1:00\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 18,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-row-in-example",
+  "text": "#+begin_example\n| a | <2026-11-24 Mon> |\n#+end_example\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 22,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-row-in-export",
+  "text": "#+begin_export html\n| a | <2026-11-24 Mon> |\n#+end_export\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 26,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-row-in-comment-block",
+  "text": "#+begin_comment\n| a | <2026-11-24 Mon> |\n#+end_comment\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 22,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-table-el",
+  "text": "+------------------+\n| <2026-11-24 Mon> |\n+------------------+\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 23,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-table-el-no-timestamp",
+  "text": "+-----+\n| a  |\n+-----+\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 11,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-diary-sexp",
+  "text": "%%(diary-float t 4 2) <2026-11-24 Mon>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 25,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-range-dashes-cell",
+  "text": "| <2026-11-24 Mon>--<2026-11-25 Tue> |\n| x |\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 19,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-range-dashes-caption",
+  "text": "#+CAPTION: <2026-11-24 Mon>--<2026-11-25 Tue>\n| x |\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 28,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-range-first-dash-cell",
+  "text": "| <2026-11-24 Mon>--<2026-11-25 Tue> |\n| x |\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 18,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-range-second-in-cell",
+  "text": "| <2026-11-24 Mon>--<2026-11-25 Tue> |\n| x |\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 23,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-caption-short",
+  "text": "#+CAPTION[<2026-11-24 Mon>]: long\n| a |\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 13,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-cell-link",
+  "text": "| [[*H][x]] <2026-11-24 Mon> |\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 15,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-bold-cell",
+  "text": "| *<2026-11-24 Mon>* |\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-tblfm",
+  "text": "| a | <2026-11-24 Mon> |\n#+TBLFM: $1=1\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 9,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-item-table",
+  "text": "- item\n  | <2026-11-24 Mon> |\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 14,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-drawer-table",
+  "text": ":D:\n| <2026-11-24 Mon> |\n:END:\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 9,
+  "keys": "C-c C-c",
+  "message": true
  }
 ]

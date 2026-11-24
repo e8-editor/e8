@@ -7040,11 +7040,16 @@ function clockUpdateTimeMaybe(): boolean {
  * Org's parser finds timestamp objects: paragraphs, headings, items, verse
  * and the keywords whose values Org parses, not inside a link.
  */
-function onRangeDashes(line: number): boolean {
+/** Whether point is on the -- between a range's two timestamps on its line. */
+function rangeDashesHere(line: number): boolean {
   const p = e8.point();
   const all = tsMatches(line);
-  const on = all.some((a, i) => i + 1 < all.length && e8.bufferText(a.end, all[i + 1].start) === "--" && a.end < p && p < all[i + 1].start);
-  if (!on) return false;
+  return all.some((a, i) => i + 1 < all.length && e8.bufferText(a.end, all[i + 1].start) === "--" && a.end < p && p < all[i + 1].start);
+}
+
+function onRangeDashes(line: number): boolean {
+  const p = e8.point();
+  if (!rangeDashesHere(line)) return false;
   const type = elementAt(p)?.type;
   const parsedKeyword = type === "keyword" && /^[ \t]*#\+(?:TITLE|DATE|AUTHOR|CAPTION):/i.test(e8.lineText(line));
   if (!parsedKeyword && !["paragraph", "headline", "item", "verse-block"].includes(type ?? "")) return false;
@@ -9572,18 +9577,29 @@ const ctrlCCtrlC = e8.defineCommand({
     // A LaTeX environment's text is raw: a table row or a checkbox in it is
     // no table or item, as Org's context there is the environment.
     if (elementAt(e8.point())?.type === "latex-environment") nothingUseful();
-    // A timestamp in a table's cell is an object Org's context finds, which
-    // it changes rather than aligning the table.
-    if (/^[ \t]*\|(?!-)/.test(text) && timestampHere() && !inVerbatimOrLink(e8.point())) {
-      changeTimestamp(0, "day");
+    const here = elementAt(e8.point());
+    const inTable = here?.type === "table" || here?.type === "table-row";
+    // A table.el table, its rows between lines of +-+, Org leaves to C-c '.
+    if (inTable && tableElTable(here)) {
+      e8.message("Use ‘C-c '’ to edit table.el tables");
       return;
     }
-    if (elementAt(e8.point())?.type === "table") {
+    // A timestamp in a table's cell is an object Org's context finds, which
+    // it changes rather than aligning the table.
+    if (inTable && /^[ \t]*\|(?!-)/.test(text)) {
+      const cell = cellTimestamp(line);
+      if (cell === "dashes") e8.userError("Not at a timestamp");
+      if (cell) {
+        changeTimestamp(0, "day");
+        return;
+      }
+    }
+    if (here?.type === "table") {
       // At the table's start, Org recalculates every row and does not align.
       e8.call("org-table-recalculate");
       return;
     }
-    if (/^[ \t]*\|/.test(text)) {
+    if (inTable && /^[ \t]*\|/.test(text)) {
       e8.call("org-table-maybe-eval-formula");
       e8.call("org-table-align");
       return;
@@ -9591,7 +9607,8 @@ const ctrlCCtrlC = e8.defineCommand({
     // On a list's affiliated keyword, as #+ATTR_ORG:, Org's context is the list.
     if (AFFILIATED.test(text)) {
       // A caption's value is parsed, so a timestamp in it is one, which is changed.
-      if (/^[ \t]*#\+CAPTION(?:\[.*\])?:/i.test(text) && timestampHere() && affiliatedOfNext(line)) {
+      if (/^[ \t]*#\+CAPTION(?:\[.*\])?:/i.test(text) && (timestampHere() || rangeDashesHere(line)) && affiliatedOfNext(line)) {
+        if (rangeDashesHere(line)) e8.userError("Not at a timestamp");
         changeTimestamp(0, "day");
         return;
       }
@@ -11614,7 +11631,7 @@ function reTimestamp(type: string | null): string {
 }
 
 /** Elements whose text C-c C-c finds no timestamp object in, as org-element-context: their text is raw. */
-const RAW_TIMESTAMP_TYPES = ["comment", "comment-block", "example-block", "export-block", "fixed-width"];
+const RAW_TIMESTAMP_TYPES = ["comment", "comment-block", "diary-sexp", "example-block", "export-block", "fixed-width"];
 
 /** Whether the affiliated keywords around a line belong to an element after them, as Org's parser attaches them. */
 function affiliatedOfNext(line: number): boolean {
@@ -11622,7 +11639,41 @@ function affiliatedOfNext(line: number): boolean {
   while (l + 1 < e8.lineCount() && AFFILIATED.test(e8.lineText(l + 1))) l++;
   const first = l + 1;
   const next = first < e8.lineCount() ? elementAt(e8.lineStart(first)) : undefined;
-  return next !== undefined && e8.lineStart(first) < e8.bufferSize() && next.begin === e8.lineStart(first) && next.type !== "headline";
+  // Comments, clocks and headings are parsed before affiliated keywords are looked for, so they take none.
+  const none = ["headline", "comment", "clock"];
+  return next !== undefined && e8.lineStart(first) < e8.bufferSize() && next.begin === e8.lineStart(first) && !none.includes(next.type);
+}
+
+/** Whether a table is a table.el one, its first line +-+, as Org's parser tells them apart. */
+function tableElTable(el: Elem | undefined): boolean {
+  let table = el;
+  while (table && table.type !== "table") table = table.parent;
+  if (!table || lineAt(table.begin) === 0) return false;
+  return /^[ \t]*\+(?:-+\+)+[ \t]*$/.test(e8.lineText(lineAt(table.begin) - 1));
+}
+
+/**
+ * The timestamp object point is on in a table row's cell, as Org's context
+ * finds it: true for one, "dashes" between a range's two, false for none.
+ * Org parses a row's objects up to its last character that is not a space,
+ * and each cell's on its own, so verbatim text is a cell's alone.
+ */
+function cellTimestamp(line: number): boolean | "dashes" {
+  const p = e8.point();
+  const text = e8.lineText(line);
+  const ls = e8.lineStart(line);
+  const trimmedEnd = ls + charCount(text.replace(/\s+$/, ""));
+  if (p >= trimmedEnd && p !== e8.bufferSize()) return false;
+  if (rangeDashesHere(line)) return "dashes";
+  if (!timestampHere()) return false;
+  // The cell: from the bar before point to the next one, or the row's end.
+  const col = p - ls;
+  const chars = [...text];
+  let from = col;
+  while (from > 0 && chars[from - 1] !== "|") from--;
+  let to = col;
+  while (to < chars.length && chars[to] !== "|") to++;
+  return !inVerbatimOrLink(p, chars.slice(from, to).join(""), from);
 }
 
 /** Elements whose timestamps org-element-context does not find as timestamp objects: a planning line's are its own, and the others hold only characters. */
@@ -11632,10 +11683,11 @@ const NO_OBJECTS = ["planning", "src-block", "example-block", "export-block", "f
  * Whether a position is in verbatim or code text (=...=, ~...~) or a
  * link, where org-element-context finds no timestamp object.
  */
-function inVerbatimOrLink(pos: number): boolean {
+function inVerbatimOrLink(pos: number, part?: string, partStart = 0): boolean {
   const line = lineAt(pos);
-  const text = e8.lineText(line);
-  const col = pos - e8.lineStart(line);
+  // Within part of the line, as a table's cell, whose ends are the text's ends.
+  const text = part ?? e8.lineText(line);
+  const col = pos - e8.lineStart(line) - partStart;
   const inside = (re: RegExp, lead = 0) => {
     for (const m of allMatches(re, text)) {
       const start = charCount(text.slice(0, m.index! + lead));
