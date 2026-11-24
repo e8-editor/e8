@@ -137,3 +137,49 @@ fn a_check_reads_orgs_property_list() {
     ed.call("test-seen", vec![]).unwrap();
     assert_eq!(ed.echo(), Some("'todo-state-change 'todo 'done / 'todo-state-change TODO DONE"));
 }
+
+/// A repeating entry going back to its first state asks org-blocker-hook
+/// too, as org-auto-repeat-maybe's own org-todo does: refused, it stays
+/// done, saying so, and its date moves on all the same.
+#[test]
+fn going_back_after_a_repeat_can_be_blocked() {
+    let (mut ed, s) = org("* TODO R\nSCHEDULED: <2026-11-24 Tue +1d>\n", false);
+    ed.set_variable("e8--today", Value::Str("2026-11-24".into()));
+    s.eval_typescript(
+        &mut ed,
+        "test.ts",
+        r#"
+        const to = (change: e8.Value[]) => change[change.findIndex((k) => typeof k === "symbol" && e8.symbolName(k) === ":to") + 1];
+        e8.addHook("org-blocker-hook", (change: e8.Value[]) => to(change) !== "TODO");
+        "#
+        .to_string(),
+    )
+    .unwrap();
+    ed.press("C-c C-t").unwrap();
+    assert_eq!(ed.take_error().map(|e| e.to_string()), None);
+    // Logged as a repeat, as org-log-repeat says, the state it stays in.
+    assert!(text(&ed).starts_with("* DONE R\nSCHEDULED: <2026-11-25 Wed +1d>\n:PROPERTIES:\n:LAST_REPEAT: [2026-11-24 Tue 12:00]\n:END:\n"), "{}", text(&ed));
+    assert!(ed.messages().iter().any(|m| m == "TODO state change from DONE to TODO blocked (by \"\")"), "{:?}", ed.messages());
+}
+
+/// org-entry-blocked-p asks from point, which it leaves where it is.
+#[test]
+fn org_entry_blocked_p_asks_from_point() {
+    let (mut ed, s) = org("* TODO A\nbody text\n", false);
+    s.eval_typescript(
+        &mut ed,
+        "test.ts",
+        r#"
+        globalThis.at = [];
+        e8.addHook("org-blocker-hook", (change: e8.Value[]) => { globalThis.at.push(`${change[3]} ${e8.point()}`); return true; });
+        e8.defineCommand({ name: "test-at", run: () => e8.message(globalThis.at.join(" ")) });
+        "#
+        .to_string(),
+    )
+    .unwrap();
+    ed.window_buffer_mut().set_point(18);
+    s.eval_expression(&mut ed, "e8.funcall('org-entry-blocked-p')").unwrap();
+    assert_eq!(ed.window_buffer().point(), 18);
+    ed.call("test-at", vec![]).unwrap();
+    assert_eq!(ed.echo(), Some("18 18"));
+}

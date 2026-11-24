@@ -5310,12 +5310,12 @@ function todoChangeAllowed(h: Heading, change: e8.Value, before: string | undefi
   return false;
 }
 
-/** Whether the entry at heading H is blocked, as org-entry-blocked-p: not NOBLOCKING, to do, and blocked from being done. */
-export function entryBlocked(h: Heading): boolean {
+/** Whether the entry at heading H is blocked, as org-entry-blocked-p: not NOBLOCKING, to do, and blocked from being done; asked from AT, the heading's start unless given, as Org asks from point. */
+export function entryBlocked(h: Heading, at = h.start): boolean {
   if (entryGet(h.line, "NOBLOCKING") !== undefined || h.todo === undefined || isDone(h.todo)) return false;
   return !e8.saveExcursion(() => {
-    e8.gotoChar(h.start);
-    return e8.runHookWithArgsUntilFailure("org-blocker-hook", todoChangePlist(e8.intern("todo"), e8.intern("done"), h.start, true));
+    e8.gotoChar(at);
+    return e8.runHookWithArgsUntilFailure("org-blocker-hook", todoChangePlist(e8.intern("todo"), e8.intern("done"), at, true));
   });
 }
 
@@ -5323,7 +5323,8 @@ export function entryBlocked(h: Heading): boolean {
 e8.defun("org-entry-blocked-p", () => {
   const all = headings();
   const i = headingIndex(all, lineAt());
-  return i !== undefined && entryBlocked(all[i]);
+  // From point, which stays where it is, as Org's passes :position (point).
+  return i !== undefined && entryBlocked(all[i], e8.point());
 });
 
 /**
@@ -5587,9 +5588,13 @@ function autoRepeat(line: number, last: string | undefined, done: string): [stri
   const to = wanted !== undefined && allKeywords().includes(wanted) ? wanted : set?.type ? last : set ? set.todo[0] ?? set.done[0] : undefined;
   const p = marker(e8.point());
   e8.gotoChar(h.start);
-  replaceTodoKeyword(parseHeading(line) as Heading, to);
-  // Back to do, as org-auto-repeat-maybe's own org-todo, which org-trigger-hook is told of first.
-  e8.saveExcursion(() => e8.runHooks("org-trigger-hook", todoChangePlist(done, to ?? null, h.start)));
+  // Back to do, as org-auto-repeat-maybe's own org-todo: asked of org-blocker-hook as a call from code, so a refusal only says
+  // so and the entry stays done, its dates moved on all the same; then org-trigger-hook is told of it first.
+  const back = todoChangePlist(done, to ?? null, h.start);
+  if (todoFromCode(() => todoChangeAllowed(parseHeading(line) as Heading, back, done, to))) {
+    replaceTodoKeyword(parseHeading(line) as Heading, to);
+    e8.saveExcursion(() => e8.runHooks("org-trigger-hook", back));
+  }
   if (parseHeading(line)?.tagsAt !== undefined) alignTagsAway(line);
   updateParentTodoStatistics(line);
   setPlanning(line, "CLOSED", undefined);
