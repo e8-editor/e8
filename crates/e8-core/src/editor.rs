@@ -918,14 +918,30 @@ impl Editor {
         }
     }
 
+    /// Shift selection as a command's code asks for it, as Emacs's
+    /// `handle-shift-selection` with `this-command-keys-shift-translated`
+    /// bound, as Org's `org-call-for-shift-select` binds it: SHIFTED starts a
+    /// region at point or keeps one Shift started; otherwise one Shift
+    /// started ends.
+    pub fn handle_shift_selection(&mut self, shifted: bool) {
+        self.shift_select(shifted);
+    }
+
     /// Emacs's shift selection: a movement with Shift starts a region at
     /// point, or keeps extending one Shift started; a movement without Shift
     /// ends a region Shift started.
     fn shift_select(&mut self, shifted: bool) {
+        let quiet = self.executing_kbd_macro() || self.minibuffer_depth() > 0;
+        // Shift starts nothing with shift-select-mode off, as handle-shift-selection checks it first.
+        let shifted = shifted && self.variable("shift-select-mode").is_none_or(|v| v.is_true());
         let b = self.buffer_mut();
         if shifted {
             if !b.is_shift_selected() {
                 b.start_shift_selection();
+                // As handle-shift-selection's push-mark says, unless a keyboard macro or the minibuffer is running.
+                if !quiet {
+                    self.message("Mark set");
+                }
             }
         } else if b.is_shift_selected() {
             b.deactivate_mark();

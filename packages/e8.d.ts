@@ -6883,6 +6883,18 @@ declare global {
        */
       "org-promote-subtree": [];
       /**
+       * Set the property on point's line to its next allowed value.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-property-next-allowed-value": [];
+      /**
+       * Set the property on point's line to its previous allowed value.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-property-previous-allowed-value": [];
+      /**
        * Move the entry or entries at point to another heading, one org-refile-targets names, by default a top-level heading of this buffer, as its last child (first with org-reverse-note-order). With an active region, its subtrees move. With C-u, go to the heading instead; with C-u C-u, to where the last refile put its entry; with C-0 or C-u C-u C-u, clear the targets kept (org-refile-use-cache); with 2, refile to the running clock; with 3, copy.
        *
        * @param arg raw prefix argument
@@ -7020,13 +7032,13 @@ declare global {
        */
       "org-shiftcontrolup": [n?: PrefixArg | boolean];
       /**
-       * S-<down> in Org: make a timestamp earlier, lower a heading's priority, or move to the next item.
+       * S-<down> in Org: make a timestamp earlier, lower a heading's priority, move to the next item, or select down with org-support-shift-select.
        *
        * Defined in packages/org.ts.
        */
       "org-shiftdown": [];
       /**
-       * S-<left> in Org: move a timestamp a day back, change a heading to its previous TODO state, or change list bullets.
+       * S-<left> in Org: move a timestamp a day back, change a heading to its previous TODO state, change list bullets, a property to its previous allowed value, or select with org-support-shift-select.
        *
        * Defined in packages/org.ts.
        */
@@ -7056,7 +7068,7 @@ declare global {
        */
       "org-shiftmetaup": [];
       /**
-       * S-<right> in Org: move a timestamp a day on, change a heading to its next TODO state, or change list bullets.
+       * S-<right> in Org: move a timestamp a day on, change a heading to its next TODO state, change list bullets, a property to its next allowed value, or select with org-support-shift-select.
        *
        * Defined in packages/org.ts.
        */
@@ -7070,7 +7082,7 @@ declare global {
        */
       "org-shifttab": [];
       /**
-       * S-<up> in Org: make a timestamp later, raise a heading's priority, or move to the previous item.
+       * S-<up> in Org: make a timestamp later, raise a heading's priority, move to the previous item, or select up with org-support-shift-select.
        *
        * Defined in packages/org.ts.
        */
@@ -14766,6 +14778,12 @@ declare global {
        */
       "org-edit-src-persistent-message": Value;
       /**
+       * Whether S-<down> on a timestamp makes it later and S-<up> earlier, the other way round from the default.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-edit-timestamp-down-means-later": Value;
+      /**
        * The property that holds an entry's estimated effort.
        *
        * Defined in packages/org.ts.
@@ -16574,6 +16592,10 @@ declare global {
        * Defined in packages/shell.ts.
        */
       "shell-prompt-pattern": Value;
+      /**
+       * Whether a movement with Shift starts a region, or extends one Shift started, as Emacs's shift-select-mode.
+       */
+      "shift-select-mode": Value;
       /**
        * How many seconds idle before Show Paren mode highlights. Changing it takes effect when the mode is turned on again.
        *
@@ -19765,6 +19787,38 @@ declare global {
        */
       "org-property-changed-functions": Value;
       /**
+       * Functions S-<down> in Org runs when nothing else it does applies, before selecting or its error.
+       */
+      "org-shiftdown-final-hook": Value;
+      /**
+       * Functions S-<down> in Org runs first, the first to give non-nil doing it.
+       */
+      "org-shiftdown-hook": Value;
+      /**
+       * Functions S-<left> in Org runs when nothing else it does applies, before selecting or its error.
+       */
+      "org-shiftleft-final-hook": Value;
+      /**
+       * Functions S-<left> in Org runs first, the first to give non-nil doing it.
+       */
+      "org-shiftleft-hook": Value;
+      /**
+       * Functions S-<right> in Org runs when nothing else it does applies, before selecting or its error.
+       */
+      "org-shiftright-final-hook": Value;
+      /**
+       * Functions S-<right> in Org runs first, the first to give non-nil doing it.
+       */
+      "org-shiftright-hook": Value;
+      /**
+       * Functions S-<up> in Org runs when nothing else it does applies, before selecting or its error.
+       */
+      "org-shiftup-final-hook": Value;
+      /**
+       * Functions S-<up> in Org runs first, the first to give non-nil doing it.
+       */
+      "org-shiftup-hook": Value;
+      /**
        * Run after Org-Src mode is turned on or off.
        */
       "org-src-mode-hook": Value;
@@ -20147,6 +20201,14 @@ declare global {
      * the minibuffer for its arguments, which it gets once they are read.
      */
     function callInteractively(name: CommandName | DefinedCommand): void;
+    /**
+     * Start a region at point as Shift with a movement does, or keep one
+     * Shift started, as handle-shift-selection does when the keys were
+     * shift-translated; with false, end one Shift started. A command calls
+     * it before moving, as Org's commands for shifted keys do when they
+     * have nothing else to do.
+     */
+    function handleShiftSelection(shifted?: boolean): void;
     /**
      * Whether an agent is acting rather than the user, so that effects
      * outside buffers, as running a program, wait for the user's approval.
