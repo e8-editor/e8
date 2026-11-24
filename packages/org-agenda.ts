@@ -92,6 +92,21 @@ e8.defineVariable({
   value: true,
 });
 e8.defineVariable({
+  name: "org-agenda-log-mode-items",
+  doc: "What log mode shows: closed for entries closed, clock for clocked time, state for changes of TODO state logged.",
+  value: [e8.intern("closed"), e8.intern("clock")],
+});
+e8.defineVariable({
+  name: "org-agenda-log-mode-add-notes",
+  doc: "Whether log mode adds the first line of a state change's or a clock's note to its line.",
+  value: true,
+});
+e8.defineVariable({
+  name: "org-agenda-start-with-log-mode",
+  doc: "Whether a new agenda starts in log mode: t for org-agenda-log-mode-items, only for nothing else, or a list of kinds.",
+  value: null,
+});
+e8.defineVariable({
   name: "org-agenda-start-with-follow-mode",
   doc: "Whether a new agenda starts in follow mode, showing each line's entry in another window as point moves.",
   value: null,
@@ -392,9 +407,12 @@ function agendaLine(
   time?: AgendaItem["time"],
   prefix = "",
   dotime?: string,
+  extra?: string,
 ): string {
   let text = prefix + e8.lineText(h.line).replace(/^\*+[ \t]+/, "");
   if (h.tagsAt !== undefined) text = text.slice(0, text.length - (e8.lineEnd(h.line) - h.tagsAt) - 0).replace(/[ \t]+$/, "");
+  // A log item's note, as org-agenda-get-progress puts it after the heading, before its tags.
+  if (extra !== undefined) text = `${text} - ${extra}`;
   if (time !== undefined && dotime !== undefined) text = withoutPrefixTime(text, dotime);
   // Every active timestamp, as org-ts-regexp is removed until none is left.
   if (removeTimestamp) text = text.replace(/<\d{4}-\d{2}-\d{2}[^>\n]*>/g, "");
@@ -521,6 +539,63 @@ interface Scanned {
   habit?: Habit;
   /** Its category, as org-get-category gives it at the heading. */
   cat: string;
+  /** What the entry logs, for log mode: what kind, on which day, its timestamp and the rest, as org-agenda-get-progress reads them. */
+  logs: LogLine[];
+}
+
+/** A line log mode shows: CLOSED:, CLOCK: or a "- State" note, with the inactive timestamp it is dated by. */
+interface LogLine {
+  kind: "closed" | "clock" | "state";
+  day: number;
+  /** The timestamp, a clock's with its end time as 08:00-09:00, as Org's timestr. */
+  stamp: string;
+  /** A clock's duration, or - while it runs; a state change's new state. */
+  clocked?: string;
+  state?: string;
+  /** The first line of its note. */
+  note?: string;
+  pos: number;
+}
+
+/**
+ * The log lines of a line of text, and the line after for their notes, as
+ * org-agenda-get-progress finds them: CLOSED: and CLOCK: after a word's
+ * start, and "- State" with a TODO keyword, each dated by the inactive
+ * timestamp after it.
+ */
+function logLinesOf(line: number, keywords: string[]): LogLine[] {
+  const text = e8.lineText(line);
+  if (!/CLOSED:|CLOCK:|State/.test(text)) return [];
+  const out: LogLine[] = [];
+  const kw = keywords.map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
+  const re = new RegExp(`(?:(?<![\\p{L}\\p{N}_])(CLOSED:|CLOCK:)|- +State "(${kw === "" ? "(?!)" : kw})".*?) *\\[(\\d{4})-(\\d{2})-(\\d{2})`, "gu");
+  const next = line + 1 < e8.lineCount() ? e8.lineText(line + 1) : "";
+  for (const m of allMatches(re, text)) {
+    const kind = m[1] === "CLOSED:" ? "closed" : m[1] === "CLOCK:" ? "clock" : "state";
+    const day = dayNumber({ year: Number(m[3]), month: Number(m[4]), day: Number(m[5]) });
+    // The timestamp, up to its bracket, and what follows it.
+    const from = (m.index ?? 0) + m[0].length - 11;
+    const ts = /^\[\d{4}-\d{2}-\d{2}[^\]\n>]*?\]/.exec(text.slice(from));
+    let stamp = ts ? ts[0] : text.slice(from);
+    let clocked: string | undefined;
+    if (kind === "clock") {
+      const rest = text.slice(from + stamp.length);
+      const r = /(\d{1,2}:\d{2})\].*?(\d{1,2}:\d{2})/.exec(rest);
+      if (r) {
+        stamp = `${stamp.slice(0, -1)}-${r[1]}]`;
+        clocked = r[2];
+      } else clocked = "-";
+    }
+    let note: string | undefined;
+    if (truthy(e8.variable("org-agenda-log-mode-add-notes") ?? null)) {
+      const after = text.slice((m.index ?? 0) + m[0].length);
+      // A line ending with a backslash, as a note's \\ does, then the note.
+      if (kind === "state" && /\\$/.test(after)) note = /^[ \t]*([^-\n \t].*?)[ \t]*$/.exec(next)?.[1];
+      if (kind === "clock") note = /^[ \t]*-[ \t]+([^-\n \t].*?)[ \t]*$/.exec(next)?.[1];
+    }
+    out.push({ kind, day, stamp, pos: at(line, text, m.index ?? 0), ...(clocked !== undefined ? { clocked } : {}), ...(kind === "state" ? { state: m[2] } : {}), ...(note !== undefined ? { note } : {}) });
+  }
+  return out;
 }
 
 /** Runs `f` with the current buffer widened, as Org's agenda reads and edits files whole, however they are narrowed. */
@@ -554,7 +629,9 @@ function scanBuffer(): { cat: string; entries: Scanned[] } {
   // Inactive timestamps too, as org-agenda-include-inactive-timestamps asks.
   const inactive = truthy(e8.variable("org-agenda-include-inactive-timestamps") ?? null);
   const stamp = inactive ? /[<[]\d{4}-\d{2}-\d{2}[^>\]\n]*[>\]]/g : /<\d{4}-\d{2}-\d{2}[^>\n]*>/g;
+  const keywords = allKeywords();
   const entries = all.map((h, i): Scanned => {
+    const logs: LogLine[] = [];
     const stamps: Scanned["stamps"] = [];
     const ranges: Scanned["ranges"] = [];
     const end = entryEnd(all, i);
@@ -564,6 +641,7 @@ function scanBuffer(): { cat: string; entries: Scanned[] } {
     // says, so it brings no item; a range there still does.
     let rawBlock: string | undefined;
     for (let l = h.line; l < e8.lineCount() && e8.lineStart(l) < end; l++) {
+      if (showLog !== null) logs.push(...logLinesOf(l, keywords));
       if (l === h.line + 1 && PLANNING.test(e8.lineText(l))) continue;
       const text = e8.lineText(l);
       // Comment lines and the inside of source blocks left out, as org-agenda-skip leaves them.
@@ -606,7 +684,7 @@ function scanBuffer(): { cat: string; entries: Scanned[] } {
     const plan = planningOf(h);
     // Only a scheduled entry can be a habit, so only those have their properties read.
     const habit = plan.scheduled !== undefined ? parseHabit(h) : undefined;
-    return { h, done: isDone(h.todo), plan, priority: priorityValue(h), stamps, ranges, cat: cats[i], ...(habit ? { habit } : {}) };
+    return { h, done: isDone(h.todo), plan, priority: priorityValue(h), stamps, ranges, cat: cats[i], logs, ...(habit ? { habit } : {}) };
   });
   return { cat: category(), entries: entries.filter((_, i) => !skipped[i]) };
 }
@@ -623,7 +701,19 @@ function dayItems(scan: { cat: string; entries: Scanned[] }, day: number, today:
   const scheduled: AgendaItem[] = [];
   const stamps: AgendaItem[] = [];
   const blocks: AgendaItem[] = [];
-  for (const { h, done, plan, priority, stamps: found, ranges, habit, cat } of scan.entries) {
+  const logged: AgendaItem[] = [];
+  const items = logItems();
+  for (const { h, done, plan, priority, stamps: found, ranges, habit, cat, logs } of scan.entries) {
+    // What the entry logged that day, as org-agenda-get-progress gives it.
+    for (const log of logs) {
+      if (log.day !== day || !items.includes(log.kind)) continue;
+      const leader = log.kind === "closed" ? "Closed:    " : log.kind === "state" ? `State:     (${log.state})` : `Clocked:   (${log.clocked})`;
+      const time = timeOf(log.stamp);
+      const item = { cat, leader, buffer, pos: log.pos, heading: h.start, ...(time ? { time, dotime: log.stamp } : {}) };
+      logged.push({ ...item, text: agendaLine(h, cat, leader, false, time, "", log.stamp, log.note), urgency: 100000 });
+    }
+    // Only those, with C-u C-u l.
+    if (showLog === "only") continue;
     // Each day of a range, numbered, with the time it starts on its first
     // day and ends on its last, as org-agenda-get-blocks has them.
     for (const r of ranges) {
@@ -691,7 +781,28 @@ function dayItems(scan: { cat: string; entries: Scanned[] }, day: number, today:
       stamps.push({ ...item, text: agendaLine(h, cat, leader, true, time, "", dotime), urgency: priority });
     }
   }
-  return [...deadlines, ...scheduled, ...blocks, ...stamps];
+  return [...logged, ...deadlines, ...scheduled, ...blocks, ...stamps];
+}
+
+/**
+ * Whether the agenda shows what was logged, as org-agenda-show-log: null
+ * for not, true for org-agenda-log-mode-items, "only" for nothing else,
+ * or the kinds, as C-u l shows them all.
+ */
+let showLog: null | true | "only" | string[] = null;
+
+/** The kinds of lines log mode shows, as org-agenda-get-progress's items. */
+function logItems(): string[] {
+  if (Array.isArray(showLog)) return showLog;
+  const v = e8.variable("org-agenda-log-mode-items");
+  return Array.isArray(v) ? v.map((x) => (typeof x === "symbol" ? e8.symbolName(x) : String(x))) : [];
+}
+
+/** A new agenda's log mode, as org-agenda-start-with-log-mode says. */
+function startLogMode(): void {
+  const v = e8.variable("org-agenda-start-with-log-mode") ?? null;
+  const name = typeof v === "symbol" ? e8.symbolName(v) : v;
+  showLog = Array.isArray(v) ? v.map((x) => (typeof x === "symbol" ? e8.symbolName(x) : String(x))) : name === "only" ? "only" : truthy(v) ? true : null;
 }
 
 /**
@@ -869,10 +980,11 @@ function setModeName(): void {
   const grid = truthy(e8.variable("org-agenda-use-time-grid") ?? null) ? " Grid" : "";
   const habit = truthy(e8.variable("org-habit-show-habits") ?? null) ? " Habit" : "";
   const archives = archivesMode === true ? " Archives" : archivesMode === "trees" ? ` :${tag}:` : "";
+  const log = Array.isArray(showLog) ? " LogAll" : showLog !== null ? " Log" : "";
   e8.makeLocalVariable("mode-name");
   const ddl = truthy(e8.variable("org-agenda-include-deadlines") ?? null) ? " Ddl" : "";
   const follow = followMode ? " Follow" : "";
-  e8.setVariable("mode-name", `Org-Agenda ${span}${follow}${ddl}${grid}${habit}${archives}`);
+  e8.setVariable("mode-name", `Org-Agenda ${span}${follow}${ddl}${grid}${habit}${log}${archives}`);
 }
 
 /**
@@ -1443,6 +1555,7 @@ function redoView(): void {
 /** A new agenda's archives mode, org-agenda-start-with-archives-mode, as org-agenda-mode sets it for each new agenda but not when it is made again. */
 function freshAgenda(): void {
   followMode = truthy(e8.variable("org-agenda-start-with-follow-mode") ?? null);
+  startLogMode();
   const start = e8.variable("org-agenda-start-with-archives-mode") ?? null;
   archivesMode = start === true ? true : truthy(start) ? "trees" : null;
 }
@@ -1815,6 +1928,23 @@ e8.defineCommand({
   run: (fullEntry) => agendaShow(fullEntry !== null && fullEntry !== undefined),
 });
 
+const logModeCommand = e8.defineCommand({
+  name: "org-agenda-log-mode",
+  doc:
+    "Toggle log mode: the agenda shows what was closed and clocked each day, as org-agenda-log-mode-items says. " +
+    "With C-u, every kind, state changes too; with C-u C-u, only what was logged.",
+  params: [{ name: "special", kind: "prefix" }],
+  run: (special) => {
+    checkAgendaType();
+    if (Array.isArray(special) && special[0] === 16) showLog = "only";
+    else if (special !== null && special !== undefined) showLog = ["closed", "clock", "state"];
+    else showLog = showLog === null ? true : null;
+    setModeName();
+    redoAgenda();
+    e8.message(`Log mode is ${showLog !== null ? "on" : "off"}`);
+  },
+});
+
 const followModeCommand = e8.defineCommand({
   name: "org-agenda-follow-mode",
   doc: "Toggle follow mode: moving to a line with n or p shows its entry in another window. Turning it off puts the windows back.",
@@ -2152,6 +2282,7 @@ e8.defineMajorMode({
     v: "org-agenda-view-mode-dispatch",
     G: "org-agenda-toggle-time-grid",
     F: "org-agenda-follow-mode",
+    l: "org-agenda-log-mode",
     "!": "org-agenda-toggle-deadlines",
     "#": "org-agenda-dim-blocked-tasks",
     ...Object.fromEntries(queryCommands),
@@ -2311,7 +2442,7 @@ e8.defineCommand({
 });
 
 /** The view modes org-agenda-view-mode-dispatch offers that E8 does not have yet. */
-const VIEW_MODES_NOT_YET = "lLcRrEeD";
+const VIEW_MODES_NOT_YET = "cRrEeD";
 
 /** Rebuilds the agenda with its inactive timestamps too, this once, as [ and v [ do. */
 function includeInactiveOnce(): void {
@@ -2370,6 +2501,8 @@ e8.defineCommand({
     else if (char === "A") toggleArchivesMode(true);
     else if (char === "G") e8.callInteractively(toggleTimeGrid);
     else if (char === "f" || char === "F") e8.callInteractively("org-agenda-follow-mode");
+    else if (char === "l") e8.callInteractively(logModeCommand);
+    else if (char === "L") e8.callWithPrefix([4], logModeCommand);
     else if (char === "!") e8.callInteractively(toggleDeadlines);
     else if (char === "[") includeInactiveOnce();
     else if (char === "q") e8.message("Abort");
