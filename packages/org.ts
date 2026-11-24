@@ -4857,9 +4857,10 @@ function levelHere(): number {
  * point, as org-paste-subtree does: before the heading point is at the
  * start of, or else before the next visible heading. With forYank, as
  * org-yank calls it, point goes to the pasted text's end and nothing is
- * folded, which org-yank decides.
+ * folded, which org-yank decides. It says what it did for a yank or when
+ * INTERACTIVE, the command's own call.
  */
-export function pasteSubtree(level: e8.PrefixArg, forYank = false): void {
+export function pasteSubtree(level: e8.PrefixArg, forYank = false, interactive = false): void {
   const txt = e8.currentKill();
   if (!killIsSubtree(txt)) throw new Error("The kill is not a (set of) tree(s).  Use \u2018C-y\u2019 to yank anyway");
   const visible = !e8.invisibleAt(e8.point());
@@ -4927,7 +4928,8 @@ export function pasteSubtree(level: e8.PrefixArg, forYank = false): void {
   const newEnd = endMark.pos;
   dropMarker(endMark);
   e8.gotoChar(beg);
-  e8.message(`Clipboard pasted as level ${fresh} subtree`);
+  // Said only for a yank or the command itself, as Org's checks called-interactively-p, so not when archiving or refiling.
+  if (forYank || interactive) e8.message(`Clipboard pasted as level ${fresh} subtree`);
   if (forYank) {
     e8.gotoChar(newEnd);
     return;
@@ -5058,7 +5060,8 @@ function visible_(h: Heading): boolean {
 e8.defineCommand({
   name: "org-paste-subtree",
   doc: "Paste the last kill as a subtree, its levels changed to fit the headings around point.",
-  run: () => pasteSubtree(e8.prefixArg()),
+  // Said only when called interactively, not from org-paste-special, as Org's checks called-interactively-p.
+  run: () => pasteSubtree(e8.prefixArg(), false, e8.calledInteractively()),
 });
 
 e8.defineCommand({
@@ -7814,8 +7817,20 @@ function planEach(keyword: string, input: string): void {
   if (!forEachHeadingInRegion(once)) plan(keyword, input);
 }
 
-/** The date org--deadline-or-schedule reads for another heading: the date to warn or delay from with C-u C-u. */
-function readPlanDate(keyword: string): string {
+/**
+ * The date org--deadline-or-schedule reads for a heading: the date to warn
+ * or delay from with C-u C-u, refused first if the heading at point has no
+ * such date, as it checks before asking, unless not CHECK, as when the
+ * region's first heading is not the one at point.
+ */
+function readPlanDate(keyword: string, check = true): string {
+  if (check && doublePrefix()) {
+    const all = headings();
+    const i = headingIndex(all, lineAt());
+    const lines = i === undefined ? [] : [all[i].line, all[i].line + 1].filter((l) => l < e8.lineCount());
+    if (i !== undefined && !lines.some((l) => new RegExp(`\\b${keyword}: *<`).test(e8.lineText(l))))
+      e8.userError(keyword === "DEADLINE" ? "No deadline information to update" : "No scheduled information to update");
+  }
   const prompt = doublePrefix() ? (keyword === "DEADLINE" ? "Warn starting from: " : "Delay until: ") : "Date: ";
   return readDateAnswer(prompt);
 }
@@ -7833,7 +7848,7 @@ function planLoopsOverNothing(): boolean {
 
 /** The date org-schedule or org-deadline reads for KEYWORD as its argument: none with C-u or a region with no heading, as their interactive specs read it. */
 export function planDateArgument(keyword: "SCHEDULED" | "DEADLINE"): string {
-  return (Array.isArray(e8.prefixArg()) && !doublePrefix()) || planLoopsOverNothing() ? "" : readPlanDate(keyword);
+  return (Array.isArray(e8.prefixArg()) && !doublePrefix()) || planLoopsOverNothing() ? "" : readPlanDate(keyword, !e8.regionActive());
 }
 
 const schedule = e8.defineCommand({
@@ -7843,7 +7858,7 @@ const schedule = e8.defineCommand({
     {
       name: "date",
       // C-u C-u asks for the date to warn or delay from, C-u for none, as org--deadline-or-schedule.
-      value: () => ((Array.isArray(e8.prefixArg()) && !doublePrefix()) || planLoopsOverNothing() ? "" : readPlanDate("SCHEDULED")),
+      value: () => ((Array.isArray(e8.prefixArg()) && !doublePrefix()) || planLoopsOverNothing() ? "" : readPlanDate("SCHEDULED", !e8.regionActive())),
     },
   ],
   run: (input) => planEach("SCHEDULED", input),
@@ -7856,7 +7871,7 @@ const deadline = e8.defineCommand({
     {
       name: "date",
       // C-u C-u asks for the date to warn or delay from, C-u for none, as org--deadline-or-schedule.
-      value: () => ((Array.isArray(e8.prefixArg()) && !doublePrefix()) || planLoopsOverNothing() ? "" : readPlanDate("DEADLINE")),
+      value: () => ((Array.isArray(e8.prefixArg()) && !doublePrefix()) || planLoopsOverNothing() ? "" : readPlanDate("DEADLINE", !e8.regionActive())),
     },
   ],
   run: (input) => planEach("DEADLINE", input),

@@ -181,3 +181,22 @@ fn n_passes_over_hidden_lines() {
 }
 
 
+
+/// With org-agenda-loop-over-headlines-in-active-region, t acts on each
+/// line of a region running past the last entry and stops there, where
+/// Org's loop would go round for ever at the last entry.
+#[test]
+fn a_region_past_the_last_entry_ends_the_loop() {
+    let (mut ed, _s, _dir) = agenda_file(TASKS);
+    ed.set_default("org-agenda-loop-over-headlines-in-active-region", Value::Bool(true));
+    ed.call("org-agenda-list", vec![]).unwrap();
+    ed.press("N C-SPC M-> t").unwrap();
+    assert_eq!(ed.take_error().map(|e| e.to_string()), None);
+    let file = ed.buffer_named_mut("tasks.org").unwrap();
+    let text = file.slice(0..file.len());
+    // Pay twice, its warning and its deadline, so to no state; the others once.
+    assert!(text.contains("* DONE Report"), "{text}");
+    assert!(text.contains("* Pay\n"), "{text}");
+    assert!(text.contains("* DONE Call Bob"), "{text}");
+    assert!(text.contains("* TODO Meeting"), "{text}");
+}
