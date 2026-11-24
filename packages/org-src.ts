@@ -419,6 +419,7 @@ e8.defun("org-src--comment-or-uncomment-region", (offset: number) => {
  * or the region if it is active there.
  */
 e8.defun("org-src--fill-paragraph", (justify?: e8.Value) => {
+  if (!editableHere()) e8.signal("error", "Not in a sub-editing buffer");
   doInEditBuffer(() => e8.callWithPrefix(justify === null || justify === undefined || justify === false ? null : 4, "fill-paragraph"));
   return true;
 });

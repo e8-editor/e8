@@ -2686,7 +2686,8 @@ e8.defineCommand({
 function fillAsParagraph(beg: number, end: number, justify: string | undefined): void {
   const prefix = e8.saveExcursion(() => {
     e8.gotoChar(beg);
-    if (e8.lineEnd(lineAt()) < end) e8.gotoChar(e8.lineStart(lineAt() + 1));
+    // The second line's, if it starts before END, as fill-context-prefix takes TO as exclusive.
+    if (lineAt() + 1 < e8.lineCount() && e8.lineStart(lineAt() + 1) < end) e8.gotoChar(e8.lineStart(lineAt() + 1));
     return adaptiveFillPrefix();
   });
   // An empty prefix is kept as it is rather than worked out again, as for Auto Fill.
@@ -2825,7 +2826,8 @@ function orgFillParagraph(justify: string | undefined, region: boolean): void {
         const holder = elementAt(e8.lineStart(closing));
         if (
           holder !== undefined &&
-          /^[ \t]*(?::END:|#\+end_\S+)[ \t]*$/i.test(e8.lineText(closing)) &&
+          // A dynamic block's #+END: too, as Org goes into one.
+          /^[ \t]*(?::END:|#\+end(?:_\S+|:))[ \t]*$/i.test(e8.lineText(closing)) &&
           holder.begin < e8.lineStart(closing) &&
           lineAt(holder.begin) + 1 < closing
         ) {
