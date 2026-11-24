@@ -3792,6 +3792,8 @@ function electricIndentNewline(): void {
 e8.defineCommand({
   name: "org-end-of-line",
   doc: "Move to the end of the line, staying on a folded heading's line rather than going past its hidden text.",
+  // With Shift it selects, as Org's interactive ^p.
+  shiftSelect: true,
   run: () => {
     const n = e8.prefixNumericValue();
     if (n !== 1) e8.callWithPrefix(n - 1, "next-line");
@@ -9499,6 +9501,14 @@ e8.defineCommand({
  * NAME_ALL and the like give, or a checkbox's; the first after the last.
  */
 function propertyNextAllowedValue(previous = false): void {
+  // Widened, as Org finds the heading and the allowed values outside a narrowing.
+  e8.saveRestriction(() => {
+    e8.widen();
+    propertyNextAllowedValueWide(previous);
+  });
+}
+
+function propertyNextAllowedValueWide(previous: boolean): void {
   const key = propertyAtPoint();
   if (key === undefined) e8.userError("Not at a property");
   const line = lineAt();

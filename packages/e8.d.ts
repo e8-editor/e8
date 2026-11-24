@@ -16593,6 +16593,10 @@ declare global {
        */
       "shell-prompt-pattern": Value;
       /**
+       * Whether a movement with Shift starts a region, or extends one Shift started, as Emacs's shift-select-mode.
+       */
+      "shift-select-mode": Value;
+      /**
        * How many seconds idle before Show Paren mode highlights. Changing it takes effect when the mode is turned on again.
        *
        * Defined in packages/paren.ts.

@@ -932,6 +932,8 @@ impl Editor {
     /// ends a region Shift started.
     fn shift_select(&mut self, shifted: bool) {
         let quiet = self.executing_kbd_macro() || self.minibuffer_depth() > 0;
+        // Shift starts nothing with shift-select-mode off, as handle-shift-selection checks it first.
+        let shifted = shifted && self.variable("shift-select-mode").is_none_or(|v| v.is_true());
         let b = self.buffer_mut();
         if shifted {
             if !b.is_shift_selected() {

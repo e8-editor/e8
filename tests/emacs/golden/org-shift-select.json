@@ -1697,6 +1697,2225 @@
       "modified": false,
       "error": "This command works only in special context like headlines or timestamps",
       "message": null
+    },
+    {
+      "name": "goal-down-twice",
+      "input": {
+        "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+        "point": 12,
+        "keys": "S-<down> S-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "visible": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "point": 20,
+      "mark": 12,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "goal-down-thrice-up",
+      "input": {
+        "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+        "point": 12,
+        "keys": "S-<down> S-<down> S-<down> S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "visible": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "point": 20,
+      "mark": 12,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "goal-down-always",
+      "input": {
+        "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+        "point": 12,
+        "keys": "S-<down> S-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": "'always"
+        }
+      },
+      "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "visible": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "point": 20,
+      "mark": 12,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "right-then-down",
+      "input": {
+        "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+        "point": 4,
+        "keys": "S-<right> S-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "visible": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "point": 16,
+      "mark": 4,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "down-then-right",
+      "input": {
+        "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+        "point": 4,
+        "keys": "S-<down> S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "visible": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "point": 16,
+      "mark": 4,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "cspc-right",
+      "input": {
+        "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+        "point": 4,
+        "keys": "C-SPC C-f C-f S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "visible": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "point": 7,
+      "mark": 6,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set [2 times]"
+    },
+    {
+      "name": "cspc-down",
+      "input": {
+        "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+        "point": 4,
+        "keys": "C-SPC C-f C-f S-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "visible": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "point": 17,
+      "mark": 6,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set [2 times]"
+    },
+    {
+      "name": "cspc-empty-heading",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 0,
+        "keys": "C-SPC S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* DONE Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* DONE Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "cspc-right-fund",
+      "input": {
+        "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+        "point": 4,
+        "keys": "C-SPC C-f C-f S-<right>",
+        "modes": [
+          "fundamental-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "visible": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "point": 7,
+      "mark": 6,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set [2 times]"
+    },
+    {
+      "name": "end-cg",
+      "input": {
+        "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+        "point": 4,
+        "keys": "S-<right> S-<right> C-g",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "visible": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "point": 6,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Quit",
+      "message": "Mark set"
+    },
+    {
+      "name": "end-ce",
+      "input": {
+        "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+        "point": 4,
+        "keys": "S-<down> C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "visible": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "point": 17,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "end-cn",
+      "input": {
+        "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+        "point": 4,
+        "keys": "S-<right> C-n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "visible": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "point": 16,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "end-type",
+      "input": {
+        "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+        "point": 4,
+        "keys": "S-<right> x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\naxbcdefghij\nab\nabcdefghij\nxyz\n",
+      "visible": "* H\naxbcdefghij\nab\nabcdefghij\nxyz\n",
+      "point": 6,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "end-unshifted-right",
+      "input": {
+        "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+        "point": 4,
+        "keys": "S-<right> <right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "visible": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "point": 6,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "item-on-bullet-t",
+      "input": {
+        "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+        "point": 4,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\n+ [ ] box\n+ num\n+ two\n  - sub\n  - sub2\nend\n",
+      "visible": "* H\n+ [ ] box\n+ num\n+ two\n  - sub\n  - sub2\nend\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "item-after-bullet-t",
+      "input": {
+        "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+        "point": 5,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+      "visible": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+      "point": 6,
+      "mark": 5,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "item-checkbox-t",
+      "input": {
+        "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+        "point": 6,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+      "visible": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+      "point": 7,
+      "mark": 6,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "item-checkbox-nil",
+      "input": {
+        "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+        "point": 6,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false
+        }
+      },
+      "text": "* H\n+ [ ] box\n+ num\n+ two\n  - sub\n  - sub2\nend\n",
+      "visible": "* H\n+ [ ] box\n+ num\n+ two\n  - sub\n  - sub2\nend\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "item-num-dot-t",
+      "input": {
+        "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+        "point": 15,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\n+ [ ] box\n+ num\n+ two\n  - sub\n  - sub2\nend\n",
+      "visible": "* H\n+ [ ] box\n+ num\n+ two\n  - sub\n  - sub2\nend\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "item-num-left-t",
+      "input": {
+        "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+        "point": 14,
+        "keys": "S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\n1) [ ] box\n2) num\n3) two\n   - sub\n   - sub2\nend\n",
+      "visible": "* H\n1) [ ] box\n2) num\n3) two\n   - sub\n   - sub2\nend\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "item-indent-col0-t",
+      "input": {
+        "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+        "point": 28,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+      "visible": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+      "point": 29,
+      "mark": 28,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "item-sub-bullet-t",
+      "input": {
+        "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+        "point": 30,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\n- [ ] box\n- num\n- two\n  + sub\n  + sub2\nend\n",
+      "visible": "* H\n- [ ] box\n- num\n- two\n  + sub\n  + sub2\nend\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-item-bullet-always",
+      "input": {
+        "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+        "point": 14,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": "'always"
+        }
+      },
+      "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+      "visible": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+      "point": 15,
+      "mark": 14,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "item-down-t",
+      "input": {
+        "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+        "point": 14,
+        "keys": "S-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+      "visible": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+      "point": 21,
+      "mark": 14,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "item-down-nil",
+      "input": {
+        "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+        "point": 14,
+        "keys": "S-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false
+        }
+      },
+      "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+      "visible": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "prop-plus",
+      "input": {
+        "text": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+        "point": 102,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+      "visible": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+      "point": 102,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Allowed values for this property have not been defined",
+      "message": null
+    },
+    {
+      "name": "prop-empty",
+      "input": {
+        "text": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+        "point": 118,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:    red\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+      "visible": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:    red\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+      "point": 118,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "prop-empty-left",
+      "input": {
+        "text": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+        "point": 118,
+        "keys": "S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:    blue\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+      "visible": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:    blue\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+      "point": 118,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "prop-inherited-file",
+      "input": {
+        "text": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+        "point": 153,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size:     l\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+      "visible": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size:     l\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+      "point": 153,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "prop-inherited-parent",
+      "input": {
+        "text": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+        "point": 162,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape:    square\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+      "visible": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape:    square\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+      "point": 162,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "prop-not-allowed",
+      "input": {
+        "text": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+        "point": 176,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other:    a\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+      "visible": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other:    a\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+      "point": 176,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "prop-not-allowed-left",
+      "input": {
+        "text": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+        "point": 176,
+        "keys": "S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other:    b\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+      "visible": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other:    b\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+      "point": 176,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "prop-indented",
+      "input": {
+        "text": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+        "point": 207,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n:Indented: b\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+      "visible": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n:Indented: b\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+      "point": 207,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "prop-wrap",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 25,
+        "keys": "S-<right> S-<right> S-<right> S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color:    green\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color:    green\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "prop-left-twice",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 25,
+        "keys": "S-<left> S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color:    green\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color:    green\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "prop-mid-value",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 33,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color:    green\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color:    green\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "prop-body-line-t",
+      "input": {
+        "text": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+        "point": 247,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+      "visible": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+      "point": 248,
+      "mark": 247,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "prop-body-line-nil",
+      "input": {
+        "text": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+        "point": 247,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false
+        }
+      },
+      "text": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+      "visible": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+      "point": 247,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "To use shift-selection with Org mode, customize ‘org-support-shift-select’",
+      "message": null
+    },
+    {
+      "name": "prop-drawer-open-line",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 12,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 13,
+      "mark": 12,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "prop-drawer-end-line",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 97,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 98,
+      "mark": 97,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "prop-before-heading",
+      "input": {
+        "text": ":PROPERTIES:\n:Color: red\n:Color_ALL: red green\n:END:\n* H\n",
+        "point": 13,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": ":PROPERTIES:\n:Color: red\n:Color_ALL: red green\n:END:\n* H\n",
+      "visible": ":PROPERTIES:\n:Color: red\n:Color_ALL: red green\n:END:\n* H\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Before first headline at position 14 in buffer *e8-oracle*",
+      "message": null
+    },
+    {
+      "name": "prop-effort-clock",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Effort: 0:10\n:Effort_ALL: 0:10 0:20 0:30\n:END:\n",
+        "point": 25,
+        "keys": "C-c C-x C-i S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-24",
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Effort:   0:20\n:Effort_ALL: 0:10 0:20 0:30\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-24 Tue 12:00]\n:END:\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Effort:   0:20\n:Effort_ALL: 0:10 0:20 0:30\n:END:\n:LOGBOOK:\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Clock starts at [2026-11-24 Tue 12:00] - showing entire task time."
+    },
+    {
+      "name": "table-up-nil",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 149,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| c | b |\n| a | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| c | b |\n| a | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 139,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "clocktable-right-nil",
+      "input": {
+        "text": "* H\n#+BEGIN: clocktable :block today\n#+END:\n",
+        "point": 13,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-24",
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false
+        }
+      },
+      "text": "* H\n#+BEGIN: clocktable :block today+1\n#+CAPTION: Clock summary at [2026-11-24 Tue 12:00], for Wednesday, November 25, 2026.\n| Headline     | Time   |\n|--------------+--------|\n| *Total time* | *0:00* |\n#+END:\n",
+      "visible": "* H\n#+BEGIN: clocktable :block today+1\n#+CAPTION: Clock summary at [2026-11-24 Tue 12:00], for Wednesday, November 25, 2026.\n| Headline     | Time   |\n|--------------+--------|\n| *Total time* | *0:00* |\n#+END:\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Updating dynamic block ‘clocktable’ at line 2...done"
+    },
+    {
+      "name": "clocktable-up-nil",
+      "input": {
+        "text": "* H\n#+BEGIN: clocktable :block today\n#+END:\n",
+        "point": 13,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-24",
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false
+        }
+      },
+      "text": "* H\n#+BEGIN: clocktable :block today+1\n#+CAPTION: Clock summary at [2026-11-24 Tue 12:00], for Wednesday, November 25, 2026.\n| Headline     | Time   |\n|--------------+--------|\n| *Total time* | *0:00* |\n#+END:\n",
+      "visible": "* H\n#+BEGIN: clocktable :block today+1\n#+CAPTION: Clock summary at [2026-11-24 Tue 12:00], for Wednesday, November 25, 2026.\n| Headline     | Time   |\n|--------------+--------|\n| *Total time* | *0:00* |\n#+END:\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Updating dynamic block ‘clocktable’ at line 2...done"
+    },
+    {
+      "name": "table-up-t",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 149,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| c | b |\n| a | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| c | b |\n| a | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 139,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "clocktable-right-t",
+      "input": {
+        "text": "* H\n#+BEGIN: clocktable :block today\n#+END:\n",
+        "point": 13,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-24",
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\n#+BEGIN: clocktable :block today+1\n#+CAPTION: Clock summary at [2026-11-24 Tue 12:00], for Wednesday, November 25, 2026.\n| Headline     | Time   |\n|--------------+--------|\n| *Total time* | *0:00* |\n#+END:\n",
+      "visible": "* H\n#+BEGIN: clocktable :block today+1\n#+CAPTION: Clock summary at [2026-11-24 Tue 12:00], for Wednesday, November 25, 2026.\n| Headline     | Time   |\n|--------------+--------|\n| *Total time* | *0:00* |\n#+END:\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Updating dynamic block ‘clocktable’ at line 2...done"
+    },
+    {
+      "name": "clocktable-up-t",
+      "input": {
+        "text": "* H\n#+BEGIN: clocktable :block today\n#+END:\n",
+        "point": 13,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-24",
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\n#+BEGIN: clocktable :block today+1\n#+CAPTION: Clock summary at [2026-11-24 Tue 12:00], for Wednesday, November 25, 2026.\n| Headline     | Time   |\n|--------------+--------|\n| *Total time* | *0:00* |\n#+END:\n",
+      "visible": "* H\n#+BEGIN: clocktable :block today+1\n#+CAPTION: Clock summary at [2026-11-24 Tue 12:00], for Wednesday, November 25, 2026.\n| Headline     | Time   |\n|--------------+--------|\n| *Total time* | *0:00* |\n#+END:\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Updating dynamic block ‘clocktable’ at line 2...done"
+    },
+    {
+      "name": "table-up-always",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 149,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": "'always"
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 139,
+      "mark": 149,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "clocktable-right-always",
+      "input": {
+        "text": "* H\n#+BEGIN: clocktable :block today\n#+END:\n",
+        "point": 13,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-24",
+        "message": true,
+        "globals": {
+          "org-support-shift-select": "'always"
+        }
+      },
+      "text": "* H\n#+BEGIN: clocktable :block today+1\n#+CAPTION: Clock summary at [2026-11-24 Tue 12:00], for Wednesday, November 25, 2026.\n| Headline     | Time   |\n|--------------+--------|\n| *Total time* | *0:00* |\n#+END:\n",
+      "visible": "* H\n#+BEGIN: clocktable :block today+1\n#+CAPTION: Clock summary at [2026-11-24 Tue 12:00], for Wednesday, November 25, 2026.\n| Headline     | Time   |\n|--------------+--------|\n| *Total time* | *0:00* |\n#+END:\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Updating dynamic block ‘clocktable’ at line 2...done"
+    },
+    {
+      "name": "clocktable-up-always",
+      "input": {
+        "text": "* H\n#+BEGIN: clocktable :block today\n#+END:\n",
+        "point": 13,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-24",
+        "message": true,
+        "globals": {
+          "org-support-shift-select": "'always"
+        }
+      },
+      "text": "* H\n#+BEGIN: clocktable :block today+1\n#+CAPTION: Clock summary at [2026-11-24 Tue 12:00], for Wednesday, November 25, 2026.\n| Headline     | Time   |\n|--------------+--------|\n| *Total time* | *0:00* |\n#+END:\n",
+      "visible": "* H\n#+BEGIN: clocktable :block today+1\n#+CAPTION: Clock summary at [2026-11-24 Tue 12:00], for Wednesday, November 25, 2026.\n| Headline     | Time   |\n|--------------+--------|\n| *Total time* | *0:00* |\n#+END:\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Updating dynamic block ‘clocktable’ at line 2...done"
+    },
+    {
+      "name": "ts-region-up-t",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 161,
+        "keys": "C-SPC C-f S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 152,
+      "mark": 162,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set [2 times]"
+    },
+    {
+      "name": "ts-region-up-nil",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 161,
+        "keys": "C-SPC C-f S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2027-11-24 Wed> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2027-11-24 Wed> today.\n",
+      "point": 162,
+      "mark": 176,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "ts-select-into-t",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 157,
+        "keys": "S-<right> S-<right> S-<right> S-<right> S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 162,
+      "mark": 157,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "meta-shift-right-heading-t",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 0,
+        "keys": "M-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "** TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "** TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "control-shift-up-t",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 103,
+        "keys": "C-S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 103,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not at a clock log",
+      "message": null
+    },
+    {
+      "name": "control-shift-down-nil",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 103,
+        "keys": "C-S-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 103,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not at a clock log",
+      "message": null
+    },
+    {
+      "name": "control-shift-right-region-t",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 0,
+        "keys": "C-SPC C-f C-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 6,
+      "mark": 1,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set [2 times]"
+    },
+    {
+      "name": "control-shift-left-twice-t",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 103,
+        "keys": "C-S-<right> C-S-<right> C-S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 109,
+      "mark": 103,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "markset-fund",
+      "input": {
+        "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+        "point": 4,
+        "keys": "S-<right>",
+        "modes": [
+          "fundamental-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "visible": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "point": 5,
+      "mark": 4,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "markset-fund-prefix",
+      "input": {
+        "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+        "point": 4,
+        "keys": "C-u 2 S-<right>",
+        "modes": [
+          "fundamental-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "visible": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "point": 6,
+      "mark": 4,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "markset-fund-eob",
+      "input": {
+        "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+        "point": 33,
+        "keys": "S-<right>",
+        "modes": [
+          "fundamental-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "visible": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "point": 33,
+      "mark": 33,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": "End of buffer",
+      "message": "Mark set"
+    },
+    {
+      "name": "markset-kmacro-fund",
+      "input": {
+        "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+        "point": 4,
+        "keys": "C-x ( S-<right> C-f C-x ) C-x e",
+        "modes": [
+          "fundamental-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "visible": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "point": 8,
+      "mark": 6,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Keyboard macro defined"
+    },
+    {
+      "name": "markset-kmacro-org",
+      "input": {
+        "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+        "point": 4,
+        "keys": "C-x ( S-<right> C-f C-x ) C-x e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "visible": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "point": 8,
+      "mark": 6,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Keyboard macro defined"
+    },
+    {
+      "name": "markset-org-eob",
+      "input": {
+        "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+        "point": 33,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "visible": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "point": 33,
+      "mark": 33,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": "End of buffer",
+      "message": "Mark set"
+    },
+    {
+      "name": "markset-org-prefix-neg",
+      "input": {
+        "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+        "point": 6,
+        "keys": "M-- S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "visible": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "point": 5,
+      "mark": 6,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "mode-off-t",
+      "input": {
+        "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+        "point": 4,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true,
+          "shift-select-mode": false
+        }
+      },
+      "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "visible": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "mode-off-heading-always",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 0,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": "'always",
+          "shift-select-mode": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "mode-off-nil-error",
+      "input": {
+        "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+        "point": 4,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false,
+          "shift-select-mode": false
+        }
+      },
+      "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "visible": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "This command works only in special context like headlines or timestamps",
+      "message": null
+    },
+    {
+      "name": "region-onto-heading-t",
+      "input": {
+        "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+        "point": 4,
+        "keys": "S-<up> S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "visible": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "point": 1,
+      "mark": 4,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "prop-late-drawer-t",
+      "input": {
+        "text": "* H\nSome text\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green\n:END:\n* S\nSCHEDULED: <2026-11-24 Tue>\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green\n:END:\n",
+        "point": 27,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\nSome text\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green\n:END:\n* S\nSCHEDULED: <2026-11-24 Tue>\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green\n:END:\n",
+      "visible": "* H\nSome text\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green\n:END:\n* S\nSCHEDULED: <2026-11-24 Tue>\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green\n:END:\n",
+      "point": 28,
+      "mark": 27,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "prop-late-drawer-nil",
+      "input": {
+        "text": "* H\nSome text\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green\n:END:\n* S\nSCHEDULED: <2026-11-24 Tue>\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green\n:END:\n",
+        "point": 27,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false
+        }
+      },
+      "text": "* H\nSome text\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green\n:END:\n* S\nSCHEDULED: <2026-11-24 Tue>\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green\n:END:\n",
+      "visible": "* H\nSome text\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green\n:END:\n* S\nSCHEDULED: <2026-11-24 Tue>\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green\n:END:\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "To use shift-selection with Org mode, customize ‘org-support-shift-select’",
+      "message": null
+    },
+    {
+      "name": "prop-after-planning-nil",
+      "input": {
+        "text": "* H\nSome text\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green\n:END:\n* S\nSCHEDULED: <2026-11-24 Tue>\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green\n:END:\n",
+        "point": 112,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false
+        }
+      },
+      "text": "* H\nSome text\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green\n:END:\n* S\nSCHEDULED: <2026-11-24 Tue>\n:PROPERTIES:\n:Color:    green\n:Color_ALL: red green\n:END:\n",
+      "visible": "* H\nSome text\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green\n:END:\n* S\nSCHEDULED: <2026-11-24 Tue>\n:PROPERTIES:\n:Color:    green\n:Color_ALL: red green\n:END:\n",
+      "point": 112,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "prop-narrowed",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 25,
+        "keys": "C-SPC C-n C-x n n C-g M-< S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color:    green\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color:    green\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 25,
+      "mark": 42,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Quit",
+      "message": "Mark set [2 times]"
+    },
+    {
+      "name": "prop-narrowed-t",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 25,
+        "keys": "C-SPC C-n C-x n n C-g M-< S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color:    green\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color:    green\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 25,
+      "mark": 42,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Quit",
+      "message": "Mark set [2 times]"
+    },
+    {
+      "name": "prefix-cu-right-t",
+      "input": {
+        "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+        "point": 4,
+        "keys": "C-u S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "visible": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "point": 8,
+      "mark": 4,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "prefix-cu-down-t",
+      "input": {
+        "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+        "point": 4,
+        "keys": "C-u S-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "visible": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "point": 33,
+      "mark": 4,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "clocktable-m2-right",
+      "input": {
+        "text": "* H\n#+BEGIN: clocktable :block today\n#+END:\n",
+        "point": 13,
+        "keys": "M-2 S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-24",
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\n#+BEGIN: clocktable :block today+2\n#+CAPTION: Clock summary at [2026-11-24 Tue 12:00], for Thursday, November 26, 2026.\n| Headline     | Time   |\n|--------------+--------|\n| *Total time* | *0:00* |\n#+END:\n",
+      "visible": "* H\n#+BEGIN: clocktable :block today+2\n#+CAPTION: Clock summary at [2026-11-24 Tue 12:00], for Thursday, November 26, 2026.\n| Headline     | Time   |\n|--------------+--------|\n| *Total time* | *0:00* |\n#+END:\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Updating dynamic block ‘clocktable’ at line 2...done"
+    },
+    {
+      "name": "shift-ce-org",
+      "input": {
+        "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+        "point": 4,
+        "keys": "S-C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "visible": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "point": 14,
+      "mark": 4,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "shift-ce-org-after",
+      "input": {
+        "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+        "point": 4,
+        "keys": "S-<right> S-C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "visible": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "point": 14,
+      "mark": 4,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "cspc-then-right-heading-t",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 0,
+        "keys": "C-SPC C-e S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 10,
+      "mark": 11,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set [2 times]"
+    },
+    {
+      "name": "item-text-left-t",
+      "input": {
+        "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+        "point": 14,
+        "keys": "C-f C-f C-f S-<left> S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+      "visible": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+      "point": 15,
+      "mark": 17,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "prop-narrowed2",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 25,
+        "keys": "C-SPC C-n C-x n n M-< S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color:    green\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color:    green\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 25,
+      "mark": 25,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "end-ce-fund",
+      "input": {
+        "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+        "point": 4,
+        "keys": "S-<down> C-e",
+        "modes": [
+          "fundamental-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "visible": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "point": 17,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "end-ce-right",
+      "input": {
+        "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+        "point": 4,
+        "keys": "S-<right> C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true
+        }
+      },
+      "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "visible": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+      "point": 14,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
     }
   ]
 }

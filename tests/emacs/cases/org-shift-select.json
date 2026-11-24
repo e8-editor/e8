@@ -878,5 +878,1120 @@
    "org-edit-timestamp-down-means-later": false,
    "shift-select-mode": false
   }
+ },
+ {
+  "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "goal-down-twice",
+  "keys": "S-<down> S-<down>",
+  "point": 12,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "goal-down-thrice-up",
+  "keys": "S-<down> S-<down> S-<down> S-<up>",
+  "point": 12,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "goal-down-always",
+  "keys": "S-<down> S-<down>",
+  "point": 12,
+  "globals": {
+   "org-support-shift-select": "'always"
+  }
+ },
+ {
+  "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "right-then-down",
+  "keys": "S-<right> S-<down>",
+  "point": 4,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "down-then-right",
+  "keys": "S-<down> S-<right>",
+  "point": 4,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "cspc-right",
+  "keys": "C-SPC C-f C-f S-<right>",
+  "point": 4,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "cspc-down",
+  "keys": "C-SPC C-f C-f S-<down>",
+  "point": 4,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "name": "cspc-empty-heading",
+  "keys": "C-SPC S-<right>",
+  "point": 0,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+  "modes": [
+   "fundamental-mode"
+  ],
+  "message": true,
+  "name": "cspc-right-fund",
+  "keys": "C-SPC C-f C-f S-<right>",
+  "point": 4,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "end-cg",
+  "keys": "S-<right> S-<right> C-g",
+  "point": 4,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "end-ce",
+  "keys": "S-<down> C-e",
+  "point": 4,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "end-cn",
+  "keys": "S-<right> C-n",
+  "point": 4,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "end-type",
+  "keys": "S-<right> x",
+  "point": 4,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "end-unshifted-right",
+  "keys": "S-<right> <right>",
+  "point": 4,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "item-on-bullet-t",
+  "keys": "S-<right>",
+  "point": 4,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "item-after-bullet-t",
+  "keys": "S-<right>",
+  "point": 5,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "item-checkbox-t",
+  "keys": "S-<right>",
+  "point": 6,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "item-checkbox-nil",
+  "keys": "S-<right>",
+  "point": 6,
+  "globals": {
+   "org-support-shift-select": false
+  }
+ },
+ {
+  "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "item-num-dot-t",
+  "keys": "S-<right>",
+  "point": 15,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "item-num-left-t",
+  "keys": "S-<left>",
+  "point": 14,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "item-indent-col0-t",
+  "keys": "S-<right>",
+  "point": 28,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "item-sub-bullet-t",
+  "keys": "S-<right>",
+  "point": 30,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "review-item-bullet-always",
+  "keys": "S-<right>",
+  "point": 14,
+  "globals": {
+   "org-support-shift-select": "'always"
+  }
+ },
+ {
+  "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "item-down-t",
+  "keys": "S-<down>",
+  "point": 14,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "item-down-nil",
+  "keys": "S-<down>",
+  "point": 14,
+  "globals": {
+   "org-support-shift-select": false
+  }
+ },
+ {
+  "text": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "prop-plus",
+  "keys": "S-<right>",
+  "point": 102,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "prop-empty",
+  "keys": "S-<right>",
+  "point": 118,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "prop-empty-left",
+  "keys": "S-<left>",
+  "point": 118,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "prop-inherited-file",
+  "keys": "S-<right>",
+  "point": 153,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "prop-inherited-parent",
+  "keys": "S-<right>",
+  "point": 162,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "prop-not-allowed",
+  "keys": "S-<right>",
+  "point": 176,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "prop-not-allowed-left",
+  "keys": "S-<left>",
+  "point": 176,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "prop-indented",
+  "keys": "S-<right>",
+  "point": 207,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "prop-wrap",
+  "keys": "S-<right> S-<right> S-<right> S-<right>",
+  "point": 25,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "prop-left-twice",
+  "keys": "S-<left> S-<left>",
+  "point": 25,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "prop-mid-value",
+  "keys": "S-<right>",
+  "point": 33,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "prop-body-line-t",
+  "keys": "S-<right>",
+  "point": 247,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "#+PROPERTY: Size_ALL s m l\n* Parent\n:PROPERTIES:\n:Shape_ALL: round square\n:END:\n** Child\n:PROPERTIES:\n:Color+: yellow\n:Color:\n:Color_ALL: red green blue\n:Size: m\n:Shape: round\n:Other: purple\n:Other_ALL: a b\n  :Indented: a\n:Indented_ALL: a b\n:END:\n:Color: red\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "prop-body-line-nil",
+  "keys": "S-<right>",
+  "point": 247,
+  "globals": {
+   "org-support-shift-select": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "prop-drawer-open-line",
+  "keys": "S-<right>",
+  "point": 12,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "prop-drawer-end-line",
+  "keys": "S-<right>",
+  "point": 97,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": ":PROPERTIES:\n:Color: red\n:Color_ALL: red green\n:END:\n* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "prop-before-heading",
+  "keys": "S-<right>",
+  "point": 13,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Effort: 0:10\n:Effort_ALL: 0:10 0:20 0:30\n:END:\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "prop-effort-clock",
+  "keys": "C-c C-x C-i S-<right>",
+  "point": 25,
+  "globals": {
+   "org-support-shift-select": true
+  },
+  "today": "2026-11-24"
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "table-up-nil",
+  "keys": "S-<up>",
+  "point": 149,
+  "globals": {
+   "org-support-shift-select": false
+  }
+ },
+ {
+  "text": "* H\n#+BEGIN: clocktable :block today\n#+END:\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "clocktable-right-nil",
+  "keys": "S-<right>",
+  "point": 13,
+  "globals": {
+   "org-support-shift-select": false
+  },
+  "today": "2026-11-24"
+ },
+ {
+  "text": "* H\n#+BEGIN: clocktable :block today\n#+END:\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "clocktable-up-nil",
+  "keys": "S-<up>",
+  "point": 13,
+  "globals": {
+   "org-support-shift-select": false
+  },
+  "today": "2026-11-24"
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "table-up-t",
+  "keys": "S-<up>",
+  "point": 149,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\n#+BEGIN: clocktable :block today\n#+END:\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "clocktable-right-t",
+  "keys": "S-<right>",
+  "point": 13,
+  "globals": {
+   "org-support-shift-select": true
+  },
+  "today": "2026-11-24"
+ },
+ {
+  "text": "* H\n#+BEGIN: clocktable :block today\n#+END:\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "clocktable-up-t",
+  "keys": "S-<up>",
+  "point": 13,
+  "globals": {
+   "org-support-shift-select": true
+  },
+  "today": "2026-11-24"
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "table-up-always",
+  "keys": "S-<up>",
+  "point": 149,
+  "globals": {
+   "org-support-shift-select": "'always"
+  }
+ },
+ {
+  "text": "* H\n#+BEGIN: clocktable :block today\n#+END:\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "clocktable-right-always",
+  "keys": "S-<right>",
+  "point": 13,
+  "globals": {
+   "org-support-shift-select": "'always"
+  },
+  "today": "2026-11-24"
+ },
+ {
+  "text": "* H\n#+BEGIN: clocktable :block today\n#+END:\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "clocktable-up-always",
+  "keys": "S-<up>",
+  "point": 13,
+  "globals": {
+   "org-support-shift-select": "'always"
+  },
+  "today": "2026-11-24"
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "ts-region-up-t",
+  "keys": "C-SPC C-f S-<up>",
+  "point": 161,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "ts-region-up-nil",
+  "keys": "C-SPC C-f S-<up>",
+  "point": 161,
+  "globals": {
+   "org-support-shift-select": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "ts-select-into-t",
+  "keys": "S-<right> S-<right> S-<right> S-<right> S-<right>",
+  "point": 157,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "meta-shift-right-heading-t",
+  "keys": "M-S-<right>",
+  "point": 0,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "control-shift-up-t",
+  "keys": "C-S-<up>",
+  "point": 103,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "control-shift-down-nil",
+  "keys": "C-S-<down>",
+  "point": 103,
+  "globals": {
+   "org-support-shift-select": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "control-shift-right-region-t",
+  "keys": "C-SPC C-f C-S-<right>",
+  "point": 0,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "control-shift-left-twice-t",
+  "keys": "C-S-<right> C-S-<right> C-S-<left>",
+  "point": 103,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+  "modes": [
+   "fundamental-mode"
+  ],
+  "message": true,
+  "name": "markset-fund",
+  "keys": "S-<right>",
+  "point": 4,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+  "modes": [
+   "fundamental-mode"
+  ],
+  "message": true,
+  "name": "markset-fund-prefix",
+  "keys": "C-u 2 S-<right>",
+  "point": 4,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+  "modes": [
+   "fundamental-mode"
+  ],
+  "message": true,
+  "name": "markset-fund-eob",
+  "keys": "S-<right>",
+  "point": 33,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+  "modes": [
+   "fundamental-mode"
+  ],
+  "message": true,
+  "name": "markset-kmacro-fund",
+  "keys": "C-x ( S-<right> C-f C-x ) C-x e",
+  "point": 4,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "markset-kmacro-org",
+  "keys": "C-x ( S-<right> C-f C-x ) C-x e",
+  "point": 4,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "markset-org-eob",
+  "keys": "S-<right>",
+  "point": 33,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "markset-org-prefix-neg",
+  "keys": "M-- S-<right>",
+  "point": 6,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "mode-off-t",
+  "keys": "S-<right>",
+  "point": 4,
+  "globals": {
+   "org-support-shift-select": true,
+   "shift-select-mode": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "mode-off-heading-always",
+  "keys": "S-<right>",
+  "point": 0,
+  "globals": {
+   "org-support-shift-select": "'always",
+   "shift-select-mode": false
+  }
+ },
+ {
+  "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "mode-off-nil-error",
+  "keys": "S-<up>",
+  "point": 4,
+  "globals": {
+   "org-support-shift-select": false,
+   "shift-select-mode": false
+  }
+ },
+ {
+  "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "region-onto-heading-t",
+  "keys": "S-<up> S-<right>",
+  "point": 4,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\nSome text\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green\n:END:\n* S\nSCHEDULED: <2026-11-24 Tue>\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green\n:END:\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "prop-late-drawer-t",
+  "keys": "S-<right>",
+  "point": 27,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\nSome text\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green\n:END:\n* S\nSCHEDULED: <2026-11-24 Tue>\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green\n:END:\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "prop-late-drawer-nil",
+  "keys": "S-<right>",
+  "point": 27,
+  "globals": {
+   "org-support-shift-select": false
+  }
+ },
+ {
+  "text": "* H\nSome text\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green\n:END:\n* S\nSCHEDULED: <2026-11-24 Tue>\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green\n:END:\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "prop-after-planning-nil",
+  "keys": "S-<right>",
+  "point": 112,
+  "globals": {
+   "org-support-shift-select": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "prop-narrowed",
+  "keys": "C-SPC C-n C-x n n C-g M-< S-<right>",
+  "point": 25,
+  "globals": {
+   "org-support-shift-select": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "prop-narrowed-t",
+  "keys": "C-SPC C-n C-x n n C-g M-< S-<right>",
+  "point": 25,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "prefix-cu-right-t",
+  "keys": "C-u S-<right>",
+  "point": 4,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "prefix-cu-down-t",
+  "keys": "C-u S-<down>",
+  "point": 4,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\n#+BEGIN: clocktable :block today\n#+END:\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "clocktable-m2-right",
+  "keys": "M-2 S-<right>",
+  "point": 13,
+  "globals": {
+   "org-support-shift-select": true
+  },
+  "today": "2026-11-24"
+ },
+ {
+  "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "shift-ce-org",
+  "keys": "S-C-e",
+  "point": 4,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "shift-ce-org-after",
+  "keys": "S-<right> S-C-e",
+  "point": 4,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "cspc-then-right-heading-t",
+  "keys": "C-SPC C-e S-<left>",
+  "point": 0,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\n- [ ] box\n1. num\n2. two\n  - sub\n  - sub2\nend\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "item-text-left-t",
+  "keys": "C-f C-f C-f S-<left> S-<left>",
+  "point": 14,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "prop-narrowed2",
+  "keys": "C-SPC C-n C-x n n M-< S-<right>",
+  "point": 25,
+  "globals": {
+   "org-support-shift-select": false
+  }
+ },
+ {
+  "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+  "modes": [
+   "fundamental-mode"
+  ],
+  "message": true,
+  "name": "end-ce-fund",
+  "keys": "S-<down> C-e",
+  "point": 4,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "text": "* H\nabcdefghij\nab\nabcdefghij\nxyz\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "end-ce-right",
+  "keys": "S-<right> C-e",
+  "point": 4,
+  "globals": {
+   "org-support-shift-select": true
+  }
  }
 ]
