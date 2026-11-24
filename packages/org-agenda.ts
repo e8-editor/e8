@@ -17,6 +17,8 @@ import {
   headingIndex,
   headings,
   inVerbatimOrLink,
+  linksIn,
+  openLink,
   isDone,
   keywordLines,
   makeTagsMatcher,
@@ -36,9 +38,9 @@ import {
   today,
   updateDblock,
 } from "org";
-import { setAgendaEntryHere, storeLink } from "ol";
+import { linkUnescape, setAgendaEntryHere, storeLink } from "ol";
 import { addArchiveFiles, archivingFromAgenda } from "org-archive";
-import { showContext, showEntry } from "org-fold";
+import { flag, hideDrawersIn, showContext, showEntry } from "org-fold";
 import { type Habit, buildGraph, habitUrgency, parseHabit } from "org-habit";
 import { getLocation, gotoLastStored, refile } from "org-refile";
 import { multiOccur } from "replace";
@@ -2299,6 +2301,237 @@ const followModeCommand = e8.defineCommand({
   },
 });
 
+/** The agenda line of the next or previous item after point's, as org-agenda-next-item and org-agenda-previous-item find it, or undefined. */
+function itemLineFrom(line: number, step: 1 | -1): number | undefined {
+  for (let l = line + step; l >= 0 && l < agendaLines.length; l += step) if (agendaLines[l] !== undefined) return l;
+  return undefined;
+}
+
+/** Moves N items on, or back with N negative, keeping the column, as org-agenda-next-item does, then follows. */
+function moveByItems(n: number): void {
+  const column = e8.currentColumn();
+  const step = n < 0 ? -1 : 1;
+  for (let k = 0; k < Math.abs(n); k++) {
+    const to = itemLineFrom(e8.lineOf(e8.point()), step);
+    if (to !== undefined) e8.gotoChar(e8.lineStart(to));
+  }
+  e8.moveToColumn(column);
+  doContextAction();
+}
+
+e8.defineCommand({
+  name: "org-agenda-next-item",
+  doc: "Move to the next line of the agenda that shows an entry, keeping the column.",
+  params: [{ name: "n", kind: "count" }],
+  run: (n: number) => moveByItems(n),
+});
+e8.defineCommand({
+  name: "org-agenda-previous-item",
+  doc: "Move to the previous line of the agenda that shows an entry, keeping the column.",
+  params: [{ name: "n", kind: "count" }],
+  run: (n: number) => moveByItems(-n),
+});
+
+e8.defineCommand({
+  name: "org-agenda-show-tags",
+  doc: "Say the tags of the entry the agenda line at point shows, inherited ones too as the agenda shows them.",
+  run: () => {
+    const item = agendaLines[e8.lineOf(e8.point())];
+    const tags = item === undefined ? [] : e8.withCurrentBuffer(item.buffer, () => widened(() => {
+      const h = headings().find((x) => x.start === headingOf(item));
+      if (h === undefined) return [];
+      // Inherited ones too, as the agenda's items take org-get-tags whatever the line shows.
+      return [...inheritedTags(h).filter((t) => !h.tags.includes(t)), ...h.tags];
+    }));
+    e8.message(tags.length > 0 ? `Tags are :${tags.join(":")}:` : "No tags associated with this line");
+  },
+});
+
+/** The agenda lines whose day starts them, as org-agenda-next-date-line finds them: a line not starting with a space. */
+function dateLineFrom(line: number, step: 1 | -1, n: number): number | undefined {
+  let found: number | undefined;
+  let left = n;
+  for (let l = line + step; l >= 0 && l < e8.lineCount() && left > 0; l += step) {
+    if (/^\S/.test(e8.lineText(l))) {
+      found = l;
+      left--;
+    }
+  }
+  return left === 0 ? found : undefined;
+}
+
+e8.defineCommand({
+  name: "org-agenda-next-date-line",
+  doc: "Move to the next line of the agenda that starts a day.",
+  params: [{ name: "n", kind: "count" }],
+  run: (n: number) => {
+    checkAgendaType();
+    const line = e8.lineOf(e8.point());
+    const to = dateLineFrom(line, 1, n);
+    if (to === undefined) {
+      // Back a character from where the search began, as Org's backward-char leaves it.
+      const from = e8.lineStart(line) + (/^\S/.test(e8.lineText(line)) ? 1 : 0);
+      e8.gotoChar(Math.max(0, from - 1));
+      e8.signal("error", "No next date after this line in this buffer");
+    }
+    e8.gotoChar(e8.lineStart(to));
+  },
+});
+e8.defineCommand({
+  name: "org-agenda-previous-date-line",
+  doc: "Move to the previous line of the agenda that starts a day.",
+  params: [{ name: "n", kind: "count" }],
+  run: (n: number) => {
+    checkAgendaType();
+    e8.gotoChar(e8.lineStart(e8.lineOf(e8.point())));
+    const to = dateLineFrom(e8.lineOf(e8.point()), -1, n);
+    if (to === undefined) e8.signal("error", "No previous date before this line in this buffer");
+    e8.gotoChar(e8.lineStart(to));
+  },
+});
+
+e8.defineCommand({
+  name: "org-agenda-recenter",
+  doc: "Show the entry the agenda line at point shows in another window, with its line in the middle of it.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg) => {
+    const win = e8.selectedWindow();
+    gotoItem();
+    e8.callWithPrefix(arg, "recenter");
+    e8.selectWindow(win);
+  },
+});
+
+/** The window SPC showed an entry in, which SPC again scrolls, as org-agenda-show-window. */
+let agendaShowWindow: e8.Window | undefined;
+
+e8.defineCommand({
+  name: "org-agenda-show-and-scroll-up",
+  doc: "Show the entry the agenda line at point shows in another window, all of it, drawers too; pressed again, scroll that window. With C-u, its drawers folded.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg) => {
+    const win = e8.selectedWindow();
+    if (agendaShowWindow !== undefined && e8.windowLiveP(agendaShowWindow) && e8.thisCommand() === e8.lastCommand()) {
+      e8.selectWindow(agendaShowWindow);
+      try {
+        e8.call("scroll-up");
+      } catch {
+        // At the end, as ignore-errors has it.
+      }
+    } else {
+      gotoItem();
+      const all = headings();
+      const i = headingIndex(all, e8.lineOf(e8.point()));
+      if (i !== undefined) {
+        showEntry(all, i);
+        // Its drawers open too, or with C-u folded, as org-agenda-show-and-scroll-up shows them.
+        if (arg === null || arg === undefined) flag(all[i].start, entryEnd(all, i), false, "org-hide-drawer");
+        else hideDrawersIn(all[i].line, entryEnd(all, i));
+      }
+      agendaShowWindow = e8.selectedWindow();
+    }
+    e8.selectWindow(win);
+  },
+});
+
+e8.defineCommand({
+  name: "org-agenda-show-scroll-down",
+  doc: "Scroll back the window SPC showed an entry in.",
+  run: () => {
+    const win = e8.selectedWindow();
+    if (agendaShowWindow !== undefined && e8.windowLiveP(agendaShowWindow)) {
+      e8.selectWindow(agendaShowWindow);
+      try {
+        e8.call("scroll-down");
+      } catch {
+        // At the start, as ignore-errors has it.
+      }
+      e8.selectWindow(win);
+    }
+  },
+});
+
+e8.defineVariable({
+  name: "org-agenda-confirm-kill",
+  doc: "Whether C-k in the agenda asks first: t always, a number when the entry has more lines than that, nil never.",
+  value: 1,
+});
+
+e8.defineCommand({
+  name: "org-agenda-kill",
+  doc: "Delete the entry, with its subtree, the agenda line at point shows, and its lines in the agenda, asking first as org-agenda-confirm-kill says.",
+  run: () => {
+    if (e8.variable("major-mode") !== "org-agenda-mode") e8.userError("Not in agenda");
+    const item = agendaLines[e8.lineOf(e8.point())];
+    if (item === undefined) e8.userError("Command not allowed in this line");
+    const [beg, end, n] = e8.withCurrentBuffer(item.buffer, () => widened(() => {
+      const all = headings();
+      const i = headingIndex(all, e8.lineOf(posOf(item)));
+      if (i === undefined) return [e8.lineStart(e8.lineOf(posOf(item))), Math.min(e8.pointMax(), e8.lineEnd(e8.lineOf(posOf(item))) + 1), 1];
+      const [b, e] = subtreeRegion(all, i);
+      let count = 0;
+      for (let l = e8.lineOf(b); l < e8.lineCount() && e8.lineStart(l) < e; l++) if (/^[ \t]*\S/.test(e8.lineText(l))) count++;
+      return [b, e, count];
+    }));
+    const confirm = e8.variable("org-agenda-confirm-kill");
+    if (confirm === true || (typeof confirm === "number" && n > confirm)) {
+      if (!e8.yOrNP(`Delete entry with ${n} lines in buffer "${item.buffer}"? `)) e8.signal("error", "Abort");
+    }
+    removeSubtreeEntries(item.buffer, beg, end);
+    e8.withCurrentBuffer(item.buffer, () => widened(() => e8.deleteRegion(beg, end)));
+    e8.message("Agenda item and source killed");
+  },
+});
+
+e8.defineCommand({
+  name: "org-agenda-open-link",
+  doc: "Open the link of the entry the agenda line at point shows: the one in the line, or the only one in the entry.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: () => {
+    const line = e8.lineOf(e8.point());
+    const item = agendaLines[line];
+    const text = e8.lineText(line);
+    const bracket = /\[\[((?:[^\][\\]|\\.)+)\](?:\[([\s\S]+?)\])?\]/;
+    let links: string[] = [];
+    if (item !== undefined) {
+      // The line's own link, then the entry's, as org-offer-links-in-entry has them.
+      const zero = bracket.exec(text)?.[0];
+      const entry = e8.withCurrentBuffer(item.buffer, () => widened(() => {
+        const all = headings();
+        const i = headingIndex(all, e8.lineOf(headingOf(item)));
+        return i === undefined ? [] : linksIn(all[i].start, all[i + 1]?.start ?? e8.bufferSize()).links;
+      }));
+      links = [...(zero !== undefined ? [zero] : []), ...entry].filter((l, k, a) => a.indexOf(l) === k);
+    }
+    if (links.length > 1) throw new Error("E8 cannot choose between an entry's links yet");
+    if (item !== undefined && links.length === 1) {
+      const l = links[0];
+      const target = bracket.exec(l)?.[1];
+      // A link to elsewhere is opened from the entry's buffer, one within it in another window, as org-agenda-open-link does.
+      const external = target === undefined || /^[A-Za-z][-A-Za-z0-9+.]*:/.test(target);
+      const open = (): void => {
+        e8.widen();
+        e8.gotoChar(posOf(item));
+        const found = e8.search(l, { from: posOf(item) });
+        if (found) {
+          e8.gotoChar(found.start);
+          e8.call("org-open-at-point");
+        }
+      };
+      if (external) e8.withCurrentBuffer(item.buffer, () => e8.saveExcursion(open));
+      else {
+        e8.call("switch-to-buffer-other-window", item.buffer);
+        open();
+      }
+      return;
+    }
+    const here = bracket.exec(text);
+    // A link in a line with no entry, as the clock report's, as org-link-open-from-string opens it.
+    if (here) openLink({ start: 0, end: 0, path: linkUnescape(here[1]), description: here[2], kind: "bracket" });
+    else e8.message("No link to open here");
+  },
+});
+
 const agendaSwitchTo = e8.defineCommand({
   name: "org-agenda-switch-to",
   doc: "Go to the entry the agenda line at point shows, in this window.",
@@ -2745,6 +2978,23 @@ e8.defineCommand({
 
 // More of Org's keys, as org-agenda.el binds them.
 for (const [key, command] of [
+  ["T", "org-agenda-show-tags"],
+  ["N", "org-agenda-next-item"],
+  ["P", "org-agenda-previous-item"],
+  ["SPC", "org-agenda-show-and-scroll-up"],
+  ["DEL", "org-agenda-show-scroll-down"],
+  ["<backspace>", "org-agenda-show-scroll-down"],
+  ["o", "delete-other-windows"],
+  ["L", "org-agenda-recenter"],
+  ["C-c C-n", "org-agenda-next-date-line"],
+  ["C-c C-p", "org-agenda-previous-date-line"],
+  ["C-c C-t", "org-agenda-todo"],
+  ["C-c C-q", "org-agenda-set-tags"],
+  ["C-k", "org-agenda-kill"],
+  ["C-c C-o", "org-agenda-open-link"],
+  ["s", "org-save-all-org-buffers"],
+  ["C-x C-s", "org-save-all-org-buffers"],
+  ...[..."0123456789"].map((d) => [d, "digit-argument"] as const),
   ["C-c C-x C-a", "org-agenda-archive-default"],
   ["C-c C-x a", "org-agenda-toggle-archive-tag"],
   ["C-c C-x A", "org-agenda-archive-to-archive-sibling"],

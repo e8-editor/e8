@@ -1,0 +1,1533 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "tags-on-item",
+      "input": {
+        "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+        "point": 0,
+        "keys": "n n T",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-inherited-tags": true,
+          "org-agenda-confirm-kill": 1
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 184,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 184,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": "Tags are :file:w:tag:"
+    },
+    {
+      "name": "tags-on-date",
+      "input": {
+        "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+        "point": 0,
+        "keys": "T",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-inherited-tags": true,
+          "org-agenda-confirm-kill": 1
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": "No tags associated with this line"
+    },
+    {
+      "name": "tags-not-inherited",
+      "input": {
+        "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+        "point": 0,
+        "keys": "n n T",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-inherited-tags": false,
+          "org-agenda-confirm-kill": 1
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report                               :tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\n  e8-agenda:  Two links \nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report                               :tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch \nFriday     30 October 2026\n  e8-agenda:  Two links \nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 139,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 139,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": "Tags are :file:w:tag:"
+    },
+    {
+      "name": "next-item",
+      "input": {
+        "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+        "point": 0,
+        "keys": "N",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-inherited-tags": true,
+          "org-agenda-confirm-kill": 1
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 104,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 104,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "next-item-twice",
+      "input": {
+        "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+        "point": 0,
+        "keys": "N N",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-inherited-tags": true,
+          "org-agenda-confirm-kill": 1
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 184,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 184,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "next-item-count",
+      "input": {
+        "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+        "point": 0,
+        "keys": "C-u 3 N",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-inherited-tags": true,
+          "org-agenda-confirm-kill": 1
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 291,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 291,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "previous-item",
+      "input": {
+        "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+        "point": 0,
+        "keys": "N N N P",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-inherited-tags": true,
+          "org-agenda-confirm-kill": 1
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 184,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 184,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "next-item-column",
+      "input": {
+        "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+        "point": 0,
+        "keys": "N C-f C-f N",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-inherited-tags": true,
+          "org-agenda-confirm-kill": 1
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 186,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 186,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "next-item-past-end",
+      "input": {
+        "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+        "point": 0,
+        "keys": "N N N N N N N",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-inherited-tags": true,
+          "org-agenda-confirm-kill": 1
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 398,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 398,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "date-line-next",
+      "input": {
+        "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+        "point": 0,
+        "keys": "C-c C-n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-inherited-tags": true,
+          "org-agenda-confirm-kill": 1
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 264,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 264,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "date-line-next-twice",
+      "input": {
+        "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+        "point": 0,
+        "keys": "C-c C-n C-c C-n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-inherited-tags": true,
+          "org-agenda-confirm-kill": 1
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 371,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 371,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "date-line-next-count",
+      "input": {
+        "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+        "point": 0,
+        "keys": "C-u 3 C-c C-n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-inherited-tags": true,
+          "org-agenda-confirm-kill": 1
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 478,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 478,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "date-line-previous",
+      "input": {
+        "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+        "point": 0,
+        "keys": "C-c C-n C-c C-n C-c C-p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-inherited-tags": true,
+          "org-agenda-confirm-kill": 1
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 264,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 264,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "date-line-past-end",
+      "input": {
+        "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+        "point": 0,
+        "keys": "M-> C-c C-n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-inherited-tags": true,
+          "org-agenda-confirm-kill": 1
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 532,
+      "mark": 77,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "No next date after this line in this buffer",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 532,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": "Mark set"
+    },
+    {
+      "name": "date-line-before-start",
+      "input": {
+        "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+        "point": 0,
+        "keys": "M-< C-c C-p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-inherited-tags": true,
+          "org-agenda-confirm-kill": 1
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 0,
+      "mark": 77,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "No previous date before this line in this buffer",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": "Mark set"
+    },
+    {
+      "name": "date-line-todo",
+      "input": {
+        "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+        "point": 0,
+        "keys": "C-c C-n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-inherited-tags": true,
+          "org-agenda-confirm-kill": 1
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda:  TODO Write report                                   :file:w::tag:\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda:  TODO Write report                                   :file:w::tag:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Not allowed in ’todo’-type agenda buffer or component",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "show-and-scroll",
+      "input": {
+        "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+        "point": 0,
+        "keys": "n n SPC",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-inherited-tags": true,
+          "org-agenda-confirm-kill": 1
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 184,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 38,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 184,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": "Mark set"
+    },
+    {
+      "name": "show-and-scroll-drawers",
+      "input": {
+        "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+        "point": 0,
+        "keys": "n n C-u SPC",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-inherited-tags": true,
+          "org-agenda-confirm-kill": 1
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 184,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 38,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 184,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": "Mark set"
+    },
+    {
+      "name": "delete-other",
+      "input": {
+        "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+        "point": 0,
+        "keys": "o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-inherited-tags": true,
+          "org-agenda-confirm-kill": 1
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "digits",
+      "input": {
+        "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+        "point": 0,
+        "keys": "3 n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-inherited-tags": true,
+          "org-agenda-confirm-kill": 1
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 264,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 264,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "recenter",
+      "input": {
+        "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+        "point": 0,
+        "keys": "n n L",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-inherited-tags": true,
+          "org-agenda-confirm-kill": 1
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 184,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 38,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 184,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": "Mark set"
+    },
+    {
+      "name": "todo-key",
+      "input": {
+        "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+        "point": 0,
+        "keys": "n n C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-inherited-tags": true,
+          "org-agenda-confirm-kill": 1
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  DONE Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  DONE Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 184,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 184,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "kill-asks",
+      "input": {
+        "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+        "point": 0,
+        "keys": "n n C-k",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "y"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-inherited-tags": true,
+          "org-agenda-confirm-kill": 1
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 184,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 184,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": "Agenda item and source killed"
+    },
+    {
+      "name": "kill-refused",
+      "input": {
+        "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+        "point": 0,
+        "keys": "n n C-k",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "n"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-inherited-tags": true,
+          "org-agenda-confirm-kill": 1
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 184,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Abort",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 184,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "kill-no-ask",
+      "input": {
+        "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+        "point": 0,
+        "keys": "n C-k",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-inherited-tags": true,
+          "org-agenda-confirm-kill": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 104,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 104,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": "Agenda item and source killed"
+    },
+    {
+      "name": "kill-on-date",
+      "input": {
+        "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+        "point": 0,
+        "keys": "C-k",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-inherited-tags": true,
+          "org-agenda-confirm-kill": 1
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Command not allowed in this line",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "open-link-entry",
+      "input": {
+        "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+        "point": 0,
+        "keys": "n n C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-inherited-tags": true,
+          "org-agenda-confirm-kill": 1
+        }
+      },
+      "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+      "visible": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee home first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n*Home and *Work\n",
+      "point": 195,
+      "mark": 122,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 195,
+          "width": 80,
+          "height": 11,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 184,
+          "width": 80,
+          "height": 13,
+          "selected": false
+        }
+      ],
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "open-link-none",
+      "input": {
+        "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+        "point": 0,
+        "keys": "n C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-inherited-tags": true,
+          "org-agenda-confirm-kill": 1
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 104,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 104,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": "No link to open here"
+    },
+    {
+      "name": "open-link-date",
+      "input": {
+        "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+        "point": 0,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-inherited-tags": true,
+          "org-agenda-confirm-kill": 1
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": "No link to open here"
+    },
+    {
+      "name": "save-all",
+      "input": {
+        "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+        "point": 0,
+        "keys": "s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-show-inherited-tags": true,
+          "org-agenda-confirm-kill": 1
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                                       :file::\n  e8-agenda:  Scheduled:  TODO Write report                       :file:w::tag:\nThursday   29 October 2026\n  e8-agenda:  12:30...... Lunch                                         :file::\nFriday     30 October 2026\n  e8-agenda:  Two links                                                 :file::\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": "Saving all Org buffers... done"
+    }
+  ]
+}

@@ -1,0 +1,667 @@
+[
+ {
+  "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "tags-on-item",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-show-inherited-tags": true,
+   "org-agenda-confirm-kill": 1
+  },
+  "keys": "n n T"
+ },
+ {
+  "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "tags-on-date",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-show-inherited-tags": true,
+   "org-agenda-confirm-kill": 1
+  },
+  "keys": "T"
+ },
+ {
+  "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "tags-not-inherited",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-show-inherited-tags": false,
+   "org-agenda-confirm-kill": 1
+  },
+  "keys": "n n T"
+ },
+ {
+  "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "next-item",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-show-inherited-tags": true,
+   "org-agenda-confirm-kill": 1
+  },
+  "keys": "N"
+ },
+ {
+  "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "next-item-twice",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-show-inherited-tags": true,
+   "org-agenda-confirm-kill": 1
+  },
+  "keys": "N N"
+ },
+ {
+  "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "next-item-count",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-show-inherited-tags": true,
+   "org-agenda-confirm-kill": 1
+  },
+  "keys": "C-u 3 N"
+ },
+ {
+  "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "previous-item",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-show-inherited-tags": true,
+   "org-agenda-confirm-kill": 1
+  },
+  "keys": "N N N P"
+ },
+ {
+  "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "next-item-column",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-show-inherited-tags": true,
+   "org-agenda-confirm-kill": 1
+  },
+  "keys": "N C-f C-f N"
+ },
+ {
+  "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "next-item-past-end",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-show-inherited-tags": true,
+   "org-agenda-confirm-kill": 1
+  },
+  "keys": "N N N N N N N"
+ },
+ {
+  "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "date-line-next",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-show-inherited-tags": true,
+   "org-agenda-confirm-kill": 1
+  },
+  "keys": "C-c C-n"
+ },
+ {
+  "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "date-line-next-twice",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-show-inherited-tags": true,
+   "org-agenda-confirm-kill": 1
+  },
+  "keys": "C-c C-n C-c C-n"
+ },
+ {
+  "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "date-line-next-count",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-show-inherited-tags": true,
+   "org-agenda-confirm-kill": 1
+  },
+  "keys": "C-u 3 C-c C-n"
+ },
+ {
+  "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "date-line-previous",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-show-inherited-tags": true,
+   "org-agenda-confirm-kill": 1
+  },
+  "keys": "C-c C-n C-c C-n C-c C-p"
+ },
+ {
+  "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "date-line-past-end",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-show-inherited-tags": true,
+   "org-agenda-confirm-kill": 1
+  },
+  "keys": "M-> C-c C-n"
+ },
+ {
+  "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "date-line-before-start",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-show-inherited-tags": true,
+   "org-agenda-confirm-kill": 1
+  },
+  "keys": "M-< C-c C-p"
+ },
+ {
+  "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "date-line-todo",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-show-inherited-tags": true,
+   "org-agenda-confirm-kill": 1
+  },
+  "keys": "C-c C-n"
+ },
+ {
+  "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "show-and-scroll",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-show-inherited-tags": true,
+   "org-agenda-confirm-kill": 1
+  },
+  "keys": "n n SPC"
+ },
+ {
+  "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "show-and-scroll-drawers",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-show-inherited-tags": true,
+   "org-agenda-confirm-kill": 1
+  },
+  "keys": "n n C-u SPC"
+ },
+ {
+  "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "delete-other",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-show-inherited-tags": true,
+   "org-agenda-confirm-kill": 1
+  },
+  "keys": "o"
+ },
+ {
+  "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "digits",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-show-inherited-tags": true,
+   "org-agenda-confirm-kill": 1
+  },
+  "keys": "3 n"
+ },
+ {
+  "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "recenter",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-show-inherited-tags": true,
+   "org-agenda-confirm-kill": 1
+  },
+  "keys": "n n L"
+ },
+ {
+  "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "todo-key",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-show-inherited-tags": true,
+   "org-agenda-confirm-kill": 1
+  },
+  "keys": "n n C-c C-t"
+ },
+ {
+  "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "kill-asks",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-show-inherited-tags": true,
+   "org-agenda-confirm-kill": 1
+  },
+  "keys": "n n C-k",
+  "answers": [
+   "y"
+  ]
+ },
+ {
+  "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "kill-refused",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-show-inherited-tags": true,
+   "org-agenda-confirm-kill": 1
+  },
+  "keys": "n n C-k",
+  "answers": [
+   "n"
+  ]
+ },
+ {
+  "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "kill-no-ask",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-show-inherited-tags": true,
+   "org-agenda-confirm-kill": false
+  },
+  "keys": "n C-k"
+ },
+ {
+  "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "kill-on-date",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-show-inherited-tags": true,
+   "org-agenda-confirm-kill": 1
+  },
+  "keys": "C-k"
+ },
+ {
+  "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "open-link-entry",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-show-inherited-tags": true,
+   "org-agenda-confirm-kill": 1
+  },
+  "keys": "n n C-c C-o"
+ },
+ {
+  "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "open-link-none",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-show-inherited-tags": true,
+   "org-agenda-confirm-kill": 1
+  },
+  "keys": "n C-c C-o"
+ },
+ {
+  "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "open-link-date",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-show-inherited-tags": true,
+   "org-agenda-confirm-kill": 1
+  },
+  "keys": "C-c C-o"
+ },
+ {
+  "text": "#+FILETAGS: :file:\n* Work :w:\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nSee [[*Home][home]] first.\n*** Detail\nMore.\n* Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n* Two links <2026-10-30 Fri>\n[[*Home]] and [[*Work]]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "save-all",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-show-inherited-tags": true,
+   "org-agenda-confirm-kill": 1
+  },
+  "keys": "s"
+ }
+]
