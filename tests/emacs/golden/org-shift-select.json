@@ -1,0 +1,1702 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "text-right-nil",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 103,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 103,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "To use shift-selection with Org mode, customize ‘org-support-shift-select’",
+      "message": null
+    },
+    {
+      "name": "text-left-nil",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 103,
+        "keys": "C-f C-f S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 105,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "To use shift-selection with Org mode, customize ‘org-support-shift-select’",
+      "message": null
+    },
+    {
+      "name": "text-up-nil",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 103,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 103,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "To use shift-selection with Org mode, customize ‘org-support-shift-select’",
+      "message": null
+    },
+    {
+      "name": "text-down-nil",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 103,
+        "keys": "S-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 103,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "To use shift-selection with Org mode, customize ‘org-support-shift-select’",
+      "message": null
+    },
+    {
+      "name": "text-right-twice-nil",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 103,
+        "keys": "S-<right> S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 103,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "To use shift-selection with Org mode, customize ‘org-support-shift-select’",
+      "message": null
+    },
+    {
+      "name": "text-right-then-move-nil",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 103,
+        "keys": "S-<right> S-<right> C-f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 104,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "To use shift-selection with Org mode, customize ‘org-support-shift-select’",
+      "message": null
+    },
+    {
+      "name": "text-right-count-nil",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 103,
+        "keys": "C-u 3 S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 103,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "To use shift-selection with Org mode, customize ‘org-support-shift-select’",
+      "message": null
+    },
+    {
+      "name": "heading-right-nil",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 0,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-support-shift-select": false,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* DONE Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* DONE Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "heading-up-nil",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 0,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO [#B] Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO [#B] Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Priority of current item set to B"
+    },
+    {
+      "name": "heading-region-nil",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 0,
+        "keys": "C-SPC C-f S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-support-shift-select": false,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* DONE Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* DONE Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 7,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "item-bullet-nil",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 125,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n+ one\n+ two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n+ one\n+ two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 125,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "item-text-nil",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 125,
+        "keys": "C-f C-f C-f S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n+ one\n+ two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n+ one\n+ two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 128,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "item-up-nil",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 131,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 125,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "property-right-nil",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 25,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color:    green\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color:    green\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "property-left-nil",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 25,
+        "keys": "S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color:    blue\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color:    blue\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "table-right-nil",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 137,
+        "keys": "C-f C-f S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| b | a |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| b | a |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 143,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "timestamp-up-nil",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 161,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2027-11-24 Wed> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2027-11-24 Wed> today.\n",
+      "point": 161,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "control-right-text-nil",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 103,
+        "keys": "C-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 103,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "To use shift-selection with Org mode, customize ‘org-support-shift-select’",
+      "message": null
+    },
+    {
+      "name": "control-right-heading-nil",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 0,
+        "keys": "C-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Keyword-Set 1/1: TODO DONE"
+    },
+    {
+      "name": "text-right-t",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 103,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 104,
+      "mark": 103,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "text-left-t",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 103,
+        "keys": "C-f C-f S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 104,
+      "mark": 105,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "text-up-t",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 103,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 97,
+      "mark": 103,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "text-down-t",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 103,
+        "keys": "S-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 125,
+      "mark": 103,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "text-right-twice-t",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 103,
+        "keys": "S-<right> S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 105,
+      "mark": 103,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "text-right-then-move-t",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 103,
+        "keys": "S-<right> S-<right> C-f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 106,
+      "mark": 103,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "text-right-count-t",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 103,
+        "keys": "C-u 3 S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 106,
+      "mark": 103,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "heading-right-t",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 0,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-support-shift-select": true,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* DONE Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* DONE Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "heading-up-t",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 0,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO [#B] Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO [#B] Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Priority of current item set to B"
+    },
+    {
+      "name": "heading-region-t",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 0,
+        "keys": "C-SPC C-f S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 2,
+      "mark": 1,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set [2 times]"
+    },
+    {
+      "name": "item-bullet-t",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 125,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n+ one\n+ two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n+ one\n+ two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 125,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "item-text-t",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 125,
+        "keys": "C-f C-f C-f S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 129,
+      "mark": 128,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "item-up-t",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 131,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 125,
+      "mark": 131,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "property-right-t",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 25,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color:    green\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color:    green\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "property-left-t",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 25,
+        "keys": "S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color:    blue\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color:    blue\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "table-right-t",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 137,
+        "keys": "C-f C-f S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| b | a |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| b | a |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 143,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "timestamp-up-t",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 161,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2027-11-24 Wed> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2027-11-24 Wed> today.\n",
+      "point": 161,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "control-right-text-t",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 103,
+        "keys": "C-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 108,
+      "mark": 103,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "control-right-heading-t",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 0,
+        "keys": "C-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Keyword-Set 1/1: TODO DONE"
+    },
+    {
+      "name": "text-right-always",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 103,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": "'always",
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 104,
+      "mark": 103,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "text-left-always",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 103,
+        "keys": "C-f C-f S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": "'always",
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 104,
+      "mark": 105,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "text-up-always",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 103,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": "'always",
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 97,
+      "mark": 103,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "text-down-always",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 103,
+        "keys": "S-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": "'always",
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 125,
+      "mark": 103,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "text-right-twice-always",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 103,
+        "keys": "S-<right> S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": "'always",
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 105,
+      "mark": 103,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "text-right-then-move-always",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 103,
+        "keys": "S-<right> S-<right> C-f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": "'always",
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 106,
+      "mark": 103,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "text-right-count-always",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 103,
+        "keys": "C-u 3 S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": "'always",
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 106,
+      "mark": 103,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "heading-right-always",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 0,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": "'always",
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 1,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "heading-up-always",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 0,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": "'always",
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Beginning of buffer",
+      "message": "Mark set"
+    },
+    {
+      "name": "heading-region-always",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 0,
+        "keys": "C-SPC C-f S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": "'always",
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 2,
+      "mark": 1,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set [2 times]"
+    },
+    {
+      "name": "item-bullet-always",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 125,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": "'always",
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 126,
+      "mark": 125,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "item-text-always",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 125,
+        "keys": "C-f C-f C-f S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": "'always",
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 129,
+      "mark": 128,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "item-up-always",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 131,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": "'always",
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 125,
+      "mark": 131,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "property-right-always",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 25,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": "'always",
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 26,
+      "mark": 25,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "property-left-always",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 25,
+        "keys": "S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": "'always",
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 24,
+      "mark": 25,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "table-right-always",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 137,
+        "keys": "C-f C-f S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": "'always",
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 140,
+      "mark": 139,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "timestamp-up-always",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 161,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": "'always",
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2027-11-24 Wed> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2027-11-24 Wed> today.\n",
+      "point": 161,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "control-right-text-always",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 103,
+        "keys": "C-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": "'always",
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 108,
+      "mark": 103,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "control-right-heading-always",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 0,
+        "keys": "C-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": "'always",
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 6,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "property-checkbox",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 64,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done:     [X]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done:     [X]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 64,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "property-only-one",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 75,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 75,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Only one allowed value for this property",
+      "message": null
+    },
+    {
+      "name": "property-none",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 37,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Allowed values for this property have not been defined",
+      "message": null
+    },
+    {
+      "name": "property-twice",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 25,
+        "keys": "S-<right> S-<right> S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true,
+          "org-edit-timestamp-down-means-later": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color:    red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color:    red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "timestamp-down-means-later",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 161,
+        "keys": "S-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": true,
+          "org-edit-timestamp-down-means-later": true
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2027-11-24 Wed> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2027-11-24 Wed> today.\n",
+      "point": 161,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "text-right-mode-off",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+        "point": 103,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-support-shift-select": false,
+          "org-edit-timestamp-down-means-later": false,
+          "shift-select-mode": false
+        }
+      },
+      "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "visible": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+      "point": 103,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "This command works only in special context like headlines or timestamps",
+      "message": null
+    }
+  ]
+}

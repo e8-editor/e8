@@ -1,0 +1,882 @@
+[
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "text-right-nil",
+  "keys": "S-<right>",
+  "point": 103,
+  "globals": {
+   "org-support-shift-select": false,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "text-left-nil",
+  "keys": "C-f C-f S-<left>",
+  "point": 103,
+  "globals": {
+   "org-support-shift-select": false,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "text-up-nil",
+  "keys": "S-<up>",
+  "point": 103,
+  "globals": {
+   "org-support-shift-select": false,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "text-down-nil",
+  "keys": "S-<down>",
+  "point": 103,
+  "globals": {
+   "org-support-shift-select": false,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "text-right-twice-nil",
+  "keys": "S-<right> S-<right>",
+  "point": 103,
+  "globals": {
+   "org-support-shift-select": false,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "text-right-then-move-nil",
+  "keys": "S-<right> S-<right> C-f",
+  "point": 103,
+  "globals": {
+   "org-support-shift-select": false,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "text-right-count-nil",
+  "keys": "C-u 3 S-<right>",
+  "point": 103,
+  "globals": {
+   "org-support-shift-select": false,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "name": "heading-right-nil",
+  "keys": "S-<right>",
+  "point": 0,
+  "globals": {
+   "org-support-shift-select": false,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "heading-up-nil",
+  "keys": "S-<up>",
+  "point": 0,
+  "globals": {
+   "org-support-shift-select": false,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "name": "heading-region-nil",
+  "keys": "C-SPC C-f S-<right>",
+  "point": 0,
+  "globals": {
+   "org-support-shift-select": false,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "item-bullet-nil",
+  "keys": "S-<right>",
+  "point": 125,
+  "globals": {
+   "org-support-shift-select": false,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "item-text-nil",
+  "keys": "C-f C-f C-f S-<right>",
+  "point": 125,
+  "globals": {
+   "org-support-shift-select": false,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "item-up-nil",
+  "keys": "S-<up>",
+  "point": 131,
+  "globals": {
+   "org-support-shift-select": false,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "property-right-nil",
+  "keys": "S-<right>",
+  "point": 25,
+  "globals": {
+   "org-support-shift-select": false,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "property-left-nil",
+  "keys": "S-<left>",
+  "point": 25,
+  "globals": {
+   "org-support-shift-select": false,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "table-right-nil",
+  "keys": "C-f C-f S-<right>",
+  "point": 137,
+  "globals": {
+   "org-support-shift-select": false,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "timestamp-up-nil",
+  "keys": "S-<up>",
+  "point": 161,
+  "globals": {
+   "org-support-shift-select": false,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "control-right-text-nil",
+  "keys": "C-S-<right>",
+  "point": 103,
+  "globals": {
+   "org-support-shift-select": false,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "control-right-heading-nil",
+  "keys": "C-S-<right>",
+  "point": 0,
+  "globals": {
+   "org-support-shift-select": false,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "text-right-t",
+  "keys": "S-<right>",
+  "point": 103,
+  "globals": {
+   "org-support-shift-select": true,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "text-left-t",
+  "keys": "C-f C-f S-<left>",
+  "point": 103,
+  "globals": {
+   "org-support-shift-select": true,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "text-up-t",
+  "keys": "S-<up>",
+  "point": 103,
+  "globals": {
+   "org-support-shift-select": true,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "text-down-t",
+  "keys": "S-<down>",
+  "point": 103,
+  "globals": {
+   "org-support-shift-select": true,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "text-right-twice-t",
+  "keys": "S-<right> S-<right>",
+  "point": 103,
+  "globals": {
+   "org-support-shift-select": true,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "text-right-then-move-t",
+  "keys": "S-<right> S-<right> C-f",
+  "point": 103,
+  "globals": {
+   "org-support-shift-select": true,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "text-right-count-t",
+  "keys": "C-u 3 S-<right>",
+  "point": 103,
+  "globals": {
+   "org-support-shift-select": true,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "name": "heading-right-t",
+  "keys": "S-<right>",
+  "point": 0,
+  "globals": {
+   "org-support-shift-select": true,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "heading-up-t",
+  "keys": "S-<up>",
+  "point": 0,
+  "globals": {
+   "org-support-shift-select": true,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "heading-region-t",
+  "keys": "C-SPC C-f S-<right>",
+  "point": 0,
+  "globals": {
+   "org-support-shift-select": true,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "item-bullet-t",
+  "keys": "S-<right>",
+  "point": 125,
+  "globals": {
+   "org-support-shift-select": true,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "item-text-t",
+  "keys": "C-f C-f C-f S-<right>",
+  "point": 125,
+  "globals": {
+   "org-support-shift-select": true,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "item-up-t",
+  "keys": "S-<up>",
+  "point": 131,
+  "globals": {
+   "org-support-shift-select": true,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "property-right-t",
+  "keys": "S-<right>",
+  "point": 25,
+  "globals": {
+   "org-support-shift-select": true,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "property-left-t",
+  "keys": "S-<left>",
+  "point": 25,
+  "globals": {
+   "org-support-shift-select": true,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "table-right-t",
+  "keys": "C-f C-f S-<right>",
+  "point": 137,
+  "globals": {
+   "org-support-shift-select": true,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "timestamp-up-t",
+  "keys": "S-<up>",
+  "point": 161,
+  "globals": {
+   "org-support-shift-select": true,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "control-right-text-t",
+  "keys": "C-S-<right>",
+  "point": 103,
+  "globals": {
+   "org-support-shift-select": true,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "control-right-heading-t",
+  "keys": "C-S-<right>",
+  "point": 0,
+  "globals": {
+   "org-support-shift-select": true,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "text-right-always",
+  "keys": "S-<right>",
+  "point": 103,
+  "globals": {
+   "org-support-shift-select": "'always",
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "text-left-always",
+  "keys": "C-f C-f S-<left>",
+  "point": 103,
+  "globals": {
+   "org-support-shift-select": "'always",
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "text-up-always",
+  "keys": "S-<up>",
+  "point": 103,
+  "globals": {
+   "org-support-shift-select": "'always",
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "text-down-always",
+  "keys": "S-<down>",
+  "point": 103,
+  "globals": {
+   "org-support-shift-select": "'always",
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "text-right-twice-always",
+  "keys": "S-<right> S-<right>",
+  "point": 103,
+  "globals": {
+   "org-support-shift-select": "'always",
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "text-right-then-move-always",
+  "keys": "S-<right> S-<right> C-f",
+  "point": 103,
+  "globals": {
+   "org-support-shift-select": "'always",
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "text-right-count-always",
+  "keys": "C-u 3 S-<right>",
+  "point": 103,
+  "globals": {
+   "org-support-shift-select": "'always",
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "heading-right-always",
+  "keys": "S-<right>",
+  "point": 0,
+  "globals": {
+   "org-support-shift-select": "'always",
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "heading-up-always",
+  "keys": "S-<up>",
+  "point": 0,
+  "globals": {
+   "org-support-shift-select": "'always",
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "heading-region-always",
+  "keys": "C-SPC C-f S-<right>",
+  "point": 0,
+  "globals": {
+   "org-support-shift-select": "'always",
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "item-bullet-always",
+  "keys": "S-<right>",
+  "point": 125,
+  "globals": {
+   "org-support-shift-select": "'always",
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "item-text-always",
+  "keys": "C-f C-f C-f S-<right>",
+  "point": 125,
+  "globals": {
+   "org-support-shift-select": "'always",
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "item-up-always",
+  "keys": "S-<up>",
+  "point": 131,
+  "globals": {
+   "org-support-shift-select": "'always",
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "property-right-always",
+  "keys": "S-<right>",
+  "point": 25,
+  "globals": {
+   "org-support-shift-select": "'always",
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "property-left-always",
+  "keys": "S-<left>",
+  "point": 25,
+  "globals": {
+   "org-support-shift-select": "'always",
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "table-right-always",
+  "keys": "C-f C-f S-<right>",
+  "point": 137,
+  "globals": {
+   "org-support-shift-select": "'always",
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "timestamp-up-always",
+  "keys": "S-<up>",
+  "point": 161,
+  "globals": {
+   "org-support-shift-select": "'always",
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "control-right-text-always",
+  "keys": "C-S-<right>",
+  "point": 103,
+  "globals": {
+   "org-support-shift-select": "'always",
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "control-right-heading-always",
+  "keys": "C-S-<right>",
+  "point": 0,
+  "globals": {
+   "org-support-shift-select": "'always",
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "property-checkbox",
+  "keys": "S-<right>",
+  "point": 64,
+  "globals": {
+   "org-support-shift-select": true,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "property-only-one",
+  "keys": "S-<right>",
+  "point": 75,
+  "globals": {
+   "org-support-shift-select": true,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "property-none",
+  "keys": "S-<right>",
+  "point": 37,
+  "globals": {
+   "org-support-shift-select": true,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "property-twice",
+  "keys": "S-<right> S-<right> S-<right>",
+  "point": 25,
+  "globals": {
+   "org-support-shift-select": true,
+   "org-edit-timestamp-down-means-later": false
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "timestamp-down-means-later",
+  "keys": "S-<down>",
+  "point": 161,
+  "globals": {
+   "org-support-shift-select": true,
+   "org-edit-timestamp-down-means-later": true
+  }
+ },
+ {
+  "text": "* TODO Task\n:PROPERTIES:\n:Color: red\n:Color_ALL: red green blue\n:Done: [ ]\n:Solo: x\n:Solo_ALL: x\n:END:\nPlain text line here.\n- one\n- two\n| a | b |\n| c | d |\nAt <2026-11-24 Tue> today.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "text-right-mode-off",
+  "keys": "S-<right>",
+  "point": 103,
+  "globals": {
+   "org-support-shift-select": false,
+   "org-edit-timestamp-down-means-later": false,
+   "shift-select-mode": false
+  }
+ }
+]

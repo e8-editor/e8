@@ -402,8 +402,22 @@ function replaceText(start: number, end: number, text: string): void {
   e8.gotoChar(p);
 }
 
+/** Org's error for a shifted key with nothing to do, as org-shiftselect-error says it, by whether shift-select-mode is on. */
 function shiftSelectError(): never {
-  throw new Error("To use shift-selection with Org mode, customize \u2018org-support-shift-select\u2019");
+  if (truthy(e8.variable("shift-select-mode") ?? true)) e8.userError("To use shift-selection with Org mode, customize \u2018org-support-shift-select\u2019");
+  e8.userError("This command works only in special context like headlines or timestamps");
+}
+
+/** Moves with COMMAND as a shifted key would, starting or extending a region, as org-call-for-shift-select binds this-command-keys-shift-translated. */
+function callForShiftSelect(command: e8.CommandName): void {
+  e8.handleShiftSelection(true);
+  e8.callWithPrefix(e8.prefixArg() ?? null, command);
+}
+
+/** org-support-shift-select's setting: off, on, or always. */
+function shiftSupport(): "off" | "on" | "always" {
+  const v = e8.variable("org-support-shift-select") ?? null;
+  return v === "always" || (typeof v === "symbol" && e8.symbolName(v) === "always") ? "always" : truthy(v) ? "on" : "off";
 }
 
 // TODO states
@@ -5729,14 +5743,14 @@ for (const [name, set, doc, motion] of [
     name,
     doc,
     run: () => {
-      const shiftSelect = e8.variable("org-support-shift-select") ?? null;
-      if (truthy(shiftSelect) && orgRegionActive()) e8.call(motion);
-      else if (shiftSelect !== "always" && headingHere()) {
+      const support = shiftSupport();
+      if (support !== "off" && orgRegionActive()) callForShiftSelect(motion);
+      else if (support !== "always" && headingHere()) {
         // As org-todo with nextset or previousset, over the region's headings too.
         const one = () => todo(1, undefined, false, { set, chosen: true });
         if (!forEachHeadingInRegion(one, { hiddenPoint: true })) one();
       }
-      else if (truthy(shiftSelect)) e8.call(motion);
+      else if (support !== "off") callForShiftSelect(motion);
       else shiftSelectError();
     },
   });
@@ -9480,14 +9494,48 @@ e8.defineCommand({
 });
 
 /**
- * What S-<left> and S-<right> do on a property, as
- * org-property-next-allowed-value does. E8 has no allowed values for
- * properties yet, so this is Org's error when none are defined.
+ * Sets the property on point's line to its next allowed value, or with
+ * PREVIOUS the one before, as org-property-next-allowed-value: of those
+ * NAME_ALL and the like give, or a checkbox's; the first after the last.
  */
-function nextAllowedValue(): never {
-  if (headingIndex(headings(), lineAt()) === undefined) backToHeading();
-  throw new Error("Allowed values for this property have not been defined");
+function propertyNextAllowedValue(previous = false): void {
+  const key = propertyAtPoint();
+  if (key === undefined) e8.userError("Not at a property");
+  const line = lineAt();
+  const value = /^[ \t]*:\S+?:(?:[ \t]+(.*?))?[ \t]*$/.exec(e8.lineText(line))?.[1] ?? "";
+  const all = headings();
+  const i = headingIndex(all, line);
+  // The heading first, as Org reads its components before the allowed values, so before the first it signals.
+  if (i === undefined) backToHeading();
+  let allowed = allowedAtPoint(key)?.values ?? (["[ ]", "[-]", "[X]"].includes(value) ? ["[ ]", "[X]"] : []);
+  if (allowed.length === 0) e8.userError("Allowed values for this property have not been defined");
+  if (previous) allowed = [...allowed].reverse();
+  const at = allowed.indexOf(value);
+  const next = (at >= 0 ? allowed[at + 1] : undefined) ?? allowed[0];
+  if (next === value) e8.userError("Only one allowed value for this property");
+  replaceText(e8.lineStart(line), e8.lineEnd(line), ` :${key}: ${next}`);
+  e8.call("org-indent-line");
+  e8.gotoChar(e8.lineStart(line));
+  e8.skipCharsForward(" \t");
+  // The running clock's effort too, as Org matches the task by its heading.
+  const effort = String(e8.variable("org-effort-property") ?? "Effort");
+  if (key === effort && i !== undefined && all[i].title === e8.variable("org-clock-current-task") && e8.fboundp("org-clock-update-mode-line")) {
+    e8.setVariable("org-clock-effort", next);
+    e8.funcall("org-clock-update-mode-line");
+  }
+  e8.runHooks("org-property-changed-functions", key, next);
 }
+
+e8.defineCommand({
+  name: "org-property-next-allowed-value",
+  doc: "Set the property on point's line to its next allowed value.",
+  run: () => propertyNextAllowedValue(false),
+});
+e8.defineCommand({
+  name: "org-property-previous-allowed-value",
+  doc: "Set the property on point's line to its previous allowed value.",
+  run: () => propertyNextAllowedValue(true),
+});
 
 /**
  * Whether a heading or item on point's line has folded headings or items
@@ -9534,66 +9582,96 @@ function clocktableTryShift(dir: "up" | "down" | "left" | "right"): boolean {
   return true;
 }
 
+for (const key of ["up", "down", "left", "right"]) {
+  e8.defineHook(`org-shift${key}-hook`, `Functions S-<${key}> in Org runs first, the first to give non-nil doing it.`);
+  e8.defineHook(`org-shift${key}-final-hook`, `Functions S-<${key}> in Org runs when nothing else it does applies, before selecting or its error.`);
+}
+e8.defineVariable({
+  name: "org-edit-timestamp-down-means-later",
+  doc: "Whether S-<down> on a timestamp makes it later and S-<up> earlier, the other way round from the default.",
+  value: false,
+});
+
+/**
+ * Org's S-<up> or S-<down>, as org-shiftup and org-shiftdown: its hook
+ * first, a region extended with org-support-shift-select, a timestamp, a
+ * heading's priority, an item, a clock table's block, a table's cell, its
+ * final hook, then selecting or Org's error.
+ */
+function shiftVertical(up: boolean): void {
+  const key = up ? "up" : "down";
+  const support = shiftSupport();
+  const motion = up ? "previous-line" : "next-line";
+  if (truthy(e8.runHookWithArgsUntilSuccess(`org-shift${key}-hook`))) return;
+  if (support !== "off" && orgRegionActive()) return callForShiftSelect(motion);
+  if (timestampHere()) {
+    const later = up !== truthy(e8.variable("org-edit-timestamp-down-means-later") ?? null);
+    return e8.callWithPrefix(e8.prefixArg(), later ? "org-timestamp-up" : "org-timestamp-down");
+  }
+  if (support !== "always" && truthy(e8.variable("org-priority-enable-commands") ?? true) && headingHere()) return e8.call(up ? "org-priority-up" : "org-priority-down");
+  if (support === "off" && itemHere()) return e8.call(up ? "org-previous-item" : "org-next-item");
+  if (clocktableTryShift(key)) return;
+  if (support !== "always" && atTableP()) return e8.call(up ? "org-table-move-cell-up" : "org-table-move-cell-down");
+  if (truthy(e8.runHookWithArgsUntilSuccess(`org-shift${key}-final-hook`))) return;
+  if (support !== "off") return callForShiftSelect(motion);
+  shiftSelectError();
+}
+
+/** Whether point is on an item's bullet, as org-at-item-bullet-p: not on a space, before the text after it. */
+function atItemBullet(): boolean {
+  const item = itemHere();
+  const c = e8.charAfter();
+  return item !== undefined && c !== " " && c !== "\t" && e8.point() < item.contentAt;
+}
+
+/**
+ * Org's S-<right> or S-<left>, as org-shiftright and org-shiftleft: its
+ * hook first, a region extended with org-support-shift-select, a
+ * timestamp, a heading's TODO state, a list's bullets, a property's value,
+ * a clock table's block, a table's cell, its final hook, then selecting or
+ * Org's error.
+ */
+function shiftHorizontal(right: boolean): void {
+  const key = right ? "right" : "left";
+  const support = shiftSupport();
+  const motion = right ? "forward-char" : "backward-char";
+  if (truthy(e8.runHookWithArgsUntilSuccess(`org-shift${key}-hook`))) return;
+  if (support !== "off" && orgRegionActive()) return callForShiftSelect(motion);
+  if (timestampHere()) return e8.callWithPrefix(e8.prefixArg(), right ? "org-timestamp-up-day" : "org-timestamp-down-day");
+  if (support !== "always" && headingHere()) {
+    // org-todo, which loops over the headings in an active region.
+    const one = () => todo(right ? 1 : -1, undefined, true, { chosen: true });
+    if (!forEachHeadingInRegion(one, { hiddenPoint: true })) one();
+    return;
+  }
+  if ((support === "on" && atItemBullet()) || (support === "off" && itemLine(lineAt()))) return right ? cycleListBullet() : cycleListBullet("previous");
+  if (support !== "always" && propertyAtPoint() !== undefined) return propertyNextAllowedValue(!right);
+  if (clocktableTryShift(key)) return;
+  if (support !== "always" && atTableP()) return e8.call(right ? "org-table-move-cell-right" : "org-table-move-cell-left");
+  if (truthy(e8.runHookWithArgsUntilSuccess(`org-shift${key}-final-hook`))) return;
+  if (support !== "off") return callForShiftSelect(motion);
+  shiftSelectError();
+}
+
 const shiftUp = e8.defineCommand({
   name: "org-shiftup",
-  doc: "S-<up> in Org: make a timestamp later, raise a heading's priority, or move to the previous item.",
-  run: () => {
-    if (timestampHere()) e8.callWithPrefix(e8.prefixArg(), "org-timestamp-up");
-    // Only while the priority commands work, as org-shiftup checks org-priority-enable-commands.
-    else if (truthy(e8.variable("org-priority-enable-commands") ?? true) && headingHere()) e8.call("org-priority-up");
-    else if (itemHere()) e8.call("org-previous-item");
-    else if (clocktableTryShift("up")) return;
-    else if (atTableP()) e8.call("org-table-move-cell-up");
-    else shiftSelectError();
-  },
+  doc: "S-<up> in Org: make a timestamp later, raise a heading's priority, move to the previous item, or select up with org-support-shift-select.",
+  run: () => shiftVertical(true),
 });
-
 const shiftDown = e8.defineCommand({
   name: "org-shiftdown",
-  doc: "S-<down> in Org: make a timestamp earlier, lower a heading's priority, or move to the next item.",
-  run: () => {
-    if (timestampHere()) e8.callWithPrefix(e8.prefixArg(), "org-timestamp-down");
-    // Only while the priority commands work, as org-shiftdown checks org-priority-enable-commands.
-    else if (truthy(e8.variable("org-priority-enable-commands") ?? true) && headingHere()) e8.call("org-priority-down");
-    else if (itemHere()) e8.call("org-next-item");
-    else if (clocktableTryShift("down")) return;
-    else if (atTableP()) e8.call("org-table-move-cell-down");
-    else shiftSelectError();
-  },
+  doc: "S-<down> in Org: make a timestamp earlier, lower a heading's priority, move to the next item, or select down with org-support-shift-select.",
+  run: () => shiftVertical(false),
 });
-
 const shiftRight = e8.defineCommand({
   name: "org-shiftright",
-  doc: "S-<right> in Org: move a timestamp a day on, change a heading to its next TODO state, or change list bullets.",
-  run: () => {
-    if (timestampHere()) e8.callWithPrefix(e8.prefixArg(), "org-timestamp-up-day");
-    // org-todo, which loops over the headings in an active region.
-    else if (headingHere()) {
-      if (!forEachHeadingInRegion(() => todo(1, undefined, true, { chosen: true }), { hiddenPoint: true })) todo(1, undefined, true, { chosen: true });
-    }
-    else if (itemLine(lineAt())) cycleListBullet();
-    else if (elementAt(e8.point())?.type === "node-property") nextAllowedValue();
-    else if (clocktableTryShift("right")) return;
-    else if (atTableP()) e8.call("org-table-move-cell-right");
-    else shiftSelectError();
-  },
+  doc: "S-<right> in Org: move a timestamp a day on, change a heading to its next TODO state, change list bullets, a property to its next allowed value, or select with org-support-shift-select.",
+  run: () => shiftHorizontal(true),
 });
-
 const shiftLeft = e8.defineCommand({
   name: "org-shiftleft",
-  doc: "S-<left> in Org: move a timestamp a day back, change a heading to its previous TODO state, or change list bullets.",
-  run: () => {
-    if (timestampHere()) e8.callWithPrefix(e8.prefixArg(), "org-timestamp-down-day");
-    // org-todo, which loops over the headings in an active region.
-    else if (headingHere()) {
-      if (!forEachHeadingInRegion(() => todo(-1, undefined, true, { chosen: true }), { hiddenPoint: true })) todo(-1, undefined, true, { chosen: true });
-    }
-    else if (itemLine(lineAt())) cycleListBullet("previous");
-    else if (elementAt(e8.point())?.type === "node-property") nextAllowedValue();
-    else if (clocktableTryShift("left")) return;
-    else if (atTableP()) e8.call("org-table-move-cell-left");
-    else shiftSelectError();
-  },
+  doc: "S-<left> in Org: move a timestamp a day back, change a heading to its previous TODO state, change list bullets, a property to its previous allowed value, or select with org-support-shift-select.",
+  run: () => shiftHorizontal(false),
 });
 
 function nothingUseful(): never {

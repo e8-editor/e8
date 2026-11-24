@@ -1726,6 +1726,11 @@ export function entryHeading(): Heading | undefined {
 
 /** The line of the drawer of the entry at point, its opening and closing, as org-get-property-block finds it: after the heading and planning, or before the first heading after the comments. */
 export function ownDrawer(): [number, number] | undefined {
+  // Widened, as org-get-property-block looks.
+  return e8.saveRestriction(() => (e8.widen(), ownDrawerWide()));
+}
+
+function ownDrawerWide(): [number, number] | undefined {
   const h = entryHeading();
   let line: number;
   if (h) {
