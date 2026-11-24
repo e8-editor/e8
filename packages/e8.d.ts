@@ -5244,17 +5244,20 @@ declare global {
       /**
        * Mark every agenda line of an entry for a bulk action with B.
        *
+       * @param count prefix count
+       *
        * Defined in packages/org-agenda.ts.
        */
-      "org-agenda-bulk-mark-all": [];
+      "org-agenda-bulk-mark-all": [count?: number];
       /**
        * Mark the agenda lines whose entries' text matches a regexp for a bulk action with B.
        *
        * @param regexp text
+       * @param count prefix count
        *
        * Defined in packages/org-agenda.ts.
        */
-      "org-agenda-bulk-mark-regexp": [regexp: string];
+      "org-agenda-bulk-mark-regexp": [regexp: string, count?: number];
       /**
        * Remove the marks the agenda shows, the entries staying marked.
        *
@@ -14385,6 +14388,12 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-use-time-grid": Value;
+      /**
+       * The days of the week that are the weekend, 0 for Sunday to 6 for Saturday, which C-u B S passes over.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-weekend-days": Value;
       /**
        * Where the agenda shows: reorganize-frame, this window and the agenda's; current-window; only-window; or other-window.
        *
