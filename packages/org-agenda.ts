@@ -46,7 +46,10 @@ import {
   smallYearToYear,
   subtreeRegion,
   timestampDatesAt,
+  planDateArgument,
+  readDateAnswer,
   shiftTimestampAt,
+  activeRangeAt,
   timestampTextAt,
   today,
   updateDblock,
@@ -1029,9 +1032,10 @@ function showAgenda(given: AgendaLines | ((maxChars: number) => AgendaLines), po
   for (const item of agendaLines) if (item) item.tagType ??= lineTagType;
   for (const item of agendaLines) {
     if (item && e8.getBuffer(item.buffer)) {
+      // Advancing past text inserted where they are, as org-agenda-new-marker makes them.
       item.marks = {
-        pos: e8.makeMarker(item.pos, { buffer: item.buffer }),
-        heading: e8.makeMarker(item.heading, { buffer: item.buffer }),
+        pos: e8.makeMarker(item.pos, { buffer: item.buffer, advances: true }),
+        heading: e8.makeMarker(item.heading, { buffer: item.buffer, advances: true }),
       };
     }
   }
@@ -3040,13 +3044,6 @@ function showNewTime(item: AgendaItem, stamp: string, prefix = ""): void {
   );
 }
 
-/** Runs a command as call-interactively does from the running one, with its prefix argument, the command's parameters read as keys would. */
-function interactively(command: e8.CommandName): void {
-  const arg = e8.prefixArg();
-  if (arg !== null && arg !== undefined) e8.setPrefixArg(arg);
-  e8.callInteractively(command);
-}
-
 /** Day number of a timestamp's date, YYYY-MM-DD. */
 const stampDay = (date: string): number => dayNumber({ year: Number(date.slice(0, 4)), month: Number(date.slice(5, 7)), day: Number(date.slice(8, 10)) });
 
@@ -3063,11 +3060,12 @@ function dateLater(n: number, what?: "hour" | "minute"): void {
     e8.widen();
     const pos = posOf(item);
     e8.gotoChar(pos);
-    const dates = timestampDatesAt(pos);
-    if (dates === undefined) e8.signal("error", "Cannot find time stamp");
-    if (truthy(e8.variable("org-agenda-move-date-from-past-immediately-to-today") ?? null) && n === 1 && what === undefined && dates.length === 1) {
+    const here = timestampTextAt(pos);
+    if (here === undefined) e8.signal("error", "Cannot find time stamp");
+    // Not an active range, both of whose ends move, as org-at-date-range-p takes only those.
+    if (truthy(e8.variable("org-agenda-move-date-from-past-immediately-to-today") ?? null) && n === 1 && what === undefined && !activeRangeAt(pos)) {
       const today = dayNumber(today_());
-      const day = stampDay(dates[0]);
+      const day = stampDay(here.slice(1, 11));
       if (today > day) n = today - day;
     }
     return shiftTimestampAt(pos, n, what ?? "day");
@@ -3148,8 +3146,13 @@ e8.defineCommand({
       const old = timestampTextAt(pos);
       if (old === undefined) e8.signal("error", "Cannot find time stamp");
       // The prefix argument passed on, as Org gives org-timestamp its ARG, an inactive one kept so.
-      interactively(old.startsWith("[") ? "org-timestamp-inactive" : "org-timestamp");
-      return timestampTextAt(pos) ?? "";
+      // Called as a function, with the prefix argument, this-command still the agenda's, as Org calls it, so a second > is not taken for C-c . twice, which makes a range.
+      const arg = e8.prefixArg() ?? null;
+      const date = isUniversal(arg, 2) ? "" : readDateAnswer("Date: ");
+      e8.callWithPrefix(arg, old.startsWith("[") ? "org-timestamp-inactive" : "org-timestamp", date);
+      const stamp = timestampTextAt(pos) ?? "";
+      // An inactive one with a repeater said with > at its end, as org-timestamp writes org-last-changed-timestamp so.
+      return /^\[.*[.+-]+[0-9]+[hdwmy]/.test(stamp) ? `${stamp.slice(0, -1)}>` : stamp;
     });
     showNewTime(item, stamp);
     e8.message(`Time stamp changed to ${stamp}`);
@@ -3164,17 +3167,18 @@ e8.defineCommand({
  */
 function agendaPlan(command: "org-schedule" | "org-deadline", prefix: string): void {
   const item = agendaItemHere();
-  // Scheduling moves the line's mark past what goes in where it points, as org-agenda-schedule makes it advance; a deadline does not.
-  if (command === "org-schedule" && item.marks) e8.setMarkerInsertionType(item.marks.pos, true);
   const said = e8.withCurrentBuffer(item.buffer, () => {
     e8.widen();
     e8.gotoChar(posOf(item));
-    interactively(command);
-    // What it returns, which is what it said.
-    return e8.currentMessage() ?? "nil";
+    const arg = e8.prefixArg() ?? null;
+    const delay = isUniversal(arg, 2);
+    // Called as a function, this-command still the agenda's, as Org calls it, so a log note it sets up is taken after this command.
+    e8.callWithPrefix(arg, command, planDateArgument(command === "org-schedule" ? "SCHEDULED" : "DEADLINE"));
+    // What it returns, which is what it said, or with C-u C-u nothing, as its delay or warning is put in with replace-match.
+    return delay ? undefined : e8.currentMessage();
   });
-  showNewTime(item, said, prefix);
-  e8.message(said);
+  showNewTime(item, said ?? "", prefix);
+  e8.message(said ?? "nil");
 }
 
 e8.defineCommand({

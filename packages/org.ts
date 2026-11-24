@@ -1802,15 +1802,16 @@ let pendingNote:
 
 /** The note set up by the command running, opened once it ends, as org-add-log-setup leaves it for post-command-hook. */
 let noteSetup:
-  | { heading: e8.Marker; purpose: string; state?: string; previous?: string; time: string; how: string; extra?: string; at?: e8.Marker; command?: string; depth: number }
+  | { heading: e8.Marker; purpose: string; state?: string; previous?: string; time: string; how: string; extra?: string; at?: e8.Marker; point?: e8.Marker; command?: string; depth: number }
   | undefined;
 
 /** How many notes have been set up, so a state change can tell whether its hook set up another, which replaces its own, as org-add-log-setup's one setup. */
 let setups = 0;
 
 /** Frees a setup's or a note's markers. */
-function freeNoteMarkers(n: { heading: e8.Marker; at?: e8.Marker; returnTo?: e8.Marker }): void {
+function freeNoteMarkers(n: { heading: e8.Marker; at?: e8.Marker; returnTo?: e8.Marker; point?: e8.Marker }): void {
   e8.deleteMarker(n.heading);
+  if (n.point !== undefined) e8.deleteMarker(n.point);
   if (n.at !== undefined) e8.deleteMarker(n.at);
   if (n.returnTo !== undefined) e8.deleteMarker(n.returnTo);
 }
@@ -1834,6 +1835,8 @@ export function addLogNote(headingLine: number, purpose: string, state?: string,
     how: opts.how ?? "note",
     extra: opts.extra,
     at: opts.at === undefined ? undefined : e8.makeMarker(opts.at),
+    // Where point was, which the entry's window shows while the note is taken, as org-log-note-marker.
+    point: e8.makeMarker(e8.point()),
     time: `[${formatTimestamp(today(true), true)}]`,
     command: e8.thisCommand(),
     depth: e8.recursionDepth(),
@@ -1882,7 +1885,7 @@ function openLogNote(): void {
     // The entry's buffer alone first, as org-display-buffer-full-frame, so the note shows beside it.
     e8.call("pop-to-buffer", source);
     e8.call("delete-other-windows");
-    e8.gotoChar(e8.markerPosition(setup.heading)!);
+    e8.gotoChar(e8.markerPosition(setup.point ?? setup.heading)!);
   }
   const what =
     {
@@ -6972,26 +6975,37 @@ function changeTimestamp(n: number, what?: string, updown = true): string {
 }
 
 /**
- * Moves the timestamp at P, or the date range it is in, by N of WHAT, a
- * day, hour or minute, as the agenda's org-agenda-date-later changes it
- * with org-timestamp-change, both ends of a range; returns what it wrote,
+ * Moves the timestamp at P, or the active date range it is in, by N of
+ * WHAT, a day, hour or minute, as the agenda's org-agenda-date-later
+ * changes it with org-timestamp-change, both ends of a range; returns what it wrote,
  * a range as its two timestamps joined by --.
  */
 export function shiftTimestampAt(p: number, n: number, what: string): string {
-  const all = tsMatches(lineAt(p));
-  for (let i = 0; i + 1 < all.length; i++) {
-    const [a, b] = [all[i], all[i + 1]];
-    if (/^-{1,3}$/.test(e8.bufferText(a.end, b.start)) && a.start <= p && p <= b.end) {
-      // The end first, so the start's change leaves its place alone.
-      e8.gotoChar(b.start);
-      const end = changeTimestamp(n, what, false);
-      e8.gotoChar(a.start);
-      return `${changeTimestamp(n, what, false)}--${end}`;
-    }
+  const range = activeRange(p);
+  if (range !== undefined) {
+    const [a, b] = range;
+    // The end first, so the start's change leaves its place alone.
+    e8.gotoChar(b.start);
+    const end = changeTimestamp(n, what, false);
+    e8.gotoChar(a.start);
+    return `${changeTimestamp(n, what, false)}--${end}`;
   }
   e8.gotoChar(p);
   return changeTimestamp(n, what, false);
 }
+
+/** The active date range P is in, its two timestamps, as org-at-date-range-p finds one without INACTIVE-OK. */
+function activeRange(p: number): [TsMatch, TsMatch] | undefined {
+  const all = tsMatches(lineAt(p));
+  for (let i = 0; i + 1 < all.length; i++) {
+    const [a, b] = [all[i], all[i + 1]];
+    if (a.text[0] === "<" && b.text[0] === "<" && /^-{1,3}$/.test(e8.bufferText(a.end, b.start)) && a.start <= p && p <= b.end) return [a, b];
+  }
+  return undefined;
+}
+
+/** Whether P is in an active date range, as org-at-date-range-p. */
+export const activeRangeAt = (p: number): boolean => activeRange(p) !== undefined;
 
 /** The timestamp at P, as org-at-timestamp-p finds it with lax, or undefined. */
 export function timestampTextAt(p: number): string | undefined {
@@ -7607,7 +7621,8 @@ function setPlanning(headingLine: number, keyword: string, ts: string | undefine
   updated = updated.replace(/[ \t]{2,}/g, " ").replace(/^[ \t]+|[ \t]+$/g, "");
   if (updated === text) return;
   const ls = e8.lineStart(next);
-  if (updated === "") replaceText(ls - 1, e8.lineEnd(next), "");
+  // The whole line and its newline, as Org deletes it, so what pointed into it is left at its start.
+  if (updated === "") replaceText(ls, Math.min(e8.pointMax(), e8.lineEnd(next) + 1), "");
   else replaceText(ls, e8.lineEnd(next), updated);
 }
 
@@ -7706,6 +7721,11 @@ function planLoopsOverNothing(): boolean {
   return forEachHeadingInRegion(() => {
     any = true;
   }) && !any;
+}
+
+/** The date org-schedule or org-deadline reads for KEYWORD as its argument: none with C-u or a region with no heading, as their interactive specs read it. */
+export function planDateArgument(keyword: "SCHEDULED" | "DEADLINE"): string {
+  return (Array.isArray(e8.prefixArg()) && !doublePrefix()) || planLoopsOverNothing() ? "" : readPlanDate(keyword);
 }
 
 const schedule = e8.defineCommand({
