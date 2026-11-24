@@ -5244,6 +5244,60 @@ declare global {
        */
       "org-agenda-clockreport-mode": [];
       /**
+       * Move the timestamp of the agenda line at point a day earlier, or with a number that many.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-date-earlier": [n?: number];
+      /**
+       * Move the time of the agenda line at point an hour earlier, or with a number that many.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-date-earlier-hours": [n?: number];
+      /**
+       * Move the time of the agenda line at point earlier by org-timestamp-rounding-minutes, or with a number that many times.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-date-earlier-minutes": [n?: number];
+      /**
+       * Move the timestamp of the agenda line at point a day later, or with a number that many.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-date-later": [n?: number];
+      /**
+       * Move the time of the agenda line at point an hour later, or with a number that many.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-date-later-hours": [n?: number];
+      /**
+       * Move the time of the agenda line at point later by org-timestamp-rounding-minutes, or with a number that many times.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-date-later-minutes": [n?: number];
+      /**
+       * Change the timestamp of the agenda line at point to a date read as org-timestamp reads it; with C-u, with the time too.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-date-prompt": [];
+      /**
        * Show a day's agenda, point's day. With a prefix argument, that day of the month.
        *
        * @param dayOfMonth raw prefix argument
@@ -5252,11 +5306,33 @@ declare global {
        */
       "org-agenda-day-view": [dayOfMonth?: PrefixArg | boolean];
       /**
+       * Give the entry of the agenda line at point a deadline, as org-deadline does; with C-u, remove it.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-deadline": [];
+      /**
        * Dim the agenda's blocked TODO entries again, or hide them, as the agenda marked them when it was made.
        *
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-dim-blocked-tasks": [];
+      /**
+       * Move the timestamp of the agenda line at point a day earlier; with C-u, an hour; with C-u C-u, by org-timestamp-rounding-minutes, as pressing it again then does too.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-do-date-earlier": [arg?: PrefixArg | boolean];
+      /**
+       * Move the timestamp of the agenda line at point a day later; with C-u, an hour; with C-u C-u, by org-timestamp-rounding-minutes, as pressing it again then does too.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-do-date-later": [arg?: PrefixArg | boolean];
       /**
        * Show the agenda for the days before it, by its span. With a prefix argument, that many spans back.
        *
@@ -5535,6 +5611,12 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-reset-view": [];
+      /**
+       * Schedule the entry of the agenda line at point, as org-schedule does; with C-u, unschedule it.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-schedule": [];
       /**
        * Set the tags of the entry the agenda line at point shows.
        *
@@ -13971,6 +14053,12 @@ declare global {
        * Keymap org-agenda-mode-map.
        */
       "org-agenda-mode-map": Value;
+      /**
+       * Whether S-<right> on an agenda line whose timestamp is in the past moves it to today, rather than a day on.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-move-date-from-past-immediately-to-today": Value;
       /**
        * Whether filters stay from one agenda view to the next.
        *

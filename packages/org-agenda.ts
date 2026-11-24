@@ -46,6 +46,11 @@ import {
   smallYearToYear,
   subtreeRegion,
   timestampDatesAt,
+  planDateArgument,
+  readDateAnswer,
+  shiftTimestampAt,
+  activeRangeAt,
+  timestampTextAt,
   today,
   updateDblock,
 } from "org";
@@ -765,7 +770,8 @@ function scanBuffer(): { cat: string; entries: Scanned[] } {
         inRange.push([m.index, m.index + m[0].length]);
         // Only active ones without org-agenda-include-inactive-timestamps, as org-tr-regexp matches.
         if (!inactive && (off || mixed)) continue;
-        ranges.push({ first: a.day, last: b.day, from: m[1], to: m[2], pos: at(l, text, m.index), ...(off ? { inactive: true } : {}) });
+        // Pointing after the range, where org-agenda-get-blocks' search leaves its marker.
+        ranges.push({ first: a.day, last: b.day, from: m[1], to: m[2], pos: at(l, text, m.index + m[0].length), ...(off ? { inactive: true } : {}) });
       }
       for (const m of allMatches(stamp, text)) {
         if (inRange.some(([a, b]) => m.index >= a && m.index < b)) continue;
@@ -1026,9 +1032,10 @@ function showAgenda(given: AgendaLines | ((maxChars: number) => AgendaLines), po
   for (const item of agendaLines) if (item) item.tagType ??= lineTagType;
   for (const item of agendaLines) {
     if (item && e8.getBuffer(item.buffer)) {
+      // Advancing past text inserted where they are, as org-agenda-new-marker makes them.
       item.marks = {
-        pos: e8.makeMarker(item.pos, { buffer: item.buffer }),
-        heading: e8.makeMarker(item.heading, { buffer: item.buffer }),
+        pos: e8.makeMarker(item.pos, { buffer: item.buffer, advances: true }),
+        heading: e8.makeMarker(item.heading, { buffer: item.buffer, advances: true }),
       };
     }
   }
@@ -2993,6 +3000,198 @@ e8.defineCommand({
   },
 });
 
+// Changing an entry's dates from the agenda, after org-agenda.el's
+// org-agenda-date-later, org-agenda-date-prompt, org-agenda-schedule and
+// org-agenda-deadline: the change is made in the Org file, and the line
+// says what it became, as org-agenda-show-new-time does, until the agenda
+// is made again.
+
+e8.defineVariable({
+  name: "org-agenda-move-date-from-past-immediately-to-today",
+  doc: "Whether S-<right> on an agenda line whose timestamp is in the past moves it to today, rather than a day on.",
+  value: true,
+});
+
+/**
+ * Shows STAMP, after PREFIX and =>, at the end of every agenda line that
+ * points where ITEM's does, over the line's last columns, as
+ * org-agenda-show-new-time does with a display property, a short line
+ * padded with spaces to reach them.
+ */
+function showNewTime(item: AgendaItem, stamp: string, prefix = ""): void {
+  const text = `${prefix} => ${stamp} `;
+  // As window-max-chars-per-line, a column short of the window's width.
+  const column = Math.max(1, (e8.windowSize()?.width ?? 80) - 1 - charCount(text));
+  const pos = posOf(item);
+  e8.withCurrentBuffer(agendaBuffer, () =>
+    e8.saveExcursion(() =>
+      e8.letBind({ "inhibit-read-only": true }, () => {
+        for (let l = agendaLines.length - 1; l >= 0; l--) {
+          const other = agendaLines[l];
+          if (!other || other.buffer !== item.buffer || posOf(other) !== pos) continue;
+          e8.removeTextProperty(e8.lineStart(l), e8.lineEnd(l), "display");
+          // To the column, spaces added to a short line, as org-move-to-column with force.
+          e8.gotoChar(e8.lineEnd(l));
+          if (e8.currentColumn() < column) e8.insert(" ".repeat(column - e8.currentColumn()));
+          else {
+            e8.gotoChar(e8.lineStart(l));
+            e8.moveToColumn(column);
+          }
+          e8.putTextProperty(e8.point() - 1, e8.lineEnd(l), "display", e8.propertize(text, { face: ["secondary-selection", "default"] }));
+        }
+      }),
+    ),
+  );
+}
+
+/** Day number of a timestamp's date, YYYY-MM-DD. */
+const stampDay = (date: string): number => dayNumber({ year: Number(date.slice(0, 4)), month: Number(date.slice(5, 7)), day: Number(date.slice(8, 10)) });
+
+/**
+ * Moves the timestamp of the agenda line at point N days on, or N of
+ * WHAT, as org-agenda-date-later: in the Org file, both ends of a range;
+ * a day on from the past goes to today, with
+ * org-agenda-move-date-from-past-immediately-to-today.
+ */
+function dateLater(n: number, what?: "hour" | "minute"): void {
+  checkAgendaType();
+  const item = agendaItemHere();
+  const stamp = e8.withCurrentBuffer(item.buffer, () => {
+    e8.widen();
+    const pos = posOf(item);
+    e8.gotoChar(pos);
+    const here = timestampTextAt(pos);
+    if (here === undefined) e8.signal("error", "Cannot find time stamp");
+    // Not an active range, both of whose ends move, as org-at-date-range-p takes only those.
+    if (truthy(e8.variable("org-agenda-move-date-from-past-immediately-to-today") ?? null) && n === 1 && what === undefined && !activeRangeAt(pos)) {
+      const today = dayNumber(today_());
+      const day = stampDay(here.slice(1, 11));
+      if (today > day) n = today - day;
+    }
+    return shiftTimestampAt(pos, n, what ?? "day");
+  });
+  showNewTime(item, stamp);
+  e8.message(`Time stamp changed to ${stamp}`);
+}
+
+/** The minutes S-<right> moves a time by, org-timestamp-rounding-minutes' second. */
+function roundingStep(): number {
+  const v = e8.variable("org-timestamp-rounding-minutes");
+  return Array.isArray(v) && typeof v[1] === "number" ? v[1] : typeof v === "number" ? v : 5;
+}
+
+for (const [name, sign, doc] of [
+  ["org-agenda-date-later", 1, "Move the timestamp of the agenda line at point a day later, or with a number that many."],
+  ["org-agenda-date-earlier", -1, "Move the timestamp of the agenda line at point a day earlier, or with a number that many."],
+] as const) {
+  e8.defineCommand({ name, doc, params: [{ name: "n", kind: "count" }], run: (n: number) => dateLater(sign * n) });
+}
+for (const [name, sign, what, doc] of [
+  ["org-agenda-date-later-hours", 1, "hour", "Move the time of the agenda line at point an hour later, or with a number that many."],
+  ["org-agenda-date-earlier-hours", -1, "hour", "Move the time of the agenda line at point an hour earlier, or with a number that many."],
+  ["org-agenda-date-later-minutes", 1, "minute", "Move the time of the agenda line at point later by org-timestamp-rounding-minutes, or with a number that many times."],
+  ["org-agenda-date-earlier-minutes", -1, "minute", "Move the time of the agenda line at point earlier by org-timestamp-rounding-minutes, or with a number that many times."],
+] as const) {
+  e8.defineCommand({
+    name,
+    doc,
+    params: [{ name: "n", kind: "count" }],
+    run: (n: number) => dateLater(sign * n * (what === "minute" ? roundingStep() : 1), what),
+  });
+}
+
+const HOUR_COMMANDS = ["org-agenda-date-later-hours", "org-agenda-date-earlier-hours"];
+const MINUTE_COMMANDS = ["org-agenda-date-later-minutes", "org-agenda-date-earlier-minutes"];
+
+/**
+ * S-<right> and S-<left> in the agenda, as org-agenda-do-date-later: a day
+ * on, or with C-u an hour and with C-u C-u the rounding minutes, which
+ * pressing it again goes on doing.
+ */
+function doDateLater(arg: e8.PrefixArg | null | undefined, sign: 1 | -1): void {
+  const last = e8.lastCommand() ?? "";
+  const later = sign > 0;
+  if (isUniversal(arg, 2) || MINUTE_COMMANDS.includes(last)) {
+    e8.setThisCommand(later ? "org-agenda-date-later-minutes" : "org-agenda-date-earlier-minutes");
+    dateLater(sign * roundingStep(), "minute");
+  } else if (isUniversal(arg, 1) || HOUR_COMMANDS.includes(last)) {
+    e8.setThisCommand(later ? "org-agenda-date-later-hours" : "org-agenda-date-earlier-hours");
+    dateLater(sign, "hour");
+  } else dateLater(sign * e8.prefixNumericValue(arg ?? null));
+}
+
+e8.defineCommand({
+  name: "org-agenda-do-date-later",
+  doc: "Move the timestamp of the agenda line at point a day later; with C-u, an hour; with C-u C-u, by org-timestamp-rounding-minutes, as pressing it again then does too.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg) => doDateLater(arg, 1),
+});
+e8.defineCommand({
+  name: "org-agenda-do-date-earlier",
+  doc: "Move the timestamp of the agenda line at point a day earlier; with C-u, an hour; with C-u C-u, by org-timestamp-rounding-minutes, as pressing it again then does too.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg) => doDateLater(arg, -1),
+});
+
+e8.defineCommand({
+  name: "org-agenda-date-prompt",
+  doc: "Change the timestamp of the agenda line at point to a date read as org-timestamp reads it; with C-u, with the time too.",
+  run: () => {
+    checkAgendaType();
+    const item = agendaItemHere();
+    const stamp = e8.withCurrentBuffer(item.buffer, () => {
+      e8.widen();
+      const pos = posOf(item);
+      e8.gotoChar(pos);
+      const old = timestampTextAt(pos);
+      if (old === undefined) e8.signal("error", "Cannot find time stamp");
+      // The prefix argument passed on, as Org gives org-timestamp its ARG, an inactive one kept so.
+      // Called as a function, with the prefix argument, this-command still the agenda's, as Org calls it, so a second > is not taken for C-c . twice, which makes a range.
+      const arg = e8.prefixArg() ?? null;
+      const date = isUniversal(arg, 2) ? "" : readDateAnswer("Date: ");
+      e8.callWithPrefix(arg, old.startsWith("[") ? "org-timestamp-inactive" : "org-timestamp", date);
+      const stamp = timestampTextAt(pos) ?? "";
+      // An inactive one with a repeater said with > at its end, as org-timestamp writes org-last-changed-timestamp so.
+      return /^\[.*[.+-]+[0-9]+[hdwmy]/.test(stamp) ? `${stamp.slice(0, -1)}>` : stamp;
+    });
+    showNewTime(item, stamp);
+    e8.message(`Time stamp changed to ${stamp}`);
+  },
+});
+
+/**
+ * Schedules the entry of the agenda line at point, or gives it a deadline,
+ * with COMMAND from where the line points, as org-agenda-schedule and
+ * org-agenda-deadline pass the prefix argument on; the line says what the
+ * command said.
+ */
+function agendaPlan(command: "org-schedule" | "org-deadline", prefix: string): void {
+  const item = agendaItemHere();
+  const said = e8.withCurrentBuffer(item.buffer, () => {
+    e8.widen();
+    e8.gotoChar(posOf(item));
+    const arg = e8.prefixArg() ?? null;
+    const delay = isUniversal(arg, 2);
+    // Called as a function, this-command still the agenda's, as Org calls it, so a log note it sets up is taken after this command.
+    e8.callWithPrefix(arg, command, planDateArgument(command === "org-schedule" ? "SCHEDULED" : "DEADLINE"));
+    // What it returns, which is what it said, or with C-u C-u nothing, as its delay or warning is put in with replace-match.
+    return delay ? undefined : e8.currentMessage();
+  });
+  showNewTime(item, said ?? "", prefix);
+  e8.message(said ?? "nil");
+}
+
+e8.defineCommand({
+  name: "org-agenda-schedule",
+  doc: "Schedule the entry of the agenda line at point, as org-schedule does; with C-u, unschedule it.",
+  run: () => agendaPlan("org-schedule", " S"),
+});
+e8.defineCommand({
+  name: "org-agenda-deadline",
+  doc: "Give the entry of the agenda line at point a deadline, as org-deadline does; with C-u, remove it.",
+  run: () => agendaPlan("org-deadline", " D"),
+});
+
 /**
  * Where the Nth line starting a day is from position FROM, as
  * re-search-forward finds ^\\S- with a count, back with a negative one,
@@ -3694,6 +3893,13 @@ for (const [key, command] of [
   ["|", "org-agenda-filter-remove-all"],
   ["<", "org-agenda-filter-by-category"],
   ["^", "org-agenda-filter-by-top-headline"],
+  ["S-<right>", "org-agenda-do-date-later"],
+  ["S-<left>", "org-agenda-do-date-earlier"],
+  ["C-c C-x <right>", "org-agenda-do-date-later"],
+  ["C-c C-x <left>", "org-agenda-do-date-earlier"],
+  [">", "org-agenda-date-prompt"],
+  ["C-c C-s", "org-agenda-schedule"],
+  ["C-c C-d", "org-agenda-deadline"],
 ] as const) e8.defineKey("org-agenda-mode-map", key, command);
 
 /** Toggles archives mode, as org-agenda-archives-mode: archived trees in and out, or with WITH-FILES the archive files too. */
