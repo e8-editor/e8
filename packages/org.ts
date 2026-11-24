@@ -11683,7 +11683,7 @@ const NO_OBJECTS = ["planning", "src-block", "example-block", "export-block", "f
  * Whether a position is in verbatim or code text (=...=, ~...~) or a
  * link, where org-element-context finds no timestamp object.
  */
-function inVerbatimOrLink(pos: number, part?: string, partStart = 0): boolean {
+export function inVerbatimOrLink(pos: number, part?: string, partStart = 0): boolean {
   const line = lineAt(pos);
   // Within part of the line, as a table's cell, whose ends are the text's ends.
   const text = part ?? e8.lineText(line);

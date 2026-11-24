@@ -5436,7 +5436,19 @@ declare global {
        */
       "org-agenda-toggle-archive-tag": [];
       /**
-       * Change how the agenda shows its entries, by a key: d, w, t, m and y for a day's, a week's, two weeks', a month's or a year's agenda, SPC for org-agenda-span's, a to toggle archived trees, A to toggle archive files too, q to abort.
+       * Toggle whether the agenda shows deadlines, org-agenda-include-deadlines, and rebuild it.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-toggle-deadlines": [];
+      /**
+       * Toggle the agenda's time grid, org-agenda-use-time-grid, and rebuild it.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-toggle-time-grid": [];
+      /**
+       * Change how the agenda shows its entries, by a key: d, w, t, m and y for a day's, a week's, two weeks', a month's or a year's agenda, SPC for org-agenda-span's, a to toggle archived trees, A to toggle archive files too, G the time grid, ! deadlines, [ to show inactive timestamps too, q to abort.
        *
        * Defined in packages/org-agenda.ts.
        */
@@ -13701,6 +13713,24 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-files": Value;
+      /**
+       * The text before an agenda item that an inactive timestamp brought in.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-inactive-leader": Value;
+      /**
+       * Whether the agenda shows deadlines; v ! toggles it.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-include-deadlines": Value;
+      /**
+       * Whether the agenda shows entries for their inactive timestamps too, as [ in an agenda turns on for one rebuilding.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-include-inactive-timestamps": Value;
       /**
        * Keymap org-agenda-mode-map.
        */
