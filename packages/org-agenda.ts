@@ -37,6 +37,7 @@ import {
 } from "org";
 import { setAgendaEntryHere, storeLink } from "ol";
 import { addArchiveFiles, archivingFromAgenda } from "org-archive";
+import { showContext, showEntry } from "org-fold";
 import { type Habit, buildGraph, habitUrgency, parseHabit } from "org-habit";
 import { getLocation, gotoLastStored, refile } from "org-refile";
 import { multiOccur } from "replace";
@@ -1778,10 +1779,15 @@ function doContextAction(): void {
   if (followMode && agendaLines[e8.lineOf(e8.point())] !== undefined) agendaShow();
 }
 
-/** Shows the entry the line at point shows in another window, staying in the agenda, as org-agenda-show. */
-function agendaShow(): void {
+/** Shows the entry the line at point shows in another window, staying in the agenda, as org-agenda-show: with FULL_ENTRY, all of the entry. */
+function agendaShow(fullEntry = false): void {
   const win = e8.selectedWindow();
   gotoItem();
+  if (fullEntry) {
+    const all = headings();
+    const i = headingIndex(all, e8.lineOf(e8.point()));
+    if (i !== undefined) showEntry(all, i);
+  }
   e8.selectWindow(win);
 }
 
@@ -1804,8 +1810,9 @@ const agendaPrevious = e8.defineCommand({
 
 e8.defineCommand({
   name: "org-agenda-show",
-  doc: "Show the entry the agenda line at point shows in another window, staying in the agenda.",
-  run: () => agendaShow(),
+  doc: "Show the entry the agenda line at point shows in another window, staying in the agenda; with C-u, all of the entry.",
+  params: [{ name: "fullEntry", kind: "prefix" }],
+  run: (fullEntry) => agendaShow(fullEntry !== null && fullEntry !== undefined),
 });
 
 const followModeCommand = e8.defineCommand({
@@ -1849,6 +1856,8 @@ function gotoItem(): void {
     // As push-mark says, but not in a keyboard macro.
     if (!e8.executingKbdMacro()) e8.message("Mark set");
     e8.gotoChar(posOf(item));
+    // Unfolded around it as org-fold-show-context-detail says for the agenda, as org-agenda-goto shows it.
+    showContext("agenda");
     // At the heading's title, as org-agenda-goto leaves it.
     const heading = headingOf(item);
     const h = headings().find((x) => x.start === heading);
@@ -2113,6 +2122,11 @@ e8.defineMajorMode({
   bindings: {
     n: agendaNext,
     p: agendaPrevious,
+    // And whatever moves by lines elsewhere, as org-agenda-mode-map takes over next-line's and previous-line's keys.
+    "C-n": agendaNext,
+    "C-p": agendaPrevious,
+    "<down>": agendaNext,
+    "<up>": agendaPrevious,
     RET: agendaSwitchTo,
     TAB: agendaGoto,
     t: agendaTodo,

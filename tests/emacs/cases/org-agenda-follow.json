@@ -265,5 +265,125 @@
    "org-agenda-start-with-follow-mode": false
   },
   "keys": "F n n n n n n n n n n n n n"
+ },
+ {
+  "text": "* Work\n** TODO Write report\nSCHEDULED: <2026-10-28 Wed>\nReport body.\n** Meeting <2026-10-28 Wed 10:00>\nMeeting body.\n*** Sub\nsub body\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "follow-folded-show",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false
+  },
+  "keys": "C-x o <backtab> C-x o F n C-x o"
+ },
+ {
+  "text": "* Work\n** TODO Write report\nSCHEDULED: <2026-10-28 Wed>\nReport body.\n** Meeting <2026-10-28 Wed 10:00>\nMeeting body.\n*** Sub\nsub body\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "goto-folded-show",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false
+  },
+  "keys": "C-x o <backtab> C-x o n TAB"
+ },
+ {
+  "text": "* Work\n** TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "follow-c-n",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false
+  },
+  "keys": "F C-n C-n"
+ },
+ {
+  "text": "* Work\n** TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "follow-c-p",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false
+  },
+  "keys": "F C-n C-n C-p"
+ },
+ {
+  "text": "* Work\n** TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "follow-down",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false
+  },
+  "keys": "F <down> <down>"
+ },
+ {
+  "text": "* Work\n** TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-28 Wed 10:00>\n* Home\n** Lunch <2026-10-29 Thu 12:30>\nSome text.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "follow-up",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false
+  },
+  "keys": "F <down> <down> <up>"
  }
 ]
