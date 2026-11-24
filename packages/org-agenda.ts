@@ -388,6 +388,8 @@ interface AgendaItem {
   blocked?: "dim" | "hide";
   /** The kind of line it is for its tags, as the item maker that made it names it. */
   tagType?: TagType;
+  /** Its entry's effort in minutes when the agenda was made, as the line's effort-minutes property. */
+  effort?: number;
 }
 
 /** Where the line's entry is now: its marker's place, as Org's org-marker follows edits. */
@@ -540,12 +542,19 @@ function withoutPrefixTime(text: string, dotime: string): string {
   return text.slice(0, at) + text.slice(end);
 }
 
+/** The buffers the agenda visited that were not open, as org-agenda-new-buffers, for x to kill: the buffers themselves, so one killed and visited again is left. */
+let agendaNewBuffers: e8.Buffer[] = [];
+
 /** The buffers of org-agenda-files, or of FILES, visited if need be. */
 function agendaBuffers(files = agendaFilesIfMode()): string[] {
   // Relative names are in org-directory, and directories stand for their Org files, as org-agenda-files expands them.
   // Each file's TAGS lines read again, as org-agenda-prepare-buffers does with org-set-regexps-and-options.
   return files.map((file) => {
+    const before = new Set(e8.bufferList());
     const buffer = e8.findFileNoselect(file);
+    // One it visited, as org-get-agenda-file-buffer pushes it.
+    const visited = e8.getBuffer(buffer);
+    if (!before.has(buffer) && visited !== undefined && !agendaNewBuffers.some((b) => b.id === visited.id)) agendaNewBuffers.unshift(visited);
     e8.withCurrentBuffer(buffer, () => {
       if (e8.derivedModeP("org-mode")) storeTagsLines();
     });
@@ -1030,6 +1039,8 @@ function showAgenda(given: AgendaLines | ((maxChars: number) => AgendaLines), po
   }
   agendaLines = lines.map((l) => l.item);
   for (const item of agendaLines) if (item) item.tagType ??= lineTagType;
+  // Each line's effort as it was then, as its effort-minutes property keeps it, though the entry's changes, as with e.
+  for (const item of agendaLines) if (item) item.effort = readEffort(item);
   for (const item of agendaLines) {
     if (item && e8.getBuffer(item.buffer)) {
       // Advancing past text inserted where they are, as org-agenda-new-marker makes them.
@@ -1052,10 +1063,20 @@ function showAgenda(given: AgendaLines | ((maxChars: number) => AgendaLines), po
   if (setup === undefined || setup === null || setup === "reorganize-frame") fitAgendaWindow(lines.length);
 }
 
+/** The windows before the agenda was shown, as org-agenda-pre-window-conf, put back on quitting with org-agenda-restore-windows-after-quit. */
+let preAgendaWindows: e8.WindowConfiguration | undefined;
+
 /** Shows the agenda's buffer as org-agenda-window-setup says, unless the selected window shows it. */
 function placeAgendaWindow(): void {
   const setup = e8.variable("org-agenda-window-setup");
   if (e8.windowBuffer() === agendaBuffer) return;
+  // Saved unless a window shows the agenda already, which is selected, as org-agenda-prepare-window.
+  const shown = e8.windowList().find((w) => e8.windowBuffer(w) === agendaBuffer);
+  if (shown !== undefined) {
+    e8.selectWindow(shown);
+    return;
+  }
+  preAgendaWindows = e8.currentWindowConfiguration();
   if (setup === "current-window") e8.call("switch-to-buffer", agendaBuffer);
   else if (setup === "only-window") {
     e8.call("delete-other-windows");
@@ -1990,6 +2011,57 @@ function atEntry(command: e8.CommandName, interactive = true): void {
   redrawEntry(item);
 }
 
+/**
+ * Runs COMMAND interactively at the agenda line's heading, or with AT_MARKER
+ * where the line points, in the entry's buffer widened, its context shown,
+ * as org-agenda-set-effort, org-agenda-set-property and org-agenda-add-note
+ * do; with REDRAW, the entry's lines written again after it.
+ */
+function atEntryShown(command: e8.CommandName | (() => void), opts: { atMarker?: boolean; redraw?: boolean; asFunction?: boolean } = {}): void {
+  const item = agendaItemHere();
+  e8.withCurrentBuffer(item.buffer, () => {
+    e8.widen();
+    e8.gotoChar(opts.atMarker ? posOf(item) : headingOf(item));
+    showContext("agenda");
+    if (typeof command === "function") command();
+    // org-add-note called as a function, so the note it sets up is taken after this command.
+    else if (opts.asFunction) e8.call(command);
+    else {
+      // With the agenda command's prefix argument, as call-interactively hands on current-prefix-arg.
+      const arg = e8.prefixArg();
+      if (arg !== null && arg !== undefined) e8.setPrefixArg(arg);
+      e8.callInteractively(command);
+    }
+  });
+  if (opts.redraw) redrawEntry(item);
+}
+
+e8.defineCommand({
+  name: "org-agenda-set-effort",
+  doc: "Set the effort of the entry the agenda line at point shows, as org-set-effort does.",
+  run: () => atEntryShown("org-set-effort", { redraw: true }),
+});
+e8.defineCommand({
+  name: "org-agenda-set-property",
+  doc: "Set a property of the entry the agenda line at point shows, as org-set-property does.",
+  // Its property and value read here, in the entry's buffer, where org-set-property then sets them.
+  run: () => atEntryShown(() => {
+    const property = e8.readString("Property: ");
+    const value = e8.readString("Value: ");
+    e8.call("org-set-property", property, value);
+  }),
+});
+e8.defineCommand({
+  name: "org-agenda-add-note",
+  doc: "Add a note to the entry the agenda line at point shows, written in *Org Note*, as org-add-note does.",
+  run: () => atEntryShown("org-add-note", { atMarker: true, asFunction: true }),
+});
+e8.defineCommand({
+  name: "org-agenda-ctrl-c-ctrl-c",
+  doc: "Set the tags of the entry the agenda line at point shows, as : does.",
+  run: () => e8.call("org-agenda-set-tags"),
+});
+
 for (const [name, command, doc] of [
   ["org-agenda-clock-in", "org-clock-in", "Start a clock on the entry the agenda line at point shows."],
   ["org-agenda-set-tags", "org-set-tags-command", "Set the tags of the entry the agenda line at point shows."],
@@ -2520,8 +2592,11 @@ function lineTxt(item: AgendaItem, line: number): string {
   return e8.lineText(line).slice(prefix.length);
 }
 
-/** The effort of an agenda line's entry in minutes, as its txt's effort-minutes property, or undefined; the search view's lines have none. */
-function lineEffort(item: AgendaItem): number | undefined {
+/** The effort of an agenda line's entry in minutes when the agenda was made, as its txt's effort-minutes property, or undefined. */
+const lineEffort = (item: AgendaItem): number | undefined => item.effort ?? undefined;
+
+/** The effort of an agenda line's entry in minutes, or undefined; the search view's lines have none, as org-search-view gives them none. */
+function readEffort(item: AgendaItem): number | undefined {
   if (agendaView.kind === "search") return undefined;
   return e8.withCurrentBuffer(item.buffer, () =>
     widened(() => {
@@ -3675,12 +3750,61 @@ const yearView = e8.defineCommand({
   },
 });
 
+e8.defineVariable({
+  name: "org-agenda-restore-windows-after-quit",
+  doc: "Whether leaving the agenda puts back the windows as they were before it was shown.",
+  value: false,
+});
+
+/**
+ * Leaves the agenda, as org-agenda--quit: the windows put back as they
+ * were with org-agenda-restore-windows-after-quit, else its window
+ * deleted unless it is the only one or the agenda was shown in it, and
+ * its buffer killed.
+ */
+function quitAgenda(): void {
+  const buffer = e8.bufferName();
+  const setup = e8.variable("org-agenda-window-setup");
+  if (truthy(e8.variable("org-agenda-restore-windows-after-quit") ?? null) && preAgendaWindows !== undefined) {
+    const windows = preAgendaWindows;
+    preAgendaWindows = undefined;
+    e8.setWindowConfiguration(windows);
+  } else if (setup !== "current-window" && e8.windowList().length > 1) e8.deleteWindow();
+  e8.call("kill-buffer", buffer);
+  archivesMode = null;
+}
+
 const agendaQuit = e8.defineCommand({
   name: "org-agenda-quit",
-  doc: "Leave the agenda: its window goes, or another buffer takes its place.",
+  doc: "Leave the agenda: its window goes, or with org-agenda-restore-windows-after-quit the windows are put back as they were, and its buffer is killed.",
+  run: quitAgenda,
+});
+e8.defineCommand({
+  name: "org-agenda-Quit",
+  doc: "Leave the agenda, killing its buffer, as q does.",
+  run: quitAgenda,
+});
+e8.defineCommand({
+  name: "org-agenda-exit",
+  doc: "Leave the agenda, killing the Org buffers it visited that were not open, asking to save those that changed.",
   run: () => {
-    if (e8.windowList().length > 1) e8.deleteWindow();
-    else e8.call("switch-to-buffer", "");
+    // As org-release-buffers: saved if the user agrees, then killed.
+    for (const visited of agendaNewBuffers) {
+      const buffer = visited.name;
+      if (!visited.live || buffer === undefined) continue;
+      const file = e8.withCurrentBuffer(buffer, () => e8.bufferFileName());
+      if (e8.bufferModifiedP(buffer) && file && e8.yOrNP(`Save file ${file}? `)) e8.withCurrentBuffer(buffer, () => e8.call("save-buffer"));
+      // Still changed, it is killed only if the user says so, as kill-buffer asks in an interactive Emacs.
+      if (e8.bufferModifiedP(buffer) && file) {
+        const answer = e8.readAnswer(`Buffer ${buffer} modified; kill anyway? `, ["yes", "no", "save and then kill"]);
+        if (answer === "no") continue;
+        if (answer === "save and then kill") e8.withCurrentBuffer(buffer, () => e8.call("save-buffer"));
+        else e8.withCurrentBuffer(buffer, () => e8.restoreBufferModifiedP(null));
+      }
+      e8.call("kill-buffer", buffer);
+    }
+    agendaNewBuffers = [];
+    quitAgenda();
   },
 });
 
@@ -3722,7 +3846,8 @@ e8.defineMajorMode({
     y: yearView,
     ".": agendaToday,
     q: agendaQuit,
-    x: agendaQuit,
+    x: "org-agenda-exit",
+    Q: "org-agenda-Quit",
     I: "org-agenda-clock-in",
     O: "org-agenda-clock-out",
     X: "org-agenda-clock-cancel",
@@ -3900,6 +4025,12 @@ for (const [key, command] of [
   [">", "org-agenda-date-prompt"],
   ["C-c C-s", "org-agenda-schedule"],
   ["C-c C-d", "org-agenda-deadline"],
+  ["e", "org-agenda-set-effort"],
+  ["C-c C-x e", "org-agenda-set-effort"],
+  ["C-c C-x p", "org-agenda-set-property"],
+  ["z", "org-agenda-add-note"],
+  ["C-c C-z", "org-agenda-add-note"],
+  ["C-c C-c", "org-agenda-ctrl-c-ctrl-c"],
 ] as const) e8.defineKey("org-agenda-mode-map", key, command);
 
 /** Toggles archives mode, as org-agenda-archives-mode: archived trees in and out, or with WITH-FILES the archive files too. */

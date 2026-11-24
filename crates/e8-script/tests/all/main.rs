@@ -79,6 +79,7 @@ mod org_agenda_archive;
 mod org_agenda_dates;
 mod org_agenda_entry_text;
 mod org_agenda_filters;
+mod org_agenda_quit;
 mod org_agenda_span;
 mod org_archive;
 mod org_src_block_faces;
