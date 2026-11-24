@@ -91,6 +91,11 @@ e8.defineVariable({
   value: true,
 });
 e8.defineVariable({
+  name: "org-agenda-start-with-follow-mode",
+  doc: "Whether a new agenda starts in follow mode, showing each line's entry in another window as point moves.",
+  value: null,
+});
+e8.defineVariable({
   name: "org-agenda-include-deadlines",
   doc: "Whether the agenda shows deadlines; v ! toggles it.",
   value: true,
@@ -865,7 +870,8 @@ function setModeName(): void {
   const archives = archivesMode === true ? " Archives" : archivesMode === "trees" ? ` :${tag}:` : "";
   e8.makeLocalVariable("mode-name");
   const ddl = truthy(e8.variable("org-agenda-include-deadlines") ?? null) ? " Ddl" : "";
-  e8.setVariable("mode-name", `Org-Agenda ${span}${ddl}${grid}${habit}${archives}`);
+  const follow = followMode ? " Follow" : "";
+  e8.setVariable("mode-name", `Org-Agenda ${span}${follow}${ddl}${grid}${habit}${archives}`);
 }
 
 /**
@@ -1435,6 +1441,7 @@ function redoView(): void {
 
 /** A new agenda's archives mode, org-agenda-start-with-archives-mode, as org-agenda-mode sets it for each new agenda but not when it is made again. */
 function freshAgenda(): void {
+  followMode = truthy(e8.variable("org-agenda-start-with-follow-mode") ?? null);
   const start = e8.variable("org-agenda-start-with-archives-mode") ?? null;
   archivesMode = start === true ? true : truthy(start) ? "trees" : null;
 }
@@ -1761,15 +1768,57 @@ function agendaItemHere(): AgendaItem {
   return item;
 }
 
+/** Whether the agenda shows each line's entry in another window as point moves, as org-agenda-follow-mode. */
+let followMode = false;
+/** The windows before follow mode was turned on, put back when it is turned off. */
+let preFollowWindows: e8.WindowConfiguration | undefined;
+
+/** Shows the entry of the line point moved to, in follow mode, as org-agenda-do-context-action. */
+function doContextAction(): void {
+  if (followMode && agendaLines[e8.lineOf(e8.point())] !== undefined) agendaShow();
+}
+
+/** Shows the entry the line at point shows in another window, staying in the agenda, as org-agenda-show. */
+function agendaShow(): void {
+  const win = e8.selectedWindow();
+  gotoItem();
+  e8.selectWindow(win);
+}
+
 const agendaNext = e8.defineCommand({
   name: "org-agenda-next-line",
-  doc: "Move to the next line of the agenda.",
-  run: () => e8.callWithPrefix(e8.prefixArg(), "next-line"),
+  doc: "Move to the next line of the agenda, showing its entry in follow mode.",
+  run: () => {
+    e8.callWithPrefix(e8.prefixArg(), "next-line");
+    doContextAction();
+  },
 });
 const agendaPrevious = e8.defineCommand({
   name: "org-agenda-previous-line",
-  doc: "Move to the previous line of the agenda.",
-  run: () => e8.callWithPrefix(e8.prefixArg(), "previous-line"),
+  doc: "Move to the previous line of the agenda, showing its entry in follow mode.",
+  run: () => {
+    e8.callWithPrefix(e8.prefixArg(), "previous-line");
+    doContextAction();
+  },
+});
+
+e8.defineCommand({
+  name: "org-agenda-show",
+  doc: "Show the entry the agenda line at point shows in another window, staying in the agenda.",
+  run: () => agendaShow(),
+});
+
+const followModeCommand = e8.defineCommand({
+  name: "org-agenda-follow-mode",
+  doc: "Toggle follow mode: moving to a line with n or p shows its entry in another window. Turning it off puts the windows back.",
+  run: () => {
+    if (!followMode) preFollowWindows = e8.currentWindowConfiguration();
+    followMode = !followMode;
+    if (!followMode && preFollowWindows !== undefined) e8.setWindowConfiguration(preFollowWindows);
+    setModeName();
+    doContextAction();
+    e8.message(`Follow mode is ${followMode ? "on" : "off"}`);
+  },
 });
 
 const agendaSwitchTo = e8.defineCommand({
@@ -1787,18 +1836,25 @@ const agendaSwitchTo = e8.defineCommand({
 const agendaGoto = e8.defineCommand({
   name: "org-agenda-goto",
   doc: "Show the entry the agenda line at point shows in another window, and go there.",
-  run: () => {
+  run: () => gotoItem(),
+});
+
+/** Goes to the entry the agenda line at point shows, in another window, as org-agenda-goto. */
+function gotoItem(): void {
+  {
     const item = agendaItemHere();
     e8.call("pop-to-buffer", item.buffer);
     e8.widen();
     e8.pushMark(e8.point());
+    // As push-mark says, but not in a keyboard macro.
+    if (!e8.executingKbdMacro()) e8.message("Mark set");
     e8.gotoChar(posOf(item));
     // At the heading's title, as org-agenda-goto leaves it.
     const heading = headingOf(item);
     const h = headings().find((x) => x.start === heading);
     if (h) e8.gotoChar(h.titleAt);
-  },
-});
+  }
+}
 
 const agendaTodo = e8.defineCommand({
   name: "org-agenda-todo",
@@ -2081,6 +2137,7 @@ e8.defineMajorMode({
     a: "org-agenda-archive-default-with-confirmation",
     v: "org-agenda-view-mode-dispatch",
     G: "org-agenda-toggle-time-grid",
+    F: "org-agenda-follow-mode",
     "!": "org-agenda-toggle-deadlines",
     "#": "org-agenda-dim-blocked-tasks",
     ...Object.fromEntries(queryCommands),
@@ -2240,7 +2297,7 @@ e8.defineCommand({
 });
 
 /** The view modes org-agenda-view-mode-dispatch offers that E8 does not have yet. */
-const VIEW_MODES_NOT_YET = "lLcFfRrEeD";
+const VIEW_MODES_NOT_YET = "lLcRrEeD";
 
 /** Rebuilds the agenda with its inactive timestamps too, this once, as [ and v [ do. */
 function includeInactiveOnce(): void {
@@ -2298,6 +2355,7 @@ e8.defineCommand({
     else if (char === "a") toggleArchivesMode(e8.prefixArg() !== null && e8.prefixArg() !== undefined);
     else if (char === "A") toggleArchivesMode(true);
     else if (char === "G") e8.callInteractively(toggleTimeGrid);
+    else if (char === "f" || char === "F") e8.callInteractively("org-agenda-follow-mode");
     else if (char === "!") e8.callInteractively(toggleDeadlines);
     else if (char === "[") includeInactiveOnce();
     else if (char === "q") e8.message("Abort");
