@@ -5412,11 +5412,13 @@ declare global {
        */
       "org-agenda-set-tags": [];
       /**
-       * Show the entry the agenda line at point shows in another window, staying in the agenda.
+       * Show the entry the agenda line at point shows in another window, staying in the agenda; with C-u, all of the entry.
+       *
+       * @param fullEntry raw prefix argument
        *
        * Defined in packages/org-agenda.ts.
        */
-      "org-agenda-show": [];
+      "org-agenda-show": [fullEntry?: PrefixArg | boolean];
       /**
        * Go to the entry the agenda line at point shows, in this window.
        *
