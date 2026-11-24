@@ -1,0 +1,272 @@
+[
+ {
+  "name": "cc-ts-paragraph",
+  "text": "Some <2026-11-24 Mon> text.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 8,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-heading",
+  "text": "* H <2026-11-24 Mon>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 7,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-item",
+  "text": "- an item <2026-11-24 Mon>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 13,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-table-cell",
+  "text": "| a | <2026-11-24 Mon> |\n| b | c |\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 9,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-table-cell-misaligned",
+  "text": "| a | <2026-11-24 Mon>   |\n| bbb | c |\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 9,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-table-first-cell",
+  "text": "| <2026-11-24 Mon> | x |\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 5,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-caption",
+  "text": "#+CAPTION: Made <2026-11-24 Mon>\n| a |\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 19,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-caption-alone",
+  "text": "#+CAPTION: Made <2026-11-24 Mon>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 19,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-date-keyword",
+  "text": "#+DATE: <2026-11-24 Mon>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 11,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-title-keyword",
+  "text": "#+TITLE: Notes <2026-11-24 Mon>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 18,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-author-keyword",
+  "text": "#+AUTHOR: Me <2026-11-24 Mon>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 16,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-other-keyword",
+  "text": "#+FOO: <2026-11-24 Mon>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 10,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-name-keyword",
+  "text": "#+NAME: <2026-11-24 Mon>\n| a |\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 11,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-comment",
+  "text": "# A comment <2026-11-24 Mon>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 15,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-fixed-width",
+  "text": ": fixed <2026-11-24 Mon>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 11,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-example-block",
+  "text": "#+begin_example\n<2026-11-24 Mon>\n#+end_example\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 19,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-export-block",
+  "text": "#+begin_export html\n<2026-11-24 Mon>\n#+end_export\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 23,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-comment-block",
+  "text": "#+begin_comment\n<2026-11-24 Mon>\n#+end_comment\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 19,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-verse-block",
+  "text": "#+begin_verse\n<2026-11-24 Mon>\n#+end_verse\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 17,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-quote-block",
+  "text": "#+begin_quote\n<2026-11-24 Mon>\n#+end_quote\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 17,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-verbatim",
+  "text": "Text =<2026-11-24 Mon>= here.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 9,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-code",
+  "text": "Text ~<2026-11-24 Mon>~ here.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 9,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-link-description",
+  "text": "Text [[https://example.com][<2026-11-24 Mon>]] here.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 31,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-drawer",
+  "text": ":NOTES:\n<2026-11-24 Mon>\n:END:\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 11,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-latex-environment",
+  "text": "\\begin{x}\n<2026-11-24 Mon>\n\\end{x}\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 13,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-footnote-definition",
+  "text": "[fn:1] Note <2026-11-24 Mon>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 15,
+  "keys": "C-c C-c",
+  "message": true
+ },
+ {
+  "name": "cc-ts-inactive-comment",
+  "text": "# A comment <2026-11-24 Mon>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 15,
+  "keys": "C-c C-c",
+  "message": true
+ }
+]

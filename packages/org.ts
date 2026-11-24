@@ -9572,6 +9572,12 @@ const ctrlCCtrlC = e8.defineCommand({
     // A LaTeX environment's text is raw: a table row or a checkbox in it is
     // no table or item, as Org's context there is the environment.
     if (elementAt(e8.point())?.type === "latex-environment") nothingUseful();
+    // A timestamp in a table's cell is an object Org's context finds, which
+    // it changes rather than aligning the table.
+    if (/^[ \t]*\|(?!-)/.test(text) && timestampHere() && !inVerbatimOrLink(e8.point())) {
+      changeTimestamp(0, "day");
+      return;
+    }
     if (elementAt(e8.point())?.type === "table") {
       // At the table's start, Org recalculates every row and does not align.
       e8.call("org-table-recalculate");
@@ -9584,6 +9590,11 @@ const ctrlCCtrlC = e8.defineCommand({
     }
     // On a list's affiliated keyword, as #+ATTR_ORG:, Org's context is the list.
     if (AFFILIATED.test(text)) {
+      // A caption's value is parsed, so a timestamp in it is one, which is changed.
+      if (/^[ \t]*#\+CAPTION(?:\[.*\])?:/i.test(text) && timestampHere() && affiliatedOfNext(line)) {
+        changeTimestamp(0, "day");
+        return;
+      }
       let l = line;
       while (l + 1 < e8.lineCount() && AFFILIATED.test(e8.lineText(l + 1))) l++;
       const first = l + 1;
@@ -9640,6 +9651,9 @@ const ctrlCCtrlC = e8.defineCommand({
     // object where it parses objects, as org-timestamp-change then finds no
     // part of one there.
     if (onRangeDashes(line)) e8.userError("Not at a timestamp");
+    // Raw text, verbatim or code, or a link's description, holds no
+    // timestamp object, so Org's context there can do nothing.
+    if (timestampHere() && (RAW_TIMESTAMP_TYPES.includes(elementAt(e8.point())?.type ?? "") || inVerbatimOrLink(e8.point()))) nothingUseful();
     if (timestampHere()) {
       changeTimestamp(0, "day");
       return;
@@ -11597,6 +11611,18 @@ function reTimestamp(type: string | null): string {
     default:
       return "\\<\\(?:\\(?:DEADLINE\\|SCHEDULED\\):\\) *<\\([^>]+\\)>";
   }
+}
+
+/** Elements whose text C-c C-c finds no timestamp object in, as org-element-context: their text is raw. */
+const RAW_TIMESTAMP_TYPES = ["comment", "comment-block", "example-block", "export-block", "fixed-width"];
+
+/** Whether the affiliated keywords around a line belong to an element after them, as Org's parser attaches them. */
+function affiliatedOfNext(line: number): boolean {
+  let l = line;
+  while (l + 1 < e8.lineCount() && AFFILIATED.test(e8.lineText(l + 1))) l++;
+  const first = l + 1;
+  const next = first < e8.lineCount() ? elementAt(e8.lineStart(first)) : undefined;
+  return next !== undefined && e8.lineStart(first) < e8.bufferSize() && next.begin === e8.lineStart(first) && next.type !== "headline";
 }
 
 /** Elements whose timestamps org-element-context does not find as timestamp objects: a planning line's are its own, and the others hold only characters. */
