@@ -12,4 +12,5 @@
 ["Saturday   31 October 2026","null"]
 ["  tasks:      Blank first ","\n    > \n    > \n    > \n    > text after blanks"]
 ["Sunday      1 November 2026","null"]
+["  tasks:      Hashes ","\n    > foo\n    > bar\n    > xx#yy\n    >   Ünïcödé — 日本語      tab"]
 ["  tasks:      Unclosed drawer ","null"]

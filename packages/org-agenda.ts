@@ -1953,10 +1953,23 @@ function agendaItemHere(): AgendaItem {
 /** Whether the agenda shows some of each entry's text under its line, as org-agenda-entry-text-mode. */
 let entryTextMode = false;
 
-/** A line's columns with its tabs made spaces, as untabify makes them with a tab-width of 8. */
+/** A line with its tabs made spaces to the next tab stop, by display columns, as untabify makes them with the default tab-width. */
 function untabify(line: string): string {
+  if (!line.includes("\t")) return line;
+  const v = e8.defaultValue("tab-width");
+  const width = typeof v === "number" && v > 0 ? v : 8;
   let out = "";
-  for (const c of line) out += c === "\t" ? " ".repeat(8 - (charCount(out) % 8)) : c;
+  let column = 0;
+  for (const c of line) {
+    if (c === "\t") {
+      const n = width - (column % width);
+      out += " ".repeat(n);
+      column += n;
+    } else {
+      out += c;
+      column += e8.charWidth(c.codePointAt(0) as number);
+    }
+  }
   return out;
 }
 
@@ -1973,7 +1986,8 @@ const indentationOf = (line: string): number => charCount(/^[ \t]*/.exec(untabif
 function someEntryText(heading: number, nLines: number, indent: string): string {
   const headLine = e8.lineOf(heading);
   const all = headings();
-  const next = all.find((h) => h.line > headLine);
+  const i = headingIndex(all, headLine);
+  const next = all[i === undefined ? 0 : i + 1];
   const from = Math.min(e8.lineEnd(headLine) + 1, e8.bufferSize());
   let txt = e8.bufferText(from, next ? next.start : e8.bufferSize());
   // Drawers, to their :END: or the text's end.
@@ -1984,8 +1998,18 @@ function someEntryText(heading: number, nLines: number, indent: string): string 
   if (Array.isArray(excluded)) {
     for (const re of excluded) {
       if (typeof re !== "string") continue;
+      // Searched for again from where each match was taken out, as Org's
+      // re-search-forward and replace-match go on in the changed text.
       const r = e8.emacsRegexp(re, { caseFold: true });
-      txt = txt.replace(new RegExp(r.source, r.flags.includes("g") ? r.flags : `${r.flags}g`), "");
+      const g = new RegExp(r.source, r.flags.includes("g") ? r.flags : `${r.flags}g`);
+      for (let from = 0; from <= txt.length; ) {
+        g.lastIndex = from;
+        const m = g.exec(txt);
+        if (!m) break;
+        txt = txt.slice(0, m.index) + txt.slice(m.index + m[0].length);
+        // An empty match would be found again for ever, where Emacs's loop never ends: go on past it.
+        from = m[0].length === 0 ? m.index + 1 : m.index;
+      }
     }
   }
   txt = txt.replace(/[ \t\n]+$/, "");
@@ -2024,6 +2048,8 @@ function withTempBuffer<T>(f: () => T): T {
 function entryTextShow(maxLines: number): void {
   const leaders = e8.variable("org-agenda-entry-text-leaders");
   const indent = typeof leaders === "string" ? leaders : "";
+  // No lines at all fails as Org's going back before the text's first line does.
+  if (maxLines <= 0 && agendaLines.some((item) => item !== undefined)) e8.signal("beginning-of-buffer", "Beginning of buffer");
   e8.withCurrentBuffer(agendaBuffer, () => {
     agendaLines.forEach((item, line) => {
       if (item === undefined) return;
@@ -2693,8 +2719,9 @@ e8.defineCommand({
     else if (char === "A") toggleArchivesMode(true);
     else if (char === "G") e8.callInteractively(toggleTimeGrid);
     else if (char === "f" || char === "F") e8.callInteractively("org-agenda-follow-mode");
-    else if (char === "l") e8.callInteractively(logModeCommand);
-    else if (char === "E" || char === "e") e8.callInteractively(entryTextModeCommand);
+    // With the prefix argument v had, as call-interactively hands on current-prefix-arg.
+    else if (char === "l") e8.callWithPrefix(e8.prefixArg(), logModeCommand);
+    else if (char === "E" || char === "e") e8.callWithPrefix(e8.prefixArg(), entryTextModeCommand);
     else if (char === "L") e8.callWithPrefix([4], logModeCommand);
     else if (char === "c") setLogMode("clockcheck");
     else if (char === "!") e8.callInteractively(toggleDeadlines);

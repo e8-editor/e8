@@ -36,6 +36,11 @@ seven
 
 
 text after blanks
+* Hashes <2026-11-01 Sun>
+##foo
+#bar
+xx#yy
+  Ünïcödé — 日本語	tab
 * Unclosed drawer <2026-11-01 Sun>
 :NOTES:
 never closed

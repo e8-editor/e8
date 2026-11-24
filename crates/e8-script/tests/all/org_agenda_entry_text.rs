@@ -76,5 +76,5 @@ fn entry_text_takes_its_leader() {
 
 #[test]
 fn entry_text_leaves_out_what_the_exclude_regexps_match() {
-    assert_eq!(agenda_with_entry_text(5, None, Some(r"first\|seven\|^.*two$")), recorded("exclude.jsonl"));
+    assert_eq!(agenda_with_entry_text(5, None, Some(r"first\|seven\|^.*two$\|^#")), recorded("exclude.jsonl"));
 }

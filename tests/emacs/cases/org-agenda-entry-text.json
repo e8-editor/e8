@@ -277,5 +277,95 @@
    "org-agenda-entry-text-maxlines": 1
   },
   "keys": "E"
+ },
+ {
+  "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\nSome text.\nMore text.\n* Meeting <2026-10-28 Wed 10:00>\nNotes.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "etxt-view-prefix",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-entry-text-maxlines": 5
+  },
+  "keys": "C-u 2 v",
+  "answers": [
+   "e"
+  ]
+ },
+ {
+  "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\nSome text.\nMore text.\n* Meeting <2026-10-28 Wed 10:00>\nNotes.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "log-view-prefix",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-entry-text-maxlines": 5
+  },
+  "keys": "C-u v",
+  "answers": [
+   "l"
+  ]
+ },
+ {
+  "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\nSome text.\nMore text.\n* Meeting <2026-10-28 Wed 10:00>\nNotes.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "etxt-zero",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-entry-text-maxlines": 5
+  },
+  "keys": "C-u 0 E"
+ },
+ {
+  "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\nSome text.\nMore text.\n* Meeting <2026-10-28 Wed 10:00>\nNotes.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "etxt-maxlines-zero",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-entry-text-maxlines": 0
+  },
+  "keys": "E"
  }
 ]
