@@ -116,6 +116,20 @@ impl Function {
         }
     }
 
+    /// A function held by its name, as a symbol on a hook is: it calls
+    /// whatever function the name has when it runs, and every one made for
+    /// the same name is the same function, so `remove-hook` with the name
+    /// takes off what `add-hook` or a hook's value put there.
+    pub fn by_name(name: &str) -> Function {
+        thread_local! {
+            static IDS: std::cell::RefCell<std::collections::HashMap<String, u64>> = Default::default();
+        }
+        let call = Value::Str(name.to_string());
+        let function = Function::new(Some(name), move |ed, args| ed.funcall(&call, args));
+        let id = IDS.with(|ids| *ids.borrow_mut().entry(name.to_string()).or_insert(function.id));
+        function.with_id(id)
+    }
+
     /// Gives the function a name, as defun gives a symbol's function one.
     pub fn with_name(mut self, name: &str) -> Function {
         self.name = Some(name.to_string());
@@ -364,7 +378,8 @@ impl Editor {
     /// The variable a name stands for, past any `defvaralias` aliases, as
     /// `indirect-variable` follows them.
     pub fn base_variable<'a>(&self, name: &'a str) -> std::borrow::Cow<'a, str> {
-        if self.variable_aliases.is_empty() {
+        // No copy for a name that is no alias, as most are, since hooks run on every change ask.
+        if !self.variable_aliases.contains_key(name) {
             return std::borrow::Cow::Borrowed(name);
         }
         let mut current = name.to_string();
@@ -632,6 +647,8 @@ impl Editor {
     /// A buffer's local value starts as `t`, where the global functions
     /// run. Returns an id for [`Editor::remove_hook`].
     pub fn add_hook_function(&mut self, hook: &str, function: Function, depth: f64, local: bool) -> u64 {
+        // The variable an alias stands for, as add-hook sets the symbol's value through it.
+        let hook = &self.base_variable(hook).into_owned();
         self.next_hook_id += 1;
         let id = self.next_hook_id;
         let list = if local {
@@ -665,11 +682,7 @@ impl Editor {
                 Value::Bool(true) => None,
                 Value::Function(f) => Some(f),
                 other => match other.as_str() {
-                    Some(name) => {
-                        let name = name.to_string();
-                        let call = Value::Str(name.clone());
-                        Some(Function::new(Some(&name), move |ed, args| ed.funcall(&call, args)))
-                    }
+                    Some(name) => Some(Function::by_name(name)),
                     None => continue,
                 },
             };
@@ -681,6 +694,7 @@ impl Editor {
 
     /// Takes a function off a hook, as Emacs's `remove-hook`.
     pub fn remove_hook_function(&mut self, hook: &str, function: &Function, local: bool) {
+        let hook = &self.base_variable(hook).into_owned();
         let list = if local { self.buffer_mut().local_hooks.get_mut(hook) } else { self.symbols.get_mut(hook).map(|s| &mut s.hook) };
         if let Some(list) = list {
             list.retain(|e| e.run.as_ref() != Some(function));
@@ -695,11 +709,13 @@ impl Editor {
     /// local hooks go when its major mode changes, and the minibuffer's
     /// when a prompt opens.
     pub fn hook_contains(&self, hook: &str, id: u64, local: bool) -> bool {
+        let hook: &str = &self.base_variable(hook);
         let list = if local { self.buffer().local_hooks.get(hook).map(Vec::as_slice) } else { Some(self.global_hook(hook)) };
         list.is_some_and(|list| list.iter().any(|entry| entry.id == id))
     }
 
     pub fn remove_hook(&mut self, hook: &str, id: u64, local: bool) {
+        let hook = &self.base_variable(hook).into_owned();
         let list = if local {
             self.buffer_mut().local_hooks.get_mut(hook)
         } else {
@@ -713,6 +729,8 @@ impl Editor {
     /// The functions a hook runs for a buffer, in order: its local value's,
     /// with the global ones where its `t` is, or else the global ones.
     pub(crate) fn hook_functions_in(&self, b: &Buffer, hook: &str) -> Vec<Function> {
+        // Through an alias, as run-hooks takes the symbol's value.
+        let hook: &str = &self.base_variable(hook);
         let global = || self.global_hook(hook).iter().filter_map(|e| e.run.clone());
         match b.local_hooks.get(hook) {
             Some(local) => local
@@ -734,6 +752,7 @@ impl Editor {
 
     /// Whether a hook has any functions for the current buffer.
     pub(crate) fn hook_has_functions(&self, hook: &str) -> bool {
+        let hook: &str = &self.base_variable(hook);
         let any = |l: &[HookEntry]| l.iter().any(|e| e.run.is_some());
         self.buffer().local_hooks.get(hook).is_some_and(|l| any(l)) || any(self.global_hook(hook))
     }
@@ -773,6 +792,7 @@ impl Editor {
     /// with the global ones where its local value has `t`, else the global
     /// ones; a hook set as a plain variable gives its value's.
     pub fn hook_functions(&self, hook: &str) -> Vec<Value> {
+        let hook: &str = &self.base_variable(hook);
         let global: Vec<Value> = self.global_hook(hook).iter().filter_map(|e| e.run.clone().map(Value::Function)).collect();
         let entries = match self.buffer().local_hooks.get(hook) {
             Some(local) => local.iter().flat_map(|e| match &e.run {
@@ -794,6 +814,7 @@ impl Editor {
     /// A hook's value for a buffer, as Emacs shows it: its local value's
     /// functions with `t`, here true, for the global ones, or the global value.
     fn hook_value_in(&self, b: &Buffer, hook: &str) -> Vec<Value> {
+        let hook: &str = &self.base_variable(hook);
         let list = b.local_hooks.get(hook).map_or(self.global_hook(hook), Vec::as_slice);
         list.iter().map(|e| e.run.clone().map_or(Value::Bool(true), Value::Function)).collect()
     }

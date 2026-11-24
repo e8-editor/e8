@@ -923,11 +923,15 @@
     },
     defineHook: (name, doc = "") => native.defineHook(String(name), String(doc)),
     addHook(hook, run, { local = false, depth, append = false } = {}) {
-      if (typeof run !== "function") throw new TypeError("addHook takes a function");
-      native.addHook(String(hook), run, Number(depth ?? (append ? 90 : 0)), Boolean(local));
+      const at = Number(depth ?? (append ? 90 : 0));
+      // A function's name, as a symbol on a hook, called by its name when the hook runs.
+      if (typeof run === "string" || typeof run === "symbol") return void native.addHookNamed(String(hook), symbolName(run), at, Boolean(local));
+      if (typeof run !== "function") throw new TypeError("addHook takes a function or a function's name");
+      native.addHook(String(hook), run, at, Boolean(local));
     },
     removeHook(hook, run, { local = false } = {}) {
-      if (typeof run === "function") native.removeHook(String(hook), run, Boolean(local));
+      if (typeof run === "string" || typeof run === "symbol") native.removeHookNamed(String(hook), symbolName(run), Boolean(local));
+      else if (typeof run === "function") native.removeHook(String(hook), run, Boolean(local));
     },
     runHooks: (hook, ...args) => native.runHooks(String(hook), args),
     runHookWithArgsUntilSuccess: (hook, ...args) => native.runHookUntil(String(hook), args, true),

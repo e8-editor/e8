@@ -3332,9 +3332,11 @@ function orgCycle(arg: e8.PrefixArg): void {
     // Not on a heading TAB cycles, one past the limit being text.
     const atBob = parseHeading(lineAt());
     if (truthy(e8.variable("org-cycle-global-at-bob")) && e8.point() === e8.pointMin() && (atBob === undefined || atBob.level > nstars)) {
-      const hook = e8.variable("org-cycle-hook");
-      const without = Array.isArray(hook) ? hook.filter((f) => f !== "org-cycle-optimize-window-after-visibility-change") : hook;
-      e8.letBind({ "org-cycle-hook": without ?? null }, () => globalCycle());
+      // Without the window's optimizing, as Org binds the hook to it remq'd: taken off by name inside the binding.
+      e8.letBind({ "org-cycle-hook": e8.variable("org-cycle-hook") ?? null }, () => {
+        e8.removeHook("org-cycle-hook", "org-cycle-optimize-window-after-visibility-change");
+        globalCycle();
+      });
       return;
     }
     const line = lineAt();
@@ -10973,6 +10975,8 @@ e8.defineCommand({
 // The hooks around TAB's changes of what shows, as org-cycle.el has them.
 
 e8.defineHook("org-cycle-pre-hook", "Functions run before TAB or S-TAB changes what shows, with the state it is about to set: overview, contents, all, folded, children, subtree or empty.");
+// Its old name, as org-cycle.el keeps it.
+e8.defvaralias("org-pre-cycle-hook", "org-cycle-pre-hook");
 e8.defineHook(
   "org-cycle-hook",
   "Functions run after TAB or S-TAB has changed what shows, with the state it set: overview, contents or all after a global change, folded, children or subtree after a local one.",
