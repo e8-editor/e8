@@ -381,6 +381,8 @@ interface AgendaItem {
   marks?: { pos: e8.Marker; heading: e8.Marker };
   /** Whether its entry was blocked when the agenda was made, and the line is dimmed or hidden for it, as org-todo-blocked marks the line. */
   blocked?: "dim" | "hide";
+  /** The kind of line it is for its tags, as the item maker that made it names it. */
+  tagType?: TagType;
 }
 
 /** Where the line's entry is now: its marker's place, as Org's org-marker follows edits. */
@@ -441,25 +443,34 @@ function inheritedTags(h: Heading): string[] {
   return inheritedCache.map.get(h.start) ?? [];
 }
 
-/** Whether the agenda's view takes inherited tags for its items, as org-agenda-use-tag-inheritance says for agenda, todo, tags and search views. */
-function viewInheritsTags(): boolean {
-  const v = e8.variable("org-agenda-use-tag-inheritance");
-  if (v === true) return true;
-  const kind = agendaView.kind === "tags" ? "todo" : agendaView.kind;
-  return Array.isArray(v) && v.some((x) => (typeof x === "symbol" ? e8.symbolName(x) : String(x)) === kind);
+/** The kinds of line Org's item makers tell apart for tags: agenda items, TODO-like ones (the TODO list's, the search view's and logged items), and the tags view's. */
+type TagType = "agenda" | "todo" | "tags";
+/** The kind of the lines being made, as each of Org's item makers names its own. */
+let lineTagType: TagType = "agenda";
+
+/** A value that is a list, nil among them, as listp; and whether a list names a view type, as memq. */
+const isList = (v: e8.Value | undefined): boolean => Array.isArray(v) || v === null || v === undefined || v === false;
+const names = (v: e8.Value | undefined, type: string): boolean =>
+  Array.isArray(v) && v.some((x) => (typeof x === "symbol" ? e8.symbolName(x) : String(x)) === type);
+
+/**
+ * Whether the lines of TYPE take inherited tags, as each of Org's item
+ * makers decides from org-agenda-show-inherited-tags and
+ * org-agenda-use-tag-inheritance; the tags view's always do, as
+ * org-scan-tags takes them all, and show them while
+ * org-agenda-show-inherited-tags is on.
+ */
+function takesInheritedTags(type: TagType): boolean {
+  const show = e8.variable("org-agenda-show-inherited-tags");
+  if (type === "tags") return truthy(show ?? null);
+  const use = e8.variable("org-agenda-use-tag-inheritance");
+  const showName = typeof show === "symbol" ? e8.symbolName(show) : show;
+  return showName === "always" || names(show, type) || (show === true && (use === true || names(use, type)));
 }
 
 /** A line's tags as the agenda shows them, inherited ones first and :: before the heading's own, as org-agenda-fix-displayed-tags writes them. */
 function displayedTags(h: Heading): string {
-  const show = e8.variable("org-agenda-show-inherited-tags");
-  // As org-agenda-format-item's inherited-tags: always, or for the views listed, or with t where org-agenda-use-tag-inheritance takes them.
-  const showName = typeof show === "symbol" ? e8.symbolName(show) : show;
-  const kind = agendaView.kind === "tags" ? "todo" : agendaView.kind;
-  const shown =
-    showName === "always" ||
-    (Array.isArray(show) && show.some((x) => (typeof x === "symbol" ? e8.symbolName(x) : String(x)) === kind)) ||
-    (show === true && viewInheritsTags());
-  const inherited = shown ? inheritedTags(h).filter((t) => !h.tags.includes(t)) : [];
+  const inherited = takesInheritedTags(lineTagType) ? inheritedTags(h).filter((t) => !h.tags.includes(t)) : [];
   if (inherited.length === 0) return h.tags.length === 0 ? "" : `:${h.tags.join(":")}:`;
   return `:${inherited.join(":")}:${h.tags.length === 0 ? ":" : `:${h.tags.join(":")}:`}`;
 }
@@ -796,7 +807,12 @@ function dayItems(scan: { cat: string; entries: Scanned[] }, day: number, today:
       const leader = log.kind === "closed" ? "Closed:    " : log.kind === "state" ? `State:     (${log.state})` : `Clocked:   (${log.clocked})`;
       const time = timeOf(log.stamp);
       const item = { cat, leader, buffer, pos: log.pos, heading: h.start, ...(time ? { time, dotime: log.stamp } : {}) };
-      logged.push({ ...item, text: agendaLine(h, cat, leader, false, time, "", log.stamp, log.note), urgency: 100000 });
+      // Logged items take tags as TODO items do, as org-agenda-get-progress decides with todo.
+      const outer = lineTagType;
+      lineTagType = "todo";
+      const text = agendaLine(h, cat, leader, false, time, "", log.stamp, log.note);
+      lineTagType = outer;
+      logged.push({ ...item, text, urgency: 100000, tagType: "todo" });
     }
     // Only those, with C-u C-u l or the clock check.
     if (showLog === "only" || showLog === "clockcheck") continue;
@@ -1007,6 +1023,7 @@ function showAgenda(given: AgendaLines | ((maxChars: number) => AgendaLines), po
     }
   }
   agendaLines = lines.map((l) => l.item);
+  for (const item of agendaLines) if (item) item.tagType ??= lineTagType;
   for (const item of agendaLines) {
     if (item && e8.getBuffer(item.buffer)) {
       item.marks = {
@@ -1133,6 +1150,7 @@ function fitAgendaWindow(lines: number): void {
  * point goes to today, else to START-DAY.
  */
 function agendaList(arg: e8.PrefixArg | null, startDay?: number, spanArg?: Span, weekdayStart = startOnWeekday()): void {
+  lineTagType = "agenda";
   if (typeof arg === "number" && arg > 0) {
     spanArg = arg;
     arg = null;
@@ -1392,6 +1410,7 @@ function notOrg(): void {
 
 /** The TODO items that are not done, as org-todo-list shows them. */
 function todoList(): void {
+  lineTagType = "todo";
   const buffers = agendaBuffers();
   const items: AgendaItem[] = [];
   const keywords = new Set<string>();
@@ -1477,6 +1496,7 @@ function skippedHeadings(all: Heading[]): boolean[] {
  * those whose TODO state is not done.
  */
 function tagsView(todoOnly: boolean, match?: string): void {
+  lineTagType = "tags";
   if (match !== undefined && !/\S/.test(match)) match = undefined;
   // Read where org-agenda was called from, as org-make-tags-matcher reads it before the agenda is prepared.
   const matcher = makeTagsMatcher(match, todoOnly);
@@ -1560,6 +1580,8 @@ function searchWords(string: string): string[] {
  * point there, counting from 1, as [ and ] do.
  */
 function searchView(todoOnlyArg: boolean, string?: string, editAt?: number): void {
+  // The search view's items decide their tags as TODO items do.
+  lineTagType = "todo";
   let todoOnly = todoOnlyArg;
   let fullWords = truthy(e8.variable("org-agenda-search-view-force-full-words"));
   if (editAt !== undefined || string === undefined || !/\S/.test(string)) {
@@ -2453,14 +2475,34 @@ function filterModeName(): string {
   );
 }
 
-/** The tags of an agenda line's entry, as its tags property holds them: inherited ones too where the view takes them. */
+/** The headings of the current buffer, and the index of an agenda line's entry's heading among them, found by halving. */
+function itemHeading(item: AgendaItem): { all: Heading[]; i: number } | undefined {
+  const all = headings();
+  const pos = headingOf(item);
+  const i = headingIndex(all, e8.lineOf(pos));
+  return i === undefined || all[i].start !== pos ? undefined : { all, i };
+}
+
+/**
+ * The tags of an agenda line's entry, as its tags property holds them:
+ * all of them, inherited ones too, as org-agenda-finalize puts them
+ * unless org-agenda-show-inherited-tags keeps what the item maker took,
+ * which for the tags view is all of them too.
+ */
 function lineTags(item: AgendaItem): string[] {
+  const view = agendaView.kind;
+  const show = e8.variable("org-agenda-show-inherited-tags");
+  const use = e8.variable("org-agenda-use-tag-inheritance");
+  const showName = typeof show === "symbol" ? e8.symbolName(show) : show;
+  // As org-agenda-finalize's test, use's list not naming the view among it.
+  const kept = showName === "always" || names(show, view) || (show === true && (use === true || (isList(use) && !names(use, view))));
+  const all = !kept || takesInheritedTags(item.tagType ?? "agenda");
   return e8.withCurrentBuffer(item.buffer, () =>
     widened(() => {
-      const h = headings().find((x) => x.start === headingOf(item));
-      if (h === undefined) return [];
-      // Inherited ones too, as the agenda's items take org-get-tags whatever the line shows, where the view takes them.
-      return viewInheritsTags() ? [...inheritedTags(h), ...h.tags] : h.tags;
+      const found = itemHeading(item);
+      if (found === undefined) return [];
+      const h = found.all[found.i];
+      return all ? [...inheritedTags(h), ...h.tags] : h.tags;
     }),
   );
 }
@@ -2476,8 +2518,8 @@ function lineEffort(item: AgendaItem): number | undefined {
   if (agendaView.kind === "search") return undefined;
   return e8.withCurrentBuffer(item.buffer, () =>
     widened(() => {
-      const h = headings().find((x) => x.start === headingOf(item));
-      const effort = h && entryGet(h.line, String(e8.variable("org-effort-property") ?? "Effort"));
+      const found = itemHeading(item);
+      const effort = found && entryGet(found.all[found.i].line, String(e8.variable("org-effort-property") ?? "Effort"));
       if (effort === undefined) return undefined;
       try {
         return durationToMinutes(effort);
@@ -2492,11 +2534,12 @@ function lineEffort(item: AgendaItem): number | undefined {
 function topHeadlineOf(item: AgendaItem): string | undefined {
   return e8.withCurrentBuffer(item.buffer, () =>
     widened(() => {
-      const all = headings();
-      let i = all.findIndex((x) => x.start === headingOf(item));
-      if (i < 0) return undefined;
+      const found = itemHeading(item);
+      if (found === undefined) return undefined;
+      const { all } = found;
+      let i = found.i;
       // Up through each parent, as org-up-heading-safe climbs while it can.
-      for (let k = i - 1; k >= 0; k--) if (all[k].level < all[i].level) i = k;
+      for (let k = i - 1; k >= 0 && all[i].level > 1; k--) if (all[k].level < all[i].level) i = k;
       return all[i].title.replace(/^\[[0-9]+\/[0-9]+\] *|^\[%[0-9]+\] */, "");
     }),
   );
@@ -2581,7 +2624,8 @@ function filterMatcher(filter: string[], type: FilterType, expand: boolean): (it
     };
   }
   if (type === "category") {
-    const multiPos = all.filter((x) => x[0] === "+").length > 1;
+    // Either of two categories, as multi-pos-cats looks at the filter before the preset joins it.
+    const multiPos = filter.filter((x) => x[0] === "+").length > 1;
     const tests = all.map((x) => (cat: string) => (x[0] === "-" ? cat !== x.slice(1) : cat === x.slice(1)));
     return (item) => (multiPos ? tests.some((t) => t(item.cat)) : tests.every((t) => t(item.cat)));
   }
@@ -2668,6 +2712,11 @@ function reapplyFilters(): void {
 
 /** Finishes the agenda again after a filter is removed, as org-agenda-finalize: its entry text, and the filters left. */
 function refinalize(): void {
+  // Links' brackets and blocked lines hidden again, as org-agenda-finalize activates links and dims blocked tasks, which a filter's removal showed.
+  e8.letBind({ "inhibit-read-only": true }, () => {
+    if (linksDescriptive()) agendaLines.forEach((_item, line) => hideLinksOn(line));
+  });
+  agendaLines.forEach((item, line) => dimLine(line, item));
   if (entryTextMode) {
     entryTextHide();
     entryTextShow(entryTextMaxlines());
@@ -2916,7 +2965,11 @@ e8.defineCommand({
       else if (char === "+") exclude = false;
     }
     let tag: string | undefined;
-    if (char === "\t") tag = e8.completingRead("Tag: ", globalTagsCompletionTable().map(([t]) => t), { requireMatch: true });
+    if (char === "\t") {
+      tag = e8.letBind({ "completion-ignore-case": true }, () =>
+        e8.completingRead("Tag: ", globalTagsCompletionTable().map(([t]) => t), { requireMatch: true }),
+      );
+    }
     if (char === "\r") {
       removeFilter("tag");
       if (truthy(autoFn)) autoExclude(autoFn, expand);
