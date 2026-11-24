@@ -852,6 +852,11 @@ pub(crate) fn install(ed: &mut Editor) {
             "A char-table of functions that find where words end, for the word commands: a word whose first character, or last going back, has one ends where it says, called with the position and the limit. Subword mode sets it.",
             Value::Null,
         ),
+        Variable::new(
+            "shift-select-mode",
+            "Whether a movement with Shift starts a region, or extends one Shift started, as Emacs's shift-select-mode.",
+            true,
+        ),
         Variable::new("tab-width", "How many columns apart tab stops are, for showing tab characters.", 8.0)
             .local(),
         Variable::new(

@@ -14,6 +14,17 @@ natives! {
         ed.call_interactively(&name)
     }
 
+    /// Start a region at point as Shift with a movement does, or keep one
+    /// Shift started, as handle-shift-selection does when the keys were
+    /// shift-translated; with false, end one Shift started. A command calls
+    /// it before moving, as Org's commands for shifted keys do when they
+    /// have nothing else to do.
+    #[ts = "(shifted?: boolean): void"]
+    pub fn handleShiftSelection(ed, shifted: Opt<bool>) {
+        ed.handle_shift_selection(shifted.0.unwrap_or(true));
+        Ok(())
+    }
+
     fn message(ed, text: String, log: Opt<bool>) {
         if log.0 == Some(false) {
             ed.message_unlogged(text);
