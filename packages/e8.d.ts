@@ -14056,6 +14056,12 @@ declare global {
        */
       "org-agenda-todo-list-sublevels": Value;
       /**
+       * Which agenda views take the tags their items inherit: a list of agenda, todo and search, or t for all.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-use-tag-inheritance": Value;
+      /**
        * Whether today's agenda draws a time grid among the entries with times, as org-agenda-time-grid says.
        *
        * Defined in packages/org-agenda.ts.

@@ -7797,6 +7797,11 @@ export interface LinkParameters {
 }
 const linkTypes = new Map<string, LinkParameters>();
 
+/** Whether a link type is one Org knows, as org-link-any-re matches only those. */
+export function linkTypeKnown(type: string): boolean {
+  return linkTypes.has(type.toLowerCase());
+}
+
 /** Sets what links of TYPE do, as org-link-set-parameters: id: links, as org-id.ts does, or a package's own; other parameters are kept. */
 export function linkSetParameters(type: string, parameters: LinkParameters): void {
   linkTypes.set(type, { ...linkTypes.get(type), ...parameters });
@@ -11044,7 +11049,7 @@ function removeUninheritedTags(tags: string[]): string[] {
  * Each heading's tags, the file's and those above it first, as org-get-tags
  * gives them: a tag once, where it comes last.
  */
-function allTagsOf(all: Heading[]): string[][] {
+export function allTagsOf(all: Heading[]): string[][] {
   const file = fileTags();
   const stack: Heading[] = [];
   const inherit = truthy(e8.variable("org-use-tag-inheritance"));
