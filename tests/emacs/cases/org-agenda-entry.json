@@ -677,5 +677,1216 @@
   "answers": [
    "org-agenda-list"
   ]
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "effort-allowed",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false,
+   "org-global-properties": {
+    "Effort_ALL": "0:10 1:00 2:00"
+   }
+  },
+  "keys": "N N e",
+  "answers": [
+   "0:10"
+  ]
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "effort-allowed-inc",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false,
+   "org-global-properties": {
+    "Effort_ALL": "0:10 1:00 2:00"
+   }
+  },
+  "keys": "N N C-u e RET"
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "effort-allowed-inc-last",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false,
+   "org-global-properties": {
+    "Effort_ALL": "0:10 1:00"
+   }
+  },
+  "keys": "N N C-u e"
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:Effort_ALL: 0:30 1:00 2:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "effort-allowed-file",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false
+  },
+  "keys": "N N e RET",
+  "answers": [
+   "2:00"
+  ]
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:Effort_ALL: 0:30 1:00 2:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "effort-allowed-file-inc",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false
+  },
+  "keys": "N N C-u e RET"
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "effort-invalid",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false
+  },
+  "keys": "N N e",
+  "answers": [
+   "abc"
+  ]
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "effort-tags",
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false
+  },
+  "keys": "M-x n e",
+  "answers": [
+   "org-tags-view",
+   "work",
+   "2:00"
+  ]
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "effort-tags-file",
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false
+  },
+  "keys": "M-x n e RET",
+  "answers": [
+   "org-tags-view",
+   "work",
+   "2:00"
+  ]
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "effort-search",
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false
+  },
+  "keys": "M-x n e",
+  "answers": [
+   "org-search-view",
+   "Report",
+   "2:00"
+  ]
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "effort-todo-noret",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false
+  },
+  "keys": "n n e",
+  "answers": [
+   "0:45"
+  ]
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "effort-week-twice",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false,
+   "org-agenda-span": "'week"
+  },
+  "keys": "N N N e",
+  "answers": [
+   "0:15"
+  ]
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "note-meeting",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false
+  },
+  "keys": "N z h i C-c C-c RET"
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "note-drawer-deadline",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": true
+  },
+  "keys": "N N N z h i C-c C-c RET"
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "note-todo-drawer",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": true
+  },
+  "keys": "n n z h i C-c C-c RET"
+ },
+ {
+  "text": "* Call\nRing them <2026-10-28 Wed>.\nMore.\n* Other\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "note-body-ts",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false
+  },
+  "keys": "N z h i C-c C-c RET"
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "note-then-quit",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false
+  },
+  "keys": "N N z h i C-c C-c q"
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "note-cancel-noret",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false
+  },
+  "keys": "N N z x C-c C-k"
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\n- Note taken on [2026-10-27 Tue 12:00] \\\\\n  old\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "note-drawer-existing",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": true
+  },
+  "keys": "N N z h i C-c C-c RET"
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "property-trim",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false
+  },
+  "keys": "N C-c C-x p RET",
+  "answers": [
+   "Owner",
+   " me "
+  ]
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "property-invalid",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false
+  },
+  "keys": "N C-c C-x p",
+  "answers": [
+   "Ow ner",
+   "me"
+  ]
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "property-allowed",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false,
+   "org-global-properties": {
+    "Owner_ALL": "me you"
+   }
+  },
+  "keys": "N C-c C-x p RET",
+  "answers": [
+   "Owner",
+   "you"
+  ]
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "quit-follow",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false
+  },
+  "keys": "N N F q"
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "quit-follow-restore",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": true,
+   "org-log-into-drawer": false
+  },
+  "keys": "N N F q"
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "quit-entry-text",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false
+  },
+  "keys": "E q"
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "quit-after-tab",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false
+  },
+  "keys": "N N TAB C-x o q"
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "quit-after-tab-restore",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": true,
+   "org-log-into-drawer": false
+  },
+  "keys": "N N TAB C-x o q"
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "quit-only-window-setup",
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false,
+   "org-agenda-window-setup": "'only-window"
+  },
+  "keys": "C-x 3 M-x q",
+  "answers": [
+   "org-agenda-list"
+  ]
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "quit-only-window-setup-restore",
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": true,
+   "org-log-into-drawer": false,
+   "org-agenda-window-setup": "'only-window"
+  },
+  "keys": "C-x 3 M-x q",
+  "answers": [
+   "org-agenda-list"
+  ]
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "quit-other-window-setup",
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false,
+   "org-agenda-window-setup": "'other-window"
+  },
+  "keys": "C-x 3 M-x q",
+  "answers": [
+   "org-agenda-list"
+  ]
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "quit-current-window-split",
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false,
+   "org-agenda-window-setup": "'current-window"
+  },
+  "keys": "C-x 3 M-x q",
+  "answers": [
+   "org-agenda-list"
+  ]
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "quit-current-window-restore",
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": true,
+   "org-log-into-drawer": false,
+   "org-agenda-window-setup": "'current-window"
+  },
+  "keys": "C-x 3 M-x q",
+  "answers": [
+   "org-agenda-list"
+  ]
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "quit-redo-restore",
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": true,
+   "org-log-into-drawer": false
+  },
+  "keys": "C-x 3 M-x r q",
+  "answers": [
+   "org-agenda-list"
+  ]
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "quit-new-view-restore",
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": true,
+   "org-log-into-drawer": false
+  },
+  "keys": "C-x 3 M-x M-x q",
+  "answers": [
+   "org-agenda-list",
+   "org-todo-list"
+  ]
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "quit-shown-again-restore",
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": true,
+   "org-log-into-drawer": false
+  },
+  "keys": "C-x 3 M-x C-x o C-x 2 M-x q",
+  "answers": [
+   "org-agenda-list",
+   "org-agenda-list"
+  ]
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "quit-twice-restore",
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": true,
+   "org-log-into-drawer": false
+  },
+  "keys": "C-x 3 M-x q C-x 1 M-x q",
+  "answers": [
+   "org-agenda-list",
+   "org-agenda-list"
+  ]
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "quit-week-moved-restore",
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": true,
+   "org-log-into-drawer": false
+  },
+  "keys": "C-x 3 M-x f q",
+  "answers": [
+   "org-agenda-list"
+  ]
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "quit-filter",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false
+  },
+  "keys": "= q M-x",
+  "answers": [
+   "Report",
+   "org-agenda-list"
+  ]
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "quit-filter-persistent",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false,
+   "org-agenda-persistent-filter": true
+  },
+  "keys": "= q M-x",
+  "answers": [
+   "Report",
+   "org-agenda-list"
+  ]
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "quit-follow-new",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false
+  },
+  "keys": "F q M-x N N",
+  "answers": [
+   "org-agenda-list"
+  ]
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* DONE Done\nCLOSED: [2026-10-28 Wed 09:00]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "quit-log",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false
+  },
+  "keys": "l q M-x",
+  "answers": [
+   "org-agenda-list"
+  ]
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "quit-entry-text-new",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false
+  },
+  "keys": "E q M-x N N",
+  "answers": [
+   "org-agenda-list"
+  ]
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "exit-opened",
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false
+  },
+  "keys": "C-x k M-x x C-x b",
+  "answers": [
+   "a.org",
+   "org-agenda-list",
+   "a.org"
+  ],
+  "files": {
+   "a.org": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n"
+  },
+  "find": "a.org"
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "quit-opened",
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false
+  },
+  "keys": "C-x k M-x q C-x b",
+  "answers": [
+   "a.org",
+   "org-agenda-list",
+   "a.org"
+  ],
+  "files": {
+   "a.org": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n"
+  },
+  "find": "a.org"
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "exit-opened-twice",
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false
+  },
+  "keys": "C-x k M-x q M-x x C-x b",
+  "answers": [
+   "a.org",
+   "org-agenda-list",
+   "org-agenda-list",
+   "a.org"
+  ],
+  "files": {
+   "a.org": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n"
+  },
+  "find": "a.org"
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "note-only-window",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false,
+   "org-agenda-window-setup": "'only-window"
+  },
+  "keys": "N N z h i C-c C-c"
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "note-current-window",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false,
+   "org-agenda-window-setup": "'current-window"
+  },
+  "keys": "N N z h i C-c C-c"
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "exit-follow",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false
+  },
+  "keys": "N N F x"
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "effort-then-filter",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false,
+   "org-global-properties": {
+    "Effort_ALL": "0:10 1:00 2:00"
+   }
+  },
+  "keys": "N N e _",
+  "answers": [
+   "2:00",
+   "<",
+   "2"
+  ]
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "effort-then-filter-nochange",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false,
+   "org-global-properties": {
+    "Effort_ALL": "0:10 1:00 2:00"
+   }
+  },
+  "keys": "N N _",
+  "answers": [
+   "<",
+   "2"
+  ]
+ },
+ {
+  "text": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "exit-reopened",
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-restore-windows-after-quit": false,
+   "org-log-into-drawer": false
+  },
+  "keys": "C-x k M-x N N TAB C-x C-v C-x o x C-x b",
+  "answers": [
+   "a.org",
+   "org-agenda-list",
+   "a.org",
+   "a.org"
+  ],
+  "files": {
+   "a.org": "* TODO Report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\nSome text.\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n"
+  },
+  "find": "a.org"
  }
 ]

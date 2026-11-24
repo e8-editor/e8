@@ -76,3 +76,36 @@ fn x_asks_to_save_what_changed() {
     assert!(!has_buffer(&ed, "tasks.org"));
     assert!(std::fs::read_to_string(&file).unwrap().starts_with("* DONE Report"));
 }
+
+/// Not saved, a changed buffer is killed only if the user says so, as
+/// kill-buffer asks in an interactive Emacs; either way x leaves the agenda.
+#[test]
+fn x_asks_before_killing_what_is_not_saved() {
+    for (kill, kept) in [("yes", false), ("no", true)] {
+        let (mut ed, _s, _dir, file) = unvisited_agenda_file();
+        ed.call("org-agenda-list", vec![]).unwrap();
+        ed.press("N t").unwrap();
+        let asked = std::rc::Rc::new(std::cell::RefCell::new(Vec::new()));
+        let noted = asked.clone();
+        let mut answers: std::collections::VecDeque<&str> = ["n", kill].into();
+        ed.set_input_source(move |ed| {
+            let Some(prompt) = ed.prompt().map(str::to_string) else { return false };
+            let Some(answer) = answers.pop_front() else { return false };
+            noted.borrow_mut().push(prompt);
+            if answer.len() == 1 {
+                ed.handle_key(Key::parse(answer).unwrap());
+            } else {
+                ed.type_text(answer);
+                ed.handle_key(Key::parse("RET").unwrap());
+            }
+            true
+        });
+        ed.press("x").unwrap();
+        assert_eq!(ed.take_error().map(|e| e.to_string()), None, "{kill}");
+        assert_eq!(asked.borrow().len(), 2, "{:?}", asked.borrow());
+        assert!(asked.borrow()[1].starts_with("Buffer tasks.org modified; kill anyway? "), "{:?}", asked.borrow());
+        assert_eq!(has_buffer(&ed, "tasks.org"), kept, "{kill}");
+        assert!(!has_buffer(&ed, "*Org Agenda*"), "{kill}");
+        assert!(std::fs::read_to_string(&file).unwrap().starts_with("* TODO Report"), "{kill}");
+    }
+}

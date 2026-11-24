@@ -388,6 +388,8 @@ interface AgendaItem {
   blocked?: "dim" | "hide";
   /** The kind of line it is for its tags, as the item maker that made it names it. */
   tagType?: TagType;
+  /** Its entry's effort in minutes when the agenda was made, as the line's effort-minutes property. */
+  effort?: number;
 }
 
 /** Where the line's entry is now: its marker's place, as Org's org-marker follows edits. */
@@ -540,10 +542,10 @@ function withoutPrefixTime(text: string, dotime: string): string {
   return text.slice(0, at) + text.slice(end);
 }
 
-/** The buffers of org-agenda-files, or of FILES, visited if need be. */
-/** The buffers the agenda visited that were not open, as org-agenda-new-buffers, for x to kill. */
-let agendaNewBuffers: string[] = [];
+/** The buffers the agenda visited that were not open, as org-agenda-new-buffers, for x to kill: the buffers themselves, so one killed and visited again is left. */
+let agendaNewBuffers: e8.Buffer[] = [];
 
+/** The buffers of org-agenda-files, or of FILES, visited if need be. */
 function agendaBuffers(files = agendaFilesIfMode()): string[] {
   // Relative names are in org-directory, and directories stand for their Org files, as org-agenda-files expands them.
   // Each file's TAGS lines read again, as org-agenda-prepare-buffers does with org-set-regexps-and-options.
@@ -551,7 +553,8 @@ function agendaBuffers(files = agendaFilesIfMode()): string[] {
     const before = new Set(e8.bufferList());
     const buffer = e8.findFileNoselect(file);
     // One it visited, as org-get-agenda-file-buffer pushes it.
-    if (!before.has(buffer) && !agendaNewBuffers.includes(buffer)) agendaNewBuffers.unshift(buffer);
+    const visited = e8.getBuffer(buffer);
+    if (!before.has(buffer) && visited !== undefined && !agendaNewBuffers.some((b) => b.id === visited.id)) agendaNewBuffers.unshift(visited);
     e8.withCurrentBuffer(buffer, () => {
       if (e8.derivedModeP("org-mode")) storeTagsLines();
     });
@@ -1036,6 +1039,8 @@ function showAgenda(given: AgendaLines | ((maxChars: number) => AgendaLines), po
   }
   agendaLines = lines.map((l) => l.item);
   for (const item of agendaLines) if (item) item.tagType ??= lineTagType;
+  // Each line's effort as it was then, as its effort-minutes property keeps it, though the entry's changes, as with e.
+  for (const item of agendaLines) if (item) item.effort = readEffort(item);
   for (const item of agendaLines) {
     if (item && e8.getBuffer(item.buffer)) {
       // Advancing past text inserted where they are, as org-agenda-new-marker makes them.
@@ -1058,10 +1063,10 @@ function showAgenda(given: AgendaLines | ((maxChars: number) => AgendaLines), po
   if (setup === undefined || setup === null || setup === "reorganize-frame") fitAgendaWindow(lines.length);
 }
 
-/** Shows the agenda's buffer as org-agenda-window-setup says, unless the selected window shows it. */
 /** The windows before the agenda was shown, as org-agenda-pre-window-conf, put back on quitting with org-agenda-restore-windows-after-quit. */
 let preAgendaWindows: e8.WindowConfiguration | undefined;
 
+/** Shows the agenda's buffer as org-agenda-window-setup says, unless the selected window shows it. */
 function placeAgendaWindow(): void {
   const setup = e8.variable("org-agenda-window-setup");
   if (e8.windowBuffer() === agendaBuffer) return;
@@ -2021,7 +2026,12 @@ function atEntryShown(command: e8.CommandName | (() => void), opts: { atMarker?:
     if (typeof command === "function") command();
     // org-add-note called as a function, so the note it sets up is taken after this command.
     else if (opts.asFunction) e8.call(command);
-    else e8.callInteractively(command);
+    else {
+      // With the agenda command's prefix argument, as call-interactively hands on current-prefix-arg.
+      const arg = e8.prefixArg();
+      if (arg !== null && arg !== undefined) e8.setPrefixArg(arg);
+      e8.callInteractively(command);
+    }
   });
   if (opts.redraw) redrawEntry(item);
 }
@@ -2582,8 +2592,11 @@ function lineTxt(item: AgendaItem, line: number): string {
   return e8.lineText(line).slice(prefix.length);
 }
 
-/** The effort of an agenda line's entry in minutes, as its txt's effort-minutes property, or undefined; the search view's lines have none. */
-function lineEffort(item: AgendaItem): number | undefined {
+/** The effort of an agenda line's entry in minutes when the agenda was made, as its txt's effort-minutes property, or undefined. */
+const lineEffort = (item: AgendaItem): number | undefined => item.effort ?? undefined;
+
+/** The effort of an agenda line's entry in minutes, or undefined; the search view's lines have none, as org-search-view gives them none. */
+function readEffort(item: AgendaItem): number | undefined {
   if (agendaView.kind === "search") return undefined;
   return e8.withCurrentBuffer(item.buffer, () =>
     widened(() => {
@@ -3776,10 +3789,18 @@ e8.defineCommand({
   doc: "Leave the agenda, killing the Org buffers it visited that were not open, asking to save those that changed.",
   run: () => {
     // As org-release-buffers: saved if the user agrees, then killed.
-    for (const buffer of agendaNewBuffers) {
-      if (e8.getBuffer(buffer) === undefined) continue;
+    for (const visited of agendaNewBuffers) {
+      const buffer = visited.name;
+      if (!visited.live || buffer === undefined) continue;
       const file = e8.withCurrentBuffer(buffer, () => e8.bufferFileName());
       if (e8.bufferModifiedP(buffer) && file && e8.yOrNP(`Save file ${file}? `)) e8.withCurrentBuffer(buffer, () => e8.call("save-buffer"));
+      // Still changed, it is killed only if the user says so, as kill-buffer asks in an interactive Emacs.
+      if (e8.bufferModifiedP(buffer) && file) {
+        const answer = e8.readAnswer(`Buffer ${buffer} modified; kill anyway? `, ["yes", "no", "save and then kill"]);
+        if (answer === "no") continue;
+        if (answer === "save and then kill") e8.withCurrentBuffer(buffer, () => e8.call("save-buffer"));
+        else e8.withCurrentBuffer(buffer, () => e8.restoreBufferModifiedP(null));
+      }
       e8.call("kill-buffer", buffer);
     }
     agendaNewBuffers = [];
