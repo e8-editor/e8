@@ -23,10 +23,14 @@
         "globals": {
           "org-agenda-use-time-grid": false,
           "org-agenda-start-with-clockreport-mode": false,
+          "org-agenda-clockreport-parameter-plist": [
+            "':link",
+            false
+          ],
           "org-agenda-clock-report-header": false
         }
       },
-      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report                               :tag:\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n| File          | Headline         | Time   |      |\n|---------------+------------------+--------+------|\n|               | ALL *Total time* | *4:15* |      |\n|---------------+------------------+--------+------|\n| e8-agenda.org | *File time*      | *4:15* |      |\n|               | [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Work][Work]]             | 2:15   |      |\n|               | \\_  [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Write report][Write report]] |        | 2:15 |\n|               | [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Home][Home]]             | 2:00   |      |\n|               | \\_  [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Garden][Garden]]       |        | 2:00 |\n",
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report                               :tag:\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n| File          | Headline         | Time   |      |\n|---------------+------------------+--------+------|\n|               | ALL *Total time* | *4:15* |      |\n|---------------+------------------+--------+------|\n| e8-agenda.org | *File time*      | *4:15* |      |\n|               | Work             | 2:15   |      |\n|               | \\_  Write report |        | 2:15 |\n|               | Home             | 2:00   |      |\n|               | \\_  Garden       |        | 2:00 |\n",
       "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report                               :tag:\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n| File          | Headline         | Time   |      |\n|---------------+------------------+--------+------|\n|               | ALL *Total time* | *4:15* |      |\n|---------------+------------------+--------+------|\n| e8-agenda.org | *File time*      | *4:15* |      |\n|               | Work             | 2:15   |      |\n|               | \\_  Write report |        | 2:15 |\n|               | Home             | 2:00   |      |\n|               | \\_  Garden       |        | 2:00 |\n",
       "point": 77,
       "mark": null,
@@ -73,6 +77,10 @@
         "globals": {
           "org-agenda-use-time-grid": false,
           "org-agenda-start-with-clockreport-mode": false,
+          "org-agenda-clockreport-parameter-plist": [
+            "':link",
+            false
+          ],
           "org-agenda-clock-report-header": false
         }
       },
@@ -126,10 +134,14 @@
         "globals": {
           "org-agenda-use-time-grid": false,
           "org-agenda-start-with-clockreport-mode": false,
+          "org-agenda-clockreport-parameter-plist": [
+            "':link",
+            false
+          ],
           "org-agenda-clock-report-header": false
         }
       },
-      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report                               :tag:\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n| File          | Headline         | Time   |      |\n|---------------+------------------+--------+------|\n|               | ALL *Total time* | *4:15* |      |\n|---------------+------------------+--------+------|\n| e8-agenda.org | *File time*      | *4:15* |      |\n|               | [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Work][Work]]             | 2:15   |      |\n|               | \\_  [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Write report][Write report]] |        | 2:15 |\n|               | [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Home][Home]]             | 2:00   |      |\n|               | \\_  [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Garden][Garden]]       |        | 2:00 |\n",
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report                               :tag:\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n| File          | Headline         | Time   |      |\n|---------------+------------------+--------+------|\n|               | ALL *Total time* | *4:15* |      |\n|---------------+------------------+--------+------|\n| e8-agenda.org | *File time*      | *4:15* |      |\n|               | Work             | 2:15   |      |\n|               | \\_  Write report |        | 2:15 |\n|               | Home             | 2:00   |      |\n|               | \\_  Garden       |        | 2:00 |\n",
       "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report                               :tag:\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n| File          | Headline         | Time   |      |\n|---------------+------------------+--------+------|\n|               | ALL *Total time* | *4:15* |      |\n|---------------+------------------+--------+------|\n| e8-agenda.org | *File time*      | *4:15* |      |\n|               | Work             | 2:15   |      |\n|               | \\_  Write report |        | 2:15 |\n|               | Home             | 2:00   |      |\n|               | \\_  Garden       |        | 2:00 |\n",
       "point": 77,
       "mark": null,
@@ -179,10 +191,14 @@
         "globals": {
           "org-agenda-use-time-grid": false,
           "org-agenda-start-with-clockreport-mode": false,
+          "org-agenda-clockreport-parameter-plist": [
+            "':link",
+            false
+          ],
           "org-agenda-clock-report-header": false
         }
       },
-      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report                               :tag:\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n| File          | Headline         | Time   |      |\n|---------------+------------------+--------+------|\n|               | ALL *Total time* | *4:15* |      |\n|---------------+------------------+--------+------|\n| e8-agenda.org | *File time*      | *4:15* |      |\n|               | [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Work][Work]]             | 2:15   |      |\n|               | \\_  [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Write report][Write report]] |        | 2:15 |\n|               | [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Home][Home]]             | 2:00   |      |\n|               | \\_  [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Garden][Garden]]       |        | 2:00 |\n",
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report                               :tag:\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n| File          | Headline         | Time   |      |\n|---------------+------------------+--------+------|\n|               | ALL *Total time* | *4:15* |      |\n|---------------+------------------+--------+------|\n| e8-agenda.org | *File time*      | *4:15* |      |\n|               | Work             | 2:15   |      |\n|               | \\_  Write report |        | 2:15 |\n|               | Home             | 2:00   |      |\n|               | \\_  Garden       |        | 2:00 |\n",
       "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report                               :tag:\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n| File          | Headline         | Time   |      |\n|---------------+------------------+--------+------|\n|               | ALL *Total time* | *4:15* |      |\n|---------------+------------------+--------+------|\n| e8-agenda.org | *File time*      | *4:15* |      |\n|               | Work             | 2:15   |      |\n|               | \\_  Write report |        | 2:15 |\n|               | Home             | 2:00   |      |\n|               | \\_  Garden       |        | 2:00 |\n",
       "point": 77,
       "mark": null,
@@ -229,6 +245,10 @@
         "globals": {
           "org-agenda-use-time-grid": false,
           "org-agenda-start-with-clockreport-mode": false,
+          "org-agenda-clockreport-parameter-plist": [
+            "':link",
+            false
+          ],
           "org-agenda-clock-report-header": false
         }
       },
@@ -279,10 +299,14 @@
         "globals": {
           "org-agenda-use-time-grid": false,
           "org-agenda-start-with-clockreport-mode": false,
+          "org-agenda-clockreport-parameter-plist": [
+            "':link",
+            false
+          ],
           "org-agenda-clock-report-header": false
         }
       },
-      "text": "Week-agenda (W43):\nMonday     19 October 2026 W43\nTuesday    20 October 2026\nWednesday  21 October 2026\nThursday   22 October 2026\nFriday     23 October 2026\nSaturday   24 October 2026\nSunday     25 October 2026\n| File          | Headline         | Time   |      |\n|---------------+------------------+--------+------|\n|               | ALL *Total time* | *1:00* |      |\n|---------------+------------------+--------+------|\n| e8-agenda.org | *File time*      | *1:00* |      |\n|               | [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Work][Work]]             | 1:00   |      |\n|               | \\_  [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Write report][Write report]] |        | 1:00 |\n",
+      "text": "Week-agenda (W43):\nMonday     19 October 2026 W43\nTuesday    20 October 2026\nWednesday  21 October 2026\nThursday   22 October 2026\nFriday     23 October 2026\nSaturday   24 October 2026\nSunday     25 October 2026\n| File          | Headline         | Time   |      |\n|---------------+------------------+--------+------|\n|               | ALL *Total time* | *1:00* |      |\n|---------------+------------------+--------+------|\n| e8-agenda.org | *File time*      | *1:00* |      |\n|               | Work             | 1:00   |      |\n|               | \\_  Write report |        | 1:00 |\n",
       "visible": "Week-agenda (W43):\nMonday     19 October 2026 W43\nTuesday    20 October 2026\nWednesday  21 October 2026\nThursday   22 October 2026\nFriday     23 October 2026\nSaturday   24 October 2026\nSunday     25 October 2026\n| File          | Headline         | Time   |      |\n|---------------+------------------+--------+------|\n|               | ALL *Total time* | *1:00* |      |\n|---------------+------------------+--------+------|\n| e8-agenda.org | *File time*      | *1:00* |      |\n|               | Work             | 1:00   |      |\n|               | \\_  Write report |        | 1:00 |\n",
       "point": 77,
       "mark": null,
@@ -329,11 +353,15 @@
         "globals": {
           "org-agenda-use-time-grid": false,
           "org-agenda-start-with-clockreport-mode": false,
+          "org-agenda-clockreport-parameter-plist": [
+            "':link",
+            false
+          ],
           "org-agenda-clock-report-header": false,
           "org-agenda-span": "'day"
         }
       },
-      "text": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report                               :tag:\n| File          | Headline         | Time   |      |\n|---------------+------------------+--------+------|\n|               | ALL *Total time* | *1:30* |      |\n|---------------+------------------+--------+------|\n| e8-agenda.org | *File time*      | *1:30* |      |\n|               | [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Work][Work]]             | 1:30   |      |\n|               | \\_  [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Write report][Write report]] |        | 1:30 |\n",
+      "text": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report                               :tag:\n| File          | Headline         | Time   |      |\n|---------------+------------------+--------+------|\n|               | ALL *Total time* | *1:30* |      |\n|---------------+------------------+--------+------|\n| e8-agenda.org | *File time*      | *1:30* |      |\n|               | Work             | 1:30   |      |\n|               | \\_  Write report |        | 1:30 |\n",
       "visible": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report                               :tag:\n| File          | Headline         | Time   |      |\n|---------------+------------------+--------+------|\n|               | ALL *Total time* | *1:30* |      |\n|---------------+------------------+--------+------|\n| e8-agenda.org | *File time*      | *1:30* |      |\n|               | Work             | 1:30   |      |\n|               | \\_  Write report |        | 1:30 |\n",
       "point": 18,
       "mark": null,
@@ -380,10 +408,14 @@
         "globals": {
           "org-agenda-use-time-grid": false,
           "org-agenda-start-with-clockreport-mode": true,
+          "org-agenda-clockreport-parameter-plist": [
+            "':link",
+            false
+          ],
           "org-agenda-clock-report-header": false
         }
       },
-      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report                               :tag:\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n| File          | Headline         | Time   |      |\n|---------------+------------------+--------+------|\n|               | ALL *Total time* | *4:15* |      |\n|---------------+------------------+--------+------|\n| e8-agenda.org | *File time*      | *4:15* |      |\n|               | [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Work][Work]]             | 2:15   |      |\n|               | \\_  [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Write report][Write report]] |        | 2:15 |\n|               | [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Home][Home]]             | 2:00   |      |\n|               | \\_  [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Garden][Garden]]       |        | 2:00 |\n",
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report                               :tag:\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n| File          | Headline         | Time   |      |\n|---------------+------------------+--------+------|\n|               | ALL *Total time* | *4:15* |      |\n|---------------+------------------+--------+------|\n| e8-agenda.org | *File time*      | *4:15* |      |\n|               | Work             | 2:15   |      |\n|               | \\_  Write report |        | 2:15 |\n|               | Home             | 2:00   |      |\n|               | \\_  Garden       |        | 2:00 |\n",
       "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report                               :tag:\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n| File          | Headline         | Time   |      |\n|---------------+------------------+--------+------|\n|               | ALL *Total time* | *4:15* |      |\n|---------------+------------------+--------+------|\n| e8-agenda.org | *File time*      | *4:15* |      |\n|               | Work             | 2:15   |      |\n|               | \\_  Write report |        | 2:15 |\n|               | Home             | 2:00   |      |\n|               | \\_  Garden       |        | 2:00 |\n",
       "point": 77,
       "mark": null,
@@ -430,10 +462,14 @@
         "globals": {
           "org-agenda-use-time-grid": false,
           "org-agenda-start-with-clockreport-mode": false,
+          "org-agenda-clockreport-parameter-plist": [
+            "':link",
+            false
+          ],
           "org-agenda-clock-report-header": "Report\n"
         }
       },
-      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report                               :tag:\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\nReport\n| File          | Headline         | Time   |      |\n|---------------+------------------+--------+------|\n|               | ALL *Total time* | *4:15* |      |\n|---------------+------------------+--------+------|\n| e8-agenda.org | *File time*      | *4:15* |      |\n|               | [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Work][Work]]             | 2:15   |      |\n|               | \\_  [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Write report][Write report]] |        | 2:15 |\n|               | [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Home][Home]]             | 2:00   |      |\n|               | \\_  [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Garden][Garden]]       |        | 2:00 |\n",
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report                               :tag:\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\nReport\n| File          | Headline         | Time   |      |\n|---------------+------------------+--------+------|\n|               | ALL *Total time* | *4:15* |      |\n|---------------+------------------+--------+------|\n| e8-agenda.org | *File time*      | *4:15* |      |\n|               | Work             | 2:15   |      |\n|               | \\_  Write report |        | 2:15 |\n|               | Home             | 2:00   |      |\n|               | \\_  Garden       |        | 2:00 |\n",
       "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report                               :tag:\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\nReport\n| File          | Headline         | Time   |      |\n|---------------+------------------+--------+------|\n|               | ALL *Total time* | *4:15* |      |\n|---------------+------------------+--------+------|\n| e8-agenda.org | *File time*      | *4:15* |      |\n|               | Work             | 2:15   |      |\n|               | \\_  Write report |        | 2:15 |\n|               | Home             | 2:00   |      |\n|               | \\_  Garden       |        | 2:00 |\n",
       "point": 77,
       "mark": null,
@@ -480,10 +516,14 @@
         "globals": {
           "org-agenda-use-time-grid": false,
           "org-agenda-start-with-clockreport-mode": false,
+          "org-agenda-clockreport-parameter-plist": [
+            "':link",
+            false
+          ],
           "org-agenda-clock-report-header": "Clocked"
         }
       },
-      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report                               :tag:\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\nClocked\n| File          | Headline         | Time   |      |\n|---------------+------------------+--------+------|\n|               | ALL *Total time* | *4:15* |      |\n|---------------+------------------+--------+------|\n| e8-agenda.org | *File time*      | *4:15* |      |\n|               | [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Work][Work]]             | 2:15   |      |\n|               | \\_  [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Write report][Write report]] |        | 2:15 |\n|               | [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Home][Home]]             | 2:00   |      |\n|               | \\_  [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Garden][Garden]]       |        | 2:00 |\n",
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report                               :tag:\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\nClocked\n| File          | Headline         | Time   |      |\n|---------------+------------------+--------+------|\n|               | ALL *Total time* | *4:15* |      |\n|---------------+------------------+--------+------|\n| e8-agenda.org | *File time*      | *4:15* |      |\n|               | Work             | 2:15   |      |\n|               | \\_  Write report |        | 2:15 |\n|               | Home             | 2:00   |      |\n|               | \\_  Garden       |        | 2:00 |\n",
       "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report                               :tag:\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\nClocked\n| File          | Headline         | Time   |      |\n|---------------+------------------+--------+------|\n|               | ALL *Total time* | *4:15* |      |\n|---------------+------------------+--------+------|\n| e8-agenda.org | *File time*      | *4:15* |      |\n|               | Work             | 2:15   |      |\n|               | \\_  Write report |        | 2:15 |\n|               | Home             | 2:00   |      |\n|               | \\_  Garden       |        | 2:00 |\n",
       "point": 77,
       "mark": null,
@@ -530,6 +570,10 @@
         "globals": {
           "org-agenda-use-time-grid": false,
           "org-agenda-start-with-clockreport-mode": false,
+          "org-agenda-clockreport-parameter-plist": [
+            "':link",
+            false
+          ],
           "org-agenda-clock-report-header": false
         }
       },
@@ -580,10 +624,14 @@
         "globals": {
           "org-agenda-use-time-grid": false,
           "org-agenda-start-with-clockreport-mode": false,
+          "org-agenda-clockreport-parameter-plist": [
+            "':link",
+            false
+          ],
           "org-agenda-clock-report-header": false
         }
       },
-      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report                               :tag:\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n| File          | Headline         | Time   |      |\n|---------------+------------------+--------+------|\n|               | ALL *Total time* | *4:15* |      |\n|---------------+------------------+--------+------|\n| e8-agenda.org | *File time*      | *4:15* |      |\n|               | [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Work][Work]]             | 2:15   |      |\n|               | \\_  [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Write report][Write report]] |        | 2:15 |\n|               | [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Home][Home]]             | 2:00   |      |\n|               | \\_  [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Garden][Garden]]       |        | 2:00 |\n",
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report                               :tag:\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n| File          | Headline         | Time   |      |\n|---------------+------------------+--------+------|\n|               | ALL *Total time* | *4:15* |      |\n|---------------+------------------+--------+------|\n| e8-agenda.org | *File time*      | *4:15* |      |\n|               | Work             | 2:15   |      |\n|               | \\_  Write report |        | 2:15 |\n|               | Home             | 2:00   |      |\n|               | \\_  Garden       |        | 2:00 |\n",
       "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  Scheduled:  TODO Write report                               :tag:\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n| File          | Headline         | Time   |      |\n|---------------+------------------+--------+------|\n|               | ALL *Total time* | *4:15* |      |\n|---------------+------------------+--------+------|\n| e8-agenda.org | *File time*      | *4:15* |      |\n|               | Work             | 2:15   |      |\n|               | \\_  Write report |        | 2:15 |\n|               | Home             | 2:00   |      |\n|               | \\_  Garden       |        | 2:00 |\n",
       "point": 77,
       "mark": null,
@@ -630,11 +678,15 @@
         "globals": {
           "org-agenda-use-time-grid": false,
           "org-agenda-start-with-clockreport-mode": false,
+          "org-agenda-clockreport-parameter-plist": [
+            "':link",
+            false
+          ],
           "org-agenda-clock-report-header": false
         }
       },
-      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n| File          | Headline                |   Time |\n|---------------+-------------------------+--------|\n|               | ALL *Total time*        | *2:40* |\n|---------------+-------------------------+--------|\n| e8-agenda.org | *File time*             | *2:40* |\n|               | [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Read \\[\\[https://example.com\\]\\[the docs\\]\\]][Read the docs]]           |   1:00 |\n|               | [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Check \\[x\\] list][Check [x] list]]          |   1:00 |\n|               | [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*Fix cookie][Fix  cookie]]             |   0:20 |\n|               | [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*See \\[\\[https://example.org\\]\\]][See https://example.org]] |   0:10 |\n|               | [[file:/var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org::*a\\]b \\[c\\] d][a]b [c] d]]               |   0:10 |\n",
-      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n| File          | Headline                |   Time |\n|---------------+-------------------------+--------|\n|               | ALL *Total time*        | *2:40* |\n|---------------+-------------------------+--------|\n| e8-agenda.org | *File time*             | *2:40* |\n|               | Read the docs           |   1:00 |\n|               | Check [x] list          |   1:00 |\n|               | Fix  cookie             |   0:20 |\n|               | See https://example.org |   0:10 |\n|               | a]b [c] d               |   0:10 |\n",
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n| File          | Headline                |   Time |\n|---------------+-------------------------+--------|\n|               | ALL *Total time*        | *2:40* |\n|---------------+-------------------------+--------|\n| e8-agenda.org | *File time*             | *2:40* |\n|               | Read [[https://example.com][the docs]]           |   1:00 |\n|               | Check [x] list          |   1:00 |\n|               | Fix [1/2] cookie        |   0:20 |\n|               | See [[https://example.org]] |   0:10 |\n|               | a]b [c] d               |   0:10 |\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n| File          | Headline                |   Time |\n|---------------+-------------------------+--------|\n|               | ALL *Total time*        | *2:40* |\n|---------------+-------------------------+--------|\n| e8-agenda.org | *File time*             | *2:40* |\n|               | Read the docs           |   1:00 |\n|               | Check [x] list          |   1:00 |\n|               | Fix [1/2] cookie        |   0:20 |\n|               | See https://example.org |   0:10 |\n|               | a]b [c] d               |   0:10 |\n",
       "point": 77,
       "mark": null,
       "mark_active": false,
@@ -680,6 +732,10 @@
         "globals": {
           "org-agenda-use-time-grid": false,
           "org-agenda-start-with-clockreport-mode": false,
+          "org-agenda-clockreport-parameter-plist": [
+            "':link",
+            false
+          ],
           "org-agenda-clock-report-header": false
         }
       },
@@ -712,7 +768,7 @@
     {
       "name": "clocktable-link-widths",
       "input": {
-        "text": "* Read [[https://example.com][the docs]]\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:00] =>  1:00\n:END:\n* Check [x] list\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 08:00]--[2026-10-27 Tue 09:00] =>  1:00\n:END:\n* TODO [#A] Fix [1/2] cookie :a:b:\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 10:00]--[2026-10-27 Tue 10:20] =>  0:20\n:END:\n* See [[https://example.org]]\n:LOGBOOK:\nCLOCK: [2026-10-29 Thu 10:00]--[2026-10-29 Thu 10:10] =>  0:10\n:END:\n* a]b [c] d\n:LOGBOOK:\nCLOCK: [2026-10-29 Thu 11:00]--[2026-10-29 Thu 11:10] =>  0:10\n:END:\n#+BEGIN: clocktable :link t :scope file\n#+END:\n",
+        "text": "* Read [[https://example.com][the docs]]\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:00] =>  1:00\n:END:\n* Check [x] list\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 08:00]--[2026-10-27 Tue 09:00] =>  1:00\n:END:\n* TODO [#A] Fix [1/2] cookie :a:b:\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 10:00]--[2026-10-27 Tue 10:20] =>  0:20\n:END:\n* See [[https://example.org]]\n:LOGBOOK:\nCLOCK: [2026-10-29 Thu 10:00]--[2026-10-29 Thu 10:10] =>  0:10\n:END:\n* a]b [c] d\n:LOGBOOK:\nCLOCK: [2026-10-29 Thu 11:00]--[2026-10-29 Thu 11:10] =>  0:10\n:END:\n#+BEGIN: clocktable :link nil :scope file\n#+END:\n",
         "point": 530,
         "keys": "C-c C-c",
         "modes": [
@@ -722,8 +778,8 @@
         "platform": null,
         "today": "2026-10-28"
       },
-      "text": "* Read [[https://example.com][the docs]]\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:00] =>  1:00\n:END:\n* Check [x] list\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 08:00]--[2026-10-27 Tue 09:00] =>  1:00\n:END:\n* TODO [#A] Fix [1/2] cookie :a:b:\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 10:00]--[2026-10-27 Tue 10:20] =>  0:20\n:END:\n* See [[https://example.org]]\n:LOGBOOK:\nCLOCK: [2026-10-29 Thu 10:00]--[2026-10-29 Thu 10:10] =>  0:10\n:END:\n* a]b [c] d\n:LOGBOOK:\nCLOCK: [2026-10-29 Thu 11:00]--[2026-10-29 Thu 11:10] =>  0:10\n:END:\n#+BEGIN: clocktable :link t :scope file\n#+CAPTION: Clock summary at [2026-10-28 Wed 12:00]\n| Headline                |   Time |\n|-------------------------+--------|\n| *Total time*            | *2:40* |\n|-------------------------+--------|\n| [[*Read \\[\\[https://example.com\\]\\[the docs\\]\\]][Read the docs]]           |   1:00 |\n| [[*Check \\[x\\] list][Check [x] list]]          |   1:00 |\n| [[*Fix cookie][Fix  cookie]]             |   0:20 |\n| [[*See \\[\\[https://example.org\\]\\]][See https://example.org]] |   0:10 |\n| [[*a\\]b \\[c\\] d][a]b [c] d]]               |   0:10 |\n#+END:\n",
-      "visible": "* Read the docs\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:00] =>  1:00\n:END:\n* Check [x] list\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 08:00]--[2026-10-27 Tue 09:00] =>  1:00\n:END:\n* TODO [#A] Fix [1/2] cookie :a:b:\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 10:00]--[2026-10-27 Tue 10:20] =>  0:20\n:END:\n* See https://example.org\n:LOGBOOK:\nCLOCK: [2026-10-29 Thu 10:00]--[2026-10-29 Thu 10:10] =>  0:10\n:END:\n* a]b [c] d\n:LOGBOOK:\nCLOCK: [2026-10-29 Thu 11:00]--[2026-10-29 Thu 11:10] =>  0:10\n:END:\n#+BEGIN: clocktable :link t :scope file\n#+CAPTION: Clock summary at [2026-10-28 Wed 12:00]\n| Headline                |   Time |\n|-------------------------+--------|\n| *Total time*            | *2:40* |\n|-------------------------+--------|\n| Read the docs           |   1:00 |\n| Check [x] list          |   1:00 |\n| Fix  cookie             |   0:20 |\n| See https://example.org |   0:10 |\n| a]b [c] d               |   0:10 |\n#+END:\n",
+      "text": "* Read [[https://example.com][the docs]]\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:00] =>  1:00\n:END:\n* Check [x] list\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 08:00]--[2026-10-27 Tue 09:00] =>  1:00\n:END:\n* TODO [#A] Fix [1/2] cookie :a:b:\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 10:00]--[2026-10-27 Tue 10:20] =>  0:20\n:END:\n* See [[https://example.org]]\n:LOGBOOK:\nCLOCK: [2026-10-29 Thu 10:00]--[2026-10-29 Thu 10:10] =>  0:10\n:END:\n* a]b [c] d\n:LOGBOOK:\nCLOCK: [2026-10-29 Thu 11:00]--[2026-10-29 Thu 11:10] =>  0:10\n:END:\n#+BEGIN: clocktable :link nil :scope file\n#+CAPTION: Clock summary at [2026-10-28 Wed 12:00]\n| Headline                |   Time |\n|-------------------------+--------|\n| *Total time*            | *2:40* |\n|-------------------------+--------|\n| Read [[https://example.com][the docs]]           |   1:00 |\n| Check [x] list          |   1:00 |\n| Fix [1/2] cookie        |   0:20 |\n| See [[https://example.org]] |   0:10 |\n| a]b [c] d               |   0:10 |\n#+END:\n",
+      "visible": "* Read the docs\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:00] =>  1:00\n:END:\n* Check [x] list\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 08:00]--[2026-10-27 Tue 09:00] =>  1:00\n:END:\n* TODO [#A] Fix [1/2] cookie :a:b:\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 10:00]--[2026-10-27 Tue 10:20] =>  0:20\n:END:\n* See https://example.org\n:LOGBOOK:\nCLOCK: [2026-10-29 Thu 10:00]--[2026-10-29 Thu 10:10] =>  0:10\n:END:\n* a]b [c] d\n:LOGBOOK:\nCLOCK: [2026-10-29 Thu 11:00]--[2026-10-29 Thu 11:10] =>  0:10\n:END:\n#+BEGIN: clocktable :link nil :scope file\n#+CAPTION: Clock summary at [2026-10-28 Wed 12:00]\n| Headline                |   Time |\n|-------------------------+--------|\n| *Total time*            | *2:40* |\n|-------------------------+--------|\n| Read the docs           |   1:00 |\n| Check [x] list          |   1:00 |\n| Fix [1/2] cookie        |   0:20 |\n| See https://example.org |   0:10 |\n| a]b [c] d               |   0:10 |\n#+END:\n",
       "point": 530,
       "mark": null,
       "mark_active": false,

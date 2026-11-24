@@ -2043,13 +2043,15 @@ function prin1(v: e8.Value): string {
 function clockReport(start: number, end: number): string {
   const given = e8.variable("org-agenda-clockreport-parameter-plist");
   const plist: e8.Value[] = Array.isArray(given) ? [...given] : [];
+  // Keys as symbols, or as strings, as an E8 config may write them.
+  const name = (x: e8.Value): string | undefined => (typeof x === "symbol" ? e8.symbolName(x) : typeof x === "string" ? x : undefined);
   const put = (key: string, value: e8.Value): void => {
-    const i = plist.findIndex((x, k) => k % 2 === 0 && typeof x === "symbol" && e8.symbolName(x) === key);
+    const i = plist.findIndex((x, k) => k % 2 === 0 && name(x) === key);
     if (i >= 0) plist[i + 1] = value;
     else plist.push(e8.intern(key), value);
   };
   const del = (key: string): void => {
-    const i = plist.findIndex((x, k) => k % 2 === 0 && typeof x === "symbol" && e8.symbolName(x) === key);
+    const i = plist.findIndex((x, k) => k % 2 === 0 && name(x) === key);
     if (i >= 0) plist.splice(i, 2);
   };
   // The agenda's days as absolute ones, as calendar-absolute-from-gregorian counts them.
@@ -2057,9 +2059,9 @@ function clockReport(start: number, end: number): string {
   put(":tstart", start + 719163);
   put(":tend", end + 719163);
   put(":scope", e8.intern("agenda"));
-  if (!plist.some((x, k) => k % 2 === 0 && typeof x === "symbol" && e8.symbolName(x) === ":maxlevel")) put(":maxlevel", 2);
+  if (!plist.some((x, k) => k % 2 === 0 && name(x) === ":maxlevel")) put(":maxlevel", 2);
   const params: string[] = [];
-  for (let k = 0; k + 1 < plist.length; k += 2) params.push(`${prin1(plist[k])} ${prin1(plist[k + 1])}`);
+  for (let k = 0; k + 1 < plist.length; k += 2) params.push(`${name(plist[k]) ?? prin1(plist[k])} ${prin1(plist[k + 1])}`);
   // The agenda's files, archives too in their mode, as org-agenda-files 'ifmode.
   return e8.letBind({ "org-agenda-files": agendaFilesIfMode() }, () =>
     withTempBuffer(() => {
