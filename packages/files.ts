@@ -329,16 +329,6 @@ function evalSafeP(exp: e8.Value): boolean {
   return false;
 }
 
-/** The function a hook is given for a name, the same one each time, so adding it again adds nothing and removing it removes it, as with a symbol in Lisp. */
-const hookFunctions = new Map<string, (...args: e8.Value[]) => unknown>();
-function hookFunction(name: string): (...args: e8.Value[]) => unknown {
-  let fn = hookFunctions.get(name);
-  if (fn === undefined) {
-    fn = (...args: e8.Value[]) => e8.funcall(name, ...args);
-    hookFunctions.set(name, fn);
-  }
-  return fn;
-}
 
 /**
  * Runs an `eval:` form. E8 has no Lisp, so it runs what a file's local
@@ -369,7 +359,8 @@ function evalForm(exp: e8.Value): e8.Value {
   if (name === "add-hook" || name === "remove-hook") {
     const hook = nameOf(values[0]);
     const fn = values[1];
-    const run = typeof fn === "function" ? fn : hookFunction(nameOf(fn));
+    // A symbol as itself, so remove-hook takes off what a hook's value or add-hook put there by name.
+    const run = typeof fn === "function" ? fn : nameOf(fn);
     const local = truthy(values[name === "add-hook" ? 3 : 2]);
     if (name === "add-hook") e8.addHook(hook, run, { local, ...(truthy(values[2]) ? { append: true } : {}) });
     else e8.removeHook(hook, run, { local });

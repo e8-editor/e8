@@ -23372,11 +23372,12 @@ declare global {
      * Add a function to a hook, first in line (Emacs's add-hook). With `local`,
      * only for the current buffer; those run before the global ones. The
      * function gets the hook's arguments, such as the start and end of the
-     * text to fontify for jit-lock-functions.
+     * text to fontify for jit-lock-functions. A function's name instead is
+     * called by its name when the hook runs, as a symbol on a hook is.
      */
     function addHook(
       hook: HookName | (string & {}),
-      run: (...args: any[]) => unknown,
+      run: ((...args: any[]) => unknown) | (string & {}),
       options?: {
         local?: boolean;
         /** Where it runs among the others, as add-hook's DEPTH, from -100 to 100: lower first, 0 by default. */
@@ -23385,8 +23386,8 @@ declare global {
         append?: boolean;
       },
     ): void;
-    /** Remove a function from a hook, passing the same function. */
-    function removeHook(hook: HookName | (string & {}), run: (...args: any[]) => void, options?: { local?: boolean }): void;
+    /** Remove a function from a hook, passing the same function, or the name it was added by or the hook's value holds. */
+    function removeHook(hook: HookName | (string & {}), run: ((...args: any[]) => void) | (string & {}), options?: { local?: boolean }): void;
     /** Run a hook's functions, passing them any arguments given (Emacs's run-hook-with-args). */
     function runHooks(hook: HookName | (string & {}), ...args: Value[]): void;
 
