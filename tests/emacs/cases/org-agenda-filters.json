@@ -1,0 +1,2038 @@
+[
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "category",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "N <"
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "category-again",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "N < <"
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "category-exclude",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "N C-u <"
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "category-exclude-twice",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "N C-u < N C-u <"
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "category-on-date",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "<"
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "category-todo",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "n n <"
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "category-then-redo",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "N < r"
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "category-then-new-agenda",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "N < M-x",
+  "answers": [
+   "org-agenda-list"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "category-persistent",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": true,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "N < M-x",
+  "answers": [
+   "org-agenda-list"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "top-headline",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "N ^"
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "top-headline-again",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "N ^ ^"
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "top-headline-exclude",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "N C-u ^"
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "top-headline-cookie",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "M-> C-p C-p ^"
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "top-headline-on-date",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "^"
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "top-headline-then-redo",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "N ^ r"
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "top-headline-then-new-agenda",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "N ^ M-x",
+  "answers": [
+   "org-agenda-list"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "regexp",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "=",
+  "answers": [
+   "sink"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "regexp-fold",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "=",
+  "answers": [
+   "SINK"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "regexp-hide",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "C-u =",
+  "answers": [
+   "sink"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "regexp-remove",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "= =",
+  "answers": [
+   "sink"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "regexp-accumulate",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "= C-u C-u =",
+  "answers": [
+   "o",
+   "r"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "regexp-tags",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "=",
+  "answers": [
+   "home:"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "regexp-not-prefix",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "=",
+  "answers": [
+   "Scheduled"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "regexp-todo",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "=",
+  "answers": [
+   "TODO Fix"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "effort-below",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "_",
+  "answers": [
+   "<",
+   "4"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "effort-above",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "_",
+  "answers": [
+   ">",
+   "3"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "effort-equal",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "_",
+  "answers": [
+   "=",
+   "4"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "effort-negative",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "C-u _",
+  "answers": [
+   "<",
+   "4"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "effort-remove",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "_ _",
+  "answers": [
+   "<",
+   "4",
+   "_"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "effort-bad-op",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "_",
+  "answers": [
+   "x",
+   "<",
+   "4"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "effort-bad-digit",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "_",
+  "answers": [
+   "<",
+   "x",
+   "4"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "effort-noeffort-low",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": false
+  },
+  "keys": "_",
+  "answers": [
+   "<",
+   "4"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "effort-keep",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "_ C-u C-u _",
+  "answers": [
+   "<",
+   "6",
+   ">",
+   "3"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "effort-values",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true,
+   "org-global-properties": {
+    "Effort_ALL": "0:15 1:00 3:00"
+   }
+  },
+  "keys": "_",
+  "answers": [
+   "<",
+   "2"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "tag-key",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "\\",
+  "answers": [
+   "h"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "tag-exclude-key",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "\\",
+  "answers": [
+   "-",
+   "h"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "tag-exclude-prefix",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "C-u \\",
+  "answers": [
+   "h"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "tag-tab",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "\\",
+  "answers": [
+   "\t",
+   "Lab"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "tag-group",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "\\",
+  "answers": [
+   "\t",
+   "Work"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "tag-group-no-expand",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "C-u C-u C-u \\",
+  "answers": [
+   "\t",
+   "Work"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "tag-inherited",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "\\",
+  "answers": [
+   "\t",
+   "proj"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "tag-dot",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "N \\",
+  "answers": [
+   "."
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "tag-space",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "\\",
+  "answers": [
+   " "
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "tag-space-exclude",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "\\",
+  "answers": [
+   "-",
+   " "
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "tag-quit",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "\\",
+  "answers": [
+   "q"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "tag-off",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "\\ \\",
+  "answers": [
+   "h",
+   "\\"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "tag-accumulate",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "\\ C-u C-u \\",
+  "answers": [
+   "h",
+   "-",
+   "e"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "tag-bad-char",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "\\",
+  "answers": [
+   "z",
+   "h"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "tag-todo",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "\\",
+  "answers": [
+   "e"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "filter-category",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "/",
+  "answers": [
+   "+house"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "filter-tag",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "/",
+  "answers": [
+   "Lab"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "filter-minus-tag",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "/",
+  "answers": [
+   "-home"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "filter-several",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "/",
+  "answers": [
+   "+house-home"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "filter-effort",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "/",
+  "answers": [
+   "<1:00"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "filter-regexp",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "/",
+  "answers": [
+   "/sink/"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "filter-regexp-open",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "/",
+  "answers": [
+   "-/sink"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "filter-unknown",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "/",
+  "answers": [
+   "nope"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "filter-negate",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "C-u /",
+  "answers": [
+   "house"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "filter-quoted-category",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "/",
+  "answers": [
+   "\"my-cat\""
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "filter-keep",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "/ /",
+  "answers": [
+   "house",
+   "+-errand"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "filter-accumulate",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "/ C-u C-u /",
+  "answers": [
+   "house",
+   "-errand"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "filter-replace",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "/ /",
+  "answers": [
+   "house",
+   "Lab"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "filter-two-categories",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "/",
+  "answers": [
+   "house+my-cat"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "filter-group",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "/",
+  "answers": [
+   "Work"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "filter-auto-exclude-unset",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "C-u C-u C-u /"
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "filter-empty",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "/",
+  "answers": [
+   ""
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "remove-all",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "N < |"
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "remove-all-several",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "N < \\ |",
+  "answers": [
+   "h"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "remove-all-none",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "|"
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "filter-entry-text",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "E =",
+  "answers": [
+   "sink"
+  ]
+ },
+ {
+  "text": "#+TAGS: { Work : Lab Conf } home(h) errand(e)\n* Projects :proj:\n** TODO Write report :Lab:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** TODO Plan conference :Conf:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Home\n:PROPERTIES:\n:CATEGORY: house\n:END:\n** TODO Fix sink :home:\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n** TODO Buy milk :errand:\nDEADLINE: <2026-10-28 Wed>\n* [1/2] Misc\n** TODO Call mum\nSCHEDULED: <2026-10-28 Wed>\n** Meeting <2026-10-30 Fri 10:00>\n* Odd\n:PROPERTIES:\n:CATEGORY: my-cat\n:END:\n** TODO Odd job\nSCHEDULED: <2026-10-31 Sat>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "filter-then-later",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-follow-mode": false,
+   "org-agenda-start-with-entry-text-mode": false,
+   "org-agenda-top-headline-filter": false,
+   "org-agenda-filtered-by-top-headline": false,
+   "org-agenda-persistent-filter": false,
+   "org-agenda-auto-exclude-function": false,
+   "org-agenda-sort-noeffort-is-high": true
+  },
+  "keys": "N < f b"
+ }
+]
