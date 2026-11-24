@@ -9394,7 +9394,11 @@ function babelSessionHook(action: "load" | "pop"): void {
   const header = e8.lineText(lineAt(el.postAffiliated ?? el.begin));
   const lang = /^[ \t]*#\+begin_src[ \t]+([^ \t:]\S*)/i.exec(header)?.[1] ?? "nil";
   if (action === "load") throw new Error(`No org-babel-load-session function for ${lang}!`);
-  if (!/:session/.test(header)) throw new Error("This block is not using a session!");
+  // The session from the block's line, else its #+HEADER: lines, as org-babel-get-src-block-info merges them; none is no session.
+  const headers = [header];
+  for (let l = lineAt(el.begin); l < lineAt(el.postAffiliated ?? el.begin); l++) if (/^[ \t]*#\+headers?:/i.test(e8.lineText(l))) headers.push(e8.lineText(l));
+  const session = headers.map((h) => /(?:^|[ \t]):session(?:[ \t]+([^ \t:][^ \t]*))?/.exec(h)).find((m) => m !== null);
+  if (!session || session[1] === "none") throw new Error("This block is not using a session!");
   throw new Error(`No org-babel-initiate-session function for ${lang}!`);
 }
 

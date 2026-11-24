@@ -687,8 +687,12 @@ function swapElementsUnchecked(a: Elem, b: Elem): void {
   e8.gotoChar(b.end);
 }
 
-/** The elements that take no affiliated keywords, as Org parses them before it collects any. */
-const NO_AFFILIATED = ["headline", "section", "item", "planning", "property-drawer", "node-property", "table-row", "clock"];
+/**
+ * The elements that take no affiliated keywords: those Org parses before
+ * it collects any, and a comment, before which they are orphans, as
+ * org-element--collect-affiliated-keywords leaves them.
+ */
+const NO_AFFILIATED = ["headline", "section", "item", "planning", "property-drawer", "node-property", "table-row", "clock", "comment"];
 
 /**
  * An element with its affiliated keywords, as #+NAME: and #+CAPTION:, as
@@ -702,7 +706,9 @@ export function withAffiliated(e: Elem | undefined): Elem | undefined {
   if (!e) return e;
   let owner = e;
   const end = e.parent?.contentsEnd ?? e.parent?.end ?? e8.bufferSize();
-  if (e.type === "keyword" && AFFILIATED.test(e8.lineText(lineAt(e.begin)))) {
+  // From a keyword's line, or a paragraph's E8 reads as one, as #+CAPTION[short title]: with a space in its brackets.
+  const keywordLine = e.type === "keyword" || (e.type === "paragraph" && e.begin === e8.lineStart(lineAt(e.begin)));
+  if (keywordLine && AFFILIATED.test(e8.lineText(lineAt(e.begin)))) {
     let k = lineAt(e.begin);
     while (k < e8.lineCount() && lineStartOrEnd(k) < end && AFFILIATED.test(e8.lineText(k))) k++;
     const at = lineStartOrEnd(k);

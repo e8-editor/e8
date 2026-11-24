@@ -298,5 +298,765 @@
    "org-mode"
   ],
   "message": true
+ },
+ {
+  "name": "review-comment-name-down",
+  "text": "Para.\n\n#+NAME: c\n# comment\n\nOther.\n",
+  "point": 7,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-comment-name-up",
+  "text": "Para.\n\n#+NAME: c\n# comment\n\nOther.\n",
+  "point": 7,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-comment-up",
+  "text": "Para.\n\n#+NAME: c\n# comment\n\nOther.\n",
+  "point": 17,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-other-up-over-comment",
+  "text": "Para.\n\n#+NAME: c\n# comment\n\nOther.\n",
+  "point": 28,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-clock-name-down",
+  "text": "Para.\n\n#+NAME: c\nCLOCK: [2024-01-01 Mon 10:00]--[2024-01-01 Mon 11:00] =>  1:00\n\nOther.\n",
+  "point": 7,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-clock-up",
+  "text": "Para.\n\n#+NAME: c\nCLOCK: [2024-01-01 Mon 10:00]--[2024-01-01 Mon 11:00] =>  1:00\n\nOther.\n",
+  "point": 17,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-item-name-up",
+  "text": "- a\n  #+NAME: t\n  | x |\n- b\n",
+  "point": 6,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-item-name-down",
+  "text": "- a\n  #+NAME: t\n  | x |\n- b\n",
+  "point": 6,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-item-para-up",
+  "text": "- a\n\n  #+NAME: p\n  text\n- b\n",
+  "point": 19,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-item-orphan-up",
+  "text": "- a\n  #+NAME: x\n- b\n",
+  "point": 6,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-quote-name-up",
+  "text": "#+begin_quote\nA.\n\n#+NAME: q\nB.\n#+end_quote\n",
+  "point": 18,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-quote-a-down",
+  "text": "#+begin_quote\nA.\n\n#+NAME: q\nB.\n#+end_quote\n",
+  "point": 14,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-quote-name-down",
+  "text": "#+begin_quote\nA.\n\n#+NAME: q\nB.\n#+end_quote\n",
+  "point": 18,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-heading-text-up",
+  "text": "* H\n#+NAME: t\n| a |\n\nText.\n",
+  "point": 21,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-heading-name-up",
+  "text": "* H\n#+NAME: t\n| a |\n\nText.\n",
+  "point": 4,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-planning-name-up",
+  "text": "* H\nSCHEDULED: <2024-01-01 Mon>\n#+NAME: t\n| a |\n",
+  "point": 32,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-propdrawer-name-up",
+  "text": "* H\n:PROPERTIES:\n:A: 1\n:END:\n#+NAME: t\n| a |\n",
+  "point": 29,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-kw-propdrawer-down",
+  "text": "* H\n#+NAME: d\n:PROPERTIES:\n:A: 1\n:END:\nText.\n",
+  "point": 4,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-kw-propdrawer-text-up",
+  "text": "* H\n#+NAME: d\n:PROPERTIES:\n:A: 1\n:END:\nText.\n",
+  "point": 39,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-kw-scheduled-down",
+  "text": "* H\n#+NAME: s\nSCHEDULED: <2024-01-01 Mon>\n\nText.\n",
+  "point": 4,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-stack-caption-down",
+  "text": "Para.\n\n#+CAPTION: c\n#+NAME: n\n#+ATTR_HTML: :width 1\n| a |\n\nAfter.\n",
+  "point": 11,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-stack-name-down",
+  "text": "Para.\n\n#+CAPTION: c\n#+NAME: n\n#+ATTR_HTML: :width 1\n| a |\n\nAfter.\n",
+  "point": 23,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-stack-attr-up",
+  "text": "Para.\n\n#+CAPTION: c\n#+NAME: n\n#+ATTR_HTML: :width 1\n| a |\n\nAfter.\n",
+  "point": 35,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-stack-after-up",
+  "text": "Para.\n\n#+CAPTION: c\n#+NAME: n\n#+ATTR_HTML: :width 1\n| a |\n\nAfter.\n",
+  "point": 61,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-title-then-table-name-up",
+  "text": "#+TITLE: T\n#+NAME: n\n| a |\n",
+  "point": 11,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-title-down",
+  "text": "#+TITLE: T\n#+NAME: n\n| a |\n",
+  "point": 0,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mixed-title-down",
+  "text": "#+NAME: a\n#+TITLE: t\n#+NAME: b\n| x |\n\nP.\n",
+  "point": 10,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mixed-name-a-down",
+  "text": "#+NAME: a\n#+TITLE: t\n#+NAME: b\n| x |\n\nP.\n",
+  "point": 0,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mixed-p-up",
+  "text": "#+NAME: a\n#+TITLE: t\n#+NAME: b\n| x |\n\nP.\n",
+  "point": 38,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-lowercase-p-up",
+  "text": "#+name: t\n#+caption[short]: long\n| a |\n\nP.\n",
+  "point": 40,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-lowercase-caption-down",
+  "text": "#+name: t\n#+caption[short]: long\n| a |\n\nP.\n",
+  "point": 10,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-caption-space-up",
+  "text": "P.\n\n#+CAPTION[short title]: Long\n| a |\n\nQ.\n",
+  "point": 4,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-caption-space-down",
+  "text": "P.\n\n#+CAPTION[short title]: Long\n| a |\n\nQ.\n",
+  "point": 4,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tblfm-name-down",
+  "text": "P.\n\n#+NAME: t\n| 1 |\n#+TBLFM: $1=1\n\nQ.\n",
+  "point": 4,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tblfm-q-up",
+  "text": "P.\n\n#+NAME: t\n| 1 |\n#+TBLFM: $1=1\n\nQ.\n",
+  "point": 35,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tblfm-line-up",
+  "text": "P.\n\n#+NAME: t\n| 1 |\n#+TBLFM: $1=1\n\nQ.\n",
+  "point": 20,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-fixed-width-down",
+  "text": "#+NAME: f\n: fixed\n\nP.\n",
+  "point": 0,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-hrule-p-up",
+  "text": "#+NAME: h\n-----\n\nP.\n",
+  "point": 17,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-dynblock-down",
+  "text": "#+NAME: d\n#+BEGIN: foo\n#+END:\n\nP.\n",
+  "point": 0,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-latex-down",
+  "text": "#+NAME: l\n\\begin{equation}\nx\n\\end{equation}\n\nP.\n",
+  "point": 0,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-diary-down",
+  "text": "#+NAME: d\n%%(diary-float t 1 1)\n\nP.\n",
+  "point": 0,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-call-down",
+  "text": "#+NAME: c\n#+CALL: foo()\n\nP.\n",
+  "point": 0,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-orphan-eob-nonl-up",
+  "text": "P.\n\n#+NAME: x",
+  "point": 4,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-orphan-eob-up",
+  "text": "P.\n\n#+NAME: x\n",
+  "point": 4,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-orphan-stack-caption-up",
+  "text": "P.\n\n#+NAME: a\n#+CAPTION: b\n\nQ.\n",
+  "point": 14,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-orphan-stack-name-down",
+  "text": "P.\n\n#+NAME: a\n#+CAPTION: b\n\nQ.\n",
+  "point": 4,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-orphan-stack-q-up",
+  "text": "P.\n\n#+NAME: a\n#+CAPTION: b\n\nQ.\n",
+  "point": 28,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-narrow-q-up",
+  "text": "P.\n\n#+NAME: t\n| a |\n\nQ.\n",
+  "point": 14,
+  "keys": "C-SPC M-> C-x n n M-> C-p M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-narrow-name-up",
+  "text": "P.\n\n#+NAME: t\n| a |\n\nQ.\n",
+  "point": 4,
+  "keys": "C-SPC M-> C-x n n M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-narrow-name-down",
+  "text": "P.\n\n#+NAME: t\n| a |\n\nQ.\n",
+  "point": 4,
+  "keys": "C-SPC M-> C-x n n M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-narrow-p-down",
+  "text": "P.\n\n#+NAME: t\n| a |\n\nQ.\n",
+  "point": 0,
+  "keys": "C-SPC C-n C-n C-n C-x n n M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-before-heading-name-down",
+  "text": "* A\n#+NAME: t\n| a |\n* B\n",
+  "point": 4,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-adjacent-paras-up",
+  "text": "#+NAME: a\nP1.\n#+NAME: b\nP2.\n",
+  "point": 24,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-adjacent-name-b-up",
+  "text": "#+NAME: a\nP1.\n#+NAME: b\nP2.\n",
+  "point": 14,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-results-up",
+  "text": "#+begin_src emacs-lisp\n(+ 1 2)\n#+end_src\n#+RESULTS:\n: 3\n",
+  "point": 41,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-fold-drawer-down",
+  "text": "* A\n#+NAME: d\n:LOGBOOK:\nx\n:END:\nText.\n",
+  "point": 4,
+  "keys": "C-n TAB C-p M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-fold-text-up",
+  "text": "* A\n#+NAME: d\n:LOGBOOK:\nx\n:END:\nText.\n",
+  "point": 4,
+  "keys": "C-n TAB C-n C-n M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-babel-name-up",
+  "text": "#+NAME: s\n#+begin_src emacs-lisp :session\n(+ 1 2)\n#+end_src\n",
+  "point": 0,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-babel-name-down",
+  "text": "#+NAME: s\n#+begin_src emacs-lisp :session\n(+ 1 2)\n#+end_src\n",
+  "point": 0,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-babel-header-session-down",
+  "text": "#+HEADER: :session s\n#+begin_src emacs-lisp\n(+ 1 2)\n#+end_src\n",
+  "point": 44,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-babel-header-session-hdr-down",
+  "text": "#+HEADER: :session s\n#+begin_src emacs-lisp\n(+ 1 2)\n#+end_src\n",
+  "point": 0,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-babel-session-none-down",
+  "text": "#+begin_src emacs-lisp :session none\n(+ 1 2)\n#+end_src\n",
+  "point": 37,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-babel-orphan-name-up",
+  "text": "P.\n\n#+NAME: s\n\n#+begin_src emacs-lisp :session\n(+ 1 2)\n#+end_src\n",
+  "point": 4,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-babel-orphan-name-down",
+  "text": "P.\n\n#+NAME: s\n\n#+begin_src emacs-lisp :session\n(+ 1 2)\n#+end_src\n",
+  "point": 4,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-babel-caption-text-down",
+  "text": "#+CAPTION: see [[https://x.org][x]]\n#+begin_src emacs-lisp :session\n1\n#+end_src\n",
+  "point": 11,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-caption-space-orphan-down",
+  "text": "P.\n\n#+CAPTION[a b]: x\n\nQ.\n",
+  "point": 4,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-caption-space-para-down",
+  "text": "#+CAPTION[a b]: x\nText.\n\nQ.\n",
+  "point": 0,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-caption-space-q-up",
+  "text": "P.\n\n#+CAPTION[a b]: x\n| a |\n\nQ.\n",
+  "point": 29,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-indented-p-up",
+  "text": "  #+NAME: t\n  | a |\n\nP.\n",
+  "point": 21,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-item-sublist-name-up",
+  "text": "- a\n  #+NAME: l\n  - b\n",
+  "point": 6,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-two-tables-name-b-up",
+  "text": "#+NAME: a\n| 1 |\n#+NAME: b\n| 2 |\n",
+  "point": 16,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-two-tables-name-a-down",
+  "text": "#+NAME: a\n| 1 |\n#+NAME: b\n| 2 |\n",
+  "point": 3,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-narrow-mid-stack-down",
+  "text": "P.\n\n#+CAPTION: c\n#+NAME: n\n| a |\n\nQ.\n",
+  "point": 17,
+  "keys": "C-SPC M-> C-x n n M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-narrow-mid-stack-up",
+  "text": "P.\n\n#+CAPTION: c\n#+NAME: n\n| a |\n\nQ.\n",
+  "point": 17,
+  "keys": "C-SPC M-> C-x n n M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-drawer-kw-end-down",
+  "text": "* H\n:NOTES:\nText.\n#+NAME: t\n:END:\n",
+  "point": 18,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-drawer-kw-end-up",
+  "text": "* H\n:NOTES:\nText.\n#+NAME: t\n:END:\n",
+  "point": 18,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
  }
 ]
