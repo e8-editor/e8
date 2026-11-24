@@ -5260,6 +5260,14 @@ declare global {
        */
       "org-agenda-earlier": [arg?: number];
       /**
+       * Toggle entry text mode: under each agenda line, some of its entry's text, at most org-agenda-entry-text-maxlines lines. With a number, turn it on with that many lines.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-entry-text-mode": [arg?: PrefixArg | boolean];
+      /**
        * Toggle follow mode: moving to a line with n or p shows its entry in another window. Turning it off puts the windows back.
        *
        * Defined in packages/org-agenda.ts.
@@ -13730,6 +13738,24 @@ declare global {
        */
       "org-agenda-dim-blocked-tasks": Value;
       /**
+       * Regexps whose matches are taken out of the entry text entry text mode shows.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-entry-text-exclude-regexps": Value;
+      /**
+       * The text before each line of entry text in the agenda.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-entry-text-leaders": Value;
+      /**
+       * How many lines of each entry's text entry text mode (E) shows under its agenda line.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-entry-text-maxlines": Value;
+      /**
        * The files the agenda collects entries from, as a list of file names.
        *
        * Defined in packages/org-agenda.ts.
@@ -13847,6 +13873,12 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-start-with-archives-mode": Value;
+      /**
+       * Whether a new agenda starts in entry text mode, showing some of each entry's text under its line.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-start-with-entry-text-mode": Value;
       /**
        * Whether a new agenda starts in follow mode, showing each line's entry in another window as point moves.
        *
@@ -19214,6 +19246,10 @@ declare global {
        * Functions called after a heading's TODO state changes, at the heading.
        */
       "org-after-todo-state-change-hook": Value;
+      /**
+       * Functions run in a buffer holding an entry's text, before entry text mode shows it, to clean it up.
+       */
+      "org-agenda-entry-text-cleanup-hook": Value;
       /**
        * Run after entering Org-Agenda mode, after the hooks of the modes it is built on.
        */

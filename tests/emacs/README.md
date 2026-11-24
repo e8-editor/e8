@@ -101,6 +101,14 @@ Batch Emacs and Emacs on a terminal cannot load images, so `images.el` runs a gr
 emacs -Q -l $PWD/tests/emacs/images.el
 ```
 
+## The agenda's entry text
+
+Entry text mode (`E` in the agenda) puts each entry's text in an overlay's `after-string` under its line, which the cases do not record. `entry-text/dump.el` makes an agenda of `entry-text/tasks.org`, turns entry text mode on and prints each line with the text under it, one JSON list a line; the `.jsonl` files there are its output for a few settings, and `org_agenda_entry_text` in `crates/e8-script/tests/all/` compares E8 with them. After changing `tasks.org`, record them again:
+
+```bash
+cd tests/emacs/entry-text && emacs -Q --batch -l dump.el tasks.org 5 > maxlines-5.jsonl && emacs -Q --batch -l dump.el tasks.org 2 > maxlines-2.jsonl && emacs -Q --batch -l dump.el tasks.org 3 "|> " > leader.jsonl && emacs -Q --batch -l dump.el tasks.org 5 "" 'first\|seven\|^.*two$\|^#' > exclude.jsonl
+```
+
 ## Bidirectional text
 
 `bidi/` holds an oracle for how Emacs shows bidirectional text, which batch Emacs cannot, as it has no window to reorder for. `bidi/record.el` runs an interactive Emacs inside tmux, whose screen it reads with `tmux capture-pane`, and records for each case in `cases.json` the window's lines, `bidi-resolved-levels` of each, where each position shows, `move-point-visually` both ways from each position, `current-bidi-paragraph-direction` and `bidi-find-overridden-directionality` into `golden.json`:

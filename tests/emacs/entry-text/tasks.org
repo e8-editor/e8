@@ -1,0 +1,47 @@
+#+TODO: TODO NEXT | DONE
+* TODO Write report :work:
+SCHEDULED: <2026-10-28 Wed>
+:PROPERTIES:
+:EFFORT: 1:00
+:END:
+  First line of the body,
+    indented a little more.
+
+  After a blank line, with a [[https://example.com][link]].
+DEADLINE: <2026-10-30 Fri>
+	A tabbed line.
+:LOGBOOK:
+CLOCK: [2026-10-27 Tue 10:00]--[2026-10-27 Tue 11:00] =>  1:00
+:END:
+Last line.
+
+
+* Meeting <2026-10-28 Wed 10:00>
+** A child heading
+Child text.
+* Empty <2026-10-29 Thu>
+:PROPERTIES:
+:ID: abc
+:END:
+* Long <2026-10-30 Fri>
+one
+two
+three
+four
+five
+six
+seven
+* Blank first <2026-10-31 Sat>
+
+
+
+text after blanks
+* Hashes <2026-11-01 Sun>
+##foo
+#bar
+xx#yy
+  Ünïcödé — 日本語	tab
+* Unclosed drawer <2026-11-01 Sun>
+:NOTES:
+never closed
+still in it
