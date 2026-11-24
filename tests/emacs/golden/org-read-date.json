@@ -367,7 +367,7 @@
       "message": null
     },
     {
-      "name": "rd-weekday-and-date",
+      "name": "rd-date-and-weekday",
       "input": {
         "text": "* H\n",
         "point": 4,
@@ -378,12 +378,12 @@
         "call": [],
         "platform": null,
         "answers": [
-          "fri 2026-11-24"
+          "2026-11-24 fri"
         ],
         "message": true
       },
-      "text": "* H\n<2026-11-27 Fri>",
-      "visible": "* H\n<2026-11-27 Fri>",
+      "text": "* H\n<2026-11-24 Tue>",
+      "visible": "* H\n<2026-11-24 Tue>",
       "point": 20,
       "mark": null,
       "mark_active": false,
@@ -1616,6 +1616,440 @@
       "modified": true,
       "error": null,
       "message": "Deadline on <2026-03-15 Sun>"
+    },
+    {
+      "name": "rd-schedule-iso-basic",
+      "input": {
+        "text": "* H\nSCHEDULED: <2026-03-10 Tue>\n",
+        "point": 2,
+        "keys": "C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "20261124"
+        ],
+        "globals": {
+          "org-read-date-prefer-future": false
+        }
+      },
+      "text": "* H\nSCHEDULED: <2037-03-10 Tue>\n",
+      "visible": "* H\nSCHEDULED: <2037-03-10 Tue>\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "rd-schedule-ordinal",
+      "input": {
+        "text": "* H\nSCHEDULED: <2026-03-10 Tue>\n",
+        "point": 2,
+        "keys": "C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2026-330"
+        ],
+        "globals": {
+          "org-read-date-prefer-future": false
+        }
+      },
+      "text": "* H\nSCHEDULED: <2026-03-10 Tue>\n",
+      "visible": "* H\nSCHEDULED: <2026-03-10 Tue>\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "rd-schedule-week-no-dash",
+      "input": {
+        "text": "* H\nSCHEDULED: <2026-03-10 Tue>\n",
+        "point": 2,
+        "keys": "C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2026w48"
+        ],
+        "globals": {
+          "org-read-date-prefer-future": false
+        }
+      },
+      "text": "* H\nSCHEDULED: <2026-03-10 Tue>\n",
+      "visible": "* H\nSCHEDULED: <2026-03-10 Tue>\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "rd-schedule-iso-t",
+      "input": {
+        "text": "* H\nSCHEDULED: <2026-03-10 Tue>\n",
+        "point": 2,
+        "keys": "C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2026-11-24T10:00"
+        ],
+        "globals": {
+          "org-read-date-prefer-future": false
+        }
+      },
+      "text": "* H\nSCHEDULED: <2026-03-10 Tue>\n",
+      "visible": "* H\nSCHEDULED: <2026-03-10 Tue>\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "rd-warn-from-old-relative",
+      "input": {
+        "text": "* H\nDEADLINE: <2020-01-01 Wed>\n",
+        "point": 2,
+        "keys": "C-u C-u C-c C-d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "++3"
+        ],
+        "globals": {
+          "org-read-date-prefer-future": false
+        }
+      },
+      "text": "* H\nDEADLINE: <2020-01-01 Wed -3d>\n",
+      "visible": "* H\nDEADLINE: <2020-01-01 Wed -3d>\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "rd-warn-from-old-day",
+      "input": {
+        "text": "* H\nDEADLINE: <2020-01-01 Wed>\n",
+        "point": 2,
+        "keys": "C-u C-u C-c C-d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "15"
+        ],
+        "globals": {
+          "org-read-date-prefer-future": false
+        }
+      },
+      "text": "* H\nDEADLINE: <2020-01-01 Wed -14d>\n",
+      "visible": "* H\nDEADLINE: <2020-01-01 Wed -14d>\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "rd-extend-today-cu",
+      "input": {
+        "text": "* H\n",
+        "point": 4,
+        "keys": "C-u C-c .",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2026-11-24"
+        ],
+        "globals": {
+          "org-extend-today-until": 24
+        }
+      },
+      "text": "* H\n<2026-11-24 Tue 23:59>",
+      "visible": "* H\n<2026-11-24 Tue 23:59>",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "rd-huge-year",
+      "input": {
+        "text": "* H\n<2026-03-10 Tue>\n",
+        "point": 6,
+        "keys": "C-c .",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "20261124"
+        ],
+        "globals": {
+          "org-read-date-prefer-future": false,
+          "org-read-date-force-compatible-dates": false
+        }
+      },
+      "text": "* H\n<20261124-03-10 Mon>\n",
+      "visible": "* H\n<20261124-03-10 Mon>\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "rd-end-without-start",
+      "input": {
+        "text": "* H\n<2026-03-10 Tue>\n",
+        "point": 6,
+        "keys": "C-c .",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2026-11-24 9am-11:30"
+        ],
+        "globals": {
+          "org-read-date-prefer-future": false
+        }
+      },
+      "text": "* H\n<2026-11-24 Tue-11:30>\n",
+      "visible": "* H\n<2026-11-24 Tue-11:30>\n",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "rd-bad-integer-zone",
+      "input": {
+        "text": "* H\n",
+        "point": 4,
+        "keys": "C-c .",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2026-11-24 +ab12"
+        ],
+        "message": true
+      },
+      "text": "* H\n",
+      "visible": "* H\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not an integer string: ‘+ab12’",
+      "message": null
+    },
+    {
+      "name": "rd-bad-integer-time",
+      "input": {
+        "text": "* H\n",
+        "point": 4,
+        "keys": "C-c .",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2026-11-24 10:3x:00"
+        ],
+        "message": true
+      },
+      "text": "* H\n",
+      "visible": "* H\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not an integer string: ‘10:3x:00’",
+      "message": null
+    },
+    {
+      "name": "rd-bad-integer-date",
+      "input": {
+        "text": "* H\n",
+        "point": 4,
+        "keys": "C-c .",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2026-1a-24"
+        ],
+        "message": true
+      },
+      "text": "* H\n",
+      "visible": "* H\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not an integer string: ‘2026-1a-24’",
+      "message": null
+    },
+    {
+      "name": "rd-keeps-double-warning",
+      "input": {
+        "text": "* H\n<2026-03-10 Tue +1w --2d>\n",
+        "point": 6,
+        "keys": "C-c .",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2026-11-24"
+        ],
+        "message": true,
+        "globals": {
+          "org-read-date-prefer-future": false
+        }
+      },
+      "text": "* H\n<2026-11-24 Tue +1w --2d>\n",
+      "visible": "* H\n<2026-11-24 Tue +1w --2d>\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Timestamp updated"
+    },
+    {
+      "name": "rd-point-before-repeater",
+      "input": {
+        "text": "* H\n<2026-03-10 Tue 10:00 .+1w -2d>\n",
+        "point": 6,
+        "keys": "C-c .",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2026-11-24"
+        ],
+        "globals": {
+          "org-read-date-prefer-future": false
+        }
+      },
+      "text": "* H\n<2026-11-24 Tue .+1w -2d>\n",
+      "visible": "* H\n<2026-11-24 Tue .+1w -2d>\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "rd-twice-makes-range",
+      "input": {
+        "text": "* H\n",
+        "point": 4,
+        "keys": "C-c . C-c .",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2026-11-24",
+          "2026-11-25"
+        ],
+        "globals": {
+          "org-read-date-prefer-future": false
+        }
+      },
+      "text": "* H\n<2026-11-24 Tue>--<2026-11-25 Wed>",
+      "visible": "* H\n<2026-11-24 Tue>--<2026-11-25 Wed>",
+      "point": 38,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "rd-inactive-twice-makes-range",
+      "input": {
+        "text": "* H\n",
+        "point": 4,
+        "keys": "C-c ! C-c !",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2026-11-24",
+          "2026-11-25"
+        ],
+        "globals": {
+          "org-read-date-prefer-future": false
+        }
+      },
+      "text": "* H\n[2026-11-24 Tue]--[2026-11-25 Wed]",
+      "visible": "* H\n[2026-11-24 Tue]--[2026-11-25 Wed]",
+      "point": 38,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }

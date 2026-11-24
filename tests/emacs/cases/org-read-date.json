@@ -182,7 +182,7 @@
   "message": true
  },
  {
-  "name": "rd-weekday-and-date",
+  "name": "rd-date-and-weekday",
   "text": "* H\n",
   "modes": [
    "org-mode"
@@ -190,7 +190,7 @@
   "point": 4,
   "keys": "C-c .",
   "answers": [
-   "fri 2026-11-24"
+   "2026-11-24 fri"
   ],
   "message": true
  },
@@ -846,5 +846,243 @@
    "org-read-date-prefer-future": false
   },
   "message": true
+ },
+ {
+  "name": "rd-schedule-iso-basic",
+  "text": "* H\nSCHEDULED: <2026-03-10 Tue>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 2,
+  "keys": "C-c C-s",
+  "answers": [
+   "20261124"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-schedule-ordinal",
+  "text": "* H\nSCHEDULED: <2026-03-10 Tue>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 2,
+  "keys": "C-c C-s",
+  "answers": [
+   "2026-330"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-schedule-week-no-dash",
+  "text": "* H\nSCHEDULED: <2026-03-10 Tue>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 2,
+  "keys": "C-c C-s",
+  "answers": [
+   "2026w48"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-schedule-iso-t",
+  "text": "* H\nSCHEDULED: <2026-03-10 Tue>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 2,
+  "keys": "C-c C-s",
+  "answers": [
+   "2026-11-24T10:00"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-warn-from-old-relative",
+  "text": "* H\nDEADLINE: <2020-01-01 Wed>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 2,
+  "keys": "C-u C-u C-c C-d",
+  "answers": [
+   "++3"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-warn-from-old-day",
+  "text": "* H\nDEADLINE: <2020-01-01 Wed>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 2,
+  "keys": "C-u C-u C-c C-d",
+  "answers": [
+   "15"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-extend-today-cu",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-u C-c .",
+  "answers": [
+   "2026-11-24"
+  ],
+  "globals": {
+   "org-extend-today-until": 24
+  }
+ },
+ {
+  "name": "rd-huge-year",
+  "text": "* H\n<2026-03-10 Tue>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "C-c .",
+  "answers": [
+   "20261124"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false,
+   "org-read-date-force-compatible-dates": false
+  }
+ },
+ {
+  "name": "rd-end-without-start",
+  "text": "* H\n<2026-03-10 Tue>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "C-c .",
+  "answers": [
+   "2026-11-24 9am-11:30"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-bad-integer-zone",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "2026-11-24 +ab12"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-bad-integer-time",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "2026-11-24 10:3x:00"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-bad-integer-date",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "2026-1a-24"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-keeps-double-warning",
+  "text": "* H\n<2026-03-10 Tue +1w --2d>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "C-c .",
+  "answers": [
+   "2026-11-24"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  },
+  "message": true
+ },
+ {
+  "name": "rd-point-before-repeater",
+  "text": "* H\n<2026-03-10 Tue 10:00 .+1w -2d>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "C-c .",
+  "answers": [
+   "2026-11-24"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-twice-makes-range",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c . C-c .",
+  "answers": [
+   "2026-11-24",
+   "2026-11-25"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-inactive-twice-makes-range",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c ! C-c !",
+  "answers": [
+   "2026-11-24",
+   "2026-11-25"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
  }
 ]

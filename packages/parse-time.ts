@@ -33,7 +33,7 @@ export function parseTimeTokenize(s: string): (string | number)[] {
 /** The number in part of a token, as cl-parse-integer reads it, failing as it does on anything else. */
 function integerIn(token: string, start: number, end: number): number {
   const part = token.slice(start, end);
-  if (!/^\s*[+-]?[0-9]+\s*$/.test(part)) throw new Error(`Not an integer string: ‘${part}’`);
+  if (!/^\s*[+-]?[0-9]+\s*$/.test(part)) throw new Error(`Not an integer string: ‘${token}’`);
   return Number(part);
 }
 

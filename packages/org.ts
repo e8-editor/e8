@@ -6641,10 +6641,22 @@ export function today(withTime = false): DateTime {
   return { year, month, day, ...(withTime ? { hour, minute } : {}) };
 }
 
+/**
+ * Whole cycles of 400 years to take off a year, and put back after, so
+ * JavaScript's dates, which end at the year 275760, reach any year
+ * Emacs's do: the calendar repeats every 400 years, weekdays and all.
+ */
+function cycles(year: number): number {
+  return 400 * Math.floor((year - 2000) / 400);
+}
+
 /** A date with its fields carried over, as Emacs's encode-time does: 31 February is 3 March. */
 function normalize(d: DateTime): DateTime {
-  const t = new Date(Date.UTC(d.year, d.month - 1, d.day, d.hour ?? 0, d.minute ?? 0));
-  const out: DateTime = { year: t.getUTCFullYear(), month: t.getUTCMonth() + 1, day: t.getUTCDate() };
+  const shift = cycles(d.year);
+  const t = new Date(Date.UTC(2000, 0, 1));
+  t.setUTCFullYear(d.year - shift, d.month - 1, d.day);
+  t.setUTCHours(d.hour ?? 0, d.minute ?? 0);
+  const out: DateTime = { year: t.getUTCFullYear() + shift, month: t.getUTCMonth() + 1, day: t.getUTCDate() };
   if (d.hour !== undefined) {
     out.hour = t.getUTCHours();
     out.minute = t.getUTCMinutes();
@@ -6653,7 +6665,9 @@ function normalize(d: DateTime): DateTime {
 }
 
 function weekday(d: DateTime): number {
-  return new Date(Date.UTC(d.year, d.month - 1, d.day)).getUTCDay();
+  const t = new Date(Date.UTC(2000, 0, 1));
+  t.setUTCFullYear(d.year - cycles(d.year), d.month - 1, d.day);
+  return t.getUTCDay();
 }
 
 const two = (n: number) => String(n).padStart(2, "0");
@@ -7169,6 +7183,17 @@ function currentTime(): DateTime {
   return normalize({ ...now, minute: nearest * step });
 }
 
+/**
+ * The prompt's default when none is given: the time now, or before
+ * org-extend-today-until's hour, a minute before midnight yesterday, as
+ * org-read-date has it.
+ */
+function promptDefault(): DateTime {
+  const def = currentTime();
+  const extend = Number(e8.variable("org-extend-today-until") ?? 0);
+  return (def.hour ?? 0) < extend ? normalize({ ...def, hour: -1, minute: 59 }) : def;
+}
+
 /** The day and time a timestamp's text says, midnight if it has no time, as org-time-string-to-time reads it. */
 function timestampTime(ts: string): DateTime | undefined {
   const m = /(\d{4})-(\d{2})-(\d{2})(?:[^\]>\d]*?(\d{1,2}):(\d{2}))?/.exec(ts);
@@ -7370,7 +7395,7 @@ export function readDateAnalyze(input: string, def: DateTime, withEnd = false): 
  * DEF is the default, the time now unless a timestamp is being changed.
  * The result has a range's end time, if WITH_END and one was given.
  */
-export function parseDate(input: string, withTime = false, def: DateTime = currentTime(), withEnd = false): DateTime & { endTime?: string } {
+export function parseDate(input: string, withTime = false, def: DateTime = promptDefault(), withEnd = false): DateTime & { endTime?: string } {
   const r = readDateAnalyze(input, { hour: 0, minute: 0, ...def }, withEnd);
   if (r.forcedYear) e8.message("Year was forced into compatible range (1970-2037)");
   const d: DateTime & { endTime?: string } = { year: r.date.year, month: r.date.month, day: r.date.day };
@@ -7395,9 +7420,13 @@ function endTimeText(endTime: string | undefined): string {
   return m ? `-${pad2(Number(m[1]))}:${pad2(Number(m[2]))}` : "";
 }
 
-/** A timestamp for a date read from the prompt, with its range's end time if it has a time, as org-insert-timestamp makes it. */
+/**
+ * A timestamp for a date read from the prompt, with its range's end time,
+ * as org-insert-timestamp makes it: after the day's name if no time was
+ * given, as Org puts it there too.
+ */
 export function stampFor(d: DateTime & { endTime?: string }, active: boolean): string {
-  const end = d.hour === undefined ? "" : endTimeText(d.endTime);
+  const end = endTimeText(d.endTime);
   return active ? `<${formatTimestamp(d)}${end}>` : `[${formatTimestamp(d)}${end}]`;
 }
 
@@ -7415,21 +7444,43 @@ function withRepeater(text: string, old: string | undefined): string {
   return repeater === undefined || repeaterOf(text) !== undefined ? text : `${text.slice(0, -1)} ${repeater}${text.slice(-1)}`;
 }
 
+/** The commands that make a range when one follows the other on a timestamp, as org-timestamp checks. */
+const TIMESTAMP_COMMANDS = ["org-time-stamp", "org-time-stamp-inactive", "org-timestamp", "org-timestamp-inactive"];
+
+/**
+ * Inserts a timestamp for a date read from the prompt, as org-timestamp
+ * does: on a timestamp, it replaces it, its repeater and warning kept, or
+ * right after one that C-c . or C-c ! just made, it makes a range. With
+ * INPUT undefined, as C-u C-u, the time now.
+ */
 function insertTimestamp(input: string | undefined, active: boolean): void {
   const withTime = Array.isArray(e8.prefixArg());
   const p = e8.point();
   const ts = tsMatches(lineAt()).find((t) => t.start <= p && p <= t.end);
+  const old = ts && e8.bufferText(ts.start, ts.end);
   // The parts not given come from the timestamp at point, if any, as Org's default time.
-  const def = ts && timestampTime(e8.bufferText(ts.start, ts.end));
-  // C-u C-u: the time now, as it is, without asking.
+  const def = old === undefined ? undefined : timestampTime(old);
   const date = input === undefined ? today(true) : parseDate(input, withTime, def, true);
-  let text = stampFor(date, active);
-  if (ts) {
-    text = withRepeater(text, e8.bufferText(ts.start, ts.end));
+  const named = (x: unknown): string => (typeof x === "symbol" ? e8.symbolName(x) : String(x ?? ""));
+  if (ts && TIMESTAMP_COMMANDS.includes(named(e8.lastCommand())) && TIMESTAMP_COMMANDS.includes(named(e8.thisCommand()))) {
+    e8.insert("--");
+    e8.insert(stampFor(date, active));
+    return;
+  }
+  if (ts && old !== undefined) {
+    const repeater = /(?:[.+-]+[0-9]+[hdwmy] ?)+/.exec(old)?.[0];
     e8.deleteRegion(ts.start, ts.end);
     e8.gotoChar(ts.start);
+    e8.insert(stampFor(date, active));
+    // Before the bracket, where point stays, as org-timestamp puts it back.
+    if (repeater !== undefined) {
+      e8.gotoChar(e8.point() - 1);
+      e8.insert(` ${repeater}`);
+    }
+    e8.message("Timestamp updated");
+    return;
   }
-  e8.insert(text);
+  e8.insert(stampFor(date, active));
 }
 
 const timestamp = e8.defineCommand({
@@ -7536,7 +7587,8 @@ function planHere(keyword: string, input: () => string): void {
       const m = new RegExp(`\\b${keyword}: *<([^>]+)>`).exec(e8.lineText(l));
       if (!m) continue;
       const d = /^(\d{4})-(\d{2})-(\d{2})/.exec(m[1]);
-      const days = d ? Math.abs(dayCount(parseDate(input())) - dayCount({ year: +d[1], month: +d[2], day: +d[3] })) : 0;
+      // Read from the old date, as org--deadline-or-schedule gives it as the default.
+      const days = d ? Math.abs(dayCount(parseDate(input(), false, timestampTime(`<${m[1]}>`))) - dayCount({ year: +d[1], month: +d[2], day: +d[3] })) : 0;
       const start = e8.lineStart(l) + m.index;
       replaceText(start, start + m[0].length, `${keyword}: <${m[1].replace(/ -[0-9]+[hdwmy]/, "")} -${days}d>`);
       return;
@@ -7606,9 +7658,7 @@ const schedule = e8.defineCommand({
     {
       name: "date",
       // C-u C-u asks for the date to warn or delay from, C-u for none, as org--deadline-or-schedule.
-      prompt: () => (doublePrefix() ? "Delay until: " : "Date: "),
-      history: "org-read-date-history",
-      value: () => ((Array.isArray(e8.prefixArg()) && !doublePrefix()) || planLoopsOverNothing() ? "" : undefined),
+      value: () => ((Array.isArray(e8.prefixArg()) && !doublePrefix()) || planLoopsOverNothing() ? "" : readPlanDate("SCHEDULED")),
     },
   ],
   run: (input) => planEach("SCHEDULED", input),
@@ -7621,9 +7671,7 @@ const deadline = e8.defineCommand({
     {
       name: "date",
       // C-u C-u asks for the date to warn or delay from, C-u for none, as org--deadline-or-schedule.
-      prompt: () => (doublePrefix() ? "Warn starting from: " : "Date: "),
-      history: "org-read-date-history",
-      value: () => ((Array.isArray(e8.prefixArg()) && !doublePrefix()) || planLoopsOverNothing() ? "" : undefined),
+      value: () => ((Array.isArray(e8.prefixArg()) && !doublePrefix()) || planLoopsOverNothing() ? "" : readPlanDate("DEADLINE")),
     },
   ],
   run: (input) => planEach("DEADLINE", input),
