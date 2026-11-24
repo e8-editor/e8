@@ -5176,14 +5176,33 @@ export function todoFromCode<T>(body: () => T): T {
   }
 }
 
-/** Whether a change of TODO state is one the dependencies look at: from not done to done, as both of Org's functions ask. */
+/**
+ * A change of TODO state as org-blocker-hook and org-trigger-hook are
+ * given it, Org's property list: (:type todo-state-change :from FROM :to TO
+ * :position POS), FROM and TO keywords, or the symbols todo and done.
+ */
+export function todoChangePlist(from: e8.Value, to: e8.Value, position: number, positionFirst = false): e8.Value[] {
+  const sym = (name: string) => e8.intern(name);
+  const head = [sym(":type"), sym("todo-state-change")];
+  return positionFirst
+    ? [...head, sym(":position"), position, sym(":from"), from, sym(":to"), to]
+    : [...head, sym(":from"), from, sym(":to"), to, sym(":position"), position];
+}
+
+/** A value's name if it is a symbol. */
+const symbolNamed = (v: e8.Value, name: string): boolean => typeof v === "symbol" && e8.symbolName(v) === name;
+
+/**
+ * Whether a change of TODO state is one the dependencies look at, as both
+ * of Org's functions ask: of type todo-state-change, not from done or a
+ * done keyword, to something other than todo, a keyword not done, or nil.
+ */
 function changeIsToDone(change: e8.Value[]): boolean {
-  const get = (k: string) => change[change.indexOf(k) + 1];
-  const from = get(":from");
-  const to = get(":to");
-  if (get(":type") !== "todo-state-change") return false;
-  if (from === "done" || (typeof from === "string" && from !== "todo" && isDone(from))) return false;
-  if (to === null || to === undefined || to === "todo" || (typeof to === "string" && to !== "done" && !isDone(to))) return false;
+  const from = plistGet(change, ":from");
+  const to = plistGet(change, ":to");
+  if (!symbolNamed(plistGet(change, ":type"), "todo-state-change")) return false;
+  if (symbolNamed(from, "done") || (typeof from === "string" && isDone(from))) return false;
+  if (!truthy(to) || symbolNamed(to, "todo") || (typeof to === "string" && allKeywords().includes(to) && !isDone(to))) return false;
   return true;
 }
 
@@ -5296,9 +5315,16 @@ export function entryBlocked(h: Heading): boolean {
   if (entryGet(h.line, "NOBLOCKING") !== undefined || h.todo === undefined || isDone(h.todo)) return false;
   return !e8.saveExcursion(() => {
     e8.gotoChar(h.start);
-    return e8.runHookWithArgsUntilFailure("org-blocker-hook", [":type", "todo-state-change", ":position", h.start, ":from", "todo", ":to", "done"]);
+    return e8.runHookWithArgsUntilFailure("org-blocker-hook", todoChangePlist(e8.intern("todo"), e8.intern("done"), h.start, true));
   });
 }
+
+/** Whether the entry at point is blocked from being done, as org-entry-blocked-p. */
+e8.defun("org-entry-blocked-p", () => {
+  const all = headings();
+  const i = headingIndex(all, lineAt());
+  return i !== undefined && entryBlocked(all[i]);
+});
 
 /**
  * Whether the entry at heading H is blocked, as org-entry-blocked-p, and if
@@ -5417,7 +5443,7 @@ function todoLogged(direction: number, state?: string, across = false, options: 
         : state === "" ? undefined : state;
   // The set's head the line remembers, as org-todo leaves org-todo-head: the old state's, or the new one's when it was given and is not done.
   let head = sequenceHead(before, h.line);
-  const change: e8.Value = [":type", "todo-state-change", ":from", before ?? null, ":to", next ?? null, ":position", h.start];
+  const change: e8.Value = todoChangePlist(before ?? null, next ?? null, h.start);
   if (!todoChangeAllowed(h, change, before, next)) return;
   replaceTodoKeyword(h, next);
   if (parseHeading(h.line)?.tagsAt !== undefined) alignTagsAway(h.line);
@@ -5563,7 +5589,7 @@ function autoRepeat(line: number, last: string | undefined, done: string): [stri
   e8.gotoChar(h.start);
   replaceTodoKeyword(parseHeading(line) as Heading, to);
   // Back to do, as org-auto-repeat-maybe's own org-todo, which org-trigger-hook is told of first.
-  e8.saveExcursion(() => e8.runHooks("org-trigger-hook", [":type", "todo-state-change", ":from", done, ":to", to ?? null, ":position", h.start]));
+  e8.saveExcursion(() => e8.runHooks("org-trigger-hook", todoChangePlist(done, to ?? null, h.start)));
   if (parseHeading(line)?.tagsAt !== undefined) alignTagsAway(line);
   updateParentTodoStatistics(line);
   setPlanning(line, "CLOSED", undefined);
