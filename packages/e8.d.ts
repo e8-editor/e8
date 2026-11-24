@@ -5238,6 +5238,12 @@ declare global {
        */
       "org-agenda-clock-out": [];
       /**
+       * Toggle the agenda's clock report: a clock table of the time clocked in its days, at its end.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-clockreport-mode": [];
+      /**
        * Show a day's agenda, point's day. With a prefix argument, that day of the month.
        *
        * @param dayOfMonth raw prefix argument
@@ -13726,6 +13732,18 @@ declare global {
        */
       "org-adapt-indentation": Value;
       /**
+       * Text put before the agenda's clock report, or nil for none.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-clock-report-header": Value;
+      /**
+       * The clock table's parameters in the agenda's clock report (R), as a dynamic block's: the agenda's days and files are added.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-clockreport-parameter-plist": Value;
+      /**
        * What the time grid's line for the time now says.
        *
        * Defined in packages/org-agenda.ts.
@@ -13873,6 +13891,12 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-start-with-archives-mode": Value;
+      /**
+       * Whether a new agenda starts with its clock report, a clock table of its days at the end.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-start-with-clockreport-mode": Value;
       /**
        * Whether a new agenda starts in entry text mode, showing some of each entry's text under its line.
        *

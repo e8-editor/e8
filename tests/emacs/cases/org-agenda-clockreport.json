@@ -1,0 +1,313 @@
+[
+ {
+  "text": "* Work\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:30] =>  1:30\nCLOCK: [2026-10-20 Tue 08:00]--[2026-10-20 Tue 09:00] =>  1:00\n:END:\n*** Detail\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 14:00]--[2026-10-27 Tue 14:45] =>  0:45\n:END:\n* Home\n** Garden\n:LOGBOOK:\nCLOCK: [2026-10-31 Sat 10:00]--[2026-10-31 Sat 12:00] =>  2:00\n:END:\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "cr-key",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-clockreport-mode": false,
+   "org-agenda-clock-report-header": false
+  },
+  "keys": "R"
+ },
+ {
+  "text": "* Work\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:30] =>  1:30\nCLOCK: [2026-10-20 Tue 08:00]--[2026-10-20 Tue 09:00] =>  1:00\n:END:\n*** Detail\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 14:00]--[2026-10-27 Tue 14:45] =>  0:45\n:END:\n* Home\n** Garden\n:LOGBOOK:\nCLOCK: [2026-10-31 Sat 10:00]--[2026-10-31 Sat 12:00] =>  2:00\n:END:\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "cr-twice",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-clockreport-mode": false,
+   "org-agenda-clock-report-header": false
+  },
+  "keys": "R R"
+ },
+ {
+  "text": "* Work\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:30] =>  1:30\nCLOCK: [2026-10-20 Tue 08:00]--[2026-10-20 Tue 09:00] =>  1:00\n:END:\n*** Detail\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 14:00]--[2026-10-27 Tue 14:45] =>  0:45\n:END:\n* Home\n** Garden\n:LOGBOOK:\nCLOCK: [2026-10-31 Sat 10:00]--[2026-10-31 Sat 12:00] =>  2:00\n:END:\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "cr-view",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-clockreport-mode": false,
+   "org-agenda-clock-report-header": false
+  },
+  "keys": "v",
+  "answers": [
+   "R"
+  ]
+ },
+ {
+  "text": "* Work\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:30] =>  1:30\nCLOCK: [2026-10-20 Tue 08:00]--[2026-10-20 Tue 09:00] =>  1:00\n:END:\n*** Detail\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 14:00]--[2026-10-27 Tue 14:45] =>  0:45\n:END:\n* Home\n** Garden\n:LOGBOOK:\nCLOCK: [2026-10-31 Sat 10:00]--[2026-10-31 Sat 12:00] =>  2:00\n:END:\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "cr-view-lower",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-clockreport-mode": false,
+   "org-agenda-clock-report-header": false
+  },
+  "keys": "v",
+  "answers": [
+   "r"
+  ]
+ },
+ {
+  "text": "* Work\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:30] =>  1:30\nCLOCK: [2026-10-20 Tue 08:00]--[2026-10-20 Tue 09:00] =>  1:00\n:END:\n*** Detail\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 14:00]--[2026-10-27 Tue 14:45] =>  0:45\n:END:\n* Home\n** Garden\n:LOGBOOK:\nCLOCK: [2026-10-31 Sat 10:00]--[2026-10-31 Sat 12:00] =>  2:00\n:END:\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "cr-later",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-clockreport-mode": false,
+   "org-agenda-clock-report-header": false
+  },
+  "keys": "R f"
+ },
+ {
+  "text": "* Work\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:30] =>  1:30\nCLOCK: [2026-10-20 Tue 08:00]--[2026-10-20 Tue 09:00] =>  1:00\n:END:\n*** Detail\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 14:00]--[2026-10-27 Tue 14:45] =>  0:45\n:END:\n* Home\n** Garden\n:LOGBOOK:\nCLOCK: [2026-10-31 Sat 10:00]--[2026-10-31 Sat 12:00] =>  2:00\n:END:\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "cr-earlier",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-clockreport-mode": false,
+   "org-agenda-clock-report-header": false
+  },
+  "keys": "R b"
+ },
+ {
+  "text": "* Work\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:30] =>  1:30\nCLOCK: [2026-10-20 Tue 08:00]--[2026-10-20 Tue 09:00] =>  1:00\n:END:\n*** Detail\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 14:00]--[2026-10-27 Tue 14:45] =>  0:45\n:END:\n* Home\n** Garden\n:LOGBOOK:\nCLOCK: [2026-10-31 Sat 10:00]--[2026-10-31 Sat 12:00] =>  2:00\n:END:\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "cr-day",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-clockreport-mode": false,
+   "org-agenda-clock-report-header": false,
+   "org-agenda-span": "'day"
+  },
+  "keys": "R"
+ },
+ {
+  "text": "* Work\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:30] =>  1:30\nCLOCK: [2026-10-20 Tue 08:00]--[2026-10-20 Tue 09:00] =>  1:00\n:END:\n*** Detail\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 14:00]--[2026-10-27 Tue 14:45] =>  0:45\n:END:\n* Home\n** Garden\n:LOGBOOK:\nCLOCK: [2026-10-31 Sat 10:00]--[2026-10-31 Sat 12:00] =>  2:00\n:END:\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "cr-start-with",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-clockreport-mode": true,
+   "org-agenda-clock-report-header": false
+  },
+  "keys": ""
+ },
+ {
+  "text": "* Work\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:30] =>  1:30\nCLOCK: [2026-10-20 Tue 08:00]--[2026-10-20 Tue 09:00] =>  1:00\n:END:\n*** Detail\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 14:00]--[2026-10-27 Tue 14:45] =>  0:45\n:END:\n* Home\n** Garden\n:LOGBOOK:\nCLOCK: [2026-10-31 Sat 10:00]--[2026-10-31 Sat 12:00] =>  2:00\n:END:\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "cr-header",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-clockreport-mode": false,
+   "org-agenda-clock-report-header": "Report\n"
+  },
+  "keys": "R"
+ },
+ {
+  "text": "* Work\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:30] =>  1:30\nCLOCK: [2026-10-20 Tue 08:00]--[2026-10-20 Tue 09:00] =>  1:00\n:END:\n*** Detail\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 14:00]--[2026-10-27 Tue 14:45] =>  0:45\n:END:\n* Home\n** Garden\n:LOGBOOK:\nCLOCK: [2026-10-31 Sat 10:00]--[2026-10-31 Sat 12:00] =>  2:00\n:END:\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "cr-header-no-newline",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-clockreport-mode": false,
+   "org-agenda-clock-report-header": "Clocked"
+  },
+  "keys": "R"
+ },
+ {
+  "text": "* Work\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:30] =>  1:30\nCLOCK: [2026-10-20 Tue 08:00]--[2026-10-20 Tue 09:00] =>  1:00\n:END:\n*** Detail\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 14:00]--[2026-10-27 Tue 14:45] =>  0:45\n:END:\n* Home\n** Garden\n:LOGBOOK:\nCLOCK: [2026-10-31 Sat 10:00]--[2026-10-31 Sat 12:00] =>  2:00\n:END:\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "cr-todo",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-clockreport-mode": false,
+   "org-agenda-clock-report-header": false
+  },
+  "keys": "R"
+ },
+ {
+  "text": "* Work\n** TODO Write report :tag:\nSCHEDULED: <2026-10-28 Wed>\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:30] =>  1:30\nCLOCK: [2026-10-20 Tue 08:00]--[2026-10-20 Tue 09:00] =>  1:00\n:END:\n*** Detail\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 14:00]--[2026-10-27 Tue 14:45] =>  0:45\n:END:\n* Home\n** Garden\n:LOGBOOK:\nCLOCK: [2026-10-31 Sat 10:00]--[2026-10-31 Sat 12:00] =>  2:00\n:END:\n* Meeting <2026-10-28 Wed 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "cr-then-redo",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-clockreport-mode": false,
+   "org-agenda-clock-report-header": false
+  },
+  "keys": "R g"
+ },
+ {
+  "text": "* Read [[https://example.com][the docs]]\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:00] =>  1:00\n:END:\n* Check [x] list\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 08:00]--[2026-10-27 Tue 09:00] =>  1:00\n:END:\n* TODO [#A] Fix [1/2] cookie :a:b:\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 10:00]--[2026-10-27 Tue 10:20] =>  0:20\n:END:\n* See [[https://example.org]]\n:LOGBOOK:\nCLOCK: [2026-10-29 Thu 10:00]--[2026-10-29 Thu 10:10] =>  0:10\n:END:\n* a]b [c] d\n:LOGBOOK:\nCLOCK: [2026-10-29 Thu 11:00]--[2026-10-29 Thu 11:10] =>  0:10\n:END:\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "cr-links",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-clockreport-mode": false,
+   "org-agenda-clock-report-header": false
+  },
+  "keys": "R"
+ },
+ {
+  "text": "* TODO Read [[https://example.com][the docs]] :tag:\nSCHEDULED: <2026-10-28 Wed>\n* Meet [[https://example.org]] <2026-10-29 Thu 10:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "item-links",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-start-with-clockreport-mode": false,
+   "org-agenda-clock-report-header": false
+  },
+  "keys": ""
+ },
+ {
+  "text": "* Read [[https://example.com][the docs]]\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:00] =>  1:00\n:END:\n* Check [x] list\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 08:00]--[2026-10-27 Tue 09:00] =>  1:00\n:END:\n* TODO [#A] Fix [1/2] cookie :a:b:\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 10:00]--[2026-10-27 Tue 10:20] =>  0:20\n:END:\n* See [[https://example.org]]\n:LOGBOOK:\nCLOCK: [2026-10-29 Thu 10:00]--[2026-10-29 Thu 10:10] =>  0:10\n:END:\n* a]b [c] d\n:LOGBOOK:\nCLOCK: [2026-10-29 Thu 11:00]--[2026-10-29 Thu 11:10] =>  0:10\n:END:\n#+BEGIN: clocktable :link t :scope file\n#+END:\n",
+  "modes": [
+   "org-mode"
+  ],
+  "name": "clocktable-link-widths",
+  "keys": "C-c C-c",
+  "today": "2026-10-28",
+  "point": 530
+ }
+]

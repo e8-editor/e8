@@ -34,6 +34,7 @@ import {
   subtreeRegion,
   timestampDatesAt,
   today,
+  updateDblock,
 } from "org";
 import { setAgendaEntryHere, storeLink } from "ol";
 import { addArchiveFiles, archivingFromAgenda } from "org-archive";
@@ -104,6 +105,21 @@ e8.defineVariable({
 e8.defineVariable({
   name: "org-agenda-start-with-log-mode",
   doc: "Whether a new agenda starts in log mode: t for org-agenda-log-mode-items, only for nothing else, or a list of kinds.",
+  value: null,
+});
+e8.defineVariable({
+  name: "org-agenda-clockreport-parameter-plist",
+  doc: "The clock table's parameters in the agenda's clock report (R), as a dynamic block's: the agenda's days and files are added.",
+  value: [e8.intern(":link"), true, e8.intern(":maxlevel"), 2],
+});
+e8.defineVariable({
+  name: "org-agenda-clock-report-header",
+  doc: "Text put before the agenda's clock report, or nil for none.",
+  value: null,
+});
+e8.defineVariable({
+  name: "org-agenda-start-with-clockreport-mode",
+  doc: "Whether a new agenda starts with its clock report, a clock table of its days at the end.",
   value: null,
 });
 e8.defineVariable({
@@ -441,7 +457,7 @@ function agendaLine(
   const tags = displayedTags(h);
   if (tags === "") return line;
   const width = (e8.windowSize()?.width ?? 80) - 1;
-  return line + " ".repeat(Math.max(1, width - charCount(line) - charCount(tags))) + tags;
+  return line + " ".repeat(Math.max(1, width - charCount(visibleText(line)) - charCount(tags))) + tags;
 }
 
 /**
@@ -905,7 +921,33 @@ function insertHabitGraphs(lines: { text: string; item?: AgendaItem }[]): void {
 }
 
 /** Puts lines into the agenda buffer and shows it, as org-agenda-prepare and org-agenda-finalize do. */
+/** An agenda's lines: each line's text and its item. */
 type AgendaLines = { text: string; item?: AgendaItem }[];
+
+/** A bracket link, its target and its description up to the ]] that ends it, as org-link-bracket-re. */
+const AGENDA_LINK = /\[\[((?:[^\][\\]|\\.)+)\](?:\[([\s\S]+?)\])?\]/g;
+
+/** Whether links show only their descriptions, as org-link-descriptive says. */
+const linksDescriptive = (): boolean => truthy(e8.variable("org-link-descriptive") ?? null);
+
+/** Text as it shows with its links' descriptions, or their targets, alone, for lining up tags, as Emacs's widths leave out invisible text. */
+function visibleText(text: string): string {
+  return linksDescriptive() ? text.replace(AGENDA_LINK, (_m, link: string, desc?: string) => desc ?? link) : text;
+}
+
+/** Hides a line's link brackets and targets, as org-agenda-finalize's org-activate-links makes them invisible, leaving descriptions. */
+function hideLinksOn(line: number): void {
+  const text = e8.lineText(line);
+  const ls = e8.lineStart(line);
+  const pos = (k: number) => ls + charCount(text.slice(0, k));
+  for (const m of allMatches(AGENDA_LINK, text)) {
+    const start = m.index ?? 0;
+    const end = start + m[0].length;
+    const shown = m[2] === undefined ? [start + 2, start + 2 + m[1].length] : [start + 2 + m[1].length + 2, end - 2];
+    e8.putTextProperty(pos(start), pos(shown[0]), "invisible", "org-link");
+    e8.putTextProperty(pos(shown[1]), pos(end), "invisible", "org-link");
+  }
+}
 
 function showAgenda(given: AgendaLines | ((maxChars: number) => AgendaLines), pointLine: number, days: typeof agendaLineDays = []): void {
   agendaBuffer = bufferTmpName ?? AGENDA;
@@ -923,6 +965,8 @@ function showAgenda(given: AgendaLines | ((maxChars: number) => AgendaLines), po
     if (e8.variable("major-mode") !== "org-agenda-mode") e8.call("org-agenda-mode");
     setModeName();
     lines.forEach((l, line) => dimLine(line, l.item));
+    // Every line's links, as org-agenda-finalize activates them in the whole buffer.
+    if (linksDescriptive()) lines.forEach((_l, line) => hideLinksOn(line));
     e8.setReadOnly(true);
     e8.gotoChar(e8.lineStart(pointLine));
   });
@@ -1034,7 +1078,8 @@ function setModeName(): void {
   e8.makeLocalVariable("mode-name");
   const ddl = truthy(e8.variable("org-agenda-include-deadlines") ?? null) ? " Ddl" : "";
   const follow = `${followMode ? " Follow" : ""}${entryTextMode ? " ETxt" : ""}`;
-  e8.setVariable("mode-name", `Org-Agenda ${span}${follow}${ddl}${grid}${habit}${log}${archives}`);
+  const clock = clockreportMode ? " Clock" : "";
+  e8.setVariable("mode-name", `Org-Agenda ${span}${follow}${ddl}${grid}${habit}${log}${archives}${clock}`);
 }
 
 /**
@@ -1114,6 +1159,13 @@ function agendaList(arg: e8.PrefixArg | null, startDay?: number, spanArg?: Span,
     }
     for (const g of grid) lines.push({ text: g.text });
     for (let l = first; l < lines.length; l++) days[l] = { day, cnt };
+  }
+  // The clock report, after the days, as org-agenda-list inserts it.
+  if (clockreportMode) {
+    const header = e8.variable("org-agenda-clock-report-header");
+    if (typeof header === "string") for (const l of header.replace(/\n$/, "").split("\n")) lines.push({ text: l });
+    const table = clockReport(start, last + 1);
+    for (const l of table.replace(/\n$/, "").split("\n")) if (table !== "") lines.push({ text: l });
   }
   agendaView = { kind: "agenda", arg, startDay, span };
   startingDay = start;
@@ -1622,6 +1674,7 @@ function redoView(): void {
 /** A new agenda's archives mode, org-agenda-start-with-archives-mode, as org-agenda-mode sets it for each new agenda but not when it is made again. */
 function freshAgenda(): void {
   followMode = truthy(e8.variable("org-agenda-start-with-follow-mode") ?? null);
+  clockreportMode = truthy(e8.variable("org-agenda-start-with-clockreport-mode") ?? null);
   entryTextMode = truthy(e8.variable("org-agenda-start-with-entry-text-mode") ?? null);
   startLogMode();
   const start = e8.variable("org-agenda-start-with-archives-mode") ?? null;
@@ -1949,6 +2002,77 @@ function agendaItemHere(): AgendaItem {
   if (!item) e8.userError("Command not allowed in this line");
   return item;
 }
+
+/** Whether the agenda ends with a clock table of its days, as org-agenda-clockreport-mode. */
+let clockreportMode = false;
+
+/** A value written as Lisp prints it, as org-create-dblock writes a block's parameters. */
+function prin1(v: e8.Value): string {
+  if (v === true) return "t";
+  if (v === null || v === undefined || v === false) return "nil";
+  if (typeof v === "symbol") return e8.symbolName(v);
+  if (typeof v === "string") return JSON.stringify(v);
+  if (Array.isArray(v)) return `(${v.map(prin1).join(" ")})`;
+  return String(v);
+}
+
+/**
+ * The clock table of the agenda files from day START to before END, as
+ * org-clock-get-clocktable makes it with org-agenda-clockreport-parameter-plist:
+ * a dynamic block made and updated in an Org buffer of its own, and its
+ * table, without the block's first line and caption.
+ */
+function clockReport(start: number, end: number): string {
+  const given = e8.variable("org-agenda-clockreport-parameter-plist");
+  const plist: e8.Value[] = Array.isArray(given) ? [...given] : [];
+  const put = (key: string, value: e8.Value): void => {
+    const i = plist.findIndex((x, k) => k % 2 === 0 && typeof x === "symbol" && e8.symbolName(x) === key);
+    if (i >= 0) plist[i + 1] = value;
+    else plist.push(e8.intern(key), value);
+  };
+  const del = (key: string): void => {
+    const i = plist.findIndex((x, k) => k % 2 === 0 && typeof x === "symbol" && e8.symbolName(x) === key);
+    if (i >= 0) plist.splice(i, 2);
+  };
+  // The agenda's days as absolute ones, as calendar-absolute-from-gregorian counts them.
+  del(":block");
+  put(":tstart", start + 719163);
+  put(":tend", end + 719163);
+  put(":scope", e8.intern("agenda"));
+  if (!plist.some((x, k) => k % 2 === 0 && typeof x === "symbol" && e8.symbolName(x) === ":maxlevel")) put(":maxlevel", 2);
+  const params: string[] = [];
+  for (let k = 0; k + 1 < plist.length; k += 2) params.push(`${prin1(plist[k])} ${prin1(plist[k + 1])}`);
+  // The agenda's files, archives too in their mode, as org-agenda-files 'ifmode.
+  return e8.letBind({ "org-agenda-files": agendaFilesIfMode() }, () =>
+    withTempBuffer(() => {
+      e8.call("org-mode");
+      e8.insert(`#+BEGIN: clocktable ${params.join(" ")}\n\n#+END:\n`);
+      e8.gotoChar(0);
+      updateDblock();
+      const from = e8.lineStart(Math.min(2, e8.lineCount() - 1));
+      let to = e8.bufferSize();
+      for (let l = 2; l < e8.lineCount(); l++) {
+        if (/^[ \t]*#\+END/i.test(e8.lineText(l))) {
+          to = e8.lineStart(l);
+          break;
+        }
+      }
+      return e8.bufferText(from, to);
+    }),
+  );
+}
+
+const clockreportModeCommand = e8.defineCommand({
+  name: "org-agenda-clockreport-mode",
+  doc: "Toggle the agenda's clock report: a clock table of the time clocked in its days, at its end.",
+  run: () => {
+    checkAgendaType();
+    clockreportMode = !clockreportMode;
+    setModeName();
+    redoAgenda();
+    e8.message(`Clocktable mode is ${clockreportMode ? "on" : "off"}`);
+  },
+});
 
 /** Whether the agenda shows some of each entry's text under its line, as org-agenda-entry-text-mode. */
 let entryTextMode = false;
@@ -2465,6 +2589,8 @@ e8.defineMajorMode({
     e8.setVariable("line-move-visual", null);
     // Lines hidden as filtered, blocked tasks among them, as org-agenda-mode adds org-filtered.
     e8.addToInvisibilitySpec("org-filtered");
+    // Links show their descriptions, as org-agenda-finalize activates them.
+    e8.addToInvisibilitySpec("org-link");
   },
   bindings: {
     n: agendaNext,
@@ -2501,6 +2627,7 @@ e8.defineMajorMode({
     F: "org-agenda-follow-mode",
     l: "org-agenda-log-mode",
     E: "org-agenda-entry-text-mode",
+    R: "org-agenda-clockreport-mode",
     "!": "org-agenda-toggle-deadlines",
     "#": "org-agenda-dim-blocked-tasks",
     ...Object.fromEntries(queryCommands),
@@ -2660,7 +2787,7 @@ e8.defineCommand({
 });
 
 /** The view modes org-agenda-view-mode-dispatch offers that E8 does not have yet. */
-const VIEW_MODES_NOT_YET = "RrD";
+const VIEW_MODES_NOT_YET = "D";
 
 /** Rebuilds the agenda with its inactive timestamps too, this once, as [ and v [ do. */
 function includeInactiveOnce(): void {
@@ -2722,6 +2849,7 @@ e8.defineCommand({
     // With the prefix argument v had, as call-interactively hands on current-prefix-arg.
     else if (char === "l") e8.callWithPrefix(e8.prefixArg(), logModeCommand);
     else if (char === "E" || char === "e") e8.callWithPrefix(e8.prefixArg(), entryTextModeCommand);
+    else if (char === "R" || char === "r") e8.callWithPrefix(e8.prefixArg(), clockreportModeCommand);
     else if (char === "L") e8.callWithPrefix([4], logModeCommand);
     else if (char === "c") setLogMode("clockcheck");
     else if (char === "!") e8.callInteractively(toggleDeadlines);

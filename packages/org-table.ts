@@ -202,7 +202,8 @@ function shownWidth(field: string): number {
   const descriptive = e8.variable("org-link-descriptive");
   const shown = descriptive === false || descriptive === null
     ? field
-    : field.replace(/\[\[((?:[^\]\\]|\\.)+)\](?:\[([^\]]+)\])?\]/g, (_m, link: string, desc?: string) => desc ?? link);
+    : // The description up to the ]] that ends it, ] and all, as org-link-bracket-re takes it.
+      field.replace(/\[\[((?:[^\]\\]|\\.)+)\](?:\[([\s\S]+?)\])?\]/g, (_m, link: string, desc?: string) => desc ?? link);
   return e8.stringWidth(shown);
 }
 
