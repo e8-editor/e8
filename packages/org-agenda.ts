@@ -29,6 +29,7 @@ import {
   scanTags,
   setPriority,
   showPriority,
+  smallYearToYear,
   subtreeRegion,
   timestampDatesAt,
   today,
@@ -195,17 +196,6 @@ function isoYearOf(n: number): number {
 function isoWeekMonday(week: number, year: number): number {
   const jan4 = gregorianDay(1, 4, year);
   return jan4 - ((weekday(jan4) + 6) % 7) + 7 * (week - 1);
-}
-
-/** A year of two digits as one of the 30 years to come or the 70 before, as org-small-year-to-year reads it. */
-function smallYearToYear(year: number): number {
-  if (year >= 100) return year;
-  const current = today_().year;
-  const century = Math.trunc(current / 100);
-  const offset = year - (current % 100);
-  if (offset > 30) return (century - 1) * 100 + year;
-  if (offset > -70) return century * 100 + year;
-  return (century + 1) * 100 + year;
 }
 
 /** How many days an agenda shows: day, week, fortnight, month, year, or a number of days, as org-agenda-span takes. */

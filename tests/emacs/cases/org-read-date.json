@@ -1,0 +1,850 @@
+[
+ {
+  "name": "rd-iso",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "2026-11-24"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-iso-short",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "2026-8-5"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-european",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "24.12.2026"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-european-space",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "5. 1. 2027"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-european-time",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "5.1.2027 10:00"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-american",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "11/24/2026"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-american-short-year",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "11/24/26"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-american-pm",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "1/5/27 3pm"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-iso-week-year",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "2026-w48"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-iso-week-day",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "2026-W48-3"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-iso-week-sunday",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "2026-w48-0"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-month-name",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "nov 3 2026"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-month-name-long",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "3 November 2026"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-month-name-only-day",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "2026 dec 25"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-weekday-and-date",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "fri 2026-11-24"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-am",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "2026-11-24 10am"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-midnight-am",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "2026-11-24 12am"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-noon-pm",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "2026-11-24 12pm"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-pm-minutes",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "2026-11-24 3:30pm"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-pm-uppercase",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "2026-11-24 3:30PM"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-hours-h",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "2026-11-24 15h"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-hours-h-minutes",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "2026-11-24 15h30"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-h-minutes",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "2026-11-24 h30"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-time",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "2026-11-24 9:05"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-range",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "2026-11-24 10:00-11:30"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-range-double-dash",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "2026-11-24 10:00--11:30"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-range-duration",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "2026-11-24 10:00+1:30"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-range-duration-carry",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "2026-11-24 10:30+1:45"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-range-am-pm",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "2026-11-24 9am-11am"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-range-pm-end",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "2026-11-24 10:00-2pm"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-forced-past",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "1960-01-01"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-forced-future",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c .",
+  "answers": [
+   "2050-06-01"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-inactive",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 4,
+  "keys": "C-c !",
+  "answers": [
+   "2026-11-24 10:00-11:00"
+  ]
+ },
+ {
+  "name": "rd-def-plus-plus",
+  "text": "* H\n<2026-03-10 Tue>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "C-c .",
+  "answers": [
+   "++3"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-def-plus-plus-week",
+  "text": "* H\n<2026-03-10 Tue>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "C-c .",
+  "answers": [
+   "++1w"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-def-plus-plus-month",
+  "text": "* H\n<2026-03-10 Tue>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "C-c .",
+  "answers": [
+   "++1m"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-def-plus-plus-year",
+  "text": "* H\n<2026-03-10 Tue>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "C-c .",
+  "answers": [
+   "++1y"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-def-minus-minus",
+  "text": "* H\n<2026-03-10 Tue>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "C-c .",
+  "answers": [
+   "--2"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-def-plus-plus-weekday",
+  "text": "* H\n<2026-03-10 Tue>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "C-c .",
+  "answers": [
+   "++fri"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-def-minus-minus-weekday",
+  "text": "* H\n<2026-03-10 Tue>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "C-c .",
+  "answers": [
+   "--fri"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-def-plus-plus-two-weekday",
+  "text": "* H\n<2026-03-10 Tue>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "C-c .",
+  "answers": [
+   "++2fri"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-def-day-only",
+  "text": "* H\n<2026-03-10 Tue>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "C-c .",
+  "answers": [
+   "15"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-def-month-day",
+  "text": "* H\n<2026-03-10 Tue>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "C-c .",
+  "answers": [
+   "4-1"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-def-time-only",
+  "text": "* H\n<2026-03-10 Tue>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "C-c .",
+  "answers": [
+   "10:00"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-def-month-name-no-day",
+  "text": "* H\n<2026-03-10 Tue>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "C-c .",
+  "answers": [
+   "dec 2026"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-def-weekday-in-month",
+  "text": "* H\n<2026-03-10 Tue>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "C-c .",
+  "answers": [
+   "nov 2026 fri"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-def-week-of-default-year",
+  "text": "* H\n<2026-03-10 Tue>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "C-c .",
+  "answers": [
+   "w12"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-def-european-no-year",
+  "text": "* H\n<2026-03-10 Tue>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "C-c .",
+  "answers": [
+   "24.12."
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-def-american-no-year",
+  "text": "* H\n<2026-03-10 Tue>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "C-c .",
+  "answers": [
+   "12/24"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-def-iso-basic",
+  "text": "* H\n<2026-03-10 Tue>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "C-c .",
+  "answers": [
+   "20261124"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-def-iso-ordinal",
+  "text": "* H\n<2026-03-10 Tue>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "C-c .",
+  "answers": [
+   "2026-330"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-def-iso-year-only",
+  "text": "* H\n<2026-03-10 Tue>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "C-c .",
+  "answers": [
+   "2026"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-def-four-digits-year",
+  "text": "* H\n<2026-03-10 Tue>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "C-c .",
+  "answers": [
+   "1124"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-def-two-digit-number",
+  "text": "* H\n<2026-03-10 Tue>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "C-c .",
+  "answers": [
+   "45"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-def-hour-word",
+  "text": "* H\n<2026-03-10 Tue>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "C-c .",
+  "answers": [
+   "3h"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-def-with-time-cu",
+  "text": "* H\n<2026-03-10 Tue 09:15>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "C-u C-c .",
+  "answers": [
+   "2026-11-24"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-def-time-kept-day",
+  "text": "* H\n<2026-03-10 Tue 09:15>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "C-c .",
+  "answers": [
+   "11:00"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-def-plus-plus-hours",
+  "text": "* H\n<2026-03-10 Tue 09:15>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 6,
+  "keys": "C-c .",
+  "answers": [
+   "++2h"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  }
+ },
+ {
+  "name": "rd-schedule-range",
+  "text": "* H\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "keys": "C-c C-s",
+  "answers": [
+   "2026-11-24 10:00-11:00"
+  ],
+  "message": true
+ },
+ {
+  "name": "rd-schedule-from-old",
+  "text": "* H\nSCHEDULED: <2026-03-10 Tue>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "keys": "C-c C-s",
+  "answers": [
+   "++2"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  },
+  "message": true
+ },
+ {
+  "name": "rd-deadline-time-from-old",
+  "text": "* H\nDEADLINE: <2026-03-10 Tue 08:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "keys": "C-c C-d",
+  "answers": [
+   "15"
+  ],
+  "globals": {
+   "org-read-date-prefer-future": false
+  },
+  "message": true
+ }
+]

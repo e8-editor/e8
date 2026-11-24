@@ -7044,7 +7044,7 @@ declare global {
       /**
        * Insert an active timestamp, such as <2026-10-28 Wed>, for a date read in the minibuffer; on a timestamp, change it.
        *
-       * Empty is today; +3 is three days on, and +2w, +1m and +1y work too; fri is the next Friday; 2026-11-03, 11-03 and 3 are the next such date; add a time as 10:30. With C-u, the time now goes in too.
+       * Empty is today; +3 is three days on, and +2w, +1m, +1y and +3h work too, ++ counting from the timestamp at point; fri is the next Friday; 2026-11-03, 11-03, 3, 3.11.2026, 11/3/26, nov 3 and w45 are the next such date; add a time as 10:30, 3pm or 15h, or a range as 10:00-11:00 or 10:00+1:30. With C-u, the time goes in too; with C-u C-u, the time now, without asking.
        *
        * @param date text
        *
@@ -14914,11 +14914,23 @@ declare global {
        */
       "org-protecting-blocks": Value;
       /**
+       * Whether a date read from the prompt is brought into the years 1970 to 2037, as older systems need.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-read-date-force-compatible-dates": Value;
+      /**
        * Dates answered to Org's date prompt, newest first.
        *
        * Defined in packages/org.ts.
        */
       "org-read-date-history": Value;
+      /**
+       * Whether a date given without a month or a year is the next one to come: t for that, time for a time earlier today to be tomorrow's too, nil for the default date's month and year.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-read-date-prefer-future": Value;
       /**
        * Whether an active region that is not whole subtrees can be refiled, its first line made a heading.
        *
