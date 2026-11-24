@@ -1,0 +1,695 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "new",
+      "input": {
+        "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+        "point": 181,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "Owner",
+          "alice"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n:PROPERTIES:\n:Owner:    alice\n:END:\n",
+      "visible": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n:PROPERTIES:\n",
+      "point": 181,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "existing",
+      "input": {
+        "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+        "point": 57,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "Color",
+          "green"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color:    green\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+      "visible": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color:    green\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "keep-current",
+      "input": {
+        "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+        "point": 57,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "Color",
+          ""
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+      "visible": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "empty-new",
+      "input": {
+        "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+        "point": 181,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "Color",
+          ""
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n:PROPERTIES:\n:Color:\n:END:\n",
+      "visible": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n:PROPERTIES:\n",
+      "point": 181,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "from-drawer-line",
+      "input": {
+        "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+        "point": 98,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "",
+          "pink"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color:    pink\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+      "visible": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color:    pink\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+      "point": 98,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "from-drawer-line-other",
+      "input": {
+        "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+        "point": 98,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "Effort",
+          "2:00"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort:   2:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+      "visible": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort:   2:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+      "point": 100,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "last-set",
+      "input": {
+        "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+        "point": 57,
+        "keys": "C-c C-x p C-n C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "Color",
+          "green",
+          "",
+          "pink"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color:    pink\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+      "visible": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color:    pink\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+      "point": 71,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "no-default",
+      "input": {
+        "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+        "point": 181,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "",
+          "x"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+      "visible": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+      "point": 181,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Invalid property name: \"\"",
+      "message": null
+    },
+    {
+      "name": "invalid",
+      "input": {
+        "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+        "point": 181,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a b"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+      "visible": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+      "point": 181,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Invalid property name: \"a b\"",
+      "message": null
+    },
+    {
+      "name": "todo",
+      "input": {
+        "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+        "point": 181,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "TODO",
+          "DONE"
+        ],
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* DONE Other\n",
+      "visible": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* DONE Other\n",
+      "point": 181,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "todo-none",
+      "input": {
+        "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+        "point": 57,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "TODO",
+          ""
+        ],
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+      "visible": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "priority",
+      "input": {
+        "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+        "point": 57,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "PRIORITY",
+          "A"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO [#A] Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+      "visible": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO [#A] Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Priority of current item set to A"
+    },
+    {
+      "name": "priority-remove",
+      "input": {
+        "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+        "point": 57,
+        "keys": "C-c C-x p C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "PRIORITY",
+          "A",
+          "PRIORITY",
+          ""
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+      "visible": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Priority removed"
+    },
+    {
+      "name": "before-first-heading-comment",
+      "input": {
+        "text": "# A comment\n#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+        "point": 0,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "Owner",
+          "alice"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "# A comment\n:PROPERTIES:\n:Owner:    alice\n:END:\n#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+      "visible": "# A comment\n:PROPERTIES:\n#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "before-first-heading-existing",
+      "input": {
+        "text": ":PROPERTIES:\n:Owner: alice\n:END:\n#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+        "point": 0,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "Owner",
+          "bob"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": ":PROPERTIES:\n:Owner:    bob\n:END:\n#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+      "visible": ":PROPERTIES:\n:Owner:    bob\n:END:\n#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "allowed-etc",
+      "input": {
+        "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+        "point": 116,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "Size",
+          "huge"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:Size:     huge\n:END:\n* Other\n",
+      "visible": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:Size:     huge\n:END:\n* Other\n",
+      "point": 116,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "allowed-inherited",
+      "input": {
+        "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+        "point": 181,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "Size",
+          "small"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n:PROPERTIES:\n:Size:     small\n:END:\n",
+      "visible": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n:PROPERTIES:\n",
+      "point": 181,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "spaces-trimmed",
+      "input": {
+        "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+        "point": 181,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "Note",
+          "  bob  "
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n:PROPERTIES:\n:Note:     bob\n:END:\n",
+      "visible": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n:PROPERTIES:\n",
+      "point": 181,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "value-with-spaces",
+      "input": {
+        "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+        "point": 181,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "Note",
+          "a b c"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n:PROPERTIES:\n:Note:     a b c\n:END:\n",
+      "visible": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n:PROPERTIES:\n",
+      "point": 181,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "category",
+      "input": {
+        "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+        "point": 181,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "CATEGORY",
+          "work"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n:PROPERTIES:\n:CATEGORY: work\n:END:\n",
+      "visible": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n:PROPERTIES:\n",
+      "point": 181,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "special",
+      "input": {
+        "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+        "point": 181,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "ITEM",
+          "x"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+      "visible": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+      "point": 181,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "The ITEM property cannot be set with ‘org-entry-put’",
+      "message": null
+    },
+    {
+      "name": "before-first-heading",
+      "input": {
+        "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+        "point": 0,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "Owner",
+          "alice"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": false
+        }
+      },
+      "text": ":PROPERTIES:\n:Owner:    alice\n:END:\n#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+      "visible": ":PROPERTIES:\n#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "last-set-variable",
+      "input": {
+        "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+        "point": 181,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "",
+          "teal"
+        ],
+        "message": true,
+        "globals": {
+          "org-last-set-property": "Color"
+        }
+      },
+      "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n:PROPERTIES:\n:Color:    teal\n:END:\n",
+      "visible": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n:PROPERTIES:\n",
+      "point": 181,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    }
+  ]
+}

@@ -15134,6 +15134,18 @@ declare global {
        */
       "org-inhibit-startup": Value;
       /**
+       * The name of the property last set with org-set-property, offered as the default next time.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-last-set-property": Value;
+      /**
+       * The property and value last set with org-set-property, as "NAME: VALUE".
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-last-set-property-value": Value;
+      /**
        * History for inserted links.
        *
        * Defined in packages/ol.ts.
@@ -15352,11 +15364,23 @@ declare global {
        */
       "org-priority-start-cycle-with-default": Value;
       /**
+       * Functions that turn a property's value as read into the one stored, as an alist of property names and functions of the value.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-properties-postprocess-alist": Value;
+      /**
        * What joins a property's values when NAME+ adds to it, as [names, separator] lists, where names is a list of property names or a regexp matching them. Others are joined by a space.
        *
        * Defined in packages/org.ts.
        */
       "org-property-separators": Value;
+      /**
+       * Functions that read a property's value instead of completing-read, as an alist of property names and functions taking completing-read's arguments.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-property-set-functions-alist": Value;
       /**
        * The blocks whose text is not Org syntax, which is fontified as org-block, or natively.
        *
@@ -19732,6 +19756,10 @@ declare global {
        * Run after org-occur has made a sparse tree; by default it goes to the first heading, at the window's top.
        */
       "org-occur-hook": Value;
+      /**
+       * Functions given a property's name, the first to give a list of values being its allowed values.
+       */
+      "org-property-allowed-value-functions": Value;
       /**
        * Run after Org-Src mode is turned on or off.
        */

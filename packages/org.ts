@@ -8311,8 +8311,9 @@ e8.defineCommand({
  * NAME_ALL, inherited: each read as Lisp, so a string's quotes go and a
  * number is written as Lisp writes it; :ETC means others may be typed.
  */
-export function allowedValues(h: Heading, property: string): { values: string[]; restricted: boolean } {
-  const all = entryGetInherited(h, `${property}_ALL`, false);
+export function allowedValues(h: Heading | undefined, property: string): { values: string[]; restricted: boolean } {
+  // Before the first heading, the file's own, as org-entry-get finds them at point-min.
+  const all = h === undefined ? topGet(`${property}_ALL`) ?? keywordProperty(`${property}_ALL`) : entryGetInherited(h, `${property}_ALL`, false);
   const values: string[] = [];
   let restricted = true;
   for (const m of allMatches(/"((?:[^"\\]|\\.)*)"|(\S+)/g, all ?? "")) {
@@ -11922,6 +11923,167 @@ function sparseTree(arg: e8.PrefixArg, type?: string | null): void {
 
 /** Every value a property has in the buffer, as org-property-values. */
 e8.defun("org--property-values", (key: string) => propertyValues(key));
+
+// Reading a property's name and value, after org.el's org-read-property-name
+// and org-read-property-value, for org-set-property.
+
+e8.defineVariable({ name: "org-last-set-property", doc: "The name of the property last set with org-set-property, offered as the default next time.", value: null });
+e8.defineVariable({ name: "org-last-set-property-value", doc: "The property and value last set with org-set-property, as \"NAME: VALUE\".", value: null });
+e8.defineVariable({
+  name: "org-property-set-functions-alist",
+  doc: "Functions that read a property's value instead of completing-read, as an alist of property names and functions taking completing-read's arguments.",
+  value: [],
+});
+e8.defineVariable({
+  name: "org-properties-postprocess-alist",
+  doc: "Functions that turn a property's value as read into the one stored, as an alist of property names and functions of the value.",
+  value: [],
+});
+e8.defineHook("org-property-allowed-value-functions", "Functions given a property's name, the first to give a list of values being its allowed values.");
+
+/** Properties Org uses itself, offered for completion, as org-default-properties lists them. */
+const DEFAULT_PROPERTIES = [
+  "ARCHIVE", "CATEGORY", "SUMMARY", "DESCRIPTION", "CUSTOM_ID", "LOCATION", "LOGGING", "COLUMNS", "VISIBILITY",
+  "TABLE_EXPORT_FORMAT", "TABLE_EXPORT_FILE", "EXPORT_OPTIONS", "EXPORT_TEXT", "EXPORT_FILE_NAME", "EXPORT_TITLE",
+  "EXPORT_AUTHOR", "EXPORT_DATE", "UNNUMBERED", "ORDERED", "NOBLOCKING", "COOKIE_DATA", "LOG_INTO_DRAWER",
+  "REPEAT_TO_STATE", "CLOCK_MODELINE_TOTAL", "STYLE", "HTML_CONTAINER_CLASS", "ORG-IMAGE-ACTUAL-WIDTH",
+];
+
+/**
+ * The property names to complete, as org-buffer-property-keys gives them
+ * with defaults and columns: the effort property and Org's own, the
+ * #+PROPERTY lines', the drawers', those COLUMNS formats name, and NAME
+ * for each NAME_ALL, sorted ignoring case.
+ */
+function propertyNamesToComplete(): string[] {
+  const props: string[] = [String(e8.variable("org-effort-property") ?? "Effort"), ...DEFAULT_PROPERTIES];
+  for (const [, , text] of keywordLines()) {
+    const m = /^#\+PROPERTY:[ \t]*(\S+)/i.exec(text);
+    if (m) props.push(m[1]);
+  }
+  e8.saveRestriction(() => {
+    e8.widen();
+    let inDrawer = false;
+    for (let l = 0; l < e8.lineCount(); l++) {
+      const text = e8.lineText(l);
+      if (/^[ \t]*:PROPERTIES:[ \t]*$/i.test(text)) inDrawer = true;
+      else if (/^[ \t]*:END:[ \t]*$/i.test(text)) inDrawer = false;
+      else if (inDrawer) {
+        const m = /^[ \t]*:(\S+?):/.exec(text);
+        if (m) props.push(m[1].replace(/\+$/, ""));
+      }
+      const columns = /^[ \t]*(?:#\+|:)COLUMNS:[ \t]*(.*)$/i.exec(text);
+      if (columns) {
+        for (const m of allMatches(/%[0-9]*([\p{L}\p{N}_-]+)(\([^)]+\))?(?:\{[^}]+\})?/gu, columns[1])) {
+          if (!SPECIAL_PROPERTIES.some((x) => x.toLowerCase() === m[1].toLowerCase())) props.push(m[1]);
+        }
+      }
+    }
+  });
+  const all = [...new Set([...props, ...props.filter((x) => /._ALL$/.test(x)).map((x) => x.slice(0, -4))])];
+  const up = (x: string) => x.toUpperCase();
+  return all.sort((a, b) => (up(a) < up(b) ? -1 : up(a) > up(b) ? 1 : 0));
+}
+
+/** Completing-read as org-completing-read calls it, case ignored, or with SET, a function of org-property-set-functions-alist. */
+function readCompleting(set: e8.Value | undefined, prompt: string, collection: string[], requireMatch: boolean, def: string | undefined): string {
+  return e8.letBind({ "completion-ignore-case": true }, () => {
+    if (set !== undefined && set !== null) {
+      const answer = e8.funcall(set as string, prompt, collection.map((x) => [x]), null, requireMatch, null, null, def ?? null);
+      return typeof answer === "string" ? answer : "";
+    }
+    return e8.completingRead(prompt, collection, { requireMatch, ...(def === undefined ? {} : { default: def }) });
+  });
+}
+
+/** An alist's value for KEY, as assoc, or with FOLD as assoc-string ignoring case. */
+function alistValue(name: string, key: string, fold = false): e8.Value | undefined {
+  const alist = e8.variable(name);
+  if (!Array.isArray(alist)) return undefined;
+  const e = alist.find((x) => Array.isArray(x) && typeof x[0] === "string" && (fold ? x[0].toLowerCase() === key.toLowerCase() : x[0] === key));
+  return Array.isArray(e) ? e[1] : undefined;
+}
+
+/** The property named on point's line in a property drawer, as org-at-property-p finds one. */
+function propertyAtPoint(): string | undefined {
+  const m = /^[ \t]*:([^:\s]+):/.exec(e8.lineText(lineAt()));
+  if (!m || /^(PROPERTIES|END)$/i.test(m[1])) return undefined;
+  // Inside a drawer: its opening line above, with no :END: between.
+  for (let l = lineAt() - 1; l >= 0; l--) {
+    const text = e8.lineText(l);
+    if (/^[ \t]*:END:[ \t]*$/i.test(text) || /^\*+ /.test(text)) return undefined;
+    if (/^[ \t]*:PROPERTIES:[ \t]*$/i.test(text)) return m[1];
+  }
+  return undefined;
+}
+
+/** Reads a property's name, offering the buffer's and Org's, the one on point's line or the last set the default, as org-read-property-name. */
+function readPropertyName(): string {
+  const last = e8.variable("org-last-set-property");
+  const def = propertyAtPoint() ?? (typeof last === "string" ? last : undefined);
+  return readCompleting(undefined, `Property${def === undefined ? "" : ` [${def}]`}: `, propertyNamesToComplete(), false, def);
+}
+e8.defun("org-read-property-name", () => readPropertyName());
+
+/**
+ * The values PROPERTY may take at point, as org-property-get-allowed-values:
+ * the TODO keywords and none, the priorities, none for CATEGORY and the
+ * special properties, what org-property-allowed-value-functions gives, or
+ * NAME_ALL's; and whether others may be typed, as :ETC says.
+ */
+function allowedAtPoint(property: string): { values: string[]; restricted: boolean } | undefined {
+  if (property === "TODO") return { values: [...allKeywords(), ""], restricted: true };
+  if (property === "PRIORITY") {
+    const values: string[] = [];
+    for (let n = priorityOption("org-priority-highest", "A"); n <= priorityOption("org-priority-lowest", "C"); n++) values.push(String.fromCodePoint(n));
+    return { values, restricted: true };
+  }
+  if (property === "CATEGORY" || SPECIAL_PROPERTIES.includes(property)) return undefined;
+  const hooked = e8.runHookWithArgsUntilSuccess("org-property-allowed-value-functions", property);
+  if (Array.isArray(hooked) && hooked.length > 0) {
+    const values = hooked.map(String);
+    return values.includes(":ETC") ? { values: values.filter((v) => v !== ":ETC"), restricted: false } : { values, restricted: true };
+  }
+  const all = headings();
+  const i = headingIndex(all, lineAt());
+  const allowed = allowedValues(i === undefined ? undefined : all[i], property);
+  return allowed.values.length === 0 ? undefined : allowed;
+}
+
+/** The entry's own value of PROPERTY at point, as org-entry-get without inheritance: its TODO state and priority for those. */
+function currentPropertyValue(property: string): string | undefined {
+  const all = headings();
+  const i = headingIndex(all, lineAt());
+  if (i === undefined) return property === "TODO" || property === "PRIORITY" ? undefined : topGet(property);
+  if (property === "TODO") return all[i].todo;
+  if (property === "PRIORITY") return all[i].priority ?? String(e8.variable("org-priority-default") ?? "B");
+  return entryGet(all[i].line, property);
+}
+
+/**
+ * Reads a value for PROPERTY, as org-read-property-value: one of its
+ * allowed values if it has any, else completing the values the buffer
+ * gives it, its current value the default.
+ */
+function readPropertyValue(property: string): string {
+  const allowed = allowedAtPoint(property);
+  const current = currentPropertyValue(property);
+  const prompt = `${property} value${current !== undefined && /\S/.test(current) ? ` [${current}]` : ""}: `;
+  const set = alistValue("org-property-set-functions-alist", property);
+  const answer = allowed
+    ? readCompleting(set, prompt, allowed.values, allowed.restricted, undefined)
+    : readCompleting(set, prompt, propertyValues(property), false, current);
+  return answer.trim();
+}
+e8.defun("org-read-property-value", (property: string) => readPropertyValue(property));
+
+/** A property's value as stored, through org-properties-postprocess-alist's function for it. */
+e8.defun("org--postprocess-property-value", (property: string, value: string) => {
+  const fn = alistValue("org-properties-postprocess-alist", property, true);
+  return fn === undefined || fn === null ? value : String(e8.funcall(fn as string, value));
+});
+
+
 
 function propertyValues(key: string): string[] {
   return e8.saveRestriction(() => {

@@ -1,0 +1,394 @@
+[
+ {
+  "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "new",
+  "keys": "C-c C-x p",
+  "point": 181,
+  "answers": [
+   "Owner",
+   "alice"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "existing",
+  "keys": "C-c C-x p",
+  "point": 57,
+  "answers": [
+   "Color",
+   "green"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "keep-current",
+  "keys": "C-c C-x p",
+  "point": 57,
+  "answers": [
+   "Color",
+   ""
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "empty-new",
+  "keys": "C-c C-x p",
+  "point": 181,
+  "answers": [
+   "Color",
+   ""
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "from-drawer-line",
+  "keys": "C-c C-x p",
+  "point": 98,
+  "answers": [
+   "",
+   "pink"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "from-drawer-line-other",
+  "keys": "C-c C-x p",
+  "point": 98,
+  "answers": [
+   "Effort",
+   "2:00"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "last-set",
+  "keys": "C-c C-x p C-n C-c C-x p",
+  "point": 57,
+  "answers": [
+   "Color",
+   "green",
+   "",
+   "pink"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "no-default",
+  "keys": "C-c C-x p",
+  "point": 181,
+  "answers": [
+   "",
+   "x"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "invalid",
+  "keys": "C-c C-x p",
+  "point": 181,
+  "answers": [
+   "a b"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+  "modes": [
+   "org-mode"
+  ],
+  "name": "todo",
+  "keys": "C-c C-x p",
+  "point": 181,
+  "answers": [
+   "TODO",
+   "DONE"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+  "modes": [
+   "org-mode"
+  ],
+  "name": "todo-none",
+  "keys": "C-c C-x p",
+  "point": 57,
+  "answers": [
+   "TODO",
+   ""
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "priority",
+  "keys": "C-c C-x p",
+  "point": 57,
+  "answers": [
+   "PRIORITY",
+   "A"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "priority-remove",
+  "keys": "C-c C-x p C-c C-x p",
+  "point": 57,
+  "answers": [
+   "PRIORITY",
+   "A",
+   "PRIORITY",
+   ""
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "text": "# A comment\n#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "before-first-heading-comment",
+  "keys": "C-c C-x p",
+  "point": 0,
+  "answers": [
+   "Owner",
+   "alice"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "text": ":PROPERTIES:\n:Owner: alice\n:END:\n#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "before-first-heading-existing",
+  "keys": "C-c C-x p",
+  "point": 0,
+  "answers": [
+   "Owner",
+   "bob"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "allowed-etc",
+  "keys": "C-c C-x p",
+  "point": 116,
+  "answers": [
+   "Size",
+   "huge"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "allowed-inherited",
+  "keys": "C-c C-x p",
+  "point": 181,
+  "answers": [
+   "Size",
+   "small"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "spaces-trimmed",
+  "keys": "C-c C-x p",
+  "point": 181,
+  "answers": [
+   "Note",
+   "  bob  "
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "value-with-spaces",
+  "keys": "C-c C-x p",
+  "point": 181,
+  "answers": [
+   "Note",
+   "a b c"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "category",
+  "keys": "C-c C-x p",
+  "point": 181,
+  "answers": [
+   "CATEGORY",
+   "work"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "special",
+  "keys": "C-c C-x p",
+  "point": 181,
+  "answers": [
+   "ITEM",
+   "x"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "before-first-heading",
+  "keys": "C-c C-x p",
+  "point": 0,
+  "answers": [
+   "Owner",
+   "alice"
+  ],
+  "globals": {
+   "org-last-set-property": false
+  }
+ },
+ {
+  "text": "#+PROPERTY: Owner_ALL alice bob\n#+COLUMNS: %25ITEM %Cost\n* TODO Report\n:PROPERTIES:\n:Effort: 1:00\n:Color: red\n:END:\n* Task\n:PROPERTIES:\n:Color: blue\n:Size_ALL: small big :ETC\n:END:\n* Other\n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "name": "last-set-variable",
+  "keys": "C-c C-x p",
+  "point": 181,
+  "answers": [
+   "",
+   "teal"
+  ],
+  "globals": {
+   "org-last-set-property": "Color"
+  }
+ }
+]

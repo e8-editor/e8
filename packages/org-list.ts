@@ -1584,7 +1584,9 @@ export function setLineIndenter(f: (line: number) => void): void {
 export function entryPut(headingLine: number, property: string, value: string): void {
   withoutFoldChecks(() => {
     let line = headingLine + 1;
-    if (line < e8.lineCount() && PLANNING.test(e8.lineText(line))) line++;
+    // Before the first heading, the drawer after the comments the file starts with, as org-get-property-block finds it.
+    if (headingLine < 0) while (line < e8.lineCount() && /^[ \t]*#(?: |$)/.test(e8.lineText(line))) line++;
+    else if (line < e8.lineCount() && PLANNING.test(e8.lineText(line))) line++;
     if (propertyDrawerEnd(line) === undefined) {
       let at = lineStartOrEnd(line);
       if (at === e8.lineStart(lineAt(at)) && at > 0 && (line < e8.lineCount() || e8.bufferText(at - 1, at) === "\n")) at--;
@@ -1725,16 +1727,46 @@ export const setProperty = e8.defineCommand({
   name: "org-set-property",
   doc: "In the current entry, set a property to a value, adding a property drawer if there is none.",
   params: [
-    { name: "property", kind: "string", prompt: "Property: " },
-    { name: "value", kind: "string", prompt: "Value: " },
+    // Completing the buffer's names and Org's, as org-read-property-name.
+    { name: "property", kind: "string", value: () => String(e8.funcall("org-read-property-name")) },
+    {
+      name: "value",
+      kind: "string",
+      // Checked before the value is asked, as org-set-property does, then one of its allowed or existing values, as org-read-property-value.
+      value: (property) => {
+        if (property === "" || /\s/.test(property)) e8.userError(`Invalid property name: "${property}"`);
+        return String(e8.funcall("org-read-property-value", property));
+      },
+    },
   ],
   run: (property, value) => {
-    if (property === "" || /\s/.test(property)) throw new Error(`Invalid property name: "${property}"`);
+    if (property === "" || /\s/.test(property)) e8.userError(`Invalid property name: "${property}"`);
+    e8.setVariable("org-last-set-property", property);
+    e8.setVariable("org-last-set-property-value", `${property}: ${value}`);
+    value = String(e8.funcall("org--postprocess-property-value", property, value));
     const h = entryHeading();
-    if (!h) throw new Error("Before first headline at position 1 in buffer " + e8.bufferName());
     const upper = property.toUpperCase();
+    // Before the first heading, the file's own drawer, as org-entry-put goes to point-min there.
+    if (!h && !["TODO", "PRIORITY"].includes(upper)) {
+      if (SPECIAL_PROPERTIES.includes(upper)) e8.signal("error", `The ${property} property cannot be set with \u2018org-entry-put\u2019`);
+      if (topGet(property) === value) return;
+      const p = marker(e8.point());
+      entryPut(-1, property, value);
+      e8.gotoChar(p.pos);
+      dropMarker(p);
+      return;
+    }
+    if (!h) throw new Error("Before first headline at position 1 in buffer " + e8.bufferName());
+    if (upper === "PRIORITY") {
+      // As org-priority with the value's first character, or a space to remove it, as org-entry-put does.
+      e8.saveExcursion(() => {
+        e8.gotoChar(h.start);
+        e8.callWithPrefix(/\S/.test(value) ? value.codePointAt(0)! : 32, "org-priority");
+      });
+      return;
+    }
     if (upper === "TODO") {
-      if (value !== "" && !allKeywords().includes(value)) throw new Error(`"${value}" is not a valid TODO state`);
+      if (value !== "" && !allKeywords().includes(value)) e8.userError(`"${value}" is not a valid TODO state`);
       // As org-todo, as org-entry-put changes it, so dependencies and logging apply.
       e8.saveExcursion(() => {
         e8.gotoChar(h.start);
@@ -1742,7 +1774,7 @@ export const setProperty = e8.defineCommand({
       });
       return;
     }
-    if (SPECIAL_PROPERTIES.includes(upper)) throw new Error(`The ${property} property cannot be set with \`org-entry-put'`);
+    if (SPECIAL_PROPERTIES.includes(upper)) e8.signal("error", `The ${property} property cannot be set with \u2018org-entry-put\u2019`);
     if (entryGet(h.line, property) === value) return;
     const p = marker(e8.point());
     entryPut(h.line, property, value);

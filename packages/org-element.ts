@@ -217,6 +217,8 @@ function parseElements(
 ): void {
   let p = from;
   let previous: string | undefined;
+  // Whether the first section began with a comment, after which a property drawer may come, as Org's top-comment mode has it.
+  let topComment = false;
   while (p < to) {
     const line = lineAt(p);
     const text = e8.bufferText(p, e8.lineEnd(line));
@@ -227,10 +229,11 @@ function parseElements(
     if (afterHeadline && previous === undefined && afterHeading && PLANNING.test(text)) {
       e = elem("planning", p, Math.min(next, to), parent);
     } else if (
-      (afterHeadline || (firstSection && p === 0)) &&
-      // Right after the heading, or the planning line with no blank line between, as Org's parser has it.
+      (afterHeadline || (firstSection && (p === 0 || topComment))) &&
+      // Right after the heading, or the planning line with no blank line between, or in the first section the comment it starts with, as Org's parser has it.
       ((previous === undefined && (afterHeading || !afterHeadline)) ||
-        (previous === "planning" && line > 0 && !isBlank(e8.lineText(line - 1)))) &&
+        (previous === "planning" && line > 0 && !isBlank(e8.lineText(line - 1))) ||
+        (topComment && previous === "comment")) &&
       /^[ \t]*:PROPERTIES:[ \t]*$/i.test(text) &&
       drawerEnd(line, to) !== undefined &&
       // As org-property-drawer-re has it, every line inside is a property.
@@ -339,6 +342,7 @@ function parseElements(
         break;
       }
     }
+    topComment = firstSection && previous === undefined && p === from && e.type === "comment";
     previous = e.type;
     if (e.end <= p) break;
     p = e.end;
