@@ -3403,6 +3403,15 @@
           "$"
         ],
         "message": true,
+        "vars": {
+          "org-archive-save-context-info": [
+            "'time",
+            "'olpath",
+            "'category",
+            "'todo",
+            "'itags"
+          ]
+        },
         "globals": {
           "org-agenda-use-time-grid": false,
           "org-agenda-start-with-follow-mode": false,
@@ -3410,7 +3419,7 @@
           "org-log-into-drawer": false
         }
       },
-      "text": "#+ARCHIVE: ::* Archive\n* Archive\n\n** TODO A\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:ARCHIVE_TIME: 2026-10-28 Wed 12:00\n:ARCHIVE_FILE: /var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org\n:ARCHIVE_CATEGORY: e8-agenda\n:ARCHIVE_TODO: TODO\n:END:\n*** TODO A1\nSCHEDULED: <2026-10-28 Wed>\n\n** TODO B\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:ARCHIVE_TIME: 2026-10-28 Wed 12:00\n:ARCHIVE_FILE: /var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-agenda.org\n:ARCHIVE_CATEGORY: e8-agenda\n:ARCHIVE_TODO: TODO\n:END:\n\n",
+      "text": "#+ARCHIVE: ::* Archive\n* Archive\n\n** TODO A\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:ARCHIVE_TIME: 2026-10-28 Wed 12:00\n:ARCHIVE_CATEGORY: e8-agenda\n:ARCHIVE_TODO: TODO\n:END:\n*** TODO A1\nSCHEDULED: <2026-10-28 Wed>\n\n** TODO B\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n:ARCHIVE_TIME: 2026-10-28 Wed 12:00\n:ARCHIVE_CATEGORY: e8-agenda\n:ARCHIVE_TODO: TODO\n:END:\n\n",
       "visible": "#+ARCHIVE: ::* Archive\n* Archive\n\n** TODO A\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n*** TODO A1\nSCHEDULED: <2026-10-28 Wed>\n\n** TODO B\nSCHEDULED: <2026-10-29 Thu>\n:PROPERTIES:\n\n",
       "point": 0,
       "mark": null,
