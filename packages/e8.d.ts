@@ -19761,6 +19761,10 @@ declare global {
        */
       "org-property-allowed-value-functions": Value;
       /**
+       * Functions given a property's name and new value after org-set-property sets it.
+       */
+      "org-property-changed-functions": Value;
+      /**
        * Run after Org-Src mode is turned on or off.
        */
       "org-src-mode-hook": Value;
