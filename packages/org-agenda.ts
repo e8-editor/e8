@@ -53,15 +53,19 @@ import {
   timestampTextAt,
   today,
   updateDblock,
+  addPendingLogNote,
+  toggleTag,
+  todoFaceOf,
 } from "org";
 import { linkUnescape, setAgendaEntryHere, storeLink } from "ol";
 import { entryGet } from "org-list";
 import { addArchiveFiles, archivingFromAgenda } from "org-archive";
 import { flag, hideDrawersIn, showContext, showEntry } from "org-fold";
 import { type Habit, buildGraph, habitUrgency, parseHabit } from "org-habit";
-import { getLocation, gotoLastStored, refile } from "org-refile";
+import { type Target, getLocation, gotoLastStored, refile } from "org-refile";
 import { multiOccur } from "replace";
-import { allMatches, charCount, eraseBuffer, regexpQuote, truthy } from "subr";
+import { allMatches, charCount, eraseBuffer, forwardLine, regexpQuote, truthy } from "subr";
+import { countLines } from "simple";
 
 e8.defineVariable({
   name: "org-agenda-window-setup",
@@ -491,6 +495,7 @@ function agendaLine(
   prefix = "",
   dotime?: string,
   extra?: string,
+  shift = 0,
 ): string {
   let text = prefix + e8.lineText(h.line).replace(/^\*+[ \t]+/, "");
   if (h.tagsAt !== undefined) text = text.slice(0, text.length - (e8.lineEnd(h.line) - h.tagsAt) - 0).replace(/[ \t]+$/, "");
@@ -503,7 +508,8 @@ function agendaLine(
   const tags = displayedTags(h);
   if (tags === "") return line;
   const width = (e8.windowSize()?.width ?? 80) - 1;
-  return line + " ".repeat(Math.max(1, width - charCount(visibleText(line)) - charCount(tags))) + tags;
+  // SHIFT more for a marked line, as current-column counts its mark's display string in place of the two characters it covers.
+  return line + " ".repeat(Math.max(1, width - charCount(visibleText(line)) - charCount(tags) + shift)) + tags;
 }
 
 /**
@@ -1017,6 +1023,8 @@ function showAgenda(given: AgendaLines | ((maxChars: number) => AgendaLines), po
   const lines = typeof given === "function" ? given((e8.windowSize()?.width ?? 80) - 1) : given;
   markBlocked(lines);
   e8.withCurrentBuffer(agendaBuffer, () => {
+    // No line marked for bulk action, as org-agenda-mode starts with none.
+    resetBulkMarks();
     e8.setReadOnly(false);
     eraseBuffer();
     e8.insert(lines.map((l) => l.text).join("\n") + "\n");
@@ -1031,12 +1039,7 @@ function showAgenda(given: AgendaLines | ((maxChars: number) => AgendaLines), po
   });
   // The lines' markers, made in the entries' buffers, as Org makes
   // org-marker and org-hd-marker; the last agenda's are freed.
-  for (const old of agendaLines) {
-    if (old?.marks) {
-      e8.deleteMarker(old.marks.pos);
-      e8.deleteMarker(old.marks.heading);
-    }
-  }
+  for (const old of agendaLines) if (old) freeMarks(old);
   agendaLines = lines.map((l) => l.item);
   for (const item of agendaLines) if (item) item.tagType ??= lineTagType;
   // Each line's effort as it was then, as its effort-minutes property keeps it, though the entry's changes, as with e.
@@ -1977,16 +1980,19 @@ function redrawEntry(item: AgendaItem): void {
     const column = e8.point() - e8.lineStart(pointLine);
     for (const [l, other] of agendaLines.entries()) {
       if (!other || other.buffer !== item.buffer || headingOf(other) !== heading) continue;
+      // The bulk mark kept on the line written again, as org-agenda-change-all-lines moves its overlay.
+      const marked = markOverlaysOn(l).length > 0;
       const text = e8.withCurrentBuffer(item.buffer, () => widened(() => {
         const h = headings().find((x) => x.start === heading);
         // Without the tags view's dots, as org-agenda-change-all-lines writes the line from the heading alone.
         // With the heading's timestamp, as org-agenda-change-all-lines formats it without org-agenda-format-item's remove-re.
-        return h ? agendaLine(h, other.cat, other.leader, false, other.time, "", other.dotime) : other.text;
+        return h ? agendaLine(h, other.cat, other.leader, false, other.time, "", other.dotime, undefined, marked ? 1 : 0) : other.text;
       }));
       other.text = text;
       e8.deleteRegion(e8.lineStart(l), e8.lineEnd(l));
       e8.gotoChar(e8.lineStart(l));
       e8.insert(text);
+      if (marked && markOverlaysOn(l).length === 0) putMarkOverlay(l);
       // Dimmed or hidden again from its mark, as org-agenda-change-all-lines finalizes the line.
       if (truthy(e8.variable("org-agenda-dim-blocked-tasks") ?? null) && blockerHookSet()) dimLine(l, other);
     }
@@ -2440,20 +2446,83 @@ const followModeCommand = e8.defineCommand({
   },
 });
 
-/** The agenda line of the next or previous item after point's, as org-agenda-next-item and org-agenda-previous-item find it, or undefined. */
-function itemLineFrom(line: number, step: 1 | -1): number | undefined {
-  for (let l = line + step; l >= 0 && l < agendaLines.length; l += step) if (agendaLines[l] !== undefined) return l;
+/**
+ * Moves to COLUMN as org-move-to-column does: with org-filtered out of the
+ * invisibility spec, so lines the filters hide count as shown.
+ */
+function orgMoveToColumn(column: number): void {
+  const spec = e8.variable("buffer-invisibility-spec");
+  const name = (x: e8.Value): unknown => (Array.isArray(x) ? name(x[0]) : typeof x === "symbol" ? x.description : x);
+  const without = Array.isArray(spec) ? spec.filter((x) => name(x) !== "org-filtered") : (spec ?? null);
+  e8.letBind({ "buffer-invisibility-spec": without }, () => e8.moveToColumn(column));
+}
+
+/** Whether the character at POS is hidden, as get-char-property sees invisible there. */
+const hiddenAt = (pos: number): boolean => truthy(e8.charProperty(pos, "invisible") ?? null);
+
+/**
+ * Where move-end-of-line with ARG 1 or 0 goes: the newline before the
+ * start of the line shown ARG lines on, lines hidden passed over, and the
+ * hidden text before it too, so the end of the line as it shows.
+ */
+function shownLineEnd(arg: 0 | 1): number {
+  let l = e8.lineOf(e8.point());
+  if (arg === 1) {
+    do l++;
+    while (l < e8.lineCount() && hiddenAt(e8.lineStart(l)));
+    if (l >= e8.lineCount()) return e8.pointMax();
+  }
+  let p = e8.lineStart(l);
+  if (p === e8.pointMin()) return p;
+  while (p > e8.pointMin() && hiddenAt(p - 1)) {
+    const hidden = e8.charProperty(p - 1, "invisible");
+    while (p > e8.pointMin() && e8.charProperty(p - 1, "invisible") === hidden) p--;
+  }
+  return Math.max(e8.pointMin(), p - 1);
+}
+
+/**
+ * Where an entry's line last changes before POS, as
+ * previous-single-property-change finds a change of org-marker: the start
+ * of the entry's line POS is just after, else the end of the entry's line
+ * before; undefined if there is none.
+ */
+function previousEntryChange(pos: number): number | undefined {
+  if (pos <= e8.pointMin()) return undefined;
+  const l = e8.lineOf(pos - 1);
+  if (agendaLines[l] && pos - 1 < e8.lineEnd(l)) return e8.lineStart(l) > e8.pointMin() ? e8.lineStart(l) : undefined;
+  for (let k = pos - 1 < e8.lineEnd(l) ? l - 1 : l; k >= 0; k--) if (agendaLines[k] && e8.lineEnd(k) < pos) return e8.lineEnd(k);
   return undefined;
 }
 
-/** Moves N items on, or back with STEP -1, keeping the column, as org-agenda-next-item does, then follows; a count below one moves nowhere, as its dotimes. */
-function moveByItems(n: number, step: 1 | -1): void {
+/**
+ * Moves N items on, keeping the column, as org-agenda-next-item does, then
+ * follows: past the end of the line as it shows, so lines a filter hides
+ * are passed over, to the next entry's line; a count below one moves
+ * nowhere, as its dotimes.
+ */
+function nextItems(n: number): void {
   const column = e8.currentColumn();
   for (let k = 0; k < n; k++) {
-    const to = itemLineFrom(e8.lineOf(e8.point()), step);
-    if (to !== undefined) e8.gotoChar(e8.lineStart(to));
+    if (nextEntryChange(e8.lineEnd(e8.lineOf(e8.point()))) === undefined) continue;
+    // To the end of the line as it shows first, as move-end-of-line goes there before the entry is looked for.
+    e8.gotoChar(shownLineEnd(1));
+    const to = nextEntryChange(e8.point());
+    if (to === undefined) e8.signal("wrong-type-argument", "Wrong type argument: integer-or-marker-p, nil", [e8.intern("integer-or-marker-p"), null]);
+    e8.gotoChar(to);
   }
-  e8.moveToColumn(column);
+  orgMoveToColumn(column);
+  doContextAction();
+}
+
+/** Moves N items back, keeping the column, as org-agenda-previous-item: from the end of the line shown before, back to the entry's line there. */
+function previousItems(n: number): void {
+  for (let k = 0; k < n; k++) {
+    const column = e8.currentColumn();
+    const to = previousEntryChange(shownLineEnd(0));
+    if (to !== undefined) e8.gotoChar(to);
+    orgMoveToColumn(column);
+  }
   doContextAction();
 }
 
@@ -2461,13 +2530,13 @@ e8.defineCommand({
   name: "org-agenda-next-item",
   doc: "Move to the next line of the agenda that shows an entry, keeping the column.",
   params: [{ name: "n", kind: "count" }],
-  run: (n: number) => moveByItems(n, 1),
+  run: (n: number) => nextItems(n),
 });
 e8.defineCommand({
   name: "org-agenda-previous-item",
   doc: "Move to the previous line of the agenda that shows an entry, keeping the column.",
   params: [{ name: "n", kind: "count" }],
-  run: (n: number) => moveByItems(n, -1),
+  run: (n: number) => previousItems(n),
 });
 
 e8.defineCommand({
@@ -3106,12 +3175,14 @@ function showNewTime(item: AgendaItem, stamp: string, prefix = ""): void {
           const other = agendaLines[l];
           if (!other || other.buffer !== item.buffer || posOf(other) !== pos) continue;
           e8.removeTextProperty(e8.lineStart(l), e8.lineEnd(l), "display");
+          // A column less on a marked line, as current-column counts its mark's display string in place of two characters.
+          const shift = markOverlaysOn(l).length > 0 ? 1 : 0;
           // To the column, spaces added to a short line, as org-move-to-column with force.
           e8.gotoChar(e8.lineEnd(l));
-          if (e8.currentColumn() < column) e8.insert(" ".repeat(column - e8.currentColumn()));
+          if (e8.currentColumn() - shift < column) e8.insert(" ".repeat(column - e8.currentColumn() + shift));
           else {
             e8.gotoChar(e8.lineStart(l));
-            e8.moveToColumn(column);
+            orgMoveToColumn(column + shift);
           }
           e8.putTextProperty(e8.point() - 1, e8.lineEnd(l), "display", e8.propertize(text, { face: ["secondary-selection", "default"] }));
         }
@@ -3241,15 +3312,14 @@ e8.defineCommand({
  * org-agenda-deadline pass the prefix argument on; the line says what the
  * command said.
  */
-function agendaPlan(command: "org-schedule" | "org-deadline", prefix: string): void {
+function agendaPlan(command: "org-schedule" | "org-deadline", prefix: string, arg: e8.PrefixArg | null = e8.prefixArg() ?? null, date?: string): void {
   const item = agendaItemHere();
   const said = e8.withCurrentBuffer(item.buffer, () => {
     e8.widen();
     e8.gotoChar(posOf(item));
-    const arg = e8.prefixArg() ?? null;
     const delay = isUniversal(arg, 2);
     // Called as a function, this-command still the agenda's, as Org calls it, so a log note it sets up is taken after this command.
-    e8.callWithPrefix(arg, command, planDateArgument(command === "org-schedule" ? "SCHEDULED" : "DEADLINE"));
+    e8.callWithPrefix(arg, command, date ?? planDateArgument(command === "org-schedule" ? "SCHEDULED" : "DEADLINE"));
     // What it returns, which is what it said, or with C-u C-u nothing, as its delay or warning is put in with replace-match.
     return delay ? undefined : e8.currentMessage();
   });
@@ -3521,18 +3591,21 @@ function gotoItem(): void {
   }
 }
 
+/** Changes the TODO state of the entry the agenda line at point shows with CHANGE, run at its heading, then writes its lines again, as org-agenda-todo. */
+function agendaTodoWith(change: () => void): void {
+  const item = agendaItemHere();
+  e8.withCurrentBuffer(item.buffer, () => widened(() => {
+    e8.gotoChar(headingOf(item));
+    change();
+  }));
+  redrawEntry(item);
+}
+
 const agendaTodo = e8.defineCommand({
   name: "org-agenda-todo",
   doc: "Change the TODO state of the entry the agenda line at point shows, as C-c C-t does there.",
-  run: () => {
-    const item = agendaItemHere();
-    e8.withCurrentBuffer(item.buffer, () => widened(() => {
-      e8.gotoChar(headingOf(item));
-      // Interactively, with the agenda's prefix argument, as Org's call-interactively: a blocked change is then an error.
-      e8.funcallInteractively("org-todo");
-    }));
-    redrawEntry(item);
-  },
+  // Interactively, with the agenda's prefix argument, as Org's call-interactively: a blocked change is then an error.
+  run: () => agendaTodoWith(() => e8.funcallInteractively("org-todo")),
 });
 
 const agendaRedo = e8.defineCommand({
@@ -3887,15 +3960,32 @@ e8.defineCommand({
     const rfloc = getLocation(g !== null ? "Goto" : "Refile to", item.buffer, e8.variable("org-refile-allow-creating-parent-nodes") ?? null);
     if (!rfloc) return;
     if (g !== null) return refile(g, item.buffer, rfloc);
-    e8.withCurrentBuffer(item.buffer, () => {
-      e8.saveExcursion(() => widened(() => {
-        e8.gotoChar(headingOf(item));
-        refile(null, item.buffer, rfloc);
-      }));
-    });
-    e8.call("org-agenda-redo");
+    agendaRefile(rfloc, false);
   },
 });
+
+/**
+ * Refiles the entry of the agenda line at point to RFLOC, its subtree's
+ * lines taken out of the agenda first, and the agenda made again unless
+ * NO_UPDATE, as org-agenda-refile.
+ */
+function agendaRefile(rfloc: [string, Target], noUpdate: boolean): void {
+  const item = agendaItemHere();
+  e8.withCurrentBuffer(item.buffer, () => {
+    e8.saveExcursion(() => widened(() => {
+      const pos = headingOf(item);
+      const all = headings();
+      const i = all.findIndex((h) => h.start === pos);
+      if (i >= 0) {
+        const [beg, end] = subtreeRegion(all, i);
+        removeSubtreeEntries(item.buffer, beg, end);
+      }
+      e8.gotoChar(pos);
+      refile(null, item.buffer, rfloc);
+    }));
+  });
+  if (!noUpdate) e8.call("org-agenda-redo");
+}
 
 // Archiving from the agenda, as org-agenda.el's org-agenda-archive-with
 // and its commands.
@@ -3913,10 +4003,8 @@ function removeSubtreeEntries(buffer: string, beg: number, end: number): void {
       const p = posOf(item);
       if (p < beg || p >= end) continue;
       e8.deleteRegion(e8.lineStart(l), Math.min(e8.lineEnd(l) + 1, e8.pointMax()));
-      if (item.marks) {
-        e8.deleteMarker(item.marks.pos);
-        e8.deleteMarker(item.marks.heading);
-      }
+      // A marked entry's markers kept, for B to say where it was, as Org's markers outlive their lines.
+      if (!bulkMarked.includes(item)) freeMarks(item);
       agendaLines.splice(l, 1);
       agendaLineDays.splice(l, 1);
     }
@@ -3978,6 +4066,469 @@ e8.defineCommand({
   run: () => atEntry("org-toggle-archive-tag"),
 });
 
+// Marking entries for a bulk action, as org-agenda.el's
+// org-agenda-bulk-mark and org-agenda-bulk-action.
+
+e8.defineVariable({
+  name: "org-agenda-weekend-days",
+  doc: "The days of the week that are the weekend, 0 for Sunday to 6 for Saturday, which C-u B S passes over.",
+  value: [6, 0],
+});
+e8.defineVariable({
+  name: "org-agenda-bulk-mark-char",
+  doc: "The string a line marked for a bulk action shows in place of its first two characters.",
+  value: ">",
+});
+e8.defineVariable({
+  name: "org-agenda-persistent-marks",
+  doc: "Whether the lines marked for a bulk action stay marked after B acts on them; p at B's prompt toggles it for that action.",
+  value: false,
+});
+e8.defineVariable({
+  name: "org-agenda-bulk-custom-functions",
+  doc:
+    "More bulk actions, a list of (CHAR FUNCTION) or (CHAR FUNCTION ARG-FUNCTION): B and CHAR call FUNCTION at each " +
+    "marked line, with the list of arguments ARG-FUNCTION returns, called once first, and the agenda is made again after.",
+  value: null,
+});
+
+/** The entries marked for a bulk action, the last marked first, as org-agenda-bulk-marked-entries holds their lines' org-hd-markers. */
+let bulkMarked: AgendaItem[] = [];
+
+/** The type of a line's bulk mark overlay, as org-marked-entry-overlay. */
+const MARK_TYPE = "org-marked-entry-overlay";
+
+/** Frees the markers of an agenda line's entry. */
+function freeMarks(item: AgendaItem): void {
+  if (!item.marks) return;
+  e8.deleteMarker(item.marks.pos);
+  e8.deleteMarker(item.marks.heading);
+  item.marks = undefined;
+}
+
+/** The bulk mark overlays on line L, as org-agenda-bulk-marked-p looks at its start. */
+function markOverlaysOn(l: number): number[] {
+  return e8.overlaysAt(e8.lineStart(l)).filter((o) => e8.overlayGet(o, "type") === MARK_TYPE);
+}
+
+/** Whether the line at point is marked for a bulk action, as org-agenda-bulk-marked-p. */
+const bulkMarkedP = (): boolean => markOverlaysOn(e8.lineOf(e8.point())).length > 0;
+
+/** Shows line L marked, as org-agenda-bulk-mark's overlay: org-agenda-bulk-mark-char, in TODO's face, and a space, in place of its first two characters. */
+function putMarkOverlay(l: number): void {
+  const start = e8.lineStart(l);
+  const ov = e8.makeOverlay(start, Math.min(start + 2, e8.lineEnd(l)));
+  e8.overlayPut(ov, "before-string", e8.propertize(String(e8.variable("org-agenda-bulk-mark-char") ?? ">"), { face: todoFaceOf("TODO") }));
+  e8.overlayPut(ov, "display", " ");
+  e8.overlayPut(ov, "evaporate", true);
+  e8.overlayPut(ov, "type", MARK_TYPE);
+}
+
+/** Removes the bulk mark overlays between BEG and END, the entries left in the list, as org-agenda-bulk-remove-overlays. */
+function removeMarkOverlays(beg = e8.pointMin(), end = e8.pointMax()): void {
+  for (const o of e8.overlaysIn(beg, end)) if (e8.overlayGet(o, "type") === MARK_TYPE) e8.deleteOverlay(o);
+}
+
+/** Forgets the marked entries, freeing the markers of those whose lines went, as a new agenda starts with none. */
+function resetBulkMarks(): void {
+  for (const item of bulkMarked) if (!agendaLines.includes(item)) freeMarks(item);
+  bulkMarked = [];
+  removeMarkOverlays();
+}
+
+/**
+ * Where the next change of the line's entry comes after POS, as
+ * next-single-property-change finds one in org-hd-marker or txt, which only
+ * an entry's line has, not its newline: the end of the entry's line POS is
+ * in, else the start of the next entry's line; undefined if there is none.
+ */
+function nextEntryChange(pos: number): number | undefined {
+  const l = e8.lineOf(pos);
+  if (agendaLines[l] && pos < e8.lineEnd(l)) return e8.lineEnd(l) < e8.pointMax() ? e8.lineEnd(l) : undefined;
+  for (let k = l + 1; k < e8.lineCount(); k++) if (agendaLines[k]) return e8.lineStart(k);
+  return undefined;
+}
+
+/** Moves on from a line marked or unmarked, as org-agenda-bulk-mark does: to the next entry's line, else the next line, past hidden lines. */
+function moveToNextEntry(): void {
+  e8.gotoChar(e8.lineEnd(e8.lineOf(e8.point())));
+  const next = nextEntryChange(e8.point());
+  if (next !== undefined) e8.gotoChar(next);
+  else forwardLine(1);
+  while (truthy(e8.charProperty(e8.point(), "invisible") ?? null) && e8.point() < e8.pointMax()) forwardLine(1);
+}
+
+/** Marks ARG lines from point, or with none and an active region, the region's lines, as org-agenda-bulk-mark. */
+function bulkMark(arg?: number): void {
+  const mark = e8.mark();
+  if ((arg === undefined || arg === 1) && e8.regionActive() && mark !== undefined && mark !== e8.point()) {
+    const [beg, end] = [Math.min(mark, e8.point()), Math.max(mark, e8.point())];
+    arg = countLines(beg, end);
+    e8.gotoChar(beg);
+    e8.deactivateMark();
+  }
+  for (let n = 0; n < (arg ?? 1); n++) {
+    if (!bulkMarkedP()) {
+      const item = agendaLines[e8.lineOf(e8.point())];
+      if (!item) e8.userError("Nothing to mark at point");
+      bulkMarked.unshift(item);
+      putMarkOverlay(e8.lineOf(e8.point()));
+    }
+    moveToNextEntry();
+  }
+  e8.message(`${bulkMarked.length} entries marked for bulk action`);
+}
+
+/** Unmarks the line at point, or with ARG every line, as org-agenda-bulk-unmark. */
+function bulkUnmark(arg: e8.PrefixArg | null | undefined): void {
+  if (arg !== null && arg !== undefined) return bulkUnmarkAll();
+  if (!bulkMarkedP()) {
+    e8.message("No entry to unmark here");
+    return;
+  }
+  const l = e8.lineOf(e8.point());
+  removeMarkOverlays(e8.lineStart(l), e8.lineStart(l) + 2);
+  // Every entry whose heading is the line's, as delete compares markers by where they are.
+  const item = agendaLines[l];
+  if (item) bulkMarked = bulkMarked.filter((m) => !(m.buffer === item.buffer && headingOf(m) === headingOf(item)));
+  moveToNextEntry();
+  e8.message(`${bulkMarked.length} entries left marked for bulk action`);
+}
+
+/** Unmarks every line, as org-agenda-bulk-unmark-all. */
+function bulkUnmarkAll(): void {
+  if (bulkMarked.length === 0) e8.message("No entry to unmark");
+  else resetBulkMarks();
+}
+
+/** Marks the line at point, or unmarks it if it is marked, as org-agenda-bulk-toggle. */
+function bulkToggle(): void {
+  if (bulkMarkedP()) bulkUnmark(null);
+  else bulkMark();
+}
+
+/**
+ * Marks the lines whose text REGEXP matches, as org-agenda-bulk-mark-regexp:
+ * from the first entry's line on, until a match in a line that is no
+ * entry's, COUNT lines at each, as it calls org-agenda-bulk-mark
+ * interactively with the prefix argument.
+ */
+function bulkMarkRegexp(regexp: string, count: number): void {
+  e8.saveExcursion(() => {
+    const first = nextEntryChange(e8.pointMin());
+    if (first === undefined) e8.signal("wrong-type-argument", "Wrong type argument: integer-or-marker-p, nil", [e8.intern("integer-or-marker-p"), null]);
+    e8.gotoChar(first);
+    while (e8.reSearchForward(regexp, { noerror: true }) !== undefined) {
+      const beg = e8.matchBeginning(0)!;
+      const l = e8.lineOf(beg);
+      const item = agendaLines[l];
+      if (!item || beg >= e8.lineEnd(l)) break;
+      if (truthy(e8.charProperty(e8.point(), "invisible") ?? null)) forwardLine(1);
+      else if (e8.stringMatch(regexp, lineTxt(item, l), { caseFold: foldCase() }) !== undefined) bulkMark(count);
+    }
+  });
+}
+
+e8.defineCommand({
+  name: "org-agenda-bulk-mark",
+  doc: "Mark the agenda line at point for a bulk action with B, and go to the next; with a count, that many lines; with the region active, its lines.",
+  params: [{ name: "arg", kind: "count" }],
+  run: (arg: number) => bulkMark(arg),
+});
+e8.defineCommand({
+  name: "org-agenda-bulk-mark-all",
+  doc: "Mark every agenda line of an entry for a bulk action with B.",
+  params: [{ name: "count", kind: "count" }],
+  run: (count: number) => bulkMarkRegexp(".", count),
+});
+e8.defineCommand({
+  name: "org-agenda-bulk-mark-regexp",
+  doc: "Mark the agenda lines whose entries' text matches a regexp for a bulk action with B.",
+  params: [
+    { name: "regexp", prompt: "Mark entries matching regexp: " },
+    { name: "count", kind: "count" },
+  ],
+  run: (regexp: string, count: number) => bulkMarkRegexp(regexp, count),
+});
+e8.defineCommand({
+  name: "org-agenda-bulk-unmark",
+  doc: "Unmark the agenda line at point and go to the next; with a prefix argument, unmark every line.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg: e8.PrefixArg) => bulkUnmark(arg),
+});
+e8.defineCommand({
+  name: "org-agenda-bulk-unmark-all",
+  doc: "Unmark every agenda line marked for a bulk action.",
+  run: bulkUnmarkAll,
+});
+e8.defineCommand({
+  name: "org-agenda-bulk-toggle",
+  doc: "Mark the agenda line at point for a bulk action, or unmark it if it is marked.",
+  run: bulkToggle,
+});
+e8.defineCommand({
+  name: "org-agenda-bulk-toggle-all",
+  doc: "Mark each agenda line of an entry that is not marked, and unmark each that is.",
+  run: () =>
+    e8.saveExcursion(() => {
+      e8.gotoChar(e8.pointMin());
+      for (let p = nextEntryChange(e8.point()); p !== undefined; p = nextEntryChange(e8.point())) {
+        e8.gotoChar(p);
+        bulkToggle();
+      }
+    }),
+});
+e8.defineCommand({
+  name: "org-agenda-bulk-remove-overlays",
+  doc: "Remove the marks the agenda shows, the entries staying marked.",
+  run: () => removeMarkOverlays(),
+});
+
+/** How a marker of an entry prints, as #<marker at POS in BUFFER>. */
+function markerText(item: AgendaItem): string {
+  const m = item.marks?.heading;
+  const pos = m === undefined ? undefined : e8.markerPosition(m);
+  return pos === undefined ? "#<marker in no buffer>" : `#<marker at ${pos + 1} in ${e8.markerBuffer(m!)}>`;
+}
+
+/** The date of the date line at point, at midnight, as org-get-cursor-date gives org-overriding-default-time on a line with org-agenda-date-header. */
+function dateHeaderHere(): DateTime | undefined {
+  const l = e8.lineOf(e8.point());
+  const d = agendaLineDays[l];
+  if (d === undefined || agendaLines[l] || agendaLineDays[l - 1]?.cnt === d.cnt) return undefined;
+  return { ...dayFromNumber(d.day), hour: 0, minute: 0 };
+}
+
+/**
+ * A date read for the bulk planning commands, as org-read-date gives it:
+ * a fixed date, its time left out, as org-add-planning-info reads the
+ * string again without org-time-was-given; an answer starting with ++ is
+ * kept, for each entry's own date to take.
+ */
+function readBulkDate(prompt: string, def: DateTime | undefined): string {
+  const answer = readDateAnswer(`${prompt} Date: `);
+  if (/^[ \t]*\+\+/.test(answer)) return answer;
+  const d = parseDate(answer, false, def);
+  const two = (n: number): string => String(n).padStart(2, "0");
+  return `${d.year}-${two(d.month)}-${two(d.day)}`;
+}
+
+/** How many days to scatter over, as read-number reads it, 7 if none is given. */
+function readScatterDays(arg: e8.PrefixArg | null): number {
+  for (;;) {
+    const answer = e8.readString(`Scatter tasks across how many ${arg !== null ? "week" : ""}days (default 7): `).trim();
+    if (answer === "") return 7;
+    if (/^[-+]?\d+(\.\d+)?$/.test(answer)) return Number(answer);
+    e8.message("Please enter a number.");
+  }
+}
+
+/** The days from today a scattered entry goes to, as org-agenda-bulk-action's S: 1 to DAYS, or with ARG that many weekdays, past org-agenda-weekend-days. */
+function scatterDistance(days: number, arg: e8.PrefixArg | null): number {
+  let distance = 1 + e8.random(days);
+  if (arg !== null) {
+    const weekend = e8.variable("org-agenda-weekend-days");
+    const isWeekend = (d: number): boolean => Array.isArray(weekend) && weekend.includes(d);
+    let dayOfWeek = weekday(dayNumber(today()));
+    const dist = distance;
+    for (let n = 0; n < dist + 1; n++) {
+      while (isWeekend(dayOfWeek)) {
+        distance++;
+        dayOfWeek = (dayOfWeek + 1) % 7;
+      }
+      dayOfWeek = (dayOfWeek + 1) % 7;
+    }
+  }
+  return distance;
+}
+
+/** The custom bulk action CHAR names in org-agenda-bulk-custom-functions: its function and the arguments to call it with. */
+function customBulkFunction(char: string): [e8.Value, e8.Value[]] | undefined {
+  const alist = e8.variable("org-agenda-bulk-custom-functions");
+  if (!Array.isArray(alist)) return undefined;
+  for (const entry of alist) {
+    if (!Array.isArray(entry) || entry.length === 0) continue;
+    const key = typeof entry[0] === "number" ? String.fromCodePoint(entry[0]) : entry[0];
+    if (key !== char) continue;
+    const args = entry.length > 2 && entry[2] !== null ? e8.funcall(entry[2] as string) : [];
+    return [entry[1], Array.isArray(args) ? args : []];
+  }
+  return undefined;
+}
+
+/** The characters of the custom bulk actions, as B's prompt lists them. */
+function customBulkChars(): string {
+  const alist = e8.variable("org-agenda-bulk-custom-functions");
+  if (!Array.isArray(alist)) return "";
+  return alist.map((e) => (Array.isArray(e) ? (typeof e[0] === "number" ? String.fromCodePoint(e[0]) : String(e[0])) : "")).join("");
+}
+
+/**
+ * Acts on each marked entry with an action read as a character, as
+ * org-agenda-bulk-action: archiving, refiling, a TODO state, a tag,
+ * scheduling, a deadline, a scattered date, a function or a custom action,
+ * the entries in their files' order, those whose lines went skipped.
+ */
+function bulkAction(arg: e8.PrefixArg | null): void {
+  // With no mark, the line at point, as Org marks it first.
+  if (bulkMarked.length === 0) e8.saveExcursion(() => bulkMark());
+  for (const m of bulkMarked) {
+    const buffer = m.marks && e8.markerBuffer(m.marks.heading);
+    if (buffer === undefined || e8.markerPosition(m.marks!.heading) === undefined) e8.userError(`Marker ${markerText(m)} for bulk command is invalid`);
+  }
+  const persistent = truthy(e8.variable("org-agenda-persistent-marks") ?? null);
+  const custom = customBulkChars();
+  const prompt =
+    `Bulk (${persistent ? "" : "don\u2019t "}[p]ersist marks): [$]arch [A]rch->sib [t]odo [+/-]tag [s]chd [d]eadline [r]efile [S]catter [f]unction    ` +
+    (custom !== "" ? ` Custom: [${custom}]` : "");
+  const entries = [...bulkMarked].reverse();
+  const def = dateHeaderHere();
+  const logRefile = truthy(e8.variable("org-log-refile") ?? null) ? "time" : null;
+  let redoAtEnd = false;
+  let cmd: () => void;
+  let cleanup = (): void => {};
+  const action = readCharString(prompt);
+  const first = entries[0];
+  switch (action) {
+    case "p":
+      // Asked again with no prefix argument, as Org calls org-agenda-bulk-action again.
+      e8.letBind({ "org-agenda-persistent-marks": !persistent }, () => bulkAction(null));
+      return;
+    case "$":
+      cmd = () => e8.call("org-agenda-archive");
+      break;
+    case "A":
+      cmd = () => e8.call("org-agenda-archive-to-archive-sibling");
+      break;
+    case "r":
+    case "w": {
+      const rfloc = e8.letBind({ "org-log-refile": logRefile }, () =>
+        getLocation("Refile to", first.buffer, e8.variable("org-refile-allow-creating-parent-nodes") ?? null),
+      );
+      if (!rfloc) return;
+      // Where it goes kept as a marker, as Org makes one, so refiling one entry does not move it.
+      const [name, target] = rfloc;
+      const start = typeof target.start === "number" && target.start >= 0 ? e8.makeMarker(target.start, { buffer: target.buffer }) : undefined;
+      const loc: [string, Target] = [name, start === undefined ? target : { ...target, start }];
+      cmd = () => agendaRefile(loc, true);
+      cleanup = () => start !== undefined && e8.deleteMarker(start);
+      redoAtEnd = true;
+      break;
+    }
+    case "t": {
+      const keywords = e8.withCurrentBuffer(first.buffer, () => allKeywords());
+      const state = e8.completingRead("Todo state: ", keywords);
+      cmd = () =>
+        agendaTodoWith(() => {
+          // A state the entry's file does not have refused, as org-todo refuses a string that is none of its keywords.
+          if (state !== "" && !allKeywords().includes(state)) e8.userError(`State \u2018${state}\u2019 not valid in this file`);
+          e8.letBind({ "org-inhibit-blocking": true, "org-inhibit-logging": "note" }, () => e8.call("org-todo-set", state));
+        });
+      break;
+    }
+    case "+":
+    case "-": {
+      const tags = e8.withCurrentBuffer(first.buffer, () => currentTagAlist().map(([t]) => t).filter((t) => !isTagKeyword(t)));
+      const tag = e8.completingRead(`Tag to ${action === "+" ? "add" : "remove"}: `, tags);
+      cmd = () => agendaSetTags(tag, action === "+" ? "on" : "off");
+      break;
+    }
+    case "s":
+    case "d": {
+      const schedule = action === "s";
+      const date = arg === null ? readBulkDate(schedule ? "(Re)Schedule to" : "(Re)Set Deadline to", def) : undefined;
+      // A time logged rather than a note, as Org cannot take a note for each entry at once.
+      const log = schedule ? "org-log-reschedule" : "org-log-redeadline";
+      cmd = () =>
+        e8.letBind({ [log]: truthy(e8.variable(log) ?? null) ? "time" : null }, () =>
+          agendaPlan(schedule ? "org-schedule" : "org-deadline", schedule ? " S" : " D", arg, date),
+        );
+      break;
+    }
+    case "S": {
+      if (agendaView.kind !== "agenda" && agendaView.kind !== "todo") e8.userError(`Can\u2019t scatter tasks in "${agendaView.kind}" agenda view`);
+      const days = readScatterDays(arg);
+      cmd = () => {
+        const distance = scatterDistance(days, arg);
+        const d = dayFromNumber(dayNumber(today()) + distance);
+        const two = (n: number): string => String(n).padStart(2, "0");
+        // Quietly not at all where it cannot be, as for a sexp entry.
+        try {
+          agendaPlan("org-schedule", " S", null, `${d.year}-${two(d.month)}-${two(d.day)}`);
+        } catch (e) {
+          // As ignore-errors, which lets a quit through.
+          if ((e as { symbol?: unknown }).symbol === "quit") throw e;
+        }
+      };
+      break;
+    }
+    case "f": {
+      const functions: string[] = [];
+      e8.mapatoms((name) => {
+        if (e8.fboundp(name)) functions.push(name);
+      });
+      const f = e8.completingRead("Function: ", functions, { requireMatch: true });
+      cmd = () => e8.funcall(f);
+      break;
+    }
+    default: {
+      const found = customBulkFunction(action);
+      if (found === undefined) e8.userError(`Invalid bulk action: ${action}`);
+      const [fn, args] = found;
+      cmd = () => e8.funcall(fn as string, ...args);
+      redoAtEnd = true;
+    }
+  }
+  // Parents before their children: each file's entries in order, the files by name.
+  entries.sort((a, b) => (a.buffer === b.buffer ? headingOf(a) - headingOf(b) : a.buffer < b.buffer ? -1 : a.buffer > b.buffer ? 1 : 0));
+  let processed = 0;
+  let skipped = 0;
+  try {
+    e8.letBind({ "org-log-refile": logRefile }, () => {
+      for (const e of entries) {
+        const l = agendaLines.indexOf(e);
+        if (l < 0) {
+          e8.message(`Skipping removed entry at ${markerText(e)}`);
+          skipped++;
+          continue;
+        }
+        e8.gotoChar(e8.lineStart(l));
+        e8.letBind({ "org-loop-over-headlines-in-active-region": null }, cmd);
+        // A log the action set up taken now, as the command has not ended.
+        addPendingLogNote();
+        processed++;
+      }
+    });
+  } finally {
+    cleanup();
+  }
+  if (redoAtEnd) e8.call("org-agenda-redo");
+  if (!persistent) bulkUnmarkAll();
+  e8.message(`Acted on ${processed} entries${skipped === 0 ? "" : `, skipped ${skipped} (disappeared before their turn)`}${persistent ? " (kept marked)" : ""}`);
+}
+
+/** Puts TAG on the entry the agenda line at point shows, or takes it off, as org-agenda-set-tags with a tag. */
+function agendaSetTags(tag: string, onoff: "on" | "off"): void {
+  const item = agendaItemHere();
+  e8.withCurrentBuffer(item.buffer, () => {
+    e8.widen();
+    e8.gotoChar(headingOf(item));
+    showContext("agenda");
+    toggleTag(tag, onoff);
+  });
+  redrawEntry(item);
+}
+
+e8.defineCommand({
+  name: "org-agenda-bulk-action",
+  doc:
+    "Act on each agenda line marked with m: $ archives, A moves to the archive sibling, r refiles, t sets a TODO state, " +
+    "+ and - add and remove a tag, s and d schedule and set a deadline, S scatters over the next days, f calls a " +
+    "function, and p keeps the marks or not; with no mark, the line at point. The prefix argument goes to s, d and S.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg: e8.PrefixArg) => bulkAction(arg ?? null),
+});
+
 // More of Org's keys, as org-agenda.el binds them.
 for (const [key, command] of [
   ["T", "org-agenda-show-tags"],
@@ -4032,6 +4583,14 @@ for (const [key, command] of [
   ["z", "org-agenda-add-note"],
   ["C-c C-z", "org-agenda-add-note"],
   ["C-c C-c", "org-agenda-ctrl-c-ctrl-c"],
+  ["m", "org-agenda-bulk-mark"],
+  ["M-m", "org-agenda-bulk-toggle"],
+  ["*", "org-agenda-bulk-mark-all"],
+  ["M-*", "org-agenda-bulk-toggle-all"],
+  ["%", "org-agenda-bulk-mark-regexp"],
+  ["u", "org-agenda-bulk-unmark"],
+  ["U", "org-agenda-bulk-unmark-all"],
+  ["B", "org-agenda-bulk-action"],
 ] as const) e8.defineKey("org-agenda-mode-map", key, command);
 
 /** Toggles archives mode, as org-agenda-archives-mode: archived trees in and out, or with WITH-FILES the archive files too. */

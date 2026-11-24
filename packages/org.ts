@@ -1861,6 +1861,11 @@ export function addLogNote(headingLine: number, purpose: string, state?: string,
   e8.addHook("post-command-hook", openLogNote);
 }
 
+/** Takes the note the command has set up now, rather than once it ends, as code calls org-add-log-note when org-log-setup is set. */
+export function addPendingLogNote(): void {
+  if (noteSetup !== undefined) openLogNote();
+}
+
 /**
  * Opens *Org Note* for the note set up, as org-add-log-note: the frame
  * showing only the entry's buffer, then split for the note; C-c C-c stores
@@ -5181,6 +5186,11 @@ e8.defineHook("org-trigger-hook", "Functions run after a TODO state changes, eac
 e8.defineVariable({ name: "org-enforce-todo-dependencies", doc: "Whether TODO children block marking their parent done, and with an ORDERED property on the parent, earlier siblings not done block a sibling.", value: false });
 e8.defineVariable({ name: "org-enforce-todo-checkbox-dependencies", doc: "Whether unchecked boxes in an entry block marking it done.", value: false });
 e8.defineVariable({ name: "org-inhibit-blocking", doc: "Whether nothing blocks a change of TODO state, whatever the dependencies.", value: false });
+e8.defineVariable({
+  name: "org-inhibit-logging",
+  doc: "Whether a change of TODO state logs nothing (t), or only a time where it would take a note (note), as code binds it.",
+  value: false,
+});
 e8.defineVariable({ name: "org-track-ordered-property-with-tag", doc: "Whether org-toggle-ordered-property also toggles a tag: t for ORDERED, or the tag to use.", value: false });
 
 /** The heading that blocked the last change, as org-block-entry-blocking, and whether checkboxes did, as org-blocked-by-checkboxes. */
@@ -5498,7 +5508,10 @@ function todoLogged(direction: number, state?: string, across = false, options: 
   }
   const logDone = e8.variable("org-log-done");
   // Logged as the states and org-log-done say, but not for a new set of keywords, unless C-u forces a note.
-  const logs = ((logStates().length > 0 || truthy(logDone ?? null)) && options.set === undefined) || options.forceLog === true;
+  // Nothing logged with org-inhibit-logging t, and a note only a time with note, as code binds it.
+  const inhibit = e8.variable("org-inhibit-logging") ?? null;
+  const logs = ((logStates().length > 0 || truthy(logDone ?? null)) && inhibit !== true && options.set === undefined) || options.forceLog === true;
+  if (inhibit === "note") options = { ...options, inhibitNote: true };
   let dolog = !logs ? undefined : options.forceLog ? "note" : logHow(next, before);
   // With a prefix of 0, a note is only a time, as org-inhibit-logging note says.
   if (options.inhibitNote && dolog === "note") dolog = "time";
@@ -5507,7 +5520,8 @@ function todoLogged(direction: number, state?: string, across = false, options: 
     const notDone = (k: string | undefined) => k !== undefined && !isDone(k);
     // No state keeps CLOSED with org-closed-keep-when-no-todo.
     if ((next === undefined && !truthy(e8.variable("org-closed-keep-when-no-todo") ?? null)) || (notDone(next) && !notDone(before))) setPlanning(h.line, "CLOSED", undefined);
-    if (isDone(next) && !isDone(before) && logDone !== null && logDone !== false) setPlanning(h.line, "CLOSED", `[${formatTimestamp(today(true), true)}]`);
+    // At the planning line's start, as org-add-planning-info puts a keyword it adds.
+    if (isDone(next) && !isDone(before) && logDone !== null && logDone !== false) addPlanningInfo(h.line, "CLOSED", `[${formatTimestamp(today(true), true)}]`, []);
   }
   updateParentTodoStatistics(h.line);
   // What to log, as org-todo's org-add-log-setup calls: a closing note
@@ -6123,6 +6137,25 @@ function setTags(tags: string[]): void {
   alignTags(h.line);
 }
 
+/**
+ * Toggles TAG on the heading point is under, or with ONOFF "on" or "off"
+ * sets it so, as org-toggle-tag: a new tag goes last; whether it is on.
+ */
+export function toggleTag(tag: string, onoff?: "on" | "off"): boolean {
+  return e8.saveExcursion(() => {
+    const [all, i] = backToHeading();
+    const current = all[i].tags;
+    const on = onoff === "on" || (onoff === undefined && !current.includes(tag));
+    setTags(on ? (current.includes(tag) ? current : [...current, tag]) : current.filter((t) => t !== tag));
+    return on;
+  });
+}
+
+e8.defun("org-toggle-tag", (tag: e8.Value, onoff?: e8.Value) => {
+  const how = typeof onoff === "symbol" ? onoff.description : onoff;
+  return toggleTag(String(tag), how === "on" || how === "off" ? how : undefined) || undefined;
+});
+
 e8.defineCommand({
   name: "org-set-tags",
   doc: "Give the heading point is under these tags, written as :work:home: or work home; empty removes them.",
@@ -6283,7 +6316,7 @@ function fileTags(): string[] {
 }
 
 /** A TODO state's face, as org-get-todo-face: its own from org-todo-keyword-faces, else org-done or org-todo. */
-function todoFaceOf(kw: string): e8.Value {
+export function todoFaceOf(kw: string): e8.Value {
   return faceFromFaceOrColor("org-todo", alistGet("org-todo-keyword-faces", kw) ?? null) ?? (isDone(kw) ? "org-done" : "org-todo");
 }
 
@@ -7690,7 +7723,10 @@ function setPlanning(headingLine: number, keyword: string, ts: string | undefine
   let updated: string;
   if (re.test(text)) updated = ts === undefined ? text.replace(re, "") : text.replace(re, `${keyword}: ${ts}`);
   else updated = ts === undefined ? text : `${text.trimEnd()} ${keyword}: ${ts}`;
-  updated = updated.replace(/[ \t]{2,}/g, " ").replace(/^[ \t]+|[ \t]+$/g, "");
+  // The line's indentation kept, as Org deletes only from the keyword on.
+  const indent = /^[ \t]*/.exec(text)![0];
+  const rest = updated.slice(indent.length).replace(/[ \t]{2,}/g, " ").replace(/^[ \t]+|[ \t]+$/g, "");
+  updated = rest === "" ? "" : indent + rest;
   if (updated === text) return;
   const ls = e8.lineStart(next);
   // The whole line and its newline, as Org deletes it, so what pointed into it is left at its start.
