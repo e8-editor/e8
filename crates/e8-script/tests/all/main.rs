@@ -95,6 +95,7 @@ mod org_clocktable;
 mod org_capture_targets;
 mod org_cycle_hook;
 mod org_clock_display;
+mod org_cycle_hooks;
 mod org_clone;
 mod org_latex_environment;
 mod org_extra_keys;

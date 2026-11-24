@@ -562,6 +562,17 @@ natives! {
         Ok(())
     }
 
+    /// Takes the function a name holds off a hook, as remove-hook with a symbol.
+    fn removeHookNamed(ed, hook: String, name: String, local: bool) {
+        ed.remove_hook_function(&hook, &e8_core::Function::by_name(&name), local);
+        Ok(())
+    }
+
+    /// Puts the function a name holds on a hook, called by its name when the hook runs, as add-hook with a symbol.
+    fn addHookNamed(ed, hook: String, name: String, depth: f64, local: bool) -> f64 {
+        Ok(ed.add_hook_function(&hook, e8_core::Function::by_name(&name), depth, local) as f64)
+    }
+
     fn runHooks(ed, hook: String, args: Opt<Vec<EditorValue>>) {
         let args = args.0.unwrap_or_default();
         ed.run_hook_with_args(&hook, &args)

@@ -10942,6 +10942,8 @@ e8.defineCommand({
 // The hooks around TAB's changes of what shows, as org-cycle.el has them.
 
 e8.defineHook("org-cycle-pre-hook", "Functions run before TAB or S-TAB changes what shows, with the state it is about to set: overview, contents, all, folded, children, subtree or empty.");
+// Its old name, as org-cycle.el keeps it.
+e8.defvaralias("org-pre-cycle-hook", "org-cycle-pre-hook");
 e8.defineHook(
   "org-cycle-hook",
   "Functions run after TAB or S-TAB has changed what shows, with the state it set: overview, contents or all after a global change, folded, children or subtree after a local one.",

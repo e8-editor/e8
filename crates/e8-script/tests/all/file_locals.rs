@@ -335,3 +335,15 @@ fn a_trusted_directory_is_trusted_through_a_link_to_it() {
     assert_eq!(d.buffer_name(), "a.txt", "not asked");
     assert_eq!(d.variable("my-setting").as_deref(), Some("3"));
 }
+
+/// An `eval:` remove-hook with a function's name takes off what the hook's
+/// value holds by that name, as remove-hook with a symbol, here one of
+/// org-cycle-hook's own.
+#[test]
+fn an_eval_remove_hook_takes_off_a_function_held_by_name() {
+    let mut t = setup();
+    t.eval("e8.setVariable('enable-local-eval', true)");
+    assert_eq!(t.eval("e8.defaultValue('org-cycle-hook').length"), "4");
+    t.visit("a.org", "* A\n\n# Local Variables:\n# eval: (remove-hook 'org-cycle-hook 'org-cycle-show-empty-lines)\n# End:\n", "");
+    assert_eq!(t.eval("e8.defaultValue('org-cycle-hook').length"), "3");
+}
