@@ -3332,9 +3332,11 @@ function orgCycle(arg: e8.PrefixArg): void {
     // Not on a heading TAB cycles, one past the limit being text.
     const atBob = parseHeading(lineAt());
     if (truthy(e8.variable("org-cycle-global-at-bob")) && e8.point() === e8.pointMin() && (atBob === undefined || atBob.level > nstars)) {
-      const hook = e8.variable("org-cycle-hook");
-      const without = Array.isArray(hook) ? hook.filter((f) => f !== "org-cycle-optimize-window-after-visibility-change") : hook;
-      e8.letBind({ "org-cycle-hook": without ?? null }, () => globalCycle());
+      // Without the window's optimizing, as Org binds the hook to it remq'd: taken off by name inside the binding.
+      e8.letBind({ "org-cycle-hook": e8.variable("org-cycle-hook") ?? null }, () => {
+        e8.removeHook("org-cycle-hook", "org-cycle-optimize-window-after-visibility-change");
+        globalCycle();
+      });
       return;
     }
     const line = lineAt();

@@ -58,3 +58,22 @@ fn org_cycle_hook_functions_come_off_by_name() {
     assert_eq!(ed.take_error().map(|e| e.to_string()), None);
     assert_eq!(eval(&mut ed, &s, "String(e8.variable('e8-test-ran'))"), "true");
 }
+
+/// TAB at the buffer's start with org-cycle-global-at-bob cycles the whole
+/// buffer without the window's optimizing, as Org binds the hook without
+/// it, and the hook is as it was afterwards.
+#[test]
+fn global_cycling_at_the_start_leaves_out_the_window_optimizing() {
+    let (mut ed, s) = org("text\n* A\n** B\n");
+    eval(&mut ed, &s, "e8.defineVariable({ name: 'e8-test-optimized', value: 0 })");
+    eval(&mut ed, &s, "e8.defun('org-cycle-optimize-window-after-visibility-change', () => e8.setVariable('e8-test-optimized', e8.variable('e8-test-optimized') + 1))");
+    eval(&mut ed, &s, "e8.setVariable('org-cycle-global-at-bob', true)");
+    ed.window_buffer_mut().set_point(0);
+    ed.press("TAB").unwrap();
+    assert_eq!(ed.take_error().map(|e| e.to_string()), None);
+    assert_eq!(eval(&mut ed, &s, "String(e8.variable('e8-test-optimized'))"), "0");
+    assert_eq!(eval(&mut ed, &s, "e8.variable('org-cycle-hook').length"), "4");
+    // On a heading it runs.
+    ed.press("C-n TAB").unwrap();
+    assert_eq!(eval(&mut ed, &s, "String(e8.variable('e8-test-optimized'))"), "1");
+}

@@ -378,7 +378,8 @@ impl Editor {
     /// The variable a name stands for, past any `defvaralias` aliases, as
     /// `indirect-variable` follows them.
     pub fn base_variable<'a>(&self, name: &'a str) -> std::borrow::Cow<'a, str> {
-        if self.variable_aliases.is_empty() {
+        // No copy for a name that is no alias, as most are, since hooks run on every change ask.
+        if !self.variable_aliases.contains_key(name) {
             return std::borrow::Cow::Borrowed(name);
         }
         let mut current = name.to_string();
