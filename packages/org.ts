@@ -6151,7 +6151,10 @@ export function toggleTag(tag: string, onoff?: "on" | "off"): boolean {
   });
 }
 
-e8.defun("org-toggle-tag", (tag: e8.Value, onoff?: e8.Value) => toggleTag(String(tag), onoff === "on" || onoff === "off" ? onoff : undefined) || undefined);
+e8.defun("org-toggle-tag", (tag: e8.Value, onoff?: e8.Value) => {
+  const how = typeof onoff === "symbol" ? onoff.description : onoff;
+  return toggleTag(String(tag), how === "on" || how === "off" ? how : undefined) || undefined;
+});
 
 e8.defineCommand({
   name: "org-set-tags",
@@ -7720,7 +7723,10 @@ function setPlanning(headingLine: number, keyword: string, ts: string | undefine
   let updated: string;
   if (re.test(text)) updated = ts === undefined ? text.replace(re, "") : text.replace(re, `${keyword}: ${ts}`);
   else updated = ts === undefined ? text : `${text.trimEnd()} ${keyword}: ${ts}`;
-  updated = updated.replace(/[ \t]{2,}/g, " ").replace(/^[ \t]+|[ \t]+$/g, "");
+  // The line's indentation kept, as Org deletes only from the keyword on.
+  const indent = /^[ \t]*/.exec(text)![0];
+  const rest = updated.slice(indent.length).replace(/[ \t]{2,}/g, " ").replace(/^[ \t]+|[ \t]+$/g, "");
+  updated = rest === "" ? "" : indent + rest;
   if (updated === text) return;
   const ls = e8.lineStart(next);
   // The whole line and its newline, as Org deletes it, so what pointed into it is left at its start.

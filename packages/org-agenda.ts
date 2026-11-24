@@ -2505,7 +2505,9 @@ function nextItems(n: number): void {
   const column = e8.currentColumn();
   for (let k = 0; k < n; k++) {
     if (nextEntryChange(e8.lineEnd(e8.lineOf(e8.point()))) === undefined) continue;
-    const to = nextEntryChange(shownLineEnd(1));
+    // To the end of the line as it shows first, as move-end-of-line goes there before the entry is looked for.
+    e8.gotoChar(shownLineEnd(1));
+    const to = nextEntryChange(e8.point());
     if (to === undefined) e8.signal("wrong-type-argument", "Wrong type argument: integer-or-marker-p, nil", [e8.intern("integer-or-marker-p"), null]);
     e8.gotoChar(to);
   }
@@ -4068,6 +4070,11 @@ e8.defineCommand({
 // org-agenda-bulk-mark and org-agenda-bulk-action.
 
 e8.defineVariable({
+  name: "org-agenda-weekend-days",
+  doc: "The days of the week that are the weekend, 0 for Sunday to 6 for Saturday, which C-u B S passes over.",
+  value: [6, 0],
+});
+e8.defineVariable({
   name: "org-agenda-bulk-mark-char",
   doc: "The string a line marked for a bulk action shows in place of its first two characters.",
   value: ">",
@@ -4200,8 +4207,13 @@ function bulkToggle(): void {
   else bulkMark();
 }
 
-/** Marks the lines whose text REGEXP matches, as org-agenda-bulk-mark-regexp: from the first entry's line on, until a match in a line that is no entry's. */
-function bulkMarkRegexp(regexp: string): void {
+/**
+ * Marks the lines whose text REGEXP matches, as org-agenda-bulk-mark-regexp:
+ * from the first entry's line on, until a match in a line that is no
+ * entry's, COUNT lines at each, as it calls org-agenda-bulk-mark
+ * interactively with the prefix argument.
+ */
+function bulkMarkRegexp(regexp: string, count: number): void {
   e8.saveExcursion(() => {
     const first = nextEntryChange(e8.pointMin());
     if (first === undefined) e8.signal("wrong-type-argument", "Wrong type argument: integer-or-marker-p, nil", [e8.intern("integer-or-marker-p"), null]);
@@ -4212,7 +4224,7 @@ function bulkMarkRegexp(regexp: string): void {
       const item = agendaLines[l];
       if (!item || beg >= e8.lineEnd(l)) break;
       if (truthy(e8.charProperty(e8.point(), "invisible") ?? null)) forwardLine(1);
-      else if (e8.stringMatch(regexp, lineTxt(item, l), { caseFold: foldCase() }) !== undefined) bulkMark();
+      else if (e8.stringMatch(regexp, lineTxt(item, l), { caseFold: foldCase() }) !== undefined) bulkMark(count);
     }
   });
 }
@@ -4226,13 +4238,17 @@ e8.defineCommand({
 e8.defineCommand({
   name: "org-agenda-bulk-mark-all",
   doc: "Mark every agenda line of an entry for a bulk action with B.",
-  run: () => bulkMarkRegexp("."),
+  params: [{ name: "count", kind: "count" }],
+  run: (count: number) => bulkMarkRegexp(".", count),
 });
 e8.defineCommand({
   name: "org-agenda-bulk-mark-regexp",
   doc: "Mark the agenda lines whose entries' text matches a regexp for a bulk action with B.",
-  params: [{ name: "regexp", prompt: "Mark entries matching regexp: " }],
-  run: (regexp: string) => bulkMarkRegexp(regexp),
+  params: [
+    { name: "regexp", prompt: "Mark entries matching regexp: " },
+    { name: "count", kind: "count" },
+  ],
+  run: (regexp: string, count: number) => bulkMarkRegexp(regexp, count),
 });
 e8.defineCommand({
   name: "org-agenda-bulk-unmark",
@@ -4375,7 +4391,8 @@ function bulkAction(arg: e8.PrefixArg | null): void {
   const first = entries[0];
   switch (action) {
     case "p":
-      e8.letBind({ "org-agenda-persistent-marks": !persistent }, () => bulkAction(arg));
+      // Asked again with no prefix argument, as Org calls org-agenda-bulk-action again.
+      e8.letBind({ "org-agenda-persistent-marks": !persistent }, () => bulkAction(null));
       return;
     case "$":
       cmd = () => e8.call("org-agenda-archive");
@@ -4401,7 +4418,12 @@ function bulkAction(arg: e8.PrefixArg | null): void {
     case "t": {
       const keywords = e8.withCurrentBuffer(first.buffer, () => allKeywords());
       const state = e8.completingRead("Todo state: ", keywords);
-      cmd = () => agendaTodoWith(() => e8.letBind({ "org-inhibit-blocking": true, "org-inhibit-logging": "note" }, () => e8.call("org-todo-set", state)));
+      cmd = () =>
+        agendaTodoWith(() => {
+          // A state the entry's file does not have refused, as org-todo refuses a string that is none of its keywords.
+          if (state !== "" && !allKeywords().includes(state)) e8.userError(`State \u2018${state}\u2019 not valid in this file`);
+          e8.letBind({ "org-inhibit-blocking": true, "org-inhibit-logging": "note" }, () => e8.call("org-todo-set", state));
+        });
       break;
     }
     case "+":
@@ -4433,8 +4455,9 @@ function bulkAction(arg: e8.PrefixArg | null): void {
         // Quietly not at all where it cannot be, as for a sexp entry.
         try {
           agendaPlan("org-schedule", " S", null, `${d.year}-${two(d.month)}-${two(d.day)}`);
-        } catch {
-          // As ignore-errors.
+        } catch (e) {
+          // As ignore-errors, which lets a quit through.
+          if ((e as { symbol?: unknown }).symbol === "quit") throw e;
         }
       };
       break;
