@@ -6271,13 +6271,13 @@ declare global {
        */
       "org-do-promote": [];
       /**
-       * Move the element at point, such as a paragraph or a list, before the one above it.
+       * Move the element at point, such as a paragraph or a list, with its affiliated keywords, before the one above it.
        *
        * Defined in packages/org-element.ts.
        */
       "org-drag-element-backward": [];
       /**
-       * Move the element at point, such as a paragraph or a list, after the one below it.
+       * Move the element at point, such as a paragraph or a list, with its affiliated keywords, after the one below it.
        *
        * Defined in packages/org-element.ts.
        */

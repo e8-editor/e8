@@ -15,7 +15,7 @@
 // an "org-link" text property, so [[https://gnu.org][GNU]] shows as GNU.
 
 import { jump, type Link, linkHere, searchInBuffer, showContext } from "ol";
-import { AFFILIATED, type Elem, elementAt, endBeforeBlank, keepingParse, PLANNING, parseShifts, startsElement } from "org-element";
+import { AFFILIATED, type Elem, elementAt, endBeforeBlank, keepingParse, PLANNING, parseShifts, startsElement, withAffiliated } from "org-element";
 import {
   ancestors,
   BLOCK_BEGIN,
@@ -9388,12 +9388,17 @@ function transposeRegionLines(up: boolean, a: number, b: number): void {
  * does for a language without them.
  */
 function babelSessionHook(action: "load" | "pop"): void {
-  const el = elementAt(e8.point());
+  // From its affiliated keywords too, as Org's element holds them.
+  const el = withAffiliated(elementAt(e8.point()));
   if (el?.type !== "src-block") return;
-  const header = e8.lineText(lineAt(el.begin));
+  const header = e8.lineText(lineAt(el.postAffiliated ?? el.begin));
   const lang = /^[ \t]*#\+begin_src[ \t]+([^ \t:]\S*)/i.exec(header)?.[1] ?? "nil";
   if (action === "load") throw new Error(`No org-babel-load-session function for ${lang}!`);
-  if (!/:session/.test(header)) throw new Error("This block is not using a session!");
+  // The session from the block's line, else its #+HEADER: lines, as org-babel-get-src-block-info merges them; none is no session.
+  const headers = [header];
+  for (let l = lineAt(el.begin); l < lineAt(el.postAffiliated ?? el.begin); l++) if (/^[ \t]*#\+headers?:/i.test(e8.lineText(l))) headers.push(e8.lineText(l));
+  const session = headers.map((h) => /(?:^|[ \t]):session(?:[ \t]+([^ \t:][^ \t]*))?/.exec(h)).find((m) => m !== null);
+  if (!session || session[1] === "none") throw new Error("This block is not using a session!");
   throw new Error(`No org-babel-initiate-session function for ${lang}!`);
 }
 

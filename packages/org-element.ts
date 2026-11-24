@@ -55,6 +55,8 @@ export interface Elem {
    * changes a child is owed are the first of them.
    */
   shifts?: { from: number[]; sums: number[] };
+  /** Where it starts after its affiliated keywords, as :post-affiliated, in an element withAffiliated gives with them. */
+  postAffiliated?: number;
   /** How many of its parent's `shifts` this element has been moved by. */
   applied?: number;
 }
@@ -685,11 +687,48 @@ function swapElementsUnchecked(a: Elem, b: Elem): void {
   e8.gotoChar(b.end);
 }
 
+/**
+ * The elements that take no affiliated keywords: those Org parses before
+ * it collects any, and a comment, before which they are orphans, as
+ * org-element--collect-affiliated-keywords leaves them.
+ */
+const NO_AFFILIATED = ["headline", "section", "item", "planning", "property-drawer", "node-property", "table-row", "clock", "comment"];
+
+/**
+ * An element with its affiliated keywords, as #+NAME: and #+CAPTION:, as
+ * Org's parser makes it, its begin the first keyword's line: from a
+ * keyword's line, the element they belong to, the next after them with no
+ * blank line between; a keyword left alone, before a blank line or the
+ * end, is one of its own. E8's parser keeps them apart, so the drag
+ * commands put them together here.
+ */
+export function withAffiliated(e: Elem | undefined): Elem | undefined {
+  if (!e) return e;
+  let owner = e;
+  const end = e.parent?.contentsEnd ?? e.parent?.end ?? e8.bufferSize();
+  // From a keyword's line, or a paragraph's E8 reads as one, as #+CAPTION[short title]: with a space in its brackets.
+  const keywordLine = e.type === "keyword" || (e.type === "paragraph" && e.begin === e8.lineStart(lineAt(e.begin)));
+  if (keywordLine && AFFILIATED.test(e8.lineText(lineAt(e.begin)))) {
+    let k = lineAt(e.begin);
+    while (k < e8.lineCount() && lineStartOrEnd(k) < end && AFFILIATED.test(e8.lineText(k))) k++;
+    const at = lineStartOrEnd(k);
+    const found = at < end && k < e8.lineCount() && !isBlank(e8.lineText(k)) ? elementAt(at) : undefined;
+    if (!found || found.begin !== at || NO_AFFILIATED.includes(found.type)) return e;
+    owner = found;
+  }
+  if (NO_AFFILIATED.includes(owner.type)) return owner;
+  const start = owner.parent?.contentsBegin ?? owner.parent?.begin ?? 0;
+  let l = lineAt(owner.begin);
+  if (owner.begin !== e8.lineStart(l)) return owner;
+  while (l > 0 && e8.lineStart(l - 1) >= start && AFFILIATED.test(e8.lineText(l - 1))) l--;
+  return e8.lineStart(l) === owner.begin ? owner : { ...owner, begin: e8.lineStart(l), postAffiliated: owner.begin };
+}
+
 e8.defineCommand({
   name: "org-drag-element-backward",
-  doc: "Move the element at point, such as a paragraph or a list, before the one above it.",
+  doc: "Move the element at point, such as a paragraph or a list, with its affiliated keywords, before the one above it.",
   run: () => {
-    const e = elementAt(e8.point());
+    const e = withAffiliated(elementAt(e8.point()));
     if (!e) e8.userError("No element at point");
     if (e.type === "headline") {
       // Point stays where it was in the subtree, even on blank lines below its heading.
@@ -711,6 +750,7 @@ e8.defineCommand({
     if (q > e8.pointMin()) {
       prev = elementAt(q);
       for (let up = prev?.parent; prev && up && up.end <= e.begin; up = up.parent) prev = up;
+      prev = withAffiliated(prev);
     }
     if (!prev || nested(e, prev)) e8.userError("Cannot drag element backward");
     const pos = e8.point();
@@ -721,13 +761,13 @@ e8.defineCommand({
 
 e8.defineCommand({
   name: "org-drag-element-forward",
-  doc: "Move the element at point, such as a paragraph or a list, after the one below it.",
+  doc: "Move the element at point, such as a paragraph or a list, with its affiliated keywords, after the one below it.",
   run: () => {
     const pos = e8.point();
-    const e = elementAt(pos);
+    const e = withAffiliated(elementAt(pos));
     if (!e) e8.userError("No element at point");
     if (e.end >= e8.pointMax()) e8.userError("Cannot drag element forward");
-    const next = elementAt(e.end);
+    const next = withAffiliated(elementAt(e.end));
     if (!next || nested(e, next) || (next.type === "headline" && e.type !== "headline")) {
       e8.gotoChar(pos);
       e8.userError("Cannot drag element forward");
