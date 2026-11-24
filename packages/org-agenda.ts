@@ -90,6 +90,21 @@ e8.defineVariable({
   value: true,
 });
 e8.defineVariable({
+  name: "org-agenda-include-deadlines",
+  doc: "Whether the agenda shows deadlines; v ! toggles it.",
+  value: true,
+});
+e8.defineVariable({
+  name: "org-agenda-include-inactive-timestamps",
+  doc: "Whether the agenda shows entries for their inactive timestamps too, as [ in an agenda turns on for one rebuilding.",
+  value: null,
+});
+e8.defineVariable({
+  name: "org-agenda-inactive-leader",
+  doc: "The text before an agenda item that an inactive timestamp brought in.",
+  value: "[",
+});
+e8.defineVariable({
   name: "org-agenda-time-grid",
   doc: "The time grid: when it is drawn, its times as HHMM, the string after a time, and the line drawn.",
   value: [["daily", "today", "require-timed"], [800, 1000, 1200, 1400, 1600, 1800, 2000], "......", "----------------"],
@@ -492,10 +507,10 @@ interface Scanned {
   done: boolean;
   plan: ReturnType<typeof planningOf>;
   priority: number;
-  /** The entry's active timestamps but its planning line's, in order: where each is, and whether it is in the heading. */
-  stamps: { ts: { day: number; repeat?: [number, string] }; pos: number; inHeading: boolean; text: string }[];
-  /** The entry's date ranges, <a>--<b>: their first and last days, the timestamps at either end, and where they are. */
-  ranges: { first: number; last: number; from: string; to: string; pos: number }[];
+  /** The entry's active timestamps but its planning line's, in order, and its inactive ones with org-agenda-include-inactive-timestamps: where each is, and whether it is in the heading. */
+  stamps: { ts: { day: number; repeat?: [number, string] }; pos: number; inHeading: boolean; text: string; inactive?: boolean }[];
+  /** The entry's date ranges, <a>--<b>, or [a]--[b] as for stamps: their first and last days, the timestamps at either end, and where they are. */
+  ranges: { first: number; last: number; from: string; to: string; pos: number; inactive?: boolean }[];
   habit?: Habit;
   /** Its category, as org-get-category gives it at the heading. */
   cat: string;
@@ -510,6 +525,14 @@ const widened = <T>(f: () => T): T =>
 
 /** A date range, <a>--<b>, as org-tr-regexp matches one. */
 const RANGE = /(<\d{4}-\d{2}-\d{2}[^>\n]*>)--(<\d{4}-\d{2}-\d{2}[^>\n]*>)/g;
+/** A range of either kind, as org-tr-regexp-both matches one. */
+const RANGE_BOTH = /([<[]\d{4}-\d{2}-\d{2}[^>\]\n]*[>\]])--([<[]\d{4}-\d{2}-\d{2}[^>\]\n]*[>\]])/g;
+
+/** An inactive timestamp's day, from text such as [2026-10-28 Wed], which never repeats in the agenda. */
+function inactiveTimestamp(text: string): { day: number } | undefined {
+  const m = /^\[(\d{4})-(\d{2})-(\d{2})[^\]\n]*\]/.exec(text);
+  return m ? { day: dayNumber({ year: Number(m[1]), month: Number(m[2]), day: Number(m[3]) }) } : undefined;
+}
 
 /** The current buffer's headings as the agenda reads them, and its category. */
 function scanBuffer(): { cat: string; entries: Scanned[] } {
@@ -518,7 +541,10 @@ function scanBuffer(): { cat: string; entries: Scanned[] } {
   const cats = categories(all);
   // Archived and commented trees left out, as org-agenda-skip leaves them.
   const skipped = skippedHeadings(all);
-  const stamp = /<\d{4}-\d{2}-\d{2}[^>\n]*>/g;
+  // Inactive timestamps too, as org-agenda-include-inactive-timestamps asks.
+  const inactive = truthy(e8.variable("org-agenda-include-inactive-timestamps") ?? null);
+  const stamp = inactive ? /[<[]\d{4}-\d{2}-\d{2}[^>\]\n]*[>\]]/g : /<\d{4}-\d{2}-\d{2}[^>\n]*>/g;
+  const ranges_ = inactive ? RANGE_BOTH : RANGE;
   const entries = all.map((h, i): Scanned => {
     const stamps: Scanned["stamps"] = [];
     const ranges: Scanned["ranges"] = [];
@@ -534,19 +560,24 @@ function scanBuffer(): { cat: string; entries: Scanned[] } {
       }
       if (/^[ \t]*#\+begin_src\b/i.test(text)) inSrc = true;
       if (/^[ \t]*#(?: |$)/.test(text)) continue;
-      if (!text.includes("<")) continue;
+      if (!text.includes("<") && !(inactive && text.includes("["))) continue;
+      // A clock's inactive timestamps are left out, as org-agenda-get-timestamps skips clock lines.
+      const clockLine = /^[ \t]*CLOCK:/.test(text);
       // A range's ends belong to the range, which shows on every day of it, as org-agenda-get-blocks has it.
       const inRange: [number, number][] = [];
-      for (const m of allMatches(RANGE, text)) {
-        const [a, b] = [activeTimestamp(m[1]), activeTimestamp(m[2])];
+      for (const m of allMatches(ranges_, text)) {
+        const off = m[1].startsWith("[");
+        const [a, b] = off ? [inactiveTimestamp(m[1]), inactiveTimestamp(m[2])] : [activeTimestamp(m[1]), activeTimestamp(m[2])];
         if (a === undefined || b === undefined) continue;
         inRange.push([m.index, m.index + m[0].length]);
-        ranges.push({ first: a.day, last: b.day, from: m[1], to: m[2], pos: at(l, text, m.index) });
+        ranges.push({ first: a.day, last: b.day, from: m[1], to: m[2], pos: at(l, text, m.index), ...(off ? { inactive: true } : {}) });
       }
       for (const m of allMatches(stamp, text)) {
         if (inRange.some(([a, b]) => m.index >= a && m.index < b)) continue;
-        const ts = activeTimestamp(m[0]);
-        if (ts) stamps.push({ ts, pos: at(l, text, m.index), inHeading: l === h.line, text: m[0] });
+        const off = m[0].startsWith("[");
+        if (off && clockLine) continue;
+        const ts = off ? inactiveTimestamp(m[0]) : activeTimestamp(m[0]);
+        if (ts) stamps.push({ ts, pos: at(l, text, m.index), inHeading: l === h.line, text: m[0], ...(off ? { inactive: true } : {}) });
       }
     }
     const plan = planningOf(h);
@@ -555,6 +586,12 @@ function scanBuffer(): { cat: string; entries: Scanned[] } {
     return { h, done: isDone(h.todo), plan, priority: priorityValue(h), stamps, ranges, cat: cats[i], ...(habit ? { habit } : {}) };
   });
   return { cat: category(), entries: entries.filter((_, i) => !skipped[i]) };
+}
+
+/** org-agenda-inactive-leader, as the agenda puts it before what an inactive timestamp brought in. */
+function inactiveLeader(): string {
+  const v = e8.variable("org-agenda-inactive-leader");
+  return typeof v === "string" ? v : "";
 }
 
 /** The items for a day from the current buffer, scanned once, as org-agenda-get-day-entries collects them. */
@@ -568,7 +605,7 @@ function dayItems(scan: { cat: string; entries: Scanned[] }, day: number, today:
     // day and ends on its last, as org-agenda-get-blocks has them.
     for (const r of ranges) {
       if (day < r.first || day > r.last) continue;
-      const leader = r.first === r.last ? "" : `(${day - r.first + 1}/${r.last - r.first + 1}): `;
+      const leader = (r.inactive ? inactiveLeader() : "") + (r.first === r.last ? "" : `(${day - r.first + 1}/${r.last - r.first + 1}): `);
       const [from, to] = [timeOf(r.from), timeOf(r.to)];
       const time = r.first === day && r.last === day && from && to
         ? { field: `${from.field.replace(gridDots(), "")}-${to.field.replace(gridDots(), "").trim()}`, minutes: from.minutes }
@@ -578,7 +615,8 @@ function dayItems(scan: { cat: string; entries: Scanned[] }, day: number, today:
       const item = { cat, leader, buffer, pos: r.pos, heading: h.start, ...(time ? { time, dotime } : {}) };
       blocks.push({ ...item, text: agendaLine(h, cat, leader, false, time, "", dotime), urgency: priority });
     }
-    if (plan.deadline !== undefined) {
+    // Not with org-agenda-include-deadlines nil, as org-agenda-list leaves :deadline out of the entry types.
+    if (plan.deadline !== undefined && truthy(e8.variable("org-agenda-include-deadlines") ?? null)) {
       const diff = plan.deadline - day;
       let leader: string | undefined;
       // Its date, and after today each of its repeats, as org-agenda-show-future-repeats has it.
@@ -624,8 +662,10 @@ function dayItems(scan: { cat: string; entries: Scanned[] }, day: number, today:
     if (stamp) {
       const time = timeOf(stamp.text);
       const dotime = stamp.text;
-      const item = { cat, leader: "", buffer, pos: stamp.pos, heading: h.start, ...(time ? { time, dotime } : {}) };
-      stamps.push({ ...item, text: agendaLine(h, cat, "", true, time, "", dotime), urgency: priority });
+      // An inactive one's item has org-agenda-inactive-leader before it.
+      const leader = stamp.inactive ? inactiveLeader() : "";
+      const item = { cat, leader, buffer, pos: stamp.pos, heading: h.start, ...(time ? { time, dotime } : {}) };
+      stamps.push({ ...item, text: agendaLine(h, cat, leader, true, time, "", dotime), urgency: priority });
     }
   }
   return [...deadlines, ...scheduled, ...blocks, ...stamps];
@@ -807,7 +847,8 @@ function setModeName(): void {
   const habit = truthy(e8.variable("org-habit-show-habits") ?? null) ? " Habit" : "";
   const archives = archivesMode === true ? " Archives" : archivesMode === "trees" ? ` :${tag}:` : "";
   e8.makeLocalVariable("mode-name");
-  e8.setVariable("mode-name", `Org-Agenda ${span} Ddl${grid}${habit}${archives}`);
+  const ddl = truthy(e8.variable("org-agenda-include-deadlines") ?? null) ? " Ddl" : "";
+  e8.setVariable("mode-name", `Org-Agenda ${span}${ddl}${grid}${habit}${archives}`);
 }
 
 /**
@@ -1455,6 +1496,10 @@ const searchViewCommand = e8.defineCommand({
  * word, " +{}" or " -{}" for a regexp, with point inside the braces.
  */
 function manipulateQuery(char: string): void {
+  if (agendaView.kind === "agenda") {
+    includeInactiveOnce();
+    return;
+  }
   if (agendaView.kind !== "search") {
     const type = agendaView.kind;
     throw new Error(`Cannot manipulate query for ${type}-type agenda buffers`);
@@ -2018,6 +2063,8 @@ e8.defineMajorMode({
     $: "org-agenda-archive",
     a: "org-agenda-archive-default-with-confirmation",
     v: "org-agenda-view-mode-dispatch",
+    G: "org-agenda-toggle-time-grid",
+    "!": "org-agenda-toggle-deadlines",
     "#": "org-agenda-dim-blocked-tasks",
     ...Object.fromEntries(queryCommands),
   },
@@ -2176,13 +2223,44 @@ e8.defineCommand({
 });
 
 /** The view modes org-agenda-view-mode-dispatch offers that E8 does not have yet. */
-const VIEW_MODES_NOT_YET = "lLcFfRrEeGD![";
+const VIEW_MODES_NOT_YET = "lLcFfRrEeD";
+
+/** Rebuilds the agenda with its inactive timestamps too, this once, as [ and v [ do. */
+function includeInactiveOnce(): void {
+  e8.letBind({ "org-agenda-include-inactive-timestamps": true }, () => {
+    checkAgendaType();
+    redoAgenda();
+  });
+  e8.message("Display now includes inactive timestamps as well");
+}
+
+/** Toggles a variable the agenda reads, rebuilds it and says so, as org-agenda-toggle-time-grid and org-agenda-toggle-deadlines do. */
+function toggleAgendaVariable(name: string, message: string): void {
+  checkAgendaType();
+  e8.setVariable(name, truthy(e8.variable(name) ?? null) ? null : true);
+  redoAgenda();
+  setModeName();
+  e8.message(`${message} ${truthy(e8.variable(name) ?? null) ? "on" : "off"}`);
+}
+
+const toggleTimeGrid = e8.defineCommand({
+  name: "org-agenda-toggle-time-grid",
+  doc: "Toggle the agenda's time grid, org-agenda-use-time-grid, and rebuild it.",
+  run: () => toggleAgendaVariable("org-agenda-use-time-grid", "Time-grid turned"),
+});
+
+const toggleDeadlines = e8.defineCommand({
+  name: "org-agenda-toggle-deadlines",
+  doc: "Toggle whether the agenda shows deadlines, org-agenda-include-deadlines, and rebuild it.",
+  run: () => toggleAgendaVariable("org-agenda-include-deadlines", "Deadlines inclusion turned"),
+});
 
 e8.defineCommand({
   name: "org-agenda-view-mode-dispatch",
   doc:
     "Change how the agenda shows its entries, by a key: d, w, t, m and y for a day's, a week's, two weeks', a month's or a year's agenda, " +
-    "SPC for org-agenda-span's, a to toggle archived trees, A to toggle archive files too, q to abort.",
+    "SPC for org-agenda-span's, a to toggle archived trees, A to toggle archive files too, G the time grid, ! deadlines, " +
+    "[ to show inactive timestamps too, q to abort.",
   run: () => {
     const key = e8.readCharExclusive(
       "View: [d]ay  [w]eek  for[t]night  [m]onth  [y]ear  [SPC]reset  [q]uit/abort\n" +
@@ -2202,6 +2280,9 @@ e8.defineCommand({
     if (views[char] !== undefined) e8.callWithPrefix(e8.prefixArg(), views[char]);
     else if (char === "a") toggleArchivesMode(e8.prefixArg() !== null && e8.prefixArg() !== undefined);
     else if (char === "A") toggleArchivesMode(true);
+    else if (char === "G") e8.callInteractively(toggleTimeGrid);
+    else if (char === "!") e8.callInteractively(toggleDeadlines);
+    else if (char === "[") includeInactiveOnce();
     else if (char === "q") e8.message("Abort");
     else if ([...char].length === 1 && VIEW_MODES_NOT_YET.includes(char)) e8.userError(`E8 does not have that view mode yet: ${char}`);
     // As a number, as Org's %s formats the character read.
