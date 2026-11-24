@@ -1,0 +1,302 @@
+[
+ {
+  "name": "table-up",
+  "text": "Para one.\n\n#+NAME: tbl\n| a | b |\n| c | d |\n\nPara two.\n",
+  "point": 33,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "table-up-from-name",
+  "text": "Para one.\n\n#+NAME: tbl\n| a | b |\n| c | d |\n\nPara two.\n",
+  "point": 11,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "table-up-from-name-mid",
+  "text": "Para one.\n\n#+NAME: tbl\n| a | b |\n| c | d |\n\nPara two.\n",
+  "point": 19,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "table-down-from-name",
+  "text": "Para one.\n\n#+NAME: tbl\n| a | b |\n| c | d |\n\nPara two.\n",
+  "point": 11,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "para-down-over-table",
+  "text": "Para one.\n\n#+NAME: tbl\n| a | b |\n| c | d |\n\nPara two.\n",
+  "point": 5,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "para-up-over-table",
+  "text": "Para one.\n\n#+NAME: tbl\n| a | b |\n| c | d |\n\nPara two.\n",
+  "point": 49,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "block-up",
+  "text": "* H\nText.\n\n#+CAPTION: A block\n#+NAME: blk\n#+begin_example\nx\n#+end_example\n\nMore.\n",
+  "point": 58,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "block-up-from-caption",
+  "text": "* H\nText.\n\n#+CAPTION: A block\n#+NAME: blk\n#+begin_example\nx\n#+end_example\n\nMore.\n",
+  "point": 11,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "block-down-from-name",
+  "text": "* H\nText.\n\n#+CAPTION: A block\n#+NAME: blk\n#+begin_example\nx\n#+end_example\n\nMore.\n",
+  "point": 30,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "text-down-over-block",
+  "text": "* H\nText.\n\n#+CAPTION: A block\n#+NAME: blk\n#+begin_example\nx\n#+end_example\n\nMore.\n",
+  "point": 4,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "more-up-over-block",
+  "text": "* H\nText.\n\n#+CAPTION: A block\n#+NAME: blk\n#+begin_example\nx\n#+end_example\n\nMore.\n",
+  "point": 75,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "src-down",
+  "text": "#+NAME: src\n#+HEADER: :results silent\n#+begin_src emacs-lisp\n(+ 1 2)\n#+end_src\n\nAfter.\n",
+  "point": 61,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "src-down-from-header",
+  "text": "#+NAME: src\n#+HEADER: :results silent\n#+begin_src emacs-lisp\n(+ 1 2)\n#+end_src\n\nAfter.\n",
+  "point": 12,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "after-up-over-src",
+  "text": "#+NAME: src\n#+HEADER: :results silent\n#+begin_src emacs-lisp\n(+ 1 2)\n#+end_src\n\nAfter.\n",
+  "point": 80,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "src-up-from-name",
+  "text": "Para.\n\n#+NAME: src\n#+HEADER: :results silent\n#+begin_src emacs-lisp\n(+ 1 2)\n#+end_src\n\nAfter.\n",
+  "point": 7,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "list-down-from-name",
+  "text": "#+NAME: l\n- a\n- b\n\nPara.\n",
+  "point": 0,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "para-up-over-list",
+  "text": "#+NAME: l\n- a\n- b\n\nPara.\n",
+  "point": 19,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "first-item-up",
+  "text": "#+NAME: l\n- a\n- b\n\nPara.\n",
+  "point": 10,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "first-item-down",
+  "text": "#+NAME: l\n- a\n- b\n\nPara.\n",
+  "point": 10,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "orphan-down",
+  "text": "Para.\n\n#+NAME: orphan\n\nOther.\n",
+  "point": 7,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "orphan-up",
+  "text": "Para.\n\n#+NAME: orphan\n\nOther.\n",
+  "point": 7,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "other-up-over-orphan",
+  "text": "Para.\n\n#+NAME: orphan\n\nOther.\n",
+  "point": 23,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "named-paras-down",
+  "text": "#+NAME: p1\nFirst para.\n\n#+CAPTION: two\nSecond para.\n",
+  "point": 11,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "named-paras-up",
+  "text": "#+NAME: p1\nFirst para.\n\n#+CAPTION: two\nSecond para.\n",
+  "point": 39,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "named-paras-up-from-caption",
+  "text": "#+NAME: p1\nFirst para.\n\n#+CAPTION: two\nSecond para.\n",
+  "point": 24,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "in-drawer-up",
+  "text": "* H\n:NOTES:\nText.\n#+NAME: t\n| x |\n:END:\n",
+  "point": 28,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "in-drawer-down",
+  "text": "* H\n:NOTES:\nText.\n#+NAME: t\n| x |\n:END:\n",
+  "point": 12,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "keyword-up",
+  "text": "Para.\n\n#+NAME: k\n#+TITLE: Title\n",
+  "point": 17,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "only-table-up",
+  "text": "#+NAME: t\n| a |\n",
+  "point": 0,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "only-table-down",
+  "text": "#+NAME: t\n| a |\n",
+  "point": 0,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ }
+]

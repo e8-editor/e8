@@ -1,0 +1,696 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "table-up",
+      "input": {
+        "text": "Para one.\n\n#+NAME: tbl\n| a | b |\n| c | d |\n\nPara two.\n",
+        "point": 33,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para one.\n\n#+NAME: tbl\n| c | d |\n| a | b |\n\nPara two.\n",
+      "visible": "Para one.\n\n#+NAME: tbl\n| c | d |\n| a | b |\n\nPara two.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "table-up-from-name",
+      "input": {
+        "text": "Para one.\n\n#+NAME: tbl\n| a | b |\n| c | d |\n\nPara two.\n",
+        "point": 11,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: tbl\n| a | b |\n| c | d |\n\nPara one.\n\nPara two.\n",
+      "visible": "#+NAME: tbl\n| a | b |\n| c | d |\n\nPara one.\n\nPara two.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "table-up-from-name-mid",
+      "input": {
+        "text": "Para one.\n\n#+NAME: tbl\n| a | b |\n| c | d |\n\nPara two.\n",
+        "point": 19,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: tbl\n| a | b |\n| c | d |\n\nPara one.\n\nPara two.\n",
+      "visible": "#+NAME: tbl\n| a | b |\n| c | d |\n\nPara one.\n\nPara two.\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "table-down-from-name",
+      "input": {
+        "text": "Para one.\n\n#+NAME: tbl\n| a | b |\n| c | d |\n\nPara two.\n",
+        "point": 11,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para one.\n\nPara two.\n\n#+NAME: tbl\n| a | b |\n| c | d |\n",
+      "visible": "Para one.\n\nPara two.\n\n#+NAME: tbl\n| a | b |\n| c | d |\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "para-down-over-table",
+      "input": {
+        "text": "Para one.\n\n#+NAME: tbl\n| a | b |\n| c | d |\n\nPara two.\n",
+        "point": 5,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: tbl\n| a | b |\n| c | d |\n\nPara one.\n\nPara two.\n",
+      "visible": "#+NAME: tbl\n| a | b |\n| c | d |\n\nPara one.\n\nPara two.\n",
+      "point": 38,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "para-up-over-table",
+      "input": {
+        "text": "Para one.\n\n#+NAME: tbl\n| a | b |\n| c | d |\n\nPara two.\n",
+        "point": 49,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para one.\n\nPara two.\n\n#+NAME: tbl\n| a | b |\n| c | d |\n",
+      "visible": "Para one.\n\nPara two.\n\n#+NAME: tbl\n| a | b |\n| c | d |\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "block-up",
+      "input": {
+        "text": "* H\nText.\n\n#+CAPTION: A block\n#+NAME: blk\n#+begin_example\nx\n#+end_example\n\nMore.\n",
+        "point": 58,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+CAPTION: A block\n#+NAME: blk\n#+begin_example\nx\n#+end_example\n\nText.\n\nMore.\n",
+      "visible": "* H\n#+CAPTION: A block\n#+NAME: blk\n#+begin_example\nx\n#+end_example\n\nText.\n\nMore.\n",
+      "point": 51,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "block-up-from-caption",
+      "input": {
+        "text": "* H\nText.\n\n#+CAPTION: A block\n#+NAME: blk\n#+begin_example\nx\n#+end_example\n\nMore.\n",
+        "point": 11,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+CAPTION: A block\n#+NAME: blk\n#+begin_example\nx\n#+end_example\n\nText.\n\nMore.\n",
+      "visible": "* H\n#+CAPTION: A block\n#+NAME: blk\n#+begin_example\nx\n#+end_example\n\nText.\n\nMore.\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "block-down-from-name",
+      "input": {
+        "text": "* H\nText.\n\n#+CAPTION: A block\n#+NAME: blk\n#+begin_example\nx\n#+end_example\n\nMore.\n",
+        "point": 30,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nText.\n\nMore.\n\n#+CAPTION: A block\n#+NAME: blk\n#+begin_example\nx\n#+end_example\n",
+      "visible": "* H\nText.\n\nMore.\n\n#+CAPTION: A block\n#+NAME: blk\n#+begin_example\nx\n#+end_example\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "text-down-over-block",
+      "input": {
+        "text": "* H\nText.\n\n#+CAPTION: A block\n#+NAME: blk\n#+begin_example\nx\n#+end_example\n\nMore.\n",
+        "point": 4,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+CAPTION: A block\n#+NAME: blk\n#+begin_example\nx\n#+end_example\n\nText.\n\nMore.\n",
+      "visible": "* H\n#+CAPTION: A block\n#+NAME: blk\n#+begin_example\nx\n#+end_example\n\nText.\n\nMore.\n",
+      "point": 68,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "more-up-over-block",
+      "input": {
+        "text": "* H\nText.\n\n#+CAPTION: A block\n#+NAME: blk\n#+begin_example\nx\n#+end_example\n\nMore.\n",
+        "point": 75,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nText.\n\nMore.\n\n#+CAPTION: A block\n#+NAME: blk\n#+begin_example\nx\n#+end_example\n",
+      "visible": "* H\nText.\n\nMore.\n\n#+CAPTION: A block\n#+NAME: blk\n#+begin_example\nx\n#+end_example\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "src-down",
+      "input": {
+        "text": "#+NAME: src\n#+HEADER: :results silent\n#+begin_src emacs-lisp\n(+ 1 2)\n#+end_src\n\nAfter.\n",
+        "point": 61,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: src\n#+HEADER: :results silent\n#+begin_src emacs-lisp\n(+ 1 2)\n#+end_src\n\nAfter.\n",
+      "visible": "#+NAME: src\n#+HEADER: :results silent\n#+begin_src emacs-lisp\n(+ 1 2)\n#+end_src\n\nAfter.\n",
+      "point": 61,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "This block is not using a session!",
+      "message": null
+    },
+    {
+      "name": "src-down-from-header",
+      "input": {
+        "text": "#+NAME: src\n#+HEADER: :results silent\n#+begin_src emacs-lisp\n(+ 1 2)\n#+end_src\n\nAfter.\n",
+        "point": 12,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: src\n#+HEADER: :results silent\n#+begin_src emacs-lisp\n(+ 1 2)\n#+end_src\n\nAfter.\n",
+      "visible": "#+NAME: src\n#+HEADER: :results silent\n#+begin_src emacs-lisp\n(+ 1 2)\n#+end_src\n\nAfter.\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "This block is not using a session!",
+      "message": null
+    },
+    {
+      "name": "after-up-over-src",
+      "input": {
+        "text": "#+NAME: src\n#+HEADER: :results silent\n#+begin_src emacs-lisp\n(+ 1 2)\n#+end_src\n\nAfter.\n",
+        "point": 80,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "After.\n\n#+NAME: src\n#+HEADER: :results silent\n#+begin_src emacs-lisp\n(+ 1 2)\n#+end_src\n",
+      "visible": "After.\n\n#+NAME: src\n#+HEADER: :results silent\n#+begin_src emacs-lisp\n(+ 1 2)\n#+end_src\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "src-up-from-name",
+      "input": {
+        "text": "Para.\n\n#+NAME: src\n#+HEADER: :results silent\n#+begin_src emacs-lisp\n(+ 1 2)\n#+end_src\n\nAfter.\n",
+        "point": 7,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n#+NAME: src\n#+HEADER: :results silent\n#+begin_src emacs-lisp\n(+ 1 2)\n#+end_src\n\nAfter.\n",
+      "visible": "Para.\n\n#+NAME: src\n#+HEADER: :results silent\n#+begin_src emacs-lisp\n(+ 1 2)\n#+end_src\n\nAfter.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No org-babel-load-session function for emacs-lisp!",
+      "message": null
+    },
+    {
+      "name": "list-down-from-name",
+      "input": {
+        "text": "#+NAME: l\n- a\n- b\n\nPara.\n",
+        "point": 0,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n#+NAME: l\n- a\n- b\n",
+      "visible": "Para.\n\n#+NAME: l\n- a\n- b\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "para-up-over-list",
+      "input": {
+        "text": "#+NAME: l\n- a\n- b\n\nPara.\n",
+        "point": 19,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n#+NAME: l\n- a\n- b\n",
+      "visible": "Para.\n\n#+NAME: l\n- a\n- b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "first-item-up",
+      "input": {
+        "text": "#+NAME: l\n- a\n- b\n\nPara.\n",
+        "point": 10,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: l\n- a\n- b\n\nPara.\n",
+      "visible": "#+NAME: l\n- a\n- b\n\nPara.\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move this item further up",
+      "message": null
+    },
+    {
+      "name": "first-item-down",
+      "input": {
+        "text": "#+NAME: l\n- a\n- b\n\nPara.\n",
+        "point": 10,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: l\n- b\n- a\n\nPara.\n",
+      "visible": "#+NAME: l\n- b\n- a\n\nPara.\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "orphan-down",
+      "input": {
+        "text": "Para.\n\n#+NAME: orphan\n\nOther.\n",
+        "point": 7,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\nOther.\n\n#+NAME: orphan\n",
+      "visible": "Para.\n\nOther.\n\n#+NAME: orphan\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "orphan-up",
+      "input": {
+        "text": "Para.\n\n#+NAME: orphan\n\nOther.\n",
+        "point": 7,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: orphan\n\nPara.\n\nOther.\n",
+      "visible": "#+NAME: orphan\n\nPara.\n\nOther.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "other-up-over-orphan",
+      "input": {
+        "text": "Para.\n\n#+NAME: orphan\n\nOther.\n",
+        "point": 23,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\nOther.\n\n#+NAME: orphan\n",
+      "visible": "Para.\n\nOther.\n\n#+NAME: orphan\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "named-paras-down",
+      "input": {
+        "text": "#+NAME: p1\nFirst para.\n\n#+CAPTION: two\nSecond para.\n",
+        "point": 11,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+CAPTION: two\nSecond para.\n\n#+NAME: p1\nFirst para.\n",
+      "visible": "#+CAPTION: two\nSecond para.\n\n#+NAME: p1\nFirst para.\n",
+      "point": 40,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "named-paras-up",
+      "input": {
+        "text": "#+NAME: p1\nFirst para.\n\n#+CAPTION: two\nSecond para.\n",
+        "point": 39,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+CAPTION: two\nSecond para.\n\n#+NAME: p1\nFirst para.\n",
+      "visible": "#+CAPTION: two\nSecond para.\n\n#+NAME: p1\nFirst para.\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "named-paras-up-from-caption",
+      "input": {
+        "text": "#+NAME: p1\nFirst para.\n\n#+CAPTION: two\nSecond para.\n",
+        "point": 24,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+CAPTION: two\nSecond para.\n\n#+NAME: p1\nFirst para.\n",
+      "visible": "#+CAPTION: two\nSecond para.\n\n#+NAME: p1\nFirst para.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "in-drawer-up",
+      "input": {
+        "text": "* H\n:NOTES:\nText.\n#+NAME: t\n| x |\n:END:\n",
+        "point": 28,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:NOTES:\nText.\n#+NAME: t\n| x |\n:END:\n",
+      "visible": "* H\n:NOTES:\nText.\n#+NAME: t\n| x |\n:END:\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move row further",
+      "message": null
+    },
+    {
+      "name": "in-drawer-down",
+      "input": {
+        "text": "* H\n:NOTES:\nText.\n#+NAME: t\n| x |\n:END:\n",
+        "point": 12,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:NOTES:\n#+NAME: t\n| x |\nText.\n:END:\n",
+      "visible": "* H\n:NOTES:\n#+NAME: t\n| x |\nText.\n:END:\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "keyword-up",
+      "input": {
+        "text": "Para.\n\n#+NAME: k\n#+TITLE: Title\n",
+        "point": 17,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: k\n#+TITLE: Title\n\nPara.\n",
+      "visible": "#+NAME: k\n#+TITLE: Title\n\nPara.\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "only-table-up",
+      "input": {
+        "text": "#+NAME: t\n| a |\n",
+        "point": 0,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: t\n| a |\n",
+      "visible": "#+NAME: t\n| a |\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot drag element backward",
+      "message": null
+    },
+    {
+      "name": "only-table-down",
+      "input": {
+        "text": "#+NAME: t\n| a |\n",
+        "point": 0,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: t\n| a |\n",
+      "visible": "#+NAME: t\n| a |\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot drag element forward",
+      "message": null
+    }
+  ]
+}
