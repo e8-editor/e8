@@ -1,0 +1,2779 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "lines",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  14:00-15:30 Call \n  e8-agenda:  Sched. 8x:  TODO Old\n  e8-agenda:  Scheduled:  TODO Report\n  e8-agenda:  Scheduled:  TODO Weekly\n  e8-agenda:  (1/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n  e8-agenda:  In   2 d.:  TODO Pay\nThursday   29 October 2026\n  e8-agenda:  (2/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Pay\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  14:00-15:30 Call \n  e8-agenda:  Sched. 8x:  TODO Old\n  e8-agenda:  Scheduled:  TODO Report\n  e8-agenda:  Scheduled:  TODO Weekly\n  e8-agenda:  (1/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n  e8-agenda:  In   2 d.:  TODO Pay\nThursday   29 October 2026\n  e8-agenda:  (2/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Pay\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "later",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                   \n  e8-agenda:  14:00-15:30 Call \n  e8-agenda:  Sched. 8x:  TODO Old\n  e8-agenda:  Scheduled:  TODO Report\n  e8-agenda:  Scheduled:  TODO Weekly\n  e8-agenda:  (1/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n  e8-agenda:  In   2 d.:  TODO Pay\nThursday   29 October 2026\n  e8-agenda:  (2/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Pay\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                   \n  e8-agenda:  14:00-15:30 Call \n  e8-agenda:  Sched. 8x:  TODO Old\n  e8-agenda:  Scheduled:  TODO Report\n  e8-agenda:  Scheduled:  TODO Weekly\n  e8-agenda:  (1/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n  e8-agenda:  In   2 d.:  TODO Pay\nThursday   29 October 2026\n  e8-agenda:  (2/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Pay\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 104,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 104,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-10-29 Thu 10:00>"
+    },
+    {
+      "name": "later-file",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N S-<right> RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 112,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 112,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-10-29 Thu 10:00>"
+    },
+    {
+      "name": "later-twice",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N S-<right> S-<right> RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-30 Fri 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-30 Fri 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 112,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 112,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-10-30 Fri 10:00>"
+    },
+    {
+      "name": "later-count",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N 3 S-<right> RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-31 Sat 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-31 Sat 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 112,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 112,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-10-31 Sat 10:00>"
+    },
+    {
+      "name": "earlier",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N S-<left> RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-27 Tue 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-27 Tue 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 112,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 112,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-10-27 Tue 10:00>"
+    },
+    {
+      "name": "earlier-count",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N C-u 2 S-<left> RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-26 Mon 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-26 Mon 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 112,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 112,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-10-26 Mon 10:00>"
+    },
+    {
+      "name": "later-cx",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N C-c C-x <right> RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 112,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 112,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-10-29 Thu 10:00>"
+    },
+    {
+      "name": "earlier-cx",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N C-c C-x <left> RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-27 Tue 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-27 Tue 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 112,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 112,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-10-27 Tue 10:00>"
+    },
+    {
+      "name": "later-hours",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N C-u S-<right> RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 11:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 11:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 112,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 112,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-10-28 Wed 11:00>"
+    },
+    {
+      "name": "later-minutes",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N C-u C-u S-<right> RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:05>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:05>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 112,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 112,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-10-28 Wed 10:05>"
+    },
+    {
+      "name": "later-hours-again",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N C-u S-<right> S-<right> RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 12:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 12:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 112,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 112,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-10-28 Wed 12:00>"
+    },
+    {
+      "name": "later-minutes-again",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N C-u C-u S-<right> S-<left> RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 112,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 112,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-10-28 Wed 10:00>"
+    },
+    {
+      "name": "later-on-date",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  14:00-15:30 Call \n  e8-agenda:  Sched. 8x:  TODO Old\n  e8-agenda:  Scheduled:  TODO Report\n  e8-agenda:  Scheduled:  TODO Weekly\n  e8-agenda:  (1/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n  e8-agenda:  In   2 d.:  TODO Pay\nThursday   29 October 2026\n  e8-agenda:  (2/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Pay\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  14:00-15:30 Call \n  e8-agenda:  Sched. 8x:  TODO Old\n  e8-agenda:  Scheduled:  TODO Report\n  e8-agenda:  Scheduled:  TODO Weekly\n  e8-agenda:  (1/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n  e8-agenda:  In   2 d.:  TODO Pay\nThursday   29 October 2026\n  e8-agenda:  (2/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Pay\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Command not allowed in this line",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "later-in-todo",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "n n S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda:  TODO Report\n  e8-agenda:  TODO Pay\n  e8-agenda:  TODO Old\n  e8-agenda:  TODO Plain\n  e8-agenda:  TODO Weekly\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda:  TODO Report\n  e8-agenda:  TODO Pay\n  e8-agenda:  TODO Old\n  e8-agenda:  TODO Plain\n  e8-agenda:  TODO Weekly\n",
+      "point": 106,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Not allowed in ’todo’-type agenda buffer or component",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 106,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "later-message",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                   \n  e8-agenda:  14:00-15:30 Call \n  e8-agenda:  Sched. 8x:  TODO Old\n  e8-agenda:  Scheduled:  TODO Report\n  e8-agenda:  Scheduled:  TODO Weekly\n  e8-agenda:  (1/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n  e8-agenda:  In   2 d.:  TODO Pay\nThursday   29 October 2026\n  e8-agenda:  (2/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Pay\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                   \n  e8-agenda:  14:00-15:30 Call \n  e8-agenda:  Sched. 8x:  TODO Old\n  e8-agenda:  Scheduled:  TODO Report\n  e8-agenda:  Scheduled:  TODO Weekly\n  e8-agenda:  (1/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n  e8-agenda:  In   2 d.:  TODO Pay\nThursday   29 October 2026\n  e8-agenda:  (2/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Pay\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 104,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 104,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-10-29 Thu 10:00>"
+    },
+    {
+      "name": "later-item-2",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N N S-<right> RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-29 Thu 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-29 Thu 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 242,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 242,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-10-29 Thu 14:00-15:30>"
+    },
+    {
+      "name": "later-item-3",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N N N S-<right> RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 193,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 193,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-10-28 Wed>"
+    },
+    {
+      "name": "later-item-4",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N N N N S-<right> RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-29 Thu>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-29 Thu>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 41,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 41,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-10-29 Thu>"
+    },
+    {
+      "name": "later-item-5",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N N N N N S-<right> RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-29 Thu +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-29 Thu +1w>\n",
+      "point": 288,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 288,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-10-29 Thu +1w>"
+    },
+    {
+      "name": "later-item-6",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N N N N N N S-<right> RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-29 Thu>--<2026-10-30 Fri>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-29 Thu>--<2026-10-30 Fri>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 154,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 154,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-10-29 Thu>--<2026-10-30 Fri>"
+    },
+    {
+      "name": "later-item-7",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N N N N N N N S-<right> RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-31 Sat>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-31 Sat>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 79,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 79,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-10-31 Sat>"
+    },
+    {
+      "name": "later-item-8",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N N N N N N N N S-<right> RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-29 Thu>--<2026-10-30 Fri>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-29 Thu>--<2026-10-30 Fri>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 154,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 154,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-10-29 Thu>--<2026-10-30 Fri>"
+    },
+    {
+      "name": "later-past-today",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "M-< N N N S-<right> RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 193,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 193,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-10-28 Wed>"
+    },
+    {
+      "name": "later-past-no-move",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N N N S-<right> RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": false,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-21 Wed>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-21 Wed>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 193,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 193,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-10-21 Wed>"
+    },
+    {
+      "name": "later-past-count",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N N N 2 S-<right> RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-22 Thu>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-22 Thu>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 193,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 193,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-10-22 Thu>"
+    },
+    {
+      "name": "earlier-past",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N N N S-<left> RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-19 Mon>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-19 Mon>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 193,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 193,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-10-19 Mon>"
+    },
+    {
+      "name": "prompt",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N >",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-02"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                         \n  e8-agenda:  14:00-15:30 Call \n  e8-agenda:  Sched. 8x:  TODO Old\n  e8-agenda:  Scheduled:  TODO Report\n  e8-agenda:  Scheduled:  TODO Weekly\n  e8-agenda:  (1/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n  e8-agenda:  In   2 d.:  TODO Pay\nThursday   29 October 2026\n  e8-agenda:  (2/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Pay\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting                         \n  e8-agenda:  14:00-15:30 Call \n  e8-agenda:  Sched. 8x:  TODO Old\n  e8-agenda:  Scheduled:  TODO Report\n  e8-agenda:  Scheduled:  TODO Weekly\n  e8-agenda:  (1/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n  e8-agenda:  In   2 d.:  TODO Pay\nThursday   29 October 2026\n  e8-agenda:  (2/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Pay\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 104,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 104,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-11-02 Mon>"
+    },
+    {
+      "name": "prompt-file",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N > RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-06"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-11-06 Fri>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-11-06 Fri>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 106,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 106,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-11-06 Fri>"
+    },
+    {
+      "name": "prompt-time",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N C-u > RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-02 9:30"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-11-02 Mon 09:30>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-11-02 Mon 09:30>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 112,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 112,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-11-02 Mon 09:30>"
+    },
+    {
+      "name": "prompt-on-date",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": ">",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-06"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  14:00-15:30 Call \n  e8-agenda:  Sched. 8x:  TODO Old\n  e8-agenda:  Scheduled:  TODO Report\n  e8-agenda:  Scheduled:  TODO Weekly\n  e8-agenda:  (1/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n  e8-agenda:  In   2 d.:  TODO Pay\nThursday   29 October 2026\n  e8-agenda:  (2/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Pay\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  14:00-15:30 Call \n  e8-agenda:  Sched. 8x:  TODO Old\n  e8-agenda:  Scheduled:  TODO Report\n  e8-agenda:  Scheduled:  TODO Weekly\n  e8-agenda:  (1/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n  e8-agenda:  In   2 d.:  TODO Pay\nThursday   29 October 2026\n  e8-agenda:  (2/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Pay\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Command not allowed in this line",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "prompt-in-todo",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "n n >",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-06"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda:  TODO Report\n  e8-agenda:  TODO Pay\n  e8-agenda:  TODO Old\n  e8-agenda:  TODO Plain\n  e8-agenda:  TODO Weekly\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda:  TODO Report\n  e8-agenda:  TODO Pay\n  e8-agenda:  TODO Old\n  e8-agenda:  TODO Plain\n  e8-agenda:  TODO Weekly\n",
+      "point": 106,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Not allowed in ’todo’-type agenda buffer or component",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 106,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "prompt-item-2",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N N > RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-02"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-11-02 Mon>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-11-02 Mon>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 230,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 230,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-11-02 Mon>"
+    },
+    {
+      "name": "prompt-item-3",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N N N > RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-02"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-11-02 Mon>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-11-02 Mon>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 193,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 193,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-11-02 Mon>"
+    },
+    {
+      "name": "prompt-item-4",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N N N N > RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-02"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-11-02 Mon>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-11-02 Mon>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 41,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 41,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-11-02 Mon>"
+    },
+    {
+      "name": "prompt-item-5",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N N N N N > RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-02"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-11-02 Mon +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-11-02 Mon +1w>\n",
+      "point": 288,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 288,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Time stamp changed to <2026-11-02 Mon +1w>"
+    },
+    {
+      "name": "schedule",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-03"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting          \n  e8-agenda:  14:00-15:30 Call \n  e8-agenda:  Sched. 8x:  TODO Old\n  e8-agenda:  Scheduled:  TODO Report\n  e8-agenda:  Scheduled:  TODO Weekly\n  e8-agenda:  (1/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n  e8-agenda:  In   2 d.:  TODO Pay\nThursday   29 October 2026\n  e8-agenda:  (2/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Pay\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting          \n  e8-agenda:  14:00-15:30 Call \n  e8-agenda:  Sched. 8x:  TODO Old\n  e8-agenda:  Scheduled:  TODO Report\n  e8-agenda:  Scheduled:  TODO Weekly\n  e8-agenda:  (1/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n  e8-agenda:  In   2 d.:  TODO Pay\nThursday   29 October 2026\n  e8-agenda:  (2/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Pay\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 104,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 104,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Scheduled to <2026-11-03 Tue> [2 times]"
+    },
+    {
+      "name": "schedule-file",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N C-c C-s RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-03"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\nSCHEDULED: <2026-11-03 Tue>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\nSCHEDULED: <2026-11-03 Tue>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 90,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 90,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Scheduled to <2026-11-03 Tue> [2 times]"
+    },
+    {
+      "name": "schedule-unscheduled",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "n n n n n C-c C-s RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-03"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\nSCHEDULED: <2026-11-03 Tue>\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\nSCHEDULED: <2026-11-03 Tue>\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 194,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 194,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Scheduled to <2026-11-03 Tue> [2 times]"
+    },
+    {
+      "name": "unschedule",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N C-u C-c C-s RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 90,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 90,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Entry was not scheduled [2 times]"
+    },
+    {
+      "name": "unschedule-none",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "n n C-u C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda:  TODO Report                  \n  e8-agenda:  TODO Pay\n  e8-agenda:  TODO Old\n  e8-agenda:  TODO Plain\n  e8-agenda:  TODO Weekly\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda:  TODO Report                  \n  e8-agenda:  TODO Pay\n  e8-agenda:  TODO Old\n  e8-agenda:  TODO Plain\n  e8-agenda:  TODO Weekly\n",
+      "point": 106,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 106,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Entry is no longer scheduled. [2 times]"
+    },
+    {
+      "name": "schedule-deadline-line",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N N C-c C-s RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-03"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\nSCHEDULED: <2026-11-03 Tue>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\nSCHEDULED: <2026-11-03 Tue>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 214,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 214,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Scheduled to <2026-11-03 Tue> [2 times]"
+    },
+    {
+      "name": "deadline",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N C-c C-d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-05"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting           \n  e8-agenda:  14:00-15:30 Call \n  e8-agenda:  Sched. 8x:  TODO Old\n  e8-agenda:  Scheduled:  TODO Report\n  e8-agenda:  Scheduled:  TODO Weekly\n  e8-agenda:  (1/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n  e8-agenda:  In   2 d.:  TODO Pay\nThursday   29 October 2026\n  e8-agenda:  (2/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Pay\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting           \n  e8-agenda:  14:00-15:30 Call \n  e8-agenda:  Sched. 8x:  TODO Old\n  e8-agenda:  Scheduled:  TODO Report\n  e8-agenda:  Scheduled:  TODO Weekly\n  e8-agenda:  (1/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n  e8-agenda:  In   2 d.:  TODO Pay\nThursday   29 October 2026\n  e8-agenda:  (2/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Pay\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 104,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 104,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Deadline on <2026-11-05 Thu> [2 times]"
+    },
+    {
+      "name": "deadline-file",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N C-c C-d RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-05"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\nDEADLINE: <2026-11-05 Thu>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\nDEADLINE: <2026-11-05 Thu>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 90,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 90,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Deadline on <2026-11-05 Thu> [2 times]"
+    },
+    {
+      "name": "deadline-remove",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N N C-u C-c C-d RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 214,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 214,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Entry had no deadline to remove [2 times]"
+    },
+    {
+      "name": "deadline-todo",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "n n C-c C-d RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-06"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nDEADLINE: <2026-11-06 Fri> SCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nDEADLINE: <2026-11-06 Fri> SCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Deadline on <2026-11-06 Fri> [2 times]"
+    },
+    {
+      "name": "schedule-on-date",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-06"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  14:00-15:30 Call \n  e8-agenda:  Sched. 8x:  TODO Old\n  e8-agenda:  Scheduled:  TODO Report\n  e8-agenda:  Scheduled:  TODO Weekly\n  e8-agenda:  (1/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n  e8-agenda:  In   2 d.:  TODO Pay\nThursday   29 October 2026\n  e8-agenda:  (2/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Pay\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  10:00...... Meeting \n  e8-agenda:  14:00-15:30 Call \n  e8-agenda:  Sched. 8x:  TODO Old\n  e8-agenda:  Scheduled:  TODO Report\n  e8-agenda:  Scheduled:  TODO Weekly\n  e8-agenda:  (1/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n  e8-agenda:  In   2 d.:  TODO Pay\nThursday   29 October 2026\n  e8-agenda:  (2/2):  Trip <2026-10-28 Wed>--<2026-10-29 Thu>\nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Pay\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Command not allowed in this line",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "schedule-tags",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "n n n C-c C-s RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-tags-view"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "TODO=\"TODO\"",
+          "2026-11-06"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nSCHEDULED: <2026-11-06 Fri> DEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nSCHEDULED: <2026-11-06 Fri> DEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 42,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 42,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Scheduled to <2026-11-06 Fri> [2 times]"
+    },
+    {
+      "name": "schedule-search",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "n n C-c C-s RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-search-view"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "Plain",
+          "2026-11-06"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\nSCHEDULED: <2026-11-06 Fri>\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\nSCHEDULED: <2026-11-06 Fri>\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 194,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 194,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Scheduled to <2026-11-06 Fri> [2 times]"
+    },
+    {
+      "name": "schedule-weekly",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N N N N N N N C-c C-s RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-06"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nSCHEDULED: <2026-11-06 Fri> DEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nSCHEDULED: <2026-11-06 Fri> DEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 91,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 91,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Scheduled to <2026-11-06 Fri> [2 times]"
+    },
+    {
+      "name": "schedule-twice",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N C-c C-s C-c C-s RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-06",
+          "2026-11-07"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": false,
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\nSCHEDULED: <2026-11-07 Sat>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\nSCHEDULED: <2026-11-07 Sat>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 90,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 90,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Scheduled to <2026-11-07 Sat> [2 times]"
+    },
+    {
+      "name": "schedule-logged",
+      "input": {
+        "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "N C-c C-s RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-06"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-start-with-follow-mode": false,
+          "org-agenda-move-date-from-past-immediately-to-today": true,
+          "org-log-reschedule": "'time",
+          "org-log-redeadline": false
+        }
+      },
+      "text": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\nSCHEDULED: <2026-11-06 Fri>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* TODO Report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Pay\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-28 Wed 10:00>\nSCHEDULED: <2026-11-06 Fri>\n* Trip <2026-10-28 Wed>--<2026-10-29 Thu>\n* TODO Old\nSCHEDULED: <2026-10-20 Tue>\n* TODO Plain\n* Call <2026-10-28 Wed 14:00-15:30>\n* TODO Weekly\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 90,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 90,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Scheduled to <2026-11-06 Fri> [2 times]"
+    }
+  ]
+}

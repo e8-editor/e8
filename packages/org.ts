@@ -6906,7 +6906,7 @@ function modifyTsExtra(extra: string, pos: number, n: number, step: number): str
  * periods from what followed them. On a bracket, the timestamp turns
  * between active and inactive.
  */
-function changeTimestamp(n: number, what?: string, updown = true): void {
+function changeTimestamp(n: number, what?: string, updown = true): string {
   const origin = e8.point();
   const ts = tsMatches(lineAt()).find((t) => t.start <= origin && origin <= t.end);
   if (!ts) e8.userError("Not at a timestamp");
@@ -6916,7 +6916,7 @@ function changeTimestamp(n: number, what?: string, updown = true): void {
     replaceText(ts.start, ts.start + 1, swap[ts.text[0]]);
     replaceText(ts.end - 1, ts.end, swap[ts.text[ts.text.length - 1]]);
     e8.message(`Timestamp is now ${ts.text[0] === "[" ? "" : "in"}active`);
-    return;
+    return tsMatches(lineAt(ts.start)).find((t) => t.start === ts.start)?.text ?? "";
   }
   const field = what ?? category;
   const inactive = ts.text[0] === "[";
@@ -6967,6 +6967,35 @@ function changeTimestamp(n: number, what?: string, updown = true): void {
   e8.gotoChar(target);
   // A CLOCK line's duration worked out again, as org-timestamp-change has it.
   clockUpdateTimeMaybe();
+  // The new timestamp, as org-last-changed-timestamp holds it.
+  return fresh?.text ?? "";
+}
+
+/**
+ * Moves the timestamp at P, or the date range it is in, by N of WHAT, a
+ * day, hour or minute, as the agenda's org-agenda-date-later changes it
+ * with org-timestamp-change, both ends of a range; returns what it wrote,
+ * a range as its two timestamps joined by --.
+ */
+export function shiftTimestampAt(p: number, n: number, what: string): string {
+  const all = tsMatches(lineAt(p));
+  for (let i = 0; i + 1 < all.length; i++) {
+    const [a, b] = [all[i], all[i + 1]];
+    if (/^-{1,3}$/.test(e8.bufferText(a.end, b.start)) && a.start <= p && p <= b.end) {
+      // The end first, so the start's change leaves its place alone.
+      e8.gotoChar(b.start);
+      const end = changeTimestamp(n, what, false);
+      e8.gotoChar(a.start);
+      return `${changeTimestamp(n, what, false)}--${end}`;
+    }
+  }
+  e8.gotoChar(p);
+  return changeTimestamp(n, what, false);
+}
+
+/** The timestamp at P, as org-at-timestamp-p finds it with lax, or undefined. */
+export function timestampTextAt(p: number): string | undefined {
+  return tsMatches(lineAt(p)).find((t) => t.start <= p && p <= t.end)?.text;
 }
 
 /** Whether clockUpdateTimeMaybe is writing a CLOCK line's timestamps again, so their change does not call it back, as Org ignores it then. */
@@ -7148,7 +7177,7 @@ for (const [name, n, what, doc] of [
   ["org-timestamp-up-day", 1, "day", "Move the timestamp point is on a day later."],
   ["org-timestamp-down-day", -1, "day", "Move the timestamp point is on a day earlier."],
 ] as [string, number, string | undefined, string][]) {
-  e8.defineCommand({ name, doc, run: () => changeTimestamp(n * e8.prefixNumericValue(), what) });
+  e8.defineCommand({ name, doc, run: () => void changeTimestamp(n * e8.prefixNumericValue(), what) });
 }
 
 /** A year of two digits as one of the 30 years to come or the 70 before, as org-small-year-to-year reads it. */
@@ -7469,14 +7498,15 @@ function insertTimestamp(input: string | undefined, active: boolean): void {
   const named = (x: unknown): string => (typeof x === "symbol" ? e8.symbolName(x) : String(x ?? ""));
   if (ts && TIMESTAMP_COMMANDS.includes(named(e8.lastCommand())) && TIMESTAMP_COMMANDS.includes(named(e8.thisCommand()))) {
     e8.insert("--");
-    e8.insert(stampFor(date, active));
+    // Before markers, as org-insert-timestamp inserts.
+    e8.insertBeforeMarkers(stampFor(date, active));
     return;
   }
   if (ts && old !== undefined) {
     const repeater = /(?:[.+-]+[0-9]+[hdwmy] ?)+/.exec(old)?.[0];
     e8.deleteRegion(ts.start, ts.end);
     e8.gotoChar(ts.start);
-    e8.insert(stampFor(date, active));
+    e8.insertBeforeMarkers(stampFor(date, active));
     // Before the bracket, where point stays, as org-timestamp puts it back.
     if (repeater !== undefined) {
       e8.gotoChar(e8.point() - 1);
@@ -7485,7 +7515,7 @@ function insertTimestamp(input: string | undefined, active: boolean): void {
     e8.message("Timestamp updated");
     return;
   }
-  e8.insert(stampFor(date, active));
+  e8.insertBeforeMarkers(stampFor(date, active));
 }
 
 const timestamp = e8.defineCommand({
@@ -7523,18 +7553,40 @@ function addPlanningInfo(headingLine: number, what: string, ts: string, remove: 
     replaceText(end, end, `\n${" ".repeat(adaptColumn(headingLine))}${what}: ${ts}`);
     return;
   }
-  const text = e8.lineText(next);
-  const ind = /^[ \t]*/.exec(text)![0].length;
-  let rest = text.slice(ind);
+  const ind = /^[ \t]*/.exec(e8.lineText(next))![0].length;
+  const start = e8.lineStart(next) + ind;
+  // Each keyword going, deleted where it is up to the next keyword or the line's end, as Org deletes them.
   for (const type of [what, ...remove]) {
+    const rest = e8.bufferText(start, e8.lineEnd(next));
     const m = new RegExp(`\\b${type}: *${type === "CLOSED" ? "\\[[^\\]\\n]+\\]" : "<[^>\\n]+>"}`).exec(rest);
     if (!m) continue;
+    const from = start + charCount(rest.slice(0, m.index));
     const after = rest.slice(m.index + m[0].length);
     const k = /(?:SCHEDULED|DEADLINE|CLOSED):[ \t]*[<[]/.exec(after);
-    rest = rest.slice(0, m.index) + (k ? after.slice(k.index) : "");
+    replaceText(from, k ? from + charCount(m[0]) + charCount(after.slice(0, k.index)) : e8.lineEnd(next), "");
   }
-  rest = rest.replace(/[ \t]+$/, "");
-  replaceText(e8.lineStart(next) + ind, e8.lineEnd(next), `${what}: ${ts}${rest === "" ? "" : " "}${rest}`);
+  // No space left at the end.
+  const left = e8.bufferText(start, e8.lineEnd(next));
+  const trimmed = left.replace(/[ \t]+$/, "");
+  if (trimmed !== left) replaceText(start + charCount(trimmed), e8.lineEnd(next), "");
+  // The keyword and its timestamp at the line's start, the timestamp before markers, as org-insert-timestamp puts it, and a space if more follows.
+  replaceText(start, start, `${what}: `);
+  const at = start + charCount(`${what}: `);
+  insertBeforeMarkersAt(at, ts);
+  const end = at + charCount(ts);
+  if (end !== e8.lineEnd(next)) replaceText(end, end, " ");
+}
+
+/** Inserts TEXT at AT before every marker there, point and Org's own too, as insert-before-markers. */
+function insertBeforeMarkersAt(at: number, text: string): void {
+  const n = charCount(text);
+  let p = e8.point();
+  const saved: [Marker, number][] = markers.map((m) => [m, m.pos >= at ? m.pos + n : m.pos]);
+  if (p >= at) p += n;
+  e8.gotoChar(at);
+  e8.insertBeforeMarkers(text);
+  placeMarkers(saved);
+  e8.gotoChar(p);
 }
 
 /** Sets or, with undefined, removes a planning keyword's timestamp on the line after a heading. */
