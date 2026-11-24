@@ -456,5 +456,278 @@
   "answers": [
    "["
   ]
+ },
+ {
+  "text": "* MixA <2026-10-27 Tue>--[2026-10-29 Thu]\n* MixB [2026-10-27 Tue]--<2026-10-29 Thu>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "mixed-ranges",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": true,
+   "org-agenda-include-deadlines": true,
+   "org-agenda-show-current-time-in-grid": false
+  },
+  "keys": "["
+ },
+ {
+  "text": "* MixA <2026-10-27 Tue>--[2026-10-29 Thu]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "mixed-range-active-only",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": true,
+   "org-agenda-include-deadlines": true,
+   "org-agenda-show-current-time-in-grid": false
+  },
+  "keys": ""
+ },
+ {
+  "text": "* Two [2026-10-28 Wed] then [2026-10-28 Wed 15:00]\n* DONE Finished [2026-10-28 Wed]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "two-inactive-same-day",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": true,
+   "org-agenda-include-deadlines": true,
+   "org-agenda-show-current-time-in-grid": false
+  },
+  "keys": "["
+ },
+ {
+  "text": "* Mix <2026-10-28 Wed> and [2026-10-28 Wed 09:00]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "active-and-inactive-same-day",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": true,
+   "org-agenda-include-deadlines": true,
+   "org-agenda-show-current-time-in-grid": false
+  },
+  "keys": "["
+ },
+ {
+  "text": "* Twice <2026-10-28 Wed 09:00> <2026-10-28 Wed 15:00>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "two-active-same-day",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": true,
+   "org-agenda-include-deadlines": true,
+   "org-agenda-show-current-time-in-grid": false
+  },
+  "keys": ""
+ },
+ {
+  "text": "* Ex\n#+begin_example\n[2026-10-28 Wed]\n#+end_example\n* Src\n#+begin_src emacs-lisp\n[2026-10-28 Wed]\n#+end_src\n* Quote\n#+begin_quote\n[2026-10-28 Wed]\n#+end_quote\n* Fixed\n: [2026-10-28 Wed]\n* Comment\n# [2026-10-28 Wed]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "inactive-in-blocks",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": true,
+   "org-agenda-include-deadlines": true,
+   "org-agenda-show-current-time-in-grid": false
+  },
+  "keys": "["
+ },
+ {
+  "text": "* Bare\nOn [2026-10-28] it was.\n* Link\nSee [[https://example.org][2026-10-29 Thu]].\n* Table\n| [2026-10-30 Fri] | x |\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "inactive-bare-and-link",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": true,
+   "org-agenda-include-deadlines": true,
+   "org-agenda-show-current-time-in-grid": false
+  },
+  "keys": "["
+ },
+ {
+  "text": "* Verb\nSee ~[2026-10-28 Wed]~ here.\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "inactive-verbatim",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": true,
+   "org-agenda-include-deadlines": true,
+   "org-agenda-show-current-time-in-grid": false
+  },
+  "keys": "["
+ },
+ {
+  "text": "* Ex\n#+begin_example\n<2026-10-28 Wed>\n#+end_example\n* Fixed\n: <2026-10-28 Wed>\n* Verb\nSee =<2026-10-28 Wed>= here.\n* Link\nSee [[https://example.org][<2026-10-29 Thu>]].\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "active-in-raw-text",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": true,
+   "org-agenda-include-deadlines": true,
+   "org-agenda-show-current-time-in-grid": false
+  },
+  "keys": ""
+ },
+ {
+  "text": "* Ex\n#+begin_example\n<2026-10-27 Tue>--<2026-10-28 Wed>\n#+end_example\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "ranges-in-example",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": true,
+   "org-agenda-include-deadlines": true,
+   "org-agenda-show-current-time-in-grid": false
+  },
+  "keys": ""
+ },
+ {
+  "text": "* One [2026-10-27 Tue]-[2026-10-29 Thu]\n* Three [2026-10-27 Tue]---[2026-10-29 Thu]\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "dash-ranges",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": true,
+   "org-agenda-include-deadlines": true,
+   "org-agenda-show-current-time-in-grid": false
+  },
+  "keys": "["
+ },
+ {
+  "text": "* One <2026-10-27 Tue>-<2026-10-29 Thu>\n* Three <2026-10-27 Tue>---<2026-10-29 Thu>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "active-dash-range",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": true,
+   "org-agenda-include-deadlines": true,
+   "org-agenda-show-current-time-in-grid": false
+  },
+  "keys": ""
+ },
+ {
+  "text": "* Exp\n#+begin_export html\n<2026-10-28 Wed>\n#+end_export\n* Com\n#+begin_comment\n<2026-10-28 Wed>\n#+end_comment\n* After\n<2026-10-28 Wed>\n",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "name": "export-and-comment-blocks",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": true,
+   "org-agenda-include-deadlines": true,
+   "org-agenda-show-current-time-in-grid": false
+  },
+  "keys": ""
  }
 ]

@@ -11606,7 +11606,7 @@ const NO_OBJECTS = ["planning", "src-block", "example-block", "export-block", "f
  * Whether a position is in verbatim or code text (=...=, ~...~) or a
  * link, where org-element-context finds no timestamp object.
  */
-function inVerbatimOrLink(pos: number): boolean {
+export function inVerbatimOrLink(pos: number): boolean {
   const line = lineAt(pos);
   const text = e8.lineText(line);
   const col = pos - e8.lineStart(line);

@@ -16,6 +16,7 @@ import {
   entryEnd,
   headingIndex,
   headings,
+  inVerbatimOrLink,
   isDone,
   keywordLines,
   makeTagsMatcher,
@@ -523,10 +524,13 @@ const widened = <T>(f: () => T): T =>
     return f();
   });
 
-/** A date range, <a>--<b>, as org-tr-regexp matches one. */
-const RANGE = /(<\d{4}-\d{2}-\d{2}[^>\n]*>)--(<\d{4}-\d{2}-\d{2}[^>\n]*>)/g;
-/** A range of either kind, as org-tr-regexp-both matches one. */
-const RANGE_BOTH = /([<[]\d{4}-\d{2}-\d{2}[^>\]\n]*[>\]])--([<[]\d{4}-\d{2}-\d{2}[^>\]\n]*[>\]])/g;
+/** A date range of either kind, <a>--<b> or [a]--[b], or one end of each, joined by one to three dashes, as org-tr-regexp-both matches one. */
+const RANGE_BOTH = /([<[]\d{4}-\d{2}-\d{2}[^>\]\n]*[>\]])-{1,3}([<[]\d{4}-\d{2}-\d{2}[^>\]\n]*[>\]])/g;
+
+/** A timestamp of either kind's day, its repeater only if it is active. */
+function eitherTimestamp(text: string): { day: number; repeat?: [number, string] } | undefined {
+  return text.startsWith("[") ? inactiveTimestamp(text) : activeTimestamp(text);
+}
 
 /** An inactive timestamp's day, from text such as [2026-10-28 Wed], which never repeats in the agenda. */
 function inactiveTimestamp(text: string): { day: number } | undefined {
@@ -544,12 +548,15 @@ function scanBuffer(): { cat: string; entries: Scanned[] } {
   // Inactive timestamps too, as org-agenda-include-inactive-timestamps asks.
   const inactive = truthy(e8.variable("org-agenda-include-inactive-timestamps") ?? null);
   const stamp = inactive ? /[<[]\d{4}-\d{2}-\d{2}[^>\]\n]*[>\]]/g : /<\d{4}-\d{2}-\d{2}[^>\n]*>/g;
-  const ranges_ = inactive ? RANGE_BOTH : RANGE;
   const entries = all.map((h, i): Scanned => {
     const stamps: Scanned["stamps"] = [];
     const ranges: Scanned["ranges"] = [];
     const end = entryEnd(all, i);
     let inSrc = false;
+    // In an example, export or comment block, or on a fixed-width line, a
+    // timestamp is no timestamp object, as org-at-timestamp-p's context
+    // says, so it brings no item; a range there still does.
+    let rawBlock: string | undefined;
     for (let l = h.line; l < e8.lineCount() && e8.lineStart(l) < end; l++) {
       if (l === h.line + 1 && PLANNING.test(e8.lineText(l))) continue;
       const text = e8.lineText(l);
@@ -560,20 +567,30 @@ function scanBuffer(): { cat: string; entries: Scanned[] } {
       }
       if (/^[ \t]*#\+begin_src\b/i.test(text)) inSrc = true;
       if (/^[ \t]*#(?: |$)/.test(text)) continue;
+      const raw = rawBlock !== undefined || /^[ \t]*:(?: |$)/.test(text);
+      if (rawBlock !== undefined) {
+        if (new RegExp(`^[ \\t]*#\\+end_${rawBlock}\\b`, "i").test(text)) rawBlock = undefined;
+      } else rawBlock = /^[ \t]*#\+begin_(example|export|comment)\b/i.exec(text)?.[1]?.toLowerCase();
       if (!text.includes("<") && !(inactive && text.includes("["))) continue;
       // A clock's inactive timestamps are left out, as org-agenda-get-timestamps skips clock lines.
       const clockLine = /^[ \t]*CLOCK:/.test(text);
       // A range's ends belong to the range, which shows on every day of it, as org-agenda-get-blocks has it.
       const inRange: [number, number][] = [];
-      for (const m of allMatches(ranges_, text)) {
+      for (const m of allMatches(RANGE_BOTH, text)) {
+        // Inactive by its first end, as org-agenda-get-blocks looks at the first bracket.
         const off = m[1].startsWith("[");
-        const [a, b] = off ? [inactiveTimestamp(m[1]), inactiveTimestamp(m[2])] : [activeTimestamp(m[1]), activeTimestamp(m[2])];
+        const mixed = off !== m[2].startsWith("[");
+        const [a, b] = [eitherTimestamp(m[1]), eitherTimestamp(m[2])];
         if (a === undefined || b === undefined) continue;
+        // Its ends are no timestamps of their own, either way.
         inRange.push([m.index, m.index + m[0].length]);
+        // Only active ones without org-agenda-include-inactive-timestamps, as org-tr-regexp matches.
+        if (!inactive && (off || mixed)) continue;
         ranges.push({ first: a.day, last: b.day, from: m[1], to: m[2], pos: at(l, text, m.index), ...(off ? { inactive: true } : {}) });
       }
       for (const m of allMatches(stamp, text)) {
         if (inRange.some(([a, b]) => m.index >= a && m.index < b)) continue;
+        if (raw || inVerbatimOrLink(at(l, text, m.index) + 1)) continue;
         const off = m[0].startsWith("[");
         if (off && clockLine) continue;
         const ts = off ? inactiveTimestamp(m[0]) : activeTimestamp(m[0]);
@@ -658,8 +675,8 @@ function dayItems(scan: { cat: string; entries: Scanned[] }, day: number, today:
     // The first active timestamp in the heading and its entry on the day,
     // the heading's active timestamps left out, as org-agenda-get-timestamps
     // gives org-ts-regexp to take out.
-    const stamp = found.find((s) => occursOn(s.ts, day));
-    if (stamp) {
+    // Each timestamp on the day is an item, as org-agenda-skip-additional-timestamps-same-entry nil has it.
+    for (const stamp of found.filter((s) => occursOn(s.ts, day))) {
       const time = timeOf(stamp.text);
       const dotime = stamp.text;
       // An inactive one's item has org-agenda-inactive-leader before it.
