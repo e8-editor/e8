@@ -59,8 +59,12 @@ fn gather(shard: Option<usize>) -> Gathered {
         .collect();
     files.sort();
     // E8_ORACLE_ONLY=dired compares only the case files whose names have it.
-    if let Ok(only) = std::env::var("E8_ORACLE_ONLY") {
-        files.retain(|f| f.file_stem().is_some_and(|s| s.to_string_lossy().contains(&only)));
+    // A file whose name starts zz- holds cases someone is trying, as a
+    // review records them beside a running make check: it is compared only
+    // when E8_ORACLE_ONLY names it, so it never fails a full run.
+    match std::env::var("E8_ORACLE_ONLY") {
+        Ok(only) => files.retain(|f| f.file_stem().is_some_and(|s| s.to_string_lossy().contains(&only))),
+        Err(_) => files.retain(|f| f.file_stem().is_some_and(|s| !s.to_string_lossy().starts_with("zz-"))),
     }
 
     let mut jobs: Vec<(String, Case, Recorded)> = Vec::new();

@@ -14,6 +14,10 @@ spikes/*/target/
 .env
 *.key
 
+# Oracle cases someone is only trying (tests/emacs/README.md), and their goldens.
+tests/emacs/cases/zz-*
+tests/emacs/golden/zz-*
+
 # Written by egui_kittest when a snapshot differs; the committed .png is the reference.
 *.new.png
 *.diff.png

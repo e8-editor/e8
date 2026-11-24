@@ -27,6 +27,8 @@ These tests check that E8 behaves like GNU Emacs by running the same keys on the
 
    `E8_ORACLE_ONLY=filling` records only the case files whose names have it.
 
+   Cases you are only trying, as a review does, go in a file whose name starts `zz-`, as `zz-review-dates.json`: a run without `E8_ORACLE_ONLY` leaves it out, so a `make check` running meanwhile is not failed by it, and git ignores it. Record and compare it with `E8_ORACLE_ONLY=zz-review-dates`, and delete it and its golden when done.
+
 3. Run `cargo test -p e8-script --test emacs`. If E8 differs and the fix is not part of the current work, add the case to `known-gaps.txt` with a reason.
 
 The test fails if a case is missing from the golden files, if a case changed since it was recorded, if E8 differs on a case that is not a known gap, or if a known gap starts matching. Each failure names the case and says what to do.
