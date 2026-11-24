@@ -1971,13 +1971,21 @@ function agendaDispatch(): string {
   });
 }
 
-/** Writes the lines showing an entry again where they are, as org-agenda-change-all-lines does, rather than the agenda rebuilt. */
-function redrawEntry(item: AgendaItem): void {
+/**
+ * Writes the lines showing an entry again where they are, as
+ * org-agenda-change-all-lines does, rather than the agenda rebuilt: each
+ * replaced as replace-match replaces it, so point or a marker in a line
+ * goes to its start and one at its end to its new end. Then, as the
+ * command calling it says, point goes back to its COLUMN, as
+ * org-agenda-todo, org-agenda-priority and org-agenda-clock-in move it,
+ * or to the start of its line, as org-agenda-set-tags and
+ * org-agenda-toggle-archive-tag do.
+ */
+function redrawEntry(item: AgendaItem, place: "replace" | "column" | "bol" = "replace"): void {
   const heading = headingOf(item);
   e8.withCurrentBuffer(agendaBuffer, () => e8.letBind({ "inhibit-read-only": true }, () => {
-    // Point kept on its line and column, as org-agenda-change-all-lines keeps it with save-excursion and org-move-to-column.
-    const pointLine = e8.lineOf(e8.point());
-    const column = e8.point() - e8.lineStart(pointLine);
+    const column = e8.currentColumn();
+    const at = e8.makeMarker(e8.point());
     for (const [l, other] of agendaLines.entries()) {
       if (!other || other.buffer !== item.buffer || headingOf(other) !== heading) continue;
       // The bulk mark kept on the line written again, as org-agenda-change-all-lines moves its overlay.
@@ -1989,14 +1997,19 @@ function redrawEntry(item: AgendaItem): void {
         return h ? agendaLine(h, other.cat, other.leader, false, other.time, "", other.dotime, undefined, marked ? 1 : 0) : other.text;
       }));
       other.text = text;
-      e8.deleteRegion(e8.lineStart(l), e8.lineEnd(l));
-      e8.gotoChar(e8.lineStart(l));
-      e8.insert(text);
+      // The new text before every marker at the line's end, and the old taken out after, as replace-match.
+      const [start, end] = [e8.lineStart(l), e8.lineEnd(l)];
+      e8.gotoChar(end);
+      e8.insertBeforeMarkers(text);
+      e8.deleteRegion(start, end);
       if (marked && markOverlaysOn(l).length === 0) putMarkOverlay(l);
       // Dimmed or hidden again from its mark, as org-agenda-change-all-lines finalizes the line.
       if (truthy(e8.variable("org-agenda-dim-blocked-tasks") ?? null) && blockerHookSet()) dimLine(l, other);
     }
-    e8.gotoChar(Math.min(e8.lineStart(pointLine) + column, e8.lineEnd(pointLine)));
+    e8.gotoChar(e8.markerPosition(at) ?? e8.point());
+    e8.deleteMarker(at);
+    if (place === "bol") e8.gotoChar(e8.lineStart(e8.lineOf(e8.point())));
+    else if (place === "column") orgMoveToColumn(column);
   }));
 }
 
@@ -2005,7 +2018,7 @@ function redrawEntry(item: AgendaItem): void {
  * the agenda's commands do with org-agenda-with-point-at, then writes the
  * entry's lines again, its heading changed.
  */
-function atEntry(command: e8.CommandName, interactive = true): void {
+function atEntry(command: e8.CommandName, place: "column" | "bol", interactive = true): void {
   const item = agendaItemHere();
   e8.withCurrentBuffer(item.buffer, () => {
     e8.saveExcursion(() => widened(() => {
@@ -2014,7 +2027,7 @@ function atEntry(command: e8.CommandName, interactive = true): void {
       else e8.call(command);
     }));
   });
-  redrawEntry(item);
+  redrawEntry(item, place);
 }
 
 /**
@@ -2069,18 +2082,27 @@ function maybeLoop(del: boolean, body: () => void): void {
   }
   const beg = Math.min(mark, e8.point());
   const mend = e8.makeMarker(Math.max(mark, e8.point()));
-  // As (eq level (org-get-at-bol 'level)): each line's level is a string of its own, so only the first line's matches it, or, from a line with none, every line with none.
+  // With start-level, as (eq level (org-get-at-bol 'level)): each line's level is a string of its own, so only the first line's matches it, or, from a line with none, every line with none.
   const first = agendaLines[e8.lineOf(beg)];
   try {
     e8.saveExcursion(() => {
       e8.gotoChar(beg);
       while (e8.point() < (e8.markerPosition(mend) ?? 0)) {
         const item = agendaLines[e8.lineOf(e8.point())];
-        const picked = option === true || (option === "start-level" ? item === first : typeof option === "string" && e8.lookingAt(option));
+        // As (eq level (org-get-at-bol 'level)) with level nil for any other option: a line with no entry is picked too.
+        const picked =
+          option === true || (option === "start-level" ? item === first : (typeof option === "string" && e8.lookingAt(option)) || item === undefined);
         const [line, lines] = [e8.lineOf(e8.point()), e8.lineCount()];
         if (!picked) nextItems(1);
         else {
-          body();
+          // The line shown in the region's face while it is acted on, as Org's overlay shows which line a question is about.
+          const ov = e8.makeOverlay(e8.point(), e8.lineEnd(e8.lineOf(e8.point())));
+          e8.overlayPut(ov, "face", "region");
+          try {
+            body();
+          } finally {
+            e8.deleteOverlay(ov);
+          }
           if (!del) nextItems(1);
         }
         // Where Org's would go round for ever, at the last entry, it stops: no other line reached, none taken away.
@@ -2122,11 +2144,11 @@ e8.defineCommand({
   run: () => e8.call("org-agenda-set-tags"),
 });
 
-for (const [name, command, doc] of [
-  ["org-agenda-clock-in", "org-clock-in", "Start a clock on the entry the agenda line at point shows."],
-  ["org-agenda-set-tags", "org-set-tags-command", "Set the tags of the entry the agenda line at point shows."],
+for (const [name, command, place, doc] of [
+  ["org-agenda-clock-in", "org-clock-in", "column", "Start a clock on the entry the agenda line at point shows."],
+  ["org-agenda-set-tags", "org-set-tags-command", "bol", "Set the tags of the entry the agenda line at point shows."],
 ] as const) {
-  e8.defineCommand({ name, doc, run: () => atEntry(command as e8.CommandName) });
+  e8.defineCommand({ name, doc, run: () => atEntry(command as e8.CommandName, place) });
 }
 
 /**
@@ -2145,7 +2167,7 @@ function agendaPriority(action: PriorityAction | "show" | "invalid"): void {
       else setPriority(action);
     }));
   });
-  redrawEntry(item);
+  redrawEntry(item, "column");
 }
 
 e8.defineCommand({
@@ -2174,7 +2196,7 @@ for (const [name, direction, doc] of [
         e8.gotoChar(headingOf(item));
         todoToSet(direction);
       }));
-      redrawEntry(item);
+      redrawEntry(item, "column");
     },
   });
 }
@@ -3655,7 +3677,7 @@ function agendaTodoWith(change: () => void): void {
     e8.gotoChar(headingOf(item));
     change();
   }));
-  redrawEntry(item);
+  redrawEntry(item, "column");
 }
 
 const agendaTodo = e8.defineCommand({
@@ -4121,7 +4143,7 @@ for (const [name, command, confirm, doc] of [
 e8.defineCommand({
   name: "org-agenda-toggle-archive-tag",
   doc: "Toggle the ARCHIVE tag of the entry the agenda line at point shows.",
-  run: () => maybeLoop(false, () => atEntry("org-toggle-archive-tag")),
+  run: () => maybeLoop(false, () => atEntry("org-toggle-archive-tag", "bol")),
 });
 
 // Marking entries for a bulk action, as org-agenda.el's
@@ -4574,7 +4596,7 @@ function agendaSetTags(tag: string, onoff: "on" | "off"): void {
     showContext("agenda");
     toggleTag(tag, onoff);
   });
-  redrawEntry(item);
+  redrawEntry(item, "bol");
 }
 
 e8.defineCommand({
