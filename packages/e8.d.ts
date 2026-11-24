@@ -5274,6 +5274,60 @@ declare global {
        */
       "org-agenda-entry-text-mode": [arg?: PrefixArg | boolean];
       /**
+       * Filter the agenda by a string of +category, +tag, +<effort and +/regexp/, each with - instead to hide what matches. With C-u, the other way round; with C-u C-u, or a string starting with + and + or -, added to the filters in force; with C-u C-u C-u, hide the tags org-agenda-auto-exclude-function names.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-filter": [arg?: PrefixArg | boolean];
+      /**
+       * Keep only the agenda lines of the category of the line at point; with C-u, hide those instead. Pressed again, show every line.
+       *
+       * @param strip raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-filter-by-category": [strip?: PrefixArg | boolean];
+      /**
+       * Keep only the agenda lines whose effort is below, above or equal to one chosen with a digit; _ again removes the filter. With C-u C-u, add the condition to those in force.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-filter-by-effort": [arg?: PrefixArg | boolean];
+      /**
+       * Keep only the agenda lines matching a regexp; with C-u, hide those instead. With a regexp filter in force, remove it, or with C-u C-u add another regexp to it.
+       *
+       * @param strip raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-filter-by-regexp": [strip?: PrefixArg | boolean];
+      /**
+       * Keep only the agenda lines with a tag chosen by its key, or with TAB by name; - and + switch to hiding them and back. With C-u, hide them; with C-u C-u, add the tag to the filter in force; with C-u C-u C-u, not the tags of its group. . keeps the tags of the line at point, SPC any tag, \ removes the filter, RET hides what org-agenda-auto-exclude-function names, q quits.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-filter-by-tag": [arg?: PrefixArg | boolean];
+      /**
+       * Keep only the agenda lines under the same top headline as the line at point; with C-u, hide those instead. Pressed again, show every line.
+       *
+       * @param strip raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-filter-by-top-headline": [strip?: PrefixArg | boolean];
+      /**
+       * Remove every filter from the agenda.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-filter-remove-all": [];
+      /**
        * Toggle follow mode: moving to a line with n or p shows its entry in another window. Turning it off puts the windows back.
        *
        * Defined in packages/org-agenda.ts.
@@ -13812,6 +13866,18 @@ declare global {
        */
       "org-adapt-indentation": Value;
       /**
+       * A function given each tag of the agenda's lines, which returns "-TAG" to hide the lines with it, or nil, for RET in the tag filter and C-u C-u C-u / to use.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-auto-exclude-function": Value;
+      /**
+       * A category filter every agenda starts with, a list of strings each starting with + or -, as agenda custom commands bind it.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-category-filter-preset": Value;
+      /**
        * Text put before the agenda's clock report, or nil for none.
        *
        * Defined in packages/org-agenda.ts.
@@ -13841,6 +13907,12 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-dim-blocked-tasks": Value;
+      /**
+       * A effort filter every agenda starts with, a list of strings each starting with + or -, as agenda custom commands bind it.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-effort-filter-preset": Value;
       /**
        * Regexps whose matches are taken out of the entry text entry text mode shows.
        *
@@ -13900,6 +13972,18 @@ declare global {
        */
       "org-agenda-mode-map": Value;
       /**
+       * Whether filters stay from one agenda view to the next.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-persistent-filter": Value;
+      /**
+       * A regexp filter every agenda starts with, a list of strings each starting with + or -, as agenda custom commands bind it.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-regexp-filter-preset": Value;
+      /**
        * The strings searched for in the search view, most recent first.
        *
        * Defined in packages/org-agenda.ts.
@@ -13954,6 +14038,12 @@ declare global {
        */
       "org-agenda-skip-comment-trees": Value;
       /**
+       * Whether an entry with no effort counts as taking very long, rather than no time, when sorting and filtering by effort.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-sort-noeffort-is-high": Value;
+      /**
        * How many days the agenda shows: day, week, fortnight, month, year, or a number of days.
        *
        * Defined in packages/org-agenda.ts.
@@ -14001,6 +14091,12 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-start-with-log-mode": Value;
+      /**
+       * A tag filter every agenda starts with, a list of strings each starting with + or -, as agenda custom commands bind it.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-tag-filter-preset": Value;
       /**
        * Whether tags-todo views and TODO-only tag matches leave out entries as the TODO list's ignore options say.
        *
@@ -19366,6 +19462,10 @@ declare global {
        * Functions run in a buffer holding an entry's text, before entry text mode shows it, to clean it up.
        */
       "org-agenda-entry-text-cleanup-hook": Value;
+      /**
+       * Run just after filtering with org-agenda-filter.
+       */
+      "org-agenda-filter-hook": Value;
       /**
        * Run after entering Org-Agenda mode, after the hooks of the modes it is built on.
        */

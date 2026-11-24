@@ -5843,7 +5843,7 @@ export function getPriority(s: string): number {
 }
 
 /** A key read by read-char-exclusive, as the character it stands for: a control character for C-a and the like. */
-function keyChar(key: string): number {
+export function keyChar(key: string): number {
   const named: Record<string, number> = { SPC: 32, RET: 13, TAB: 9, ESC: 27, DEL: 127 };
   if (named[key] !== undefined) return named[key];
   const control = /^C-([a-z@[\\\]^_])$/.exec(key);
@@ -6093,9 +6093,9 @@ e8.defineFace({ name: "org-tag-group", doc: "The tag that names a group of tags.
 // Tag tables, as org-tag-alist and the TAGS keyword give them.
 
 /** A tag table's entry: a tag and its key, or a keyword such as :startgroup with a group's name. */
-type TagEntry = [string, string | undefined];
+export type TagEntry = [string, string | undefined];
 const TAG_KEYWORDS = new Set([":startgroup", ":endgroup", ":startgrouptag", ":endgrouptag", ":grouptags", ":newline"]);
-const isTagKeyword = (tag: string): boolean => TAG_KEYWORDS.has(tag);
+export const isTagKeyword = (tag: string): boolean => TAG_KEYWORDS.has(tag);
 
 /** A tag table from a variable's value: [tag, key] lists, a key a character or its code. */
 function tagTable(value: e8.Value): TagEntry[] {
@@ -6139,7 +6139,7 @@ export function tagStringToAlist(s: string): TagEntry[] {
 }
 
 /** ALIST1's tags before ALIST2's, its tags already in ALIST2 left out unless in a group, as org--tag-add-to-alist. */
-function tagAddToAlist(alist1: TagEntry[], alist2: TagEntry[]): TagEntry[] {
+export function tagAddToAlist(alist1: TagEntry[], alist2: TagEntry[]): TagEntry[] {
   if (alist2.length === 0) return alist1;
   if (alist1.length === 0) return alist2;
   const add: TagEntry[] = [];
@@ -11186,7 +11186,7 @@ export function entryGetAt(ctx: MatchContext, name: string, inherit: boolean): s
 }
 
 /** The groups of the tag table, each its tag and those it stands for, as org-tag-alist-to-groups. */
-function tagGroups(): [string, string[]][] {
+export function tagGroups(): [string, string[]][] {
   const groups: [string, string[]][] = [];
   let status: false | true | "append" = false;
   let current: string[] = [];
@@ -11204,7 +11204,7 @@ function tagGroups(): [string, string[]][] {
 }
 
 /** A group's tags and those of the groups among them, as org--tags-expand-group. */
-function tagsExpandGroup(group: string[], groups: [string, string[]][], expanded: string[]): string[] {
+export function tagsExpandGroup(group: string[], groups: [string, string[]][], expanded: string[]): string[] {
   for (const tag of group) {
     if (expanded.includes(tag)) continue;
     expanded.unshift(tag);

@@ -12,6 +12,15 @@ import {
   at,
   categories,
   category,
+  currentTagAlist,
+  durationToMinutes,
+  globalTagsCompletionTable,
+  isTagKeyword,
+  keyChar,
+  tagAddToAlist,
+  type TagEntry,
+  tagGroups,
+  tagsExpandGroup,
   entryBlockedBy,
   entryEnd,
   headingIndex,
@@ -41,6 +50,7 @@ import {
   updateDblock,
 } from "org";
 import { linkUnescape, setAgendaEntryHere, storeLink } from "ol";
+import { entryGet } from "org-list";
 import { addArchiveFiles, archivingFromAgenda } from "org-archive";
 import { flag, hideDrawersIn, showContext, showEntry } from "org-fold";
 import { type Habit, buildGraph, habitUrgency, parseHabit } from "org-habit";
@@ -371,6 +381,8 @@ interface AgendaItem {
   marks?: { pos: e8.Marker; heading: e8.Marker };
   /** Whether its entry was blocked when the agenda was made, and the line is dimmed or hidden for it, as org-todo-blocked marks the line. */
   blocked?: "dim" | "hide";
+  /** The kind of line it is for its tags, as the item maker that made it names it. */
+  tagType?: TagType;
 }
 
 /** Where the line's entry is now: its marker's place, as Org's org-marker follows edits. */
@@ -431,25 +443,34 @@ function inheritedTags(h: Heading): string[] {
   return inheritedCache.map.get(h.start) ?? [];
 }
 
-/** Whether the agenda's view takes inherited tags for its items, as org-agenda-use-tag-inheritance says for agenda, todo, tags and search views. */
-function viewInheritsTags(): boolean {
-  const v = e8.variable("org-agenda-use-tag-inheritance");
-  if (v === true) return true;
-  const kind = agendaView.kind === "tags" ? "todo" : agendaView.kind;
-  return Array.isArray(v) && v.some((x) => (typeof x === "symbol" ? e8.symbolName(x) : String(x)) === kind);
+/** The kinds of line Org's item makers tell apart for tags: agenda items, TODO-like ones (the TODO list's, the search view's and logged items), and the tags view's. */
+type TagType = "agenda" | "todo" | "tags";
+/** The kind of the lines being made, as each of Org's item makers names its own. */
+let lineTagType: TagType = "agenda";
+
+/** A value that is a list, nil among them, as listp; and whether a list names a view type, as memq. */
+const isList = (v: e8.Value | undefined): boolean => Array.isArray(v) || v === null || v === undefined || v === false;
+const names = (v: e8.Value | undefined, type: string): boolean =>
+  Array.isArray(v) && v.some((x) => (typeof x === "symbol" ? e8.symbolName(x) : String(x)) === type);
+
+/**
+ * Whether the lines of TYPE take inherited tags, as each of Org's item
+ * makers decides from org-agenda-show-inherited-tags and
+ * org-agenda-use-tag-inheritance; the tags view's always do, as
+ * org-scan-tags takes them all, and show them while
+ * org-agenda-show-inherited-tags is on.
+ */
+function takesInheritedTags(type: TagType): boolean {
+  const show = e8.variable("org-agenda-show-inherited-tags");
+  if (type === "tags") return truthy(show ?? null);
+  const use = e8.variable("org-agenda-use-tag-inheritance");
+  const showName = typeof show === "symbol" ? e8.symbolName(show) : show;
+  return showName === "always" || names(show, type) || (show === true && (use === true || names(use, type)));
 }
 
 /** A line's tags as the agenda shows them, inherited ones first and :: before the heading's own, as org-agenda-fix-displayed-tags writes them. */
 function displayedTags(h: Heading): string {
-  const show = e8.variable("org-agenda-show-inherited-tags");
-  // As org-agenda-format-item's inherited-tags: always, or for the views listed, or with t where org-agenda-use-tag-inheritance takes them.
-  const showName = typeof show === "symbol" ? e8.symbolName(show) : show;
-  const kind = agendaView.kind === "tags" ? "todo" : agendaView.kind;
-  const shown =
-    showName === "always" ||
-    (Array.isArray(show) && show.some((x) => (typeof x === "symbol" ? e8.symbolName(x) : String(x)) === kind)) ||
-    (show === true && viewInheritsTags());
-  const inherited = shown ? inheritedTags(h).filter((t) => !h.tags.includes(t)) : [];
+  const inherited = takesInheritedTags(lineTagType) ? inheritedTags(h).filter((t) => !h.tags.includes(t)) : [];
   if (inherited.length === 0) return h.tags.length === 0 ? "" : `:${h.tags.join(":")}:`;
   return `:${inherited.join(":")}:${h.tags.length === 0 ? ":" : `:${h.tags.join(":")}:`}`;
 }
@@ -786,7 +807,12 @@ function dayItems(scan: { cat: string; entries: Scanned[] }, day: number, today:
       const leader = log.kind === "closed" ? "Closed:    " : log.kind === "state" ? `State:     (${log.state})` : `Clocked:   (${log.clocked})`;
       const time = timeOf(log.stamp);
       const item = { cat, leader, buffer, pos: log.pos, heading: h.start, ...(time ? { time, dotime: log.stamp } : {}) };
-      logged.push({ ...item, text: agendaLine(h, cat, leader, false, time, "", log.stamp, log.note), urgency: 100000 });
+      // Logged items take tags as TODO items do, as org-agenda-get-progress decides with todo.
+      const outer = lineTagType;
+      lineTagType = "todo";
+      const text = agendaLine(h, cat, leader, false, time, "", log.stamp, log.note);
+      lineTagType = outer;
+      logged.push({ ...item, text, urgency: 100000, tagType: "todo" });
     }
     // Only those, with C-u C-u l or the clock check.
     if (showLog === "only" || showLog === "clockcheck") continue;
@@ -997,6 +1023,7 @@ function showAgenda(given: AgendaLines | ((maxChars: number) => AgendaLines), po
     }
   }
   agendaLines = lines.map((l) => l.item);
+  for (const item of agendaLines) if (item) item.tagType ??= lineTagType;
   for (const item of agendaLines) {
     if (item && e8.getBuffer(item.buffer)) {
       item.marks = {
@@ -1010,6 +1037,9 @@ function showAgenda(given: AgendaLines | ((maxChars: number) => AgendaLines), po
     entryTextHide();
     entryTextShow(entryTextMaxlines());
   }
+  // The filters in force and the presets, as org-agenda-finalize applies them.
+  readFilterPresets();
+  e8.withCurrentBuffer(agendaBuffer, reapplyFilters);
   placeAgendaWindow();
   const setup = e8.variable("org-agenda-window-setup");
   if (setup === undefined || setup === null || setup === "reorganize-frame") fitAgendaWindow(lines.length);
@@ -1097,7 +1127,7 @@ function setModeName(): void {
   const ddl = truthy(e8.variable("org-agenda-include-deadlines") ?? null) ? " Ddl" : "";
   const follow = `${followMode ? " Follow" : ""}${entryTextMode ? " ETxt" : ""}`;
   const clock = clockreportMode ? " Clock" : "";
-  e8.setVariable("mode-name", `Org-Agenda ${span}${follow}${ddl}${grid}${habit}${log}${archives}${clock}`);
+  e8.setVariable("mode-name", `Org-Agenda ${span}${follow}${ddl}${grid}${habit}${log}${filterModeName()}${archives}${clock}`);
 }
 
 /**
@@ -1120,6 +1150,7 @@ function fitAgendaWindow(lines: number): void {
  * point goes to today, else to START-DAY.
  */
 function agendaList(arg: e8.PrefixArg | null, startDay?: number, spanArg?: Span, weekdayStart = startOnWeekday()): void {
+  lineTagType = "agenda";
   if (typeof arg === "number" && arg > 0) {
     spanArg = arg;
     arg = null;
@@ -1379,6 +1410,7 @@ function notOrg(): void {
 
 /** The TODO items that are not done, as org-todo-list shows them. */
 function todoList(): void {
+  lineTagType = "todo";
   const buffers = agendaBuffers();
   const items: AgendaItem[] = [];
   const keywords = new Set<string>();
@@ -1464,6 +1496,7 @@ function skippedHeadings(all: Heading[]): boolean[] {
  * those whose TODO state is not done.
  */
 function tagsView(todoOnly: boolean, match?: string): void {
+  lineTagType = "tags";
   if (match !== undefined && !/\S/.test(match)) match = undefined;
   // Read where org-agenda was called from, as org-make-tags-matcher reads it before the agenda is prepared.
   const matcher = makeTagsMatcher(match, todoOnly);
@@ -1547,6 +1580,8 @@ function searchWords(string: string): string[] {
  * point there, counting from 1, as [ and ] do.
  */
 function searchView(todoOnlyArg: boolean, string?: string, editAt?: number): void {
+  // The search view's items decide their tags as TODO items do.
+  lineTagType = "todo";
   let todoOnly = todoOnlyArg;
   let fullWords = truthy(e8.variable("org-agenda-search-view-force-full-words"));
   if (editAt !== undefined || string === undefined || !/\S/.test(string)) {
@@ -1691,6 +1726,8 @@ function redoView(): void {
 
 /** A new agenda's archives mode, org-agenda-start-with-archives-mode, as org-agenda-mode sets it for each new agenda but not when it is made again. */
 function freshAgenda(): void {
+  // No filters unless org-agenda-persistent-filter keeps them, as org-agenda-prepare-window sets them; the top headline's stays, as there.
+  if (!truthy(e8.variable("org-agenda-persistent-filter") ?? null)) for (const t of ["tag", "category", "regexp", "effort"] as const) agendaFilters[t] = [];
   followMode = truthy(e8.variable("org-agenda-start-with-follow-mode") ?? null);
   clockreportMode = truthy(e8.variable("org-agenda-start-with-clockreport-mode") ?? null);
   entryTextMode = truthy(e8.variable("org-agenda-start-with-entry-text-mode") ?? null);
@@ -2230,6 +2267,10 @@ const entryTextModeCommand = e8.defineCommand({
     "With a number, turn it on with that many lines.",
   params: [{ name: "arg", kind: "prefix" }],
   run: (arg) => {
+    // Not with lines filtered out, but by effort, as Org's checks.
+    if (agendaFilters.tag.length > 0 || agendaFilters.category.length > 0 || agendaFilters.regexp.length > 0 || topHeadlineFilter !== undefined) {
+      e8.userError("Can\u2019t show entry text in filtered views");
+    }
     const n = typeof arg === "number" ? arg : undefined;
     entryTextMode = n !== undefined || !entryTextMode;
     entryTextHide();
@@ -2354,13 +2395,601 @@ e8.defineCommand({
   doc: "Say the tags of the entry the agenda line at point shows, inherited ones too as the agenda shows them.",
   run: () => {
     const item = agendaLines[e8.lineOf(e8.point())];
-    const tags = item === undefined ? [] : e8.withCurrentBuffer(item.buffer, () => widened(() => {
-      const h = headings().find((x) => x.start === headingOf(item));
-      if (h === undefined) return [];
-      // Inherited ones too, as the agenda's items take org-get-tags whatever the line shows, where the view takes them.
-      return viewInheritsTags() ? [...inheritedTags(h), ...h.tags] : h.tags;
-    }));
+    const tags = item === undefined ? [] : lineTags(item);
     e8.message(tags.length > 0 ? `Tags are :${tags.join(":")}:` : "No tags associated with this line");
+  },
+});
+
+// Filtering the agenda's lines, after org-agenda.el's org-agenda-filter and
+// its kin: lines that fail a filter are hidden with the invisible property
+// org-filtered, as org-agenda-filter-hide-line hides them, until the filter
+// is removed.
+
+/** The kinds of filter that org-agenda-filter-variables lists, and the top headline's. */
+type FilterType = "tag" | "category" | "regexp" | "effort";
+
+/** The filters in force, each a list of +X and -X, as org-agenda-tag-filter and its kin hold them. */
+const agendaFilters: Record<FilterType, string[]> = { tag: [], category: [], regexp: [], effort: [] };
+/** The presets of the agenda being shown, as org-agenda-filters-preset, read from org-agenda-tag-filter-preset and its kin. */
+let filterPresets: Record<FilterType, string[]> = { tag: [], category: [], regexp: [], effort: [] };
+/** The top headline whose lines are kept, as org-agenda-top-headline-filter. */
+let topHeadlineFilter: string | undefined;
+/** Whether < filtered to the category at point, as org-agenda-filtered-by-category, so that < again removes it. */
+let filteredByCategory = false;
+/** Whether ^ filtered by top headline, as org-agenda-filtered-by-top-headline, so that ^ again removes it. */
+let filteredByTopHeadline = false;
+/** The tags and categories of the agenda's lines, as org-agenda-represented-tags and -categories keep them until it is made again. */
+let representedTagsCache: string[] | undefined;
+let representedCategoriesCache: string[] | undefined;
+
+e8.defineVariable({ name: "org-agenda-persistent-filter", doc: "Whether filters stay from one agenda view to the next.", value: false });
+e8.defineHook("org-agenda-filter-hook", "Run just after filtering with org-agenda-filter.");
+e8.defineVariable({
+  name: "org-agenda-auto-exclude-function",
+  doc:
+    "A function given each tag of the agenda's lines, which returns \"-TAG\" to hide the lines with it, or nil, " +
+    "for RET in the tag filter and C-u C-u C-u / to use.",
+  value: null,
+});
+e8.defineVariable({
+  name: "org-agenda-sort-noeffort-is-high",
+  doc: "Whether an entry with no effort counts as taking very long, rather than no time, when sorting and filtering by effort.",
+  value: true,
+});
+for (const type of ["tag", "category", "regexp", "effort"] as const) {
+  e8.defineVariable({
+    name: `org-agenda-${type}-filter-preset`,
+    doc: `A ${type} filter every agenda starts with, a list of strings each starting with + or -, as agenda custom commands bind it.`,
+    value: [],
+  });
+}
+
+/** A list variable's strings. */
+const stringList = (v: e8.Value | undefined): string[] => (Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : []);
+
+/** Reads the presets, as org-agenda-prepare sets org-agenda-filters-preset for each agenda it makes. */
+function readFilterPresets(): void {
+  filterPresets = {
+    tag: stringList(e8.variable("org-agenda-tag-filter-preset")),
+    category: stringList(e8.variable("org-agenda-category-filter-preset")),
+    regexp: stringList(e8.variable("org-agenda-regexp-filter-preset")),
+    effort: stringList(e8.variable("org-agenda-effort-filter-preset")),
+  };
+}
+
+/** Whether any filter but the top headline's is in force, as org-agenda-filter-any. */
+function filterAny(): boolean {
+  return (["category", "tag", "effort", "regexp"] as const).some((t) => agendaFilters[t].length > 0 || filterPresets[t].length > 0);
+}
+
+/** What the mode name says of the filters, as org-agenda-set-mode-name writes them: [categories], tags, efforts and /regexps/. */
+function filterModeName(): string {
+  const all = (t: FilterType) => [...filterPresets[t], ...agendaFilters[t]];
+  const cats = all("category");
+  return (
+    (filterAny() ? " " : "") +
+    (cats.length > 0 ? `[${cats.join("")}]` : "") +
+    all("tag").join("") +
+    all("effort").join("") +
+    all("regexp").map((x) => `${x[0]}/${x.slice(1)}/`).join("")
+  );
+}
+
+/** The headings of the current buffer, and the index of an agenda line's entry's heading among them, found by halving. */
+function itemHeading(item: AgendaItem): { all: Heading[]; i: number } | undefined {
+  const all = headings();
+  const pos = headingOf(item);
+  const i = headingIndex(all, e8.lineOf(pos));
+  return i === undefined || all[i].start !== pos ? undefined : { all, i };
+}
+
+/**
+ * The tags of an agenda line's entry, as its tags property holds them:
+ * all of them, inherited ones too, as org-agenda-finalize puts them
+ * unless org-agenda-show-inherited-tags keeps what the item maker took,
+ * which for the tags view is all of them too.
+ */
+function lineTags(item: AgendaItem): string[] {
+  const view = agendaView.kind;
+  const show = e8.variable("org-agenda-show-inherited-tags");
+  const use = e8.variable("org-agenda-use-tag-inheritance");
+  const showName = typeof show === "symbol" ? e8.symbolName(show) : show;
+  // As org-agenda-finalize's test, use's list not naming the view among it.
+  const kept = showName === "always" || names(show, view) || (show === true && (use === true || (isList(use) && !names(use, view))));
+  const all = !kept || takesInheritedTags(item.tagType ?? "agenda");
+  return e8.withCurrentBuffer(item.buffer, () =>
+    widened(() => {
+      const found = itemHeading(item);
+      if (found === undefined) return [];
+      const h = found.all[found.i];
+      return all ? [...inheritedTags(h), ...h.tags] : h.tags;
+    }),
+  );
+}
+
+/** An agenda line's text after its prefix: the heading as the line shows it, with its tags, as the line's txt property. */
+function lineTxt(item: AgendaItem, line: number): string {
+  const prefix = `  ${(item.cat === "" ? "" : `${item.cat}:`).padEnd(12)}${item.time === undefined ? "" : `${item.time.field.padEnd(11)} `}${item.leader === "" ? "" : `${item.leader} `}`;
+  return e8.lineText(line).slice(prefix.length);
+}
+
+/** The effort of an agenda line's entry in minutes, as its txt's effort-minutes property, or undefined; the search view's lines have none. */
+function lineEffort(item: AgendaItem): number | undefined {
+  if (agendaView.kind === "search") return undefined;
+  return e8.withCurrentBuffer(item.buffer, () =>
+    widened(() => {
+      const found = itemHeading(item);
+      const effort = found && entryGet(found.all[found.i].line, String(e8.variable("org-effort-property") ?? "Effort"));
+      if (effort === undefined) return undefined;
+      try {
+        return durationToMinutes(effort);
+      } catch {
+        return undefined;
+      }
+    }),
+  );
+}
+
+/** The title of the topmost heading above an agenda line's entry, without a statistics cookie at its start, as org-find-top-headline. */
+function topHeadlineOf(item: AgendaItem): string | undefined {
+  return e8.withCurrentBuffer(item.buffer, () =>
+    widened(() => {
+      const found = itemHeading(item);
+      if (found === undefined) return undefined;
+      const { all } = found;
+      let i = found.i;
+      // Up through each parent, as org-up-heading-safe climbs while it can.
+      for (let k = i - 1; k >= 0 && all[i].level > 1; k--) if (all[k].level < all[i].level) i = k;
+      return all[i].title.replace(/^\[[0-9]+\/[0-9]+\] *|^\[%[0-9]+\] */, "");
+    }),
+  );
+}
+
+/** The tag groups of the agenda files, as org-tag-groups-alist-for-agenda merges them. */
+function agendaTagGroups(): [string, string[]][] {
+  const out: [string, string[]][] = [];
+  for (const file of agendaFiles()) {
+    e8.withCurrentBuffer(e8.findFileNoselect(file), () => {
+      for (const [key, members] of tagGroups()) {
+        const old = out.find(([k]) => k === key);
+        if (old) old[1] = [...new Set([...old[1], ...members])];
+        else out.unshift([key, members]);
+      }
+    });
+  }
+  return out;
+}
+
+/** The tags of the agenda files with their selection keys, as org-tag-alist-for-agenda gathers them. */
+function agendaTagAlist(): TagEntry[] {
+  let alist: TagEntry[] = [];
+  for (const file of agendaFiles()) e8.withCurrentBuffer(e8.findFileNoselect(file), () => (alist = tagAddToAlist(currentTagAlist(), alist)));
+  return alist;
+}
+
+/** The lines of the agenda with entries, and the entries, as Org's filters walk the lines that have org-hd-marker or org-marker. */
+function itemLines(): [number, AgendaItem][] {
+  const out: [number, AgendaItem][] = [];
+  agendaLines.forEach((item, line) => item !== undefined && out.push([line, item]));
+  return out;
+}
+
+/** The tags of the agenda's lines, each once, and the groups any of them is in, as org-agenda-get-represented-tags. */
+function representedTags(): string[] {
+  if (representedTagsCache === undefined) {
+    const tags = [...new Set(itemLines().flatMap(([, item]) => lineTags(item)))];
+    const groups = truthy(e8.variable("org-group-tags")) ? agendaTagGroups() : [];
+    for (const tag of [...tags]) for (const [key, members] of groups) if (key === tag || members.includes(tag)) tags.unshift(key);
+    representedTagsCache = tags;
+  }
+  return representedTagsCache;
+}
+
+/** The categories of the agenda's lines, each once, one with a hyphen in quotes, as org-agenda-get-represented-categories. */
+function representedCategories(): string[] {
+  representedCategoriesCache ??= [...new Set(itemLines().map(([, item]) => item.cat))].map((c) => (c.includes("-") ? `"${c}"` : c));
+  return representedCategoriesCache;
+}
+
+/** Whether case is ignored in the agenda's regexps, as case-fold-search there says. */
+const foldCase = (): boolean => truthy(e8.variable("case-fold-search") ?? null);
+
+/** A tag filter's tags with each group's tags, as org-agenda-filter-expand-tags does with no operator. */
+function expandTags(x: string): string[] {
+  if (!truthy(e8.variable("org-group-tags"))) return [x];
+  const m = /^([+-])(.+)/.exec(x);
+  const [dir, tag] = m ? [m[1], m[2]] : ["", x];
+  return tagsExpandGroup([tag], agendaTagGroups(), []).map((t) => dir + t);
+}
+
+/**
+ * The test of a line for FILTER of TYPE, with the preset of its type, as
+ * org-agenda-filter-make-matcher makes the form: every element must pass,
+ * but with two categories to keep, either may.
+ */
+function filterMatcher(filter: string[], type: FilterType, expand: boolean): (item: AgendaItem, line: number) => boolean {
+  const all = [...new Set([...filterPresets[type], ...filter])];
+  if (type === "tag") {
+    const tests = all.map((x) => {
+      const neg = x[0] === "-";
+      const tags = (expand ? expandTags(x) : [x]).map((t) => t.slice(1));
+      const one = (t: string, have: string[]) =>
+        t === "" ? have.length > 0 : /^\{.*\}$/.test(t) ? have.some((h) => e8.stringMatch(t.slice(1, -1), h, { caseFold: foldCase() }) !== undefined) : have.includes(t);
+      // Any of the tags for +, none of them for -, as org-agenda-filter-make-matcher-tag-exp.
+      return (have: string[]) => (neg ? tags.every((t) => !one(t, have)) : tags.some((t) => one(t, have)));
+    });
+    return (item) => {
+      const have = lineTags(item);
+      return tests.every((t) => t(have));
+    };
+  }
+  if (type === "category") {
+    // Either of two categories, as multi-pos-cats looks at the filter before the preset joins it.
+    const multiPos = filter.filter((x) => x[0] === "+").length > 1;
+    const tests = all.map((x) => (cat: string) => (x[0] === "-" ? cat !== x.slice(1) : cat === x.slice(1)));
+    return (item) => (multiPos ? tests.some((t) => t(item.cat)) : tests.every((t) => t(item.cat)));
+  }
+  if (type === "regexp") {
+    const tests = all.map((x) => (txt: string) => (e8.stringMatch(x.slice(1), txt, { caseFold: foldCase() }) !== undefined) !== (x[0] === "-"));
+    return (item, line) => {
+      const txt = lineTxt(item, line);
+      return tests.every((t) => t(txt));
+    };
+  }
+  // Effort: the sign is dropped, as org-agenda-filter-effort-form drops it, so a - condition keeps what it matches too.
+  const tests = all.map((x) => {
+    const op = x[1];
+    const value = durationToMinutes(x.slice(2));
+    return (effort: number) => (op === "<" ? effort <= value : op === ">" ? effort >= value : effort === value);
+  });
+  return (item) => {
+    const effort = lineEffort(item) ?? (truthy(e8.variable("org-agenda-sort-noeffort-is-high") ?? null) ? 32767 : -1);
+    return tests.every((t) => t(effort));
+  };
+}
+
+/** Hides agenda line L and the newline before it, as org-agenda-filter-hide-line does, marked with TYPE. */
+function hideLine(l: number, type: FilterType | "top-headline"): void {
+  const start = Math.max(e8.pointMin(), e8.lineStart(l) - 1);
+  e8.letBind({ "inhibit-read-only": true }, () => {
+    e8.putTextProperty(start, e8.lineEnd(l), "invisible", "org-filtered");
+    e8.putTextProperty(start, e8.lineEnd(l), "org-filter-type", type);
+  });
+}
+
+/**
+ * Moves off a line just hidden, as Org's filters go to the previous line
+ * when point is on one, calling it interactively, so with the filter's own
+ * prefix argument; errors ignored unless SIGNAL, as the top headline's
+ * filter does not ignore them.
+ */
+function leaveHiddenLine(signal = false): void {
+  if (e8.getTextProperty(e8.point(), "invisible") === undefined) return;
+  try {
+    e8.callWithPrefix(e8.prefixArg() ?? null, "org-agenda-previous-line");
+  } catch (e) {
+    if (signal) throw e;
+  }
+}
+
+/** Applies FILTER of TYPE to the agenda's lines, hiding those that fail it, as org-agenda-filter-apply; entry text mode goes off first. */
+function filterApply(filter: string[], type: FilterType, expand = false): void {
+  if (entryTextMode) e8.call("org-agenda-entry-text-mode");
+  const test = filterMatcher(filter, type, expand);
+  // Set only when one category is kept, as org-agenda-filter-apply sets it from the filter's first element.
+  filteredByCategory = type === "category" && filter[0]?.[0] !== "-";
+  setModeName();
+  for (const [line, item] of itemLines()) if (!test(item, line)) hideLine(line, type);
+  leaveHiddenLine();
+}
+
+/** Hides the lines not under top headline HL, or with NEGATIVE those under it, as org-agenda-filter-top-headline-apply. */
+function topHeadlineApply(hl: string, negative = false): void {
+  setModeName();
+  for (const [line, item] of itemLines()) {
+    const top = topHeadlineOf(item);
+    if (top !== undefined && (negative ? top === hl : top !== hl)) hideLine(line, "top-headline");
+  }
+  leaveHiddenLine(true);
+  topHeadlineFilter = hl;
+  filteredByTopHeadline = true;
+}
+
+/** Applies every filter in force, as org-agenda-finalize does when the agenda is made or a filter removed. */
+function reapplyFilters(): void {
+  representedTagsCache = undefined;
+  representedCategoriesCache = undefined;
+  if (topHeadlineFilter !== undefined) topHeadlineApply(topHeadlineFilter);
+  if (agendaFilters.tag.length > 0) filterApply(agendaFilters.tag, "tag", true);
+  if (filterPresets.tag.length > 0) filterApply(filterPresets.tag, "tag", true);
+  if (agendaFilters.category.length > 0) filterApply(agendaFilters.category, "category");
+  if (filterPresets.category.length > 0) filterApply(filterPresets.category, "category");
+  if (agendaFilters.regexp.length > 0) filterApply(agendaFilters.regexp, "regexp");
+  if (filterPresets.regexp.length > 0) filterApply(filterPresets.regexp, "regexp");
+  if (agendaFilters.effort.length > 0) filterApply(agendaFilters.effort, "effort");
+  if (filterPresets.effort.length > 0) filterApply(filterPresets.effort, "effort");
+}
+
+/** Finishes the agenda again after a filter is removed, as org-agenda-finalize: its entry text, and the filters left. */
+function refinalize(): void {
+  // Links' brackets and blocked lines hidden again, as org-agenda-finalize activates links and dims blocked tasks, which a filter's removal showed.
+  e8.letBind({ "inhibit-read-only": true }, () => {
+    if (linksDescriptive()) agendaLines.forEach((_item, line) => hideLinksOn(line));
+  });
+  agendaLines.forEach((item, line) => dimLine(line, item));
+  if (entryTextMode) {
+    entryTextHide();
+    entryTextShow(entryTextMaxlines());
+  }
+  reapplyFilters();
+}
+
+/** Shows the lines a filter of TYPE hid and drops the filter, as org-agenda-remove-filter, then finishes the agenda again. */
+function removeFilter(type: FilterType | "top-headline"): void {
+  e8.letBind({ "inhibit-read-only": true }, () => {
+    let pos: number | undefined;
+    while ((pos = e8.textPropertyAny(e8.pointMin(), e8.pointMax(), "org-filter-type", type)) !== undefined) {
+      const end = e8.nextSinglePropertyChange(pos, "org-filter-type") ?? e8.pointMax();
+      e8.removeTextProperty(pos, end, "invisible");
+      e8.removeTextProperty(pos, end, "org-filter-type");
+    }
+  });
+  if (type === "top-headline") topHeadlineFilter = undefined;
+  else agendaFilters[type] = [];
+  setModeName();
+  refinalize();
+}
+
+/** The agenda line's item at point, or undefined. */
+const itemHere = (): AgendaItem | undefined => agendaLines[e8.lineOf(e8.point())];
+
+/** A character read as read-char-exclusive gives it, a key such as TAB as its character. */
+const readCharString = (prompt?: string): string => {
+  const c = keyChar(e8.readCharExclusive(prompt));
+  return c < 0 ? "" : String.fromCodePoint(c);
+};
+
+/** Whether a prefix argument is C-u pressed N times, as (equal arg '(4)) and its kin test. */
+const isUniversal = (arg: e8.PrefixArg | null | undefined, n: number): boolean => Array.isArray(arg) && arg[0] === 4 ** n;
+
+e8.defineCommand({
+  name: "org-agenda-filter-by-category",
+  doc: "Keep only the agenda lines of the category of the line at point; with C-u, hide those instead. Pressed again, show every line.",
+  params: [{ name: "strip", kind: "prefix" }],
+  run: (strip) => {
+    if (filteredByCategory && agendaFilters.category.length > 0) return removeFilter("category");
+    const cat = itemHere()?.cat;
+    if (cat === undefined) e8.signal("error", "No category at point");
+    if (strip !== null && strip !== undefined) agendaFilters.category.unshift(`-${cat}`);
+    else agendaFilters.category = [`+${cat}`];
+    filterApply(agendaFilters.category, "category");
+  },
+});
+
+e8.defineCommand({
+  name: "org-agenda-filter-by-top-headline",
+  doc: "Keep only the agenda lines under the same top headline as the line at point; with C-u, hide those instead. Pressed again, show every line.",
+  params: [{ name: "strip", kind: "prefix" }],
+  run: (strip) => {
+    if (filteredByTopHeadline) {
+      filteredByTopHeadline = false;
+      topHeadlineFilter = undefined;
+      return removeFilter("top-headline");
+    }
+    const item = itemHere();
+    const top = item && topHeadlineOf(item);
+    if (top === undefined) e8.signal("error", "No top-level headline at point");
+    topHeadlineApply(top, strip !== null && strip !== undefined);
+  },
+});
+
+e8.defineCommand({
+  name: "org-agenda-filter-by-regexp",
+  doc:
+    "Keep only the agenda lines matching a regexp; with C-u, hide those instead. With a regexp filter in force, remove it, " +
+    "or with C-u C-u add another regexp to it.",
+  params: [{ name: "strip", kind: "prefix" }],
+  run: (arg) => {
+    const strip = isUniversal(arg, 1);
+    if (agendaFilters.regexp.length > 0 && !isUniversal(arg, 2)) {
+      removeFilter("regexp");
+      e8.message("Regexp filter removed");
+      return;
+    }
+    const flt = e8.readString(strip ? "Hide entries matching regexp: " : "Narrow to entries matching regexp: ");
+    agendaFilters.regexp.unshift(`${strip ? "-" : "+"}${flt}`);
+    filterApply(agendaFilters.regexp, "regexp");
+  },
+});
+
+/** The efforts to choose from, Effort_ALL in org-global-properties or Org's own, as org-agenda-filter-by-effort lists them. */
+function effortValues(): string[] {
+  const key = `${String(e8.variable("org-effort-property") ?? "Effort")}_ALL`.toLowerCase();
+  const props = e8.variable("org-global-properties");
+  const own = Array.isArray(props) ? props.find((e) => Array.isArray(e) && typeof e[0] === "string" && e[0].toLowerCase() === key) : undefined;
+  const value = Array.isArray(own) && typeof own[1] === "string" ? own[1] : "0 0:10 0:30 1:00 2:00 3:00 4:00 5:00 6:00 7:00";
+  return value.split(/[ \f\t\n\r\v]+/).filter((s) => s !== "");
+}
+
+e8.defineCommand({
+  name: "org-agenda-filter-by-effort",
+  doc:
+    "Keep only the agenda lines whose effort is below, above or equal to one chosen with a digit; _ again removes the filter. " +
+    "With C-u C-u, add the condition to those in force.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg) => {
+    const efforts = effortValues();
+    const allowed = efforts.map((_e, i) => (i + 1) % 10);
+    const keep = isUniversal(arg, 2);
+    const negative = isUniversal(arg, 1);
+    const current = agendaFilters.effort;
+    let op = "";
+    while (!["<", ">", "=", "_"].includes(op)) op = readCharString("Effort operator? (> = or <)     or press `_' again to remove filter");
+    if (op === "_") {
+      removeFilter("effort");
+      e8.message("Effort filter removed");
+      return;
+    }
+    const prompt = `Effort ${op} ${efforts.map((s, i) => `[${allowed[i]}]${s}`).join(" ")}`;
+    let eff = -1;
+    while (!allowed.includes(eff)) {
+      e8.message(prompt);
+      eff = keyChar(e8.readCharExclusive()) - 48;
+    }
+    removeFilter("effort");
+    agendaFilters.effort = [`${negative ? "-" : "+"}${op}${efforts[(((eff - 1) % 10) + 10) % 10]}`, ...(keep ? current : [])];
+    filterApply(agendaFilters.effort, "effort");
+  },
+});
+
+/** Hides the lines with the tags org-agenda-auto-exclude-function names, as RET in the tag filter does. */
+function autoExclude(fn: e8.Value, expand: boolean): void {
+  agendaFilters.tag = [];
+  for (const tag of representedTags()) {
+    const modifier = e8.funcall(fn as string, tag);
+    if (typeof modifier === "string") agendaFilters.tag.unshift(modifier);
+  }
+  if (agendaFilters.tag.length > 0) filterApply(agendaFilters.tag, "tag", expand);
+}
+
+/** Completes the parts of a filter after its last operator, categories and tags or efforts, as org-agenda-filter-completion-function. */
+function filterCompletions(input: string): string[] {
+  const m = /^(.*([-+<>=]))[^-+<>=]*$/s.exec(input);
+  const [prefix, operator] = m ? [m[1], m[2]] : ["", ""];
+  const table = ["<", ">", "="].includes(operator) ? effortValues() : [...representedCategories(), ...representedTags()];
+  return table.map((t) => prefix + t);
+}
+
+/** Adds X to the end of LIST unless it is there, as org-pushnew-to-end. */
+const pushnewToEnd = (x: string, list: string[]): void => void (list.includes(x) || list.push(x));
+
+e8.defineCommand({
+  name: "org-agenda-filter",
+  doc:
+    "Filter the agenda by a string of +category, +tag, +<effort and +/regexp/, each with - instead to hide what matches. " +
+    "With C-u, the other way round; with C-u C-u, or a string starting with + and + or -, added to the filters in force; " +
+    "with C-u C-u C-u, hide the tags org-agenda-auto-exclude-function names.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg) => {
+    if (isUniversal(arg, 3)) {
+      const fn = e8.variable("org-agenda-auto-exclude-function") ?? null;
+      if (!truthy(fn)) e8.userError("‘org-agenda-auto-exclude-function’ is undefined");
+      removeFilter("tag");
+      autoExclude(fn, true);
+      return;
+    }
+    const tagList = representedTags();
+    const categoryList = representedCategories();
+    const negate = isUniversal(arg, 1);
+    const rf = (agendaFilters.regexp[0] ?? "").replace(/^\+/, "");
+    const ff =
+      agendaFilters.category.join("") + agendaFilters.tag.join("") + (agendaFilters.effort[0] ?? "").replace(/^\+/, "") + (rf === "" ? "" : `/${rf}/`);
+    let f = e8.completingRead(`${negate ? "Negative filter" : "Filter"} [+cat-tag<0:10-/regexp/]: `, filterCompletions, { initial: ff });
+    let keep = isUniversal(arg, 2);
+    if (/^\+[+-]/.test(f)) {
+      f = f.slice(1);
+      keep = true;
+    }
+    const fc = keep ? [...agendaFilters.category] : [];
+    const ft = keep ? [...agendaFilters.tag] : [];
+    const fe = keep ? [...agendaFilters.effort] : [];
+    const fr = keep ? [...agendaFilters.regexp] : [];
+    // A hyphen in double quotes is part of the name, not an operator.
+    f = f.replace(/"([^"]*)-([^"]*)"/g, '"$1~~~$2"');
+    const part = /^[ \t]*([-+])?(([^-+<>=/ \t]+)|([<>=][0-9:]+)|(\/([^/]+)\/?))/;
+    for (let m = part.exec(f); m !== null; m = part.exec(f)) {
+      let pm = m[1] ?? "+";
+      if (negate) pm = pm === "+" ? "-" : "+";
+      if (m[3] !== undefined) {
+        const s = m[3].replace(/~~~/g, "-");
+        if (tagList.includes(s)) pushnewToEnd(pm + s, ft);
+        else if (categoryList.includes(s)) pushnewToEnd(pm + s.replace(/"(.*)"/, "$1"), fc);
+        else e8.message(`‘${pm}${s}’ filter ignored because tag/category is not represented`);
+      } else if (m[4] !== undefined) pushnewToEnd(pm + m[4], fe);
+      else pushnewToEnd(pm + m[6], fr);
+      f = f.slice(m[0].length);
+    }
+    removeAllFilters();
+    if (fc.length > 0) filterApply((agendaFilters.category = fc), "category");
+    if (ft.length > 0) filterApply((agendaFilters.tag = ft), "tag", true);
+    if (fe.length > 0) filterApply((agendaFilters.effort = fe), "effort");
+    if (fr.length > 0) filterApply((agendaFilters.regexp = fr), "regexp");
+    e8.runHooks("org-agenda-filter-hook");
+  },
+});
+
+/** Removes every filter, as org-agenda-filter-remove-all, and finishes the agenda again. */
+function removeAllFilters(): void {
+  if (agendaFilters.tag.length > 0) removeFilter("tag");
+  if (agendaFilters.category.length > 0) removeFilter("category");
+  if (agendaFilters.regexp.length > 0) removeFilter("regexp");
+  if (topHeadlineFilter !== undefined) removeFilter("top-headline");
+  if (agendaFilters.effort.length > 0) removeFilter("effort");
+  refinalize();
+}
+
+e8.defineCommand({
+  name: "org-agenda-filter-remove-all",
+  doc: "Remove every filter from the agenda.",
+  run: () => {
+    removeAllFilters();
+    if (e8.calledInteractively()) e8.message("All agenda filters removed");
+  },
+});
+
+e8.defineCommand({
+  name: "org-agenda-filter-by-tag",
+  doc:
+    "Keep only the agenda lines with a tag chosen by its key, or with TAB by name; - and + switch to hiding them and back. " +
+    "With C-u, hide them; with C-u C-u, add the tag to the filter in force; with C-u C-u C-u, not the tags of its group. " +
+    ". keeps the tags of the line at point, SPC any tag, \\ removes the filter, RET hides what org-agenda-auto-exclude-function names, q quits.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg) => {
+    const alist = agendaTagAlist();
+    const seen: string[] = [];
+    for (const [tag, key] of alist) if (!isTagKeyword(tag) && key !== undefined && !seen.includes(key)) seen.push(key);
+    const tagChars = seen.join("");
+    const valid = ["\t", "\r", "\\", ".", " ", "q", ...seen];
+    let exclude = isUniversal(arg, 1);
+    const accumulate = isUniversal(arg, 2);
+    const expand = !isUniversal(arg, 3);
+    const current = agendaFilters.tag;
+    const autoFn = e8.variable("org-agenda-auto-exclude-function") ?? null;
+    let char = "";
+    while (!valid.includes(char)) {
+      // The prompt unlogged, as org-unlogged-message shows it.
+      char = readCharString(
+        `${exclude ? "Exclude[+]" : "Filter[-]"} by tag${expand ? "" : " (no grouptag expand)"}: [${tagChars} ]tag-char [TAB]tag ${truthy(autoFn) ? "[RET] " : ""}[\\]off [q]uit`,
+      );
+      if (char === "-") exclude = true;
+      else if (char === "+") exclude = false;
+    }
+    let tag: string | undefined;
+    if (char === "\t") {
+      tag = e8.letBind({ "completion-ignore-case": true }, () =>
+        e8.completingRead("Tag: ", globalTagsCompletionTable().map(([t]) => t), { requireMatch: true }),
+      );
+    }
+    if (char === "\r") {
+      removeFilter("tag");
+      if (truthy(autoFn)) autoExclude(autoFn, expand);
+    } else if (char === "\\") {
+      removeFilter("tag");
+      if (filterPresets.tag.length > 0) filterApply(agendaFilters.tag, "tag", expand);
+    } else if (char === ".") {
+      const item = itemHere();
+      agendaFilters.tag = (item ? lineTags(item) : []).map((t) => `+${t}`);
+      filterApply(agendaFilters.tag, "tag", expand);
+    } else if (char === "q") {
+      // Nothing, even with a q key for a tag.
+    } else {
+      const entry = char === " " ? undefined : alist.find(([, key]) => key === char);
+      if (char !== " " && entry === undefined && tag === undefined) e8.signal("error", `Invalid tag selection character ${char}`);
+      removeFilter("tag");
+      const chosen = char === " " ? "" : (entry?.[0] ?? tag ?? "");
+      agendaFilters.tag = [`${exclude ? "-" : "+"}${chosen}`, ...(accumulate ? current : [])];
+      filterApply(agendaFilters.tag, "tag", expand);
+    }
   },
 });
 
@@ -3058,6 +3687,13 @@ for (const [key, command] of [
   ["C-c C-x <up>", "org-agenda-priority-up"],
   ["C-c C-x <down>", "org-agenda-priority-down"],
   ["C-c C-w", "org-agenda-refile"],
+  ["\\", "org-agenda-filter-by-tag"],
+  ["_", "org-agenda-filter-by-effort"],
+  ["=", "org-agenda-filter-by-regexp"],
+  ["/", "org-agenda-filter"],
+  ["|", "org-agenda-filter-remove-all"],
+  ["<", "org-agenda-filter-by-category"],
+  ["^", "org-agenda-filter-by-top-headline"],
 ] as const) e8.defineKey("org-agenda-mode-map", key, command);
 
 /** Toggles archives mode, as org-agenda-archives-mode: archived trees in and out, or with WITH-FILES the archive files too. */
