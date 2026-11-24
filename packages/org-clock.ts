@@ -42,6 +42,7 @@ import {
   parseDate,
   plistGet,
   propertyInheritP,
+  readDateAnswer,
   reducedLevel,
   tableSortLines,
   today,
@@ -1234,7 +1235,7 @@ export function clockSpecialRange(key: string, time = millis(now()) / 1000, wsta
   } else if (k !== "interactive" && k !== "untilnow") e8.userError(`No such time block ${k}`);
   const encode = (min: number, hour: number, day: number, mon: number, year: number) => e8.encodeTime([0, min, hour, day, mon, year, null, -1, null]);
   const readDate = (prompt: string) => {
-    const t = parseDate(e8.readString(`${prompt} `), true);
+    const t = parseDate(readDateAnswer(`${prompt} `), true);
     return encode(t.minute ?? 0, t.hour ?? 0, t.day, t.month, t.year);
   };
   const start = k === "interactive" ? readDate("Range start?") : k === "untilnow" ? undefined : encode(m, h, d, month, y);

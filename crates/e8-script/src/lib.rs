@@ -205,6 +205,8 @@ const PACKAGES: &[(&str, &str)] = &[
     ("packages/abbrev.ts", include_str!("../../../packages/abbrev.ts")),
     ("packages/org-macs.ts", include_str!("../../../packages/org-macs.ts")),
     ("packages/org-table.ts", include_str!("../../../packages/org-table.ts")),
+    ("packages/iso8601.ts", include_str!("../../../packages/iso8601.ts")),
+    ("packages/parse-time.ts", include_str!("../../../packages/parse-time.ts")),
     ("packages/org.ts", include_str!("../../../packages/org.ts")),
     ("packages/org-element.ts", include_str!("../../../packages/org-element.ts")),
     ("packages/org-fold.ts", include_str!("../../../packages/org-fold.ts")),

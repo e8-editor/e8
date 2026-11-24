@@ -127,6 +127,7 @@ import { atTable, beforeOnLine, blankField, markAligned, needsAlign, restOfLine 
 import { completingReadMultiple } from "crm";
 import { allMatches, autoFillAllowed, charCount, eraseBuffer, escapeRegExp, forwardLine, getBufferWindow, truthy } from "subr";
 import { isearchNoUpperCaseP } from "isearch";
+import { PARSE_TIME_WEEKDAYS, parseTimeString } from "parse-time";
 export { PLANNING } from "org-element";
 
 // Variables
@@ -240,6 +241,17 @@ const variables: [string, string, e8.Value][] = [
   ],
   ["org-fontify-done-headline", "Whether the text of a done heading gets the face org-headline-done.", true],
   ["org-fontify-whole-block-delimiter-line", "Whether a block's #+begin and #+end lines take their faces to the line's end, newline and all, so a background with :extend reaches the window's edge.", true],
+  [
+    "org-read-date-prefer-future",
+    "Whether a date given without a month or a year is the next one to come: t for that, time for a time earlier today " +
+      "to be tomorrow's too, nil for the default date's month and year.",
+    true,
+  ],
+  [
+    "org-read-date-force-compatible-dates",
+    "Whether a date read from the prompt is brought into the years 1970 to 2037, as older systems need.",
+    true,
+  ],
   [
     "org-timestamp-rounding-minutes",
     "Minutes are rounded to the first of these when a time is inserted, and S-<up> and S-<down> change them by the second. " +
@@ -6629,10 +6641,22 @@ export function today(withTime = false): DateTime {
   return { year, month, day, ...(withTime ? { hour, minute } : {}) };
 }
 
+/**
+ * Whole cycles of 400 years to take off a year, and put back after, so
+ * JavaScript's dates, which end at the year 275760, reach any year
+ * Emacs's do: the calendar repeats every 400 years, weekdays and all.
+ */
+function cycles(year: number): number {
+  return 400 * Math.floor((year - 2000) / 400);
+}
+
 /** A date with its fields carried over, as Emacs's encode-time does: 31 February is 3 March. */
 function normalize(d: DateTime): DateTime {
-  const t = new Date(Date.UTC(d.year, d.month - 1, d.day, d.hour ?? 0, d.minute ?? 0));
-  const out: DateTime = { year: t.getUTCFullYear(), month: t.getUTCMonth() + 1, day: t.getUTCDate() };
+  const shift = cycles(d.year);
+  const t = new Date(Date.UTC(2000, 0, 1));
+  t.setUTCFullYear(d.year - shift, d.month - 1, d.day);
+  t.setUTCHours(d.hour ?? 0, d.minute ?? 0);
+  const out: DateTime = { year: t.getUTCFullYear() + shift, month: t.getUTCMonth() + 1, day: t.getUTCDate() };
   if (d.hour !== undefined) {
     out.hour = t.getUTCHours();
     out.minute = t.getUTCMinutes();
@@ -6641,7 +6665,9 @@ function normalize(d: DateTime): DateTime {
 }
 
 function weekday(d: DateTime): number {
-  return new Date(Date.UTC(d.year, d.month - 1, d.day)).getUTCDay();
+  const t = new Date(Date.UTC(2000, 0, 1));
+  t.setUTCFullYear(d.year - cycles(d.year), d.month - 1, d.day);
+  return t.getUTCDay();
 }
 
 const two = (n: number) => String(n).padStart(2, "0");
@@ -7120,96 +7146,288 @@ for (const [name, n, what, doc] of [
   e8.defineCommand({ name, doc, run: () => changeTimestamp(n * e8.prefixNumericValue(), what) });
 }
 
-/**
- * Reads a date as Org's date prompt does, mostly: empty for today; +3 or -2
- * days from today, or +2w, +1m, +1y; 2026-11-03, 11-03 or 3 for the next such
- * date; a weekday such as fri for the next one; and a time such as 10:30.
- */
-/** A day's index in the week from its name, whole or its first three letters, as parse-time-weekdays has them, or -1. */
-function weekdayIndex(name: string): number {
-  return DAY_NAMES.findIndex((day) => name === day || name === day.slice(0, 3));
+/** A year of two digits as one of the 30 years to come or the 70 before, as org-small-year-to-year reads it. */
+export function smallYearToYear(year: number): number {
+  if (year >= 100) return year;
+  const current = today().year;
+  const century = Math.trunc(current / 100);
+  const offset = year - (current % 100);
+  if (offset > 30) return (century - 1) * 100 + year;
+  if (offset > -70) return century * 100 + year;
+  return (century + 1) * 100 + year;
+}
+
+/** A word's start or end, as Emacs's \< and \> find them: a letter or digit on one side only. */
+const WORD_START = "(?<![\\p{L}\\p{N}])";
+const WORD_END = "(?![\\p{L}\\p{N}])";
+
+const pad2 = (n: number): string => String(n).padStart(2, "0");
+const pad4 = (n: number): string => String(n).padStart(4, "0");
+
+/** A plain time or a range of times, as org-plain-time-of-day-regexp: group 8 is the range's end, group 7 it with its dash. */
+const PLAIN_TIME_OF_DAY = new RegExp(
+  `(${WORD_START}[012]?[0-9]((:([0-5][0-9]([AaPp][Mm])?))|([AaPp][Mm]))${WORD_END})` +
+    `(--?(${WORD_START}[012]?[0-9]((:([0-5][0-9]([AaPp][Mm])?))|([AaPp][Mm]))${WORD_END}))?`,
+  "u",
+);
+
+/** The time now, its minutes rounded to org-timestamp-rounding-minutes's first, as org-current-time gives it. */
+function currentTime(): DateTime {
+  const now = today(true);
+  const step = roundingMinutes()[0];
+  if (step < 1) return now;
+  // Halves to the even step, as Emacs's round of integers does.
+  const q = (now.minute ?? 0) / step;
+  const down = Math.floor(q);
+  const nearest = q - down === 0.5 ? (down % 2 === 0 ? down : down + 1) : Math.round(q);
+  return normalize({ ...now, minute: nearest * step });
 }
 
 /**
- * The day a relative date such as +3, -2w, ++1m, fri, -fri or +2fri says,
- * from today, as org-read-date-get-relative reads it: a sign or a day's name
- * is needed; a day's name is the next such day after today, a week on if it
- * is today's, or with - the last one before it.
+ * The prompt's default when none is given: the time now, or before
+ * org-extend-today-until's hour, a minute before midnight yesterday, as
+ * org-read-date has it.
  */
-function relativeDate(m: RegExpExecArray): DateTime | undefined {
-  const [, sign, count, what = "d"] = m;
-  const wd1 = weekdayIndex(what);
-  if (!/^[dwmy]$/.test(what) && wd1 < 0) return undefined;
-  if (sign === "" && wd1 < 0) return undefined;
-  const base = today();
-  const back = sign.endsWith("-");
-  const n = count === undefined ? 1 : Number(count);
-  if (wd1 >= 0) {
-    let delta = (7 + wd1 - weekday(base)) % 7;
-    if (delta === 0) delta = 7;
-    if (back) {
-      delta -= 7;
-      if (delta === 0) delta = -7;
-    }
-    if (n > 1) delta += (n - 1) * (back ? -7 : 7);
-    return normalize({ ...base, day: base.day + delta });
-  }
-  const shift = back ? -n : n;
-  return normalize({
-    year: base.year + (what === "y" ? shift : 0),
-    month: base.month + (what === "m" ? shift : 0),
-    day: base.day + (what === "d" ? shift : what === "w" ? 7 * shift : 0),
-  });
+function promptDefault(): DateTime {
+  const def = currentTime();
+  const extend = Number(e8.variable("org-extend-today-until") ?? 0);
+  return (def.hour ?? 0) < extend ? normalize({ ...def, hour: -1, minute: 59 }) : def;
 }
 
-export function parseDate(input: string, withTime = false): DateTime {
-  let text = input.trim().toLowerCase();
-  const base = today();
-  let time: [number, number] | undefined;
-  // 10am or 3:30pm, as org-read-date reads them.
-  const ampm = /(?:^|\s)(\d{1,2})(?::(\d{2}))?(am|pm)(?:\s|$)/.exec(text);
-  // A time, or a range of times, its start taken.
-  const clock = ampm ? null : /(?:^|\s)(\d{1,2}):(\d{2})(?:-\d{1,2}:\d{2})?(?:\s|$)/.exec(text);
-  if (ampm) {
-    time = [(Number(ampm[1]) % 12) + (ampm[3] === "pm" ? 12 : 0), Number(ampm[2] ?? 0)];
-    text = text.replace(ampm[0], " ").trim();
-  } else if (clock) {
-    time = [Number(clock[1]), Number(clock[2])];
-    text = text.replace(clock[0], " ").trim();
+/** The day and time a timestamp's text says, midnight if it has no time, as org-time-string-to-time reads it. */
+function timestampTime(ts: string): DateTime | undefined {
+  const m = /(\d{4})-(\d{2})-(\d{2})(?:[^\]>\d]*?(\d{1,2}):(\d{2}))?/.exec(ts);
+  return m ? { year: +m[1], month: +m[2], day: +m[3], hour: m[4] === undefined ? 0 : +m[4], minute: m[5] === undefined ? 0 : +m[5] } : undefined;
+}
+
+/**
+ * A relative date at the start of an answer, as org-read-date-get-relative
+ * reads it: +3, -2w, ++1m, +3h, fri, -fri or +2fri, a sign or a day's name
+ * needed. Days from today, or with ++ or -- from the default; a day's name
+ * is the next such day, a week on if it is that day, or with - the last.
+ */
+function readDateGetRelative(s: string, now: DateTime, def: DateTime): { n: number; what: string; rel: boolean; length: number } | undefined {
+  const names = PARSE_TIME_WEEKDAYS.map(([name]) => name).join("|");
+  const m = new RegExp(`^[ \\t]*([-+]{0,2})([0-9]+)?([hdwmy]|(${names}))?([ \\t]|$)`, "i").exec(s);
+  if (!m || (m[1] === "" && m[4] === undefined)) return undefined;
+  const back = m[1].endsWith("-");
+  const rel = m[1].length === 2;
+  const n = m[2] === undefined ? 1 : Number(m[2]);
+  const what = m[3] ?? "d";
+  const wday1 = PARSE_TIME_WEEKDAYS.find(([name]) => name === what.toLowerCase())?.[1];
+  const length = m[0].length;
+  if (wday1 === undefined) return { n: back ? -n : n, what, rel, length };
+  let delta = (7 + wday1 - weekday(rel ? def : now)) % 7;
+  if (delta === 0) delta = 7;
+  if (back) {
+    delta -= 7;
+    if (delta === 0) delta = -7;
   }
-  let d: DateTime;
+  if (n > 1) delta += (n - 1) * (back ? -7 : 7);
+  return { n: delta, what: "d", rel, length };
+}
+
+/** What a date prompt's answer says, as org-read-date-analyze works it out. */
+export interface AnalyzedDate {
+  date: DateTime;
+  /** Whether the answer gave a time, as org-time-was-given says. */
+  timeGiven: boolean;
+  /** A range's end time as written, as org-end-time-was-given holds it. */
+  endTime?: string;
+  /** Whether the year was brought into 1970 to 2037, as org-read-date-force-compatible-dates has it. */
+  forcedYear: boolean;
+}
+
+/**
+ * Reads the answer to Org's date prompt as org-read-date-analyze does:
+ * relative dates, ISO weeks (w48, 2026-w48-2), dates as 2026-11-24, 11-24,
+ * 24.11.2026 or 11/24/26, month and day names, times as 10:30, 3pm or 15h,
+ * and ranges as 10:00-11:00 or 10:00+1:30, the parts not given taken from
+ * DEF, or chosen in the future, as org-read-date-prefer-future says.
+ * WITH_END reads a range's end, as when org-end-time-was-given is bound.
+ */
+export function readDateAnalyze(input: string, def: DateTime, withEnd = false): AnalyzedDate {
+  let ans = input;
+  const now = today(true);
+  let futurep = false;
+  let killYear = false;
+  let timeGiven = false;
+  let endTime: string | undefined;
   let m: RegExpExecArray | null;
-  if (text === "" || text === ".") d = base;
-  else if ((m = /^([+-]{0,2})(\d+)?([dwmy]|[a-z]+)?$/.exec(text)) && relativeDate(m) !== undefined) {
-    d = relativeDate(m)!;
-  } else if ((m = /^(\d{4})-(\d{1,2})-(\d{1,2})(?:\s.*)?$/.exec(text))) {
-    // What follows the date, as its day's name, is left out, as parse-time-string leaves it.
-    d = { year: Number(m[1]), month: Number(m[2]), day: Number(m[3]) };
-  } else if ((m = /^(\d{1,2})-(\d{1,2})$/.exec(text))) {
-    d = { year: base.year, month: Number(m[1]), day: Number(m[2]) };
-    if (d.month < base.month || (d.month === base.month && d.day < base.day)) d.year += 1;
-  } else if ((m = /^(\d{1,2})$/.exec(text))) {
-    d = { year: base.year, month: base.month, day: Number(m[1]) };
-    if (d.day < base.day) d = normalize({ ...d, month: d.month + 1 });
-  } else {
-    // What cannot be read is the default day, today, as org-read-date-analyze fills in what parse-time-string did not find.
-    d = base;
+  const replace = (match: RegExpExecArray, text: string): void => {
+    ans = ans.slice(0, match.index) + text + ans.slice(match.index + match[0].length);
+  };
+  if (/^[ \t]*\.[ \t]*$/.test(ans)) ans = "+0";
+  const delta = readDateGetRelative(ans, now, def);
+  if (delta) ans = ans.slice(delta.length);
+  // An ISO week, read once the rest is.
+  let isoYear: number | undefined;
+  let isoWeekday: number | undefined;
+  let isoWeek: number | undefined;
+  if ((m = new RegExp(`${WORD_START}(?:([0-9]+)-)?[wW]([0-9]{1,2})(?:-([0-6]))?([ \\t]|$)`, "u").exec(ans))) {
+    isoYear = m[1] === undefined ? undefined : smallYearToYear(Number(m[1]));
+    isoWeekday = m[3] === undefined ? undefined : Number(m[3]);
+    isoWeek = Number(m[2]);
+    replace(m, "");
   }
-  if (time) {
-    d.hour = time[0];
-    d.minute = time[1];
-  } else if (withTime) {
-    const now = today(true);
-    const step = roundingMinutes()[0] || 1;
-    d.hour = now.hour;
-    // Halves to the even step, as Emacs's round of integers does.
-    const q = (now.minute ?? 0) / step;
-    const down = Math.floor(q);
-    const nearest = q - down === 0.5 ? (down % 2 === 0 ? down : down + 1) : Math.round(q);
-    d.minute = nearest * step;
-    d = normalize(d);
+  // ISO dates with one-digit months or days, as 2006-8-11, or none of the year.
+  if ((m = /^ *(([0-9]+)-)?([0-1]?[0-9])-([0-3]?[0-9])([^-0-9]|$)/.exec(ans))) {
+    let year = m[2] === undefined ? ((killYear = true), now.year) : Number(m[2]);
+    year = smallYearToYear(year);
+    replace(m, `${pad4(year)}-${pad2(Number(m[3]))}-${pad2(Number(m[4]))}${m[5]}`);
   }
+  // European dates, as 24.11.2026 or 24.11.
+  if ((m = /^ *(3[01]|0?[1-9]|[12][0-9])\. ?(0?[1-9]|1[012])\.( ?[1-9][0-9]{3})?/.exec(ans))) {
+    const year = m[3] === undefined ? ((killYear = true), now.year) : Number(m[3]);
+    replace(m, `${pad4(year)}-${pad2(Number(m[2]))}-${pad2(Number(m[1]))}`);
+  }
+  // American dates, as 11/24 or 11/24/26.
+  if ((m = /^ *(0?[1-9]|1[012])\/(0?[1-9]|[12][0-9]|3[01])(\/([0-9]+))?([^/0-9]|$)/.exec(ans))) {
+    let year = m[4] === undefined ? ((killYear = true), now.year) : Number(m[4]);
+    year = smallYearToYear(year);
+    replace(m, `${pad4(year)}-${pad2(Number(m[1]))}-${pad2(Number(m[2]))}${m[5]}`);
+  }
+  // Times with am or pm, and as 15h or 15h30, made HH:MM, the range's end too, when no time is so already.
+  const hasTime = (): boolean => /(?:^|[^+])[012]?[0-9]:[0-9][0-9](?:[ \t\n]|$)/.test(ans);
+  for (let i = 0; i < 2; i++) {
+    if (hasTime() || !(m = new RegExp(`([012]?[0-9])(:([0-5][0-9]))?(am|pm)${WORD_END}`, "iu").exec(ans))) continue;
+    let hour = Number(m[1]);
+    const minute = m[3] === undefined ? 0 : Number(m[3]);
+    const pm = m[4].toLowerCase().startsWith("p");
+    if (hour === 12 && !pm) hour = 0;
+    else if (pm && hour < 12) hour += 12;
+    replace(m, `${pad2(hour)}:${pad2(minute)}`);
+  }
+  for (let i = 0; i < 2; i++) {
+    if (hasTime() || !(m = new RegExp(`(?:([012]?[0-9])?h([0-5][0-9]))|(?:([012]?[0-9])h([0-5][0-9])?)${WORD_END}`, "iu").exec(ans))) continue;
+    const hour = m[1] ?? m[3];
+    const minute = m[2] ?? m[4];
+    replace(m, `${pad2(hour === undefined ? 0 : Number(hour))}:${pad2(minute === undefined ? 0 : Number(minute))}`);
+  }
+  // A range given by its length, as 10:00+1:30.
+  if ((m = /([012]?[0-9]):([0-6][0-9])\+([012]?[0-9])(:([0-5][0-9]))?/.exec(ans))) {
+    const hour = Number(m[1]);
+    const minute = Number(m[2]);
+    let h2 = hour + Number(m[3]);
+    let m2 = minute + (m[5] === undefined ? 0 : Number(m[5]));
+    if (m2 >= 60) [h2, m2] = [h2 + 1, m2 - 60];
+    replace(m, `${pad2(hour)}:${pad2(minute)}-${pad2(h2)}:${pad2(m2)}`);
+  }
+  // A range's end, taken out.
+  if (withEnd && (m = PLAIN_TIME_OF_DAY.exec(ans)) && m[8] !== undefined) {
+    endTime = m[8];
+    const end = m.index + m[0].length;
+    ans = ans.slice(0, end - m[7].length) + ans.slice(end);
+  }
+  const [, tlMinute, tlHour, tlDay, tlMonth, tlYear, tlWday] = parseTimeString(ans);
+  const prefer = e8.variable("org-read-date-prefer-future");
+  const preferFuture = truthy(prefer);
+  let day = tlDay ?? def.day;
+  let month: number;
+  if (tlMonth !== undefined) month = tlMonth;
+  else if (!preferFuture) month = def.month;
+  else if (tlDay !== undefined) {
+    // A day given: the day and month to come.
+    futurep = true;
+    month = day < now.day ? now.month + 1 : now.month;
+  } else month = def.month;
+  let year: number;
+  if (!killYear && tlYear !== undefined) year = tlYear;
+  else if (!preferFuture) year = def.year;
+  else if (futurep) year = month > now.month || day >= now.day ? now.year : now.year + 1;
+  else if (tlMonth !== undefined) {
+    // A month given: the month and year to come.
+    futurep = true;
+    if (month > now.month) year = now.year;
+    else if (month < now.month) year = now.year + 1;
+    else if (day < now.day) year = now.year + 1;
+    else year = now.year;
+  } else year = def.year;
+  let hour = tlHour ?? def.hour ?? 0;
+  const minute = tlMinute ?? def.minute ?? 0;
+  let wday = tlWday;
+  // With org-read-date-prefer-future time, a time earlier today is tomorrow's.
+  if (
+    (prefer === "time" || (typeof prefer === "symbol" && e8.symbolName(prefer) === "time")) &&
+    tlDay === undefined && tlMonth === undefined && tlYear === undefined &&
+    day === now.day && month === now.month && year === now.year &&
+    tlHour !== undefined &&
+    (tlHour < (now.hour ?? 0) || (tlHour === now.hour && tlMinute !== undefined && tlMinute < (now.minute ?? 0)))
+  ) {
+    day += 1;
+    futurep = true;
+  }
+  if (isoWeek !== undefined) {
+    year = isoYear ?? year;
+    const isoDay = isoWeekday ?? wday ?? 1;
+    wday = undefined;
+    // As calendar-iso-to-absolute: the week's Monday, then the day, Sunday its last.
+    const jan4 = { year, month: 1, day: 4 };
+    const monday = normalize({ ...jan4, day: 4 - ((weekday(jan4) + 6) % 7) + 7 * (isoWeek - 1) + (isoDay === 0 ? 6 : isoDay - 1) });
+    [year, month, day] = [monday.year, monday.month, monday.day];
+  } else if (delta) {
+    if (!delta.rel) [day, month, year] = [now.day, now.month, now.year];
+    if (delta.what === "h") {
+      timeGiven = true;
+      hour += delta.n;
+    } else if (delta.what === "d") day += delta.n;
+    else if (delta.what === "w") day += 7 * delta.n;
+    else if (delta.what === "m") month += delta.n;
+    else if (delta.what === "y") year += delta.n;
+  } else if (wday !== undefined && tlDay === undefined) {
+    // A day's name and no day: that day in the week from the date.
+    const wday1 = weekday(normalize({ year, month, day }));
+    if (wday !== wday1) day += (wday - wday1 + 7) % 7;
+  }
+  if (tlHour !== undefined) timeGiven = true;
+  if (year < 100) year += 2000;
+  let forcedYear = false;
+  if (truthy(e8.variable("org-read-date-force-compatible-dates"))) {
+    if (year < 1970) [year, forcedYear] = [1970, true];
+    if (year > 2037) [year, forcedYear] = [2037, true];
+  }
+  return { date: normalize({ year, month, day, hour, minute }), timeGiven, endTime, forcedYear };
+}
+
+/**
+ * Reads a date as Org's date prompt does, as org-read-date-analyze: the
+ * time only if the answer gives one, or with WITH_TIME, the default's.
+ * DEF is the default, the time now unless a timestamp is being changed.
+ * The result has a range's end time, if WITH_END and one was given.
+ */
+export function parseDate(input: string, withTime = false, def: DateTime = promptDefault(), withEnd = false): DateTime & { endTime?: string } {
+  const r = readDateAnalyze(input, { hour: 0, minute: 0, ...def }, withEnd);
+  if (r.forcedYear) e8.message("Year was forced into compatible range (1970-2037)");
+  const d: DateTime & { endTime?: string } = { year: r.date.year, month: r.date.month, day: r.date.day };
+  if (r.timeGiven || withTime) [d.hour, d.minute] = [r.date.hour, r.date.minute];
+  if (r.endTime !== undefined) d.endTime = r.endTime;
   return d;
+}
+
+/**
+ * An answer to the date prompt, as org-read-date takes it with its
+ * calendar: what was typed, then a space and no date clicked in the
+ * calendar, which E8 does not show. So the answer is never ISO 8601 text
+ * alone, which parse-time-string would read whole.
+ */
+export function readDateAnswer(prompt: string): string {
+  return `${e8.readString(prompt, { history: "org-read-date-history" })} `;
+}
+
+/** A range's end time as org-insert-timestamp puts it before the bracket, -HH:MM, if it has hours and minutes. */
+function endTimeText(endTime: string | undefined): string {
+  const m = endTime === undefined ? null : /([0-9]+):([0-9]+)/.exec(endTime);
+  return m ? `-${pad2(Number(m[1]))}:${pad2(Number(m[2]))}` : "";
+}
+
+/**
+ * A timestamp for a date read from the prompt, with its range's end time,
+ * as org-insert-timestamp makes it: after the day's name if no time was
+ * given, as Org puts it there too.
+ */
+export function stampFor(d: DateTime & { endTime?: string }, active: boolean): string {
+  const end = endTimeText(d.endTime);
+  return active ? `<${formatTimestamp(d)}${end}>` : `[${formatTimestamp(d)}${end}]`;
 }
 
 /**
@@ -7226,35 +7444,62 @@ function withRepeater(text: string, old: string | undefined): string {
   return repeater === undefined || repeaterOf(text) !== undefined ? text : `${text.slice(0, -1)} ${repeater}${text.slice(-1)}`;
 }
 
-function insertTimestamp(input: string, active: boolean): void {
+/** The commands that make a range when one follows the other on a timestamp, as org-timestamp checks. */
+const TIMESTAMP_COMMANDS = ["org-time-stamp", "org-time-stamp-inactive", "org-timestamp", "org-timestamp-inactive"];
+
+/**
+ * Inserts a timestamp for a date read from the prompt, as org-timestamp
+ * does: on a timestamp, it replaces it, its repeater and warning kept, or
+ * right after one that C-c . or C-c ! just made, it makes a range. With
+ * INPUT undefined, as C-u C-u, the time now.
+ */
+function insertTimestamp(input: string | undefined, active: boolean): void {
   const withTime = Array.isArray(e8.prefixArg());
-  const date = parseDate(input, withTime);
-  let text = active ? `<${formatTimestamp(date)}>` : `[${formatTimestamp(date)}]`;
   const p = e8.point();
   const ts = tsMatches(lineAt()).find((t) => t.start <= p && p <= t.end);
-  if (ts) {
-    text = withRepeater(text, e8.bufferText(ts.start, ts.end));
+  const old = ts && e8.bufferText(ts.start, ts.end);
+  // The parts not given come from the timestamp at point, if any, as Org's default time.
+  const def = old === undefined ? undefined : timestampTime(old);
+  const date = input === undefined ? today(true) : parseDate(input, withTime, def, true);
+  const named = (x: unknown): string => (typeof x === "symbol" ? e8.symbolName(x) : String(x ?? ""));
+  if (ts && TIMESTAMP_COMMANDS.includes(named(e8.lastCommand())) && TIMESTAMP_COMMANDS.includes(named(e8.thisCommand()))) {
+    e8.insert("--");
+    e8.insert(stampFor(date, active));
+    return;
+  }
+  if (ts && old !== undefined) {
+    const repeater = /(?:[.+-]+[0-9]+[hdwmy] ?)+/.exec(old)?.[0];
     e8.deleteRegion(ts.start, ts.end);
     e8.gotoChar(ts.start);
+    e8.insert(stampFor(date, active));
+    // Before the bracket, where point stays, as org-timestamp puts it back.
+    if (repeater !== undefined) {
+      e8.gotoChar(e8.point() - 1);
+      e8.insert(` ${repeater}`);
+    }
+    e8.message("Timestamp updated");
+    return;
   }
-  e8.insert(text);
+  e8.insert(stampFor(date, active));
 }
 
 const timestamp = e8.defineCommand({
   name: "org-timestamp",
   doc:
     "Insert an active timestamp, such as <2026-10-28 Wed>, for a date read in the minibuffer; on a timestamp, change it.\n\n" +
-    "Empty is today; +3 is three days on, and +2w, +1m and +1y work too; fri is the next Friday; " +
-    "2026-11-03, 11-03 and 3 are the next such date; add a time as 10:30. With C-u, the time now goes in too.",
-  params: [{ name: "date", prompt: "Date: ", history: "org-read-date-history" }],
-  run: (input) => insertTimestamp(input, true),
+    "Empty is today; +3 is three days on, and +2w, +1m, +1y and +3h work too, ++ counting from the timestamp at point; " +
+    "fri is the next Friday; 2026-11-03, 11-03, 3, 3.11.2026, 11/3/26, nov 3 and w45 are the next such date; " +
+    "add a time as 10:30, 3pm or 15h, or a range as 10:00-11:00 or 10:00+1:30. With C-u, the time goes in too; " +
+    "with C-u C-u, the time now, without asking.",
+  params: [{ name: "date", value: () => (doublePrefix() ? "" : readDateAnswer("Date: ")) }],
+  run: (input: string) => insertTimestamp(doublePrefix() ? undefined : input, true),
 });
 
 const inactiveTimestamp = e8.defineCommand({
   name: "org-timestamp-inactive",
   doc: "Insert an inactive timestamp, such as [2026-10-28 Wed], which the agenda leaves out. See org-timestamp.",
-  params: [{ name: "date", prompt: "Date: ", history: "org-read-date-history" }],
-  run: (input) => insertTimestamp(input, false),
+  params: [{ name: "date", value: () => (doublePrefix() ? "" : readDateAnswer("Date: ")) }],
+  run: (input: string) => insertTimestamp(doublePrefix() ? undefined : input, false),
 });
 
 e8.defineVariable({ name: "org-read-date-history", doc: "Dates answered to Org's date prompt, newest first.", value: [] });
@@ -7342,7 +7587,8 @@ function planHere(keyword: string, input: () => string): void {
       const m = new RegExp(`\\b${keyword}: *<([^>]+)>`).exec(e8.lineText(l));
       if (!m) continue;
       const d = /^(\d{4})-(\d{2})-(\d{2})/.exec(m[1]);
-      const days = d ? Math.abs(dayCount(parseDate(input())) - dayCount({ year: +d[1], month: +d[2], day: +d[3] })) : 0;
+      // Read from the old date, as org--deadline-or-schedule gives it as the default.
+      const days = d ? Math.abs(dayCount(parseDate(input(), false, timestampTime(`<${m[1]}>`))) - dayCount({ year: +d[1], month: +d[2], day: +d[3] })) : 0;
       const start = e8.lineStart(l) + m.index;
       replaceText(start, start + m[0].length, `${keyword}: <${m[1].replace(/ -[0-9]+[hdwmy]/, "")} -${days}d>`);
       return;
@@ -7359,9 +7605,10 @@ function planHere(keyword: string, input: () => string): void {
     e8.message(deadline ? "Entry no longer has a deadline." : "Entry is no longer scheduled.");
     return;
   }
-  const date = parseDate(input());
+  // The parts not given come from the old date, as its default time.
+  const date = parseDate(input(), false, old === undefined ? undefined : timestampTime(old), true);
   // The old date's repeater and warning stay, as org--deadline-or-schedule keeps them.
-  const inserted = `<${formatTimestamp(date)}>`;
+  const inserted = stampFor(date, true);
   const ts = withRepeater(inserted, old);
   // At the start of the planning line, CLOSED taken out, as org-add-planning-info with closed to remove.
   addPlanningInfo(all[i].line, keyword, ts, ["CLOSED"]);
@@ -7390,7 +7637,7 @@ function planEach(keyword: string, input: string): void {
 /** The date org--deadline-or-schedule reads for another heading: the date to warn or delay from with C-u C-u. */
 function readPlanDate(keyword: string): string {
   const prompt = doublePrefix() ? (keyword === "DEADLINE" ? "Warn starting from: " : "Delay until: ") : "Date: ";
-  return e8.readString(prompt, { history: "org-read-date-history" });
+  return readDateAnswer(prompt);
 }
 
 /**
@@ -7411,9 +7658,7 @@ const schedule = e8.defineCommand({
     {
       name: "date",
       // C-u C-u asks for the date to warn or delay from, C-u for none, as org--deadline-or-schedule.
-      prompt: () => (doublePrefix() ? "Delay until: " : "Date: "),
-      history: "org-read-date-history",
-      value: () => ((Array.isArray(e8.prefixArg()) && !doublePrefix()) || planLoopsOverNothing() ? "" : undefined),
+      value: () => ((Array.isArray(e8.prefixArg()) && !doublePrefix()) || planLoopsOverNothing() ? "" : readPlanDate("SCHEDULED")),
     },
   ],
   run: (input) => planEach("SCHEDULED", input),
@@ -7426,9 +7671,7 @@ const deadline = e8.defineCommand({
     {
       name: "date",
       // C-u C-u asks for the date to warn or delay from, C-u for none, as org--deadline-or-schedule.
-      prompt: () => (doublePrefix() ? "Warn starting from: " : "Date: "),
-      history: "org-read-date-history",
-      value: () => ((Array.isArray(e8.prefixArg()) && !doublePrefix()) || planLoopsOverNothing() ? "" : undefined),
+      value: () => ((Array.isArray(e8.prefixArg()) && !doublePrefix()) || planLoopsOverNothing() ? "" : readPlanDate("DEADLINE")),
     },
   ],
   run: (input) => planEach("DEADLINE", input),
@@ -11400,7 +11643,7 @@ function dateMatchCounts(type: string | null): boolean {
 export function readDate(prompt?: string): string {
   const t = today();
   const def = `${t.year}-${String(t.month).padStart(2, "0")}-${String(t.day).padStart(2, "0")}`;
-  const input = e8.readString(`${prompt ?? "Date+time"} [${def}]: `, { history: "org-read-date-history" });
+  const input = readDateAnswer(`${prompt ?? "Date+time"} [${def}]: `);
   const d = parseDate(input);
   const date = `${d.year}-${String(d.month).padStart(2, "0")}-${String(d.day).padStart(2, "0")}`;
   return d.hour === undefined ? date : `${date} ${String(d.hour).padStart(2, "0")}:${String(d.minute ?? 0).padStart(2, "0")}`;

@@ -59,8 +59,6 @@ org-folding/blank-entry-tab-twice-with-separator-lines-1  # TAB folds a shown bl
 # Emacs's region active, as Emacs reads the buffer-local deactivate-mark only
 # when a command loop's command returns; E8 deactivates the region when a
 # command called from code changes text, and when the RET answering a prompt
-# returns, so after Org's End of buffer or a C-u C-u planning error the
-# region has gone.
-org-region-loops/region-schedule-double-prefix  # region deactivated mid-command
+# returns, so after Org's End of buffer the region has gone.
 org-region-loops/region-sibling-start-level  # region deactivated mid-command
 org-region-loops/region-sibling-narrowed  # region deactivated mid-command

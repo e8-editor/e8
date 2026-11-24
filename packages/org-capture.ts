@@ -4,7 +4,7 @@
 // E8 narrows the target buffer itself.
 
 import { bookmarkSet, jumpTo } from "bookmark";
-import { alignTags, allowedValues, type DateTime, formatTimestamp, globalTagsCompletionTable, type Heading, headingIndex, headings, isHeadingLine, killIsSubtree, parseDate, parseHeading, plistGet, shiftHeadings, subtreeRegion, today, updateCheckboxCount, updateParentTodoStatistics, validLevel } from "org";
+import { alignTags, allowedValues, type DateTime, formatTimestamp, globalTagsCompletionTable, type Heading, headingIndex, headings, isHeadingLine, killIsSubtree, parseDate, parseHeading, plistGet, readDateAnswer, shiftHeadings, stampFor, subtreeRegion, today, updateCheckboxCount, updateParentTodoStatistics, validLevel } from "org";
 import { clockIn, clockOut, refreshClockHeading, runningClockLine, runningEntry } from "org-clock";
 import { dateTreeRoot, findDateCreate } from "org-datetree";
 import { ancestors, flag, showHeadingLine } from "org-fold";
@@ -368,10 +368,9 @@ function fillTemplate(template: string, context: Context = { annotation: "", ini
     }
     if (key === "t" || key === "T" || key === "u" || key === "U") {
       const upcase = key === "T" || key === "U";
-      const answer = e8.readString(`${prompt !== undefined ? `${prompt} ` : ""}Date${upcase ? "+time" : ""}: `, { history: "org-read-date-history" });
-      const d = parseDate(answer, upcase);
-      const stamp = formatTimestamp(d, d.hour !== undefined);
-      return key === "u" || key === "U" ? `[${stamp}]` : `<${stamp}>`;
+      const answer = readDateAnswer(`${prompt !== undefined ? `${prompt} ` : ""}Date${upcase ? "+time" : ""}: `);
+      // With a range's end time, as org-end-time-was-given is bound there.
+      return stampFor(parseDate(answer, upcase, undefined, true), key === "t" || key === "T");
     }
     // Keys in other cases, as a case-folding search finds them, are none Org knows.
     if (key !== undefined) e8.signal("error", `Unknown template placeholder: "%^${key}"`);
@@ -608,8 +607,9 @@ function setTargetLocation(t: CaptureTemplate, prepend: boolean, env: TargetEnv 
         // The day: one asked for with :time-prompt or C-1, else today.
         let day: DateTime = today();
         if (truthy(option(t, ":time-prompt") ?? null) || env.askDate) {
-          const answer = e8.readString("Date for tree entry: ", { history: "org-read-date-history" });
-          const asked = parseDate(answer, /\d{1,2}:\d{2}/.test(answer));
+          const answer = readDateAnswer("Date for tree entry: ");
+          // A range's end is read and left out, as org-end-time-was-given is bound there.
+          const asked = parseDate(answer, false, undefined, true);
           day = { year: asked.year, month: asked.month, day: asked.day };
           const now = today();
           const isToday = asked.year === now.year && asked.month === now.month && asked.day === now.day;

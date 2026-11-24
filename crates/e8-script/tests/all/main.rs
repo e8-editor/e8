@@ -96,6 +96,7 @@ mod org_extra_keys;
 mod org_goto;
 mod org_id;
 mod org_list_alphabetical;
+mod org_read_date;
 mod org_markers_follow_moves;
 mod org_occur_agenda_files;
 mod org_search_view;
