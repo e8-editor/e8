@@ -16,6 +16,10 @@
   "globals": {
    "org-agenda-use-time-grid": false,
    "org-agenda-start-with-clockreport-mode": false,
+   "org-agenda-clockreport-parameter-plist": [
+    "':link",
+    false
+   ],
    "org-agenda-clock-report-header": false
   },
   "keys": "R"
@@ -37,6 +41,10 @@
   "globals": {
    "org-agenda-use-time-grid": false,
    "org-agenda-start-with-clockreport-mode": false,
+   "org-agenda-clockreport-parameter-plist": [
+    "':link",
+    false
+   ],
    "org-agenda-clock-report-header": false
   },
   "keys": "R R"
@@ -58,6 +66,10 @@
   "globals": {
    "org-agenda-use-time-grid": false,
    "org-agenda-start-with-clockreport-mode": false,
+   "org-agenda-clockreport-parameter-plist": [
+    "':link",
+    false
+   ],
    "org-agenda-clock-report-header": false
   },
   "keys": "v",
@@ -82,6 +94,10 @@
   "globals": {
    "org-agenda-use-time-grid": false,
    "org-agenda-start-with-clockreport-mode": false,
+   "org-agenda-clockreport-parameter-plist": [
+    "':link",
+    false
+   ],
    "org-agenda-clock-report-header": false
   },
   "keys": "v",
@@ -106,6 +122,10 @@
   "globals": {
    "org-agenda-use-time-grid": false,
    "org-agenda-start-with-clockreport-mode": false,
+   "org-agenda-clockreport-parameter-plist": [
+    "':link",
+    false
+   ],
    "org-agenda-clock-report-header": false
   },
   "keys": "R f"
@@ -127,6 +147,10 @@
   "globals": {
    "org-agenda-use-time-grid": false,
    "org-agenda-start-with-clockreport-mode": false,
+   "org-agenda-clockreport-parameter-plist": [
+    "':link",
+    false
+   ],
    "org-agenda-clock-report-header": false
   },
   "keys": "R b"
@@ -148,6 +172,10 @@
   "globals": {
    "org-agenda-use-time-grid": false,
    "org-agenda-start-with-clockreport-mode": false,
+   "org-agenda-clockreport-parameter-plist": [
+    "':link",
+    false
+   ],
    "org-agenda-clock-report-header": false,
    "org-agenda-span": "'day"
   },
@@ -170,6 +198,10 @@
   "globals": {
    "org-agenda-use-time-grid": false,
    "org-agenda-start-with-clockreport-mode": true,
+   "org-agenda-clockreport-parameter-plist": [
+    "':link",
+    false
+   ],
    "org-agenda-clock-report-header": false
   },
   "keys": ""
@@ -191,6 +223,10 @@
   "globals": {
    "org-agenda-use-time-grid": false,
    "org-agenda-start-with-clockreport-mode": false,
+   "org-agenda-clockreport-parameter-plist": [
+    "':link",
+    false
+   ],
    "org-agenda-clock-report-header": "Report\n"
   },
   "keys": "R"
@@ -212,6 +248,10 @@
   "globals": {
    "org-agenda-use-time-grid": false,
    "org-agenda-start-with-clockreport-mode": false,
+   "org-agenda-clockreport-parameter-plist": [
+    "':link",
+    false
+   ],
    "org-agenda-clock-report-header": "Clocked"
   },
   "keys": "R"
@@ -233,6 +273,10 @@
   "globals": {
    "org-agenda-use-time-grid": false,
    "org-agenda-start-with-clockreport-mode": false,
+   "org-agenda-clockreport-parameter-plist": [
+    "':link",
+    false
+   ],
    "org-agenda-clock-report-header": false
   },
   "keys": "R"
@@ -254,6 +298,10 @@
   "globals": {
    "org-agenda-use-time-grid": false,
    "org-agenda-start-with-clockreport-mode": false,
+   "org-agenda-clockreport-parameter-plist": [
+    "':link",
+    false
+   ],
    "org-agenda-clock-report-header": false
   },
   "keys": "R g"
@@ -275,6 +323,10 @@
   "globals": {
    "org-agenda-use-time-grid": false,
    "org-agenda-start-with-clockreport-mode": false,
+   "org-agenda-clockreport-parameter-plist": [
+    "':link",
+    false
+   ],
    "org-agenda-clock-report-header": false
   },
   "keys": "R"
@@ -296,12 +348,16 @@
   "globals": {
    "org-agenda-use-time-grid": false,
    "org-agenda-start-with-clockreport-mode": false,
+   "org-agenda-clockreport-parameter-plist": [
+    "':link",
+    false
+   ],
    "org-agenda-clock-report-header": false
   },
   "keys": ""
  },
  {
-  "text": "* Read [[https://example.com][the docs]]\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:00] =>  1:00\n:END:\n* Check [x] list\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 08:00]--[2026-10-27 Tue 09:00] =>  1:00\n:END:\n* TODO [#A] Fix [1/2] cookie :a:b:\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 10:00]--[2026-10-27 Tue 10:20] =>  0:20\n:END:\n* See [[https://example.org]]\n:LOGBOOK:\nCLOCK: [2026-10-29 Thu 10:00]--[2026-10-29 Thu 10:10] =>  0:10\n:END:\n* a]b [c] d\n:LOGBOOK:\nCLOCK: [2026-10-29 Thu 11:00]--[2026-10-29 Thu 11:10] =>  0:10\n:END:\n#+BEGIN: clocktable :link t :scope file\n#+END:\n",
+  "text": "* Read [[https://example.com][the docs]]\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 08:00]--[2026-10-28 Wed 09:00] =>  1:00\n:END:\n* Check [x] list\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 08:00]--[2026-10-27 Tue 09:00] =>  1:00\n:END:\n* TODO [#A] Fix [1/2] cookie :a:b:\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 10:00]--[2026-10-27 Tue 10:20] =>  0:20\n:END:\n* See [[https://example.org]]\n:LOGBOOK:\nCLOCK: [2026-10-29 Thu 10:00]--[2026-10-29 Thu 10:10] =>  0:10\n:END:\n* a]b [c] d\n:LOGBOOK:\nCLOCK: [2026-10-29 Thu 11:00]--[2026-10-29 Thu 11:10] =>  0:10\n:END:\n#+BEGIN: clocktable :link nil :scope file\n#+END:\n",
   "modes": [
    "org-mode"
   ],
