@@ -1,0 +1,866 @@
+[
+ {
+  "name": "open",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "open-second-row",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 34,
+  "keys": "C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "edit-and-finish",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-c ` C-e SPC x y z C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "edit-lines",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 28,
+  "keys": "C-c ` C-e RET RET n e w SPC SPC RET C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "kill-finishes",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-c ` C-e x C-c C-k",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "empty-field",
+  "text": "| a |   |\n",
+  "point": 6,
+  "keys": "C-c ` n e w C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "standard-references",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 34,
+  "keys": "C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "org-table-use-standard-references": true
+  }
+ },
+ {
+  "name": "not-at-table",
+  "text": "text\n",
+  "point": 0,
+  "keys": "C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "on-hline",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 19,
+  "keys": "C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "at-bol",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 0,
+  "keys": "C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cu-props",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-u C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "hash-in-field",
+  "text": "| #x | y |\n",
+  "point": 3,
+  "keys": "C-c ` C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "indented",
+  "text": "  | a | b |\n",
+  "point": 8,
+  "keys": "C-c ` C-e c C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "wide",
+  "text": "| 日本 | b |\n",
+  "point": 3,
+  "keys": "C-c ` C-e x C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "twice",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-c ` C-c C-c C-n C-c ` C-e ! C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "follow-on",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-u C-u C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "follow-move",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-u C-u C-c ` C-n C-n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "follow-off",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-u C-u C-c ` C-u C-u C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "follow-leave",
+  "text": "before\n| a   | bb |\n|-----+----|\n| ccc | d  |\nafter\n",
+  "point": 15,
+  "keys": "C-u C-u C-c ` M->",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "open-windows",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "windows": true
+ },
+ {
+  "name": "finish-windows",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-c ` C-e x C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "windows": true
+ },
+ {
+  "name": "split-open",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-x 2 C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "windows": true
+ },
+ {
+  "name": "split-finish",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-x 2 C-c ` C-e x C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "windows": true
+ },
+ {
+  "name": "twice-open-again",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-c ` C-x o C-n C-n C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "windows": true
+ },
+ {
+  "name": "twice-finish",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-c ` C-x o C-n C-n C-c ` C-e ! C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "windows": true
+ },
+ {
+  "name": "hash-middle",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-c ` C-e RET # x RET y C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "hash-last-line",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-c ` C-e RET # x C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "empty-edit",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-c ` C-k C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "eol-open",
+  "text": "| a | b |\n",
+  "point": 9,
+  "keys": "C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "eol-finish",
+  "text": "| a | b |\n",
+  "point": 9,
+  "keys": "C-c ` x C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "windows": true
+ },
+ {
+  "name": "on-bar",
+  "text": "| a | b |\n",
+  "point": 4,
+  "keys": "C-c ` C-e z C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "bol-indented",
+  "text": "  | a |\n",
+  "point": 1,
+  "keys": "C-c ` x C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "blanks",
+  "text": "|  a  b  | c |\n",
+  "point": 3,
+  "keys": "C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "blanks-finish",
+  "text": "|  a  b  | c |\n",
+  "point": 3,
+  "keys": "C-c ` C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "read-only",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-c ` C-e x C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "buffer-read-only": true
+  },
+  "windows": true
+ },
+ {
+  "name": "narrow-open",
+  "text": "| a |\n| b |\n| c |\n| d |\n",
+  "point": 6,
+  "keys": "C-SPC C-n C-n C-x n n C-p C-f C-f C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "narrow-finish",
+  "text": "| a |\n| b |\n| c |\n| d |\n",
+  "point": 6,
+  "keys": "C-SPC C-n C-n C-x n n C-p C-f C-f C-c ` C-e x C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "follow-back",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-u C-u C-c ` C-b C-b C-b C-b",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "windows": true
+ },
+ {
+  "name": "follow-hline",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-u C-u C-c ` C-n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "windows": true
+ },
+ {
+  "name": "follow-off-windows",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-u C-u C-c ` C-u C-u C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "windows": true
+ },
+ {
+  "name": "follow-leave-windows",
+  "text": "before\n| a   | bb |\n|-----+----|\n| ccc | d  |\nafter\n",
+  "point": 15,
+  "keys": "C-u C-u C-c ` M->",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "windows": true
+ },
+ {
+  "name": "follow-mx",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-follow-field-mode"
+  ],
+  "windows": true
+ },
+ {
+  "name": "follow-mx-off",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "M-x M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-follow-field-mode",
+   "org-table-follow-field-mode"
+  ],
+  "windows": true
+ },
+ {
+  "name": "follow-side",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-x 3 C-u C-u C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "windows": true
+ },
+ {
+  "name": "follow-type",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-u C-u C-c ` x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "windows": true
+ },
+ {
+  "name": "follow-finish",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-u C-u C-c ` C-x o C-e x C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "windows": true
+ },
+ {
+  "name": "numeric-arg",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "M-1 C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pipe-in-edit",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-c ` C-e | z C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "follow-bol",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-u C-u C-c ` C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "windows": true
+ },
+ {
+  "name": "follow-down-row",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-u C-u C-c ` C-n C-n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "windows": true
+ },
+ {
+  "name": "kill-by-hand",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-c ` C-x k",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   ""
+  ],
+  "windows": true
+ },
+ {
+  "name": "kill-by-hand-reopen",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-c ` C-x k C-c ` C-e y C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   ""
+  ],
+  "windows": true
+ },
+ {
+  "name": "follow-kill-then-off",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-u C-u C-c ` C-x o C-x k C-x o C-u C-u C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   ""
+  ],
+  "windows": true
+ },
+ {
+  "name": "follow-kill-then-move",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-u C-u C-c ` C-x o C-x k C-x o C-b C-b C-b C-b",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   ""
+  ],
+  "windows": true
+ },
+ {
+  "name": "link-cu",
+  "text": "| [[https://x.org][desc]] | b |\n",
+  "point": 3,
+  "keys": "C-u C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "link-open",
+  "text": "| [[https://x.org][desc]] | b |\n",
+  "point": 3,
+  "keys": "C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "link-finish",
+  "text": "| [[https://x.org][desc]] | b |\n",
+  "point": 3,
+  "keys": "C-c ` C-e x C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "follow-tab",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-u C-u C-c ` TAB TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "windows": true
+ },
+ {
+  "name": "follow-stab",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-u C-u C-c ` S-TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "windows": true
+ },
+ {
+  "name": "follow-noexit",
+  "text": "before\n| a   | bb |\n|-----+----|\n| ccc | d  |\nafter\n",
+  "point": 15,
+  "keys": "C-u C-u C-c ` M->",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "org-table-exit-follow-field-mode-when-leaving-table": false
+  },
+  "windows": true
+ },
+ {
+  "name": "follow-noexit-back",
+  "text": "before\n| a   | bb |\n|-----+----|\n| ccc | d  |\nafter\n",
+  "point": 15,
+  "keys": "C-u C-u C-c ` M-> C-p C-p C-f C-f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "org-table-exit-follow-field-mode-when-leaving-table": false
+  },
+  "windows": true
+ },
+ {
+  "name": "follow-one-window",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-u C-u C-c ` C-x 1 C-b",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "windows": true
+ },
+ {
+  "name": "follow-long",
+  "text": "| word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word | b |\n",
+  "point": 4,
+  "keys": "C-u C-u C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "windows": true
+ },
+ {
+  "name": "open-long",
+  "text": "| word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word | b |\n",
+  "point": 4,
+  "keys": "C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "windows": true
+ },
+ {
+  "name": "tab-in-edit",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-c ` C-e C-q TAB x C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "trailing-newlines",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-c ` C-e RET RET C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cc-in-edit-buffer-on-table",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-c ` C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "follow-cck",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-u C-u C-c ` C-x o C-e x C-c C-k",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "windows": true
+ },
+ {
+  "name": "follow-noeol",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |",
+  "point": 8,
+  "keys": "C-u C-u C-c ` C-n C-n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "windows": true
+ },
+ {
+  "name": "hline-plus",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 19,
+  "keys": "C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "three-windows",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-x 2 C-x 2 C-c ` C-e x C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "windows": true
+ },
+ {
+  "name": "three-windows-open",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-x 2 C-x 2 C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "windows": true
+ },
+ {
+  "name": "follow-two-tables",
+  "text": "| a | b |\n\n| c | d |\n",
+  "point": 3,
+  "keys": "C-u C-u C-c ` C-n C-n C-n C-n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "windows": true
+ },
+ {
+  "name": "standard-refs-hline",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 34,
+  "keys": "C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "org-table-use-standard-references": true
+  }
+ },
+ {
+  "name": "cu-cu-off-not-table",
+  "text": "before\n| a   | bb |\n|-----+----|\n| ccc | d  |\nafter\n",
+  "point": 15,
+  "keys": "C-u C-u C-c ` M-> C-u C-u C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "other-buffer-finish",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-c ` C-x o C-x b RET C-x o C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "*scratch*"
+  ],
+  "windows": true
+ },
+ {
+  "name": "renamed-finish",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-c ` M-x C-e x C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "rename-buffer",
+   "fld"
+  ],
+  "windows": true
+ },
+ {
+  "name": "renamed-then-new",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-c ` M-x C-x o C-n C-n C-c ` C-x b C-e y C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "rename-buffer",
+   "fld",
+   "fld"
+  ],
+  "windows": true
+ }
+]

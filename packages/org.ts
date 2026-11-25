@@ -11339,6 +11339,7 @@ const keys: { [keys: string]: e8.CommandName | e8.DefinedCommand } = {
   "M-h": "org-mark-element",
   "C-c |": "org-table-create-or-convert-from-region",
   "C-c +": "org-table-sum",
+  "C-c `": "org-table-edit-field",
   "C-c C-x C-w": "org-cut-special",
   "C-c C-x M-w": "org-copy-special",
   "C-c C-x C-y": "org-paste-special",
