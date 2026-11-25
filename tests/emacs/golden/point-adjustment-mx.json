@@ -208,6 +208,401 @@
       "kill_ring": [],
       "modified": false,
       "error": null
+    },
+    {
+      "name": "mx-goto-line-code-prompt",
+      "input": {
+        "text": "* a\nbody one is quite long here\nbody two is long as well\n* b\nmore\n",
+        "point": 0,
+        "keys": "S-TAB M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "goto-line",
+          "3"
+        ]
+      },
+      "text": "* a\nbody one is quite long here\nbody two is long as well\n* b\nmore\n",
+      "visible": "* a\n* b",
+      "point": 3,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "key-goto-line-code-prompt",
+      "input": {
+        "text": "* a\nbody one is quite long here\nbody two is long as well\n* b\nmore\n",
+        "point": 0,
+        "keys": "S-TAB M-g g",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3"
+        ]
+      },
+      "text": "* a\nbody one is quite long here\nbody two is long as well\n* b\nmore\n",
+      "visible": "* a\n* b",
+      "point": 3,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "mx-goto-char-code-prompt",
+      "input": {
+        "text": "* a\nbody one is quite long here\nbody two is long as well\n* b\nmore\n",
+        "point": 0,
+        "keys": "S-TAB M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "goto-char",
+          "41"
+        ]
+      },
+      "text": "* a\nbody one is quite long here\nbody two is long as well\n* b\nmore\n",
+      "visible": "* a\n* b",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "mx-sparse-tree-code-prompt",
+      "input": {
+        "text": "* a\nbody one is quite long here\nbody two is long as well\n* b\nmore\n",
+        "point": 8,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-sparse-tree",
+          "r",
+          "more"
+        ]
+      },
+      "text": "* a\nbody one is quite long here\nbody two is long as well\n* b\nmore\n",
+      "visible": "* a\n* b\nmore\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "key-sparse-tree-code-prompt",
+      "input": {
+        "text": "* a\nbody one is quite long here\nbody two is long as well\n* b\nmore\n",
+        "point": 8,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "r",
+          "more"
+        ]
+      },
+      "text": "* a\nbody one is quite long here\nbody two is long as well\n* b\nmore\n",
+      "visible": "* a\n* b\nmore\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "cxb-back-to-hidden-point",
+      "input": {
+        "text": "* a\nbody one\nbody two\n* b\nmore\n",
+        "point": 8,
+        "keys": "C-c C-c C-x b C-x b",
+        "modes": [
+          "outline-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "*scratch*",
+          "*e8-oracle*"
+        ]
+      },
+      "text": "* a\nbody one\nbody two\n* b\nmore\n",
+      "visible": "* a\n* b\nmore\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "mx-switch-back-to-hidden-point",
+      "input": {
+        "text": "* a\nbody one\nbody two\n* b\nmore\n",
+        "point": 8,
+        "keys": "C-c C-c M-x M-x",
+        "modes": [
+          "outline-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "switch-to-buffer",
+          "*scratch*",
+          "switch-to-buffer",
+          "*e8-oracle*"
+        ]
+      },
+      "text": "* a\nbody one\nbody two\n* b\nmore\n",
+      "visible": "* a\n* b\nmore\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "global-disable-key",
+      "input": {
+        "text": "* a\nbody one\nbody two\n* b\nmore\n",
+        "point": 0,
+        "keys": "S-TAB C-u 5 C-f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "global-disable-point-adjustment": true
+        }
+      },
+      "text": "* a\nbody one\nbody two\n* b\nmore\n",
+      "visible": "* a\n* b",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "global-disable-mx",
+      "input": {
+        "text": "* a\nbody one\nbody two\n* b\nmore\n",
+        "point": 0,
+        "keys": "S-TAB C-u 5 M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "forward-char"
+        ],
+        "globals": {
+          "global-disable-point-adjustment": true
+        }
+      },
+      "text": "* a\nbody one\nbody two\n* b\nmore\n",
+      "visible": "* a\n* b",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "link-key-forward",
+      "input": {
+        "text": "[[https://x.org][desc]] tail\n",
+        "point": 0,
+        "keys": "C-f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "[[https://x.org][desc]] tail\n",
+      "visible": "desc tail\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "link-mx-forward",
+      "input": {
+        "text": "[[https://x.org][desc]] tail\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "forward-char"
+        ]
+      },
+      "text": "[[https://x.org][desc]] tail\n",
+      "visible": "desc tail\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "link-mx-forward-then-key",
+      "input": {
+        "text": "[[https://x.org][desc]] tail\n",
+        "point": 0,
+        "keys": "M-x C-f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "forward-char"
+        ]
+      },
+      "text": "[[https://x.org][desc]] tail\n",
+      "visible": "desc tail\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "link-mx-backward",
+      "input": {
+        "text": "[[https://x.org][desc]] tail\n",
+        "point": 21,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "backward-char"
+        ]
+      },
+      "text": "[[https://x.org][desc]] tail\n",
+      "visible": "desc tail\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "link-mx-goto-char",
+      "input": {
+        "text": "[[https://x.org][desc]] tail\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "goto-char",
+          "2"
+        ]
+      },
+      "text": "[[https://x.org][desc]] tail\n",
+      "visible": "desc tail\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "macro-mx-forward",
+      "input": {
+        "text": "* a\nbody one is quite long here\nbody two is long as well\n* b\nmore\n",
+        "point": 2,
+        "keys": "S-TAB <f3> C-u 2 M-x <f4> <f4>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "forward-char",
+          "forward-char"
+        ]
+      },
+      "text": "* a\nbody one is quite long here\nbody two is long as well\n* b\nmore\n",
+      "visible": "* a\n* b",
+      "point": 56,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "mx-hide-then-cxz",
+      "input": {
+        "text": "* a\nbody one\nbody two\n* b\nmore\n",
+        "point": 8,
+        "keys": "M-x C-f C-x z",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "outline-hide-subtree"
+        ]
+      },
+      "text": "* a\nbody one\nbody two\n* b\nmore\n",
+      "visible": "* a\n* b\nmore\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
     }
   ]
 }

@@ -14,6 +14,7 @@ mod images;
 mod keys;
 mod margins_and_fringes;
 mod modeline;
+mod point_adjustment;
 mod quit;
 mod scrolling;
 mod search;

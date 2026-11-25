@@ -11890,6 +11890,10 @@ declare global {
        */
       "dired-trivial-filenames": Value;
       /**
+       * Non-nil if the command just run asked not to have point moved out of invisible text after it, as the command loop otherwise does. Reset to nil before each command.
+       */
+      "disable-point-adjustment": Value;
+      /**
        * Function to call to handle disabled commands.
        * If nil, the feature is disabled, i.e., all commands work normally.
        *
@@ -12494,6 +12498,10 @@ declare global {
        * Defined in packages/autorevert.ts.
        */
       "global-auto-revert-non-file-buffers": Value;
+      /**
+       * Non-nil to never move point out of invisible text after a command, as the command loop otherwise does.
+       */
+      "global-disable-point-adjustment": Value;
       /**
        * Whether Global-Display-Line-Numbers mode is on. Use the command global-display-line-numbers-mode to change it.
        *

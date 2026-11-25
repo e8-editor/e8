@@ -1905,6 +1905,12 @@ impl Editor {
             self.remapped_from = Some(std::mem::replace(&mut name, to));
         }
         let (old_point, old_buffer, old_tick) = (self.buffer().point(), self.buffer().id, self.buffer().modified_tick());
+        // The start of a pending call this command runs belongs to this
+        // level: an outer one's is kept aside, and at the top level one
+        // left by a call made outside the command loop is dropped.
+        let outer_start = self.pending_start.take().filter(|_| self.running > 0);
+        // As Emacs's command loop resets it before each command.
+        self.set_default("disable-point-adjustment", Value::Null);
         self.command_failed = false;
         if !self.run_disabled_command_function(&name, None) {
             self.run_interactive(&name);
@@ -1928,9 +1934,14 @@ impl Editor {
         // A command that read its arguments in the minibuffer, as one M-x
         // runs, is compared with where it started, as Emacs's command loop
         // does for the command the minibuffer was read for.
-        let (old_point, old_buffer, old_tick) = self.pending_start.take().unwrap_or((old_point, old_buffer, old_tick));
-        let modified = self.buffer().id != old_buffer || self.buffer().modified_tick() != old_tick;
-        if !self.command_failed {
+        let (old_point, old_buffer, old_tick) = std::mem::replace(&mut self.pending_start, outer_start).unwrap_or((old_point, old_buffer, old_tick));
+        // Only in the buffer the command started in, shown in the selected
+        // window, and unless disable-point-adjustment or its global form
+        // says not, as Emacs's command loop checks.
+        let same = self.buffer().id == old_buffer && self.window_buffer().id == old_buffer;
+        let disabled = ["disable-point-adjustment", "global-disable-point-adjustment"].iter().any(|v| self.variable(v).is_some_and(|v| v.is_true()));
+        let modified = self.buffer().modified_tick() != old_tick;
+        if !self.command_failed && same && !disabled {
             self.adjust_point_for_invisible(old_point, modified);
         }
         self.keep_point_out_of_prompt();
