@@ -218,59 +218,17 @@ export function referenceAt(p = e8.point()): Reference | undefined {
   return r && p < r.end ? r : undefined;
 }
 
-/** Where the section a line is in ends, as the parser's limit for the elements in it: the next heading or the buffer's end. */
-function sectionEnd(line: number): number {
-  for (let l = line + 1; l < e8.lineCount(); l++) if (isHeadingLine(e8.lineText(l))) return e8.lineStart(l);
-  return e8.pointMax();
-}
-
-/** The definition whose [fn:label] line is LINE, as org-element-footnote-definition-parser reads it, if one starts there. */
-function definitionStartingAt(line: number, sectionLimit?: number): Definition | undefined {
-  const text = e8.lineText(line);
-  const m = DEFINITION.exec(text);
+/** The definition whose [fn:label] line is LINE, as the parser's footnote-definition element, if one starts there. */
+function definitionStartingAt(line: number): Definition | undefined {
+  const m = DEFINITION.exec(e8.lineText(line));
   if (!m) return undefined;
   // Not inside a block or the like, where the line is the block's text.
   const e = elementAt(e8.lineStart(line));
-  if (e && e.type !== "paragraph") return undefined;
-  let limit = sectionLimit ?? sectionEnd(line);
-  for (let parent = e?.parent; parent; parent = parent.parent) {
-    if (parent.contentsEnd !== undefined && parent.type !== "section" && parent.type !== "org-data") limit = Math.min(limit, parent.contentsEnd);
-  }
-  const postAffiliated = e8.lineStart(line);
+  if (e?.type !== "footnote-definition" || e.begin !== e8.lineStart(line)) return undefined;
+  const postAffiliated = e.begin;
   let begin = postAffiliated;
   while (lineAt(begin) > 0 && AFFILIATED.test(e8.lineText(lineAt(begin) - 1))) begin = e8.lineStart(lineAt(begin) - 1);
-  // The next heading, definition, or two blank lines, as org-element--footnote-separator.
-  let end = limit;
-  for (let l = line + 1; l < e8.lineCount() && e8.lineStart(l) < limit; l++) {
-    const t = e8.lineText(l);
-    if (isHeadingLine(t)) {
-      end = e8.lineStart(l);
-      break;
-    }
-    if (DEFINITION.test(t)) {
-      // Before any affiliated keyword above it.
-      let k = l - 1;
-      while (k > line && AFFILIATED.test(e8.lineText(k))) k--;
-      end = lineStartOrEnd(k + 1);
-      break;
-    }
-    // Two blank lines, each ending in a newline, as ^([ \t]*\n){2,} needs.
-    if (/^[ \t]*$/.test(t) && l + 2 < e8.lineCount() && e8.lineStart(l + 1) < limit && /^[ \t]*$/.test(e8.lineText(l + 1))) {
-      let k = l;
-      while (k < e8.lineCount() && e8.lineStart(k) < limit && /^[ \t]*$/.test(e8.lineText(k))) k++;
-      end = k >= e8.lineCount() || e8.lineStart(k) >= limit ? limit : e8.lineStart(k);
-      break;
-    }
-  }
-  // Its contents: after the label, past blank space, if anything is there.
-  const afterLabel = postAffiliated + charCount(m[0]);
-  const rest = e8.bufferText(afterLabel, Math.max(afterLabel, end));
-  const blank = /^[ \r\t\n]*/.exec(rest)![0];
-  let contentsBegin: number | undefined = afterLabel + charCount(blank);
-  if (contentsBegin >= end) contentsBegin = undefined;
-  else if (lineAt(contentsBegin) !== line) contentsBegin = e8.lineStart(lineAt(contentsBegin));
-  const contentsEnd = contentsBegin === undefined ? undefined : afterBlankBack(end);
-  return { label: m[1], begin, postAffiliated, end, contentsBegin, contentsEnd };
+  return { label: m[1], begin, postAffiliated, end: e.end, contentsBegin: e.contentsBegin, contentsEnd: e.contentsEnd };
 }
 
 /** From a position, back over blank space, then to the start of the next line, as Org finds an element's last line's end. */
@@ -332,19 +290,12 @@ function fnStarts(from = e8.pointMin(), to = e8.pointMax()): number[] {
   return out;
 }
 
-/**
- * Every definition in the buffer, in order, read in one pass: where each
- * section ends is worked out once, not for each definition.
- */
+/** Every definition in the buffer, in order. */
 function allDefinitions(): Definition[] {
-  const count = e8.lineCount();
-  const nextHeading: number[] = new Array(count + 1);
-  nextHeading[count] = e8.pointMax();
-  for (let l = count - 1; l >= 0; l--) nextHeading[l] = l + 1 < count && isHeadingLine(e8.lineText(l + 1)) ? e8.lineStart(l + 1) : nextHeading[l + 1];
   const out: Definition[] = [];
-  for (let l = 0; l < count; l++) {
+  for (let l = 0; l < e8.lineCount(); l++) {
     if (!e8.lineText(l).startsWith("[fn:")) continue;
-    const d = definitionStartingAt(l, nextHeading[l]);
+    const d = definitionStartingAt(l);
     if (d) out.push(d);
   }
   return out;

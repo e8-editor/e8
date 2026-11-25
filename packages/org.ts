@@ -15,7 +15,7 @@
 // an "org-link" text property, so [[https://gnu.org][GNU]] shows as GNU.
 
 import { jump, type Link, linkHere, searchInBuffer, showContext } from "ol";
-import { AFFILIATED, type Elem, elementAt, endBeforeBlank, keepingParse, PLANNING, parseShifts, startsElement, withAffiliated } from "org-element";
+import { AFFILIATED, type Elem, elementAt, endBeforeBlank, FOOTNOTE_DEFINITION, keepingParse, PLANNING, parseShifts, startsElement, withAffiliated } from "org-element";
 import {
   ancestors,
   BLOCK_BEGIN,
@@ -2647,6 +2647,8 @@ function adaptiveFillPrefix(): string | undefined {
     switch (el.type) {
       case "comment":
         return indentation(line) + "# ";
+      case "footnote-definition":
+        return "";
       case "item":
       case "plain-list":
         return " ".repeat(listBodyColumn(el.begin));
@@ -2900,7 +2902,7 @@ e8.defun("org-fill-paragraph-with-timestamp-nobreak-p", () => {
   return tsMatches(lineAt()).some((ts) => ts.start < p && p <= ts.end);
 });
 
-const GREATER_ELEMENTS = ["center-block", "drawer", "dynamic-block", "headline", "item", "plain-list", "property-drawer", "quote-block", "section", "special-block", "table"];
+const GREATER_ELEMENTS = ["center-block", "drawer", "dynamic-block", "footnote-definition", "headline", "item", "plain-list", "property-drawer", "quote-block", "section", "special-block", "table"];
 
 /**
  * The column text under the heading `line` is in starts at, as
@@ -2965,6 +2967,7 @@ function expectedIndentWide(el: Elem | undefined, contentsp: boolean, line: numb
   const indentOf = (pos: number): number => textIndentation(e8.lineText(lineAt(pos)));
   if (contentsp) {
     if (type === "section") return expectedIndentWide(el?.parent, true, line);
+    if (type === "footnote-definition" || type === "diary-sexp") return 0;
     // One past the stars with org-adapt-indentation, else the margin.
     if (type === undefined || type === "headline") return adaptColumn(line);
     if (type === "item" || type === "plain-list") return listBodyColumn((el as Elem).begin);
@@ -2972,25 +2975,33 @@ function expectedIndentWide(el: Elem | undefined, contentsp: boolean, line: numb
     return indentOf(affiliatedBegin((el as Elem).begin));
   }
   if (!el || type === "headline" || type === "org-data") return isBlank(e8.lineText(line)) ? expectedIndentWide(el, true, line) : 0;
+  if (type === "footnote-definition" || type === "diary-sexp") return 0;
   const bol = e8.lineStart(line);
   const start = el.begin;
   if (bol < start) return expectedIndentWide(el.parent, true, line);
   if (bol === start) {
-    if (start === 0) return 0;
-    let previous = elementAt(start - 1);
-    for (let parent = previous; parent && parent.end <= start; parent = parent.parent) previous = parent;
-    if (!previous || previous.type === "org-data") return 0;
-    if (previous.end > start) return expectedIndentWide(previous, true, line);
-    // With headline-data, what follows the heading's data starts at the margin.
-    if (
-      e8.variable("org-adapt-indentation") === "headline-data" &&
-      !atHeadlineData(start, el) &&
-      (isHeadingLine(e8.lineText(lineAt(start - 1))) || atHeadlineData(start - 1, previous))
-    )
-      return 0;
-    // From its affiliated keywords, as Org's previous element begins at them.
-    if (previous.begin === e8.lineStart(lineAt(previous.begin))) return indentOf(NO_AFFILIATED.includes(previous.type) ? previous.begin : affiliatedBegin(previous.begin));
-    return expectedIndentWide(previous.parent, true, line);
+    // Like the element before, passing over footnote definitions, as Org ignores them there.
+    for (let from = start; ; ) {
+      if (from === 0) return 0;
+      let previous = elementAt(from - 1);
+      for (let parent = previous; parent && parent.end <= from; parent = parent.parent) previous = parent;
+      if (!previous || previous.type === "org-data") return 0;
+      if (previous.end > from) return expectedIndentWide(previous, true, line);
+      if (previous.type === "footnote-definition") {
+        from = affiliatedBegin(previous.begin);
+        continue;
+      }
+      // With headline-data, what follows the heading's data starts at the margin.
+      if (
+        e8.variable("org-adapt-indentation") === "headline-data" &&
+        !atHeadlineData(from, el) &&
+        (isHeadingLine(e8.lineText(lineAt(from - 1))) || atHeadlineData(from - 1, previous))
+      )
+        return 0;
+      // From its affiliated keywords, as Org's previous element begins at them.
+      if (previous.begin === e8.lineStart(lineAt(previous.begin))) return indentOf(NO_AFFILIATED.includes(previous.type) ? previous.begin : affiliatedBegin(previous.begin));
+      return expectedIndentWide(previous.parent, true, line);
+    }
   }
   let q = bol;
   while (q > 0 && /[ \r\t\n]/.test(e8.bufferText(q - 1, q))) q--;
@@ -4373,23 +4384,19 @@ function fixupIndentationWide(headingLine: number, diff: number): void {
     }
   }
   if (diff === 0 || e8.variable("org-adapt-indentation") !== true) return;
-  const footnote = /^\[fn:[-_\w]+\]/;
   // The lines to shift: past footnote definitions, blank lines and headings, and the inside of blocks whose indentation is kept.
   const lines: number[] = [];
   for (let k = l; k < endLine; k++) {
     const text = e8.lineText(k);
-    if (/^[ \t]*$/.test(text) || isHeadingLine(text)) continue;
-    if (footnote.test(text)) {
-      // A footnote definition runs to the next one, a heading or two blank lines, as Org's element does.
-      let m = k + 1;
-      while (m < endLine) {
-        const t = e8.lineText(m);
-        if (footnote.test(t) || isHeadingLine(t) || (/^[ \t]*$/.test(t) && m + 1 < endLine && /^[ \t]*$/.test(e8.lineText(m + 1)))) break;
-        m++;
+    if (FOOTNOTE_DEFINITION.test(text)) {
+      // A footnote definition, all of it.
+      const fd = elementAt(e8.lineStart(k));
+      if (fd?.type === "footnote-definition") {
+        k = fd.end === e8.lineStart(lineAt(fd.end)) ? lineAt(fd.end) - 1 : endLine;
+        continue;
       }
-      k = m - 1;
-      continue;
     }
+    if (/^[ \t]*$/.test(text) || isHeadingLine(text)) continue;
     lines.push(k);
     if (/^[ \t]*#\+BEGIN_(EXAMPLE|SRC)/i.test(text)) {
       const block = elementAt(e8.lineStart(k));
@@ -4406,7 +4413,7 @@ function fixupIndentationWide(headingLine: number, diff: number): void {
       const text = e8.lineText(k);
       const ind = textIndentation(text);
       const rest = text.replace(/^[ \t]*/, "");
-      if (ind < -diff || (ind === -diff && (/^\*+ /.test(rest) || footnote.test(rest)))) return;
+      if (ind < -diff || (ind === -diff && (/^\*+ /.test(rest) || FOOTNOTE_DEFINITION.test(rest)))) return;
     }
   }
   for (const k of lines) indentLineTo(k, textIndentation(e8.lineText(k)) + diff);

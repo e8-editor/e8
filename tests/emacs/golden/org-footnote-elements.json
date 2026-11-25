@@ -1,0 +1,3245 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "fwd-element-label",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 18,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "bwd-element-label",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 18,
+        "keys": "M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fwd-para-label",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 18,
+        "keys": "C-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 49,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "bwd-para-label",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 18,
+        "keys": "C-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "mark-label",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 18,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\nAfter the note.\n\nLast.\n",
+      "point": 18,
+      "mark": 18,
+      "mark_active": false,
+      "kill_ring": [
+        "[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fwd-element-first",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 25,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 50,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "bwd-element-first",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 25,
+        "keys": "M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fwd-para-first",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 25,
+        "keys": "C-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 49,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "bwd-para-first",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 25,
+        "keys": "C-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "mark-first",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 25,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] Second para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] Second para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 25,
+      "mark": 25,
+      "mark_active": false,
+      "kill_ring": [
+        "First para of the\nnote.\n\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fwd-element-note",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 43,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 50,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "bwd-element-note",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 43,
+        "keys": "M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fwd-para-note",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 43,
+        "keys": "C-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 49,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "bwd-para-note",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 43,
+        "keys": "C-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "mark-note",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 43,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] Second para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] Second para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 25,
+      "mark": 25,
+      "mark_active": false,
+      "kill_ring": [
+        "First para of the\nnote.\n\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fwd-element-second",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 50,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "bwd-element-second",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 50,
+        "keys": "M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fwd-para-second",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 50,
+        "keys": "C-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 75,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "bwd-para-second",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 50,
+        "keys": "C-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 49,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "mark-second",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 50,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\n\n\nAfter the note.\n\nLast.\n",
+      "point": 50,
+      "mark": 50,
+      "mark_active": false,
+      "kill_ring": [
+        "Second para of the note.\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fwd-element-blank",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 48,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 50,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "bwd-element-blank",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 48,
+        "keys": "M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fwd-para-blank",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 48,
+        "keys": "C-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 75,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "bwd-para-blank",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 48,
+        "keys": "C-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "mark-blank",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 48,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] Second para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] Second para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 25,
+      "mark": 25,
+      "mark_active": false,
+      "kill_ring": [
+        "First para of the\nnote.\n\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fwd-element-after",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 77,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 94,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "bwd-element-after",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 77,
+        "keys": "M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fwd-para-after",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 77,
+        "keys": "C-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 93,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "bwd-para-after",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 77,
+        "keys": "C-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 76,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "mark-after",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 77,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nLast.\n",
+      "point": 77,
+      "mark": 77,
+      "mark_active": false,
+      "kill_ring": [
+        "After the note.\n\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fwd-element-text",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 0,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "bwd-element-text",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 0,
+        "keys": "M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move further up",
+      "message": null
+    },
+    {
+      "name": "fwd-para-text",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 0,
+        "keys": "C-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "bwd-para-text",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 0,
+        "keys": "C-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "mark-text",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 0,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [
+        "Text[fn:1] here.\n\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fwd-element-twice",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 0,
+        "keys": "M-} M-} M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 94,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "bwd-element-twice",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 94,
+        "keys": "M-{ M-{ M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fwd-para-all",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 0,
+        "keys": "C-<down> C-<down> C-<down> C-<down> C-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 100,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "bwd-para-all",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 94,
+        "keys": "C-<up> C-<up> C-<up> C-<up> C-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "mark-twice",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 25,
+        "keys": "M-h M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] \n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] \n\nAfter the note.\n\nLast.\n",
+      "point": 25,
+      "mark": 25,
+      "mark_active": false,
+      "kill_ring": [
+        "First para of the\nnote.\n\nSecond para of the note.\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "drag-def-down",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 18,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\nAfter the note.\n\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\nAfter the note.\n\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\nLast.\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "drag-def-up",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 18,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\nText[fn:1] here.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\nText[fn:1] here.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "drag-after-up",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 77,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\nAfter the note.\n\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\nAfter the note.\n\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\nLast.\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "drag-text-down",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 0,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\nText[fn:1] here.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\nText[fn:1] here.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 58,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "drag-second-up",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 50,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] Second para of the note.\n\nFirst para of the\nnote.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] Second para of the note.\n\nFirst para of the\nnote.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "drag-second-down",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 50,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 50,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot drag element forward",
+      "message": null
+    },
+    {
+      "name": "drag-first-down",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 25,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] Second para of the note.\n\nFirst para of the\nnote.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] Second para of the note.\n\nFirst para of the\nnote.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 51,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "drag-first-up",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 25,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot drag element backward",
+      "message": null
+    },
+    {
+      "name": "two-fwd-element-a",
+      "input": {
+        "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+        "point": 14,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "visible": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "point": 30,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "two-bwd-element-a",
+      "input": {
+        "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+        "point": 14,
+        "keys": "M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "visible": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "two-mark-a",
+      "input": {
+        "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+        "point": 14,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:a] #+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "visible": "Para.\n\n[fn:a] #+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "point": 14,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [
+        "Note a\ngoes on.\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "two-drag-down-a",
+      "input": {
+        "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+        "point": 14,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "visible": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot swap elements",
+      "message": null
+    },
+    {
+      "name": "two-drag-up-a",
+      "input": {
+        "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+        "point": 14,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "visible": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot drag element backward",
+      "message": null
+    },
+    {
+      "name": "two-fwd-element-on",
+      "input": {
+        "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+        "point": 21,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "visible": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "point": 30,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "two-bwd-element-on",
+      "input": {
+        "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+        "point": 21,
+        "keys": "M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "visible": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "two-mark-on",
+      "input": {
+        "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+        "point": 21,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:a] #+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "visible": "Para.\n\n[fn:a] #+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "point": 14,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [
+        "Note a\ngoes on.\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "two-drag-down-on",
+      "input": {
+        "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+        "point": 21,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "visible": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot swap elements",
+      "message": null
+    },
+    {
+      "name": "two-drag-up-on",
+      "input": {
+        "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+        "point": 21,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "visible": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot drag element backward",
+      "message": null
+    },
+    {
+      "name": "two-fwd-element-name",
+      "input": {
+        "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+        "point": 30,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "visible": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "point": 67,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "two-bwd-element-name",
+      "input": {
+        "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+        "point": 30,
+        "keys": "M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "visible": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "two-mark-name",
+      "input": {
+        "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+        "point": 30,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:a] Note a\ngoes on.\n* Heading\n[fn:c] Note c.\n",
+      "visible": "Para.\n\n[fn:a] Note a\ngoes on.\n* Heading\n[fn:c] Note c.\n",
+      "point": 30,
+      "mark": 30,
+      "mark_active": false,
+      "kill_ring": [
+        "#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "two-drag-down-name",
+      "input": {
+        "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+        "point": 30,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "visible": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "point": 30,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot drag element forward",
+      "message": null
+    },
+    {
+      "name": "two-drag-up-name",
+      "input": {
+        "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+        "point": 30,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n[fn:a] Note a\ngoes on.\n* Heading\n[fn:c] Note c.\n",
+      "visible": "Para.\n\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n[fn:a] Note a\ngoes on.\n* Heading\n[fn:c] Note c.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "two-fwd-element-b",
+      "input": {
+        "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+        "point": 47,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "visible": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "point": 56,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "two-bwd-element-b",
+      "input": {
+        "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+        "point": 47,
+        "keys": "M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "visible": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "point": 30,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "two-mark-b",
+      "input": {
+        "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+        "point": 47,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] More of b.\n* Heading\n[fn:c] Note c.\n",
+      "visible": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] More of b.\n* Heading\n[fn:c] Note c.\n",
+      "point": 47,
+      "mark": 47,
+      "mark_active": false,
+      "kill_ring": [
+        "Note b.\n\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "two-drag-down-b",
+      "input": {
+        "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+        "point": 47,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] More of b.\n\nNote b.\n* Heading\n[fn:c] Note c.\n",
+      "visible": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] More of b.\n\nNote b.\n* Heading\n[fn:c] Note c.\n",
+      "point": 59,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "two-drag-up-b",
+      "input": {
+        "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+        "point": 47,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "visible": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "point": 47,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot drag element backward",
+      "message": null
+    },
+    {
+      "name": "two-fwd-element-more",
+      "input": {
+        "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+        "point": 56,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "visible": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "point": 67,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "two-bwd-element-more",
+      "input": {
+        "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+        "point": 56,
+        "keys": "M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "visible": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "point": 47,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "two-mark-more",
+      "input": {
+        "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+        "point": 56,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\n* Heading\n[fn:c] Note c.\n",
+      "visible": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\n* Heading\n[fn:c] Note c.\n",
+      "point": 56,
+      "mark": 56,
+      "mark_active": false,
+      "kill_ring": [
+        "More of b.\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "two-drag-down-more",
+      "input": {
+        "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+        "point": 56,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "visible": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "point": 56,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot drag element forward",
+      "message": null
+    },
+    {
+      "name": "two-drag-up-more",
+      "input": {
+        "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+        "point": 56,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] More of b.\n\nNote b.\n* Heading\n[fn:c] Note c.\n",
+      "visible": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] More of b.\n\nNote b.\n* Heading\n[fn:c] Note c.\n",
+      "point": 47,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "two-fwd-element-c",
+      "input": {
+        "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+        "point": 84,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "visible": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "point": 92,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "two-bwd-element-c",
+      "input": {
+        "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+        "point": 84,
+        "keys": "M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "visible": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "two-mark-c",
+      "input": {
+        "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+        "point": 84,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] ",
+      "visible": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] ",
+      "point": 84,
+      "mark": 84,
+      "mark_active": false,
+      "kill_ring": [
+        "Note c.\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "two-drag-down-c",
+      "input": {
+        "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+        "point": 84,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "visible": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "point": 84,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot drag element forward",
+      "message": null
+    },
+    {
+      "name": "two-drag-up-c",
+      "input": {
+        "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+        "point": 84,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "visible": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+      "point": 84,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot drag element backward",
+      "message": null
+    },
+    {
+      "name": "pre-fwd-element-x",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 0,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "visible": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pre-bwd-element-x",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 0,
+        "keys": "M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "visible": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move further up",
+      "message": null
+    },
+    {
+      "name": "pre-fwd-para-x",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 0,
+        "keys": "C-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "visible": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pre-mark-x",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 0,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:y]\n\nPara.\n",
+      "visible": "[fn:y]\n\nPara.\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [
+        "[fn:x]\n\n  Indented note\n  text.\n\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pre-tab-x",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 0,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "visible": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pre-fwd-element-blank",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 6,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "visible": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pre-bwd-element-blank",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 6,
+        "keys": "M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "visible": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pre-fwd-para-blank",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 6,
+        "keys": "C-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "visible": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pre-mark-blank",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 6,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:y]\n\nPara.\n",
+      "visible": "[fn:y]\n\nPara.\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [
+        "[fn:x]\n\n  Indented note\n  text.\n\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pre-tab-blank",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 6,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "visible": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pre-fwd-element-ind",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 10,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "visible": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pre-bwd-element-ind",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 10,
+        "keys": "M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "visible": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pre-fwd-para-ind",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 10,
+        "keys": "C-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "visible": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pre-mark-ind",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 10,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:x]\n\n\n[fn:y]\n\nPara.\n",
+      "visible": "[fn:x]\n\n\n[fn:y]\n\nPara.\n",
+      "point": 8,
+      "mark": 8,
+      "mark_active": false,
+      "kill_ring": [
+        "  Indented note\n  text.\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pre-tab-ind",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 10,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:x]\n\nIndented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "visible": "[fn:x]\n\nIndented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pre-fwd-element-text",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 24,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "visible": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pre-bwd-element-text",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 24,
+        "keys": "M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "visible": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pre-fwd-para-text",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 24,
+        "keys": "C-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "visible": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pre-mark-text",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 24,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:x]\n\n\n[fn:y]\n\nPara.\n",
+      "visible": "[fn:x]\n\n\n[fn:y]\n\nPara.\n",
+      "point": 8,
+      "mark": 8,
+      "mark_active": false,
+      "kill_ring": [
+        "  Indented note\n  text.\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pre-tab-text",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 24,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "visible": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pre-fwd-element-y",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 33,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "visible": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "point": 47,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pre-bwd-element-y",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 33,
+        "keys": "M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "visible": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pre-fwd-para-y",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 33,
+        "keys": "C-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "visible": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "point": 40,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pre-mark-y",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 33,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:x]\n\n  Indented note\n  text.\n\n",
+      "visible": "[fn:x]\n\n  Indented note\n  text.\n\n",
+      "point": 33,
+      "mark": 33,
+      "mark_active": false,
+      "kill_ring": [
+        "[fn:y]\n\nPara.\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pre-tab-y",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 33,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "visible": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pre-fwd-element-para",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 41,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "visible": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "point": 47,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pre-bwd-element-para",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 41,
+        "keys": "M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "visible": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pre-fwd-para-para",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 41,
+        "keys": "C-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "visible": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "point": 47,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pre-mark-para",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 41,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\n",
+      "visible": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\n",
+      "point": 41,
+      "mark": 41,
+      "mark_active": false,
+      "kill_ring": [
+        "Para.\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pre-tab-para",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 41,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "visible": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+      "point": 41,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pre-drag-y-up",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 33,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:y]\n\nPara.\n\n[fn:x]\n\n  Indented note\n  text.\n",
+      "visible": "[fn:y]\n\nPara.\n\n[fn:x]\n\n  Indented note\n  text.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pre-drag-x-down",
+      "input": {
+        "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+        "point": 0,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:y]\n\nPara.\n\n[fn:x]\n\n  Indented note\n  text.\n",
+      "visible": "[fn:y]\n\nPara.\n\n[fn:x]\n\n  Indented note\n  text.\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "upper-fwd-element",
+      "input": {
+        "text": "Para.\n[FN:1] Upper\ncase.\n\nNext.\n",
+        "point": 0,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n[FN:1] Upper\ncase.\n\nNext.\n",
+      "visible": "Para.\n[FN:1] Upper\ncase.\n\nNext.\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "upper-mark",
+      "input": {
+        "text": "Para.\n[FN:1] Upper\ncase.\n\nNext.\n",
+        "point": 13,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n[FN:1] Next.\n",
+      "visible": "Para.\n[FN:1] Next.\n",
+      "point": 13,
+      "mark": 13,
+      "mark_active": false,
+      "kill_ring": [
+        "Upper\ncase.\n\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "upper-fwd-para",
+      "input": {
+        "text": "[FN:1] Upper\ncase.\n\nNext para.\n\n\nOut.\n",
+        "point": 7,
+        "keys": "C-<down> C-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[FN:1] Upper\ncase.\n\nNext para.\n\n\nOut.\n",
+      "visible": "[FN:1] Upper\ncase.\n\nNext para.\n\n\nOut.\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "drawer-fwd-element",
+      "input": {
+        "text": "* H\n:NOTES:\n[fn:d] In a drawer.\n\nStill in it.\n:END:\nAfter.\n",
+        "point": 19,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:NOTES:\n[fn:d] In a drawer.\n\nStill in it.\n:END:\nAfter.\n",
+      "visible": "* H\n:NOTES:\n[fn:d] In a drawer.\n\nStill in it.\n:END:\nAfter.\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "drawer-mark",
+      "input": {
+        "text": "* H\n:NOTES:\n[fn:d] In a drawer.\n\nStill in it.\n:END:\nAfter.\n",
+        "point": 33,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:NOTES:\n[fn:d] In a drawer.\n\n:END:\nAfter.\n",
+      "visible": "* H\n:NOTES:\n[fn:d] In a drawer.\n\n:END:\nAfter.\n",
+      "point": 33,
+      "mark": 33,
+      "mark_active": false,
+      "kill_ring": [
+        "Still in it.\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "drawer-drag-up",
+      "input": {
+        "text": "* H\n:NOTES:\n[fn:d] In a drawer.\n\nStill in it.\n:END:\nAfter.\n",
+        "point": 33,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:NOTES:\n[fn:d] Still in it.\n\nIn a drawer.\n:END:\nAfter.\n",
+      "visible": "* H\n:NOTES:\n[fn:d] Still in it.\n\nIn a drawer.\n:END:\nAfter.\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "drawer-fwd-para",
+      "input": {
+        "text": "* H\n:NOTES:\n[fn:d] In a drawer.\n\nStill in it.\n:END:\nAfter.\n",
+        "point": 12,
+        "keys": "C-<down> C-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:NOTES:\n[fn:d] In a drawer.\n\nStill in it.\n:END:\nAfter.\n",
+      "visible": "* H\n:NOTES:\n[fn:d] In a drawer.\n\nStill in it.\n:END:\nAfter.\n",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-fwd-element",
+      "input": {
+        "text": "#+begin_quote\n[fn:q] Quoted note.\n\nMore.\n#+end_quote\n",
+        "point": 21,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+begin_quote\n[fn:q] Quoted note.\n\nMore.\n#+end_quote\n",
+      "visible": "#+begin_quote\n[fn:q] Quoted note.\n\nMore.\n#+end_quote\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-mark",
+      "input": {
+        "text": "#+begin_quote\n[fn:q] Quoted note.\n\nMore.\n#+end_quote\n",
+        "point": 35,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+begin_quote\n[fn:q] Quoted note.\n\n#+end_quote\n",
+      "visible": "#+begin_quote\n[fn:q] Quoted note.\n\n#+end_quote\n",
+      "point": 35,
+      "mark": 35,
+      "mark_active": false,
+      "kill_ring": [
+        "More.\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-mark-label",
+      "input": {
+        "text": "#+begin_quote\n[fn:q] Quoted note.\n\nMore.\n#+end_quote\n",
+        "point": 14,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+begin_quote\n#+end_quote\n",
+      "visible": "#+begin_quote\n#+end_quote\n",
+      "point": 14,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [
+        "[fn:q] Quoted note.\n\nMore.\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fill-first",
+      "input": {
+        "text": "[fn:1] A rather long footnote whose first paragraph runs well past the fill column here.\nAnd on.\n\nSecond paragraph of it also long enough to need filling at the column.\n",
+        "point": 9,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "fill-column": 30
+        }
+      },
+      "text": "[fn:1] A rather long footnote\nwhose first paragraph runs\nwell past the fill column\nhere.  And on.\n\nSecond paragraph of it also long enough to need filling at the column.\n",
+      "visible": "[fn:1] A rather long footnote\nwhose first paragraph runs\nwell past the fill column\nhere.  And on.\n\nSecond paragraph of it also long enough to need filling at the column.\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fill-label",
+      "input": {
+        "text": "[fn:1] A rather long footnote whose first paragraph runs well past the fill column here.\nAnd on.\n\nSecond paragraph of it also long enough to need filling at the column.\n",
+        "point": 0,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "fill-column": 30
+        }
+      },
+      "text": "[fn:1] A rather long footnote\nwhose first paragraph runs\nwell past the fill column\nhere.  And on.\n\nSecond paragraph of it also long enough to need filling at the column.\n",
+      "visible": "[fn:1] A rather long footnote\nwhose first paragraph runs\nwell past the fill column\nhere.  And on.\n\nSecond paragraph of it also long enough to need filling at the column.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fill-second",
+      "input": {
+        "text": "[fn:1] A rather long footnote whose first paragraph runs well past the fill column here.\nAnd on.\n\nSecond paragraph of it also long enough to need filling at the column.\n",
+        "point": 98,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "fill-column": 30
+        }
+      },
+      "text": "[fn:1] A rather long footnote whose first paragraph runs well past the fill column here.\nAnd on.\n\nSecond paragraph of it also\nlong enough to need filling at\nthe column.\n",
+      "visible": "[fn:1] A rather long footnote whose first paragraph runs well past the fill column here.\nAnd on.\n\nSecond paragraph of it also\nlong enough to need filling at\nthe column.\n",
+      "point": 98,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fill-region",
+      "input": {
+        "text": "[fn:1] A rather long footnote whose first paragraph runs well past the fill column here.\nAnd on.\n\nSecond paragraph of it also long enough to need filling at the column.\n",
+        "point": 0,
+        "keys": "C-SPC M-> M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "fill-column": 30
+        }
+      },
+      "text": "[fn:1] A rather long footnote\nwhose first paragraph runs\nwell past the fill column\nhere.  And on.\n\nSecond paragraph of it also\nlong enough to need filling at\nthe column.\n",
+      "visible": "[fn:1] A rather long footnote\nwhose first paragraph runs\nwell past the fill column\nhere.  And on.\n\nSecond paragraph of it also\nlong enough to need filling at\nthe column.\n",
+      "point": 170,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "auto-fill",
+      "input": {
+        "text": "[fn:1] Some note text that is",
+        "point": 29,
+        "keys": "SPC f o o SPC b a r SPC b a z",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "fill-column": 30
+        }
+      },
+      "text": "[fn:1] Some note text that is\nfoo bar baz",
+      "visible": "[fn:1] Some note text that is\nfoo bar baz",
+      "point": 41,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "indent-label",
+      "input": {
+        "text": "* H\n  Para.\n\n[fn:1] Note\n     text.\n\n     More note.\n\n\n   After.\n",
+        "point": 13,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* H\n  Para.\n\n[fn:1] Note\n     text.\n\n     More note.\n\n\n   After.\n",
+      "visible": "* H\n  Para.\n\n[fn:1] Note\n     text.\n\n     More note.\n\n\n   After.\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "indent-text",
+      "input": {
+        "text": "* H\n  Para.\n\n[fn:1] Note\n     text.\n\n     More note.\n\n\n   After.\n",
+        "point": 25,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* H\n  Para.\n\n[fn:1] Note\ntext.\n\n     More note.\n\n\n   After.\n",
+      "visible": "* H\n  Para.\n\n[fn:1] Note\ntext.\n\n     More note.\n\n\n   After.\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "indent-more",
+      "input": {
+        "text": "* H\n  Para.\n\n[fn:1] Note\n     text.\n\n     More note.\n\n\n   After.\n",
+        "point": 37,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* H\n  Para.\n\n[fn:1] Note\n     text.\n\nMore note.\n\n\n   After.\n",
+      "visible": "* H\n  Para.\n\n[fn:1] Note\n     text.\n\nMore note.\n\n\n   After.\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "indent-after",
+      "input": {
+        "text": "* H\n  Para.\n\n[fn:1] Note\n     text.\n\n     More note.\n\n\n   After.\n",
+        "point": 55,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* H\n  Para.\n\n[fn:1] Note\n     text.\n\n     More note.\n\n\n  After.\n",
+      "visible": "* H\n  Para.\n\n[fn:1] Note\n     text.\n\n     More note.\n\n\n  After.\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "indent-region",
+      "input": {
+        "text": "* H\n  Para.\n\n[fn:1] Note\n     text.\n\n     More note.\n\n\n   After.\n",
+        "point": 0,
+        "keys": "C-x h C-M-\\",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* H\n  Para.\n\n[fn:1] Note\ntext.\n\nMore note.\n\n\n  After.\n",
+      "visible": "* H\n  Para.\n\n[fn:1] Note\ntext.\n\nMore note.\n\n\n  After.\n",
+      "point": 0,
+      "mark": 54,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "indent-after-def",
+      "input": {
+        "text": "Para.\n\n[fn:1] Note.\nNext.",
+        "point": 20,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:1] Note.\nNext.",
+      "visible": "Para.\n\n[fn:1] Note.\nNext.",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "indent-after-def-in-item",
+      "input": {
+        "text": "- item\n  text\n[fn:1] Note.\n\n\nAfter.",
+        "point": 29,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- item\n  text\n[fn:1] Note.\n\n\nAfter.",
+      "visible": "- item\n  text\n[fn:1] Note.\n\n\nAfter.",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "demote-skips-def",
+      "input": {
+        "text": "* H\n  Text.\n[fn:1] Note\n  goes on.\n\n\n  After.\n",
+        "point": 0,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "** H\n   Text.\n[fn:1] Note\n  goes on.\n\n\n   After.\n",
+      "visible": "** H\n   Text.\n[fn:1] Note\n  goes on.\n\n\n   After.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "promote-skips-def",
+      "input": {
+        "text": "** H\n   Text.\n[fn:1] Note\n   goes on.\n\n\n   After.\n",
+        "point": 0,
+        "keys": "M-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* H\n  Text.\n[fn:1] Note\n   goes on.\n\n\n  After.\n",
+      "visible": "* H\n  Text.\n[fn:1] Note\n   goes on.\n\n\n  After.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "narrow-element",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 50,
+        "keys": "C-x n e C-a C-k",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-adapt-indentation": false
+        }
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\n\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\n\n\n\nAfter the note.\n\nLast.\n",
+      "point": 50,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "Second para of the note."
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "ctrl-c-label",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 18,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 4,
+      "mark": 18,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "ctrl-c-text",
+      "input": {
+        "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+        "point": 43,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "visible": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+      "point": 43,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    }
+  ]
+}
