@@ -3840,7 +3840,8 @@ e8.defineVariable({
 /** org-special-ctrl-a/e's setting for C-a (first) or C-e: undefined for none, "reversed", or "on". */
 function specialCtrlAE(first: boolean): "on" | "reversed" | undefined {
   let v: e8.Value = e8.variable("org-special-ctrl-a/e") ?? null;
-  if (Array.isArray(v)) v = (first ? v[0] : v.length === 2 ? v[1] : v.slice(1)) ?? null;
+  // A list of two is the pair (C-A . C-E), as E8 has no dotted pairs; of one, its cdr is nil.
+  if (Array.isArray(v)) v = (first ? v[0] : v.length === 2 ? v[1] : v.length > 2 ? v.slice(1) : null) ?? null;
   if (!truthy(v)) return undefined;
   return symbolNamed(v, "reversed") || v === "reversed" ? "reversed" : "on";
 }
@@ -3849,27 +3850,45 @@ function specialCtrlAE(first: boolean): "on" | "reversed" | undefined {
 const repeated = (): boolean => e8.lastCommand() !== undefined && e8.lastCommand() === e8.thisCommand();
 
 /**
- * Where a heading's title starts for C-a, as org-complex-heading-regexp
- * finds it on the line: after the TODO state, else the priority, else the
- * stars, and one space; a line of bare stars matches too.
+ * A heading line as org-complex-heading-regexp matches it, case mattering:
+ * the stars, a TODO keyword, a priority of any one character, the title,
+ * and tags, each after spaces or tabs; a line of bare stars too.
  */
-function headingTitlePosition(line: number): number | undefined {
+function complexHeading(line: number): { starsEnd: number; todoEnd?: number; priorityEnd?: number; tagsAt?: number } | undefined {
+  const words = [...allKeywords()].sort((a, b) => b.length - a.length).map(escapeRegExp).join("|");
+  const re = new RegExp(`^(\\*+)(?: +(${words || "(?!)"}))?(?: +(\\[#.\\]))?(?: +(.*?))??(?:[ \\t]+(:[\\p{L}\\p{N}_@#%:]+:))?[ \\t]*$`, "u");
   const text = e8.lineText(line);
-  const le = e8.lineEnd(line);
-  // As org-complex-heading-regexp, case matters for the TODO keywords.
-  const h = parseHeading(line);
-  if (h) {
-    const after = h.priorityAt !== undefined ? h.priorityAt + 4 : h.todoAt !== undefined ? h.todoAt + charCount(h.todo ?? "") : h.start + h.level;
-    return Math.min(after + 1, le);
-  }
-  const stars = /^\*+(?=[ \t]*$)/.exec(text);
-  return stars ? Math.min(e8.lineStart(line) + stars[0].length + 1, le) : undefined;
+  const m = re.exec(text);
+  if (!m) return undefined;
+  const ls = e8.lineStart(line);
+  const endOf = (group: number): number | undefined => {
+    if (m[group] === undefined) return undefined;
+    // Each group's place, found after the ones before it.
+    let from = 0;
+    for (let g = 1; g < group; g++) if (m[g] !== undefined) from = text.indexOf(m[g], from) + m[g].length;
+    return ls + charCount(text.slice(0, text.indexOf(m[group], from) + m[group].length));
+  };
+  const tagsEnd = endOf(5);
+  return {
+    starsEnd: ls + charCount(m[1]),
+    todoEnd: endOf(2),
+    priorityEnd: endOf(3),
+    tagsAt: tagsEnd === undefined ? undefined : tagsEnd - charCount(m[5]),
+  };
+}
+
+/** Where a heading's title starts for C-a: one past the TODO keyword, else the priority, else the stars, at most the line's end. */
+function headingTitlePosition(line: number): number | undefined {
+  const h = complexHeading(line);
+  if (!h) return undefined;
+  return Math.min((h.priorityEnd ?? h.todoEnd ?? h.starsEnd) + 1, e8.lineEnd(line));
 }
 
 /** Where an item's text starts for C-a, as org-beginning-of-line finds it: after the bullet and the spaces after it, and after a checkbox and a space. */
 function itemTextPosition(line: number): number | undefined {
   const text = e8.lineText(line);
-  const m = /^[ \t]*((?:[-+*]|(?:[0-9]+|[A-Za-z])[.)])(?:[ \t]+|$))(?:\[@(?:start:)?(?:[0-9]+|[A-Za-z])\][ \t]*)?(?:(\[[ X-]\])(?:[ \t]+|$))?/.exec(text);
+  // Whatever the case, as Org matches org-list-full-item-re with case-fold-search, so [x] is a box.
+  const m = /^[ \t]*((?:[-+*]|(?:[0-9]+|[A-Za-z])[.)])(?:[ \t]+|$))(?:\[@(?:start:)?(?:[0-9]+|[A-Za-z])\][ \t]*)?(?:(\[[ X-]\])(?:[ \t]+|$))?/i.exec(text);
   if (!m || !itemLine(line)) return undefined;
   const ls = e8.lineStart(line);
   if (m[2] === undefined) return ls + charCount(text.slice(0, m.index + m[0].indexOf(m[1]) + m[1].length));
@@ -3931,7 +3950,7 @@ e8.defineCommand({
       e8.call("beginning-of-visual-line");
     } else e8.call("move-beginning-of-line", n);
     const line = lineAt();
-    const h = special ? parseHeading(line) : undefined;
+    const h = special ? complexHeading(line) : undefined;
     if (h?.tagsAt !== undefined) {
       let tags = h.tagsAt;
       while (tags > e8.lineStart(line) && /[ \t]/.test(e8.bufferText(tags - 1, tags))) tags--;

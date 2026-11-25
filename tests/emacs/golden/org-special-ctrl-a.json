@@ -4369,6 +4369,4176 @@
       "modified": false,
       "error": null,
       "message": null
+    },
+    {
+      "name": "review-todo-file-kw",
+      "input": {
+        "text": "#+TODO: NEXT(n) WAIT(w@/!) | DONE(d)\n* NEXT [#B] Next title :x:\n* TODO Not a keyword here\n",
+        "point": 56,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "#+TODO: NEXT(n) WAIT(w@/!) | DONE(d)\n* NEXT [#B] Next title :x:\n* TODO Not a keyword here\n",
+      "visible": "#+TODO: NEXT(n) WAIT(w@/!) | DONE(d)\n* NEXT [#B] Next title :x:\n* TODO Not a keyword here\n",
+      "point": 49,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-todo-file-kw-ce",
+      "input": {
+        "text": "#+TODO: NEXT(n) WAIT(w@/!) | DONE(d)\n* NEXT [#B] Next title :x:\n* TODO Not a keyword here\n",
+        "point": 49,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "#+TODO: NEXT(n) WAIT(w@/!) | DONE(d)\n* NEXT [#B] Next title :x:\n* TODO Not a keyword here\n",
+      "visible": "#+TODO: NEXT(n) WAIT(w@/!) | DONE(d)\n* NEXT [#B] Next title :x:\n* TODO Not a keyword here\n",
+      "point": 59,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-todo-file-not-kw",
+      "input": {
+        "text": "#+TODO: NEXT(n) WAIT(w@/!) | DONE(d)\n* NEXT [#B] Next title :x:\n* TODO Not a keyword here\n",
+        "point": 75,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "#+TODO: NEXT(n) WAIT(w@/!) | DONE(d)\n* NEXT [#B] Next title :x:\n* TODO Not a keyword here\n",
+      "visible": "#+TODO: NEXT(n) WAIT(w@/!) | DONE(d)\n* NEXT [#B] Next title :x:\n* TODO Not a keyword here\n",
+      "point": 66,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-seq-todo",
+      "input": {
+        "text": "#+SEQ_TODO: OPEN CLOSED\n#+TYP_TODO: Fred Sara | DONE\n* OPEN First\n* Sara Second\n* Fred\n",
+        "point": 63,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "#+SEQ_TODO: OPEN CLOSED\n#+TYP_TODO: Fred Sara | DONE\n* OPEN First\n* Sara Second\n* Fred\n",
+      "visible": "#+SEQ_TODO: OPEN CLOSED\n#+TYP_TODO: Fred Sara | DONE\n* OPEN First\n* Sara Second\n* Fred\n",
+      "point": 60,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-typ-todo",
+      "input": {
+        "text": "#+SEQ_TODO: OPEN CLOSED\n#+TYP_TODO: Fred Sara | DONE\n* OPEN First\n* Sara Second\n* Fred\n",
+        "point": 76,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "#+SEQ_TODO: OPEN CLOSED\n#+TYP_TODO: Fred Sara | DONE\n* OPEN First\n* Sara Second\n* Fred\n",
+      "visible": "#+SEQ_TODO: OPEN CLOSED\n#+TYP_TODO: Fred Sara | DONE\n* OPEN First\n* Sara Second\n* Fred\n",
+      "point": 73,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-typ-todo-no-title",
+      "input": {
+        "text": "#+SEQ_TODO: OPEN CLOSED\n#+TYP_TODO: Fred Sara | DONE\n* OPEN First\n* Sara Second\n* Fred\n",
+        "point": 86,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "#+SEQ_TODO: OPEN CLOSED\n#+TYP_TODO: Fred Sara | DONE\n* OPEN First\n* Sara Second\n* Fred\n",
+      "visible": "#+SEQ_TODO: OPEN CLOSED\n#+TYP_TODO: Fred Sara | DONE\n* OPEN First\n* Sara Second\n* Fred\n",
+      "point": 80,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-prio-lower",
+      "input": {
+        "text": "* TODO [#a] Low prio\n",
+        "point": 16,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#a] Low prio\n",
+      "visible": "* TODO [#a] Low prio\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-prio-odd",
+      "input": {
+        "text": "* [#!] Odd prio\n",
+        "point": 11,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* [#!] Odd prio\n",
+      "visible": "* [#!] Odd prio\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-prio-space",
+      "input": {
+        "text": "* [# ] Space prio\n",
+        "point": 13,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* [# ] Space prio\n",
+      "visible": "* [# ] Space prio\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-prio-num-two",
+      "input": {
+        "text": "* TODO [#10] Num prio\n",
+        "point": 17,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#10] Num prio\n",
+      "visible": "* TODO [#10] Num prio\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-prio-num-one",
+      "input": {
+        "text": "* TODO [#1] Num prio\n",
+        "point": 16,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#1] Num prio\n",
+      "visible": "* TODO [#1] Num prio\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-prio-before-kw",
+      "input": {
+        "text": "* [#A] TODO title\n",
+        "point": 12,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* [#A] TODO title\n",
+      "visible": "* [#A] TODO title\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-prio-no-space",
+      "input": {
+        "text": "* TODO [#A]title\n",
+        "point": 13,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A]title\n",
+      "visible": "* TODO [#A]title\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-kw-tab-tags",
+      "input": {
+        "text": "* TODO\t:tag:\n",
+        "point": 12,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO\t:tag:\n",
+      "visible": "* TODO\t:tag:\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-kw-tab-tags-ce",
+      "input": {
+        "text": "* TODO\t:tag:\n",
+        "point": 3,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO\t:tag:\n",
+      "visible": "* TODO\t:tag:\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-kw-tab-eol",
+      "input": {
+        "text": "* TODO\t\n* Next\n",
+        "point": 7,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO\t\n* Next\n",
+      "visible": "* TODO\t\n* Next\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-kw-tab-title",
+      "input": {
+        "text": "* TODO\tTitle\n",
+        "point": 10,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO\tTitle\n",
+      "visible": "* TODO\tTitle\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-prio-tab-tags",
+      "input": {
+        "text": "* TODO [#A]\t:tag:\n",
+        "point": 17,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A]\t:tag:\n",
+      "visible": "* TODO [#A]\t:tag:\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-prio-alone",
+      "input": {
+        "text": "* DONE [#A]\n",
+        "point": 11,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* DONE [#A]\n",
+      "visible": "* DONE [#A]\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-kw-alone",
+      "input": {
+        "text": "* TODO\n",
+        "point": 6,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO\n",
+      "visible": "* TODO\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-comment-then-kw",
+      "input": {
+        "text": "* COMMENT TODO x\n",
+        "point": 15,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* COMMENT TODO x\n",
+      "visible": "* COMMENT TODO x\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-kw-then-comment",
+      "input": {
+        "text": "* TODO COMMENT x\n",
+        "point": 15,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO COMMENT x\n",
+      "visible": "* TODO COMMENT x\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-inline-task",
+      "input": {
+        "text": "*************** TODO Inline task :t:\nbody\n*************** END\n",
+        "point": 28,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "*************** TODO Inline task :t:\nbody\n*************** END\n",
+      "visible": "*************** TODO Inline task :t:\nbody\n*************** END\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-inline-task-ce",
+      "input": {
+        "text": "*************** TODO Inline task :t:\nbody\n*************** END\n",
+        "point": 21,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "*************** TODO Inline task :t:\nbody\n*************** END\n",
+      "visible": "*************** TODO Inline task :t:\nbody\n*************** END\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-odd-levels",
+      "input": {
+        "text": "* One\n*** TODO Three\n",
+        "point": 17,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true,
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* One\n*** TODO Three\n",
+      "visible": "* One\n*** TODO Three\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-two-spaces-after-stars",
+      "input": {
+        "text": "*  Spaced title\n",
+        "point": 10,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "*  Spaced title\n",
+      "visible": "*  Spaced title\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-two-spaces-after-kw",
+      "input": {
+        "text": "* TODO  Spaced title\n",
+        "point": 15,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO  Spaced title\n",
+      "visible": "* TODO  Spaced title\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-tags-no-space",
+      "input": {
+        "text": "* Title:notag:\n",
+        "point": 2,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* Title:notag:\n",
+      "visible": "* Title:notag:\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-tags-hyphen",
+      "input": {
+        "text": "* Title :a-b:\n",
+        "point": 2,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* Title :a-b:\n",
+      "visible": "* Title :a-b:\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-tags-unicode",
+      "input": {
+        "text": "* Title :åäö:\n",
+        "point": 2,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* Title :åäö:\n",
+      "visible": "* Title :åäö:\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-tags-two-groups",
+      "input": {
+        "text": "* Title :a:b: :c:\n",
+        "point": 2,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* Title :a:b: :c:\n",
+      "visible": "* Title :a:b: :c:\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-tags-trailing-ws",
+      "input": {
+        "text": "* Title :tag:   \n",
+        "point": 2,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* Title :tag:   \n",
+      "visible": "* Title :tag:   \n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-tags-trailing-ws-twice",
+      "input": {
+        "text": "* Title :tag:   \n",
+        "point": 2,
+        "keys": "C-e C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* Title :tag:   \n",
+      "visible": "* Title :tag:   \n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-tags-trailing-ws-thrice",
+      "input": {
+        "text": "* Title :tag:   \n",
+        "point": 2,
+        "keys": "C-e C-e C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* Title :tag:   \n",
+      "visible": "* Title :tag:   \n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-tags-tab-before",
+      "input": {
+        "text": "* Title\t\t:tag:\n",
+        "point": 2,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* Title\t\t:tag:\n",
+      "visible": "* Title\t\t:tag:\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-title-trailing-ws",
+      "input": {
+        "text": "* Title   \n",
+        "point": 11,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* Title   \n",
+      "visible": "* Title   \n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-eob-heading-ce",
+      "input": {
+        "text": "Text\n* TODO Last :t:",
+        "point": 12,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "Text\n* TODO Last :t:",
+      "visible": "Text\n* TODO Last :t:",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-eob-heading-ca",
+      "input": {
+        "text": "Text\n* TODO Last :t:",
+        "point": 20,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "Text\n* TODO Last :t:",
+      "visible": "Text\n* TODO Last :t:",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-eob-bare-star",
+      "input": {
+        "text": "Text\n*",
+        "point": 6,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "Text\n*",
+      "visible": "Text\n*",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-eob-star-space",
+      "input": {
+        "text": "Text\n* ",
+        "point": 7,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "Text\n* ",
+      "visible": "Text\n* ",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-star-tab",
+      "input": {
+        "text": "*\t\nx\n",
+        "point": 2,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "*\t\nx\n",
+      "visible": "*\t\nx\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-star-tab-title",
+      "input": {
+        "text": "*\tTitle\n",
+        "point": 2,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "*\tTitle\n",
+      "visible": "*\tTitle\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-only-stars-tags",
+      "input": {
+        "text": "** :t:\n",
+        "point": 4,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "** :t:\n",
+      "visible": "** :t:\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-link-heading",
+      "input": {
+        "text": "* [[https://e8.org][Link]] title\n",
+        "point": 27,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* [[https://e8.org][Link]] title\n",
+      "visible": "* Link title\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-link-heading-ce",
+      "input": {
+        "text": "* Title [[https://e8.org][Link]]\n",
+        "point": 2,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* Title [[https://e8.org][Link]]\n",
+      "visible": "* Title Link\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-link-heading-ce-tags",
+      "input": {
+        "text": "* Title [[https://e8.org][Link]] :t:\n",
+        "point": 2,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* Title [[https://e8.org][Link]] :t:\n",
+      "visible": "* Title Link :t:\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-link-bol",
+      "input": {
+        "text": "Text\n[[https://e8.org][Link]] at bol\n",
+        "point": 30,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "Text\n[[https://e8.org][Link]] at bol\n",
+      "visible": "Text\nLink at bol\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-link-bol-ce",
+      "input": {
+        "text": "[[https://e8.org][Link]]\nnext\n",
+        "point": 25,
+        "keys": "M-0 C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "[[https://e8.org][Link]]\nnext\n",
+      "visible": "Link\nnext\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-link-item",
+      "input": {
+        "text": "- [[https://e8.org][L]] item\n",
+        "point": 24,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "- [[https://e8.org][L]] item\n",
+      "visible": "- L item\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-emoji-heading",
+      "input": {
+        "text": "* 😀 TODO x :t:\n",
+        "point": 9,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* 😀 TODO x :t:\n",
+      "visible": "* 😀 TODO x :t:\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-emoji-item",
+      "input": {
+        "text": "- [ ] 😀 x\n",
+        "point": 8,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "- [ ] 😀 x\n",
+      "visible": "- [ ] 😀 x\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-ce-zero",
+      "input": {
+        "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+        "point": 22,
+        "keys": "M-0 C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+      "visible": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-ce-neg",
+      "input": {
+        "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+        "point": 29,
+        "keys": "M-- C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+      "visible": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-ce-cu",
+      "input": {
+        "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+        "point": 7,
+        "keys": "C-u C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+      "visible": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+      "point": 50,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-ca-zero",
+      "input": {
+        "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+        "point": 22,
+        "keys": "M-0 C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+      "visible": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-ca-neg",
+      "input": {
+        "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+        "point": 42,
+        "keys": "M-- C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+      "visible": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-ca-neg-two",
+      "input": {
+        "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+        "point": 42,
+        "keys": "M-- M-2 C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+      "visible": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-ca-three",
+      "input": {
+        "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+        "point": 17,
+        "keys": "M-3 C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+      "visible": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+      "point": 42,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-ca-past-end",
+      "input": {
+        "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+        "point": 17,
+        "keys": "M-9 C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+      "visible": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+      "point": 51,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-ce-past-end",
+      "input": {
+        "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+        "point": 17,
+        "keys": "M-9 C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+      "visible": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+      "point": 51,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-ca-past-end-nonl",
+      "input": {
+        "text": "* One :a:\n- item end",
+        "point": 2,
+        "keys": "M-5 C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* One :a:\n- item end",
+      "visible": "* One :a:\n- item end",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-ce-past-end-nonl",
+      "input": {
+        "text": "* One :a:\n- item end",
+        "point": 2,
+        "keys": "M-5 C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* One :a:\n- item end",
+      "visible": "* One :a:\n- item end",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-ca-zero-bob",
+      "input": {
+        "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+        "point": 7,
+        "keys": "M-0 C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+      "visible": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-ca-neg-bob",
+      "input": {
+        "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+        "point": 7,
+        "keys": "M-- C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+      "visible": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-ce-zero-bob",
+      "input": {
+        "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+        "point": 7,
+        "keys": "M-0 C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+      "visible": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-ca-zero-rev",
+      "input": {
+        "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+        "point": 29,
+        "keys": "M-0 C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+      "visible": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-ce-two-rev",
+      "input": {
+        "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+        "point": 7,
+        "keys": "M-2 C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+      "visible": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-ca-cu-cu",
+      "input": {
+        "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+        "point": 7,
+        "keys": "C-u C-u C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+      "visible": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+      "point": 51,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-rev-ca-prefix-repeat",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 0,
+        "keys": "C-a M-1 C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-rev-ca-cu-repeat",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 0,
+        "keys": "C-a C-u 1 C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-rev-ce-prefix-repeat",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 28,
+        "keys": "C-e M-1 C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-rev-ca-home",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 0,
+        "keys": "C-a <home>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-rev-home-ca",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 0,
+        "keys": "<home> C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-rev-ca-shift",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 0,
+        "keys": "C-a C-S-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 12,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-rev-shift-twice",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 0,
+        "keys": "C-S-a C-S-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 12,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-rev-end-ce",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 28,
+        "keys": "<end> C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 46,
+      "mark": 28,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-rev-ce-end",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 28,
+        "keys": "C-e <end>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 46,
+      "mark": 28,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-rev-ca-fb-ca",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 0,
+        "keys": "C-a C-f C-b C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-rev-ca-ce-ca",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 0,
+        "keys": "C-a C-e C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-rev-ca-mark-ca",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 0,
+        "keys": "C-a C-SPC C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-rev-item-twice",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 29,
+        "keys": "C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-rev-item-thrice",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 29,
+        "keys": "C-a C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-rev-ca-four",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 0,
+        "keys": "C-a C-a C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-rev-ce-cycle",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 12,
+        "keys": "C-e C-e C-e C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-t-ca-cycle",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 18,
+        "keys": "C-a C-a C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-t-ce-cycle",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 12,
+        "keys": "C-e C-e C-e C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-t-ca-home-cycle",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 18,
+        "keys": "<home> <home> <home>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-t-ce-end-cycle",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 12,
+        "keys": "<end> <end> <end>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 46,
+      "mark": 46,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-rev-ca-other-line",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 0,
+        "keys": "C-a C-n C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-list-t-nil-ca",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 18,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": [
+            true,
+            false
+          ]
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-list-rev-t-ca",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 0,
+        "keys": "C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": [
+            "'reversed",
+            true
+          ]
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-list-rev-only-ca",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 0,
+        "keys": "C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": [
+            "'reversed"
+          ]
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-list-rev-only-ce",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 12,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": [
+            "'reversed"
+          ]
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-plus",
+      "input": {
+        "text": "+ plus item\n",
+        "point": 7,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "+ plus item\n",
+      "visible": "+ plus item\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-star-indented",
+      "input": {
+        "text": "  * star item\n",
+        "point": 9,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "  * star item\n",
+      "visible": "  * star item\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-ten",
+      "input": {
+        "text": "10. ten item\n",
+        "point": 8,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "10. ten item\n",
+      "visible": "10. ten item\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-paren",
+      "input": {
+        "text": "1) paren item\n",
+        "point": 9,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "1) paren item\n",
+      "visible": "1) paren item\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-alpha-off",
+      "input": {
+        "text": "a. alpha item\nb. next\n",
+        "point": 9,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "a. alpha item\nb. next\n",
+      "visible": "a. alpha item\nb. next\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-alpha-on",
+      "input": {
+        "text": "a. alpha item\nb. next\n",
+        "point": 9,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true,
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "a. alpha item\nb. next\n",
+      "visible": "a. alpha item\nb. next\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-alpha-upper-on",
+      "input": {
+        "text": "A) alpha item\nB) next\n",
+        "point": 9,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true,
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "A) alpha item\nB) next\n",
+      "visible": "A) alpha item\nB) next\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-counter-box",
+      "input": {
+        "text": "- [@3] [X] counter and box\n",
+        "point": 19,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "- [@3] [X] counter and box\n",
+      "visible": "- [@3] [X] counter and box\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-counter-start",
+      "input": {
+        "text": "- [@start:3] started\n",
+        "point": 13,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "- [@start:3] started\n",
+      "visible": "- [@start:3] started\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-num-counter",
+      "input": {
+        "text": "1. [@5] five\n",
+        "point": 8,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "1. [@5] five\n",
+      "visible": "1. [@5] five\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-box-eol",
+      "input": {
+        "text": "- [X]\nnext\n",
+        "point": 0,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "- [X]\nnext\n",
+      "visible": "- [X]\nnext\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-box-eol-twice",
+      "input": {
+        "text": "- [X]\nnext\n",
+        "point": 5,
+        "keys": "C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "- [X]\nnext\n",
+      "visible": "- [X]\nnext\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-box-tab",
+      "input": {
+        "text": "- [ ]\ttab after box\n",
+        "point": 10,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "- [ ]\ttab after box\n",
+      "visible": "- [ ]\ttab after box\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-bullet-tab",
+      "input": {
+        "text": "-\t[ ] tab bullet\n",
+        "point": 10,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "-\t[ ] tab bullet\n",
+      "visible": "-\t[ ] tab bullet\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-desc",
+      "input": {
+        "text": "- term :: description\n",
+        "point": 10,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "- term :: description\n",
+      "visible": "- term :: description\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-desc-box",
+      "input": {
+        "text": "- [ ] term :: description\n",
+        "point": 14,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "- [ ] term :: description\n",
+      "visible": "- [ ] term :: description\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-empty",
+      "input": {
+        "text": "- \nnext\n",
+        "point": 2,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "- \nnext\n",
+      "visible": "- \nnext\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-empty-twice",
+      "input": {
+        "text": "- \nnext\n",
+        "point": 2,
+        "keys": "C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "- \nnext\n",
+      "visible": "- \nnext\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-dash-only",
+      "input": {
+        "text": "-\nnext\n",
+        "point": 1,
+        "keys": "C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "-\nnext\n",
+      "visible": "-\nnext\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-dash-only-bol",
+      "input": {
+        "text": "-\nnext\n",
+        "point": 0,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "-\nnext\n",
+      "visible": "-\nnext\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-partial-box",
+      "input": {
+        "text": "- [-] partial box\n",
+        "point": 14,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "- [-] partial box\n",
+      "visible": "- [-] partial box\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-lower-x",
+      "input": {
+        "text": "- [x] lowercase x\n",
+        "point": 6,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "- [x] lowercase x\n",
+      "visible": "- [x] lowercase x\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-no-space",
+      "input": {
+        "text": "-text no item\n",
+        "point": 6,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "-text no item\n",
+      "visible": "-text no item\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-in-drawer",
+      "input": {
+        "text": "* H\n:NOTES:\n- in drawer\n:END:\n",
+        "point": 17,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* H\n:NOTES:\n- in drawer\n:END:\n",
+      "visible": "* H\n:NOTES:\n- in drawer\n:END:\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-in-quote",
+      "input": {
+        "text": "#+begin_quote\n- in quote\n#+end_quote\n",
+        "point": 19,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "#+begin_quote\n- in quote\n#+end_quote\n",
+      "visible": "#+begin_quote\n- in quote\n#+end_quote\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-in-src",
+      "input": {
+        "text": "#+begin_src emacs-lisp\n- in src\n#+end_src\n",
+        "point": 28,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "#+begin_src emacs-lisp\n- in src\n#+end_src\n",
+      "visible": "#+begin_src emacs-lisp\n- in src\n#+end_src\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-in-example",
+      "input": {
+        "text": "#+begin_example\n- in example\n#+end_example\n",
+        "point": 21,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "#+begin_example\n- in example\n#+end_example\n",
+      "visible": "#+begin_example\n- in example\n#+end_example\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-in-verse",
+      "input": {
+        "text": "#+begin_verse\n- in verse\n#+end_verse\n",
+        "point": 19,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "#+begin_verse\n- in verse\n#+end_verse\n",
+      "visible": "#+begin_verse\n- in verse\n#+end_verse\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-in-center",
+      "input": {
+        "text": "#+begin_center\n- in center\n#+end_center\n",
+        "point": 20,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "#+begin_center\n- in center\n#+end_center\n",
+      "visible": "#+begin_center\n- in center\n#+end_center\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-in-export",
+      "input": {
+        "text": "#+begin_export html\n- in export\n#+end_export\n",
+        "point": 25,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "#+begin_export html\n- in export\n#+end_export\n",
+      "visible": "#+begin_export html\n- in export\n#+end_export\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-in-comment",
+      "input": {
+        "text": "#+begin_comment\n- in comment\n#+end_comment\n",
+        "point": 21,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "#+begin_comment\n- in comment\n#+end_comment\n",
+      "visible": "#+begin_comment\n- in comment\n#+end_comment\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-in-special",
+      "input": {
+        "text": "#+begin_note\n- in note\n#+end_note\n",
+        "point": 18,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "#+begin_note\n- in note\n#+end_note\n",
+      "visible": "#+begin_note\n- in note\n#+end_note\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-after-unclosed",
+      "input": {
+        "text": "#+begin_src\n- after unclosed\n",
+        "point": 20,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "#+begin_src\n- after unclosed\n",
+      "visible": "#+begin_src\n- after unclosed\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-in-latex-eq",
+      "input": {
+        "text": "\\begin{equation}\n- x\n\\end{equation}\n",
+        "point": 19,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "\\begin{equation}\n- x\n\\end{equation}\n",
+      "visible": "\\begin{equation}\n- x\n\\end{equation}\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-nested",
+      "input": {
+        "text": "- a\n  - nested b\n    1. deep item\n",
+        "point": 29,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "- a\n  - nested b\n    1. deep item\n",
+      "visible": "- a\n  - nested b\n    1. deep item\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-continuation",
+      "input": {
+        "text": "- a\n  continued text\n",
+        "point": 16,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "- a\n  continued text\n",
+      "visible": "- a\n  continued text\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-continuation-ws",
+      "input": {
+        "text": "- a\n  continued text\n",
+        "point": 6,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "- a\n  continued text\n",
+      "visible": "- a\n  continued text\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-after-para",
+      "input": {
+        "text": "Para text\n- item after\n",
+        "point": 17,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "Para text\n- item after\n",
+      "visible": "Para text\n- item after\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-in-table",
+      "input": {
+        "text": "| - x | y |\n",
+        "point": 4,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "| - x | y |\n",
+      "visible": "| - x | y |\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-in-fixed",
+      "input": {
+        "text": ": - fixed\n",
+        "point": 4,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": ": - fixed\n",
+      "visible": ": - fixed\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-in-footnote",
+      "input": {
+        "text": "[fn:1] Note\n- item in fn\n",
+        "point": 19,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "[fn:1] Note\n- item in fn\n",
+      "visible": "[fn:1] Note\n- item in fn\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-wide-tabs",
+      "input": {
+        "text": "-   [ ]   wide box\n",
+        "point": 15,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "-   [ ]   wide box\n",
+      "visible": "-   [ ]   wide box\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-ce",
+      "input": {
+        "text": "- item :tag:\n",
+        "point": 2,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "- item :tag:\n",
+      "visible": "- item :tag:\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-item-after-two-blanks",
+      "input": {
+        "text": "- a\n\n\n- b item\n",
+        "point": 10,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "- a\n\n\n- b item\n",
+      "visible": "- a\n\n\n- b item\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-fold-ca-two",
+      "input": {
+        "text": "* A :t:\nbody a\n* B :u:\nbody b\n",
+        "point": 2,
+        "keys": "S-TAB M-2 C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* A :t:\nbody a\n* B :u:\nbody b\n",
+      "visible": "* A :t:\n* B :u:",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-fold-ce-two",
+      "input": {
+        "text": "* A :t:\nbody a\n* B :u:\nbody b\n",
+        "point": 2,
+        "keys": "S-TAB M-2 C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* A :t:\nbody a\n* B :u:\nbody b\n",
+      "visible": "* A :t:\n* B :u:",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-fold-ca-zero",
+      "input": {
+        "text": "* A :t:\nbody a\n* B :u:\nbody b\n",
+        "point": 18,
+        "keys": "S-TAB M-0 C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* A :t:\nbody a\n* B :u:\nbody b\n",
+      "visible": "* A :t:\n* B :u:",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-fold-ce-zero",
+      "input": {
+        "text": "* A :t:\nbody a\n* B :u:\nbody b\n",
+        "point": 18,
+        "keys": "S-TAB M-0 C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* A :t:\nbody a\n* B :u:\nbody b\n",
+      "visible": "* A :t:\n* B :u:",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-drawer-fold-ce",
+      "input": {
+        "text": "* H\n:LOGBOOK:\n- note\n:END:\nText\n",
+        "point": 6,
+        "keys": "TAB C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* H\n:LOGBOOK:\n- note\n:END:\nText\n",
+      "visible": "* H\n:LOGBOOK:\nText\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-drawer-fold-next-ca",
+      "input": {
+        "text": "* H\n:LOGBOOK:\n- note\n:END:\nText\n",
+        "point": 6,
+        "keys": "TAB C-n C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* H\n:LOGBOOK:\n- note\n:END:\nText\n",
+      "visible": "* H\n:LOGBOOK:\nText\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-drawer-fold-two-ca",
+      "input": {
+        "text": "* H\n:LOGBOOK:\n- note\n:END:\nText\n",
+        "point": 6,
+        "keys": "TAB M-2 C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* H\n:LOGBOOK:\n- note\n:END:\nText\n",
+      "visible": "* H\n:LOGBOOK:\nText\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-drawer-fold-two-ce",
+      "input": {
+        "text": "* H\n:LOGBOOK:\n- note\n:END:\nText\n",
+        "point": 6,
+        "keys": "TAB M-2 C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* H\n:LOGBOOK:\n- note\n:END:\nText\n",
+      "visible": "* H\n:LOGBOOK:\nText\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-narrow-mid-heading-ca",
+      "input": {
+        "text": "* TODO Title :tag:\nBody\n- item text\n",
+        "point": 2,
+        "keys": "C-SPC C-n C-n C-x n n M-< C-f C-f C-f C-f C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO Title :tag:\nBody\n- item text\n",
+      "visible": "* TODO Title :tag:\nBody\n- item text\n",
+      "point": 2,
+      "mark": 2,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-narrow-mid-heading-ce",
+      "input": {
+        "text": "* TODO Title :tag:\nBody\n- item text\n",
+        "point": 2,
+        "keys": "C-SPC C-n C-n C-x n n M-< C-f C-f C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO Title :tag:\nBody\n- item text\n",
+      "visible": "* TODO Title :tag:\nBody\n- item text\n",
+      "point": 18,
+      "mark": 2,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-narrow-before-tags-ce",
+      "input": {
+        "text": "* TODO Title :tag:\nBody\n- item text\n",
+        "point": 0,
+        "keys": "C-SPC C-f C-f C-f C-f C-f C-f C-f C-f C-f C-f C-f C-f C-x n n M-< C-f C-f C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO Title :tag:\nBody\n- item text\n",
+      "visible": "* TODO Title :tag:\nBody\n- item text\n",
+      "point": 12,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-narrow-before-tags-ca",
+      "input": {
+        "text": "* TODO Title :tag:\nBody\n- item text\n",
+        "point": 0,
+        "keys": "C-SPC C-f C-f C-f C-f C-f C-f C-f C-f C-f C-f C-f C-f C-x n n M-> C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO Title :tag:\nBody\n- item text\n",
+      "visible": "* TODO Title :tag:\nBody\n- item text\n",
+      "point": 7,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-narrow-mid-item-ca",
+      "input": {
+        "text": "* TODO Title :tag:\nBody\n- item text\n",
+        "point": 26,
+        "keys": "C-SPC C-e C-x n n M-> C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO Title :tag:\nBody\n- item text\n",
+      "visible": "* TODO Title :tag:\nBody\n- item text\n",
+      "point": 26,
+      "mark": 26,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-narrow-mid-item-ca-twice",
+      "input": {
+        "text": "* TODO Title :tag:\nBody\n- item text\n",
+        "point": 26,
+        "keys": "C-SPC C-e C-x n n M-> C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO Title :tag:\nBody\n- item text\n",
+      "visible": "* TODO Title :tag:\nBody\n- item text\n",
+      "point": 26,
+      "mark": 26,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-mark-ce-ca",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 18,
+        "keys": "C-SPC C-e C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 12,
+      "mark": 18,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-shift-ce-then-ca",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 18,
+        "keys": "C-S-e C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 12,
+      "mark": 18,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-shift-ca-twice",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 18,
+        "keys": "C-S-a C-S-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 0,
+      "mark": 18,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-shift-home-item",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 41,
+        "keys": "S-<home>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 0,
+      "mark": 41,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-shift-end-heading",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 12,
+        "keys": "S-<end> S-<end>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 46,
+      "mark": 12,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-shift-ca-then-ce",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 18,
+        "keys": "C-S-a C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 22,
+      "mark": 18,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-shift-rev",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 0,
+        "keys": "C-a C-S-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-empty-buffer",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-a C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "",
+      "visible": "",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-blank-line",
+      "input": {
+        "text": "* H\n\n- x\n",
+        "point": 5,
+        "keys": "C-a C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* H\n\n- x\n",
+      "visible": "* H\n\n- x\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-nil-heading",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 18,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-nil-item",
+      "input": {
+        "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+        "point": 41,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "visible": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-nil-fold-ce-two",
+      "input": {
+        "text": "* A :t:\nbody a\n* B :u:\nbody b\n",
+        "point": 2,
+        "keys": "S-TAB M-2 C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* A :t:\nbody a\n* B :u:\nbody b\n",
+      "visible": "* A :t:\n* B :u:",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-nil-fold-ca-two",
+      "input": {
+        "text": "* A :t:\nbody a\n* B :u:\nbody b\n",
+        "point": 2,
+        "keys": "S-TAB M-2 C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* A :t:\nbody a\n* B :u:\nbody b\n",
+      "visible": "* A :t:\n* B :u:",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-nil-drawer-fold-two-ce",
+      "input": {
+        "text": "* H\n:LOGBOOK:\n- note\n:END:\nText\n",
+        "point": 6,
+        "keys": "TAB M-2 C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* H\n:LOGBOOK:\n- note\n:END:\nText\n",
+      "visible": "* H\n:LOGBOOK:\nText\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-nil-fold-ce-cu",
+      "input": {
+        "text": "* A :t:\nbody a\n* B :u:\nbody b\n* C\nbody c\n",
+        "point": 2,
+        "keys": "S-TAB C-u 3 C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* A :t:\nbody a\n* B :u:\nbody b\n* C\nbody c\n",
+      "visible": "* A :t:\n* B :u:\n* C",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-startup-fold-ce-two",
+      "input": {
+        "text": "* A :t:\nbody a\n* B :u:\nbody b\n",
+        "point": 2,
+        "keys": "M-2 C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true,
+          "org-startup-folded": "'overview"
+        }
+      },
+      "text": "* A :t:\nbody a\n* B :u:\nbody b\n",
+      "visible": "* A :t:\n* B :u:",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-startup-fold-ce-two-nil",
+      "input": {
+        "text": "* A :t:\nbody a\n* B :u:\nbody b\n",
+        "point": 2,
+        "keys": "M-2 C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": false,
+          "org-startup-folded": "'overview"
+        }
+      },
+      "text": "* A :t:\nbody a\n* B :u:\nbody b\n",
+      "visible": "* A :t:\n* B :u:",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-call-ca-folded",
+      "input": {
+        "text": "* A :t:\nbody a\n* B :u:\nbody b\n",
+        "point": 2,
+        "keys": "C-f C-b",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-beginning-of-line"
+        ],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true,
+          "org-startup-folded": "'overview"
+        }
+      },
+      "text": "* A :t:\nbody a\n* B :u:\nbody b\n",
+      "visible": "* A :t:\n* B :u:",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-box-lower-x-bol",
+      "input": {
+        "text": "- [x] lowercase\n",
+        "point": 0,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "- [x] lowercase\n",
+      "visible": "- [x] lowercase\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-box-lower-x-eol",
+      "input": {
+        "text": "- [x]\nnext\n",
+        "point": 0,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "- [x]\nnext\n",
+      "visible": "- [x]\nnext\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-box-lower-x-rev",
+      "input": {
+        "text": "- [x] lowercase\n",
+        "point": 0,
+        "keys": "C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "- [x] lowercase\n",
+      "visible": "- [x] lowercase\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-counter-upper-start",
+      "input": {
+        "text": "- [@START:3] started\n",
+        "point": 13,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "- [@START:3] started\n",
+      "visible": "- [@START:3] started\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
     }
   ]
 }
