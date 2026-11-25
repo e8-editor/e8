@@ -1,0 +1,1432 @@
+[
+ {
+  "name": "dot-paren-cminus",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-dot-cminus",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-paren-mret",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "M-RET x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-dot-mret",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "M-RET x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-paren-tab",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-dot-tab",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-paren-cc",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-dot-cc",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-paren-mdown",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-dot-mdown",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-paren-sright",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "S-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-dot-sright",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "S-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-paren-sleft",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "S-<left>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-dot-sleft",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "S-<left>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-paren-mright",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "M-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-dot-mright",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "M-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-paren-checkbox",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "C-u C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-dot-checkbox",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "C-u C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-paren-ret",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-dot-ret",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-paren-star",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "C-c *",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-dot-star",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "C-c *",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-paren-fwd-el",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-dot-fwd-el",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-paren-mark",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-dot-mark",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-paren-fill",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-dot-fill",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-paren-ca",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-dot-ca",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-cycle-dash",
+  "text": "* H\n- dash\n- [ ] box\n",
+  "point": 4,
+  "keys": "C-c - C-c - C-c - C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-cycle-dash-alpha",
+  "text": "* H\n- dash\n- [ ] box\n",
+  "point": 4,
+  "keys": "C-c - C-c - C-c - C-c - C-c - C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46,
+   "org-list-allow-alphabetical": true
+  }
+ },
+ {
+  "name": "dot-cycle-back",
+  "text": "* H\n- dash\n- [ ] box\n",
+  "point": 4,
+  "keys": "C-u C-c - C-u C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-cycle-previous",
+  "text": "* H\n- dash\n- [ ] box\n",
+  "point": 4,
+  "keys": "S-<left> S-<left>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-cycle-to-num",
+  "text": "* H\n- dash\n- [ ] box\n",
+  "point": 4,
+  "keys": "C-c - C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-toggle-item",
+  "text": "one\ntwo\n",
+  "point": 0,
+  "keys": "C-x h C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-heading-to-list",
+  "text": "* a\n* b\n",
+  "point": 0,
+  "keys": "C-x h C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "dot-lettered",
+  "text": "a) letter\nb) next\n",
+  "point": 13,
+  "keys": "C-c - M-RET y",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 46,
+   "org-list-allow-alphabetical": true
+  }
+ },
+ {
+  "name": "paren-paren-cminus",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-dot-cminus",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-paren-mret",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "M-RET x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-dot-mret",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "M-RET x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-paren-tab",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-dot-tab",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-paren-cc",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-dot-cc",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-paren-mdown",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-paren-sright",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "S-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-dot-sright",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "S-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-paren-sleft",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "S-<left>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-dot-sleft",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "S-<left>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-paren-mright",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "M-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-dot-mright",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "M-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-paren-checkbox",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "C-u C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-dot-checkbox",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "C-u C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-paren-ret",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-dot-ret",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-dot-star",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "C-c *",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-paren-fwd-el",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-dot-fwd-el",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-paren-mark",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-paren-fill",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-paren-ca",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-dot-ca",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-cycle-dash",
+  "text": "* H\n- dash\n- [ ] box\n",
+  "point": 4,
+  "keys": "C-c - C-c - C-c - C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-cycle-dash-alpha",
+  "text": "* H\n- dash\n- [ ] box\n",
+  "point": 4,
+  "keys": "C-c - C-c - C-c - C-c - C-c - C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41,
+   "org-list-allow-alphabetical": true
+  }
+ },
+ {
+  "name": "paren-cycle-back",
+  "text": "* H\n- dash\n- [ ] box\n",
+  "point": 4,
+  "keys": "C-u C-c - C-u C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-cycle-previous",
+  "text": "* H\n- dash\n- [ ] box\n",
+  "point": 4,
+  "keys": "S-<left> S-<left>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-cycle-to-num",
+  "text": "* H\n- dash\n- [ ] box\n",
+  "point": 4,
+  "keys": "C-c - C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-toggle-item",
+  "text": "one\ntwo\n",
+  "point": 0,
+  "keys": "C-x h C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-heading-to-list",
+  "text": "* a\n* b\n",
+  "point": 0,
+  "keys": "C-x h C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "paren-lettered",
+  "text": "a) letter\nb) next\n",
+  "point": 13,
+  "keys": "C-c - M-RET y",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": 41,
+   "org-list-allow-alphabetical": true
+  }
+ },
+ {
+  "name": "both-paren-cminus",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-dot-cminus",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-paren-mret",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "M-RET x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-dot-mret",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "M-RET x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-paren-tab",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-dot-tab",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-paren-cc",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-dot-cc",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-paren-mdown",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-dot-mdown",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-paren-sright",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "S-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-dot-sright",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "S-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-paren-sleft",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "S-<left>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-dot-sleft",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "S-<left>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-paren-mright",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "M-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-dot-mright",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "M-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-paren-checkbox",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "C-u C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-dot-checkbox",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "C-u C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-paren-ret",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-dot-ret",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-paren-star",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "C-c *",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-dot-star",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "C-c *",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-paren-fwd-el",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-dot-fwd-el",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-paren-mark",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-dot-mark",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-paren-fill",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-dot-fill",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-paren-ca",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 23,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-dot-ca",
+  "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+  "point": 48,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-cycle-dash",
+  "text": "* H\n- dash\n- [ ] box\n",
+  "point": 4,
+  "keys": "C-c - C-c - C-c - C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-cycle-dash-alpha",
+  "text": "* H\n- dash\n- [ ] box\n",
+  "point": 4,
+  "keys": "C-c - C-c - C-c - C-c - C-c - C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true,
+   "org-list-allow-alphabetical": true
+  }
+ },
+ {
+  "name": "both-cycle-back",
+  "text": "* H\n- dash\n- [ ] box\n",
+  "point": 4,
+  "keys": "C-u C-c - C-u C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-cycle-previous",
+  "text": "* H\n- dash\n- [ ] box\n",
+  "point": 4,
+  "keys": "S-<left> S-<left>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-cycle-to-num",
+  "text": "* H\n- dash\n- [ ] box\n",
+  "point": 4,
+  "keys": "C-c - C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-toggle-item",
+  "text": "one\ntwo\n",
+  "point": 0,
+  "keys": "C-x h C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-heading-to-list",
+  "text": "* a\n* b\n",
+  "point": 0,
+  "keys": "C-x h C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true
+  }
+ },
+ {
+  "name": "both-lettered",
+  "text": "a) letter\nb) next\n",
+  "point": 13,
+  "keys": "C-c - M-RET y",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-plain-list-ordered-item-terminator": true,
+   "org-list-allow-alphabetical": true
+  }
+ }
+]

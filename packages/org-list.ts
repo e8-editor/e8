@@ -69,21 +69,60 @@ export function alphabetical(): boolean {
   return lettered;
 }
 
-const ITEM_NUMBERED = /^(?:[ \t]*(?:[-+]|\d+[.)])|[ \t]+\*)(?:[ \t]+|$)/;
-const ITEM_LETTERED = /^(?:[ \t]*(?:[-+]|(?:\d+|[A-Za-z])[.)])|[ \t]+\*)(?:[ \t]+|$)/;
+e8.defineVariable({
+  name: "org-plain-list-ordered-item-terminator",
+  doc: "What may end an ordered item's number or letter: t for either . or ), or the character ?. or ?) for that one alone.",
+  value: true,
+});
 
-/** Matches the start of an item, as org-item-beginning-re: a lettered one too with org-list-allow-alphabetical. */
-export const ITEM_RE = { test: (text: string): boolean => (lettered ? ITEM_LETTERED : ITEM_NUMBERED).test(text) };
+/** The terminators a setting of org-plain-list-ordered-item-terminator allows, as a regexp's source, as org-item-re makes it. */
+function terminatorOf(v: e8.Value | undefined): string {
+  if (v === 41 || v === ")") return "\\)";
+  if (v === 46 || v === ".") return "\\.";
+  return "[.)]";
+}
+
+// The setting's global value, kept by a watcher as lettered is.
+let terminator = terminatorOf(e8.variable("org-plain-list-ordered-item-terminator") ?? true);
+
+/** The terminators an ordered item's bullet may end in, as a regexp's source: [.)], \\. or \\). */
+export function orderedTerminator(): string {
+  return terminator;
+}
+
+let ITEM_NUMBERED = /$^/;
+let ITEM_LETTERED = /$^/;
+let SEPARATE_NUMBERED = /$^/;
+let SEPARATE_LETTERED = /$^/;
 
 /** An item's indentation, bullet and the spaces after it, numbered bullets only or lettered ones too. */
-export const ITEM_GROUPS = {
-  numbered: /^([ \t]*)([-+*]|\d+[.)])([ \t]+|$)/,
-  lettered: /^([ \t]*)([-+*]|(?:\d+|[A-Za-z])[.)])([ \t]+|$)/,
-};
+export const ITEM_GROUPS = { numbered: /$^/, lettered: /$^/ };
+
+/** Makes the item regexps for the terminators allowed, as org-item-re does for each setting. */
+function makeItemRegexps(): void {
+  const t = terminator;
+  ITEM_NUMBERED = new RegExp(`^(?:[ \\t]*(?:[-+]|\\d+${t})|[ \\t]+\\*)(?:[ \\t]+|$)`);
+  ITEM_LETTERED = new RegExp(`^(?:[ \\t]*(?:[-+]|(?:\\d+|[A-Za-z])${t})|[ \\t]+\\*)(?:[ \\t]+|$)`);
+  SEPARATE_NUMBERED = new RegExp(`^[ \\t]*(?:[-+*]|[0-9]+${t})(?:[ \\t]|$)`);
+  SEPARATE_LETTERED = new RegExp(`^[ \\t]*(?:[-+*]|(?:[0-9]+|[A-Za-z])${t})(?:[ \\t]|$)`);
+  ITEM_GROUPS.numbered = new RegExp(`^([ \\t]*)([-+*]|\\d+${t})([ \\t]+|$)`);
+  ITEM_GROUPS.lettered = new RegExp(`^([ \\t]*)([-+*]|(?:\\d+|[A-Za-z])${t})([ \\t]+|$)`);
+}
+makeItemRegexps();
+// A global change only, as for org-list-allow-alphabetical.
+e8.addVariableWatcher("org-plain-list-ordered-item-terminator", (_symbol, value, _operation, where) => {
+  if (where === null || where === undefined) {
+    terminator = terminatorOf(value ?? true);
+    makeItemRegexps();
+  }
+});
+
+/** Matches the start of an item, as org-item-beginning-re: a lettered one too with org-list-allow-alphabetical, ending as org-plain-list-ordered-item-terminator says. */
+export const ITEM_RE = { test: (text: string): boolean => (lettered ? ITEM_LETTERED : ITEM_NUMBERED).test(text) };
 
 /** A line that looks like an item ends a paragraph, as org-element-paragraph-separate has it: lettered too with the setting. */
 export function separatesParagraph(text: string): boolean {
-  return (lettered ? /^[ \t]*(?:[-+*]|(?:[0-9]+|[A-Za-z])[.)])(?:[ \t]|$)/ : /^[ \t]*(?:[-+*]|[0-9]+[.)])(?:[ \t]|$)/).test(text);
+  return (lettered ? SEPARATE_LETTERED : SEPARATE_NUMBERED).test(text);
 }
 export const DRAWER_RE = /^[ \t]*:((?:\w|[-_])+):[ \t]*$/;
 const LIST_FORBIDDEN_BLOCKS = ["example", "verse", "src", "export"];
@@ -1318,9 +1357,12 @@ export function cycleListBullet(which?: string): void {
     "-",
     "+",
     ...(/^\S/.test(e8.lineText(line)) ? [] : ["*"]),
-    ...(description ? [] : ["1.", "1)"]),
+    // Those the terminator allows, as org-plain-list-ordered-item-terminator says.
+    ...(description || terminator === "\\)" ? [] : ["1."]),
+    ...(description || terminator === "\\." ? [] : ["1)"]),
     // Letters too where the list can have them, as org-list-use-alpha-bul-p says.
-    ...(description || !alpha ? [] : ["a.", "A.", "a)", "A)"]),
+    ...(description || !alpha || terminator === "\\)" ? [] : ["a.", "A."]),
+    ...(description || !alpha || terminator === "\\." ? [] : ["a)", "A)"]),
   ];
   const k = choices.indexOf(current);
   const index = k < 0 ? choices.length : k;

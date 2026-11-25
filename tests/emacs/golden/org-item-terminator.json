@@ -1,0 +1,2870 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "dot-paren-cminus",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1) paren one\n- 2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n- 2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "dot-dot-cminus",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n- dot one\n- dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n- dot one\n- dot two\n\nAfter.\n",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "dot-paren-mret",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1) paren one\n2) par\n* xen two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) par\n* xen two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "dot-dot-mret",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot\n3. xtwo\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot\n3. xtwo\n\nAfter.\n",
+      "point": 53,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "dot-paren-tab",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "dot-dot-tab",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 48,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "dot-paren-cc",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    },
+    {
+      "name": "dot-dot-cc",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 48,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "dot-paren-mdown",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1. dot one\n2. dot two\n\n1) paren one\n2) paren two\n\nAfter.\n",
+      "visible": "* H\n1. dot one\n2. dot two\n\n1) paren one\n2) paren two\n\nAfter.\n",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "dot-dot-mdown",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 48,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move this item further down",
+      "message": null
+    },
+    {
+      "name": "dot-paren-sright",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "To use shift-selection with Org mode, customize ‘org-support-shift-select’",
+      "message": null
+    },
+    {
+      "name": "dot-dot-sright",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n- dot one\n- dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n- dot one\n- dot two\n\nAfter.\n",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "dot-paren-sleft",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "To use shift-selection with Org mode, customize ‘org-support-shift-select’",
+      "message": null
+    },
+    {
+      "name": "dot-dot-sleft",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n+ dot one\n+ dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n+ dot one\n+ dot two\n\nAfter.\n",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "dot-paren-mright",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "dot-dot-mright",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n   1. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n   1. dot two\n\nAfter.\n",
+      "point": 51,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "dot-paren-checkbox",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    },
+    {
+      "name": "dot-dot-checkbox",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. [ ] dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. [ ] dot two\n\nAfter.\n",
+      "point": 52,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "dot-paren-ret",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1) paren one\n2) par\nen two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) par\nen two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "dot-dot-ret",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot\n    two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot\n    two\n\nAfter.\n",
+      "point": 52,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "dot-paren-star",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "C-c *",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1) paren one\n** 2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n** 2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "dot-dot-star",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "C-c *",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n** dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n** dot two\n\nAfter.\n",
+      "point": 42,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "dot-paren-fwd-el",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "dot-dot-fwd-el",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 53,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "dot-paren-mark",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 4,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [
+        "1) paren one\n2) paren two\n\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "dot-dot-mark",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. \nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. \nAfter.\n",
+      "point": 45,
+      "mark": 45,
+      "mark_active": false,
+      "kill_ring": [
+        "dot two\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "dot-paren-fill",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1) paren one 2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one 2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "dot-dot-fill",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 48,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "dot-paren-ca",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "dot-dot-ca",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 42,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "dot-cycle-dash",
+      "input": {
+        "text": "* H\n- dash\n- [ ] box\n",
+        "point": 4,
+        "keys": "C-c - C-c - C-c - C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n+ dash\n+ [ ] box\n",
+      "visible": "* H\n+ dash\n+ [ ] box\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "dot-cycle-dash-alpha",
+      "input": {
+        "text": "* H\n- dash\n- [ ] box\n",
+        "point": 4,
+        "keys": "C-c - C-c - C-c - C-c - C-c - C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46,
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "* H\n+ dash\n+ [ ] box\n",
+      "visible": "* H\n+ dash\n+ [ ] box\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "dot-cycle-back",
+      "input": {
+        "text": "* H\n- dash\n- [ ] box\n",
+        "point": 4,
+        "keys": "C-u C-c - C-u C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1. dash\n2. [ ] box\n",
+      "visible": "* H\n1. dash\n2. [ ] box\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "dot-cycle-previous",
+      "input": {
+        "text": "* H\n- dash\n- [ ] box\n",
+        "point": 4,
+        "keys": "S-<left> S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n+ dash\n+ [ ] box\n",
+      "visible": "* H\n+ dash\n+ [ ] box\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "dot-cycle-to-num",
+      "input": {
+        "text": "* H\n- dash\n- [ ] box\n",
+        "point": 4,
+        "keys": "C-c - C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n1. dash\n2. [ ] box\n",
+      "visible": "* H\n1. dash\n2. [ ] box\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "dot-toggle-item",
+      "input": {
+        "text": "one\ntwo\n",
+        "point": 0,
+        "keys": "C-x h C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "- one\n- two\n",
+      "visible": "- one\n- two\n",
+      "point": 0,
+      "mark": 12,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dot-heading-to-list",
+      "input": {
+        "text": "* a\n* b\n",
+        "point": 0,
+        "keys": "C-x h C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "- a\n- b\n",
+      "visible": "- a\n- b\n",
+      "point": 0,
+      "mark": 8,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dot-lettered",
+      "input": {
+        "text": "a) letter\nb) next\n",
+        "point": 13,
+        "keys": "C-c - M-RET y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 46,
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "a) letter\n- b)\n- ynext\n",
+      "visible": "a) letter\n- b)\n- ynext\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "paren-paren-cminus",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "* H\n- paren one\n- paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n- paren one\n- paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "paren-dot-cminus",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n- 2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n- 2. dot two\n\nAfter.\n",
+      "point": 50,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "paren-paren-mret",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "* H\n1) paren one\n2) par\n3) xen two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) par\n3) xen two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "paren-dot-mret",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot\n* x two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot\n* x two\n\nAfter.\n",
+      "point": 52,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "paren-paren-tab",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "paren-dot-tab",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 48,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "paren-paren-cc",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "paren-dot-cc",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 48,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    },
+    {
+      "name": "paren-paren-mdown",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move this item further down",
+      "message": null
+    },
+    {
+      "name": "paren-paren-sright",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "* H\n- paren one\n- paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n- paren one\n- paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "paren-dot-sright",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 48,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "To use shift-selection with Org mode, customize ‘org-support-shift-select’",
+      "message": null
+    },
+    {
+      "name": "paren-paren-sleft",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "* H\n+ paren one\n+ paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n+ paren one\n+ paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "paren-dot-sleft",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 48,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "To use shift-selection with Org mode, customize ‘org-support-shift-select’",
+      "message": null
+    },
+    {
+      "name": "paren-paren-mright",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "* H\n1) paren one\n   1) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n   1) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "paren-dot-mright",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 52,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "paren-paren-checkbox",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "* H\n1) paren one\n2) [ ] paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) [ ] paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "paren-dot-checkbox",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 48,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    },
+    {
+      "name": "paren-paren-ret",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "* H\n1) paren one\n2) par\n   en two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) par\n   en two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "paren-dot-ret",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot\ntwo\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot\ntwo\n\nAfter.\n",
+      "point": 49,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "paren-dot-star",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "C-c *",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n** 2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n** 2. dot two\n\nAfter.\n",
+      "point": 51,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "paren-paren-fwd-el",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 30,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "paren-dot-fwd-el",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 54,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "paren-paren-mark",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "* H\n1) paren one\n2) \n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) \n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 20,
+      "mark": 20,
+      "mark_active": false,
+      "kill_ring": [
+        "paren two\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "paren-paren-fill",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "paren-paren-ca",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "paren-dot-ca",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 42,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "paren-cycle-dash",
+      "input": {
+        "text": "* H\n- dash\n- [ ] box\n",
+        "point": 4,
+        "keys": "C-c - C-c - C-c - C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "* H\n+ dash\n+ [ ] box\n",
+      "visible": "* H\n+ dash\n+ [ ] box\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "paren-cycle-dash-alpha",
+      "input": {
+        "text": "* H\n- dash\n- [ ] box\n",
+        "point": 4,
+        "keys": "C-c - C-c - C-c - C-c - C-c - C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41,
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "* H\n+ dash\n+ [ ] box\n",
+      "visible": "* H\n+ dash\n+ [ ] box\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "paren-cycle-back",
+      "input": {
+        "text": "* H\n- dash\n- [ ] box\n",
+        "point": 4,
+        "keys": "C-u C-c - C-u C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "* H\n1) dash\n2) [ ] box\n",
+      "visible": "* H\n1) dash\n2) [ ] box\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "paren-cycle-previous",
+      "input": {
+        "text": "* H\n- dash\n- [ ] box\n",
+        "point": 4,
+        "keys": "S-<left> S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "* H\n+ dash\n+ [ ] box\n",
+      "visible": "* H\n+ dash\n+ [ ] box\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "paren-cycle-to-num",
+      "input": {
+        "text": "* H\n- dash\n- [ ] box\n",
+        "point": 4,
+        "keys": "C-c - C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "* H\n1) dash\n2) [ ] box\n",
+      "visible": "* H\n1) dash\n2) [ ] box\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "paren-toggle-item",
+      "input": {
+        "text": "one\ntwo\n",
+        "point": 0,
+        "keys": "C-x h C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "- one\n- two\n",
+      "visible": "- one\n- two\n",
+      "point": 0,
+      "mark": 12,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "paren-heading-to-list",
+      "input": {
+        "text": "* a\n* b\n",
+        "point": 0,
+        "keys": "C-x h C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "- a\n- b\n",
+      "visible": "- a\n- b\n",
+      "point": 0,
+      "mark": 8,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "paren-lettered",
+      "input": {
+        "text": "a) letter\nb) next\n",
+        "point": 13,
+        "keys": "C-c - M-RET y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": 41,
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "A) letter\nB) y\nC) next\n",
+      "visible": "A) letter\nB) y\nC) next\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-paren-cminus",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n- paren one\n- paren two\n\n- dot one\n- dot two\n\nAfter.\n",
+      "visible": "* H\n- paren one\n- paren two\n\n- dot one\n- dot two\n\nAfter.\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-dot-cminus",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n- paren one\n- paren two\n\n- dot one\n- dot two\n\nAfter.\n",
+      "visible": "* H\n- paren one\n- paren two\n\n- dot one\n- dot two\n\nAfter.\n",
+      "point": 44,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-paren-mret",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n1) paren one\n2) par\n\n3) xen two\n\n4) dot one\n5) dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) par\n\n3) xen two\n\n4) dot one\n5) dot two\n\nAfter.\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-dot-mret",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n3) dot one\n4) dot\n5) xtwo\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n3) dot one\n4) dot\n5) xtwo\n\nAfter.\n",
+      "point": 53,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-paren-tab",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-dot-tab",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 48,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-paren-cc",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n3) dot one\n4) dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n3) dot one\n4) dot two\n\nAfter.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-dot-cc",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n3) dot one\n4) dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n3) dot one\n4) dot two\n\nAfter.\n",
+      "point": 48,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-paren-mdown",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n1) paren one\n2) dot one\n\n3) paren two\n4) dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) dot one\n\n3) paren two\n4) dot two\n\nAfter.\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-dot-mdown",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 48,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move this item further down",
+      "message": null
+    },
+    {
+      "name": "both-paren-sright",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n- paren one\n- paren two\n\n- dot one\n- dot two\n\nAfter.\n",
+      "visible": "* H\n- paren one\n- paren two\n\n- dot one\n- dot two\n\nAfter.\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-dot-sright",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n- paren one\n- paren two\n\n- dot one\n- dot two\n\nAfter.\n",
+      "visible": "* H\n- paren one\n- paren two\n\n- dot one\n- dot two\n\nAfter.\n",
+      "point": 44,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-paren-sleft",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n1. paren one\n2. paren two\n\n3. dot one\n4. dot two\n\nAfter.\n",
+      "visible": "* H\n1. paren one\n2. paren two\n\n3. dot one\n4. dot two\n\nAfter.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-dot-sleft",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n1. paren one\n2. paren two\n\n3. dot one\n4. dot two\n\nAfter.\n",
+      "visible": "* H\n1. paren one\n2. paren two\n\n3. dot one\n4. dot two\n\nAfter.\n",
+      "point": 48,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-paren-mright",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n1) paren one\n   1) paren two\n\n2) dot one\n3) dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n   1) paren two\n\n2) dot one\n3) dot two\n\nAfter.\n",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-dot-mright",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n3) dot one\n   1. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n3) dot one\n   1. dot two\n\nAfter.\n",
+      "point": 51,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-paren-checkbox",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n1) paren one\n2) [ ] paren two\n\n3) dot one\n4) dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) [ ] paren two\n\n3) dot one\n4) dot two\n\nAfter.\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-dot-checkbox",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n3) dot one\n4) [ ] dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n3) dot one\n4) [ ] dot two\n\nAfter.\n",
+      "point": 52,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-paren-ret",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n1) paren one\n2) par\n   en two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) par\n   en two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-dot-ret",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot\n    two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot\n    two\n\nAfter.\n",
+      "point": 52,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-paren-star",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "C-c *",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n1) paren one\n** paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n** paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-dot-star",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "C-c *",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n** dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n** dot two\n\nAfter.\n",
+      "point": 42,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-paren-fwd-el",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-dot-fwd-el",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 53,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-paren-mark",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n1) paren one\n2) \n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) \n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 20,
+      "mark": 20,
+      "mark_active": false,
+      "kill_ring": [
+        "paren two\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-dot-mark",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. \nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. \nAfter.\n",
+      "point": 45,
+      "mark": 45,
+      "mark_active": false,
+      "kill_ring": [
+        "dot two\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-paren-fill",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-dot-fill",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 48,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-paren-ca",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 23,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-dot-ca",
+      "input": {
+        "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+        "point": 48,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "visible": "* H\n1) paren one\n2) paren two\n\n1. dot one\n2. dot two\n\nAfter.\n",
+      "point": 42,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-cycle-dash",
+      "input": {
+        "text": "* H\n- dash\n- [ ] box\n",
+        "point": 4,
+        "keys": "C-c - C-c - C-c - C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n- dash\n- [ ] box\n",
+      "visible": "* H\n- dash\n- [ ] box\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-cycle-dash-alpha",
+      "input": {
+        "text": "* H\n- dash\n- [ ] box\n",
+        "point": 4,
+        "keys": "C-c - C-c - C-c - C-c - C-c - C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true,
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "* H\na) dash\nb) [ ] box\n",
+      "visible": "* H\na) dash\nb) [ ] box\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-cycle-back",
+      "input": {
+        "text": "* H\n- dash\n- [ ] box\n",
+        "point": 4,
+        "keys": "C-u C-c - C-u C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n1. dash\n2. [ ] box\n",
+      "visible": "* H\n1. dash\n2. [ ] box\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-cycle-previous",
+      "input": {
+        "text": "* H\n- dash\n- [ ] box\n",
+        "point": 4,
+        "keys": "S-<left> S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n1. dash\n2. [ ] box\n",
+      "visible": "* H\n1. dash\n2. [ ] box\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-cycle-to-num",
+      "input": {
+        "text": "* H\n- dash\n- [ ] box\n",
+        "point": 4,
+        "keys": "C-c - C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "* H\n1. dash\n2. [ ] box\n",
+      "visible": "* H\n1. dash\n2. [ ] box\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "both-toggle-item",
+      "input": {
+        "text": "one\ntwo\n",
+        "point": 0,
+        "keys": "C-x h C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "- one\n- two\n",
+      "visible": "- one\n- two\n",
+      "point": 0,
+      "mark": 12,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "both-heading-to-list",
+      "input": {
+        "text": "* a\n* b\n",
+        "point": 0,
+        "keys": "C-x h C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true
+        }
+      },
+      "text": "- a\n- b\n",
+      "visible": "- a\n- b\n",
+      "point": 0,
+      "mark": 8,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "both-lettered",
+      "input": {
+        "text": "a) letter\nb) next\n",
+        "point": 13,
+        "keys": "C-c - M-RET y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-plain-list-ordered-item-terminator": true,
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "A) letter\nB) y\nC) next\n",
+      "visible": "A) letter\nB) y\nC) next\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    }
+  ]
+}
