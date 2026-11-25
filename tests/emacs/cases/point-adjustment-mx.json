@@ -1,0 +1,304 @@
+[
+ {
+  "name": "mx-hide-subtree",
+  "text": "* a\nbody one\nbody two\n* b\nmore\n",
+  "point": 8,
+  "keys": "M-x",
+  "answers": [
+   "outline-hide-subtree"
+  ],
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "mx-hide-body",
+  "text": "* a\nbody one\nbody two\n* b\nmore\n",
+  "point": 8,
+  "keys": "M-x",
+  "answers": [
+   "outline-hide-body"
+  ],
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "mx-hide-then-move",
+  "text": "* a\nbody one\nbody two\n* b\nmore\n",
+  "point": 8,
+  "keys": "M-x C-f",
+  "answers": [
+   "outline-hide-subtree"
+  ],
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "key-hide-subtree",
+  "text": "* a\nbody one\nbody two\n* b\nmore\n",
+  "point": 8,
+  "keys": "C-c C-c",
+  "modes": [
+   "outline-mode"
+  ]
+ },
+ {
+  "name": "key-shifttab",
+  "text": "* a\nbody one\nbody two\n* b\nmore\n",
+  "point": 8,
+  "keys": "S-TAB",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "mx-hide-subtree-outline",
+  "text": "* a\nbody one\nbody two\n* b\nmore\n",
+  "point": 8,
+  "keys": "M-x",
+  "answers": [
+   "outline-hide-subtree"
+  ],
+  "modes": [
+   "outline-mode"
+  ]
+ },
+ {
+  "name": "mx-move-into-hidden",
+  "text": "* a\nbody one\nbody two\n* b\nmore\n",
+  "point": 0,
+  "keys": "S-TAB M-x",
+  "answers": [
+   "forward-char"
+  ],
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "mx-move-twice",
+  "text": "* a\nbody one\nbody two\n* b\nmore\n",
+  "point": 0,
+  "keys": "S-TAB C-u 5 M-x",
+  "answers": [
+   "forward-char"
+  ],
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "key-move-into-hidden",
+  "text": "* a\nbody one\nbody two\n* b\nmore\n",
+  "point": 0,
+  "keys": "S-TAB C-u 5 C-f",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "mx-goto-line-code-prompt",
+  "text": "* a\nbody one is quite long here\nbody two is long as well\n* b\nmore\n",
+  "point": 0,
+  "keys": "S-TAB M-x",
+  "answers": [
+   "goto-line",
+   "3"
+  ],
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "key-goto-line-code-prompt",
+  "text": "* a\nbody one is quite long here\nbody two is long as well\n* b\nmore\n",
+  "point": 0,
+  "keys": "S-TAB M-g g",
+  "answers": [
+   "3"
+  ],
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "mx-goto-char-code-prompt",
+  "text": "* a\nbody one is quite long here\nbody two is long as well\n* b\nmore\n",
+  "point": 0,
+  "keys": "S-TAB M-x",
+  "answers": [
+   "goto-char",
+   "41"
+  ],
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "mx-sparse-tree-code-prompt",
+  "text": "* a\nbody one is quite long here\nbody two is long as well\n* b\nmore\n",
+  "point": 8,
+  "keys": "M-x",
+  "answers": [
+   "org-sparse-tree",
+   "r",
+   "more"
+  ],
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "key-sparse-tree-code-prompt",
+  "text": "* a\nbody one is quite long here\nbody two is long as well\n* b\nmore\n",
+  "point": 8,
+  "keys": "C-c /",
+  "answers": [
+   "r",
+   "more"
+  ],
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "cxb-back-to-hidden-point",
+  "text": "* a\nbody one\nbody two\n* b\nmore\n",
+  "point": 8,
+  "keys": "C-c C-c C-x b C-x b",
+  "answers": [
+   "*scratch*",
+   "*e8-oracle*"
+  ],
+  "modes": [
+   "outline-mode"
+  ]
+ },
+ {
+  "name": "mx-switch-back-to-hidden-point",
+  "text": "* a\nbody one\nbody two\n* b\nmore\n",
+  "point": 8,
+  "keys": "C-c C-c M-x M-x",
+  "answers": [
+   "switch-to-buffer",
+   "*scratch*",
+   "switch-to-buffer",
+   "*e8-oracle*"
+  ],
+  "modes": [
+   "outline-mode"
+  ]
+ },
+ {
+  "name": "global-disable-key",
+  "text": "* a\nbody one\nbody two\n* b\nmore\n",
+  "point": 0,
+  "keys": "S-TAB C-u 5 C-f",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "global-disable-point-adjustment": true
+  }
+ },
+ {
+  "name": "global-disable-mx",
+  "text": "* a\nbody one\nbody two\n* b\nmore\n",
+  "point": 0,
+  "keys": "S-TAB C-u 5 M-x",
+  "answers": [
+   "forward-char"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "global-disable-point-adjustment": true
+  }
+ },
+ {
+  "name": "link-key-forward",
+  "text": "[[https://x.org][desc]] tail\n",
+  "point": 0,
+  "keys": "C-f",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "link-mx-forward",
+  "text": "[[https://x.org][desc]] tail\n",
+  "point": 0,
+  "keys": "M-x",
+  "answers": [
+   "forward-char"
+  ],
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "link-mx-forward-then-key",
+  "text": "[[https://x.org][desc]] tail\n",
+  "point": 0,
+  "keys": "M-x C-f",
+  "answers": [
+   "forward-char"
+  ],
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "link-mx-backward",
+  "text": "[[https://x.org][desc]] tail\n",
+  "point": 21,
+  "keys": "M-x",
+  "answers": [
+   "backward-char"
+  ],
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "link-mx-goto-char",
+  "text": "[[https://x.org][desc]] tail\n",
+  "point": 0,
+  "keys": "M-x",
+  "answers": [
+   "goto-char",
+   "2"
+  ],
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "macro-mx-forward",
+  "text": "* a\nbody one is quite long here\nbody two is long as well\n* b\nmore\n",
+  "point": 2,
+  "keys": "S-TAB <f3> C-u 2 M-x <f4> <f4>",
+  "answers": [
+   "forward-char",
+   "forward-char"
+  ],
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "mx-hide-then-cxz",
+  "text": "* a\nbody one\nbody two\n* b\nmore\n",
+  "point": 8,
+  "keys": "M-x C-f C-x z",
+  "answers": [
+   "outline-hide-subtree"
+  ],
+  "modes": [
+   "org-mode"
+  ]
+ }
+]
