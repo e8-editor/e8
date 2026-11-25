@@ -1070,6 +1070,12 @@ function copyRegion(cut: boolean): void {
   const region = orgRegionActive() && e8.mark() !== undefined;
   const mark = e8.mark() ?? e8.point();
   const [beg, end] = region ? [Math.min(mark, e8.point()), Math.max(mark, e8.point())] : [e8.point(), e8.point()];
+  tableClip = copyRegionBetween(beg, end, cut);
+}
+
+/** The fields of the rectangle from beg to end, row by row, blanked if cutting, as org-table-copy-region returns them. */
+function copyRegionBetween(beg: number, end: number, cut: boolean): string[][] {
+  [beg, end] = [Math.min(beg, end), Math.max(beg, end)];
   e8.gotoChar(beg);
   checkInsideDataField();
   const begLine = lineAt();
@@ -1092,8 +1098,137 @@ function copyRegion(cut: boolean): void {
   }
   dropMarker(endMark);
   if (cut) align();
-  tableClip = clip;
+  return clip;
 }
+
+/**
+ * A field's number for summing, as org-table--number-for-summing reads it:
+ * zero written with only signs, points and exponent letters is 0; a time
+ * H:MM or H:MM:SS is a float of hours, counted in `times`; blanks, text
+ * and anything else reading as the integer 0 are no number.
+ */
+function numberForSumming(field: string, times: { count: number }): LispNumber | undefined {
+  const s = field.replace(/^ *\|? */, "").replace(/ *\|? *$/, "");
+  if (s.includes("0") && /^[-+ \t0.edED]+$/.test(s)) return { int: 0n };
+  if (/^[ \t]+$/.test(s)) return undefined;
+  const time = /^([0-9]+):([0-9]+)(?::([0-9]+))?$/.exec(s);
+  if (time) {
+    times.count++;
+    return { float: Number(time[1]) + Number(time[2]) / 60 + Number(time[3] ?? "0") / 3600 };
+  }
+  const n = stringToLispNumber(s);
+  return n.int === 0n ? undefined : n;
+}
+
+/** A string's leading number as string-to-number reads it, an integer or a float, or the integer 0. */
+function stringToLispNumber(text: string): LispNumber {
+  const m = /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?/.exec(text.replace(/^[ \t]+/, ""));
+  return m ? lispNumber(m[0]) : { int: 0n };
+}
+
+/** The sum of numbers as + adds them: integers exactly until the first float, then floats. */
+function sumNumbers(numbers: LispNumber[]): LispNumber {
+  let int = 0n;
+  let float: number | undefined;
+  for (const n of numbers) {
+    if (float === undefined && n.int !== undefined) int += n.int;
+    else float = (float ?? Number(int)) + (n.int !== undefined ? Number(n.int) : n.float!);
+  }
+  return float === undefined ? { int } : { float };
+}
+
+/** A float rounded to a whole number as printf's %.0f rounds it, halves to even. */
+function roundHalfEven(x: number): number {
+  const r = Math.round(x);
+  return Math.abs(x % 1) === 0.5 ? 2 * Math.round(x / 2) : r;
+}
+
+/** A number as printf's %0W.0f writes it: rounded halves to even, zero-padded to width after any sign, and -0 for a negative zero. */
+function printfFloat(x: number, width: number): string {
+  const sign = x < 0 || Object.is(x, -0) ? "-" : "";
+  const digits = String(Math.abs(roundHalfEven(x)));
+  return sign + digits.padStart(width - sign.length, "0");
+}
+
+/** x modulo y as Emacs's mod takes floats: the remainder with y's sign. */
+function floatMod(x: number, y: number): number {
+  const r = x % y;
+  return r !== 0 && (y < 0 ? r > 0 : r < 0) ? r + y : r;
+}
+
+/**
+ * Sums the numbers in the region's rectangle of the table, or in point's
+ * column, from its first data line to its last, as org-table-sum does: the
+ * result, as hours, minutes and seconds if a field was a time, is put on
+ * the kill ring and returned. With nlast, only the last nlast fields.
+ */
+export function tableSum(beg?: number, end?: number, nlast?: number, interactive = false): string {
+  return saveExcursion(() => {
+    if (beg === undefined || end === undefined) {
+      if (orgRegionActive() && e8.mark() !== undefined) [beg, end] = [Math.min(e8.mark()!, e8.point()), Math.max(e8.mark()!, e8.point())];
+      else {
+        // Org's own searches, which outside a table find the next table down.
+        const col = currentColumn();
+        e8.gotoChar(orgTableBegin());
+        if (e8.reSearchForward("^[ \t]*|[^-]", { noerror: true }) === undefined) e8.userError("No table data");
+        gotoColumn(col);
+        beg = e8.point();
+        e8.gotoChar(orgTableEnd());
+        if (e8.reSearchBackward("^[ \t]*|[^-]", { noerror: true }) === undefined) e8.userError("No table data");
+        gotoColumn(col);
+        end = e8.point();
+      }
+    }
+    let items = copyRegionBetween(beg, end, false).flat();
+    if (nlast !== undefined && nlast < items.length) items = items.slice(items.length - nlast);
+    const times = { count: 0 };
+    const numbers = items.map((f) => numberForSumming(f, times)).filter((n): n is LispNumber => n !== undefined);
+    const res = sumNumbers(numbers);
+    let sres: string;
+    if (times.count === 0) sres = numberString(res);
+    else {
+      let diff = 3600 * (res.int !== undefined ? Number(res.int) : res.float);
+      // floor gives integers, never a negative zero.
+      const h = Math.floor(diff / 3600) + 0;
+      diff = floatMod(diff, 3600);
+      const m = Math.floor(diff / 60) + 0;
+      diff = floatMod(diff, 60);
+      sres = `${printfFloat(h, 0)}:${printfFloat(m, 2)}:${printfFloat(diff, 2)}`;
+    }
+    e8.killNew(sres);
+    if (interactive)
+      e8.message(
+        `Sum of ${numbers.length} items: ${sres.padEnd(20)}     (${e8.whereIsInternal("yank")[0] ?? "M-x yank"} will insert result into buffer)`,
+      );
+    return sres;
+  });
+}
+
+/** Where the table above point begins, as org-table-begin searches for it: after the last line before point not starting with a bar, or the accessible start. */
+function orgTableBegin(): number {
+  return saveExcursion(() =>
+    e8.reSearchBackward("^[ \t]*[^| \t]", { noerror: true }) === undefined ? e8.pointMin() : (forwardLine(1), e8.point()),
+  );
+}
+
+/** Where the table at point ends, as org-table-end searches for it: the next line not starting with a bar, or the accessible end. */
+function orgTableEnd(): number {
+  return saveExcursion(() => {
+    if (e8.reSearchForward("^[ \t]*[^| \t]", { noerror: true }) !== undefined) return e8.matchBeginning(0)!;
+    // A last line of blanks with no newline after it ends the table at its start.
+    e8.gotoChar(e8.pointMax());
+    e8.skipCharsBackward(" \t");
+    return atBol() ? e8.point() : e8.lineEnd(lineAt());
+  });
+}
+
+e8.defineCommand({
+  name: "org-table-sum",
+  doc:
+    "Sum the numbers in the region's rectangle of a table, or in point's column, showing the sum and putting it on the kill ring. " +
+    "If a field looks like a time, H:MM or H:MM:SS, the sum is a time too.",
+  run: () => void tableSum(undefined, undefined, undefined, true),
+});
 
 /** The fields last cut or copied from a table, as org-table-clip keeps them. */
 let tableClip: string[][] = [];

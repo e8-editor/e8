@@ -306,6 +306,18 @@ fn a_table_is_made_from_a_size() {
 }
 
 #[test]
+fn a_column_is_summed_and_the_sum_yanked() {
+    let (mut ed, _s) = org("| a | 1:30 |\n|---+------|\n| b | 0:45 |\n");
+    ed.window_buffer_mut().set_point(6);
+    ed.press("C-c +").unwrap();
+    // As Org's message when called interactively, which batch Emacs, and so the oracle, never shows.
+    assert_eq!(ed.echo(), Some("Sum of 2 items: 2:15:00                  (C-y will insert result into buffer)"));
+    assert_eq!(ed.window_buffer().point(), 6);
+    ed.press("C-e C-y").unwrap();
+    assert_eq!(text(&ed), "| a | 1:30 |2:15:00\n|---+------|\n| b | 0:45 |\n");
+}
+
+#[test]
 fn typing_after_tab_replaces_a_field() {
     let (mut ed, _s) = org("| one | two |\n");
     ed.window_buffer_mut().set_point(2);
