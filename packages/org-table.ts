@@ -20,7 +20,8 @@ import {
   placeMarkers,
 } from "org-macs";
 import { elementAt } from "org-element";
-import { allMatches, charCount, forwardLine } from "subr";
+import { allMatches, charCount, forwardLine, getBufferWindow, truthy } from "subr";
+import { fitWindowToBuffer, windowFullWidthP } from "window";
 
 e8.defineVariable({
   name: "org-table-auto-blank-field",
@@ -1572,5 +1573,157 @@ e8.defineCommand({
       e8.call("org-table-align");
     } else e8.call("org-table-next-field");
     if (sameColumn !== null && sameColumn !== undefined) gotoColumn(col);
+  },
+});
+
+// Editing a field in a buffer of its own, after org-table-edit-field: C-c `
+// opens *Org Table Edit Field* with the field's text, C-c C-c puts it back.
+
+e8.defineVariable({
+  name: "org-table-use-standard-references",
+  doc: "Whether field references are written as spreadsheets write them, as B3, rather than as @3$2: t always, from to read them only.",
+  value: "from",
+});
+
+e8.defineVariable({
+  name: "org-table-exit-follow-field-mode-when-leaving-table",
+  doc: "Whether org-table-follow-field-mode turns itself off when point leaves the table.",
+  value: true,
+});
+
+/** The field each edit buffer edits and the windows to go back to, as Org's org-field-marker and org-window-configuration, which keep script objects. */
+const fieldEdits = new Map<string, { marker: e8.Marker; windows: e8.WindowConfiguration }>();
+
+const EDIT_FIELD_BUFFER = "*Org Table Edit Field*";
+
+/** A column number as letters, A for 1 and AA for 27, as org-number-to-letters writes it. */
+function numberToLetters(n: number): string {
+  let s = "";
+  while (n > 0) {
+    s = String.fromCharCode(65 + ((n - 1) % 26)) + s;
+    n = Math.floor((n - 1) / 26);
+  }
+  return s;
+}
+
+/** The data lines up to and including point's, as org-table-current-dline counts them. */
+function currentDline(): number {
+  const pos = e8.point();
+  return saveExcursion(() => {
+    e8.gotoChar(orgTableBegin());
+    let count = 0;
+    while (e8.point() <= pos) {
+      if (e8.lookingAt("^[ \t]*|[^-]")) count++;
+      const before = e8.point();
+      forwardLine(1);
+      if (e8.point() === before) break;
+    }
+    return count;
+  });
+}
+
+/** Opens the field at point in *Org Table Edit Field* in another window, as org-table-edit-field does without an argument. */
+function editField(): void {
+  const pos = e8.makeMarker(e8.point());
+  const coord =
+    e8.variable("org-table-use-standard-references") === true
+      ? `${numberToLetters(tableCurrentColumn())}${currentDline()}`
+      : `@${currentDline()}$${tableCurrentColumn()}`;
+  const field = getField();
+  const windows = e8.currentWindowConfiguration();
+  e8.gotoChar(e8.markerPosition(pos)!);
+  e8.call("switch-to-buffer-other-window", EDIT_FIELD_BUFFER);
+  const old = fieldEdits.get(EDIT_FIELD_BUFFER);
+  if (old) e8.deleteMarker(old.marker);
+  e8.call("erase-buffer");
+  e8.insert(`#\n# Edit field ${coord} and finish with C-c C-c\n#\n`);
+  e8.letBind({ "org-inhibit-startup": true }, () => e8.call("org-mode"));
+  e8.callWithPrefix(-1, "auto-fill-mode");
+  e8.setVariable("truncate-lines", false);
+  e8.setVariable("word-wrap", true);
+  const p = e8.pointMax();
+  e8.gotoChar(p);
+  e8.insert(orgTrim(field));
+  e8.removeTextProperty(p, e8.pointMax(), "invisible");
+  e8.removeTextProperty(p, e8.pointMax(), "intangible");
+  e8.gotoChar(p);
+  e8.makeLocalVariable("org-finish-function");
+  e8.setVariable("org-finish-function", "org-table-finish-edit-field");
+  fieldEdits.set(EDIT_FIELD_BUFFER, { marker: pos, windows });
+  e8.message("Edit and finish with C-c C-c");
+}
+
+e8.defun("org-table-finish-edit-field", () => {
+  const edit = fieldEdits.get(e8.bufferName());
+  if (!edit) e8.userError("No field is being edited here");
+  const cb = e8.bufferName();
+  e8.gotoChar(e8.pointMin());
+  while (e8.reSearchForward("^#.*\n?", { noerror: true }) !== undefined) e8.replaceMatch("", { literal: true });
+  while (e8.reSearchForward("[ \t]*\n[ \t\n]*", { noerror: true }) !== undefined) e8.replaceMatch(" ", { literal: true });
+  const text = orgTrim(e8.bufferText(e8.pointMin(), e8.pointMax()));
+  e8.setWindowConfiguration(edit!.windows);
+  fieldEdits.delete(cb);
+  e8.call("kill-buffer", cb);
+  const buffer = e8.markerBuffer(edit!.marker);
+  const window = buffer === undefined ? undefined : getBufferWindow(buffer);
+  if (window !== undefined) e8.selectWindow(window);
+  e8.gotoChar(e8.markerPosition(edit!.marker)!);
+  e8.deleteMarker(edit!.marker);
+  checkInsideDataField();
+  getField(undefined, text);
+  align();
+  e8.message("New field value inserted");
+});
+
+e8.defineCommand({
+  name: "org-table-edit-field",
+  doc:
+    "Edit the table field at point in a window of its own, finishing with C-c C-c. " +
+    "With C-u, show the whole field where it is instead; with C-u C-u, turn org-table-follow-field-mode on or off.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg: e8.PrefixArg) => {
+    if (!atTable()) e8.userError("Not at a table");
+    if (Array.isArray(arg) && arg[0] === 16) {
+      e8.callWithPrefix(truthy(e8.variable("org-table-follow-field-mode")) ? -1 : 1, "org-table-follow-field-mode");
+    } else if (arg !== null) {
+      // The field's hidden parts shown, as removing its invisible and intangible properties.
+      const b = saveExcursion(() => (e8.skipCharsBackward("^|"), e8.point()));
+      const e = saveExcursion(() => (e8.skipCharsForward("^|\r\n"), e8.point()));
+      e8.removeTextProperty(b, e, "invisible");
+      e8.removeTextProperty(b, e, "intangible");
+    } else editField();
+  },
+});
+
+/** After each command in the table, the field point is in shown in the editor, as org-table-follow-fields-with-editor. */
+function followFieldsWithEditor(): void {
+  if (truthy(e8.variable("org-table-exit-follow-field-mode-when-leaving-table")) && !atTable()) {
+    e8.callWithPrefix(-1, "org-table-follow-field-mode");
+    return;
+  }
+  if (!atTable() || !/[^ \t]/.test(beforeOnLine()) || atHline() || /^[ \t]*$/.test(restOfLine())) return;
+  const win = e8.selectedWindow();
+  editField();
+  if (windowFullWidthP()) fitWindowToBuffer();
+  e8.selectWindow(win);
+}
+
+e8.defineMinorMode({
+  name: "org-table-follow-field-mode",
+  lighter: " TblFollow",
+  doc: "Make the field editor window follow point through the table; leaving the table turns it off, as org-table-exit-follow-field-mode-when-leaving-table says.",
+  onChange: (enabled) => {
+    if (enabled) {
+      e8.addHook("post-command-hook", followFieldsWithEditor, { local: true, append: true });
+      return;
+    }
+    e8.removeHook("post-command-hook", followFieldsWithEditor, { local: true });
+    if (e8.getBuffer(EDIT_FIELD_BUFFER) === undefined) return;
+    const win = getBufferWindow(EDIT_FIELD_BUFFER);
+    if (win !== undefined) e8.deleteWindow(win);
+    const edit = fieldEdits.get(EDIT_FIELD_BUFFER);
+    if (edit) e8.deleteMarker(edit.marker);
+    fieldEdits.delete(EDIT_FIELD_BUFFER);
+    e8.call("kill-buffer", EDIT_FIELD_BUFFER);
   },
 });

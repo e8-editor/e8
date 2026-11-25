@@ -1,0 +1,195 @@
+[
+ {
+  "name": "open",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "open-second-row",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 34,
+  "keys": "C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "edit-and-finish",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-c ` C-e SPC x y z C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "edit-lines",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 28,
+  "keys": "C-c ` C-e RET RET n e w SPC SPC RET C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "kill-finishes",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-c ` C-e x C-c C-k",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "empty-field",
+  "text": "| a |   |\n",
+  "point": 6,
+  "keys": "C-c ` n e w C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "standard-references",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 34,
+  "keys": "C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "org-table-use-standard-references": true
+  }
+ },
+ {
+  "name": "not-at-table",
+  "text": "text\n",
+  "point": 0,
+  "keys": "C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "on-hline",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 19,
+  "keys": "C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "at-bol",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 0,
+  "keys": "C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cu-props",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-u C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "hash-in-field",
+  "text": "| #x | y |\n",
+  "point": 3,
+  "keys": "C-c ` C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "indented",
+  "text": "  | a | b |\n",
+  "point": 8,
+  "keys": "C-c ` C-e c C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "wide",
+  "text": "| 日本 | b |\n",
+  "point": 3,
+  "keys": "C-c ` C-e x C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "twice",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-c ` C-c C-c C-n C-c ` C-e ! C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "follow-on",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-u C-u C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "follow-move",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-u C-u C-c ` C-n C-n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "follow-off",
+  "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+  "point": 8,
+  "keys": "C-u C-u C-c ` C-u C-u C-c `",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "follow-leave",
+  "text": "before\n| a   | bb |\n|-----+----|\n| ccc | d  |\nafter\n",
+  "point": 15,
+  "keys": "C-u C-u C-c ` M->",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ }
+]
