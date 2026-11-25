@@ -1198,24 +1198,31 @@ e8.defineCommand({
     const match = /^\s*(\d+)\s*x\s*(\d+)\s*$/.exec(size === "" ? "5x2" : size);
     if (!match) throw new Error("Table size should be columns x rows, such as 5x2");
     const [cols, rowCount] = [Number(match[1]), Number(match[2])];
-    const rows: Row[] = [];
-    for (let r = 0; r < rowCount; r++) {
-      rows.push(Array.from({ length: cols }, () => ""));
-      if (r === 0 && rowCount > 1) rows.push("hline");
+    // As org-table-create: rows of empty fields indented to point's column,
+    // after a line break at point unless only blanks come before it, then a
+    // rule after the first row, and the table aligned around point.
+    const pos = e8.point();
+    const indent = " ".repeat(e8.currentColumn());
+    const row = `${indent}|${"  |".repeat(cols)}\n`;
+    if (/^[ \t]*$/.test(e8.bufferText(e8.lineStart(lineAt()), e8.point()))) e8.gotoChar(e8.lineStart(lineAt()));
+    else e8.insert("\n");
+    const first = e8.point();
+    e8.insert(row.repeat(rowCount));
+    e8.gotoChar(pos);
+    if (rowCount > 1) {
+      e8.gotoChar(e8.lineEnd(lineAt()));
+      e8.insert("\n|-");
+      e8.gotoChar(pos);
     }
-    const line = e8.lineOf(e8.point());
-    const indent = /^[ \t]*/.exec(e8.lineText(line))?.[0] ?? "";
-    if (e8.lineText(line).trim() !== "") {
-      e8.gotoChar(e8.lineEnd(line));
-      e8.insert("\n");
-    } else {
-      e8.deleteRegion(e8.lineStart(line), e8.lineEnd(line));
-      e8.gotoChar(e8.lineStart(line));
+    // Org aligns from point; on the line before the table, which is no
+    // table line, its search for the table's bounds finds the new one.
+    if (isTableLine(lineAt())) align();
+    else {
+      e8.gotoChar(rowCount > 1 && pos < first ? e8.lineStart(lineAt(pos) + 1) : first);
+      align();
+      // Left at the start of point's line, as Org's align leaves it there.
+      e8.gotoChar(e8.lineStart(lineAt(pos)));
     }
-    const start = e8.point();
-    e8.insert(`${formatRows(indent, rows).join("\n")}\n`);
-    e8.gotoChar(start);
-    gotoColumn(1);
   },
 });
 

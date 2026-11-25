@@ -1,0 +1,509 @@
+[
+ {
+  "name": "bol-3x2",
+  "text": "foo bar\n",
+  "point": 0,
+  "keys": "C-c |",
+  "answers": [
+   "3x2"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mid-3x2",
+  "text": "foo bar\n",
+  "point": 3,
+  "keys": "C-c |",
+  "answers": [
+   "3x2"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "eol-3x2",
+  "text": "foo bar\n",
+  "point": 7,
+  "keys": "C-c |",
+  "answers": [
+   "3x2"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "blanks-3x2",
+  "text": "   foo\n",
+  "point": 2,
+  "keys": "C-c |",
+  "answers": [
+   "3x2"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "empty-3x2",
+  "text": "a\n\nb\n",
+  "point": 2,
+  "keys": "C-c |",
+  "answers": [
+   "3x2"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "indented-mid-3x2",
+  "text": "  foo bar\n",
+  "point": 5,
+  "keys": "C-c |",
+  "answers": [
+   "3x2"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "eob-3x2",
+  "text": "foo",
+  "point": 3,
+  "keys": "C-c |",
+  "answers": [
+   "3x2"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "bol-2x1",
+  "text": "foo bar\n",
+  "point": 0,
+  "keys": "C-c |",
+  "answers": [
+   "2x1"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mid-2x1",
+  "text": "foo bar\n",
+  "point": 3,
+  "keys": "C-c |",
+  "answers": [
+   "2x1"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "eol-2x1",
+  "text": "foo bar\n",
+  "point": 7,
+  "keys": "C-c |",
+  "answers": [
+   "2x1"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "blanks-2x1",
+  "text": "   foo\n",
+  "point": 2,
+  "keys": "C-c |",
+  "answers": [
+   "2x1"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "empty-2x1",
+  "text": "a\n\nb\n",
+  "point": 2,
+  "keys": "C-c |",
+  "answers": [
+   "2x1"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "indented-mid-2x1",
+  "text": "  foo bar\n",
+  "point": 5,
+  "keys": "C-c |",
+  "answers": [
+   "2x1"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "eob-2x1",
+  "text": "foo",
+  "point": 3,
+  "keys": "C-c |",
+  "answers": [
+   "2x1"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "bol-1x1",
+  "text": "foo bar\n",
+  "point": 0,
+  "keys": "C-c |",
+  "answers": [
+   "1x1"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mid-1x1",
+  "text": "foo bar\n",
+  "point": 3,
+  "keys": "C-c |",
+  "answers": [
+   "1x1"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "eol-1x1",
+  "text": "foo bar\n",
+  "point": 7,
+  "keys": "C-c |",
+  "answers": [
+   "1x1"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "blanks-1x1",
+  "text": "   foo\n",
+  "point": 2,
+  "keys": "C-c |",
+  "answers": [
+   "1x1"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "empty-1x1",
+  "text": "a\n\nb\n",
+  "point": 2,
+  "keys": "C-c |",
+  "answers": [
+   "1x1"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "indented-mid-1x1",
+  "text": "  foo bar\n",
+  "point": 5,
+  "keys": "C-c |",
+  "answers": [
+   "1x1"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "eob-1x1",
+  "text": "foo",
+  "point": 3,
+  "keys": "C-c |",
+  "answers": [
+   "1x1"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "bol-5x2",
+  "text": "foo bar\n",
+  "point": 0,
+  "keys": "C-c |",
+  "answers": [
+   "5x2"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mid-5x2",
+  "text": "foo bar\n",
+  "point": 3,
+  "keys": "C-c |",
+  "answers": [
+   "5x2"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "eol-5x2",
+  "text": "foo bar\n",
+  "point": 7,
+  "keys": "C-c |",
+  "answers": [
+   "5x2"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "blanks-5x2",
+  "text": "   foo\n",
+  "point": 2,
+  "keys": "C-c |",
+  "answers": [
+   "5x2"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "empty-5x2",
+  "text": "a\n\nb\n",
+  "point": 2,
+  "keys": "C-c |",
+  "answers": [
+   "5x2"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "indented-mid-5x2",
+  "text": "  foo bar\n",
+  "point": 5,
+  "keys": "C-c |",
+  "answers": [
+   "5x2"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "eob-5x2",
+  "text": "foo",
+  "point": 3,
+  "keys": "C-c |",
+  "answers": [
+   "5x2"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "bol-default",
+  "text": "foo bar\n",
+  "point": 0,
+  "keys": "C-c |",
+  "answers": [
+   ""
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mid-default",
+  "text": "foo bar\n",
+  "point": 3,
+  "keys": "C-c |",
+  "answers": [
+   ""
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "eol-default",
+  "text": "foo bar\n",
+  "point": 7,
+  "keys": "C-c |",
+  "answers": [
+   ""
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "blanks-default",
+  "text": "   foo\n",
+  "point": 2,
+  "keys": "C-c |",
+  "answers": [
+   ""
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "empty-default",
+  "text": "a\n\nb\n",
+  "point": 2,
+  "keys": "C-c |",
+  "answers": [
+   ""
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "indented-mid-default",
+  "text": "  foo bar\n",
+  "point": 5,
+  "keys": "C-c |",
+  "answers": [
+   ""
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "eob-default",
+  "text": "foo",
+  "point": 3,
+  "keys": "C-c |",
+  "answers": [
+   ""
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "in-item",
+  "text": "- item text\n",
+  "point": 6,
+  "keys": "C-c |",
+  "answers": [
+   "2x2"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "heading-mid",
+  "text": "* Heading here\n",
+  "point": 6,
+  "keys": "C-c |",
+  "answers": [
+   "2x2"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "empty-buffer",
+  "text": "",
+  "point": 0,
+  "keys": "C-c |",
+  "answers": [
+   "2x2"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "blank-line-spaces",
+  "text": "a\n   \nb\n",
+  "point": 4,
+  "keys": "C-c |",
+  "answers": [
+   "2x2"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ }
+]
