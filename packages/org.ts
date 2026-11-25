@@ -9968,6 +9968,8 @@ function ctrlCCtrlCPlainList(first: number, arg: e8.PrefixArg): void {
   const c16 = Array.isArray(arg) && arg[0] === 16;
   const newBox = c16 ? "[-]" : c4 ? (firstBox ? undefined : "[ ]") : firstBox === "[X]" ? "[ ]" : "[X]";
   if (arg !== null && arg !== undefined) for (const pos of allItems(begin, prevsAlist(struct))) getItem(struct, pos).checkbox = newBox;
+  // At the list's start with no argument, the first item's box alone, as Org's convenience.
+  else if (firstBox && e8.point() === begin) getItem(struct, begin).checkbox = newBox;
   if (sameStruct(writeStruct(struct, parentsAlist(struct), old), old)) e8.message("Cannot update this checkbox");
   updateCheckboxCount();
 }
@@ -10131,7 +10133,10 @@ const ctrlCCtrlC = e8.defineCommand({
       return;
     }
     if (itemLine(line)) {
+      // At the very start of a list, Org's context is the list, not its first item.
+      const list = elementAt(e8.lineStart(line));
       if (radioButtonsHere()) toggleRadioButton(e8.prefixArg());
+      else if (list?.type === "plain-list" && e8.point() === list.begin) ctrlCCtrlCPlainList(line, e8.prefixArg());
       else ctrlCCtrlCItem(line, e8.prefixArg());
       return;
     }

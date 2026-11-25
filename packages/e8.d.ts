@@ -15371,6 +15371,12 @@ declare global {
        */
       "org-list-demote-modify-bullet": Value;
       /**
+       * How many more columns a sub-list is indented than its parent item's text, as structure editing puts it.
+       *
+       * Defined in packages/org-list.ts.
+       */
+      "org-list-indent-offset": Value;
+      /**
        * A regexp matching the bullets that take two spaces after them, rather than one, as "[0-9]" for numbered items. nil for none.
        *
        * Defined in packages/org-list.ts.

@@ -833,9 +833,16 @@ export function fixBul(struct: Struct, prevs: Alist): void {
   }
 }
 
-/** Indents items under their parents' text, or as the first item, as org-list-struct-fix-ind does. */
+e8.defineVariable({
+  name: "org-list-indent-offset",
+  doc: "How many more columns a sub-list is indented than its parent item's text, as structure editing puts it.",
+  value: 0,
+});
+
+/** Indents items under their parents' text, and org-list-indent-offset more, or as the first item, as org-list-struct-fix-ind does. */
 export function fixInd(struct: Struct, parents: Alist, bulletSize?: number): void {
   const topInd = struct[0].ind;
+  const offset = Number(e8.variable("org-list-indent-offset") ?? 0) || 0;
   // By position, as Org goes, setting the first item there, as assq finds it.
   for (const { pos } of struct.slice(1)) {
     const e = getItem(struct, pos);
@@ -843,7 +850,7 @@ export function fixInd(struct: Struct, parents: Alist, bulletSize?: number): voi
     if (parent === undefined) e.ind = topInd;
     else {
       const p = getItem(struct, parent);
-      e.ind = (bulletSize ?? charCount(p.bullet)) + p.ind;
+      e.ind = (bulletSize ?? charCount(p.bullet)) + p.ind + offset;
     }
   }
 }
