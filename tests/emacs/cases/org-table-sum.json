@@ -1,0 +1,750 @@
+[
+ {
+  "name": "ints",
+  "text": "| a | 1 |\n| b | 2 |\n| c | 3 |\n",
+  "point": 6,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "ints-yank",
+  "text": "| a | 1 |\n| b | 2 |\n| c | 3 |\n",
+  "point": 6,
+  "keys": "C-c + C-e C-y",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "text-column",
+  "text": "| a | 1 |\n| b | 2 |\n| c | 3 |\n",
+  "point": 12,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "ints-last-row",
+  "text": "| a | 1 |\n| b | 2 |\n| c | 3 |\n",
+  "point": 26,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "col0",
+  "text": "| a | 1 |\n| b | 2 |\n| c | 3 |\n",
+  "point": 0,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "after-last-bar",
+  "text": "| a | 1 |\n| b | 2 |\n| c | 3 |\n",
+  "point": 8,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "bar-itself",
+  "text": "| a | 1 |\n| b | 2 |\n| c | 3 |\n",
+  "point": 4,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "floats",
+  "text": "| 1.5 |\n| 2.25 |\n|  |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "float-whole",
+  "text": "| 1.5 |\n| 1.5 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "float-tenths",
+  "text": "| 0.1 |\n| 0.2 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "float-and-int",
+  "text": "| 1 |\n| 2.0 |\n| 3 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "times",
+  "text": "| 1:30 |\n| 0:45:30 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "times-and-numbers",
+  "text": "| 1:30 |\n| 2 |\n| 0.25 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "times-negative",
+  "text": "| 1:00 |\n| -3 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "times-thirds",
+  "text": "| 0:10 |\n| 0:10 |\n| 0:10 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "time-hms-odd",
+  "text": "| 1:2:3 |\n| 10:59:59 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "zeros",
+  "text": "| 0 |\n| 0.0 |\n| -0 |\n| +0.e0 |\n| 5 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "exponent",
+  "text": "| 1e3 |\n| 2E-1 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "text-numbers",
+  "text": "| 3abc |\n| abc |\n| 0x10 |\n| 4 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "negatives",
+  "text": "| -2 |\n| +5 |\n| -10 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "bignum",
+  "text": "| 9007199254740993 |\n| 9007199254740993 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "huge-float",
+  "text": "| 1e20 |\n| 1 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "tiny-float",
+  "text": "| 0.00001 |\n| 0.00002 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "tiny-1e-400",
+  "text": "| 1e-400 |\n| 0 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "hlines",
+  "text": "| x | y |\n|---+---|\n| a | 1 |\n|---+---|\n| b | 2 |\n|---+---|\n",
+  "point": 26,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "on-header",
+  "text": "| x | y |\n|---+---|\n| a | 1 |\n|---+---|\n| b | 2 |\n|---+---|\n",
+  "point": 6,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "on-hline",
+  "text": "| x | y |\n|---+---|\n| a | 1 |\n|---+---|\n| b | 2 |\n|---+---|\n",
+  "point": 14,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "on-hline-start",
+  "text": "| x | y |\n|---+---|\n| a | 1 |\n|---+---|\n| b | 2 |\n|---+---|\n",
+  "point": 10,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "only-header",
+  "text": "| x | y |\n|---+---|\n",
+  "point": 6,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "only-hlines",
+  "text": "|---+---|\n|---+---|\n",
+  "point": 3,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "ragged",
+  "text": "| 1 |\n| 2 | 3 |\n| 4 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "ragged-col2",
+  "text": "| 1 | 5 |\n| 2 |\n| 4 | 6 |\n",
+  "point": 6,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "before-table",
+  "text": "Some text\n\n| a | 1 |\n| b | 2 |\n",
+  "point": 0,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "before-table-mid",
+  "text": "Some text\n\n| a | 1 |\n| b | 2 |\n",
+  "point": 5,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "blank-before-table",
+  "text": "Some text\n\n| a | 1 |\n| b | 2 |\n",
+  "point": 10,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "after-table",
+  "text": "| a | 1 |\n| b | 2 |\nmore text\n",
+  "point": 21,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "after-table-col",
+  "text": "| a | 1 |\n| b | 2 |\nmore text\n",
+  "point": 25,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "no-table",
+  "text": "just text\n",
+  "point": 3,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "empty",
+  "text": "",
+  "point": 0,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "eob-no-newline",
+  "text": "| 1 |\n| 2 |",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "eob-trailing-blanks",
+  "text": "| 1 |\n| 2 |\n   ",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "indented",
+  "text": "  | 1 |\n  | 2 |\n",
+  "point": 4,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "two-tables",
+  "text": "| 1 |\n| 2 |\n\n| 10 |\n| 20 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "two-tables-second",
+  "text": "| 1 |\n| 2 |\n\n| 10 |\n| 20 |\n",
+  "point": 15,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "region-rect",
+  "text": "| a | 1 |\n| b | 2 |\n| c | 3 |\n",
+  "point": 2,
+  "keys": "C-SPC C-n C-n C-f C-f C-f C-f C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "region-one-col",
+  "text": "| a | 1 |\n| b | 2 |\n| c | 3 |\n",
+  "point": 6,
+  "keys": "C-SPC C-n C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "region-backwards",
+  "text": "| a | 1 |\n| b | 2 |\n| c | 3 |\n",
+  "point": 26,
+  "keys": "C-SPC C-p C-p C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "region-hline",
+  "text": "| x | y |\n|---+---|\n| a | 1 |\n|---+---|\n| b | 2 |\n|---+---|\n",
+  "point": 26,
+  "keys": "C-SPC C-n C-n C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "region-outside",
+  "text": "Some text\n\n| a | 1 |\n| b | 2 |\n",
+  "point": 0,
+  "keys": "C-SPC C-n C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "narrowed",
+  "text": "| a | 1 |\n| b | 2 |\n| c | 3 |\n",
+  "point": 10,
+  "keys": "C-SPC C-n C-e C-x n n C-SPC C-SPC C-a C-f C-f C-f C-f C-f C-f C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "narrowed-two-rows",
+  "text": "| a | 1 |\n| b | 2 |\n| c | 3 |\n",
+  "point": 0,
+  "keys": "C-SPC C-n C-e C-x n n C-SPC C-SPC C-p C-a C-f C-f C-f C-f C-f C-f C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "time-yank",
+  "text": "| 1:30 |\n| 0:45 |\n",
+  "point": 2,
+  "keys": "C-c + C-e C-y",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "paragraph-bar",
+  "text": "text | 1 |\n",
+  "point": 6,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "in-block",
+  "text": "#+begin_example\n| 1 |\n| 2 |\n#+end_example\n",
+  "point": 18,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "bar-in-heading",
+  "text": "* a\n| 1 |\n| 2 |\n",
+  "point": 6,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "inf",
+  "text": "| 1.0e+INF |\n| 2 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "inf-int",
+  "text": "| 1e+INF |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "neg-inf",
+  "text": "| -1.0e+INF |\n| 5 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "nan",
+  "text": "| 0.0e+NaN |\n| 1 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "nan-payload",
+  "text": "| 1.0e+NaN |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "inf-time",
+  "text": "| 1.0e+INF |\n| 0:30 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "neg-zero-float",
+  "text": "| -0.0e1 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "neg-zero-two",
+  "text": "| -0.0e1 |\n| -0.0e1 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "int-then-neg-zero",
+  "text": "| 1 |\n| -0.0e1 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "huge-time",
+  "text": "| 1e21 |\n| 0:00 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "bignum-time",
+  "text": "| 123456789012345678901234 |\n| 0:30 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "time-60s",
+  "text": "| 0:00:59 |\n| 0.00015 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "time-neg-zero",
+  "text": "| -1 |\n| 0:00 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "time-neg-half",
+  "text": "| -0.5 |\n| 0:00 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "odd-strings",
+  "text": "| 1e |\n| +.e1 |\n| 1.e5 |\n| 5e+ |\n| 1e-INF |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "tab-dot",
+  "text": "| \t5 |\n| 1. |\n| .5 |\n| -.25 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "eob-after-table",
+  "text": "| 1 |\n| 2 |\n",
+  "point": 12,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "eob-after-table-col",
+  "text": "| a | 1 |\n| b | 2 |\n",
+  "point": 20,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "blank-line-mid",
+  "text": "| 1 |\n  \n| 2 |\n",
+  "point": 7,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "blank-line-end",
+  "text": "| 1 |\n  \n| 2 |\n",
+  "point": 8,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "blank-line-start",
+  "text": "| 1 |\n  \n| 2 |\n",
+  "point": 6,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "region-twice",
+  "text": "| a | 1 |\n| b | 2 |\n| c | 3 |\n",
+  "point": 6,
+  "keys": "C-SPC C-n C-c + C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "region-empty",
+  "text": "| a | 1 |\n| b | 2 |\n| c | 3 |\n",
+  "point": 6,
+  "keys": "C-SPC C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "region-then-yank",
+  "text": "| a | 1 |\n| b | 2 |\n| c | 3 |\n",
+  "point": 6,
+  "keys": "C-SPC C-n C-c + C-y",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "sum-twice",
+  "text": "| a | 1 |\n| b | 2 |\n",
+  "point": 6,
+  "keys": "C-c + C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "dsel-org-yank",
+  "text": "one two",
+  "point": 0,
+  "keys": "M-d C-e M-S-b C-y",
+  "modes": [
+   "org-mode",
+   "delete-selection-mode"
+  ]
+ },
+ {
+  "name": "yank-pop",
+  "text": "| a | 1 |\n| b | 2 |\n",
+  "point": 6,
+  "keys": "C-c + C-e C-c + C-y M-y",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "prefix-yank",
+  "text": "| a | 1 |\n",
+  "point": 6,
+  "keys": "C-c + C-e C-u C-y",
+  "modes": [
+   "org-mode"
+  ]
+ }
+]

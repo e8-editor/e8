@@ -11260,7 +11260,6 @@ const keys: { [keys: string]: e8.CommandName | e8.DefinedCommand } = {
   TAB: cycle,
   "S-TAB": shiftTab,
   RET: orgReturn,
-  "C-y": "org-yank",
   "C-j": "org-return-and-maybe-indent",
   "C-o": "org-open-line",
   "M-RET": metaReturn,
@@ -11331,6 +11330,7 @@ const keys: { [keys: string]: e8.CommandName | e8.DefinedCommand } = {
   "C-c @": markSubtree,
   "M-h": "org-mark-element",
   "C-c |": "org-table-create-or-convert-from-region",
+  "C-c +": "org-table-sum",
   "C-c C-x C-w": "org-cut-special",
   "C-c C-x M-w": "org-copy-special",
   "C-c C-x C-y": "org-paste-special",
@@ -13443,4 +13443,6 @@ e8.remapCommand("org-mode-map", "delete-backward-char", "org-delete-backward-cha
 e8.remapCommand("org-mode-map", "delete-char", "org-delete-char");
 e8.remapCommand("org-mode-map", "fill-paragraph", "org-fill-paragraph" as e8.CommandName);
 e8.remapCommand("org-mode-map", "move-end-of-line", "org-end-of-line");
+// A remap, as Org's, so C-y is still yank's key to where-is and \[yank].
+e8.remapCommand("org-mode-map", "yank", "org-yank");
 e8.remapCommand("org-mode-map", "move-beginning-of-line", orgBeginningOfLine);

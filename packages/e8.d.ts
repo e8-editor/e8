@@ -7457,6 +7457,12 @@ declare global {
        */
       "org-table-sort-lines": [withCase?: PrefixArg | boolean];
       /**
+       * Sum the numbers in the region's rectangle of a table, or in point's column, showing the sum and putting it on the kill ring. If a field looks like a time, H:MM or H:MM:SS, the sum is a time too.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-sum": [];
+      /**
        * Split the field at point, as M-RET does in a table: the text after point goes to the same field in the next row.
        *
        * Defined in packages/org-table.ts.
