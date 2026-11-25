@@ -1,0 +1,1957 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "spaces",
+      "input": {
+        "text": "a b c\nd e f\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b | c |\n| d | e | f |\n",
+      "visible": "| a | b | c |\n| d | e | f |\n",
+      "point": 2,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "spaces-runs",
+      "input": {
+        "text": "a   b  c\nd e    f\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b | c |\n| d | e | f |\n",
+      "visible": "| a | b | c |\n| d | e | f |\n",
+      "point": 2,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "indented",
+      "input": {
+        "text": "  a b\n    c d\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b |\n| c | d |\n",
+      "visible": "| a | b |\n| c | d |\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "tabs",
+      "input": {
+        "text": "a\tb\tc\nd\te\tf\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b | c |\n| d | e | f |\n",
+      "visible": "| a | b | c |\n| d | e | f |\n",
+      "point": 2,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "tabs-with-spaces",
+      "input": {
+        "text": "a b\tc d\ne f\tg\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a b | c d |\n| e f | g   |\n",
+      "visible": "| a b | c d |\n| e f | g   |\n",
+      "point": 2,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "tabs-some-lines",
+      "input": {
+        "text": "a\tb\nc d\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b |\n| c | d |\n",
+      "visible": "| a | b |\n| c | d |\n",
+      "point": 2,
+      "mark": 10,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "tab-empty-field",
+      "input": {
+        "text": "a\t\tb\nc\td\te\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a |   | b |\n| c | d | e |\n",
+      "visible": "| a |   | b |\n| c | d | e |\n",
+      "point": 2,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "commas",
+      "input": {
+        "text": "a,b,c\nd,e,f\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b | c |\n| d | e | f |\n",
+      "visible": "| a | b | c |\n| d | e | f |\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "commas-spaces",
+      "input": {
+        "text": "a , b,c \n d,e ,f\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b | c |\n| d | e | f |\n",
+      "visible": "| a | b | c |\n| d | e | f |\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "commas-some-lines",
+      "input": {
+        "text": "a,b\nc d\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a,b |   |\n| c   | d |\n",
+      "visible": "| a,b |   |\n| c   | d |\n",
+      "point": 2,
+      "mark": 12,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "csv-quotes",
+      "input": {
+        "text": "\"a\",\"b c\",d\n\"e,f\",g,\"h\"\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a   | b c | d |\n| e,f | g   | h |\n",
+      "visible": "| a   | b c | d |\n| e,f | g   | h |\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "csv-doubled",
+      "input": {
+        "text": "\"a\"\"b\",c\n\"x\",\"\"\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a\"b | c |\n| x   |   |\n",
+      "visible": "| a\"b | c |\n| x   |   |\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "csv-empty-fields",
+      "input": {
+        "text": "a,,b\n,c,\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a |   | b |\n|   | c |   |\n",
+      "visible": "| a |   | b |\n|   | c |   |\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "csv-trailing-comma",
+      "input": {
+        "text": "a,b,\nc,d,\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b |   |\n| c | d |   |\n",
+      "visible": "| a | b |   |\n| c | d |   |\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "blank-line-between",
+      "input": {
+        "text": "a b\n\nc d\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b |\n|   |   |\n| c | d |\n",
+      "visible": "| a | b |\n|   |   |\n| c | d |\n",
+      "point": 2,
+      "mark": 10,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "blank-line-commas",
+      "input": {
+        "text": "a,b\n\nc,d\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b |\n|   |   |\n| c | d |\n",
+      "visible": "| a | b |\n|   |   |\n| c | d |\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "blank-line-tabs",
+      "input": {
+        "text": "a\tb\n\nc\td\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b |\n|   |   |\n| c | d |\n",
+      "visible": "| a | b |\n|   |   |\n| c | d |\n",
+      "point": 2,
+      "mark": 10,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "single-line",
+      "input": {
+        "text": "a b c\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b | c |\n",
+      "visible": "| a | b | c |\n",
+      "point": 2,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "single-word",
+      "input": {
+        "text": "word\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| word |\n",
+      "visible": "| word |\n",
+      "point": 2,
+      "mark": 9,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "numbers",
+      "input": {
+        "text": "x 1\ny 22\nz 333\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| x |   1 |\n| y |  22 |\n| z | 333 |\n",
+      "visible": "| x |   1 |\n| y |  22 |\n| z | 333 |\n",
+      "point": 2,
+      "mark": 12,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "no-final-newline",
+      "input": {
+        "text": "a b\nc d",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b |\n| c | d |\n",
+      "visible": "| a | b |\n| c | d |\n",
+      "point": 2,
+      "mark": 10,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "mid-line-start",
+      "input": {
+        "text": "foo a b\nc d e\nlast\n",
+        "point": 4,
+        "keys": "C-SPC C-n C-e C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| foo | a | b |\n| c   | d | e |\nlast\n",
+      "visible": "| foo | a | b |\n| c   | d | e |\nlast\n",
+      "point": 2,
+      "mark": 16,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "end-at-bol",
+      "input": {
+        "text": "a b\nc d\ne f\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-n C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b |\n| c | d |\ne f\n",
+      "visible": "| a | b |\n| c | d |\ne f\n",
+      "point": 2,
+      "mark": 10,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "end-mid-line",
+      "input": {
+        "text": "a b\nc d\ne f\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-n C-f C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b |\n| c | d |\n| e | f |\n",
+      "visible": "| a | b |\n| c | d |\n| e | f |\n",
+      "point": 2,
+      "mark": 10,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "backwards",
+      "input": {
+        "text": "a b\nc d\n",
+        "point": 8,
+        "keys": "C-SPC M-< C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b |\n| c | d |\n",
+      "visible": "| a | b |\n| c | d |\n",
+      "point": 2,
+      "mark": 20,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "in-text",
+      "input": {
+        "text": "before\na b\nc d\nafter\n",
+        "point": 7,
+        "keys": "C-SPC C-n C-e C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "before\n| a | b |\n| c | d |\nafter\n",
+      "visible": "before\n| a | b |\n| c | d |\nafter\n",
+      "point": 9,
+      "mark": 17,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "wide-chars",
+      "input": {
+        "text": "日本 語\nab c\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| 日本 | 語 |\n| ab   | c  |\n",
+      "visible": "| 日本 | 語 |\n| ab   | c  |\n",
+      "point": 2,
+      "mark": 11,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "prefix-comma",
+      "input": {
+        "text": "a b,c\nd e,f\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-u C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a b | c |\n| d e | f |\n",
+      "visible": "| a b | c |\n| d e | f |\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "prefix-comma-quotes",
+      "input": {
+        "text": "\"a b\",c\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-u C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a b | c |\n",
+      "visible": "| a b | c |\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "prefix-tab",
+      "input": {
+        "text": "a b\tc\nd\te\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-u C-u C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a b | c |\n| d   | e |\n",
+      "visible": "| a b | c |\n| d   | e |\n",
+      "point": 2,
+      "mark": 12,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "prefix-regexp",
+      "input": {
+        "text": "a;b;c\nd;e\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-u C-u C-u C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          ";"
+        ],
+        "message": true
+      },
+      "text": "| a | b | c |\n| d | e |   |\n",
+      "visible": "| a | b | c |\n| d | e |   |\n",
+      "point": 2,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "prefix-regexp-spaces",
+      "input": {
+        "text": "a ; b\nc;d\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-u C-u C-u C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          " *; *"
+        ],
+        "message": true
+      },
+      "text": "| a | b |\n| c | d |\n",
+      "visible": "| a | b |\n| c | d |\n",
+      "point": 2,
+      "mark": 10,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "prefix-2",
+      "input": {
+        "text": "a b  c\nd  e f\n",
+        "point": 0,
+        "keys": "C-SPC M-> M-2 C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a b | c   |\n| d   | e f |\n",
+      "visible": "| a b | c   |\n| d   | e f |\n",
+      "point": 2,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "prefix-3-tab",
+      "input": {
+        "text": "a b\tc   d\n",
+        "point": 0,
+        "keys": "C-SPC M-> M-3 C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a b | c | d |\n",
+      "visible": "| a b | c | d |\n",
+      "point": 2,
+      "mark": 16,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "prefix-1",
+      "input": {
+        "text": "a b  c\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-u 1 C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b | c |\n",
+      "visible": "| a | b | c |\n",
+      "point": 2,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "prefix-0",
+      "input": {
+        "text": "a b\n",
+        "point": 0,
+        "keys": "C-SPC M-> M-0 C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "a b\n",
+      "visible": "a b\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Number of spaces in separator must be >= 1",
+      "message": "Mark set"
+    },
+    {
+      "name": "prefix-negative",
+      "input": {
+        "text": "a b\n",
+        "point": 0,
+        "keys": "C-SPC M-> M-- C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "a b\n",
+      "visible": "a b\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": "This should not happen",
+      "message": "Mark set"
+    },
+    {
+      "name": "prefix-minus-2",
+      "input": {
+        "text": "a b\n",
+        "point": 0,
+        "keys": "C-SPC M-> M-- M-2 C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "a b\n",
+      "visible": "a b\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Number of spaces in separator must be >= 1",
+      "message": "Mark set"
+    },
+    {
+      "name": "max-lines",
+      "input": {
+        "text": "a b\nc d\ne f\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-table-convert-region-max-lines": 2
+        }
+      },
+      "text": "a b\nc d\ne f\n",
+      "visible": "a b\nc d\ne f\n",
+      "point": 12,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Region is longer than ‘org-table-convert-region-max-lines’ (2) lines; not converting",
+      "message": "Mark set"
+    },
+    {
+      "name": "max-lines-ok",
+      "input": {
+        "text": "a b\nc d\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-table-convert-region-max-lines": 2
+        }
+      },
+      "text": "| a | b |\n| c | d |\n",
+      "visible": "| a | b |\n| c | d |\n",
+      "point": 2,
+      "mark": 10,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "existing-table",
+      "input": {
+        "text": "| a | b |\n| c | d |\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "|   |   | a |   |   | b |   |\n|   |   | c |   |   | d |   |\n",
+      "visible": "|   |   | a |   |   | b |   |\n|   |   | c |   |   | d |   |\n",
+      "point": 2,
+      "mark": 30,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "item-lines",
+      "input": {
+        "text": "- a b\n- c d\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| - | a | b |\n| - | c | d |\n",
+      "visible": "| - | a | b |\n| - | c | d |\n",
+      "point": 2,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "heading-region",
+      "input": {
+        "text": "* H\na b\n",
+        "point": 0,
+        "keys": "C-n C-SPC C-n C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n| a | b |\n",
+      "visible": "* H\n| a | b |\n",
+      "point": 6,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "undo",
+      "input": {
+        "text": "a b\nc d\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c | C-/",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "a b\nc d\n",
+      "visible": "a b\nc d\n",
+      "point": 8,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Undo"
+    },
+    {
+      "name": "leading-trailing-spaces",
+      "input": {
+        "text": " a b \n c d \n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b |\n| c | d |\n",
+      "visible": "| a | b |\n| c | d |\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "empty-region",
+      "input": {
+        "text": "a b\n",
+        "point": 0,
+        "keys": "C-SPC C-SPC C-SPC C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3x2"
+        ],
+        "message": true
+      },
+      "text": "|   |   |   |\n|---+---+---|\n|   |   |   |\na b\n",
+      "visible": "|   |   |   |\n|---+---+---|\n|   |   |   |\na b\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark activated"
+    },
+    {
+      "name": "region-whitespace-only",
+      "input": {
+        "text": "   \n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "||\n",
+      "visible": "||\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "above-table",
+      "input": {
+        "text": "| x | y |\na b\n",
+        "point": 10,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| x | y |\n| a | b |\n",
+      "visible": "| x | y |\n| a | b |\n",
+      "point": 12,
+      "mark": 20,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "below-table",
+      "input": {
+        "text": "a b\n| xx | y |\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a  | b |\n| xx | y |\n",
+      "visible": "| a  | b |\n| xx | y |\n",
+      "point": 2,
+      "mark": 11,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "above-table-blank",
+      "input": {
+        "text": "| x |\n\na b\n",
+        "point": 7,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| x |\n\n| a | b |\n",
+      "visible": "| x |\n\n| a | b |\n",
+      "point": 9,
+      "mark": 17,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "above-indented-table",
+      "input": {
+        "text": "  | x | y |\na b\n",
+        "point": 12,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "  | x | y |\n  | a | b |\n",
+      "visible": "  | x | y |\n  | a | b |\n",
+      "point": 16,
+      "mark": 24,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "leading-tab-spaces",
+      "input": {
+        "text": "\ta b\nc d\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "|   | a | b |\n| c | d |   |\n",
+      "visible": "|   | a | b |\n| c | d |   |\n",
+      "point": 2,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "regexp-case-fold",
+      "input": {
+        "text": "aXbxc\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-u C-u C-u C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "x"
+        ],
+        "message": true
+      },
+      "text": "| a | b | c |\n",
+      "visible": "| a | b | c |\n",
+      "point": 2,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "crlf-csv",
+      "input": {
+        "text": "a,b\r\nc,d\r\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b\r |\n| c | d\r |\n",
+      "visible": "| a | b\r |\n| c | d\r |\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "crlf-spaces",
+      "input": {
+        "text": "a b\r\nc d\r\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b\r |\n| c | d\r |\n",
+      "visible": "| a | b\r |\n| c | d\r |\n",
+      "point": 2,
+      "mark": 11,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "csv-unclosed",
+      "input": {
+        "text": "\"a,b\nc,d\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| \"a | b |\n| c  | d |\n",
+      "visible": "| \"a | b |\n| c  | d |\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "csv-quote-then-text",
+      "input": {
+        "text": "\"a\"b,c\n\"x\"y\"z\",d\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| ab    | c |\n| xy\"z\" | d |\n",
+      "visible": "| ab    | c |\n| xy\"z\" | d |\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "csv-quotes-spaced",
+      "input": {
+        "text": " \"a\" , \"b\"\nc,d\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b |\n| c | d |\n",
+      "visible": "| a | b |\n| c | d |\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "csv-quadruple",
+      "input": {
+        "text": "\"\"\"\",x\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| \" | x |\n",
+      "visible": "| \" | x |\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "trailing-blank-line",
+      "input": {
+        "text": "a b\nc d\n\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b |\n| c | d |\n|   |   |\n",
+      "visible": "| a | b |\n| c | d |\n|   |   |\n",
+      "point": 2,
+      "mark": 10,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "trailing-blank-tabs",
+      "input": {
+        "text": "a\tb\nc\td\n\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b |\n| c | d |\n|   |   |\n",
+      "visible": "| a | b |\n| c | d |\n|   |   |\n",
+      "point": 2,
+      "mark": 10,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "trailing-blank-csv",
+      "input": {
+        "text": "a,b\nc,d\n\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b |\n| c | d |\n\n",
+      "visible": "| a | b |\n| c | d |\n\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "trailing-ws-line",
+      "input": {
+        "text": "a b\n   \n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b |\n|   |   |\n",
+      "visible": "| a | b |\n|   |   |\n",
+      "point": 2,
+      "mark": 10,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "narrowed-mid-line",
+      "input": {
+        "text": "xx a b\nc d\nyy\n",
+        "point": 3,
+        "keys": "C-SPC C-n C-e C-x n n M-< C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "xx | a | b |\n| c | d |\n\nyy\n",
+      "visible": "xx | a | b |\n| c | d |\n\nyy\n",
+      "point": 5,
+      "mark": 13,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "narrowed-mid-line-csv",
+      "input": {
+        "text": "xx a,b\nc,d\nyy\n",
+        "point": 3,
+        "keys": "C-SPC C-n C-e C-x n n M-< C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "xx | a | b |\n| c | d |\n\nyy\n",
+      "visible": "xx | a | b |\n| c | d |\n\nyy\n",
+      "point": 3,
+      "mark": 3,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "narrowed-table-below",
+      "input": {
+        "text": "a b\nc d\n| x | y |\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-n C-x n n M-< C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b |\n| c | d |\n| x | y |\n",
+      "visible": "| a | b |\n| c | d |\n| x | y |\n",
+      "point": 2,
+      "mark": 10,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "mark-mid-line",
+      "input": {
+        "text": "a b c\nd e f\n",
+        "point": 2,
+        "keys": "C-SPC C-n C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b | c |\n| d | e | f |\n",
+      "visible": "| a | b | c |\n| d | e | f |\n",
+      "point": 2,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "prefix-256",
+      "input": {
+        "text": "a b\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-u C-u C-u C-u C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "a b\n",
+      "visible": "a b\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": "This should not happen",
+      "message": "Mark set"
+    },
+    {
+      "name": "prefix-c-u-minus",
+      "input": {
+        "text": "a b\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-u - C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "a b\n",
+      "visible": "a b\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": "This should not happen",
+      "message": "Mark set"
+    },
+    {
+      "name": "mixed-bars",
+      "input": {
+        "text": "| a | b |\nc d\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "|   |   | a |   |   | b |   |\n| c | d |   |   |   |   |   |\n",
+      "visible": "|   |   | a |   |   | b |   |\n| c | d |   |   |   |   |   |\n",
+      "point": 2,
+      "mark": 30,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "region-start-blank",
+      "input": {
+        "text": "\na b\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "|   |   |\n| a | b |\n",
+      "visible": "|   |   |\n| a | b |\n",
+      "point": 2,
+      "mark": 10,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "all-and-table",
+      "input": {
+        "text": "| x |\na b\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "|   |   | x |   |\n| a | b |   |   |\n",
+      "visible": "|   |   | x |   |\n| a | b |   |   |\n",
+      "point": 2,
+      "mark": 18,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "one-line-of-two-above-table",
+      "input": {
+        "text": "| x |\na b\nc d\n",
+        "point": 6,
+        "keys": "C-SPC C-n C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| x |   |\n| a | b |\nc d\n",
+      "visible": "| x |   |\n| a | b |\nc d\n",
+      "point": 12,
+      "mark": 20,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "hline-above",
+      "input": {
+        "text": "| x |\n|---|\na b\n",
+        "point": 12,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| x |   |\n|---+---|\n| a | b |\n",
+      "visible": "| x |   |\n|---+---|\n| a | b |\n",
+      "point": 22,
+      "mark": 30,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "narrowed-end-mid-line",
+      "input": {
+        "text": "a b\nc d e\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-f C-f C-f C-x n n M-< C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b |\n| c | d |\n e\n",
+      "visible": "| a | b |\n| c | d |\n e\n",
+      "point": 2,
+      "mark": 10,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "regexp-class",
+      "input": {
+        "text": "a;b:c\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-u C-u C-u C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "[;:]"
+        ],
+        "message": true
+      },
+      "text": "| a | b | c |\n",
+      "visible": "| a | b | c |\n",
+      "point": 2,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "prefix-tab-forced",
+      "input": {
+        "text": "a b\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-u C-u C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a b |\n",
+      "visible": "| a b |\n",
+      "point": 2,
+      "mark": 8,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "csv-tab-in-field",
+      "input": {
+        "text": "a\tb,c\nd,e\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a\tb | c |\n| d         | e |\n",
+      "visible": "| a\tb | c |\n| d         | e |\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "spaces-tab-in-field",
+      "input": {
+        "text": "a\tb c\nd e\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b | c |\n| d | e |   |\n",
+      "visible": "| a | b | c |\n| d | e |   |\n",
+      "point": 2,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "backwards-mid-line",
+      "input": {
+        "text": "a b c\nd e f\n",
+        "point": 9,
+        "keys": "C-SPC C-p C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b | c |\n| d | e | f |\n",
+      "visible": "| a | b | c |\n| d | e | f |\n",
+      "point": 2,
+      "mark": 28,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "prefix-2-trailing",
+      "input": {
+        "text": "a  b  \nc  d\n",
+        "point": 0,
+        "keys": "C-SPC M-> M-2 C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b |\n| c | d |\n",
+      "visible": "| a | b |\n| c | d |\n",
+      "point": 2,
+      "mark": 10,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "csv-only-quote-line",
+      "input": {
+        "text": "\"\n\"a\",b\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| \"     |\n| \"a\",b |\n",
+      "visible": "| \"     |\n| \"a\",b |\n",
+      "point": 2,
+      "mark": 10,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "max-lines-nil",
+      "input": {
+        "text": "a b\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-table-convert-region-max-lines": false
+        }
+      },
+      "text": "a b\n",
+      "visible": "a b\n",
+      "point": 4,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Wrong type argument: number-or-marker-p, nil",
+      "message": "Mark set"
+    },
+    {
+      "name": "max-lines-exact-no-newline",
+      "input": {
+        "text": "a b\nc d",
+        "point": 0,
+        "keys": "C-SPC M-> C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-table-convert-region-max-lines": 1
+        }
+      },
+      "text": "a b\nc d",
+      "visible": "a b\nc d",
+      "point": 7,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Region is longer than ‘org-table-convert-region-max-lines’ (1) lines; not converting",
+      "message": "Mark set"
+    }
+  ]
+}
