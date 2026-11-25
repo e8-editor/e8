@@ -820,9 +820,10 @@ pub(crate) fn position_at_x_in(ed: &Editor, window: crate::window::WindowId, b: 
 /// character that spans it, or the line's end.
 pub(crate) fn move_to_column_on(ed: &Editor, b: &Buffer, line: usize, goal: usize) -> usize {
     let tab = ed.tab_width_in(b).max(1);
-    let end = b.line_end(line);
+    // Within the narrowing, as Emacs's scan from the line's start stops at it.
+    let end = b.line_end(line).min(b.point_max());
     let mut col = 0;
-    let mut p = b.line_start(line);
+    let mut p = b.line_start(line).max(b.point_min());
     while p < end {
         // Hidden text is skipped first, so point goes before the character the cursor shows on.
         if ed.invisible_in(b, p) == Some(false) {
@@ -848,9 +849,10 @@ pub(crate) fn move_to_column_on(ed: &Editor, b: &Buffer, line: usize, goal: usiz
 /// the line's end.
 fn position_at_goal_column(ed: &Editor, b: &Buffer, line: usize, goal: usize) -> usize {
     let tab = ed.tab_width_in(b).max(1);
-    let end = b.line_end(line);
+    // Within the narrowing, as move-to-column counts.
+    let end = b.line_end(line).min(b.point_max());
     let mut col = 0;
-    let mut p = b.line_start(line);
+    let mut p = b.line_start(line).max(b.point_min());
     while p < end && col < goal {
         if ed.invisible_in(b, p) == Some(false) {
             p += 1;
@@ -886,7 +888,8 @@ pub(crate) fn column_width(c: char) -> usize {
 pub(crate) fn current_column(ed: &Editor, b: &Buffer, pos: usize) -> usize {
     let tab = ed.tab_width_in(b).max(1);
     let mut col = 0;
-    for p in b.line_start(b.line_of(pos))..pos {
+    // From the narrowing's start when it is in the line, as Emacs's scan back stops there.
+    for p in b.line_start(b.line_of(pos)).max(b.point_min())..pos {
         if ed.invisible_in(b, p) == Some(false) {
             continue;
         }

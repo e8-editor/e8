@@ -1,0 +1,342 @@
+[
+ {
+  "name": "what-cursor",
+  "text": "abcdefgh\nijklmnopqrst\nuv\n",
+  "point": 4,
+  "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-f C-f C-x =",
+  "message": true
+ },
+ {
+  "name": "c-n-goal",
+  "text": "abcdefgh\nijklmnopqrst\nuv\n",
+  "point": 4,
+  "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-f C-f C-n C-x =",
+  "message": true
+ },
+ {
+  "name": "c-n-twice",
+  "text": "abcdefgh\nijklmnopqrst\nuv\n",
+  "point": 4,
+  "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-e C-n C-n C-x =",
+  "message": true
+ },
+ {
+  "name": "c-p-back",
+  "text": "abcdefgh\nijklmnopqrst\nuv\n",
+  "point": 4,
+  "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-n C-e C-p C-x =",
+  "message": true
+ },
+ {
+  "name": "tab-in-narrowing",
+  "text": "abc\tde\tf\n",
+  "point": 2,
+  "keys": "C-SPC C-e C-x n n C-SPC C-SPC C-e C-x =",
+  "message": true
+ },
+ {
+  "name": "tab-c-n",
+  "text": "abc\tde\nxxxxxxxxxxxxxxxx\n",
+  "point": 2,
+  "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-e C-n C-x =",
+  "message": true
+ },
+ {
+  "name": "whole-line-unchanged",
+  "text": "abcdefgh\nijklmnopqrst\nuv\n",
+  "point": 0,
+  "keys": "C-f C-f C-f C-x =",
+  "message": true
+ },
+ {
+  "name": "end-mid-line",
+  "text": "abcdefgh\nijklmnopqrst\nuv\n",
+  "point": 0,
+  "keys": "C-SPC C-n C-f C-f C-f C-x n n C-SPC C-SPC M-< C-n C-e C-x =",
+  "message": true
+ },
+ {
+  "name": "back-to-indentation",
+  "text": "  ab  cd\n  ef\n",
+  "point": 5,
+  "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-e M-m C-x =",
+  "message": true
+ },
+ {
+  "name": "zzc-goal-column-var-c-p",
+  "text": "abcdefgh\nijklmnopqrst\nuv\n",
+  "point": 4,
+  "vars": {
+   "goal-column": 2
+  },
+  "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-n C-p C-x =",
+  "message": true
+ },
+ {
+  "name": "zzc-logical-c-p",
+  "text": "abcdefgh\nijklmnopqrst\nuv\n",
+  "point": 4,
+  "vars": {
+   "line-move-visual": false
+  },
+  "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-n C-f C-f C-p C-x =",
+  "message": true
+ },
+ {
+  "name": "zzc-visual-c-p",
+  "text": "abcdefgh\nijklmnopqrst\nuv\n",
+  "point": 4,
+  "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-n C-f C-f C-p C-x =",
+  "message": true
+ },
+ {
+  "name": "zzc-logical-c-n-end-mid-line",
+  "text": "abcdefgh\nijklmnopqrst\nuv\n",
+  "point": 0,
+  "vars": {
+   "line-move-visual": false
+  },
+  "keys": "C-SPC C-n C-f C-f C-f C-x n n C-SPC C-SPC M-< C-e C-n C-x =",
+  "message": true
+ },
+ {
+  "name": "zzc-goal-column-var-end-mid-line",
+  "text": "abcdefgh\nijklmnopqrst\nuv\n",
+  "point": 0,
+  "vars": {
+   "goal-column": 6
+  },
+  "keys": "C-SPC C-n C-f C-f C-f C-x n n C-SPC C-SPC M-< C-n C-x =",
+  "message": true
+ },
+ {
+  "name": "zzc-indent-rigidly-start-mid-line",
+  "text": "ab  cd\n  ef\n",
+  "point": 2,
+  "keys": "C-SPC M-> C-x n n C-x h C-u 2 C-x TAB"
+ },
+ {
+  "name": "zzc-indent-rigidly-end-in-indentation",
+  "text": "x\n    ab\n",
+  "point": 0,
+  "keys": "C-SPC C-n C-f C-f C-x n n C-x h C-u 1 C-x TAB"
+ },
+ {
+  "name": "zzc-tab-relative-line-above-narrowed",
+  "text": "xxxx  ab cd\nz\n",
+  "point": 4,
+  "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-n C-e TAB"
+ },
+ {
+  "name": "zzc-tab-relative-empty-line",
+  "text": "xxxx  ab cd\n\n",
+  "point": 4,
+  "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-n TAB"
+ },
+ {
+  "name": "zzc-tab-relative-own-line-narrowed",
+  "text": "ab cd\nxx  ef\n",
+  "point": 8,
+  "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< TAB"
+ },
+ {
+  "name": "zzc-ret-electric-indent",
+  "text": "  ab  cd\n",
+  "point": 5,
+  "keys": "C-SPC C-e C-x n n C-SPC C-SPC C-e RET"
+ },
+ {
+  "name": "zzc-indent-according-to-mode",
+  "text": "  ab  cd\nx\n",
+  "point": 5,
+  "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-n M-x",
+  "answers": [
+   "indent-according-to-mode"
+  ]
+ },
+ {
+  "name": "zzc-tab-to-tab-stop",
+  "text": "abcd  e\n",
+  "point": 2,
+  "vars": {
+   "tab-width": 4
+  },
+  "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-f C-f C-f C-f M-i C-x =",
+  "message": true
+ },
+ {
+  "name": "zzc-kill-rectangle-from-bobp",
+  "text": "abcdef\nghijkl\n",
+  "point": 2,
+  "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-SPC C-n C-f C-f C-x r k"
+ },
+ {
+  "name": "zzc-kill-rectangle-mid",
+  "text": "abcdef\nghijkl\n",
+  "point": 2,
+  "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-f C-SPC C-n C-f C-f C-x r k"
+ },
+ {
+  "name": "zzc-open-rectangle-end-mid-line",
+  "text": "abcdef\nghijkl\n",
+  "point": 0,
+  "keys": "C-SPC C-n C-f C-f C-x n n C-SPC C-SPC M-< C-f C-f C-f C-f C-SPC C-n C-x r o"
+ },
+ {
+  "name": "zzc-string-rectangle-tab",
+  "text": "xab\tcd\nxxxxxxxxxxxx\n",
+  "point": 1,
+  "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-f C-f C-f C-f C-SPC C-n C-x r t",
+  "answers": [
+   "Z"
+  ]
+ },
+ {
+  "name": "zzc-fill-paragraph",
+  "text": "xxxx aaa bbb ccc ddd eee\n",
+  "point": 5,
+  "vars": {
+   "fill-column": 10
+  },
+  "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< M-q"
+ },
+ {
+  "name": "zzc-auto-fill",
+  "text": "xxxxxxxx aaa\n",
+  "point": 9,
+  "vars": {
+   "fill-column": 10
+  },
+  "modes": [
+   "auto-fill-mode"
+  ],
+  "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-e SPC b b b SPC c c c SPC d d d SPC"
+ },
+ {
+  "name": "zzc-split-line",
+  "text": "abcd efg\n",
+  "point": 2,
+  "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-f C-f C-M-o"
+ },
+ {
+  "name": "zzc-overwrite-end-mid-line",
+  "text": "abcdef\n",
+  "point": 0,
+  "modes": [
+   "overwrite-mode"
+  ],
+  "keys": "C-SPC C-f C-f C-f C-x n n C-SPC C-SPC M-< C-f C-f x y"
+ },
+ {
+  "name": "zzc-overwrite-tab-start-mid-line",
+  "text": "xxxxxab\tcd\n",
+  "point": 5,
+  "modes": [
+   "overwrite-mode"
+  ],
+  "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-f C-f x y z"
+ },
+ {
+  "name": "zzc-set-goal-column-message",
+  "text": "abcdefgh\nijklmnopqrst\nuv\n",
+  "point": 4,
+  "vars": {
+   "goal-column": 3
+  },
+  "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-n C-n C-p C-p C-x =",
+  "message": true
+ },
+ {
+  "name": "zzc-indent-region-col",
+  "text": "ab  cd\n  ef\n",
+  "point": 2,
+  "keys": "C-SPC M-> C-x n n C-x h C-u 4 C-M-\\"
+ },
+ {
+  "name": "zzc-mx-indent-relative-empty-line",
+  "text": "xxxx  ab cd\n\n",
+  "point": 4,
+  "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-n M-x",
+  "answers": [
+   "indent-relative"
+  ]
+ },
+ {
+  "name": "zzc-mx-indent-relative-z",
+  "text": "xxxx  ab cd\nz\n",
+  "point": 4,
+  "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-n C-e M-x",
+  "answers": [
+   "indent-relative"
+  ]
+ },
+ {
+  "name": "zzc-org-table-align",
+  "text": "xx| a | bbb |\n| cc | d |\n",
+  "point": 2,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-f C-f C-c C-c"
+ },
+ {
+  "name": "zzc-set-fill-column-here",
+  "text": "abcdefgh\n",
+  "point": 3,
+  "keys": "C-SPC C-e C-x n n C-SPC C-SPC M-< C-f C-f C-u C-x f",
+  "message": true
+ },
+ {
+  "name": "zzc-c-j-indent",
+  "text": "  ab  cd\n",
+  "point": 5,
+  "keys": "C-SPC C-e C-x n n C-SPC C-SPC C-e C-j"
+ },
+ {
+  "name": "zzc-logical-c-p-long-goal",
+  "text": "abcdefgh\nijklmnopqrst\nuv\n",
+  "point": 4,
+  "vars": {
+   "line-move-visual": false
+  },
+  "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-n C-e C-p C-x =",
+  "message": true
+ },
+ {
+  "name": "zzc-logical-c-n-from-narrowed-first",
+  "text": "abcdefgh\nijklmnopqrst\nuv\n",
+  "point": 4,
+  "vars": {
+   "line-move-visual": false
+  },
+  "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-f C-f C-n C-x =",
+  "message": true
+ },
+ {
+  "name": "m-g-tab",
+  "text": "abcdefgh\nijklmnopqrst\nuv\n",
+  "point": 4,
+  "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-n M-g TAB C-x =",
+  "message": true,
+  "answers": [
+   "3"
+  ]
+ },
+ {
+  "name": "m-g-tab-prefix",
+  "text": "abcdefgh\nijklmnopqrst\nuv\n",
+  "point": 4,
+  "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-n M-5 M-g TAB C-x =",
+  "message": true
+ },
+ {
+  "name": "m-g-tab-past-end",
+  "text": "abcdefgh\nijklmnopqrst\nuv\n",
+  "point": 4,
+  "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-n C-n M-g TAB C-x =",
+  "message": true,
+  "answers": [
+   "9"
+  ]
+ }
+]

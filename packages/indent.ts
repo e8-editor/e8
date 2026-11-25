@@ -30,7 +30,9 @@ const currentIndentation = (line: number): number => e8.currentIndentation(e8.li
 e8.defineCommand({
   name: "indent-according-to-mode",
   doc: "Indent the current line as the major mode says, through indent-line-function.",
-  run: () => {
+  // Widened, as Emacs's, so the whole line and the lines before count.
+  run: () => e8.saveRestriction(() => {
+    e8.widen();
     const fn = e8.variable("indent-line-function");
     const ignored = e8.variable("indent-line-ignored-functions");
     if (typeof fn === "string" && !(Array.isArray(ignored) && ignored.includes(fn))) {
@@ -49,7 +51,7 @@ e8.defineCommand({
       e8.gotoChar(e8.markerPosition(p)!);
       e8.deleteMarker(p);
     }
-  },
+  }),
 });
 
 e8.defineVariable({
@@ -286,7 +288,11 @@ e8.defineCommand({
       e8.insert("\t".repeat(Math.max(1, e8.prefixNumericValue(e8.prefixArg()))));
       return;
     }
-    e8.funcall(typeof fn === "string" ? fn : "indent-relative");
+    // Widened, as indent--funcall-widened calls it.
+    e8.saveRestriction(() => {
+      e8.widen();
+      e8.funcall(typeof fn === "string" ? fn : "indent-relative");
+    });
   },
 });
 
