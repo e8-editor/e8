@@ -15829,6 +15829,12 @@ declare global {
        */
       "org-table-automatic-realign": Value;
       /**
+       * The most lines org-table-convert-region will convert, so a large region does not hang the editor.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-convert-region-max-lines": Value;
+      /**
        * Whether org-table-copy-down increments a number, a number before or after text, or a timestamp's day as it copies it: t by the difference from the field above, a number by that much, nil not at all.
        *
        * Defined in packages/org-table.ts.
