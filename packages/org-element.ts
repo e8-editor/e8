@@ -24,7 +24,7 @@ import {
   ITEM_RE,
   separatesParagraph,
   itemEndBeforeBlank,
-  itemLine,
+  itemLineByText,
   itemParts,
   listStruct,
   moveItemDown,
@@ -315,7 +315,7 @@ function parseElements(
       e = elem("table", p, Math.min(lineStartOrEnd(formulas + 1), to), parent, p);
       e.contentsEnd = Math.min(lineStartOrEnd(last + 1), to);
       for (let l = line; l <= last; l++) elem("table-row", e8.lineStart(l), Math.min(lineStartOrEnd(l + 1), to), e);
-    } else if (p === e8.lineStart(line) && itemLine(line)) {
+    } else if (p === e8.lineStart(line) && itemLineByText(line)) {
       const [struct, prevs, parents] = list ?? (() => {
         // Bounded by what holds the list, as org-element--list-struct is, not
         // by the drawer org-list-context may take a line for.

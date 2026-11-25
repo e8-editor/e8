@@ -19,6 +19,7 @@ import {
   orgRegionActive,
   placeMarkers,
 } from "org-macs";
+import { elementAt } from "org-element";
 import { allMatches, charCount, forwardLine } from "subr";
 
 e8.defineVariable({
@@ -82,8 +83,16 @@ function isTableLine(line: number): boolean {
   return TABLE_LINE.test(e8.lineText(line));
 }
 
+/**
+ * Whether a position is in a table, as org-at-table-p: its line starts as a
+ * row does and, in Org mode, the parser puts it in a table, so a `|` line
+ * in a LaTeX environment or a block is none.
+ */
 export function atTable(pos = e8.point()): boolean {
-  return isTableLine(lineAt(pos));
+  if (!isTableLine(lineAt(pos))) return false;
+  if (!e8.derivedModeP("org-mode")) return true;
+  for (let e = elementAt(pos); e; e = e.parent) if (e.type === "table") return true;
+  return false;
 }
 
 function atHline(pos = e8.point()): boolean {

@@ -249,11 +249,26 @@ function atListEnd(line: number): boolean {
   return line + 1 < e8.lineCount() && isBlank(e8.lineText(line)) && isBlank(e8.lineText(line + 1));
 }
 
-/** Whether a line starts an item: org-at-item-p for that line. */
-export function itemLine(line: number): boolean {
+/**
+ * Whether a line looks like an item, read from its text in a list's
+ * context, as org-list's own code reads lines with org-item-re; the parser
+ * uses it, as it reads the lists it parses.
+ */
+export function itemLineByText(line: number): boolean {
   if (line < 0 || line >= e8.lineCount()) return false;
   if (!ITEM_RE.test(e8.lineText(line))) return false;
   return listContext(line).type !== "invalid";
+}
+
+/**
+ * Whether a line starts an item, as org-at-item-p: it looks like one and
+ * the parser puts a list or an item there, so a `- ` line in a LaTeX
+ * environment or a comment block, which are not parsed, is none.
+ */
+export function itemLine(line: number): boolean {
+  if (!itemLineByText(line)) return false;
+  const e = elementAt(e8.lineStart(line));
+  return e?.type === "plain-list" || e?.type === "item";
 }
 
 /** The start of the item a line is in, if any, as org-in-item-p finds it. */

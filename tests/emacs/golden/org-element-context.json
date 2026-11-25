@@ -1,0 +1,3667 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "latex-item-dash",
+      "input": {
+        "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+        "point": 29,
+        "keys": "C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "visible": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not at an item",
+      "message": null
+    },
+    {
+      "name": "latex-item-checkbox",
+      "input": {
+        "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+        "point": 29,
+        "keys": "C-c C-x C-b",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "visible": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not at an item or heading, and no active region",
+      "message": null
+    },
+    {
+      "name": "latex-item-cc",
+      "input": {
+        "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+        "point": 29,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "visible": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    },
+    {
+      "name": "latex-item-star",
+      "input": {
+        "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+        "point": 29,
+        "keys": "C-c *",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{itemize}\n- one\n** - two [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "visible": "* H\n\\begin{itemize}\n- one\n** - two [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "latex-item-sright",
+      "input": {
+        "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+        "point": 29,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "visible": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "To use shift-selection with Org mode, customize ‘org-support-shift-select’",
+      "message": null
+    },
+    {
+      "name": "latex-item-sleft",
+      "input": {
+        "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+        "point": 29,
+        "keys": "S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "visible": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "To use shift-selection with Org mode, customize ‘org-support-shift-select’",
+      "message": null
+    },
+    {
+      "name": "latex-item-mright",
+      "input": {
+        "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+        "point": 29,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "visible": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "latex-item-mleft",
+      "input": {
+        "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+        "point": 29,
+        "keys": "M-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "visible": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "latex-item-msright",
+      "input": {
+        "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+        "point": 29,
+        "keys": "M-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "visible": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "This command is active in special context like tables, headlines or items",
+      "message": null
+    },
+    {
+      "name": "latex-item-mdown",
+      "input": {
+        "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+        "point": 29,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nAfter.\n\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n",
+      "visible": "* H\nAfter.\n\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "latex-item-mup",
+      "input": {
+        "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+        "point": 29,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "visible": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot drag element backward",
+      "message": null
+    },
+    {
+      "name": "latex-item-mret",
+      "input": {
+        "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+        "point": 29,
+        "keys": "M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{itemize}\n- one\n- t\n- xwo [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "visible": "* H\n\\begin{itemize}\n- one\n- t\n- xwo [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "latex-item-tab",
+      "input": {
+        "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+        "point": 29,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "visible": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "latex-item-ret",
+      "input": {
+        "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+        "point": 29,
+        "keys": "C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{itemize}\n- one\n- t\n* wo [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "visible": "* H\n\\begin{itemize}\n- one\n- t\n* wo [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "latex-item-sort",
+      "input": {
+        "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+        "point": 29,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ],
+        "message": true
+      },
+      "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "visible": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Nothing to sort",
+      "message": null
+    },
+    {
+      "name": "latex-item-sup",
+      "input": {
+        "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+        "point": 29,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "visible": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "To use shift-selection with Org mode, customize ‘org-support-shift-select’",
+      "message": null
+    },
+    {
+      "name": "latex-item-first-mdown",
+      "input": {
+        "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+        "point": 22,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nAfter.\n\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n",
+      "visible": "* H\nAfter.\n\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n",
+      "point": 30,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "latex-item-cycle-bullet",
+      "input": {
+        "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+        "point": 20,
+        "keys": "C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "visible": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not at an item",
+      "message": null
+    },
+    {
+      "name": "comment-item-dash",
+      "input": {
+        "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+        "point": 29,
+        "keys": "C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not at an item",
+      "message": null
+    },
+    {
+      "name": "comment-item-checkbox",
+      "input": {
+        "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+        "point": 29,
+        "keys": "C-c C-x C-b",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not at an item or heading, and no active region",
+      "message": null
+    },
+    {
+      "name": "comment-item-cc",
+      "input": {
+        "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+        "point": 29,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    },
+    {
+      "name": "comment-item-star",
+      "input": {
+        "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+        "point": 29,
+        "keys": "C-c *",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n- one\n** - two [ ] box\n#+end_comment\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n- one\n** - two [ ] box\n#+end_comment\n\nAfter.\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "comment-item-sright",
+      "input": {
+        "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+        "point": 29,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "To use shift-selection with Org mode, customize ‘org-support-shift-select’",
+      "message": null
+    },
+    {
+      "name": "comment-item-sleft",
+      "input": {
+        "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+        "point": 29,
+        "keys": "S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "To use shift-selection with Org mode, customize ‘org-support-shift-select’",
+      "message": null
+    },
+    {
+      "name": "comment-item-mright",
+      "input": {
+        "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+        "point": 29,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "comment-item-mleft",
+      "input": {
+        "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+        "point": 29,
+        "keys": "M-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "comment-item-msright",
+      "input": {
+        "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+        "point": 29,
+        "keys": "M-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "This command is active in special context like tables, headlines or items",
+      "message": null
+    },
+    {
+      "name": "comment-item-mdown",
+      "input": {
+        "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+        "point": 29,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nAfter.\n\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n",
+      "visible": "* H\nAfter.\n\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "comment-item-mup",
+      "input": {
+        "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+        "point": 29,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot drag element backward",
+      "message": null
+    },
+    {
+      "name": "comment-item-mret",
+      "input": {
+        "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+        "point": 29,
+        "keys": "M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n- one\n- t\n- xwo [ ] box\n#+end_comment\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n- one\n- t\n- xwo [ ] box\n#+end_comment\n\nAfter.\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "comment-item-tab",
+      "input": {
+        "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+        "point": 29,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "comment-item-ret",
+      "input": {
+        "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+        "point": 29,
+        "keys": "C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n- one\n- t\n* wo [ ] box\n#+end_comment\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n- one\n- t\n* wo [ ] box\n#+end_comment\n\nAfter.\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "comment-item-sort",
+      "input": {
+        "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+        "point": 29,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ],
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Nothing to sort",
+      "message": null
+    },
+    {
+      "name": "comment-item-sup",
+      "input": {
+        "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+        "point": 29,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "To use shift-selection with Org mode, customize ‘org-support-shift-select’",
+      "message": null
+    },
+    {
+      "name": "comment-item-first-mdown",
+      "input": {
+        "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+        "point": 22,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nAfter.\n\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n",
+      "visible": "* H\nAfter.\n\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n",
+      "point": 30,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "comment-item-cycle-bullet",
+      "input": {
+        "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+        "point": 20,
+        "keys": "C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n- one\n- two [ ] box\n#+end_comment\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not at an item",
+      "message": null
+    },
+    {
+      "name": "quote-item-dash",
+      "input": {
+        "text": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+        "point": 27,
+        "keys": "C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n+ one\n+ two [ ] box\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n+ one\n+ two [ ] box\n#+end_quote\n\nAfter.\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-item-checkbox",
+      "input": {
+        "text": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+        "point": 27,
+        "keys": "C-c C-x C-b",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-item-cc",
+      "input": {
+        "text": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+        "point": 27,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-item-star",
+      "input": {
+        "text": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+        "point": 27,
+        "keys": "C-c *",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n- one\n** two [ ] box\n\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n- one\n** two [ ] box\n\n#+end_quote\n\nAfter.\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-item-sright",
+      "input": {
+        "text": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+        "point": 27,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n+ one\n+ two [ ] box\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n+ one\n+ two [ ] box\n#+end_quote\n\nAfter.\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-item-sleft",
+      "input": {
+        "text": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+        "point": 27,
+        "keys": "S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n1) one\n2) two [ ] box\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n1) one\n2) two [ ] box\n#+end_quote\n\nAfter.\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-item-mright",
+      "input": {
+        "text": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+        "point": 27,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n- one\n  - two [ ] box\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n- one\n  - two [ ] box\n#+end_quote\n\nAfter.\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-item-mleft",
+      "input": {
+        "text": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+        "point": 27,
+        "keys": "M-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot outdent top-level items",
+      "message": null
+    },
+    {
+      "name": "quote-item-msright",
+      "input": {
+        "text": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+        "point": 27,
+        "keys": "M-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n- one\n  - two [ ] box\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n- one\n  - two [ ] box\n#+end_quote\n\nAfter.\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-item-mdown",
+      "input": {
+        "text": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+        "point": 27,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move this item further down",
+      "message": null
+    },
+    {
+      "name": "quote-item-mup",
+      "input": {
+        "text": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+        "point": 27,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n- two [ ] box\n- one\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n- two [ ] box\n- one\n#+end_quote\n\nAfter.\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-item-mret",
+      "input": {
+        "text": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+        "point": 27,
+        "keys": "M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n- one\n- t\n- xwo [ ] box\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n- one\n- t\n- xwo [ ] box\n#+end_quote\n\nAfter.\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-item-tab",
+      "input": {
+        "text": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+        "point": 27,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-item-ret",
+      "input": {
+        "text": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+        "point": 27,
+        "keys": "C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n- one\n- t\n* wo [ ] box\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n- one\n- t\n* wo [ ] box\n#+end_quote\n\nAfter.\n",
+      "point": 30,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-item-sort",
+      "input": {
+        "text": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+        "point": 27,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ],
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Sorting items...done"
+    },
+    {
+      "name": "quote-item-sup",
+      "input": {
+        "text": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+        "point": 27,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-item-first-mdown",
+      "input": {
+        "text": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n- two [ ] box\n- one\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n- two [ ] box\n- one\n#+end_quote\n\nAfter.\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-item-cycle-bullet",
+      "input": {
+        "text": "* H\n#+begin_quote\n- one\n- two [ ] box\n#+end_quote\n\nAfter.\n",
+        "point": 18,
+        "keys": "C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n+ one\n+ two [ ] box\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n+ one\n+ two [ ] box\n#+end_quote\n\nAfter.\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "drawer-item-dash",
+      "input": {
+        "text": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+        "point": 21,
+        "keys": "C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:NOTES:\n+ one\n+ two [ ] box\n:END:\n\nAfter.\n",
+      "visible": "* H\n:NOTES:\n+ one\n+ two [ ] box\n:END:\n\nAfter.\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "drawer-item-checkbox",
+      "input": {
+        "text": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+        "point": 21,
+        "keys": "C-c C-x C-b",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+      "visible": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "drawer-item-cc",
+      "input": {
+        "text": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+        "point": 21,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+      "visible": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "drawer-item-star",
+      "input": {
+        "text": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+        "point": 21,
+        "keys": "C-c *",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:NOTES:\n- one\n** two [ ] box\n\n:END:\n\nAfter.\n",
+      "visible": "* H\n:NOTES:\n- one\n** two [ ] box\n\n:END:\n\nAfter.\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "drawer-item-sright",
+      "input": {
+        "text": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+        "point": 21,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:NOTES:\n+ one\n+ two [ ] box\n:END:\n\nAfter.\n",
+      "visible": "* H\n:NOTES:\n+ one\n+ two [ ] box\n:END:\n\nAfter.\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "drawer-item-sleft",
+      "input": {
+        "text": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+        "point": 21,
+        "keys": "S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:NOTES:\n1) one\n2) two [ ] box\n:END:\n\nAfter.\n",
+      "visible": "* H\n:NOTES:\n1) one\n2) two [ ] box\n:END:\n\nAfter.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "drawer-item-mright",
+      "input": {
+        "text": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+        "point": 21,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:NOTES:\n- one\n  - two [ ] box\n:END:\n\nAfter.\n",
+      "visible": "* H\n:NOTES:\n- one\n  - two [ ] box\n:END:\n\nAfter.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "drawer-item-mleft",
+      "input": {
+        "text": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+        "point": 21,
+        "keys": "M-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+      "visible": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot outdent top-level items",
+      "message": null
+    },
+    {
+      "name": "drawer-item-msright",
+      "input": {
+        "text": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+        "point": 21,
+        "keys": "M-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:NOTES:\n- one\n  - two [ ] box\n:END:\n\nAfter.\n",
+      "visible": "* H\n:NOTES:\n- one\n  - two [ ] box\n:END:\n\nAfter.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "drawer-item-mdown",
+      "input": {
+        "text": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+        "point": 21,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+      "visible": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move this item further down",
+      "message": null
+    },
+    {
+      "name": "drawer-item-mup",
+      "input": {
+        "text": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+        "point": 21,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:NOTES:\n- two [ ] box\n- one\n:END:\n\nAfter.\n",
+      "visible": "* H\n:NOTES:\n- two [ ] box\n- one\n:END:\n\nAfter.\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "drawer-item-mret",
+      "input": {
+        "text": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+        "point": 21,
+        "keys": "M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:NOTES:\n- one\n- t\n- xwo [ ] box\n:END:\n\nAfter.\n",
+      "visible": "* H\n:NOTES:\n- one\n- t\n- xwo [ ] box\n:END:\n\nAfter.\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "drawer-item-tab",
+      "input": {
+        "text": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+        "point": 21,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+      "visible": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "drawer-item-ret",
+      "input": {
+        "text": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+        "point": 21,
+        "keys": "C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:NOTES:\n- one\n- t\n* wo [ ] box\n:END:\n\nAfter.\n",
+      "visible": "* H\n:NOTES:\n- one\n- t\n* wo [ ] box\n:END:\n\nAfter.\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "drawer-item-sort",
+      "input": {
+        "text": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+        "point": 21,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ],
+        "message": true
+      },
+      "text": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+      "visible": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Sorting items...done"
+    },
+    {
+      "name": "drawer-item-sup",
+      "input": {
+        "text": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+        "point": 21,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+      "visible": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "drawer-item-first-mdown",
+      "input": {
+        "text": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+        "point": 14,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:NOTES:\n- two [ ] box\n- one\n:END:\n\nAfter.\n",
+      "visible": "* H\n:NOTES:\n- two [ ] box\n- one\n:END:\n\nAfter.\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "drawer-item-cycle-bullet",
+      "input": {
+        "text": "* H\n:NOTES:\n- one\n- two [ ] box\n:END:\n\nAfter.\n",
+        "point": 12,
+        "keys": "C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:NOTES:\n+ one\n+ two [ ] box\n:END:\n\nAfter.\n",
+      "visible": "* H\n:NOTES:\n+ one\n+ two [ ] box\n:END:\n\nAfter.\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-item-dash",
+      "input": {
+        "text": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+        "point": 13,
+        "keys": "C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n+ one\n+ two [ ] box\n\nAfter.\n",
+      "visible": "* H\n+ one\n+ two [ ] box\n\nAfter.\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-item-checkbox",
+      "input": {
+        "text": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+        "point": 13,
+        "keys": "C-c C-x C-b",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+      "visible": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-item-cc",
+      "input": {
+        "text": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+        "point": 13,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+      "visible": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-item-star",
+      "input": {
+        "text": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+        "point": 13,
+        "keys": "C-c *",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n- one\n** two [ ] box\n\nAfter.\n",
+      "visible": "* H\n- one\n** two [ ] box\n\nAfter.\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-item-sright",
+      "input": {
+        "text": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+        "point": 13,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n+ one\n+ two [ ] box\n\nAfter.\n",
+      "visible": "* H\n+ one\n+ two [ ] box\n\nAfter.\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-item-sleft",
+      "input": {
+        "text": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+        "point": 13,
+        "keys": "S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n1) one\n2) two [ ] box\n\nAfter.\n",
+      "visible": "* H\n1) one\n2) two [ ] box\n\nAfter.\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-item-mright",
+      "input": {
+        "text": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+        "point": 13,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n- one\n  - two [ ] box\n\nAfter.\n",
+      "visible": "* H\n- one\n  - two [ ] box\n\nAfter.\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-item-mleft",
+      "input": {
+        "text": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+        "point": 13,
+        "keys": "M-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+      "visible": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot outdent top-level items",
+      "message": null
+    },
+    {
+      "name": "plain-item-msright",
+      "input": {
+        "text": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+        "point": 13,
+        "keys": "M-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n- one\n  - two [ ] box\n\nAfter.\n",
+      "visible": "* H\n- one\n  - two [ ] box\n\nAfter.\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-item-mdown",
+      "input": {
+        "text": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+        "point": 13,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+      "visible": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move this item further down",
+      "message": null
+    },
+    {
+      "name": "plain-item-mup",
+      "input": {
+        "text": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+        "point": 13,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n- two [ ] box\n- one\n\nAfter.\n",
+      "visible": "* H\n- two [ ] box\n- one\n\nAfter.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-item-mret",
+      "input": {
+        "text": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+        "point": 13,
+        "keys": "M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n- one\n- t\n- xwo [ ] box\n\nAfter.\n",
+      "visible": "* H\n- one\n- t\n- xwo [ ] box\n\nAfter.\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-item-tab",
+      "input": {
+        "text": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+        "point": 13,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+      "visible": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-item-ret",
+      "input": {
+        "text": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+        "point": 13,
+        "keys": "C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n- one\n- t\n* wo [ ] box\n\nAfter.\n",
+      "visible": "* H\n- one\n- t\n* wo [ ] box\n\nAfter.\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-item-sort",
+      "input": {
+        "text": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+        "point": 13,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ],
+        "message": true
+      },
+      "text": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+      "visible": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Sorting items...done"
+    },
+    {
+      "name": "plain-item-sup",
+      "input": {
+        "text": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+        "point": 13,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+      "visible": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-item-first-mdown",
+      "input": {
+        "text": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+        "point": 6,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n- two [ ] box\n- one\n\nAfter.\n",
+      "visible": "* H\n- two [ ] box\n- one\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-item-cycle-bullet",
+      "input": {
+        "text": "* H\n- one\n- two [ ] box\n\nAfter.\n",
+        "point": 4,
+        "keys": "C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n+ one\n+ two [ ] box\n\nAfter.\n",
+      "visible": "* H\n+ one\n+ two [ ] box\n\nAfter.\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "latex-table-ret",
+      "input": {
+        "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+        "point": 36,
+        "keys": "C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| \n* c | d |\n\\end{tabular}\n\nAfter.\n",
+      "visible": "* H\n\\begin{tabular}{ll}\n| a | b |\n| \n* c | d |\n\\end{tabular}\n\nAfter.\n",
+      "point": 39,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "latex-table-tab",
+      "input": {
+        "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+        "point": 36,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+      "visible": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "latex-table-stab",
+      "input": {
+        "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+        "point": 36,
+        "keys": "S-TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+      "visible": "* H",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "latex-table-cc",
+      "input": {
+        "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+        "point": 36,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+      "visible": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    },
+    {
+      "name": "latex-table-dash",
+      "input": {
+        "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+        "point": 36,
+        "keys": "C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n- | c | d |\n\\end{tabular}\n\nAfter.\n",
+      "visible": "* H\n\\begin{tabular}{ll}\n| a | b |\n- | c | d |\n\\end{tabular}\n\nAfter.\n",
+      "point": 38,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "latex-table-type",
+      "input": {
+        "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+        "point": 36,
+        "keys": "x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| xc | d |\n\\end{tabular}\n\nAfter.\n",
+      "visible": "* H\n\\begin{tabular}{ll}\n| a | b |\n| xc | d |\n\\end{tabular}\n\nAfter.\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "latex-table-del",
+      "input": {
+        "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+        "point": 36,
+        "keys": "C-d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n|  | d |\n\\end{tabular}\n\nAfter.\n",
+      "visible": "* H\n\\begin{tabular}{ll}\n| a | b |\n|  | d |\n\\end{tabular}\n\nAfter.\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "latex-table-bs",
+      "input": {
+        "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+        "point": 36,
+        "keys": "DEL",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n|c | d |\n\\end{tabular}\n\nAfter.\n",
+      "visible": "* H\n\\begin{tabular}{ll}\n| a | b |\n|c | d |\n\\end{tabular}\n\nAfter.\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "latex-table-mright",
+      "input": {
+        "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+        "point": 36,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+      "visible": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "latex-table-mdown",
+      "input": {
+        "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+        "point": 36,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nAfter.\n\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n",
+      "visible": "* H\nAfter.\n\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n",
+      "point": 44,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "latex-table-sright",
+      "input": {
+        "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+        "point": 36,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+      "visible": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "To use shift-selection with Org mode, customize ‘org-support-shift-select’",
+      "message": null
+    },
+    {
+      "name": "latex-table-sdown",
+      "input": {
+        "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+        "point": 36,
+        "keys": "S-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+      "visible": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "To use shift-selection with Org mode, customize ‘org-support-shift-select’",
+      "message": null
+    },
+    {
+      "name": "latex-table-msdown",
+      "input": {
+        "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+        "point": 36,
+        "keys": "M-S-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n\\end{tabular}\n| c | d |\n\nAfter.\n",
+      "visible": "* H\n\\begin{tabular}{ll}\n| a | b |\n\\end{tabular}\n| c | d |\n\nAfter.\n",
+      "point": 50,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "latex-table-enter",
+      "input": {
+        "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+        "point": 36,
+        "keys": "RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n|\nc | d |\n\\end{tabular}\n\nAfter.\n",
+      "visible": "* H\n\\begin{tabular}{ll}\n| a | b |\n|\nc | d |\n\\end{tabular}\n\nAfter.\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "latex-table-cbar",
+      "input": {
+        "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+        "point": 36,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+      "visible": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Minibuffer read in batch",
+      "message": null
+    },
+    {
+      "name": "latex-table-sort",
+      "input": {
+        "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+        "point": 36,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ],
+        "message": true
+      },
+      "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+      "visible": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Nothing to sort",
+      "message": null
+    },
+    {
+      "name": "latex-table-space",
+      "input": {
+        "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+        "point": 36,
+        "keys": "SPC",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n|  c | d |\n\\end{tabular}\n\nAfter.\n",
+      "visible": "* H\n\\begin{tabular}{ll}\n| a | b |\n|  c | d |\n\\end{tabular}\n\nAfter.\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "comment-table-ret",
+      "input": {
+        "text": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+        "point": 32,
+        "keys": "C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n| a | b |\n| \n* c | d |\n#+end_comment\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n| a | b |\n| \n* c | d |\n#+end_comment\n\nAfter.\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "comment-table-tab",
+      "input": {
+        "text": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+        "point": 32,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "comment-table-stab",
+      "input": {
+        "text": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+        "point": 32,
+        "keys": "S-TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+      "visible": "* H",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "comment-table-cc",
+      "input": {
+        "text": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+        "point": 32,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    },
+    {
+      "name": "comment-table-dash",
+      "input": {
+        "text": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+        "point": 32,
+        "keys": "C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n| a | b |\n- | c | d |\n#+end_comment\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n| a | b |\n- | c | d |\n#+end_comment\n\nAfter.\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "comment-table-type",
+      "input": {
+        "text": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+        "point": 32,
+        "keys": "x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n| a | b |\n| xc | d |\n#+end_comment\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n| a | b |\n| xc | d |\n#+end_comment\n\nAfter.\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "comment-table-del",
+      "input": {
+        "text": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+        "point": 32,
+        "keys": "C-d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n| a | b |\n|  | d |\n#+end_comment\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n| a | b |\n|  | d |\n#+end_comment\n\nAfter.\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "comment-table-bs",
+      "input": {
+        "text": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+        "point": 32,
+        "keys": "DEL",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n| a | b |\n|c | d |\n#+end_comment\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n| a | b |\n|c | d |\n#+end_comment\n\nAfter.\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "comment-table-mright",
+      "input": {
+        "text": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+        "point": 32,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "comment-table-mdown",
+      "input": {
+        "text": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+        "point": 32,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nAfter.\n\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n",
+      "visible": "* H\nAfter.\n\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n",
+      "point": 40,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "comment-table-sright",
+      "input": {
+        "text": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+        "point": 32,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "To use shift-selection with Org mode, customize ‘org-support-shift-select’",
+      "message": null
+    },
+    {
+      "name": "comment-table-sdown",
+      "input": {
+        "text": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+        "point": 32,
+        "keys": "S-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "To use shift-selection with Org mode, customize ‘org-support-shift-select’",
+      "message": null
+    },
+    {
+      "name": "comment-table-msdown",
+      "input": {
+        "text": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+        "point": 32,
+        "keys": "M-S-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n| a | b |\n#+end_comment\n| c | d |\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n| a | b |\n#+end_comment\n| c | d |\n\nAfter.\n",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "comment-table-enter",
+      "input": {
+        "text": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+        "point": 32,
+        "keys": "RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n| a | b |\n|\nc | d |\n#+end_comment\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n| a | b |\n|\nc | d |\n#+end_comment\n\nAfter.\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "comment-table-cbar",
+      "input": {
+        "text": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+        "point": 32,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Minibuffer read in batch",
+      "message": null
+    },
+    {
+      "name": "comment-table-sort",
+      "input": {
+        "text": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+        "point": 32,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ],
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Nothing to sort",
+      "message": null
+    },
+    {
+      "name": "comment-table-space",
+      "input": {
+        "text": "* H\n#+begin_comment\n| a | b |\n| c | d |\n#+end_comment\n\nAfter.\n",
+        "point": 32,
+        "keys": "SPC",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_comment\n| a | b |\n|  c | d |\n#+end_comment\n\nAfter.\n",
+      "visible": "* H\n#+begin_comment\n| a | b |\n|  c | d |\n#+end_comment\n\nAfter.\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-table-ret",
+      "input": {
+        "text": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+        "point": 30,
+        "keys": "C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n| a | b |\n| c | d |\n|---+---|\n|   |   |\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n| a | b |\n| c | d |\n|---+---|\n|   |   |\n#+end_quote\n\nAfter.\n",
+      "point": 50,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-table-tab",
+      "input": {
+        "text": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+        "point": 30,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-table-stab",
+      "input": {
+        "text": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+        "point": 30,
+        "keys": "S-TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-table-cc",
+      "input": {
+        "text": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+        "point": 30,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+      "point": 30,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-table-dash",
+      "input": {
+        "text": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+        "point": 30,
+        "keys": "C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n| a | b |\n| c | d |\n|---+---|\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n| a | b |\n| c | d |\n|---+---|\n#+end_quote\n\nAfter.\n",
+      "point": 30,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-table-type",
+      "input": {
+        "text": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+        "point": 30,
+        "keys": "x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n| a | b |\n| xc | d |\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n| a | b |\n| xc | d |\n#+end_quote\n\nAfter.\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-table-del",
+      "input": {
+        "text": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+        "point": 30,
+        "keys": "C-d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n| a | b |\n|   | d |\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n| a | b |\n|   | d |\n#+end_quote\n\nAfter.\n",
+      "point": 30,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-table-bs",
+      "input": {
+        "text": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+        "point": 30,
+        "keys": "DEL",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n| a | b |\n|c  | d |\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n| a | b |\n|c  | d |\n#+end_quote\n\nAfter.\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-table-mright",
+      "input": {
+        "text": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+        "point": 30,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n| b | a |\n| d | c |\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n| b | a |\n| d | c |\n#+end_quote\n\nAfter.\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-table-mdown",
+      "input": {
+        "text": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+        "point": 30,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+      "point": 30,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move row further",
+      "message": null
+    },
+    {
+      "name": "quote-table-sright",
+      "input": {
+        "text": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+        "point": 30,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n| a | b |\n| d | c |\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n| a | b |\n| d | c |\n#+end_quote\n\nAfter.\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-table-sdown",
+      "input": {
+        "text": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+        "point": 30,
+        "keys": "S-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+      "point": 30,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move cell further",
+      "message": null
+    },
+    {
+      "name": "quote-table-msdown",
+      "input": {
+        "text": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+        "point": 30,
+        "keys": "M-S-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n| a | b |\n|   |   |\n| c | d |\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n| a | b |\n|   |   |\n| c | d |\n#+end_quote\n\nAfter.\n",
+      "point": 30,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-table-enter",
+      "input": {
+        "text": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+        "point": 30,
+        "keys": "RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n| a | b |\n| c | d |\n|   |   |\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n| a | b |\n| c | d |\n|   |   |\n#+end_quote\n\nAfter.\n",
+      "point": 40,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-table-cbar",
+      "input": {
+        "text": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+        "point": 30,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+      "point": 30,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Minibuffer read in batch",
+      "message": null
+    },
+    {
+      "name": "quote-table-sort",
+      "input": {
+        "text": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+        "point": 30,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ],
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+      "point": 30,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-table-space",
+      "input": {
+        "text": "* H\n#+begin_quote\n| a | b |\n| c | d |\n#+end_quote\n\nAfter.\n",
+        "point": 30,
+        "keys": "SPC",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\n| a | b |\n|  c | d |\n#+end_quote\n\nAfter.\n",
+      "visible": "* H\n#+begin_quote\n| a | b |\n|  c | d |\n#+end_quote\n\nAfter.\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-table-ret",
+      "input": {
+        "text": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+        "point": 16,
+        "keys": "C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n| a | b |\n| c | d |\n|---+---|\n|   |   |\n\nAfter.\n",
+      "visible": "* H\n| a | b |\n| c | d |\n|---+---|\n|   |   |\n\nAfter.\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-table-tab",
+      "input": {
+        "text": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+        "point": 16,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+      "visible": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-table-stab",
+      "input": {
+        "text": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+        "point": 16,
+        "keys": "S-TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+      "visible": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-table-cc",
+      "input": {
+        "text": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+        "point": 16,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+      "visible": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-table-dash",
+      "input": {
+        "text": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+        "point": 16,
+        "keys": "C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n| a | b |\n| c | d |\n|---+---|\n\nAfter.\n",
+      "visible": "* H\n| a | b |\n| c | d |\n|---+---|\n\nAfter.\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-table-type",
+      "input": {
+        "text": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+        "point": 16,
+        "keys": "x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n| a | b |\n| xc | d |\n\nAfter.\n",
+      "visible": "* H\n| a | b |\n| xc | d |\n\nAfter.\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-table-del",
+      "input": {
+        "text": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+        "point": 16,
+        "keys": "C-d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n| a | b |\n|   | d |\n\nAfter.\n",
+      "visible": "* H\n| a | b |\n|   | d |\n\nAfter.\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-table-bs",
+      "input": {
+        "text": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+        "point": 16,
+        "keys": "DEL",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n| a | b |\n|c  | d |\n\nAfter.\n",
+      "visible": "* H\n| a | b |\n|c  | d |\n\nAfter.\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-table-mright",
+      "input": {
+        "text": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+        "point": 16,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n| b | a |\n| d | c |\n\nAfter.\n",
+      "visible": "* H\n| b | a |\n| d | c |\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-table-mdown",
+      "input": {
+        "text": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+        "point": 16,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+      "visible": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move row further",
+      "message": null
+    },
+    {
+      "name": "plain-table-sright",
+      "input": {
+        "text": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+        "point": 16,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n| a | b |\n| d | c |\n\nAfter.\n",
+      "visible": "* H\n| a | b |\n| d | c |\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-table-sdown",
+      "input": {
+        "text": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+        "point": 16,
+        "keys": "S-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+      "visible": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move cell further",
+      "message": null
+    },
+    {
+      "name": "plain-table-msdown",
+      "input": {
+        "text": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+        "point": 16,
+        "keys": "M-S-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n| a | b |\n|   |   |\n| c | d |\n\nAfter.\n",
+      "visible": "* H\n| a | b |\n|   |   |\n| c | d |\n\nAfter.\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-table-enter",
+      "input": {
+        "text": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+        "point": 16,
+        "keys": "RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n| a | b |\n| c | d |\n|   |   |\n\nAfter.\n",
+      "visible": "* H\n| a | b |\n| c | d |\n|   |   |\n\nAfter.\n",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-table-cbar",
+      "input": {
+        "text": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+        "point": 16,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+      "visible": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Minibuffer read in batch",
+      "message": null
+    },
+    {
+      "name": "plain-table-sort",
+      "input": {
+        "text": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+        "point": 16,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ],
+        "message": true
+      },
+      "text": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+      "visible": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-table-space",
+      "input": {
+        "text": "* H\n| a | b |\n| c | d |\n\nAfter.\n",
+        "point": 16,
+        "keys": "SPC",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n| a | b |\n|  c | d |\n\nAfter.\n",
+      "visible": "* H\n| a | b |\n|  c | d |\n\nAfter.\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    }
+  ]
+}
