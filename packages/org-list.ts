@@ -85,11 +85,6 @@ function terminatorOf(v: e8.Value | undefined): string {
 // The setting's global value, kept by a watcher as lettered is.
 let terminator = terminatorOf(e8.variable("org-plain-list-ordered-item-terminator") ?? true);
 
-/** The terminators an ordered item's bullet may end in, as a regexp's source: [.)], \\. or \\). */
-export function orderedTerminator(): string {
-  return terminator;
-}
-
 let ITEM_NUMBERED = /$^/;
 let ITEM_LETTERED = /$^/;
 let SEPARATE_NUMBERED = /$^/;
