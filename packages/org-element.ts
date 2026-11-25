@@ -175,11 +175,19 @@ export function latexEnvironmentEnd(line: number, limit: number): number | undef
 export const AFFILIATED = /^[ \t]*#\+(?:(?:CAPTION|RESULTS)(?:\[.*\])?|DATA|HEADERS?|LABEL|NAME|PLOT|RESNAME|RESULT|SOURCE|SRCNAME|TBLNAME|ATTR_[-_A-Za-z0-9]+):/i;
 
 /**
+ * A footnote label's characters, as Org's [-_[:word:]]: what Org mode's
+ * syntax table makes words, Unicode's letters, marks and numbers with $, %,
+ * ', ¥ and ·, but not ª, º or the fractions ¼, ½ and ¾. Beyond Latin-1 a
+ * few that Emacs does not take, as circled numbers, are taken.
+ */
+export const FOOTNOTE_LABEL = "(?:(?![\\u00AA\\u00BA\\u00BC-\\u00BE])[-_$%'\\p{L}\\p{M}\\p{N}\\u00A5\\u00B7])+";
+
+/**
  * A footnote definition's first line, as org-footnote-definition-re, at
- * the margin, whatever the case of fn, as the parser matches it with
+ * the margin, whatever the case, as the parser matches it with
  * case-fold-search.
  */
-export const FOOTNOTE_DEFINITION = /^\[fn:([-_\p{L}\p{N}]+)\]/iu;
+export const FOOTNOTE_DEFINITION = new RegExp(`^\\[fn:(${FOOTNOTE_LABEL})\\]`, "iu");
 
 /**
  * Where a footnote definition whose label starts line ends, and its
