@@ -6183,6 +6183,14 @@ declare global {
        */
       "org-ctrl-c-star": [];
       /**
+       * C-c TAB in Org: in a table, shrink or widen its columns; before the first heading, hide the text there and show the headings of as many levels as the prefix argument says; else fold the subtree and show its children, that many levels of them.
+       *
+       * @param arg prefix count
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-ctrl-c-tab": [arg?: number];
+      /**
        * Cut the subtree point is in, or in a table, blank the field at point or the fields in the region.
        *
        * Defined in packages/org.ts.
@@ -6388,6 +6396,14 @@ declare global {
        * Defined in packages/org-fold.ts.
        */
       "org-fold-check-before-invisible-edit-maybe": [];
+      /**
+       * Hide everything but the headings of the top levels: as many as the prefix argument says, or the heading point is on's level, or 1.
+       *
+       * @param levels raw prefix argument
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-fold-hide-sublevels": [levels?: PrefixArg | boolean];
       /**
        * Do the right thing for footnotes: on a reference, go to its definition, offering to make one; on a definition, go to its reference; elsewhere make a new footnote. With a prefix argument, or where none can go, offer to sort, renumber, normalize or delete them.
        *
