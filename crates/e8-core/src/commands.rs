@@ -1251,17 +1251,20 @@ fn editing(ed: &mut Editor) {
     def(
         ed,
         "set-mark-command",
-        "Set the mark at point and activate the region, saving the old mark on the mark ring.\n\nRepeating it straight away deactivates the region, leaving the mark set. With C-u, jump to the mark instead and take the previous one from the mark ring, so repeating C-u C-SPC goes back through earlier marks.",
+        "Set the mark at point and activate the region, saving the old mark on the mark ring. If the mark is already at point, only activate it.\n\nRepeating it straight away deactivates the region, leaving the mark set. With C-u, jump to the mark instead and take the previous one from the mark ring, so repeating C-u C-SPC goes back through earlier marks.",
         |ed, _| {
             let arg = ed.current_prefix_arg();
-            let repeated = ed.last_command() == Some("set-mark-command");
+            // C-u C-u sets the mark whatever came before, as the first case of Emacs's cond.
+            let set_anyway = matches!(arg, Some(PrefixArg::Universal(n)) if n > 4);
+            let repeated = ed.last_command() == Some("set-mark-command") && !set_anyway;
+            let quiet = ed.executing_kbd_macro() || ed.minibuffer_depth() > 0;
             let b = ed.buffer_mut();
             // A region Shift made goes first, as Emacs's does.
             if b.is_shift_selected() {
                 b.deactivate_mark();
             }
             // Any argument but C-u C-u pops the mark, as in Emacs, a number included.
-            if arg.is_some() && !matches!(arg, Some(PrefixArg::Universal(n)) if n > 4) {
+            if arg.is_some() && !set_anyway {
                 let mark = b.mark().ok_or_else(|| Error::new("No mark set in this buffer"))?;
                 let popped = b.point() == mark;
                 b.set_point(mark);
@@ -1277,10 +1280,18 @@ fn editing(ed: &mut Editor) {
                 // mark again, as set-mark-command does after itself.
                 b.activate_region();
                 ed.message("Mark activated");
+            } else if b.mark() == Some(b.point()) {
+                // With the mark already at point, it is only activated, not
+                // pushed again, as push-mark-command does.
+                b.activate_region();
+                ed.message("Mark activated");
             } else {
                 let p = b.point();
                 ed.push_mark(p, true);
-                ed.message("Mark set");
+                // As push-mark says, unless a macro runs or the minibuffer is active.
+                if !quiet {
+                    ed.message("Mark set");
+                }
             }
             Ok(())
         },
