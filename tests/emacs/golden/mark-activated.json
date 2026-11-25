@@ -295,6 +295,474 @@
       "modified": false,
       "error": "The mark is not set now, so there is no region",
       "message": "Mark set"
+    },
+    {
+      "name": "cu-cu-after-cspc",
+      "input": {
+        "text": "abc\ndef\nghi\n",
+        "point": 2,
+        "keys": "C-SPC C-u C-u C-SPC",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "abc\ndef\nghi\n",
+      "visible": "abc\ndef\nghi\n",
+      "point": 2,
+      "mark": 2,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark activated"
+    },
+    {
+      "name": "cu-cu-after-cspc-ring",
+      "input": {
+        "text": "abc\ndef\nghi\n",
+        "point": 2,
+        "keys": "C-SPC C-n C-SPC C-u C-u C-SPC C-g C-u C-SPC C-u C-SPC",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "abc\ndef\nghi\n",
+      "visible": "abc\ndef\nghi\n",
+      "point": 2,
+      "mark": 6,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Quit",
+      "message": "Mark popped"
+    },
+    {
+      "name": "cu-cu-after-two",
+      "input": {
+        "text": "abc\ndef\nghi\n",
+        "point": 2,
+        "keys": "C-SPC C-SPC C-u C-u C-SPC",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "abc\ndef\nghi\n",
+      "visible": "abc\ndef\nghi\n",
+      "point": 2,
+      "mark": 2,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark activated"
+    },
+    {
+      "name": "cu-cu-cu-after-cspc",
+      "input": {
+        "text": "abc\ndef\nghi\n",
+        "point": 2,
+        "keys": "C-SPC C-u C-u C-u C-SPC",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "abc\ndef\nghi\n",
+      "visible": "abc\ndef\nghi\n",
+      "point": 2,
+      "mark": 2,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark activated"
+    },
+    {
+      "name": "cu-cu-moved",
+      "input": {
+        "text": "abc\ndef\nghi\n",
+        "point": 2,
+        "keys": "C-SPC C-n C-u C-u C-SPC",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "abc\ndef\nghi\n",
+      "visible": "abc\ndef\nghi\n",
+      "point": 6,
+      "mark": 6,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set [2 times]"
+    },
+    {
+      "name": "pop-then-cspc",
+      "input": {
+        "text": "abc\ndef\nghi\n",
+        "point": 2,
+        "keys": "C-SPC C-n C-SPC C-n C-u C-SPC C-SPC",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "abc\ndef\nghi\n",
+      "visible": "abc\ndef\nghi\n",
+      "point": 6,
+      "mark": 6,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set [3 times]"
+    },
+    {
+      "name": "pop-then-cspc-twice",
+      "input": {
+        "text": "abc\ndef\nghi\n",
+        "point": 2,
+        "keys": "C-SPC C-n C-SPC C-n C-u C-SPC C-SPC C-SPC",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "abc\ndef\nghi\n",
+      "visible": "abc\ndef\nghi\n",
+      "point": 6,
+      "mark": 6,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark deactivated"
+    },
+    {
+      "name": "macro-mark-set",
+      "input": {
+        "text": "abc\ndef\nghi\n",
+        "point": 0,
+        "keys": "<f3> C-SPC C-f <f4> <f4>",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "abc\ndef\nghi\n",
+      "visible": "abc\ndef\nghi\n",
+      "point": 2,
+      "mark": 1,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Keyboard macro defined"
+    },
+    {
+      "name": "macro-mark-activated",
+      "input": {
+        "text": "abc\ndef\nghi\n",
+        "point": 0,
+        "keys": "C-SPC <f3> C-SPC <f4> <f4>",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "abc\ndef\nghi\n",
+      "visible": "abc\ndef\nghi\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark activated"
+    },
+    {
+      "name": "macro-at-mark-ring",
+      "input": {
+        "text": "abc\ndef\nghi\n",
+        "point": 0,
+        "keys": "C-SPC C-g <f3> C-SPC C-n <f4> C-p <f4> C-g C-u C-SPC C-u C-SPC C-u C-SPC",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "abc\ndef\nghi\n",
+      "visible": "abc\ndef\nghi\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Quit",
+      "message": "Mark popped [2 times]"
+    },
+    {
+      "name": "mark-word-at-eob",
+      "input": {
+        "text": "abc",
+        "point": 3,
+        "keys": "M-@ C-SPC",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "abc",
+      "visible": "abc",
+      "point": 3,
+      "mark": 3,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark activated"
+    },
+    {
+      "name": "empty-yank",
+      "input": {
+        "text": "abc\ndef\nghi\n",
+        "point": 2,
+        "keys": "C-SPC M-w C-y C-SPC C-g C-u C-SPC C-u C-SPC",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "abc\ndef\nghi\n",
+      "visible": "abc\ndef\nghi\n",
+      "point": 2,
+      "mark": 2,
+      "mark_active": false,
+      "kill_ring": [
+        ""
+      ],
+      "modified": false,
+      "error": "Quit",
+      "message": "Mark popped [2 times]"
+    },
+    {
+      "name": "mark-whole-empty",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-x h C-SPC",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "",
+      "visible": "",
+      "point": 0,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark activated"
+    },
+    {
+      "name": "mark-whole-empty-twice",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-x h C-SPC C-SPC",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "",
+      "visible": "",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark deactivated"
+    },
+    {
+      "name": "active-shift-back",
+      "input": {
+        "text": "abc\ndef\nghi\n",
+        "point": 2,
+        "keys": "C-SPC S-<right> S-<left> C-SPC",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "abc\ndef\nghi\n",
+      "visible": "abc\ndef\nghi\n",
+      "point": 2,
+      "mark": 2,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark activated"
+    },
+    {
+      "name": "shift-back-twice",
+      "input": {
+        "text": "abc\ndef\nghi\n",
+        "point": 2,
+        "keys": "S-<right> S-<left> C-SPC C-SPC",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "abc\ndef\nghi\n",
+      "visible": "abc\ndef\nghi\n",
+      "point": 2,
+      "mark": 2,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark deactivated"
+    },
+    {
+      "name": "shift-dup-ring",
+      "input": {
+        "text": "abc\ndef\nghi\n",
+        "point": 2,
+        "keys": "C-SPC C-g S-<right> S-<left> C-SPC C-n C-g C-u C-SPC C-u C-SPC C-u C-SPC",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "abc\ndef\nghi\n",
+      "visible": "abc\ndef\nghi\n",
+      "point": 2,
+      "mark": 2,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Quit",
+      "message": "Mark popped [2 times]"
+    },
+    {
+      "name": "global-ring",
+      "input": {
+        "text": "abc\ndef\nghi\n",
+        "point": 2,
+        "keys": "C-SPC C-g C-x b x y C-SPC C-x b C-SPC C-x C-SPC",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "other",
+          "*e8-oracle*"
+        ],
+        "message": true
+      },
+      "text": "xy",
+      "visible": "xy",
+      "point": 2,
+      "mark": 2,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Quit",
+      "message": "Mark activated"
+    },
+    {
+      "name": "exchange-at-mark",
+      "input": {
+        "text": "abc\ndef\nghi\n",
+        "point": 2,
+        "keys": "C-SPC C-g C-x C-x C-SPC",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "abc\ndef\nghi\n",
+      "visible": "abc\ndef\nghi\n",
+      "point": 2,
+      "mark": 2,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Quit",
+      "message": "Mark activated"
+    },
+    {
+      "name": "exchange-at-mark-twice",
+      "input": {
+        "text": "abc\ndef\nghi\n",
+        "point": 2,
+        "keys": "C-SPC C-g C-x C-x C-SPC C-SPC",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "abc\ndef\nghi\n",
+      "visible": "abc\ndef\nghi\n",
+      "point": 2,
+      "mark": 2,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Quit",
+      "message": "Mark deactivated"
+    },
+    {
+      "name": "isearch-back-to-start",
+      "input": {
+        "text": "abc\ndef\nghi\n",
+        "point": 0,
+        "keys": "C-SPC C-g C-s d e RET C-u C-SPC C-SPC",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "abc\ndef\nghi\n",
+      "visible": "abc\ndef\nghi\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Quit",
+      "message": "Mark activated"
+    },
+    {
+      "name": "narrow-mark-at-point",
+      "input": {
+        "text": "abc\ndef\nghi\n",
+        "point": 4,
+        "keys": "C-SPC C-n C-x n n C-x C-x C-g C-SPC",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "abc\ndef\nghi\n",
+      "visible": "abc\ndef\nghi\n",
+      "point": 4,
+      "mark": 4,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Quit",
+      "message": "Mark set [2 times]"
     }
   ]
 }
