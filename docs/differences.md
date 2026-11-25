@@ -64,6 +64,7 @@ Each entry says whether the difference is **deliberate**, which keeps it, or **n
 
 ## Text and search
 
+- **Visual Line mode** (not yet): `beginning-of-visual-line` and `end-of-visual-line` do not select with Shift, where Emacs's are `^` movement commands, and `kill-visual-line` takes no prefix argument, so `C-u 2 C-k` kills one screen line where Emacs's kills two.
 - **`lineBeginningPosition` and `lineEndPosition` given a position** (deliberate): at point they stop at a field's edge on the line, as Emacs's `line-beginning-position` does after a shell's prompt; given a position, which Emacs's do not take, they do not, as `posBol` and `posEol` never do.
 - **Source blocks' faces** (not yet): a block in a language with no mode in E8, such as shell, has only `org-block` and the face `org-src-block-faces` gives its language. Python blocks have python-ts-mode's faces, which differ in detail from python.el's.
 - **`window-configuration-change-hook`** (not yet) runs after a command that changed the selected frame's windows or the buffers they show, not when a window's size changes, nor buffer-locally in each window's buffer, as Emacs runs it at redisplay.

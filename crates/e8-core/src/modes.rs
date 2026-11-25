@@ -92,14 +92,22 @@ impl Editor {
                 .collect(),
             _ => Vec::new(),
         };
-        self.minor_modes
-            .iter()
-            .filter(|m| self.minor_mode_on(b, &m.name))
-            .filter_map(|m| match overriding.iter().find(|(mode, _)| *mode == m.name) {
-                Some((_, map)) => map.map(|k| (m.name.clone(), k)),
-                None => m.keymap.as_deref().and_then(|k| self.keymap_named(k)).map(|k| (m.name.clone(), k)),
-            })
-            .collect()
+        // The overriding entries first, for any variable that is on, then the
+        // other minor modes' own keymaps, as current_minor_maps goes through both alists.
+        let on = |name: &str| self.minor_mode_on(b, name) || self.variable_in(b, name).is_some_and(|v| v.is_true());
+        let mut maps: Vec<(String, KeymapId)> = Vec::new();
+        for (mode, map) in &overriding {
+            if on(mode) && !maps.iter().any(|(m, _)| m == mode) && let Some(map) = map {
+                maps.push((mode.clone(), *map));
+            }
+        }
+        maps.extend(
+            self.minor_modes
+                .iter()
+                .filter(|m| self.minor_mode_on(b, &m.name) && !overriding.iter().any(|(mode, _)| *mode == m.name))
+                .filter_map(|m| m.keymap.as_deref().and_then(|k| self.keymap_named(k)).map(|k| (m.name.clone(), k))),
+        );
+        maps
     }
 
     /// The minor modes whose keymaps bind a key sequence, each with what it

@@ -752,11 +752,7 @@ impl Editor {
     /// Emacs's `where-is-internal` with FIRSTONLY: in its modes' keymaps
     /// first, then the global map.
     pub fn where_is(&self, command: &str) -> Option<Vec<crate::key::Key>> {
-        let b = self.window_buffer();
-        let mut maps = self.mode_keymaps_in(b, false);
-        maps.push(self.global_map());
-        let found = maps.iter().flat_map(|&m| self.keymaps().keys_for(m, command));
-        found.into_iter().find(|keys| self.lookup_keys_in_window_buffer(keys) == command)
+        self.where_is_all(command).into_iter().next()
     }
 
     /// Every key sequence that runs a command in the window's buffer, as
@@ -770,6 +766,19 @@ impl Editor {
         for keys in maps.iter().flat_map(|&m| self.keymaps().keys_for(m, command)) {
             if !out.contains(&keys) && self.lookup_keys_in_window_buffer(&keys) == command {
                 out.push(keys);
+            }
+        }
+        // Keys bound to a command the active keymaps remap to this one, as
+        // where-is-internal finds C-a for beginning-of-visual-line.
+        let remapping = |from: &str| maps.iter().find_map(|&m| self.keymaps().remapped(m, from));
+        for from in maps.iter().flat_map(|&m| self.keymaps().remapped_to(m, command)) {
+            if remapping(&from) != Some(command) {
+                continue;
+            }
+            for keys in maps.iter().flat_map(|&m| self.keymaps().keys_for(m, &from)) {
+                if !out.contains(&keys) && self.lookup_keys_in_window_buffer(&keys) == from {
+                    out.push(keys);
+                }
             }
         }
         out

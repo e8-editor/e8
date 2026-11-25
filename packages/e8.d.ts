@@ -20643,6 +20643,11 @@ declare global {
      */
     function whereIs(command: string): string | undefined;
     /**
+     * The command the active keymaps remap a command to, as Emacs's
+     * command-remapping, or undefined if none does.
+     */
+    function commandRemapping(command: string): string | undefined;
+    /**
      * Every key sequence that runs a command in the selected window's
      * buffer, as where-is-internal: those in its modes' keymaps first, then
      * the global map's, and none that another binding shadows.

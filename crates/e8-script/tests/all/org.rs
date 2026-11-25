@@ -316,6 +316,45 @@ fn visual_line_mode_leaves_org_s_line_keys_alone() {
     ed.call("visual-line-mode", vec![]).unwrap();
     assert_eq!(ed.command_remapping("move-end-of-line").as_deref(), Some("end-of-visual-line"));
     assert_eq!(ed.command_remapping("kill-line").as_deref(), Some("kill-visual-line"));
+    // Help finds the keys through the remaps, as Emacs's key-binding and where-is-internal do:
+    // beginning-of-visual-line on C-a, kill-visual-line on C-k.
+    let got = _s
+        .eval_expression(
+            &mut ed,
+            r#"import("help").then(({ keyBinding }) => e8.message(JSON.stringify([keyBinding("C-a"), e8.whereIsInternal("beginning-of-visual-line")[0], e8.whereIsInternal("kill-visual-line")[0],
+                 e8.keymapBindings("visual-line-mode-map").find(([k]) => k === "<remap> <kill-line>")])))"#,
+        )
+        .unwrap();
+    let _ = got;
+    assert_eq!(ed.echo(), Some(r#"["beginning-of-visual-line","C-a","C-k",["<remap> <kill-line>","kill-visual-line"]]"#));
+    // In Org, C-a runs and is found for org-beginning-of-line, as in Emacs.
+    ed.call("switch-to-buffer", vec![e8_core::Arg::Str("*scratch*".into())]).unwrap();
+    ed.call("org-mode", vec![]).unwrap();
+    ed.call("visual-line-mode", vec![]).unwrap();
+    _s.eval_expression(&mut ed, r#"import("help").then(({ keyBinding }) => e8.message(JSON.stringify([keyBinding("C-a"), e8.whereIsInternal("org-beginning-of-line")[0]])))"#)
+        .unwrap();
+    assert_eq!(ed.echo(), Some(r#"["org-beginning-of-line","C-a"]"#));
+}
+
+#[test]
+fn an_overriding_minor_mode_map_comes_before_the_other_minor_modes() {
+    let (mut ed, s) = org("");
+    // As Emacs's current_minor_maps: minor-mode-overriding-map-alist's entries first.
+    s.eval_typescript(
+        &mut ed,
+        "t.ts",
+        r#"e8.defineMinorMode({ name: "test-a-mode", bindings: { "C-c z": "forward-char" } });
+           e8.defineMinorMode({ name: "test-b-mode", bindings: { "C-c z": "backward-char" } });
+           e8.call("test-a-mode"); e8.call("test-b-mode");
+           const map = e8.makeSparseKeymap(); e8.defineKey(map, "C-c z", "forward-line");
+           e8.makeLocalVariable("minor-mode-overriding-map-alist");
+           e8.setVariable("minor-mode-overriding-map-alist", [["test-b-mode", map]]);"#
+            .to_string(),
+    )
+    .unwrap();
+    let got = s.eval_expression(&mut ed, r#"import("help").then(({ keyBinding }) => e8.message(keyBinding("C-c z") ?? "none"))"#).unwrap();
+    let _ = got;
+    assert_eq!(ed.echo(), Some("forward-line"));
 }
 
 #[test]

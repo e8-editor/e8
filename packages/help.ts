@@ -128,7 +128,8 @@ function isPrintable(key: string): boolean {
 export function keyBinding(keys: string): string | undefined {
   for (const map of e8.currentActiveMaps()) {
     const binding = e8.lookupKey(map, keys);
-    if (typeof binding === "string") return binding;
+    // The command it is remapped to, as key-binding gives it.
+    if (typeof binding === "string") return e8.commandRemapping(binding) ?? binding;
     if (Array.isArray(binding)) return "Keyboard Macro";
   }
   return undefined;

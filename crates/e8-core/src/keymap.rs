@@ -447,6 +447,25 @@ impl Keymaps {
         self.chain(map).find_map(|m| m.remaps.get(command)).and_then(|to| to.as_deref())
     }
 
+    /// The commands this keymap or its parents remap to `command`, each
+    /// once, as `[remap FROM]` bindings to it.
+    pub fn remapped_to(&self, map: KeymapId, command: &str) -> Vec<String> {
+        let mut out: Vec<String> = Vec::new();
+        for m in self.chain(map) {
+            for (from, _) in m.remaps.iter().filter(|(_, to)| to.as_deref() == Some(command)) {
+                if !out.contains(from) && self.remapped(map, from) == Some(command) {
+                    out.push(from.clone());
+                }
+            }
+        }
+        out
+    }
+
+    /// The keymap's own remaps, not its parents', as [from, to], to nil as None.
+    pub fn remaps(&self, map: KeymapId) -> impl Iterator<Item = (&str, Option<&str>)> {
+        self.maps[map].remaps.iter().map(|(from, to)| (from.as_str(), to.as_deref()))
+    }
+
     /// Sets or removes the command for keys with no binding of their own.
     pub fn set_default(&mut self, map: KeymapId, command: Option<&str>) {
         self.maps[map].default = command.map(str::to_string);
