@@ -10811,6 +10811,10 @@ declare global {
        */
       "buffer-quit-function": Value;
       /**
+       * Non-nil if this buffer is read-only: commands that change its text signal buffer-read-only, unless inhibit-read-only is set. Every buffer has its own value; C-x C-q toggles it.
+       */
+      "buffer-read-only": Value;
+      /**
        * A function of one optional argument, NOCONFIRM, saying whether the buffer needs reverting, as Auto-Revert asks it: true to revert, "fast" to revert without saying so. The default asks whether the visited file changed.
        *
        * Defined in packages/files.ts.

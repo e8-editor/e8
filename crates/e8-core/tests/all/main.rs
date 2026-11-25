@@ -3,6 +3,7 @@
 //! one new program before it first runs rather than many.
 
 mod bidi;
+mod buffer_read_only;
 mod clipboard;
 mod display;
 mod driver;

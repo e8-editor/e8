@@ -1,0 +1,109 @@
+[
+ {
+  "name": "typing",
+  "text": "abc\n",
+  "point": 1,
+  "keys": "x",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true
+  }
+ },
+ {
+  "name": "deleting",
+  "text": "abc\n",
+  "point": 1,
+  "keys": "C-d",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true
+  }
+ },
+ {
+  "name": "killing",
+  "text": "abc\n",
+  "point": 1,
+  "keys": "C-k",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true
+  }
+ },
+ {
+  "name": "toggled-off",
+  "text": "abc\n",
+  "point": 1,
+  "keys": "C-x C-q x",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true
+  }
+ },
+ {
+  "name": "toggled-on",
+  "text": "abc\n",
+  "point": 1,
+  "keys": "C-x C-q x",
+  "message": true
+ },
+ {
+  "name": "yank",
+  "text": "abc\n",
+  "point": 1,
+  "keys": "C-a C-k C-x C-q C-y",
+  "message": true
+ },
+ {
+  "name": "org-typing",
+  "text": "abc\n",
+  "point": 1,
+  "keys": "x",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true
+  },
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "org-table",
+  "text": "| a | b |\n",
+  "point": 1,
+  "keys": "TAB",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true
+  },
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "movement",
+  "text": "abc\n",
+  "point": 1,
+  "keys": "C-f C-n",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true
+  }
+ },
+ {
+  "name": "yank-pop",
+  "text": "abc\n",
+  "point": 1,
+  "keys": "C-a C-k C-k C-y C-x C-q M-y",
+  "message": true
+ },
+ {
+  "name": "yank-inhibit",
+  "text": "abc\n",
+  "point": 1,
+  "keys": "C-a C-k C-x C-q C-y",
+  "message": true,
+  "vars": {
+   "inhibit-read-only": true
+  }
+ }
+]

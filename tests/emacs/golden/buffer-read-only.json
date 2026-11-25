@@ -1,0 +1,273 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "typing",
+      "input": {
+        "text": "abc\n",
+        "point": 1,
+        "keys": "x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "abc\n",
+      "visible": "abc\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "deleting",
+      "input": {
+        "text": "abc\n",
+        "point": 1,
+        "keys": "C-d",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "abc\n",
+      "visible": "abc\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "killing",
+      "input": {
+        "text": "abc\n",
+        "point": 1,
+        "keys": "C-k",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "abc\n",
+      "visible": "abc\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "bc"
+      ],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "toggled-off",
+      "input": {
+        "text": "abc\n",
+        "point": 1,
+        "keys": "C-x C-q x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "axbc\n",
+      "visible": "axbc\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Read-Only mode disabled in current buffer"
+    },
+    {
+      "name": "toggled-on",
+      "input": {
+        "text": "abc\n",
+        "point": 1,
+        "keys": "C-x C-q x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "abc\n",
+      "visible": "abc\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": "Read-Only mode enabled in current buffer"
+    },
+    {
+      "name": "yank",
+      "input": {
+        "text": "abc\n",
+        "point": 1,
+        "keys": "C-a C-k C-x C-q C-y",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "\n",
+      "visible": "\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "abc"
+      ],
+      "modified": true,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": "Read-Only mode enabled in current buffer"
+    },
+    {
+      "name": "org-typing",
+      "input": {
+        "text": "abc\n",
+        "point": 1,
+        "keys": "x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "abc\n",
+      "visible": "abc\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "org-table",
+      "input": {
+        "text": "| a | b |\n",
+        "point": 1,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "| a | b |\n",
+      "visible": "| a | b |\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "movement",
+      "input": {
+        "text": "abc\n",
+        "point": 1,
+        "keys": "C-f C-n",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "abc\n",
+      "visible": "abc\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "yank-pop",
+      "input": {
+        "text": "abc\n",
+        "point": 1,
+        "keys": "C-a C-k C-k C-y C-x C-q M-y",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "abc\n",
+      "visible": "abc\n",
+      "point": 4,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [
+        "abc\n"
+      ],
+      "modified": true,
+      "error": "Minibuffer read in batch",
+      "message": "Read-Only mode enabled in current buffer"
+    },
+    {
+      "name": "yank-inhibit",
+      "input": {
+        "text": "abc\n",
+        "point": 1,
+        "keys": "C-a C-k C-x C-q C-y",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "inhibit-read-only": true
+        }
+      },
+      "text": "abc\n",
+      "visible": "abc\n",
+      "point": 3,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [
+        "abc"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    }
+  ]
+}

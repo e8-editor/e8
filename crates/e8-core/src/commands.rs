@@ -1416,6 +1416,8 @@ fn killing(ed: &mut Editor) {
         "Insert the most recent kill, leaving the mark at its start.\n\nWith a numeric prefix argument N, insert the Nth most recent kill. With plain C-u, leave point at the start and the mark at the end.",
         |ed, _| {
             let arg = ed.current_prefix_arg();
+            // A read-only buffer fails first, as yank's interactive "*" checks.
+            ed.barf_if_buffer_read_only()?;
             // Emacs sets the mark before it looks at the kill ring, even if it is empty.
             ed.push_mark(ed.buffer().point(), false);
             let back = match arg {
