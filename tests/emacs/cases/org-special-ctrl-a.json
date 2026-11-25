@@ -660,7 +660,8 @@
   "message": true,
   "globals": {
    "org-special-ctrl-a/e": true
-  }
+  },
+  "platform": "darwin"
  },
  {
   "name": "t-ce-end",
@@ -673,7 +674,8 @@
   "message": true,
   "globals": {
    "org-special-ctrl-a/e": true
-  }
+  },
+  "platform": "darwin"
  },
  {
   "name": "t-ca-other-then",
@@ -1349,7 +1351,8 @@
   "message": true,
   "globals": {
    "org-special-ctrl-a/e": "'reversed"
-  }
+  },
+  "platform": "darwin"
  },
  {
   "name": "rev-ce-end",
@@ -1362,7 +1365,8 @@
   "message": true,
   "globals": {
    "org-special-ctrl-a/e": "'reversed"
-  }
+  },
+  "platform": "darwin"
  },
  {
   "name": "rev-ca-other-then",
@@ -2038,7 +2042,8 @@
   "message": true,
   "globals": {
    "org-special-ctrl-a/e": false
-  }
+  },
+  "platform": "darwin"
  },
  {
   "name": "nil-ce-end",
@@ -2051,7 +2056,8 @@
   "message": true,
   "globals": {
    "org-special-ctrl-a/e": false
-  }
+  },
+  "platform": "darwin"
  },
  {
   "name": "nil-ca-other-then",
@@ -3046,7 +3052,8 @@
   ],
   "globals": {
    "org-special-ctrl-a/e": "'reversed"
-  }
+  },
+  "platform": "darwin"
  },
  {
   "name": "review-rev-home-ca",
@@ -3058,7 +3065,8 @@
   ],
   "globals": {
    "org-special-ctrl-a/e": "'reversed"
-  }
+  },
+  "platform": "darwin"
  },
  {
   "name": "review-rev-ca-shift",
@@ -3094,7 +3102,8 @@
   ],
   "globals": {
    "org-special-ctrl-a/e": "'reversed"
-  }
+  },
+  "platform": "darwin"
  },
  {
   "name": "review-rev-ce-end",
@@ -3106,7 +3115,8 @@
   ],
   "globals": {
    "org-special-ctrl-a/e": "'reversed"
-  }
+  },
+  "platform": "darwin"
  },
  {
   "name": "review-rev-ca-fb-ca",
@@ -3226,7 +3236,8 @@
   ],
   "globals": {
    "org-special-ctrl-a/e": true
-  }
+  },
+  "platform": "darwin"
  },
  {
   "name": "review-t-ce-end-cycle",
@@ -3238,7 +3249,8 @@
   ],
   "globals": {
    "org-special-ctrl-a/e": true
-  }
+  },
+  "platform": "darwin"
  },
  {
   "name": "review-rev-ca-other-line",
@@ -4054,7 +4066,8 @@
   ],
   "globals": {
    "org-special-ctrl-a/e": true
-  }
+  },
+  "platform": "darwin"
  },
  {
   "name": "review-shift-end-heading",
@@ -4066,7 +4079,8 @@
   ],
   "globals": {
    "org-special-ctrl-a/e": true
-  }
+  },
+  "platform": "darwin"
  },
  {
   "name": "review-shift-ca-then-ce",

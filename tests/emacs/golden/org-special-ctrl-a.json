@@ -1312,7 +1312,7 @@
           "org-mode"
         ],
         "call": [],
-        "platform": null,
+        "platform": "darwin",
         "message": true,
         "globals": {
           "org-special-ctrl-a/e": true
@@ -1338,7 +1338,7 @@
           "org-mode"
         ],
         "call": [],
-        "platform": null,
+        "platform": "darwin",
         "message": true,
         "globals": {
           "org-special-ctrl-a/e": true
@@ -2690,7 +2690,7 @@
           "org-mode"
         ],
         "call": [],
-        "platform": null,
+        "platform": "darwin",
         "message": true,
         "globals": {
           "org-special-ctrl-a/e": "'reversed"
@@ -2716,7 +2716,7 @@
           "org-mode"
         ],
         "call": [],
-        "platform": null,
+        "platform": "darwin",
         "message": true,
         "globals": {
           "org-special-ctrl-a/e": "'reversed"
@@ -4068,7 +4068,7 @@
           "org-mode"
         ],
         "call": [],
-        "platform": null,
+        "platform": "darwin",
         "message": true,
         "globals": {
           "org-special-ctrl-a/e": false
@@ -4094,7 +4094,7 @@
           "org-mode"
         ],
         "call": [],
-        "platform": null,
+        "platform": "darwin",
         "message": true,
         "globals": {
           "org-special-ctrl-a/e": false
@@ -6085,7 +6085,7 @@
           "org-mode"
         ],
         "call": [],
-        "platform": null,
+        "platform": "darwin",
         "globals": {
           "org-special-ctrl-a/e": "'reversed"
         }
@@ -6109,7 +6109,7 @@
           "org-mode"
         ],
         "call": [],
-        "platform": null,
+        "platform": "darwin",
         "globals": {
           "org-special-ctrl-a/e": "'reversed"
         }
@@ -6181,7 +6181,7 @@
           "org-mode"
         ],
         "call": [],
-        "platform": null,
+        "platform": "darwin",
         "globals": {
           "org-special-ctrl-a/e": "'reversed"
         }
@@ -6205,7 +6205,7 @@
           "org-mode"
         ],
         "call": [],
-        "platform": null,
+        "platform": "darwin",
         "globals": {
           "org-special-ctrl-a/e": "'reversed"
         }
@@ -6445,7 +6445,7 @@
           "org-mode"
         ],
         "call": [],
-        "platform": null,
+        "platform": "darwin",
         "globals": {
           "org-special-ctrl-a/e": true
         }
@@ -6469,7 +6469,7 @@
           "org-mode"
         ],
         "call": [],
-        "platform": null,
+        "platform": "darwin",
         "globals": {
           "org-special-ctrl-a/e": true
         }
@@ -8089,7 +8089,7 @@
           "org-mode"
         ],
         "call": [],
-        "platform": null,
+        "platform": "darwin",
         "globals": {
           "org-special-ctrl-a/e": true
         }
@@ -8113,7 +8113,7 @@
           "org-mode"
         ],
         "call": [],
-        "platform": null,
+        "platform": "darwin",
         "globals": {
           "org-special-ctrl-a/e": true
         }
