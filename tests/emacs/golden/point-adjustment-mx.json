@@ -1,0 +1,213 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "mx-hide-subtree",
+      "input": {
+        "text": "* a\nbody one\nbody two\n* b\nmore\n",
+        "point": 8,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "outline-hide-subtree"
+        ]
+      },
+      "text": "* a\nbody one\nbody two\n* b\nmore\n",
+      "visible": "* a\n* b\nmore\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "mx-hide-body",
+      "input": {
+        "text": "* a\nbody one\nbody two\n* b\nmore\n",
+        "point": 8,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "outline-hide-body"
+        ]
+      },
+      "text": "* a\nbody one\nbody two\n* b\nmore\n",
+      "visible": "* a\n* b\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "mx-hide-then-move",
+      "input": {
+        "text": "* a\nbody one\nbody two\n* b\nmore\n",
+        "point": 8,
+        "keys": "M-x C-f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "outline-hide-subtree"
+        ]
+      },
+      "text": "* a\nbody one\nbody two\n* b\nmore\n",
+      "visible": "* a\n* b\nmore\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "key-hide-subtree",
+      "input": {
+        "text": "* a\nbody one\nbody two\n* b\nmore\n",
+        "point": 8,
+        "keys": "C-c C-c",
+        "modes": [
+          "outline-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* a\nbody one\nbody two\n* b\nmore\n",
+      "visible": "* a\n* b\nmore\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "key-shifttab",
+      "input": {
+        "text": "* a\nbody one\nbody two\n* b\nmore\n",
+        "point": 8,
+        "keys": "S-TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* a\nbody one\nbody two\n* b\nmore\n",
+      "visible": "* a\n* b",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "mx-hide-subtree-outline",
+      "input": {
+        "text": "* a\nbody one\nbody two\n* b\nmore\n",
+        "point": 8,
+        "keys": "M-x",
+        "modes": [
+          "outline-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "outline-hide-subtree"
+        ]
+      },
+      "text": "* a\nbody one\nbody two\n* b\nmore\n",
+      "visible": "* a\n* b\nmore\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "mx-move-into-hidden",
+      "input": {
+        "text": "* a\nbody one\nbody two\n* b\nmore\n",
+        "point": 0,
+        "keys": "S-TAB M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "forward-char"
+        ]
+      },
+      "text": "* a\nbody one\nbody two\n* b\nmore\n",
+      "visible": "* a\n* b",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "mx-move-twice",
+      "input": {
+        "text": "* a\nbody one\nbody two\n* b\nmore\n",
+        "point": 0,
+        "keys": "S-TAB C-u 5 M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "forward-char"
+        ]
+      },
+      "text": "* a\nbody one\nbody two\n* b\nmore\n",
+      "visible": "* a\n* b",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "key-move-into-hidden",
+      "input": {
+        "text": "* a\nbody one\nbody two\n* b\nmore\n",
+        "point": 0,
+        "keys": "S-TAB C-u 5 C-f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* a\nbody one\nbody two\n* b\nmore\n",
+      "visible": "* a\n* b",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    }
+  ]
+}

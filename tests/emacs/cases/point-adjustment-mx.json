@@ -1,0 +1,101 @@
+[
+ {
+  "name": "mx-hide-subtree",
+  "text": "* a\nbody one\nbody two\n* b\nmore\n",
+  "point": 8,
+  "keys": "M-x",
+  "answers": [
+   "outline-hide-subtree"
+  ],
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "mx-hide-body",
+  "text": "* a\nbody one\nbody two\n* b\nmore\n",
+  "point": 8,
+  "keys": "M-x",
+  "answers": [
+   "outline-hide-body"
+  ],
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "mx-hide-then-move",
+  "text": "* a\nbody one\nbody two\n* b\nmore\n",
+  "point": 8,
+  "keys": "M-x C-f",
+  "answers": [
+   "outline-hide-subtree"
+  ],
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "key-hide-subtree",
+  "text": "* a\nbody one\nbody two\n* b\nmore\n",
+  "point": 8,
+  "keys": "C-c C-c",
+  "modes": [
+   "outline-mode"
+  ]
+ },
+ {
+  "name": "key-shifttab",
+  "text": "* a\nbody one\nbody two\n* b\nmore\n",
+  "point": 8,
+  "keys": "S-TAB",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "mx-hide-subtree-outline",
+  "text": "* a\nbody one\nbody two\n* b\nmore\n",
+  "point": 8,
+  "keys": "M-x",
+  "answers": [
+   "outline-hide-subtree"
+  ],
+  "modes": [
+   "outline-mode"
+  ]
+ },
+ {
+  "name": "mx-move-into-hidden",
+  "text": "* a\nbody one\nbody two\n* b\nmore\n",
+  "point": 0,
+  "keys": "S-TAB M-x",
+  "answers": [
+   "forward-char"
+  ],
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "mx-move-twice",
+  "text": "* a\nbody one\nbody two\n* b\nmore\n",
+  "point": 0,
+  "keys": "S-TAB C-u 5 M-x",
+  "answers": [
+   "forward-char"
+  ],
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "key-move-into-hidden",
+  "text": "* a\nbody one\nbody two\n* b\nmore\n",
+  "point": 0,
+  "keys": "S-TAB C-u 5 C-f",
+  "modes": [
+   "org-mode"
+  ]
+ }
+]
