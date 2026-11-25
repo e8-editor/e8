@@ -4092,8 +4092,9 @@ function markElement(): void {
   const mark = e8.mark();
   const again = e8.lastCommand() === e8.thisCommand() && mark !== undefined;
   if (e8.calledInteractively() && (again || (e8.regionActive() && mark !== undefined))) {
-    // Within the narrowing, as goto-char keeps to it.
-    const end = elementWithAffiliated(mark as number)?.[0].end ?? (mark as number);
+    // From the mark, then to the end of the element there, each within the narrowing, as goto-char keeps to it.
+    const from = Math.max(e8.pointMin(), Math.min(e8.pointMax(), mark as number));
+    const end = elementWithAffiliated(from)?.[0].end ?? from;
     e8.setMark(Math.max(e8.pointMin(), Math.min(e8.pointMax(), end)));
     return;
   }
@@ -4104,7 +4105,7 @@ function markElement(): void {
   e8.gotoChar(e8.lineEnd(lineAt()));
   e8.pushMark(Math.min(e8.pointMax(), e.end), { activate: true });
   // Within the narrowing, as goto-char keeps to it: the element may start before it.
-  e8.gotoChar(Math.max(e8.pointMin(), begin));
+  e8.gotoChar(begin);
 }
 
 e8.defineCommand({
@@ -4115,12 +4116,27 @@ e8.defineCommand({
 
 const markSubtree = e8.defineCommand({
   name: "org-mark-subtree",
-  doc: "Make the region the subtree point is in: point at its heading, the mark at its end.",
-  run: () => {
+  doc: "Make the region the subtree point is in: point at its heading, the mark at its end. With a number, the subtree that many levels up.",
+  params: [{ name: "up", kind: "prefix" }],
+  run: (up: e8.PrefixArg) => {
     const line = lineAt();
     if (parseHeading(line)) e8.gotoChar(e8.lineStart(line));
     else if (headingIndex(headings(), line) === undefined) e8.userError("Not in a subtree");
     else e8.call("org-previous-visible-heading");
+    if (up !== null && up !== undefined) {
+      // As Org's (> up 0), which a raw C-u, a list, fails.
+      if (typeof up !== "number") e8.signal("wrong-type-argument", `Wrong type argument: number-or-marker-p, (${Array.isArray(up) ? up[0] : String(up)})`, [e8.intern("number-or-marker-p"), up]);
+      // Up that many levels, as org-up-heading-safe climbs, while there is a heading above.
+      for (let n = up as number; n > 0; n--) {
+        const all = headings();
+        const i = headingIndex(all, lineAt());
+        if (i === undefined) break;
+        let j = i - 1;
+        while (j >= 0 && all[j].level >= all[i].level) j--;
+        if (j < 0 || all[j].start < e8.pointMin()) break;
+        e8.gotoChar(all[j].start);
+      }
+    }
     markElement();
   },
 });

@@ -338,5 +338,565 @@
    "org-mode"
   ],
   "message": true
+ },
+ {
+  "name": "review-mark-para-mid-start",
+  "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+  "point": 33,
+  "keys": "C-SPC C-u 1 9 C-f C-x n n M-< C-SPC C-SPC M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-para-mid-end",
+  "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+  "point": 33,
+  "keys": "C-SPC C-u 1 9 C-f C-x n n M-> C-SPC C-SPC M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-para-mid-between",
+  "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+  "point": 33,
+  "keys": "C-SPC C-u 1 9 C-f C-x n n M-< C-u 6 C-f C-SPC C-SPC M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-para-mid-twice",
+  "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+  "point": 33,
+  "keys": "C-SPC C-u 1 9 C-f C-x n n M-< C-SPC C-SPC M-h M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-blank-line",
+  "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+  "point": 59,
+  "keys": "C-SPC C-u 1 C-f C-x n n M-< C-SPC C-SPC M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-blank-line-twice",
+  "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+  "point": 59,
+  "keys": "C-SPC C-u 1 C-f C-x n n M-< C-SPC C-SPC M-h M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-exact-para-end",
+  "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+  "point": 0,
+  "keys": "C-SPC C-u 5 9 C-f C-x n n M-> C-SPC C-SPC M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-exact-para-twice",
+  "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+  "point": 0,
+  "keys": "C-SPC C-u 5 9 C-f C-x n n M-< C-SPC C-SPC M-h M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-exact-para-blank-end",
+  "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+  "point": 0,
+  "keys": "C-SPC C-u 6 0 C-f C-x n n M-> C-SPC C-SPC M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-exact-para-blank-twice",
+  "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+  "point": 0,
+  "keys": "C-SPC C-u 6 0 C-f C-x n n M-< C-SPC C-SPC M-h M-h M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-empty-twice",
+  "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+  "point": 28,
+  "keys": "C-SPC C-x n n C-SPC C-SPC M-h M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-last-to-eob",
+  "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+  "point": 65,
+  "keys": "C-SPC C-u 6 C-f C-x n n M-> C-SPC C-SPC M-h M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-item-mid",
+  "text": "- one\n  more one\n- two\n  - nested a\n  - nested b\n- three\n\nAfter.\n",
+  "point": 13,
+  "keys": "C-SPC C-u 8 C-f C-x n n M-< C-SPC C-SPC M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-item-mid-twice",
+  "text": "- one\n  more one\n- two\n  - nested a\n  - nested b\n- three\n\nAfter.\n",
+  "point": 13,
+  "keys": "C-SPC C-u 8 C-f C-x n n M-< C-SPC C-SPC M-h M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-nested-b",
+  "text": "- one\n  more one\n- two\n  - nested a\n  - nested b\n- three\n\nAfter.\n",
+  "point": 28,
+  "keys": "C-SPC C-u 2 5 C-f C-x n n M-< C-u 1 2 C-f C-SPC C-SPC M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-nested-b-twice",
+  "text": "- one\n  more one\n- two\n  - nested a\n  - nested b\n- three\n\nAfter.\n",
+  "point": 28,
+  "keys": "C-SPC C-u 2 5 C-f C-x n n M-< C-u 1 2 C-f C-SPC C-SPC M-h M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-nested-three-end",
+  "text": "- one\n  more one\n- two\n  - nested a\n  - nested b\n- three\n\nAfter.\n",
+  "point": 28,
+  "keys": "C-SPC C-u 2 5 C-f C-x n n M-> C-SPC C-SPC M-h M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-item-line-start",
+  "text": "- one\n  more one\n- two\n  - nested a\n  - nested b\n- three\n\nAfter.\n",
+  "point": 17,
+  "keys": "C-SPC C-u 6 C-f C-x n n M-< C-SPC C-SPC M-h M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-src-inside",
+  "text": "Before.\n\n#+begin_src emacs-lisp\n(a)\n\n(b)\n#+end_src\n\nAfter.\n",
+  "point": 32,
+  "keys": "C-SPC C-u 8 C-f C-x n n M-< C-SPC C-SPC M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-src-inside-twice",
+  "text": "Before.\n\n#+begin_src emacs-lisp\n(a)\n\n(b)\n#+end_src\n\nAfter.\n",
+  "point": 32,
+  "keys": "C-SPC C-u 8 C-f C-x n n M-> C-SPC C-SPC M-h M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-quote-inside",
+  "text": "#+begin_quote\nQuote one.\n\nQuote two.\n#+end_quote\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-SPC C-u 1 1 C-f C-x n n M-< C-SPC C-SPC M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-quote-inside-twice",
+  "text": "#+begin_quote\nQuote one.\n\nQuote two.\n#+end_quote\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-SPC C-u 1 1 C-f C-x n n M-< C-SPC C-SPC M-h M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-drawer-inside",
+  "text": ":DRAWER:\nIn drawer.\n\nMore here.\n:END:\n\nAfter.\n",
+  "point": 12,
+  "keys": "C-SPC C-u 1 1 C-f C-x n n M-< C-SPC C-SPC M-h M-h M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-drawer-inside-end",
+  "text": ":DRAWER:\nIn drawer.\n\nMore here.\n:END:\n\nAfter.\n",
+  "point": 12,
+  "keys": "C-SPC C-u 1 1 C-f C-x n n M-> C-SPC C-SPC M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-table-mid",
+  "text": "| a | b |\n| c | d |\n| e | f |\n\nAfter.\n",
+  "point": 12,
+  "keys": "C-SPC C-u 1 2 C-f C-x n n M-< C-SPC C-SPC M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-aff-outside",
+  "text": "Intro.\n\n#+NAME: tbl\n| a |\n| b |\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-SPC C-u 1 2 C-f C-x n n M-< C-SPC C-SPC M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-aff-mid-keyword-twice",
+  "text": "Intro.\n\n#+NAME: tbl\n| a |\n| b |\n\nAfter.\n",
+  "point": 10,
+  "keys": "C-SPC C-u 1 6 C-f C-x n n M-< C-SPC C-SPC M-h M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-subtree-narrow-body",
+  "text": "* One\nText one.\n** Sub\nSub text.\n\nSub two.\n* Two\nText two.\n",
+  "point": 23,
+  "keys": "C-x n s C-SPC C-SPC M-h M-h M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-subtree-narrow-heading",
+  "text": "* One\nText one.\n** Sub\nSub text.\n\nSub two.\n* Two\nText two.\n",
+  "point": 23,
+  "keys": "C-x n s M-< C-SPC C-SPC M-h M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-subtree-narrow-end",
+  "text": "* One\nText one.\n** Sub\nSub text.\n\nSub two.\n* Two\nText two.\n",
+  "point": 23,
+  "keys": "C-x n s M-> C-SPC C-SPC M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-subtree-c-c-at",
+  "text": "* One\nText one.\n** Sub\nSub text.\n\nSub two.\n* Two\nText two.\n",
+  "point": 23,
+  "keys": "C-x n s C-SPC C-SPC C-c @ C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-subtree-c-c-at-twice",
+  "text": "* One\nText one.\n** Sub\nSub text.\n\nSub two.\n* Two\nText two.\n",
+  "point": 23,
+  "keys": "C-x n s M-< C-SPC C-SPC C-c @ C-c @ C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-subtree-c-c-at-up",
+  "text": "* One\nText one.\n** Sub\nSub text.\n\nSub two.\n* Two\nText two.\n",
+  "point": 23,
+  "keys": "C-x n s C-SPC C-SPC C-u C-c @ C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-c-c-at-up-wide",
+  "text": "* One\nText one.\n** Sub\nSub text.\n\nSub two.\n* Two\nText two.\n",
+  "point": 23,
+  "keys": "C-SPC C-SPC C-u 1 C-c @ C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-heading-mid-line",
+  "text": "* One\nText one.\n** Sub\nSub text.\n\nSub two.\n* Two\nText two.\n",
+  "point": 19,
+  "keys": "C-SPC C-u 1 8 C-f C-x n n M-< C-SPC C-SPC M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-heading-mid-line-c-c-at",
+  "text": "* One\nText one.\n** Sub\nSub text.\n\nSub two.\n* Two\nText two.\n",
+  "point": 19,
+  "keys": "C-SPC C-u 1 8 C-f C-x n n M-> C-SPC C-SPC C-c @ C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-body-only-c-c-at",
+  "text": "* One\nText one.\n** Sub\nSub text.\n\nSub two.\n* Two\nText two.\n",
+  "point": 23,
+  "keys": "C-SPC C-u 1 4 C-f C-x n n M-> C-SPC C-SPC C-c @ C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-heading-mid-line-subtree",
+  "text": "* One\nText one.\n** Sub\nSub text.\n\nSub two.\n* Two\nText two.\n",
+  "point": 3,
+  "keys": "C-SPC C-u 2 0 C-f C-x n n M-< C-SPC C-SPC M-h M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-exchange-then-extend",
+  "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+  "point": 33,
+  "keys": "C-SPC C-u 1 9 C-f C-x n n M-< C-SPC C-SPC M-h C-x C-x M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-active-mark-before",
+  "text": "Intro para.\n\n* One\nText one.\n* Two\nText two.\n",
+  "point": 0,
+  "keys": "C-SPC C-n C-n C-n C-x n s M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-active-mark-after",
+  "text": "Intro para.\n\n* One\nText one.\n* Two\nText two.\n",
+  "point": 45,
+  "keys": "C-SPC C-p C-p C-p C-x n s M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-other-fwd-para",
+  "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+  "point": 33,
+  "keys": "C-SPC C-u 1 9 C-f C-x n n M-< C-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-other-bwd-para",
+  "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+  "point": 33,
+  "keys": "C-SPC C-u 1 9 C-f C-x n n M-> C-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-other-fwd-element",
+  "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+  "point": 33,
+  "keys": "C-SPC C-u 1 9 C-f C-x n n M-< M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-other-bwd-element",
+  "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+  "point": 33,
+  "keys": "C-SPC C-u 1 9 C-f C-x n n M-< C-u 5 C-f M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-other-bwd-sentence",
+  "text": "First sentence here. Second one is\nlonger here. Third sentence.\n\nNext para.\n",
+  "point": 28,
+  "keys": "C-SPC C-u 2 3 C-f C-x n n M-< C-u 5 C-f M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-other-fwd-sentence",
+  "text": "First sentence here. Second one is\nlonger here. Third sentence.\n\nNext para.\n",
+  "point": 28,
+  "keys": "C-SPC C-u 2 3 C-f C-x n n M-< M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-other-fwd-para-quote",
+  "text": "#+begin_quote\nQuote one.\n\nQuote two.\n#+end_quote\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-SPC C-u 1 1 C-f C-x n n M-< C-<down> C-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-other-fwd-element-quote",
+  "text": "#+begin_quote\nQuote one.\n\nQuote two.\n#+end_quote\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-SPC C-u 1 1 C-f C-x n n M-< M-} M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-other-bwd-element-src",
+  "text": "Before.\n\n#+begin_src emacs-lisp\n(a)\n\n(b)\n#+end_src\n\nAfter.\n",
+  "point": 32,
+  "keys": "C-SPC C-u 8 C-f C-x n n M-> M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-other-fwd-element-src",
+  "text": "Before.\n\n#+begin_src emacs-lisp\n(a)\n\n(b)\n#+end_src\n\nAfter.\n",
+  "point": 32,
+  "keys": "C-SPC C-u 8 C-f C-x n n M-< M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-other-heading-mid-fwd-element",
+  "text": "* One\nText one.\n** Sub\nSub text.\n\nSub two.\n* Two\nText two.\n",
+  "point": 19,
+  "keys": "C-SPC C-u 1 8 C-f C-x n n M-< M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-other-heading-mid-bwd-element",
+  "text": "* One\nText one.\n** Sub\nSub text.\n\nSub two.\n* Two\nText two.\n",
+  "point": 19,
+  "keys": "C-SPC C-u 1 8 C-f C-x n n M-< C-f M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-other-heading-mid-fwd-para",
+  "text": "* One\nText one.\n** Sub\nSub text.\n\nSub two.\n* Two\nText two.\n",
+  "point": 19,
+  "keys": "C-SPC C-u 1 8 C-f C-x n n M-< C-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-other-subtree-fwd-element",
+  "text": "* One\nText one.\n** Sub\nSub text.\n\nSub two.\n* Two\nText two.\n",
+  "point": 23,
+  "keys": "C-x n s M-< M-} M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-mark-other-subtree-bwd-element",
+  "text": "* One\nText one.\n** Sub\nSub text.\n\nSub two.\n* Two\nText two.\n",
+  "point": 23,
+  "keys": "C-x n s M-> M-{ M-{ M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
  }
 ]

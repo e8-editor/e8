@@ -6735,11 +6735,13 @@ declare global {
        */
       "org-mark-ring-push": [];
       /**
-       * Make the region the subtree point is in: point at its heading, the mark at its end.
+       * Make the region the subtree point is in: point at its heading, the mark at its end. With a number, the subtree that many levels up.
+       *
+       * @param up raw prefix argument
        *
        * Defined in packages/org.ts.
        */
-      "org-mark-subtree": [];
+      "org-mark-subtree": [up?: PrefixArg | boolean];
       /**
        * Make a sparse tree of the headings a match picks: tags (+work-boss, work|home), properties (PRIORITY="A", LEVEL>1, Effort<"1:00"), and after a / TODO states (/TODO|WAIT, or /! for those not done). With a prefix argument, only headings with a TODO state.
        *
