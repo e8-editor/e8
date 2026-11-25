@@ -21,6 +21,7 @@ import {
 } from "org-macs";
 import { elementAt } from "org-element";
 import { allMatches, charCount, forwardLine } from "subr";
+import { countLines } from "simple";
 
 e8.defineVariable({
   name: "org-table-auto-blank-field",
@@ -1330,25 +1331,87 @@ function stringToNumber(text: string): number {
   return m ? Number(m[1]) : 0;
 }
 
-/** Rows laid out as an aligned table, for making a new one. */
-function formatRows(indent: string, rows: Row[]): string[] {
-  const data = rows.filter((r): r is string[] => r !== "hline");
-  const n = Math.max(1, ...data.map((r) => r.length));
-  const widths = Array.from({ length: n }, (_, i) => Math.max(1, ...data.map((r) => e8.stringWidth(r[i] ?? ""))));
-  const fraction = Number(e8.variable("org-table-number-fraction") ?? 0.5);
-  const aligns = widths.map((_, i) => {
-    const cells = data.map((r) => r[i] ?? "").filter((c) => c !== "");
-    return cells.filter((c) => NUMBER.test(c)).length >= fraction * cells.length ? "r" : "l";
-  });
-  return rows.map(
-    (r) =>
-      indent +
-      "|" +
-      (r === "hline"
-        ? widths.map((w) => "-".repeat(w + 2)).join("+")
-        : widths.map((w, i) => alignField(r[i] ?? "", w, aligns[i])).join("|")) +
-      "|",
-  );
+e8.defineVariable({
+  name: "org-table-convert-region-max-lines",
+  doc: "The most lines org-table-convert-region will convert, so a large region does not hang the editor.",
+  value: 999,
+});
+
+/**
+ * How org-table-convert-region splits lines into fields: [4] at commas, as
+ * CSV, [16] at tabs, [64] at a regexp read in the minibuffer, a number at
+ * that many spaces or a tab, a string at that regexp; undefined guesses
+ * tabs if every line has one, else commas, else runs of spaces, and
+ * "babel-auto" guesses so too but splits a single line only at those.
+ */
+export type Separator = undefined | "babel-auto" | [number] | number | string | symbol;
+
+/**
+ * Turns the lines from beg0 to end0 into a table, as org-table-convert-region:
+ * a bar starts each line and replaces each separator, and the table is aligned.
+ */
+export function convertRegion(beg0: number, end0: number, separator: Separator): void {
+  const beg1 = Math.min(beg0, end0);
+  const end1 = Math.max(beg0, end0);
+  const max = e8.variable("org-table-convert-region-max-lines");
+  if (countLines(beg1, end1) > Number(max))
+    e8.userError(e8.formatMessage("Region is longer than `org-table-convert-region-max-lines' (%s) lines; not converting", max ?? null));
+  const listOf = (n: number) => Array.isArray(separator) && separator.length === 1 && separator[0] === n;
+  if (listOf(64)) separator = e8.readString("Regexp for field separator: ", { history: "regexp-history" });
+  e8.gotoChar(beg1);
+  e8.gotoChar(e8.lineStart(lineAt()));
+  const beg = marker(e8.point());
+  e8.gotoChar(end1);
+  if (atBol()) e8.gotoChar(Math.max(e8.pointMin(), e8.point() - 1));
+  else e8.gotoChar(e8.lineEnd(lineAt()));
+  const end = marker(e8.point());
+  try {
+    if (separator === undefined || separator === null || separator === "babel-auto") {
+      e8.gotoChar(beg.pos);
+      const has = (re: string) => e8.saveExcursion(() => e8.reSearchForward(re, { bound: end.pos, noerror: true }) !== undefined);
+      if (!has("^[^\n\t]+$")) separator = [16];
+      else if (!has("^[^\n,]+$")) separator = [4];
+      else if (separator === "babel-auto" && countLines(beg.pos, end.pos) === 1) separator = "\\`a\\`";
+      else separator = 1;
+    }
+    e8.gotoChar(beg.pos);
+    if (listOf(4)) {
+      // Org's CSV reading: a bar at each line's start and end, quotes taken off a field, commas made bars.
+      while (e8.point() < end.pos) {
+        if (atBol()) e8.insert("| ");
+        else if (e8.lookingAt("[ \t]*$")) {
+          lookAndReplace("[ \t]*$", " |");
+          forwardLine(1);
+        } else if (e8.lookingAt('[ \t]*"\\([^"\n]*\\)"')) {
+          lookAndReplace('[ \t]*"\\([^"\n]*\\)"', "\\1", false);
+          if (e8.lookingAt('"')) e8.insert('"');
+        } else if (e8.lookingAt("[^,\n]+")) e8.gotoChar(e8.matchEnd(0)!);
+        else if (e8.lookingAt("[ \t]*,")) lookAndReplace("[ \t]*,", " | ");
+        else forwardLine(1);
+      }
+    } else {
+      let re: string;
+      if (listOf(16)) re = "^\\|\t";
+      else if (typeof separator === "number" && Number.isInteger(separator)) {
+        if (separator < 1) e8.userError("Number of spaces in separator must be >= 1");
+        re = `^ *\\| *\t *\\| \\{${separator},\\}`;
+      } else if (typeof separator === "string") re = `^ *\\|${separator}`;
+      // As Org's, with a prefix argument of only -.
+      else e8.signal("error", "This should not happen", ["This should not happen"]);
+      while (e8.reSearchForward(re, { bound: end.pos, noerror: true }) !== undefined) e8.replaceMatch("| ", { literal: true, fixedCase: true });
+    }
+    e8.gotoChar(beg.pos);
+    align();
+  } finally {
+    dropMarker(beg);
+    dropMarker(end);
+  }
+}
+
+/** Replaces what regexp matches at point, as looking-at and replace-match do. */
+function lookAndReplace(regexp: string, replacement: string, literal = true): void {
+  e8.lookingAt(regexp);
+  e8.replaceMatch(replacement, { literal, fixedCase: true });
 }
 
 e8.defineCommand({
@@ -1358,23 +1421,10 @@ e8.defineCommand({
     "otherwise an empty one of a size read in the minibuffer, such as 3x2.",
   params: [{ name: "arg", kind: "prefix" }],
   run: (arg: e8.PrefixArg) => {
-    if (orgRegionActive()) {
-      const mark = e8.mark() ?? e8.point();
-      const from = e8.lineStart(e8.lineOf(Math.min(mark, e8.point())));
-      const to = e8.lineEnd(e8.lineOf(Math.max(mark, e8.point())));
-      const lines = e8.bufferText(from, to).split("\n");
-      const separator = lines.some((l) => l.includes("\t"))
-        ? /\t/
-        : lines.every((l) => l.includes(",") || l.trim() === "")
-          ? /,/
-          : /\s+/;
-      const rows: Row[] = lines.map((l) => l.trim().split(separator).map((f) => f.trim()));
-      e8.deactivateMark();
-      e8.deleteRegion(from, to);
-      e8.gotoChar(from);
-      e8.insert(formatRows("", rows).join("\n"));
-      e8.gotoChar(from);
-      gotoColumn(1);
+    if (orgRegionActive() && e8.mark() !== undefined) {
+      // The raw prefix argument, - being the symbol, which is no separator.
+      const separator: Separator = arg === null || arg === undefined ? undefined : arg === "-" ? e8.intern("-") : arg;
+      convertRegion(e8.mark()!, e8.point(), separator);
       return;
     }
     // As org-table-create: a prefix argument is taken for the size, which
