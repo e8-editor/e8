@@ -21,10 +21,10 @@ import {
   DRAWER_RE,
   getItem,
   indentItemCommand,
-  ITEM_RE,
   separatesParagraph,
   itemEndBeforeBlank,
   itemLineByText,
+  listSyntaxKey,
   itemParts,
   listStruct,
   moveItemDown,
@@ -273,7 +273,6 @@ export function startsElement(line: number, limit: number): boolean {
     isBlank(text) ||
     isHeadingLine(text) ||
     /^[ \t]*\|/.test(text) ||
-    ITEM_RE.test(text) ||
     /^[ \t]*#\+\S*:/.test(text) ||
     FIXED_WIDTH.test(text) ||
     COMMENT_LINE.test(text) ||
@@ -623,7 +622,7 @@ function parseFor(pos: number): Elem {
 function parseWide(pos: number): Elem {
   const all = headingsAsRead();
   const branch = headingIndex(all, lineAt(pos));
-  const key = `${e8.bufferName()}\n${allKeywords().join(" ")}\n${branch ?? -1}`;
+  const key = `${e8.bufferName()}\n${allKeywords().join(" ")}\n${branch ?? -1}\n${listSyntaxKey()}`;
   const tick = e8.bufferCharsModifiedTick();
   const [min, max] = [e8.pointMin(), e8.pointMax()];
   if (parseCache?.key === key && parseCache.tick !== tick && parseShifts && parseCache.shifted <= parseShifts.changes.length) {

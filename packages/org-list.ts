@@ -56,16 +56,27 @@ e8.defineVariable({
   value: null,
 });
 
-// The setting's global value, kept by a watcher rather than read for each
-// line tested, as the item tests run over whole buffers.
-let lettered = truthy(e8.variable("org-list-allow-alphabetical") ?? null);
-// A global change only, as Org reads the global value; makunbound's value is nil.
-e8.addVariableWatcher("org-list-allow-alphabetical", (_symbol, value, _operation, where) => {
-  if (where === null || where === undefined) lettered = truthy(value ?? null);
-});
+// The settings' global values, kept rather than read for each line tested,
+// as the item tests run over whole buffers; once a buffer has a value of its
+// own, the current buffer's are read, as Org's org-item-re does. A watcher
+// marks them stale, and they are read again, from the default values and
+// the buffers' own, when next used: a global change can reach buffers that
+// made the variable theirs without setting it, which calls no watcher, and
+// makunbound of a buffer's own value reaches the watchers as a global change.
+let globalLettered = truthy(e8.variable("org-list-allow-alphabetical") ?? null);
+let lettered = globalLettered;
+// Whether any buffer has had a value of its own of either setting.
+let localValues = false;
+// Whether a watcher has seen a change since the values were read.
+let stale = false;
+const markStale = (): void => {
+  stale = true;
+};
+e8.addVariableWatcher("org-list-allow-alphabetical", markStale);
 
 /** Whether lettered bullets are allowed, as org-list-allow-alphabetical says. */
 export function alphabetical(): boolean {
+  sync();
   return lettered;
 }
 
@@ -82,42 +93,104 @@ function terminatorOf(v: e8.Value | undefined): string {
   return "[.)]";
 }
 
-// The setting's global value, kept by a watcher as lettered is.
-let terminator = terminatorOf(e8.variable("org-plain-list-ordered-item-terminator") ?? true);
+let globalTerminator = terminatorOf(e8.variable("org-plain-list-ordered-item-terminator") ?? true);
+let terminator = globalTerminator;
 
 let ITEM_NUMBERED = /$^/;
 let ITEM_LETTERED = /$^/;
 let SEPARATE_NUMBERED = /$^/;
 let SEPARATE_LETTERED = /$^/;
+let GROUPS_NUMBERED = /$^/;
+let GROUPS_LETTERED = /$^/;
+// The terminator the regexps were made for.
+let madeFor = "";
 
 /** An item's indentation, bullet and the spaces after it, numbered bullets only or lettered ones too. */
-export const ITEM_GROUPS = { numbered: /$^/, lettered: /$^/ };
+export const ITEM_GROUPS = {
+  get numbered(): RegExp {
+    sync();
+    return GROUPS_NUMBERED;
+  },
+  get lettered(): RegExp {
+    sync();
+    return GROUPS_LETTERED;
+  },
+};
 
 /** Makes the item regexps for the terminators allowed, as org-item-re does for each setting. */
 function makeItemRegexps(): void {
   const t = terminator;
+  if (t === madeFor) return;
+  madeFor = t;
   ITEM_NUMBERED = new RegExp(`^(?:[ \\t]*(?:[-+]|\\d+${t})|[ \\t]+\\*)(?:[ \\t]+|$)`);
   ITEM_LETTERED = new RegExp(`^(?:[ \\t]*(?:[-+]|(?:\\d+|[A-Za-z])${t})|[ \\t]+\\*)(?:[ \\t]+|$)`);
-  SEPARATE_NUMBERED = new RegExp(`^[ \\t]*(?:[-+*]|[0-9]+${t})(?:[ \\t]|$)`);
-  SEPARATE_LETTERED = new RegExp(`^[ \\t]*(?:[-+*]|(?:[0-9]+|[A-Za-z])${t})(?:[ \\t]|$)`);
-  ITEM_GROUPS.numbered = new RegExp(`^([ \\t]*)([-+*]|\\d+${t})([ \\t]+|$)`);
-  ITEM_GROUPS.lettered = new RegExp(`^([ \\t]*)([-+*]|(?:\\d+|[A-Za-z])${t})([ \\t]+|$)`);
+  GROUPS_NUMBERED = new RegExp(`^([ \\t]*)([-+*]|\\d+${t})([ \\t]+|$)`);
+  GROUPS_LETTERED = new RegExp(`^([ \\t]*)([-+*]|(?:\\d+|[A-Za-z])${t})([ \\t]+|$)`);
 }
 makeItemRegexps();
-// A global change only, as for org-list-allow-alphabetical.
-e8.addVariableWatcher("org-plain-list-ordered-item-terminator", (_symbol, value, _operation, where) => {
-  if (where === null || where === undefined) {
-    terminator = terminatorOf(value ?? true);
-    makeItemRegexps();
-  }
-});
+
+/** Makes the paragraph separator's item part, from the global terminator, as Org's is made from the global value. */
+function makeSeparators(): void {
+  const t = globalTerminator;
+  SEPARATE_NUMBERED = new RegExp(`^[ \\t]*(?:[-+*]|[0-9]+${t})(?:[ \\t]|$)`);
+  SEPARATE_LETTERED = new RegExp(`^[ \\t]*(?:[-+*]|(?:[0-9]+|[A-Za-z])${t})(?:[ \\t]|$)`);
+}
+makeSeparators();
+e8.addVariableWatcher("org-plain-list-ordered-item-terminator", markStale);
+
+/** Reads the settings' global values again, and whether any buffer has its own, after a change. */
+function refresh(): void {
+  stale = false;
+  globalLettered = truthy(e8.defaultValue("org-list-allow-alphabetical") ?? null);
+  globalTerminator = terminatorOf(e8.defaultValue("org-plain-list-ordered-item-terminator") ?? true);
+  makeSeparators();
+  localValues =
+    localValues ||
+    e8.bufferList().some((b) => e8.localVariableP("org-list-allow-alphabetical", b) || e8.localVariableP("org-plain-list-ordered-item-terminator", b));
+  lettered = globalLettered;
+  terminator = globalTerminator;
+  makeItemRegexps();
+}
+
+/** Brings the settings up to the current buffer's values, once any buffer has its own. */
+function sync(): void {
+  // After the watchers run, as they run before the change.
+  if (stale) refresh();
+  if (!localValues) return;
+  lettered = truthy(e8.variable("org-list-allow-alphabetical") ?? null);
+  terminator = terminatorOf(e8.variable("org-plain-list-ordered-item-terminator") ?? true);
+  makeItemRegexps();
+}
+
+/** The terminators allowed here, as a regexp's source. */
+function terminatorHere(): string {
+  sync();
+  return terminator;
+}
 
 /** Matches the start of an item, as org-item-beginning-re: a lettered one too with org-list-allow-alphabetical, ending as org-plain-list-ordered-item-terminator says. */
-export const ITEM_RE = { test: (text: string): boolean => (lettered ? ITEM_LETTERED : ITEM_NUMBERED).test(text) };
+export const ITEM_RE = {
+  test: (text: string): boolean => {
+    sync();
+    return (lettered ? ITEM_LETTERED : ITEM_NUMBERED).test(text);
+  },
+};
 
-/** A line that looks like an item ends a paragraph, as org-element-paragraph-separate has it: lettered too with the setting. */
+/**
+ * A line that looks like an item ends a paragraph, as
+ * org-element-paragraph-separate has it: lettered too with the setting.
+ * Org makes it from the settings' global values, a buffer's own values
+ * not counting, so this reads them.
+ */
 export function separatesParagraph(text: string): boolean {
-  return (lettered ? SEPARATE_LETTERED : SEPARATE_NUMBERED).test(text);
+  if (stale) refresh();
+  return (globalLettered ? SEPARATE_LETTERED : SEPARATE_NUMBERED).test(text);
+}
+
+/** What the item tests read now, for the parser's cache to be made again when it changes. */
+export function listSyntaxKey(): string {
+  sync();
+  return `${lettered}${terminator}${globalLettered}${globalTerminator}`;
 }
 export const DRAWER_RE = /^[ \t]*:((?:\w|[-_])+):[ \t]*$/;
 const LIST_FORBIDDEN_BLOCKS = ["example", "verse", "src", "export"];
@@ -1353,7 +1426,7 @@ export function cycleListBullet(which?: string): void {
     "+",
     ...(/^\S/.test(e8.lineText(line)) ? [] : ["*"]),
     // Those the terminator allows, as org-plain-list-ordered-item-terminator says.
-    ...(description || terminator === "\\)" ? [] : ["1."]),
+    ...(description || terminatorHere() === "\\)" ? [] : ["1."]),
     ...(description || terminator === "\\." ? [] : ["1)"]),
     // Letters too where the list can have them, as org-list-use-alpha-bul-p says.
     ...(description || !alpha || terminator === "\\)" ? [] : ["a.", "A."]),
