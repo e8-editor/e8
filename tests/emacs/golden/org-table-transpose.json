@@ -1,0 +1,709 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "doc-example",
+      "input": {
+        "text": "| 1 | 2 | 4 | 5 |\n|---+---+---+---|\n| a | b | c | d |\n| e | f | g | h |\n",
+        "point": 2,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-transpose-table-at-point"
+        ],
+        "message": true
+      },
+      "text": "| 1 | a | e |\n| 2 | b | f |\n| 4 | c | g |\n| 5 | d | h |\n",
+      "visible": "| 1 | a | e |\n| 2 | b | f |\n| 4 | c | g |\n| 5 | d | h |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "doc-example-field",
+      "input": {
+        "text": "| 1 | 2 | 4 | 5 |\n|---+---+---+---|\n| a | b | c | d |\n| e | f | g | h |\n",
+        "point": 64,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-transpose-table-at-point"
+        ],
+        "message": true
+      },
+      "text": "| 1 | a | e |\n| 2 | b | f |\n| 4 | c | g |\n| 5 | d | h |\n",
+      "visible": "| 1 | a | e |\n| 2 | b | f |\n| 4 | c | g |\n| 5 | d | h |\n",
+      "point": 38,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "doc-example-hline",
+      "input": {
+        "text": "| 1 | 2 | 4 | 5 |\n|---+---+---+---|\n| a | b | c | d |\n| e | f | g | h |\n",
+        "point": 22,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-transpose-table-at-point"
+        ],
+        "message": true
+      },
+      "text": "| 1 | a | e |\n| 2 | b | f |\n| 4 | c | g |\n| 5 | d | h |\n",
+      "visible": "| 1 | a | e |\n| 2 | b | f |\n| 4 | c | g |\n| 5 | d | h |\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "square",
+      "input": {
+        "text": "| a | b |\n| c | d |\n",
+        "point": 6,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-transpose-table-at-point"
+        ],
+        "message": true
+      },
+      "text": "| a | c |\n| b | d |\n",
+      "visible": "| a | c |\n| b | d |\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "one-row",
+      "input": {
+        "text": "| a | b | c |\n",
+        "point": 2,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-transpose-table-at-point"
+        ],
+        "message": true
+      },
+      "text": "| a |\n| b |\n| c |\n",
+      "visible": "| a |\n| b |\n| c |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "one-column",
+      "input": {
+        "text": "| a |\n| b |\n| c |\n",
+        "point": 9,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-transpose-table-at-point"
+        ],
+        "message": true
+      },
+      "text": "| a | b | c |\n",
+      "visible": "| a | b | c |\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "ragged-short",
+      "input": {
+        "text": "| a | b | c |\n| d |\n| e | f |\n",
+        "point": 2,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-transpose-table-at-point"
+        ],
+        "message": true
+      },
+      "text": "| a | d | e |\n| b |   | f |\n| c |   |   |\n",
+      "visible": "| a | d | e |\n| b |   | f |\n| c |   |   |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "ragged-long",
+      "input": {
+        "text": "| a |\n| b | c | d |\n",
+        "point": 2,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-transpose-table-at-point"
+        ],
+        "message": true
+      },
+      "text": "| a | b |\n",
+      "visible": "| a | b |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "empty-fields",
+      "input": {
+        "text": "| a |   |\n|   | d |\n",
+        "point": 2,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-transpose-table-at-point"
+        ],
+        "message": true
+      },
+      "text": "| a |   |\n|   | d |\n",
+      "visible": "| a |   |\n|   | d |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "indented",
+      "input": {
+        "text": "  | a | b |\n  | c | d |\n",
+        "point": 4,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-transpose-table-at-point"
+        ],
+        "message": true
+      },
+      "text": "  | a | c |\n  | b | d |\n",
+      "visible": "  | a | c |\n  | b | d |\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "in-text",
+      "input": {
+        "text": "before\n| a | b |\n| c | d |\nafter\n",
+        "point": 9,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-transpose-table-at-point"
+        ],
+        "message": true
+      },
+      "text": "before\n| a | c |\n| b | d |\nafter\n",
+      "visible": "before\n| a | c |\n| b | d |\nafter\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "eob-no-newline",
+      "input": {
+        "text": "| a | b |\n| c | d |",
+        "point": 2,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-transpose-table-at-point"
+        ],
+        "message": true
+      },
+      "text": "| a | c |\n| b | d |\n",
+      "visible": "| a | c |\n| b | d |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "only-hlines",
+      "input": {
+        "text": "|---+---|\n",
+        "point": 2,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-transpose-table-at-point"
+        ],
+        "message": true
+      },
+      "text": "",
+      "visible": "",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Search failed: \"|\"",
+      "message": null
+    },
+    {
+      "name": "hline-only-header",
+      "input": {
+        "text": "| x | y |\n|---+---|\n",
+        "point": 2,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-transpose-table-at-point"
+        ],
+        "message": true
+      },
+      "text": "| x |\n| y |\n",
+      "visible": "| x |\n| y |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "wide",
+      "input": {
+        "text": "| 日本 | b |\n| c | dd |\n",
+        "point": 2,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-transpose-table-at-point"
+        ],
+        "message": true
+      },
+      "text": "| 日本 | c  |\n| b    | dd |\n",
+      "visible": "| 日本 | c  |\n| b    | dd |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "numbers",
+      "input": {
+        "text": "| 1 | 22 |\n| 333 | 4 |\n",
+        "point": 2,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-transpose-table-at-point"
+        ],
+        "message": true
+      },
+      "text": "|  1 | 333 |\n| 22 |   4 |\n",
+      "visible": "|  1 | 333 |\n| 22 |   4 |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "not-at-table",
+      "input": {
+        "text": "text\n\n| a | b |\n| c | d |\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-transpose-table-at-point"
+        ],
+        "message": true
+      },
+      "text": "text\n\n",
+      "visible": "text\n\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Search failed: \"|\"",
+      "message": null
+    },
+    {
+      "name": "no-table",
+      "input": {
+        "text": "just text\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-transpose-table-at-point"
+        ],
+        "message": true
+      },
+      "text": "just text\n",
+      "visible": "just text\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Search failed: \"|\"",
+      "message": null
+    },
+    {
+      "name": "after-table",
+      "input": {
+        "text": "| a | b |\n| c | d |\ntext\n",
+        "point": 20,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-transpose-table-at-point"
+        ],
+        "message": true
+      },
+      "text": "| a | c |\n| b | d |\ntext\n",
+      "visible": "| a | c |\n| b | d |\ntext\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "bol",
+      "input": {
+        "text": "| a | b |\n| c | d |\n",
+        "point": 10,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-transpose-table-at-point"
+        ],
+        "message": true
+      },
+      "text": "| a | c |\n| b | d |\n",
+      "visible": "| a | c |\n| b | d |\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "eol",
+      "input": {
+        "text": "| a | b |\n| c | d |\n",
+        "point": 17,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-transpose-table-at-point"
+        ],
+        "message": true
+      },
+      "text": "| a | c |\n| b | d |\n",
+      "visible": "| a | c |\n| b | d |\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "twice",
+      "input": {
+        "text": "| a | b | c |\n| d | e | f |\n",
+        "point": 20,
+        "keys": "M-x M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-transpose-table-at-point",
+          "org-table-transpose-table-at-point"
+        ],
+        "message": true
+      },
+      "text": "| a | b | c |\n| d | e | f |\n",
+      "visible": "| a | b | c |\n| d | e | f |\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "undo",
+      "input": {
+        "text": "| a | b |\n| c | d |\n",
+        "point": 2,
+        "keys": "M-x C-/",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-transpose-table-at-point"
+        ],
+        "message": true
+      },
+      "text": "| a | b |\n| c | d |\n",
+      "visible": "| a | b |\n| c | d |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Undo"
+    },
+    {
+      "name": "narrowed",
+      "input": {
+        "text": "| a | b |\n| c | d |\n| e | f |\n",
+        "point": 10,
+        "keys": "C-SPC C-n C-e C-x n n C-SPC C-SPC C-p M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-transpose-table-at-point"
+        ],
+        "message": true
+      },
+      "text": "| a | b |\n| c | e |\n| d | f |\n\n",
+      "visible": "| a | b |\n| c | e |\n| d | f |\n\n",
+      "point": 22,
+      "mark": 10,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark deactivated"
+    },
+    {
+      "name": "not-at-table-two-tables",
+      "input": {
+        "text": "text\n\n| a | b |\n\n| x |  y |\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-transpose-table-at-point"
+        ],
+        "message": true
+      },
+      "text": "text\n\n\n| x |  y |\n",
+      "visible": "text\n\n\n| x |  y |\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "only-hlines-then-table",
+      "input": {
+        "text": "|---+---|\n\n| x |  y |\n",
+        "point": 2,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-transpose-table-at-point"
+        ],
+        "message": true
+      },
+      "text": "\n| x |  y |\n",
+      "visible": "\n| x |  y |\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "only-hlines-text-after",
+      "input": {
+        "text": "|---+---|\nmore\n",
+        "point": 2,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-transpose-table-at-point"
+        ],
+        "message": true
+      },
+      "text": "more\n",
+      "visible": "more\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Search failed: \"|\"",
+      "message": null
+    }
+  ]
+}

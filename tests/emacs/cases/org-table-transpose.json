@@ -1,0 +1,354 @@
+[
+ {
+  "name": "doc-example",
+  "text": "| 1 | 2 | 4 | 5 |\n|---+---+---+---|\n| a | b | c | d |\n| e | f | g | h |\n",
+  "point": 2,
+  "keys": "M-x",
+  "answers": [
+   "org-table-transpose-table-at-point"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "doc-example-field",
+  "text": "| 1 | 2 | 4 | 5 |\n|---+---+---+---|\n| a | b | c | d |\n| e | f | g | h |\n",
+  "point": 64,
+  "keys": "M-x",
+  "answers": [
+   "org-table-transpose-table-at-point"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "doc-example-hline",
+  "text": "| 1 | 2 | 4 | 5 |\n|---+---+---+---|\n| a | b | c | d |\n| e | f | g | h |\n",
+  "point": 22,
+  "keys": "M-x",
+  "answers": [
+   "org-table-transpose-table-at-point"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "square",
+  "text": "| a | b |\n| c | d |\n",
+  "point": 6,
+  "keys": "M-x",
+  "answers": [
+   "org-table-transpose-table-at-point"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "one-row",
+  "text": "| a | b | c |\n",
+  "point": 2,
+  "keys": "M-x",
+  "answers": [
+   "org-table-transpose-table-at-point"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "one-column",
+  "text": "| a |\n| b |\n| c |\n",
+  "point": 9,
+  "keys": "M-x",
+  "answers": [
+   "org-table-transpose-table-at-point"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ragged-short",
+  "text": "| a | b | c |\n| d |\n| e | f |\n",
+  "point": 2,
+  "keys": "M-x",
+  "answers": [
+   "org-table-transpose-table-at-point"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ragged-long",
+  "text": "| a |\n| b | c | d |\n",
+  "point": 2,
+  "keys": "M-x",
+  "answers": [
+   "org-table-transpose-table-at-point"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "empty-fields",
+  "text": "| a |   |\n|   | d |\n",
+  "point": 2,
+  "keys": "M-x",
+  "answers": [
+   "org-table-transpose-table-at-point"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "indented",
+  "text": "  | a | b |\n  | c | d |\n",
+  "point": 4,
+  "keys": "M-x",
+  "answers": [
+   "org-table-transpose-table-at-point"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "in-text",
+  "text": "before\n| a | b |\n| c | d |\nafter\n",
+  "point": 9,
+  "keys": "M-x",
+  "answers": [
+   "org-table-transpose-table-at-point"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "eob-no-newline",
+  "text": "| a | b |\n| c | d |",
+  "point": 2,
+  "keys": "M-x",
+  "answers": [
+   "org-table-transpose-table-at-point"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "only-hlines",
+  "text": "|---+---|\n",
+  "point": 2,
+  "keys": "M-x",
+  "answers": [
+   "org-table-transpose-table-at-point"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "hline-only-header",
+  "text": "| x | y |\n|---+---|\n",
+  "point": 2,
+  "keys": "M-x",
+  "answers": [
+   "org-table-transpose-table-at-point"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "wide",
+  "text": "| 日本 | b |\n| c | dd |\n",
+  "point": 2,
+  "keys": "M-x",
+  "answers": [
+   "org-table-transpose-table-at-point"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "numbers",
+  "text": "| 1 | 22 |\n| 333 | 4 |\n",
+  "point": 2,
+  "keys": "M-x",
+  "answers": [
+   "org-table-transpose-table-at-point"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "not-at-table",
+  "text": "text\n\n| a | b |\n| c | d |\n",
+  "point": 0,
+  "keys": "M-x",
+  "answers": [
+   "org-table-transpose-table-at-point"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "no-table",
+  "text": "just text\n",
+  "point": 0,
+  "keys": "M-x",
+  "answers": [
+   "org-table-transpose-table-at-point"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "after-table",
+  "text": "| a | b |\n| c | d |\ntext\n",
+  "point": 20,
+  "keys": "M-x",
+  "answers": [
+   "org-table-transpose-table-at-point"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "bol",
+  "text": "| a | b |\n| c | d |\n",
+  "point": 10,
+  "keys": "M-x",
+  "answers": [
+   "org-table-transpose-table-at-point"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "eol",
+  "text": "| a | b |\n| c | d |\n",
+  "point": 17,
+  "keys": "M-x",
+  "answers": [
+   "org-table-transpose-table-at-point"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "twice",
+  "text": "| a | b | c |\n| d | e | f |\n",
+  "point": 20,
+  "keys": "M-x M-x",
+  "answers": [
+   "org-table-transpose-table-at-point",
+   "org-table-transpose-table-at-point"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "undo",
+  "text": "| a | b |\n| c | d |\n",
+  "point": 2,
+  "keys": "M-x C-/",
+  "answers": [
+   "org-table-transpose-table-at-point"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "narrowed",
+  "text": "| a | b |\n| c | d |\n| e | f |\n",
+  "point": 10,
+  "keys": "C-SPC C-n C-e C-x n n C-SPC C-SPC C-p M-x",
+  "answers": [
+   "org-table-transpose-table-at-point"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "not-at-table-two-tables",
+  "text": "text\n\n| a | b |\n\n| x |  y |\n",
+  "point": 0,
+  "keys": "M-x",
+  "answers": [
+   "org-table-transpose-table-at-point"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "only-hlines-then-table",
+  "text": "|---+---|\n\n| x |  y |\n",
+  "point": 2,
+  "keys": "M-x",
+  "answers": [
+   "org-table-transpose-table-at-point"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "only-hlines-text-after",
+  "text": "|---+---|\nmore\n",
+  "point": 2,
+  "keys": "M-x",
+  "answers": [
+   "org-table-transpose-table-at-point"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ }
+]
