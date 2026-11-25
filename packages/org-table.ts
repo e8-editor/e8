@@ -21,7 +21,6 @@ import {
 } from "org-macs";
 import { elementAt } from "org-element";
 import { allMatches, charCount, forwardLine } from "subr";
-import { countLines } from "simple";
 
 e8.defineVariable({
   name: "org-table-auto-blank-field",
@@ -1354,8 +1353,10 @@ export function convertRegion(beg0: number, end0: number, separator: Separator):
   const beg1 = Math.min(beg0, end0);
   const end1 = Math.max(beg0, end0);
   const max = e8.variable("org-table-convert-region-max-lines");
-  if (countLines(beg1, end1) > Number(max))
-    e8.userError(e8.formatMessage("Region is longer than `org-table-convert-region-max-lines' (%s) lines; not converting", max ?? null));
+  // As > fails on what is no number.
+  if (typeof max !== "number") e8.signal("wrong-type-argument", `Wrong type argument: number-or-marker-p, ${e8.prin1ToString(max ?? null)}`, [e8.intern("number-or-marker-p"), max ?? null]);
+  if (linesBetween(beg1, end1) > max)
+    e8.userError(e8.formatMessage("Region is longer than `org-table-convert-region-max-lines' (%s) lines; not converting", max));
   const listOf = (n: number) => Array.isArray(separator) && separator.length === 1 && separator[0] === n;
   if (listOf(64)) separator = e8.readString("Regexp for field separator: ", { history: "regexp-history" });
   e8.gotoChar(beg1);
@@ -1371,7 +1372,7 @@ export function convertRegion(beg0: number, end0: number, separator: Separator):
       const has = (re: string) => e8.saveExcursion(() => e8.reSearchForward(re, { bound: end.pos, noerror: true }) !== undefined);
       if (!has("^[^\n\t]+$")) separator = [16];
       else if (!has("^[^\n,]+$")) separator = [4];
-      else if (separator === "babel-auto" && countLines(beg.pos, end.pos) === 1) separator = "\\`a\\`";
+      else if (separator === "babel-auto" && linesBetween(beg.pos, end.pos) === 1) separator = "\\`a\\`";
       else separator = 1;
     }
     e8.gotoChar(beg.pos);
@@ -1406,6 +1407,12 @@ export function convertRegion(beg0: number, end0: number, separator: Separator):
     dropMarker(beg);
     dropMarker(end);
   }
+}
+
+/** How many lines there are from start to end, as count-lines: a last line without its newline counts, without reading the text. */
+function linesBetween(start: number, end: number): number {
+  if (end <= start) return 0;
+  return lineAt(end) - lineAt(start) + (e8.charBefore(end) === "\n" ? 0 : 1);
 }
 
 /** Replaces what regexp matches at point, as looking-at and replace-match do. */

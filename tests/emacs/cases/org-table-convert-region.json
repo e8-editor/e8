@@ -483,5 +483,383 @@
    "org-mode"
   ],
   "message": true
+ },
+ {
+  "name": "above-table",
+  "text": "| x | y |\na b\n",
+  "point": 10,
+  "keys": "C-SPC M-> C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "below-table",
+  "text": "a b\n| xx | y |\n",
+  "point": 0,
+  "keys": "C-SPC C-n C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "above-table-blank",
+  "text": "| x |\n\na b\n",
+  "point": 7,
+  "keys": "C-SPC M-> C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "above-indented-table",
+  "text": "  | x | y |\na b\n",
+  "point": 12,
+  "keys": "C-SPC M-> C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "leading-tab-spaces",
+  "text": "\ta b\nc d\n",
+  "point": 0,
+  "keys": "C-SPC M-> C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "regexp-case-fold",
+  "text": "aXbxc\n",
+  "point": 0,
+  "keys": "C-SPC M-> C-u C-u C-u C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "x"
+  ]
+ },
+ {
+  "name": "crlf-csv",
+  "text": "a,b\r\nc,d\r\n",
+  "point": 0,
+  "keys": "C-SPC M-> C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "crlf-spaces",
+  "text": "a b\r\nc d\r\n",
+  "point": 0,
+  "keys": "C-SPC M-> C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "csv-unclosed",
+  "text": "\"a,b\nc,d\n",
+  "point": 0,
+  "keys": "C-SPC M-> C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "csv-quote-then-text",
+  "text": "\"a\"b,c\n\"x\"y\"z\",d\n",
+  "point": 0,
+  "keys": "C-SPC M-> C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "csv-quotes-spaced",
+  "text": " \"a\" , \"b\"\nc,d\n",
+  "point": 0,
+  "keys": "C-SPC M-> C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "csv-quadruple",
+  "text": "\"\"\"\",x\n",
+  "point": 0,
+  "keys": "C-SPC M-> C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "trailing-blank-line",
+  "text": "a b\nc d\n\n",
+  "point": 0,
+  "keys": "C-SPC M-> C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "trailing-blank-tabs",
+  "text": "a\tb\nc\td\n\n",
+  "point": 0,
+  "keys": "C-SPC M-> C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "trailing-blank-csv",
+  "text": "a,b\nc,d\n\n",
+  "point": 0,
+  "keys": "C-SPC M-> C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "trailing-ws-line",
+  "text": "a b\n   \n",
+  "point": 0,
+  "keys": "C-SPC M-> C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "narrowed-mid-line",
+  "text": "xx a b\nc d\nyy\n",
+  "point": 3,
+  "keys": "C-SPC C-n C-e C-x n n M-< C-SPC M-> C-c |",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "narrowed-mid-line-csv",
+  "text": "xx a,b\nc,d\nyy\n",
+  "point": 3,
+  "keys": "C-SPC C-n C-e C-x n n M-< C-SPC M-> C-c |",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "narrowed-table-below",
+  "text": "a b\nc d\n| x | y |\n",
+  "point": 0,
+  "keys": "C-SPC C-n C-n C-x n n M-< C-SPC M-> C-c |",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "mark-mid-line",
+  "text": "a b c\nd e f\n",
+  "point": 2,
+  "keys": "C-SPC C-n C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "prefix-256",
+  "text": "a b\n",
+  "point": 0,
+  "keys": "C-SPC M-> C-u C-u C-u C-u C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "prefix-c-u-minus",
+  "text": "a b\n",
+  "point": 0,
+  "keys": "C-SPC M-> C-u - C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mixed-bars",
+  "text": "| a | b |\nc d\n",
+  "point": 0,
+  "keys": "C-SPC M-> C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "region-start-blank",
+  "text": "\na b\n",
+  "point": 0,
+  "keys": "C-SPC M-> C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "all-and-table",
+  "text": "| x |\na b\n",
+  "point": 0,
+  "keys": "C-SPC M-> C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "one-line-of-two-above-table",
+  "text": "| x |\na b\nc d\n",
+  "point": 6,
+  "keys": "C-SPC C-n C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "hline-above",
+  "text": "| x |\n|---|\na b\n",
+  "point": 12,
+  "keys": "C-SPC M-> C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "narrowed-end-mid-line",
+  "text": "a b\nc d e\n",
+  "point": 0,
+  "keys": "C-SPC C-n C-f C-f C-f C-x n n M-< C-SPC M-> C-c |",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "regexp-class",
+  "text": "a;b:c\n",
+  "point": 0,
+  "keys": "C-SPC M-> C-u C-u C-u C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "[;:]"
+  ]
+ },
+ {
+  "name": "prefix-tab-forced",
+  "text": "a b\n",
+  "point": 0,
+  "keys": "C-SPC M-> C-u C-u C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "csv-tab-in-field",
+  "text": "a\tb,c\nd,e\n",
+  "point": 0,
+  "keys": "C-SPC M-> C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "spaces-tab-in-field",
+  "text": "a\tb c\nd e\n",
+  "point": 0,
+  "keys": "C-SPC M-> C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "backwards-mid-line",
+  "text": "a b c\nd e f\n",
+  "point": 9,
+  "keys": "C-SPC C-p C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "prefix-2-trailing",
+  "text": "a  b  \nc  d\n",
+  "point": 0,
+  "keys": "C-SPC M-> M-2 C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "csv-only-quote-line",
+  "text": "\"\n\"a\",b\n",
+  "point": 0,
+  "keys": "C-SPC M-> C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "max-lines-nil",
+  "text": "a b\n",
+  "point": 0,
+  "keys": "C-SPC M-> C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "org-table-convert-region-max-lines": false
+  }
+ },
+ {
+  "name": "max-lines-exact-no-newline",
+  "text": "a b\nc d",
+  "point": 0,
+  "keys": "C-SPC M-> C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "org-table-convert-region-max-lines": 1
+  }
  }
 ]
