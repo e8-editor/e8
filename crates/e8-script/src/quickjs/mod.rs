@@ -105,12 +105,20 @@ impl rquickjs::loader::Resolver for PackageResolver {
     }
 }
 
-/// The bytecode of the packages E8 ships, compiled once in a process and
-/// read again by every engine started after, as compiling them took most
-/// of an engine's start: each engine the oracle's tests start for a case
-/// compiled every package anew. The bytes live as long as the process, as
-/// QuickJS reads bytecode in place rather than copying it.
-static BYTECODE: std::sync::Mutex<std::collections::BTreeMap<String, &'static [u8]>> = std::sync::Mutex::new(std::collections::BTreeMap::new());
+/// The bytecode of the packages E8 ships, written the second time one is
+/// compiled in a process and read by every engine started after, as
+/// compiling them took most of an engine's start: each engine the oracle's
+/// tests start for a case compiled every package anew. A process with one
+/// engine, as the editor, writes none. QuickJS copies what it reads, so the
+/// bytes are shared, not kept in place.
+static BYTECODE: std::sync::Mutex<std::collections::BTreeMap<String, Option<std::sync::Arc<[u8]>>>> =
+    std::sync::Mutex::new(std::collections::BTreeMap::new());
+
+// Reading bytecode in place, as JS_READ_OBJ_ROM_DATA once asked QuickJS to,
+// would need the bytes to outlive every engine that read them, and atoms
+// read the other engine's way: this QuickJS (quickjs-ng) makes the flag a
+// no-op and copies, which the cache relies on.
+const _: () = assert!(qjs::JS_READ_OBJ_ROM_DATA == 0);
 
 /// Loads a package as an ES module, its types erased.
 struct PackageLoader;
@@ -123,9 +131,14 @@ impl rquickjs::loader::Loader for PackageLoader {
         _attributes: Option<rquickjs::loader::ImportAttributes<'js>>,
     ) -> rquickjs::Result<rquickjs::Module<'js, rquickjs::module::Declared>> {
         let (file, source) = package_source(name).ok_or_else(|| rquickjs::Error::new_loading(name))?;
-        // A package E8 ships, whose source cannot change while it runs, as a user's package on load-path can.
-        let shipped = matches!(source, std::borrow::Cow::Borrowed(_));
-        if shipped && let Some(bytes) = BYTECODE.lock().ok().and_then(|cache| cache.get(&file).copied()) {
+        // A package E8 ships, whose source cannot change while it runs, as a
+        // user's package on load-path can; not one loaded again as NAME#N,
+        // whose name, in its bytecode, no other load shares.
+        let shipped = matches!(source, std::borrow::Cow::Borrowed(_)) && !file.contains('#');
+        // The lock is let go before loading: reading a module loads what it
+        // imports, through this loader again.
+        let cached = if shipped { BYTECODE.lock().ok().and_then(|cache| cache.get(&file).cloned()) } else { None };
+        if let Some(Some(bytes)) = &cached {
             // SAFETY: the bytes are what Module::write gave for this module, in this process, by this QuickJS.
             return unsafe { rquickjs::Module::load(ctx.clone(), bytes) };
         }
@@ -135,9 +148,24 @@ impl rquickjs::loader::Loader for PackageLoader {
         };
         let js = crate::module_js(&file, js);
         let module = rquickjs::Module::declare(ctx.clone(), file.clone(), js)?;
-        if shipped && let Ok(bytes) = module.write(rquickjs::WriteOptions::default()) {
+        if shipped {
+            // Compiled once before in this process: another engine will want it again, so keep its bytecode.
+            let bytes = match cached {
+                Some(None) => match module.write(rquickjs::WriteOptions::default()) {
+                    Ok(bytes) => Some(std::sync::Arc::from(bytes)),
+                    Err(_) => {
+                        // A failed write leaves its exception pending, which the next import would take for its own.
+                        ctx.catch();
+                        None
+                    }
+                },
+                _ => None,
+            };
             if let Ok(mut cache) = BYTECODE.lock() {
-                cache.entry(file).or_insert_with(|| Box::leak(bytes.into_boxed_slice()));
+                let entry = cache.entry(file).or_insert(None);
+                if entry.is_none() {
+                    *entry = bytes;
+                }
             }
         }
         Ok(module)
