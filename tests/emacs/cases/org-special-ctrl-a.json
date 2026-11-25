@@ -1,0 +1,4281 @@
+[
+ {
+  "name": "t-ca-todo-title",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 12,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ce-todo-title",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 12,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ca-todo-mid",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 20,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ce-todo-mid",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 20,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ca-todo-stars",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 0,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ce-todo-stars",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 0,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ca-todo-kw",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 3,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ce-todo-kw",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 3,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ca-todo-tags",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 27,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ce-todo-tags",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 27,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ca-todo-eol",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 35,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ce-todo-eol",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 35,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ca-plain-title",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 45,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ce-plain-title",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 45,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ca-plain-mid",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 54,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ce-plain-mid",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 54,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ca-plain-bol",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 42,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ce-plain-bol",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 42,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ca-box",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 67,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ce-box",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 67,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ca-box-bol",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 59,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ce-box-bol",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 59,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ca-box-bullet",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 62,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ce-box-bullet",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 62,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ca-wide",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 81,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ce-wide",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 81,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ca-numbered",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 97,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ce-numbered",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 97,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ca-counted",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 110,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ce-counted",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 110,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ca-empty-head",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 117,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ce-empty-head",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 117,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ca-bare-stars",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 122,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ce-bare-stars",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 122,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ca-body",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 39,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ce-body",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 39,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ca-twice-todo-mid",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 20,
+  "keys": "C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ca-thrice-todo-mid",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 20,
+  "keys": "C-a C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ce-twice-todo-mid",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 20,
+  "keys": "C-e C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ca-twice-box",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 67,
+  "keys": "C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ca-thrice-box",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 67,
+  "keys": "C-a C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ce-twice-box",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 67,
+  "keys": "C-e C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ca-twice-plain-mid",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 54,
+  "keys": "C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ca-thrice-plain-mid",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 54,
+  "keys": "C-a C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ce-twice-plain-mid",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 54,
+  "keys": "C-e C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ce-thrice-tags",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 12,
+  "keys": "C-e C-e C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ca-count",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 36,
+  "keys": "M-2 C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ce-count",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 36,
+  "keys": "M-2 C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ca-shift",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 20,
+  "keys": "S-C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ce-shift",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 12,
+  "keys": "S-C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ca-home",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 67,
+  "keys": "<home>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ce-end",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 12,
+  "keys": "<end>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "t-ca-other-then",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 20,
+  "keys": "C-f C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "rev-ca-todo-title",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 12,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ce-todo-title",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 12,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ca-todo-mid",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 20,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ce-todo-mid",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 20,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ca-todo-stars",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 0,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ce-todo-stars",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 0,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ca-todo-kw",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 3,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ce-todo-kw",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 3,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ca-todo-tags",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 27,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ce-todo-tags",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 27,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ca-todo-eol",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 35,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ce-todo-eol",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 35,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ca-plain-title",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 45,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ce-plain-title",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 45,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ca-plain-mid",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 54,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ce-plain-mid",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 54,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ca-plain-bol",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 42,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ce-plain-bol",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 42,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ca-box",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 67,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ce-box",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 67,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ca-box-bol",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 59,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ce-box-bol",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 59,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ca-box-bullet",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 62,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ce-box-bullet",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 62,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ca-wide",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 81,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ce-wide",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 81,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ca-numbered",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 97,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ce-numbered",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 97,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ca-counted",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 110,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ce-counted",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 110,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ca-empty-head",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 117,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ce-empty-head",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 117,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ca-bare-stars",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 122,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ce-bare-stars",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 122,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ca-body",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 39,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ce-body",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 39,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ca-twice-todo-mid",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 20,
+  "keys": "C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ca-thrice-todo-mid",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 20,
+  "keys": "C-a C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ce-twice-todo-mid",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 20,
+  "keys": "C-e C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ca-twice-box",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 67,
+  "keys": "C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ca-thrice-box",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 67,
+  "keys": "C-a C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ce-twice-box",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 67,
+  "keys": "C-e C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ca-twice-plain-mid",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 54,
+  "keys": "C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ca-thrice-plain-mid",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 54,
+  "keys": "C-a C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ce-twice-plain-mid",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 54,
+  "keys": "C-e C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ce-thrice-tags",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 12,
+  "keys": "C-e C-e C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ca-count",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 36,
+  "keys": "M-2 C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ce-count",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 36,
+  "keys": "M-2 C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ca-shift",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 20,
+  "keys": "S-C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ce-shift",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 12,
+  "keys": "S-C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ca-home",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 67,
+  "keys": "<home>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ce-end",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 12,
+  "keys": "<end>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "rev-ca-other-then",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 20,
+  "keys": "C-f C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "nil-ca-todo-title",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 12,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ce-todo-title",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 12,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ca-todo-mid",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 20,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ce-todo-mid",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 20,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ca-todo-stars",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 0,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ce-todo-stars",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 0,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ca-todo-kw",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 3,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ce-todo-kw",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 3,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ca-todo-tags",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 27,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ce-todo-tags",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 27,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ca-todo-eol",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 35,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ce-todo-eol",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 35,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ca-plain-title",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 45,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ce-plain-title",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 45,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ca-plain-mid",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 54,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ce-plain-mid",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 54,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ca-plain-bol",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 42,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ce-plain-bol",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 42,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ca-box",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 67,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ce-box",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 67,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ca-box-bol",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 59,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ce-box-bol",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 59,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ca-box-bullet",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 62,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ce-box-bullet",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 62,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ca-wide",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 81,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ce-wide",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 81,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ca-numbered",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 97,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ce-numbered",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 97,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ca-counted",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 110,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ce-counted",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 110,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ca-empty-head",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 117,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ce-empty-head",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 117,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ca-bare-stars",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 122,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ce-bare-stars",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 122,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ca-body",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 39,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ce-body",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 39,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ca-twice-todo-mid",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 20,
+  "keys": "C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ca-thrice-todo-mid",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 20,
+  "keys": "C-a C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ce-twice-todo-mid",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 20,
+  "keys": "C-e C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ca-twice-box",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 67,
+  "keys": "C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ca-thrice-box",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 67,
+  "keys": "C-a C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ce-twice-box",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 67,
+  "keys": "C-e C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ca-twice-plain-mid",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 54,
+  "keys": "C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ca-thrice-plain-mid",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 54,
+  "keys": "C-a C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ce-twice-plain-mid",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 54,
+  "keys": "C-e C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ce-thrice-tags",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 12,
+  "keys": "C-e C-e C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ca-count",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 36,
+  "keys": "M-2 C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ce-count",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 36,
+  "keys": "M-2 C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ca-shift",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 20,
+  "keys": "S-C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ce-shift",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 12,
+  "keys": "S-C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ca-home",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 67,
+  "keys": "<home>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ce-end",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 12,
+  "keys": "<end>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "nil-ca-other-then",
+  "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+  "point": 20,
+  "keys": "C-f C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "folded-ce",
+  "text": "* Folded heading :tag:\nHidden body.\n* Next\n",
+  "point": 9,
+  "keys": "S-TAB C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "folded-ce-twice",
+  "text": "* Folded heading :tag:\nHidden body.\n* Next\n",
+  "point": 9,
+  "keys": "S-TAB C-e C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "folded-ca",
+  "text": "* Folded heading :tag:\nHidden body.\n* Next\n",
+  "point": 12,
+  "keys": "S-TAB C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "latex-ca",
+  "text": "\\begin{itemize}\n- not an item\n\\end{itemize}\n",
+  "point": 22,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "latex-ca-bol",
+  "text": "\\begin{itemize}\n- not an item\n\\end{itemize}\n",
+  "point": 16,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "comment-heading-ca",
+  "text": "* COMMENT Done thing\n",
+  "point": 15,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "lower-todo-ca",
+  "text": "* todo lower\n",
+  "point": 7,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "tags-only-ce",
+  "text": "* :onlytag:\n",
+  "point": 3,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "tags-only-ca",
+  "text": "* :onlytag:\n",
+  "point": 3,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-todo-file-kw",
+  "text": "#+TODO: NEXT(n) WAIT(w@/!) | DONE(d)\n* NEXT [#B] Next title :x:\n* TODO Not a keyword here\n",
+  "point": 56,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-todo-file-kw-ce",
+  "text": "#+TODO: NEXT(n) WAIT(w@/!) | DONE(d)\n* NEXT [#B] Next title :x:\n* TODO Not a keyword here\n",
+  "point": 49,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-todo-file-not-kw",
+  "text": "#+TODO: NEXT(n) WAIT(w@/!) | DONE(d)\n* NEXT [#B] Next title :x:\n* TODO Not a keyword here\n",
+  "point": 75,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-seq-todo",
+  "text": "#+SEQ_TODO: OPEN CLOSED\n#+TYP_TODO: Fred Sara | DONE\n* OPEN First\n* Sara Second\n* Fred\n",
+  "point": 63,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-typ-todo",
+  "text": "#+SEQ_TODO: OPEN CLOSED\n#+TYP_TODO: Fred Sara | DONE\n* OPEN First\n* Sara Second\n* Fred\n",
+  "point": 76,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-typ-todo-no-title",
+  "text": "#+SEQ_TODO: OPEN CLOSED\n#+TYP_TODO: Fred Sara | DONE\n* OPEN First\n* Sara Second\n* Fred\n",
+  "point": 86,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-prio-lower",
+  "text": "* TODO [#a] Low prio\n",
+  "point": 16,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-prio-odd",
+  "text": "* [#!] Odd prio\n",
+  "point": 11,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-prio-space",
+  "text": "* [# ] Space prio\n",
+  "point": 13,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-prio-num-two",
+  "text": "* TODO [#10] Num prio\n",
+  "point": 17,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-prio-num-one",
+  "text": "* TODO [#1] Num prio\n",
+  "point": 16,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-prio-before-kw",
+  "text": "* [#A] TODO title\n",
+  "point": 12,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-prio-no-space",
+  "text": "* TODO [#A]title\n",
+  "point": 13,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-kw-tab-tags",
+  "text": "* TODO\t:tag:\n",
+  "point": 12,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-kw-tab-tags-ce",
+  "text": "* TODO\t:tag:\n",
+  "point": 3,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-kw-tab-eol",
+  "text": "* TODO\t\n* Next\n",
+  "point": 7,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-kw-tab-title",
+  "text": "* TODO\tTitle\n",
+  "point": 10,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-prio-tab-tags",
+  "text": "* TODO [#A]\t:tag:\n",
+  "point": 17,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-prio-alone",
+  "text": "* DONE [#A]\n",
+  "point": 11,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-kw-alone",
+  "text": "* TODO\n",
+  "point": 6,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-comment-then-kw",
+  "text": "* COMMENT TODO x\n",
+  "point": 15,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-kw-then-comment",
+  "text": "* TODO COMMENT x\n",
+  "point": 15,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-inline-task",
+  "text": "*************** TODO Inline task :t:\nbody\n*************** END\n",
+  "point": 28,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-inline-task-ce",
+  "text": "*************** TODO Inline task :t:\nbody\n*************** END\n",
+  "point": 21,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-odd-levels",
+  "text": "* One\n*** TODO Three\n",
+  "point": 17,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true,
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "name": "review-two-spaces-after-stars",
+  "text": "*  Spaced title\n",
+  "point": 10,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-two-spaces-after-kw",
+  "text": "* TODO  Spaced title\n",
+  "point": 15,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-tags-no-space",
+  "text": "* Title:notag:\n",
+  "point": 2,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-tags-hyphen",
+  "text": "* Title :a-b:\n",
+  "point": 2,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-tags-unicode",
+  "text": "* Title :\u00e5\u00e4\u00f6:\n",
+  "point": 2,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-tags-two-groups",
+  "text": "* Title :a:b: :c:\n",
+  "point": 2,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-tags-trailing-ws",
+  "text": "* Title :tag:   \n",
+  "point": 2,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-tags-trailing-ws-twice",
+  "text": "* Title :tag:   \n",
+  "point": 2,
+  "keys": "C-e C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-tags-trailing-ws-thrice",
+  "text": "* Title :tag:   \n",
+  "point": 2,
+  "keys": "C-e C-e C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-tags-tab-before",
+  "text": "* Title\t\t:tag:\n",
+  "point": 2,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-title-trailing-ws",
+  "text": "* Title   \n",
+  "point": 11,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-eob-heading-ce",
+  "text": "Text\n* TODO Last :t:",
+  "point": 12,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-eob-heading-ca",
+  "text": "Text\n* TODO Last :t:",
+  "point": 20,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-eob-bare-star",
+  "text": "Text\n*",
+  "point": 6,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-eob-star-space",
+  "text": "Text\n* ",
+  "point": 7,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-star-tab",
+  "text": "*\t\nx\n",
+  "point": 2,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-star-tab-title",
+  "text": "*\tTitle\n",
+  "point": 2,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-only-stars-tags",
+  "text": "** :t:\n",
+  "point": 4,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-link-heading",
+  "text": "* [[https://e8.org][Link]] title\n",
+  "point": 27,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-link-heading-ce",
+  "text": "* Title [[https://e8.org][Link]]\n",
+  "point": 2,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-link-heading-ce-tags",
+  "text": "* Title [[https://e8.org][Link]] :t:\n",
+  "point": 2,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-link-bol",
+  "text": "Text\n[[https://e8.org][Link]] at bol\n",
+  "point": 30,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-link-bol-ce",
+  "text": "[[https://e8.org][Link]]\nnext\n",
+  "point": 25,
+  "keys": "M-0 C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-link-item",
+  "text": "- [[https://e8.org][L]] item\n",
+  "point": 24,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-emoji-heading",
+  "text": "* \ud83d\ude00 TODO x :t:\n",
+  "point": 9,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-emoji-item",
+  "text": "- [ ] \ud83d\ude00 x\n",
+  "point": 8,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-ce-zero",
+  "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+  "point": 22,
+  "keys": "M-0 C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-ce-neg",
+  "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+  "point": 29,
+  "keys": "M-- C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-ce-cu",
+  "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+  "point": 7,
+  "keys": "C-u C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-ca-zero",
+  "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+  "point": 22,
+  "keys": "M-0 C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-ca-neg",
+  "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+  "point": 42,
+  "keys": "M-- C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-ca-neg-two",
+  "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+  "point": 42,
+  "keys": "M-- M-2 C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-ca-three",
+  "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+  "point": 17,
+  "keys": "M-3 C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-ca-past-end",
+  "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+  "point": 17,
+  "keys": "M-9 C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-ce-past-end",
+  "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+  "point": 17,
+  "keys": "M-9 C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-ca-past-end-nonl",
+  "text": "* One :a:\n- item end",
+  "point": 2,
+  "keys": "M-5 C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-ce-past-end-nonl",
+  "text": "* One :a:\n- item end",
+  "point": 2,
+  "keys": "M-5 C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-ca-zero-bob",
+  "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+  "point": 7,
+  "keys": "M-0 C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-ca-neg-bob",
+  "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+  "point": 7,
+  "keys": "M-- C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-ce-zero-bob",
+  "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+  "point": 7,
+  "keys": "M-0 C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-ca-zero-rev",
+  "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+  "point": 29,
+  "keys": "M-0 C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "review-ce-two-rev",
+  "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+  "point": 7,
+  "keys": "M-2 C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "review-ca-cu-cu",
+  "text": "* TODO First :a:\nBody line\n* Second :b:\n- item two\n",
+  "point": 7,
+  "keys": "C-u C-u C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-rev-ca-prefix-repeat",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 0,
+  "keys": "C-a M-1 C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "review-rev-ca-cu-repeat",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 0,
+  "keys": "C-a C-u 1 C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "review-rev-ce-prefix-repeat",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 28,
+  "keys": "C-e M-1 C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "review-rev-ca-home",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 0,
+  "keys": "C-a <home>",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "review-rev-home-ca",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 0,
+  "keys": "<home> C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "review-rev-ca-shift",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 0,
+  "keys": "C-a C-S-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "review-rev-shift-twice",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 0,
+  "keys": "C-S-a C-S-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "review-rev-end-ce",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 28,
+  "keys": "<end> C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "review-rev-ce-end",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 28,
+  "keys": "C-e <end>",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "review-rev-ca-fb-ca",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 0,
+  "keys": "C-a C-f C-b C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "review-rev-ca-ce-ca",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 0,
+  "keys": "C-a C-e C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "review-rev-ca-mark-ca",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 0,
+  "keys": "C-a C-SPC C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "review-rev-item-twice",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 29,
+  "keys": "C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "review-rev-item-thrice",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 29,
+  "keys": "C-a C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "review-rev-ca-four",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 0,
+  "keys": "C-a C-a C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "review-rev-ce-cycle",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 12,
+  "keys": "C-e C-e C-e C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "review-t-ca-cycle",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 18,
+  "keys": "C-a C-a C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-t-ce-cycle",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 12,
+  "keys": "C-e C-e C-e C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-t-ca-home-cycle",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 18,
+  "keys": "<home> <home> <home>",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-t-ce-end-cycle",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 12,
+  "keys": "<end> <end> <end>",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-rev-ca-other-line",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 0,
+  "keys": "C-a C-n C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "review-list-t-nil-ca",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 18,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": [
+    true,
+    false
+   ]
+  }
+ },
+ {
+  "name": "review-list-rev-t-ca",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 0,
+  "keys": "C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": [
+    "'reversed",
+    true
+   ]
+  }
+ },
+ {
+  "name": "review-list-rev-only-ca",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 0,
+  "keys": "C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": [
+    "'reversed"
+   ]
+  }
+ },
+ {
+  "name": "review-list-rev-only-ce",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 12,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": [
+    "'reversed"
+   ]
+  }
+ },
+ {
+  "name": "review-item-plus",
+  "text": "+ plus item\n",
+  "point": 7,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-star-indented",
+  "text": "  * star item\n",
+  "point": 9,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-ten",
+  "text": "10. ten item\n",
+  "point": 8,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-paren",
+  "text": "1) paren item\n",
+  "point": 9,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-alpha-off",
+  "text": "a. alpha item\nb. next\n",
+  "point": 9,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-alpha-on",
+  "text": "a. alpha item\nb. next\n",
+  "point": 9,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true,
+   "org-list-allow-alphabetical": true
+  }
+ },
+ {
+  "name": "review-item-alpha-upper-on",
+  "text": "A) alpha item\nB) next\n",
+  "point": 9,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true,
+   "org-list-allow-alphabetical": true
+  }
+ },
+ {
+  "name": "review-item-counter-box",
+  "text": "- [@3] [X] counter and box\n",
+  "point": 19,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-counter-start",
+  "text": "- [@start:3] started\n",
+  "point": 13,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-num-counter",
+  "text": "1. [@5] five\n",
+  "point": 8,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-box-eol",
+  "text": "- [X]\nnext\n",
+  "point": 0,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-box-eol-twice",
+  "text": "- [X]\nnext\n",
+  "point": 5,
+  "keys": "C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-box-tab",
+  "text": "- [ ]\ttab after box\n",
+  "point": 10,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-bullet-tab",
+  "text": "-\t[ ] tab bullet\n",
+  "point": 10,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-desc",
+  "text": "- term :: description\n",
+  "point": 10,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-desc-box",
+  "text": "- [ ] term :: description\n",
+  "point": 14,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-empty",
+  "text": "- \nnext\n",
+  "point": 2,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-empty-twice",
+  "text": "- \nnext\n",
+  "point": 2,
+  "keys": "C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-dash-only",
+  "text": "-\nnext\n",
+  "point": 1,
+  "keys": "C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-dash-only-bol",
+  "text": "-\nnext\n",
+  "point": 0,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-partial-box",
+  "text": "- [-] partial box\n",
+  "point": 14,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-lower-x",
+  "text": "- [x] lowercase x\n",
+  "point": 6,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-no-space",
+  "text": "-text no item\n",
+  "point": 6,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-in-drawer",
+  "text": "* H\n:NOTES:\n- in drawer\n:END:\n",
+  "point": 17,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-in-quote",
+  "text": "#+begin_quote\n- in quote\n#+end_quote\n",
+  "point": 19,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-in-src",
+  "text": "#+begin_src emacs-lisp\n- in src\n#+end_src\n",
+  "point": 28,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-in-example",
+  "text": "#+begin_example\n- in example\n#+end_example\n",
+  "point": 21,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-in-verse",
+  "text": "#+begin_verse\n- in verse\n#+end_verse\n",
+  "point": 19,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-in-center",
+  "text": "#+begin_center\n- in center\n#+end_center\n",
+  "point": 20,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-in-export",
+  "text": "#+begin_export html\n- in export\n#+end_export\n",
+  "point": 25,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-in-comment",
+  "text": "#+begin_comment\n- in comment\n#+end_comment\n",
+  "point": 21,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-in-special",
+  "text": "#+begin_note\n- in note\n#+end_note\n",
+  "point": 18,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-after-unclosed",
+  "text": "#+begin_src\n- after unclosed\n",
+  "point": 20,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-in-latex-eq",
+  "text": "\\begin{equation}\n- x\n\\end{equation}\n",
+  "point": 19,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-nested",
+  "text": "- a\n  - nested b\n    1. deep item\n",
+  "point": 29,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-continuation",
+  "text": "- a\n  continued text\n",
+  "point": 16,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-continuation-ws",
+  "text": "- a\n  continued text\n",
+  "point": 6,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-after-para",
+  "text": "Para text\n- item after\n",
+  "point": 17,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-in-table",
+  "text": "| - x | y |\n",
+  "point": 4,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-in-fixed",
+  "text": ": - fixed\n",
+  "point": 4,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-in-footnote",
+  "text": "[fn:1] Note\n- item in fn\n",
+  "point": 19,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-wide-tabs",
+  "text": "-   [ ]   wide box\n",
+  "point": 15,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-ce",
+  "text": "- item :tag:\n",
+  "point": 2,
+  "keys": "C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-item-after-two-blanks",
+  "text": "- a\n\n\n- b item\n",
+  "point": 10,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-fold-ca-two",
+  "text": "* A :t:\nbody a\n* B :u:\nbody b\n",
+  "point": 2,
+  "keys": "S-TAB M-2 C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-fold-ce-two",
+  "text": "* A :t:\nbody a\n* B :u:\nbody b\n",
+  "point": 2,
+  "keys": "S-TAB M-2 C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-fold-ca-zero",
+  "text": "* A :t:\nbody a\n* B :u:\nbody b\n",
+  "point": 18,
+  "keys": "S-TAB M-0 C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-fold-ce-zero",
+  "text": "* A :t:\nbody a\n* B :u:\nbody b\n",
+  "point": 18,
+  "keys": "S-TAB M-0 C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-drawer-fold-ce",
+  "text": "* H\n:LOGBOOK:\n- note\n:END:\nText\n",
+  "point": 6,
+  "keys": "TAB C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-drawer-fold-next-ca",
+  "text": "* H\n:LOGBOOK:\n- note\n:END:\nText\n",
+  "point": 6,
+  "keys": "TAB C-n C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-drawer-fold-two-ca",
+  "text": "* H\n:LOGBOOK:\n- note\n:END:\nText\n",
+  "point": 6,
+  "keys": "TAB M-2 C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-drawer-fold-two-ce",
+  "text": "* H\n:LOGBOOK:\n- note\n:END:\nText\n",
+  "point": 6,
+  "keys": "TAB M-2 C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-narrow-mid-heading-ca",
+  "text": "* TODO Title :tag:\nBody\n- item text\n",
+  "point": 2,
+  "keys": "C-SPC C-n C-n C-x n n M-< C-f C-f C-f C-f C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-narrow-mid-heading-ce",
+  "text": "* TODO Title :tag:\nBody\n- item text\n",
+  "point": 2,
+  "keys": "C-SPC C-n C-n C-x n n M-< C-f C-f C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-narrow-before-tags-ce",
+  "text": "* TODO Title :tag:\nBody\n- item text\n",
+  "point": 0,
+  "keys": "C-SPC C-f C-f C-f C-f C-f C-f C-f C-f C-f C-f C-f C-f C-x n n M-< C-f C-f C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-narrow-before-tags-ca",
+  "text": "* TODO Title :tag:\nBody\n- item text\n",
+  "point": 0,
+  "keys": "C-SPC C-f C-f C-f C-f C-f C-f C-f C-f C-f C-f C-f C-f C-x n n M-> C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-narrow-mid-item-ca",
+  "text": "* TODO Title :tag:\nBody\n- item text\n",
+  "point": 26,
+  "keys": "C-SPC C-e C-x n n M-> C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-narrow-mid-item-ca-twice",
+  "text": "* TODO Title :tag:\nBody\n- item text\n",
+  "point": 26,
+  "keys": "C-SPC C-e C-x n n M-> C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-mark-ce-ca",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 18,
+  "keys": "C-SPC C-e C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-shift-ce-then-ca",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 18,
+  "keys": "C-S-e C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-shift-ca-twice",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 18,
+  "keys": "C-S-a C-S-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-shift-home-item",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 41,
+  "keys": "S-<home>",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-shift-end-heading",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 12,
+  "keys": "S-<end> S-<end>",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-shift-ca-then-ce",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 18,
+  "keys": "C-S-a C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-shift-rev",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 0,
+  "keys": "C-a C-S-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "review-empty-buffer",
+  "text": "",
+  "point": 0,
+  "keys": "C-a C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-blank-line",
+  "text": "* H\n\n- x\n",
+  "point": 5,
+  "keys": "C-a C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-nil-heading",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 18,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "review-nil-item",
+  "text": "* TODO [#A] Title text :tag:\n- [ ] boxed item\n",
+  "point": 41,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "review-nil-fold-ce-two",
+  "text": "* A :t:\nbody a\n* B :u:\nbody b\n",
+  "point": 2,
+  "keys": "S-TAB M-2 C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "review-nil-fold-ca-two",
+  "text": "* A :t:\nbody a\n* B :u:\nbody b\n",
+  "point": 2,
+  "keys": "S-TAB M-2 C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "review-nil-drawer-fold-two-ce",
+  "text": "* H\n:LOGBOOK:\n- note\n:END:\nText\n",
+  "point": 6,
+  "keys": "TAB M-2 C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "review-nil-fold-ce-cu",
+  "text": "* A :t:\nbody a\n* B :u:\nbody b\n* C\nbody c\n",
+  "point": 2,
+  "keys": "S-TAB C-u 3 C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": false
+  }
+ },
+ {
+  "name": "review-startup-fold-ce-two",
+  "text": "* A :t:\nbody a\n* B :u:\nbody b\n",
+  "point": 2,
+  "keys": "M-2 C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true,
+   "org-startup-folded": "'overview"
+  }
+ },
+ {
+  "name": "review-startup-fold-ce-two-nil",
+  "text": "* A :t:\nbody a\n* B :u:\nbody b\n",
+  "point": 2,
+  "keys": "M-2 C-e",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": false,
+   "org-startup-folded": "'overview"
+  }
+ },
+ {
+  "name": "review-call-ca-folded",
+  "text": "* A :t:\nbody a\n* B :u:\nbody b\n",
+  "point": 2,
+  "keys": "C-f C-b",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true,
+   "org-startup-folded": "'overview"
+  },
+  "call": [
+   "org-beginning-of-line"
+  ]
+ },
+ {
+  "name": "review-box-lower-x-bol",
+  "text": "- [x] lowercase\n",
+  "point": 0,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-box-lower-x-eol",
+  "text": "- [x]\nnext\n",
+  "point": 0,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "review-box-lower-x-rev",
+  "text": "- [x] lowercase\n",
+  "point": 0,
+  "keys": "C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": "'reversed"
+  }
+ },
+ {
+  "name": "review-counter-upper-start",
+  "text": "- [@START:3] started\n",
+  "point": 13,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-special-ctrl-a/e": true
+  }
+ }
+]

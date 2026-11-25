@@ -210,8 +210,9 @@ fn movement(ed: &mut Editor) {
             let n = args[0].as_int()?;
             let b = ed.buffer();
             let orig = b.point();
-            let pos = if n == 1 { orig } else { forward_line(b, orig, n - 1) };
-            let row = ed.row_line_in(b, b.line_of(pos));
+            // Over N - 1 lines as line-move goes, past lines inside hidden
+            // text, and stopping at the ends without an error.
+            let row = if n == 1 { ed.row_line_in(b, b.line_of(orig)) } else { ed.move_rows_in(b, ed.row_line_in(b, b.line_of(orig)), n - 1).0 };
             // Fields, such as the minibuffer's prompt, stop it.
             let start = ed.constrain_to_field(b.line_start(row), orig, n != 1, true, None);
             ed.buffer_mut().set_point(start);

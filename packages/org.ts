@@ -3828,20 +3828,149 @@ function electricIndentNewline(): void {
 
 // Commands: moving between headings
 
+e8.defineVariable({
+  name: "org-special-ctrl-a/e",
+  doc:
+    "Whether C-a and C-e are special on headings and items: t sends C-a first to a heading's title, after its stars, TODO state and priority, " +
+    "or to an item's text, after its bullet and checkbox, and C-e first to before a heading's tags; reversed does so on the second press; " +
+    "a pair [C-A, C-E] sets each on its own.",
+  value: null,
+});
+
+/** org-special-ctrl-a/e's setting for C-a (first) or C-e: undefined for none, "reversed", or "on". */
+function specialCtrlAE(first: boolean): "on" | "reversed" | undefined {
+  let v: e8.Value = e8.variable("org-special-ctrl-a/e") ?? null;
+  // A list of two is the pair (C-A . C-E), as E8 has no dotted pairs; of one, its cdr is nil.
+  if (Array.isArray(v)) v = (first ? v[0] : v.length === 2 ? v[1] : v.length > 2 ? v.slice(1) : null) ?? null;
+  if (!truthy(v)) return undefined;
+  return symbolNamed(v, "reversed") || v === "reversed" ? "reversed" : "on";
+}
+
+/** Whether this command repeats the last, as (eq last-command this-command). */
+const repeated = (): boolean => e8.lastCommand() !== undefined && e8.lastCommand() === e8.thisCommand();
+
+/**
+ * A heading line as org-complex-heading-regexp matches it, case mattering:
+ * the stars, a TODO keyword, a priority of any one character, the title,
+ * and tags, each after spaces or tabs; a line of bare stars too.
+ */
+function complexHeading(line: number): { starsEnd: number; todoEnd?: number; priorityEnd?: number; tagsAt?: number } | undefined {
+  const words = [...allKeywords()].sort((a, b) => b.length - a.length).map(escapeRegExp).join("|");
+  const re = new RegExp(`^(\\*+)(?: +(${words || "(?!)"}))?(?: +(\\[#.\\]))?(?: +(.*?))??(?:[ \\t]+(:[\\p{L}\\p{N}_@#%:]+:))?[ \\t]*$`, "u");
+  const text = e8.lineText(line);
+  const m = re.exec(text);
+  if (!m) return undefined;
+  const ls = e8.lineStart(line);
+  const endOf = (group: number): number | undefined => {
+    if (m[group] === undefined) return undefined;
+    // Each group's place, found after the ones before it.
+    let from = 0;
+    for (let g = 1; g < group; g++) if (m[g] !== undefined) from = text.indexOf(m[g], from) + m[g].length;
+    return ls + charCount(text.slice(0, text.indexOf(m[group], from) + m[group].length));
+  };
+  const tagsEnd = endOf(5);
+  return {
+    starsEnd: ls + charCount(m[1]),
+    todoEnd: endOf(2),
+    priorityEnd: endOf(3),
+    tagsAt: tagsEnd === undefined ? undefined : tagsEnd - charCount(m[5]),
+  };
+}
+
+/** Where a heading's title starts for C-a: one past the TODO keyword, else the priority, else the stars, at most the line's end. */
+function headingTitlePosition(line: number): number | undefined {
+  const h = complexHeading(line);
+  if (!h) return undefined;
+  return Math.min((h.priorityEnd ?? h.todoEnd ?? h.starsEnd) + 1, e8.lineEnd(line));
+}
+
+/** Where an item's text starts for C-a, as org-beginning-of-line finds it: after the bullet and the spaces after it, and after a checkbox and a space. */
+function itemTextPosition(line: number): number | undefined {
+  const text = e8.lineText(line);
+  // Whatever the case, as Org matches org-list-full-item-re with case-fold-search, so [x] is a box.
+  const m = /^[ \t]*((?:[-+*]|(?:[0-9]+|[A-Za-z])[.)])(?:[ \t]+|$))(?:\[@(?:start:)?(?:[0-9]+|[A-Za-z])\][ \t]*)?(?:(\[[ X-]\])(?:[ \t]+|$))?/i.exec(text);
+  if (!m || !itemLine(line)) return undefined;
+  const ls = e8.lineStart(line);
+  if (m[2] === undefined) return ls + charCount(text.slice(0, m.index + m[0].indexOf(m[1]) + m[1].length));
+  const boxEnd = ls + charCount(text.slice(0, text.indexOf(m[2], m.index + m[1].length) + 3));
+  return e8.bufferText(boxEnd, boxEnd + 1) === " " ? boxEnd + 1 : boxEnd;
+}
+
+const visualLineMode = (): boolean => truthy(e8.variable("visual-line-mode"));
+
+const orgBeginningOfLine = e8.defineCommand({
+  name: "org-beginning-of-line",
+  doc:
+    "Move to the start of the line; with org-special-ctrl-a/e, on a heading first to its title, after the stars, " +
+    "TODO state and priority, and on an item to its text, after the bullet and checkbox. With a prefix argument, move N - 1 lines first.",
+  shiftSelect: true,
+  params: [{ name: "n", kind: "count" }],
+  run: (n: number) => {
+    const origin = e8.point();
+    const special = specialCtrlAE(true);
+    if (visualLineMode()) {
+      if (n !== 1) forwardLine(n - 1);
+      e8.call("beginning-of-visual-line");
+    } else {
+      e8.call("move-beginning-of-line", n);
+      e8.gotoChar(e8.lineStart(lineAt()));
+    }
+    if (!special) return;
+    const bol = e8.point();
+    if (visualLineMode() && bol !== e8.lineStart(lineAt())) return;
+    const line = lineAt();
+    const refpos = headingTitlePosition(line);
+    if (refpos !== undefined) {
+      if (special === "reversed") {
+        if (origin === bol && repeated()) e8.gotoChar(refpos);
+      } else if (origin > refpos || origin <= bol) e8.gotoChar(refpos);
+      return;
+    }
+    const afterBullet = itemTextPosition(line);
+    if (afterBullet === undefined) return;
+    if (special === "reversed") {
+      if (bol === origin && repeated()) e8.gotoChar(afterBullet);
+    } else if (origin > afterBullet || bol >= origin) e8.gotoChar(afterBullet);
+  },
+});
+
 e8.defineCommand({
   name: "org-end-of-line",
-  doc: "Move to the end of the line, staying on a folded heading's line rather than going past its hidden text.",
+  doc:
+    "Move to the end of the line, staying on a folded heading's line rather than going past its hidden text; with org-special-ctrl-a/e, " +
+    "on a heading with tags first to before them. With a prefix argument, move N - 1 lines first.",
   // With Shift it selects, as Org's interactive ^p.
   shiftSelect: true,
-  run: () => {
-    const n = e8.prefixNumericValue();
-    if (n !== 1) e8.callWithPrefix(n - 1, "next-line");
-    // As move-beginning-of-line does, back to the start of the visible line first.
-    e8.gotoChar(e8.lineStart(lineAt()));
-    while (e8.point() > 0 && e8.invisibleAt(e8.point() - 1)) {
-      let q = e8.point() - 1;
-      while (q > 0 && e8.invisibleAt(q - 1)) q--;
-      e8.gotoChar(e8.lineStart(lineAt(q)));
+  params: [{ name: "n", kind: "count" }],
+  run: (n: number) => {
+    const origin = e8.point();
+    const special = specialCtrlAE(false);
+    if (visualLineMode()) {
+      if (n !== 1) forwardLine(n - 1);
+      e8.call("beginning-of-visual-line");
+    } else e8.call("move-beginning-of-line", n);
+    const line = lineAt();
+    const h = special ? complexHeading(line) : undefined;
+    if (h?.tagsAt !== undefined) {
+      let tags = h.tagsAt;
+      while (tags > e8.lineStart(line) && /[ \t]/.test(e8.bufferText(tags - 1, tags))) tags--;
+      const le = e8.lineEnd(line);
+      const visualEnd = visualLineMode()
+        ? e8.saveExcursion(() => {
+            e8.call("end-of-visual-line");
+            return e8.point();
+          })
+        : undefined;
+      if (visualEnd !== undefined && visualEnd < tags && origin <= visualEnd) e8.gotoChar(visualEnd);
+      else if (special === "reversed") e8.gotoChar(origin === le && repeated() ? tags : le);
+      else e8.gotoChar(origin < tags || origin >= le ? tags : le);
+      return;
+    }
+    if (visualLineMode()) {
+      const bol = e8.lineStart(lineAt());
+      e8.call("end-of-visual-line");
+      if (bol !== e8.lineStart(lineAt())) e8.gotoChar(e8.lineEnd(lineAt(bol)));
+      return;
     }
     e8.gotoChar(e8.lineEnd(lineAt()));
   },
@@ -13140,3 +13269,4 @@ e8.remapCommand("org-mode-map", "delete-backward-char", "org-delete-backward-cha
 e8.remapCommand("org-mode-map", "delete-char", "org-delete-char");
 e8.remapCommand("org-mode-map", "fill-paragraph", "org-fill-paragraph" as e8.CommandName);
 e8.remapCommand("org-mode-map", "move-end-of-line", "org-end-of-line");
+e8.remapCommand("org-mode-map", "move-beginning-of-line", orgBeginningOfLine);
