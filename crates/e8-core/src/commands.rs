@@ -1251,7 +1251,7 @@ fn editing(ed: &mut Editor) {
     def(
         ed,
         "set-mark-command",
-        "Set the mark at point and activate the region, saving the old mark on the mark ring.\n\nRepeating it straight away deactivates the region, leaving the mark set. With C-u, jump to the mark instead and take the previous one from the mark ring, so repeating C-u C-SPC goes back through earlier marks.",
+        "Set the mark at point and activate the region, saving the old mark on the mark ring. If the mark is already at point, only activate it.\n\nRepeating it straight away deactivates the region, leaving the mark set. With C-u, jump to the mark instead and take the previous one from the mark ring, so repeating C-u C-SPC goes back through earlier marks.",
         |ed, _| {
             let arg = ed.current_prefix_arg();
             let repeated = ed.last_command() == Some("set-mark-command");
@@ -1275,6 +1275,11 @@ fn editing(ed: &mut Editor) {
             } else if repeated && !b.is_mark_active() && b.mark() == Some(b.point()) {
                 // A third C-SPC turns the region back on without pushing the
                 // mark again, as set-mark-command does after itself.
+                b.activate_region();
+                ed.message("Mark activated");
+            } else if b.mark() == Some(b.point()) {
+                // With the mark already at point, it is only activated, not
+                // pushed again, as push-mark-command does.
                 b.activate_region();
                 ed.message("Mark activated");
             } else {

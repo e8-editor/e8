@@ -1,0 +1,100 @@
+[
+ {
+  "name": "narrowed-region-then-m-lt",
+  "text": "abc\ndef\nghi\n",
+  "point": 0,
+  "keys": "C-SPC C-n C-x n n M-< C-SPC",
+  "message": true
+ },
+ {
+  "name": "back-at-mark",
+  "text": "abc\ndef\nghi\n",
+  "point": 2,
+  "keys": "C-SPC C-f C-g C-b C-SPC",
+  "message": true
+ },
+ {
+  "name": "back-at-mark-ring",
+  "text": "abc\ndef\nghi\n",
+  "point": 2,
+  "keys": "C-SPC C-f C-g C-b C-SPC C-n C-u C-SPC",
+  "message": true
+ },
+ {
+  "name": "back-at-mark-ring-twice",
+  "text": "abc\ndef\nghi\n",
+  "point": 2,
+  "keys": "C-SPC C-n C-SPC C-n C-g M-< C-f C-f C-n C-SPC C-u C-SPC C-u C-SPC",
+  "message": true
+ },
+ {
+  "name": "back-at-mark-active",
+  "text": "abc\ndef\nghi\n",
+  "point": 2,
+  "keys": "C-SPC C-f C-b C-SPC",
+  "message": true
+ },
+ {
+  "name": "back-at-mark-cu-cu",
+  "text": "abc\ndef\nghi\n",
+  "point": 2,
+  "keys": "C-SPC C-f C-g C-b C-u C-u C-SPC",
+  "message": true
+ },
+ {
+  "name": "after-exchange",
+  "text": "abc\ndef\nghi\n",
+  "point": 2,
+  "keys": "C-SPC C-n C-x C-x C-g C-x C-x C-SPC",
+  "message": true
+ },
+ {
+  "name": "after-shift-select",
+  "text": "abc\ndef\nghi\n",
+  "point": 2,
+  "keys": "S-<right> C-b C-SPC",
+  "message": true
+ },
+ {
+  "name": "thrice",
+  "text": "abc\ndef\nghi\n",
+  "point": 2,
+  "keys": "C-SPC C-SPC C-SPC",
+  "message": true
+ },
+ {
+  "name": "four-times",
+  "text": "abc\ndef\nghi\n",
+  "point": 2,
+  "keys": "C-SPC C-SPC C-SPC C-SPC",
+  "message": true
+ },
+ {
+  "name": "no-mark",
+  "text": "abc\ndef\nghi\n",
+  "point": 2,
+  "keys": "C-SPC",
+  "message": true
+ },
+ {
+  "name": "moved-away",
+  "text": "abc\ndef\nghi\n",
+  "point": 2,
+  "keys": "C-SPC C-n C-g C-SPC",
+  "message": true
+ },
+ {
+  "name": "after-m-lt-at-start",
+  "text": "abc\ndef\nghi\n",
+  "point": 5,
+  "keys": "M-< C-SPC",
+  "message": true
+ },
+ {
+  "name": "yank-then-at-mark",
+  "text": "abc\ndef\nghi\n",
+  "point": 0,
+  "keys": "M-w C-SPC",
+  "message": true
+ }
+]
