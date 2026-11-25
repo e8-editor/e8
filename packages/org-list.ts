@@ -249,11 +249,26 @@ function atListEnd(line: number): boolean {
   return line + 1 < e8.lineCount() && isBlank(e8.lineText(line)) && isBlank(e8.lineText(line + 1));
 }
 
-/** Whether a line starts an item: org-at-item-p for that line. */
-export function itemLine(line: number): boolean {
+/**
+ * Whether a line looks like an item, read from its text in a list's
+ * context, as org-list's own code reads lines with org-item-re; the parser
+ * uses it, as it reads the lists it parses.
+ */
+export function itemLineByText(line: number): boolean {
   if (line < 0 || line >= e8.lineCount()) return false;
   if (!ITEM_RE.test(e8.lineText(line))) return false;
   return listContext(line).type !== "invalid";
+}
+
+/**
+ * Whether a line starts an item, as org-at-item-p: it looks like one and
+ * the parser puts a list or an item there, so a `- ` line in a LaTeX
+ * environment or a comment block, which are not parsed, is none.
+ */
+export function itemLine(line: number): boolean {
+  if (!itemLineByText(line)) return false;
+  const e = elementAt(e8.lineStart(line));
+  return e?.type === "plain-list" || e?.type === "item";
 }
 
 /** The start of the item a line is in, if any, as org-in-item-p finds it. */
@@ -1403,9 +1418,10 @@ export function toggleCheckbox(arg: e8.PrefixArg): void {
   try {
     let limUp: number;
     let limDown: Marker;
+    // By the text, as org-list-search-forward finds items, not asking the parser.
     const firstItemFrom = (from: number, limit: number): number | undefined => {
       for (let l = lineAt(from); l < e8.lineCount() && e8.lineStart(l) < limit; l++) {
-        if (e8.lineStart(l) >= from && itemLine(l)) return e8.lineStart(l);
+        if (e8.lineStart(l) >= from && itemLineByText(l)) return e8.lineStart(l);
       }
       return undefined;
     };
@@ -1428,8 +1444,8 @@ export function toggleCheckbox(arg: e8.PrefixArg): void {
       limUp = e8.lineStart(lineAt());
       limDown = marker(e8.lineEnd(lineAt()));
     } else throw new Error("Not at an item or heading, and no active region");
-    // As org-at-item-checkbox-p sees it: a box needs blanks after it.
-    const parts = itemParts(lineAt(limUp));
+    // As org-at-item-checkbox-p sees it: a box needs blanks after it, on what the parser takes for an item.
+    const parts = itemLine(lineAt(limUp)) ? itemParts(lineAt(limUp)) : undefined;
     const box = parts?.boxAt !== undefined && /^[ \t]/.test(e8.bufferText(parts.boxAt + 3, parts.boxAt + 4)) ? parts.checkbox : undefined;
     const ref = Array.isArray(arg) && arg[0] === 16 ? "[-]" : presence ? (box ? undefined : "[ ]") : box === "[X]" ? "[ ]" : "[X]";
     let at = limUp;
