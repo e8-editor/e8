@@ -5927,6 +5927,14 @@ declare global {
        */
       "org-backward-sentence": [arg?: number];
       /**
+       * Move to the start of the line; with org-special-ctrl-a/e, on a heading first to its title, after the stars, TODO state and priority, and on an item to its text, after the bullet and checkbox. With a prefix argument, move N - 1 lines first.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-beginning-of-line": [n?: number];
+      /**
        * Set the repeater of the entry's first timestamp to 0, so marking it done does not repeat it.
        *
        * Defined in packages/org.ts.
@@ -6351,11 +6359,13 @@ declare global {
        */
       "org-element-update-syntax": [];
       /**
-       * Move to the end of the line, staying on a folded heading's line rather than going past its hidden text.
+       * Move to the end of the line, staying on a folded heading's line rather than going past its hidden text; with org-special-ctrl-a/e, on a heading with tags first to before them. With a prefix argument, move N - 1 lines first.
+       *
+       * @param n prefix count
        *
        * Defined in packages/org.ts.
        */
-      "org-end-of-line": [];
+      "org-end-of-line": [n?: number];
       /**
        * Fill element at point, when applicable.
        *
@@ -15646,6 +15656,12 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-sparse-tree-open-archived-trees": Value;
+      /**
+       * Whether C-a and C-e are special on headings and items: t sends C-a first to a heading's title, after its stars, TODO state and priority, or to an item's text, after its bullet and checkbox, and C-e first to before a heading's tags; reversed does so on the second press; a pair [C-A, C-E] sets each on its own.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-special-ctrl-a/e": Value;
       /**
        * Whether C-o in a table inserts a row rather than opening a line.
        *

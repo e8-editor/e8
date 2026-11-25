@@ -1,0 +1,4374 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "t-ca-todo-title",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 12,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ce-todo-title",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 12,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ca-todo-mid",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 20,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ce-todo-mid",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 20,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ca-todo-stars",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 0,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ce-todo-stars",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 0,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ca-todo-kw",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 3,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ce-todo-kw",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 3,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ca-todo-tags",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 27,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ce-todo-tags",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 27,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ca-todo-eol",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 35,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ce-todo-eol",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 35,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ca-plain-title",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 45,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 42,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ce-plain-title",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 45,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 58,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ca-plain-mid",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 54,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 45,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ce-plain-mid",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 54,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 58,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ca-plain-bol",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 42,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 45,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ce-plain-bol",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 42,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 58,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ca-box",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 67,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 65,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ce-box",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 67,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 75,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ca-box-bol",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 59,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 65,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ce-box-bol",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 59,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 75,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ca-box-bullet",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 62,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 59,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ce-box-bullet",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 62,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 75,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ca-wide",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 81,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 79,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ce-wide",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 81,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 88,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ca-numbered",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 97,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 92,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ce-numbered",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 97,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 99,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ca-counted",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 110,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 102,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ce-counted",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 110,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 114,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ca-empty-head",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 117,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 115,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ce-empty-head",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 117,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 119,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ca-bare-stars",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 122,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 120,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ce-bare-stars",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 122,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 124,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ca-body",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 39,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ce-body",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 39,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 41,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ca-twice-todo-mid",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 20,
+        "keys": "C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ca-thrice-todo-mid",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 20,
+        "keys": "C-a C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ce-twice-todo-mid",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 20,
+        "keys": "C-e C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ca-twice-box",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 67,
+        "keys": "C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 59,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ca-thrice-box",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 67,
+        "keys": "C-a C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 65,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ce-twice-box",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 67,
+        "keys": "C-e C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 75,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ca-twice-plain-mid",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 54,
+        "keys": "C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 42,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ca-thrice-plain-mid",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 54,
+        "keys": "C-a C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 45,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ce-twice-plain-mid",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 54,
+        "keys": "C-e C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 58,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ce-thrice-tags",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 12,
+        "keys": "C-e C-e C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ca-count",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 36,
+        "keys": "M-2 C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 45,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ce-count",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 36,
+        "keys": "M-2 C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 58,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "t-ca-shift",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 20,
+        "keys": "S-C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 12,
+      "mark": 20,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "t-ce-shift",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 12,
+        "keys": "S-C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 22,
+      "mark": 12,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "t-ca-home",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 67,
+        "keys": "<home>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 0,
+      "mark": 67,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "t-ce-end",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 12,
+        "keys": "<end>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 125,
+      "mark": 12,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "t-ca-other-then",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 20,
+        "keys": "C-f C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ca-todo-title",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 12,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ce-todo-title",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 12,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ca-todo-mid",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 20,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ce-todo-mid",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 20,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ca-todo-stars",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 0,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ce-todo-stars",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 0,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ca-todo-kw",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 3,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ce-todo-kw",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 3,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ca-todo-tags",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 27,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ce-todo-tags",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 27,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ca-todo-eol",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 35,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ce-todo-eol",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 35,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ca-plain-title",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 45,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 42,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ce-plain-title",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 45,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 58,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ca-plain-mid",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 54,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 42,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ce-plain-mid",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 54,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 58,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ca-plain-bol",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 42,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 42,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ce-plain-bol",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 42,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 58,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ca-box",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 67,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 59,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ce-box",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 67,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 75,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ca-box-bol",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 59,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 59,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ce-box-bol",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 59,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 75,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ca-box-bullet",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 62,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 59,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ce-box-bullet",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 62,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 75,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ca-wide",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 81,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 76,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ce-wide",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 81,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 88,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ca-numbered",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 97,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 89,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ce-numbered",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 97,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 99,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ca-counted",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 110,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 100,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ce-counted",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 110,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 114,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ca-empty-head",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 117,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 115,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ce-empty-head",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 117,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 119,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ca-bare-stars",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 122,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 120,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ce-bare-stars",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 122,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 124,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ca-body",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 39,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ce-body",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 39,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 41,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ca-twice-todo-mid",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 20,
+        "keys": "C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ca-thrice-todo-mid",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 20,
+        "keys": "C-a C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ce-twice-todo-mid",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 20,
+        "keys": "C-e C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ca-twice-box",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 67,
+        "keys": "C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 65,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ca-thrice-box",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 67,
+        "keys": "C-a C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 59,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ce-twice-box",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 67,
+        "keys": "C-e C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 75,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ca-twice-plain-mid",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 54,
+        "keys": "C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 45,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ca-thrice-plain-mid",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 54,
+        "keys": "C-a C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 42,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ce-twice-plain-mid",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 54,
+        "keys": "C-e C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 58,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ce-thrice-tags",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 12,
+        "keys": "C-e C-e C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ca-count",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 36,
+        "keys": "M-2 C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 42,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ce-count",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 36,
+        "keys": "M-2 C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 58,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rev-ca-shift",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 20,
+        "keys": "S-C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 0,
+      "mark": 20,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "rev-ce-shift",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 12,
+        "keys": "S-C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 35,
+      "mark": 12,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "rev-ca-home",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 67,
+        "keys": "<home>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 0,
+      "mark": 67,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "rev-ce-end",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 12,
+        "keys": "<end>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 125,
+      "mark": 12,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "rev-ca-other-then",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 20,
+        "keys": "C-f C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": "'reversed"
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ca-todo-title",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 12,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ce-todo-title",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 12,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ca-todo-mid",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 20,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ce-todo-mid",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 20,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ca-todo-stars",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 0,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ce-todo-stars",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 0,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ca-todo-kw",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 3,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ce-todo-kw",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 3,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ca-todo-tags",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 27,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ce-todo-tags",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 27,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ca-todo-eol",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 35,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ce-todo-eol",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 35,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ca-plain-title",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 45,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 42,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ce-plain-title",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 45,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 58,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ca-plain-mid",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 54,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 42,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ce-plain-mid",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 54,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 58,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ca-plain-bol",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 42,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 42,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ce-plain-bol",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 42,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 58,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ca-box",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 67,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 59,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ce-box",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 67,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 75,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ca-box-bol",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 59,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 59,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ce-box-bol",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 59,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 75,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ca-box-bullet",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 62,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 59,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ce-box-bullet",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 62,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 75,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ca-wide",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 81,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 76,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ce-wide",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 81,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 88,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ca-numbered",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 97,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 89,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ce-numbered",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 97,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 99,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ca-counted",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 110,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 100,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ce-counted",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 110,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 114,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ca-empty-head",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 117,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 115,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ce-empty-head",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 117,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 119,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ca-bare-stars",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 122,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 120,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ce-bare-stars",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 122,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 124,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ca-body",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 39,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ce-body",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 39,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 41,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ca-twice-todo-mid",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 20,
+        "keys": "C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ca-thrice-todo-mid",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 20,
+        "keys": "C-a C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ce-twice-todo-mid",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 20,
+        "keys": "C-e C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ca-twice-box",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 67,
+        "keys": "C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 59,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ca-thrice-box",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 67,
+        "keys": "C-a C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 59,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ce-twice-box",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 67,
+        "keys": "C-e C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 75,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ca-twice-plain-mid",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 54,
+        "keys": "C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 42,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ca-thrice-plain-mid",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 54,
+        "keys": "C-a C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 42,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ce-twice-plain-mid",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 54,
+        "keys": "C-e C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 58,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ce-thrice-tags",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 12,
+        "keys": "C-e C-e C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ca-count",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 36,
+        "keys": "M-2 C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 42,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ce-count",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 36,
+        "keys": "M-2 C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 58,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "nil-ca-shift",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 20,
+        "keys": "S-C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 0,
+      "mark": 20,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "nil-ce-shift",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 12,
+        "keys": "S-C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 35,
+      "mark": 12,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "nil-ca-home",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 67,
+        "keys": "<home>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 0,
+      "mark": 67,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "nil-ce-end",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 12,
+        "keys": "<end>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 125,
+      "mark": 12,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "nil-ca-other-then",
+      "input": {
+        "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+        "point": 20,
+        "keys": "C-f C-a C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": false
+        }
+      },
+      "text": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "visible": "* TODO [#A] Title text   :tag:work:\nBody.\n** Plain heading\n- [ ] boxed item\n-  wide item\n1. [X]text\n- [@3] counted\n*** \n****\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "folded-ce",
+      "input": {
+        "text": "* Folded heading :tag:\nHidden body.\n* Next\n",
+        "point": 9,
+        "keys": "S-TAB C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* Folded heading :tag:\nHidden body.\n* Next\n",
+      "visible": "* Folded heading :tag:\n* Next\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "folded-ce-twice",
+      "input": {
+        "text": "* Folded heading :tag:\nHidden body.\n* Next\n",
+        "point": 9,
+        "keys": "S-TAB C-e C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* Folded heading :tag:\nHidden body.\n* Next\n",
+      "visible": "* Folded heading :tag:\n* Next\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "folded-ca",
+      "input": {
+        "text": "* Folded heading :tag:\nHidden body.\n* Next\n",
+        "point": 12,
+        "keys": "S-TAB C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* Folded heading :tag:\nHidden body.\n* Next\n",
+      "visible": "* Folded heading :tag:\n* Next\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "latex-ca",
+      "input": {
+        "text": "\\begin{itemize}\n- not an item\n\\end{itemize}\n",
+        "point": 22,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "\\begin{itemize}\n- not an item\n\\end{itemize}\n",
+      "visible": "\\begin{itemize}\n- not an item\n\\end{itemize}\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "latex-ca-bol",
+      "input": {
+        "text": "\\begin{itemize}\n- not an item\n\\end{itemize}\n",
+        "point": 16,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "\\begin{itemize}\n- not an item\n\\end{itemize}\n",
+      "visible": "\\begin{itemize}\n- not an item\n\\end{itemize}\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "comment-heading-ca",
+      "input": {
+        "text": "* COMMENT Done thing\n",
+        "point": 15,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* COMMENT Done thing\n",
+      "visible": "* COMMENT Done thing\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "lower-todo-ca",
+      "input": {
+        "text": "* todo lower\n",
+        "point": 7,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* todo lower\n",
+      "visible": "* todo lower\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "tags-only-ce",
+      "input": {
+        "text": "* :onlytag:\n",
+        "point": 3,
+        "keys": "C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* :onlytag:\n",
+      "visible": "* :onlytag:\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "tags-only-ca",
+      "input": {
+        "text": "* :onlytag:\n",
+        "point": 3,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "* :onlytag:\n",
+      "visible": "* :onlytag:\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    }
+  ]
+}
