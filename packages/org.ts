@@ -2726,6 +2726,8 @@ function orgFillElement(justify: string | undefined): void {
       return;
     case "table":
     case "table-row":
+      // A table.el table is left as it is.
+      if (element.type === "table" && element.tableType === "table.el") return;
       e8.saveExcursion(() => {
         e8.gotoChar(element.begin);
         e8.call("org-table-align");
@@ -3407,7 +3409,11 @@ function orgCycle(arg: e8.PrefixArg): void {
       if (e8.point() > 0 && e8.invisibleAt(e8.point() - 1)) e8.gotoChar(e8.lineStart(opener));
       return;
     }
-    // A table's line, as the element there says: a | line in a block is text.
+    // A table's line, as the element there says: a | line in a block is text; a table.el table is left to C-c '.
+    if (/^[ \t]*[|+]/.test(text) && tableElTable(elementAt(e8.point()))) {
+      e8.message(TABLE_EL_MESSAGE);
+      return;
+    }
     if (/^[ \t]*[|+]/.test(text) && /^[ \t]*\|/.test(text) && inTable(e8.lineStart(line))) {
       e8.call("org-table-justify-field-maybe");
       e8.call("org-table-next-field");
@@ -9793,7 +9799,8 @@ function atTableP(): boolean {
   const p = e8.point();
   return e8.saveRestriction(() => {
     e8.widen();
-    for (let e = elementAt(p); e; e = e.parent) if (e.type === "table") return true;
+    // An Org table, not a table.el one.
+    for (let e = elementAt(p); e; e = e.parent) if (e.type === "table") return e.tableType !== "table.el";
     return false;
   });
 }
@@ -10012,7 +10019,8 @@ const ctrlCCtrlC = e8.defineCommand({
     const inTable = here?.type === "table" || here?.type === "table-row";
     // A table.el table, its rows between lines of +-+, Org leaves to C-c '.
     if (inTable && tableElTable(here)) {
-      e8.message("Use ‘C-c '’ to edit table.el tables");
+      // Quoted so, where TAB's message, through substitute-command-keys, quotes the key's own quote.
+      e8.message("Use \u2018C-c '\u2019 to edit table.el tables");
       return;
     }
     // A timestamp in a table's cell is an object Org's context finds, which
@@ -12104,12 +12112,14 @@ function affiliatedOfNext(line: number): boolean {
   return next !== undefined && e8.lineStart(first) < e8.bufferSize() && next.begin === e8.lineStart(first) && !none.includes(next.type);
 }
 
-/** Whether a table is a table.el one, its first line +-+, as Org's parser tells them apart. */
+/** What TAB says on a table.el table, as substitute-command-keys quotes the key. */
+const TABLE_EL_MESSAGE = "Use \u2018C-c \u2019\u2019 to edit table.el tables";
+
+/** Whether an element is in a table.el table, as Org's parser types them. */
 function tableElTable(el: Elem | undefined): boolean {
   let table = el;
   while (table && table.type !== "table") table = table.parent;
-  if (!table || lineAt(table.begin) === 0) return false;
-  return /^[ \t]*\+(?:-+\+)+[ \t]*$/.test(e8.lineText(lineAt(table.begin) - 1));
+  return table?.tableType === "table.el";
 }
 
 /**
@@ -13107,11 +13117,9 @@ e8.defun("org--fill-forward-paragraph", (arg?: e8.Value) => {
 
 e8.bindKey("C-S-<up>", shiftControlUp, "org-mode-map");
 e8.bindKey("C-S-<down>", shiftControlDown, "org-mode-map");
-/** Whether point's table is a table.el one, as Org's parser tells: the first of its lines starts with +- or +=. */
+/** Whether point is in a table.el table, as org-at-table.el-p: its line starts with | or + and the parser says so. */
 function tableElHere(): boolean {
-  let l = lineAt();
-  while (l > 0 && /^[ \t]*[|+]/.test(e8.lineText(l - 1))) l--;
-  return /^[ \t]*\+[-+=]/.test(e8.lineText(l));
+  return /^[ \t]*[|+]/.test(e8.lineText(lineAt())) && tableElTable(elementAt(e8.point()));
 }
 
 const ctrlCRet = e8.defineCommand({
