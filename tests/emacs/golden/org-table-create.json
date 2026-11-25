@@ -1,0 +1,3265 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "bol-3x2",
+      "input": {
+        "text": "foo bar\n",
+        "point": 0,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3x2"
+        ],
+        "message": true
+      },
+      "text": "|   |   |   |\n|---+---+---|\n|   |   |   |\nfoo bar\n",
+      "visible": "|   |   |   |\n|---+---+---|\n|   |   |   |\nfoo bar\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "mid-3x2",
+      "input": {
+        "text": "foo bar\n",
+        "point": 3,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3x2"
+        ],
+        "message": true
+      },
+      "text": "foo\n|---+---+---|\n|   |   |   |\n|   |   |   |\n bar\n",
+      "visible": "foo\n|---+---+---|\n|   |   |   |\n|   |   |   |\n bar\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "eol-3x2",
+      "input": {
+        "text": "foo bar\n",
+        "point": 7,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3x2"
+        ],
+        "message": true
+      },
+      "text": "foo bar\n|---+---+---|\n|   |   |   |\n|   |   |   |\n\n",
+      "visible": "foo bar\n|---+---+---|\n|   |   |   |\n|   |   |   |\n\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "blanks-3x2",
+      "input": {
+        "text": "   foo\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3x2"
+        ],
+        "message": true
+      },
+      "text": "  |   |   |   |\n  |---+---+---|\n  |   |   |   |\n   foo\n",
+      "visible": "  |   |   |   |\n  |---+---+---|\n  |   |   |   |\n   foo\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "empty-3x2",
+      "input": {
+        "text": "a\n\nb\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3x2"
+        ],
+        "message": true
+      },
+      "text": "a\n|   |   |   |\n|---+---+---|\n|   |   |   |\n\nb\n",
+      "visible": "a\n|   |   |   |\n|---+---+---|\n|   |   |   |\n\nb\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "indented-mid-3x2",
+      "input": {
+        "text": "  foo bar\n",
+        "point": 5,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3x2"
+        ],
+        "message": true
+      },
+      "text": "  foo\n|---+---+---|\n|   |   |   |\n|   |   |   |\n bar\n",
+      "visible": "  foo\n|---+---+---|\n|   |   |   |\n|   |   |   |\n bar\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "eob-3x2",
+      "input": {
+        "text": "foo",
+        "point": 3,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3x2"
+        ],
+        "message": true
+      },
+      "text": "foo\n|---+---+---|\n|   |   |   |\n|   |   |   |\n",
+      "visible": "foo\n|---+---+---|\n|   |   |   |\n|   |   |   |\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "bol-2x1",
+      "input": {
+        "text": "foo bar\n",
+        "point": 0,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x1"
+        ],
+        "message": true
+      },
+      "text": "|   |   |\nfoo bar\n",
+      "visible": "|   |   |\nfoo bar\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "mid-2x1",
+      "input": {
+        "text": "foo bar\n",
+        "point": 3,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x1"
+        ],
+        "message": true
+      },
+      "text": "foo\n   |   |   |\n bar\n",
+      "visible": "foo\n   |   |   |\n bar\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "eol-2x1",
+      "input": {
+        "text": "foo bar\n",
+        "point": 7,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x1"
+        ],
+        "message": true
+      },
+      "text": "foo bar\n       |   |   |\n\n",
+      "visible": "foo bar\n       |   |   |\n\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "blanks-2x1",
+      "input": {
+        "text": "   foo\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x1"
+        ],
+        "message": true
+      },
+      "text": "  |   |   |\n   foo\n",
+      "visible": "  |   |   |\n   foo\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "empty-2x1",
+      "input": {
+        "text": "a\n\nb\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x1"
+        ],
+        "message": true
+      },
+      "text": "a\n|   |   |\n\nb\n",
+      "visible": "a\n|   |   |\n\nb\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "indented-mid-2x1",
+      "input": {
+        "text": "  foo bar\n",
+        "point": 5,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x1"
+        ],
+        "message": true
+      },
+      "text": "  foo\n     |   |   |\n bar\n",
+      "visible": "  foo\n     |   |   |\n bar\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "eob-2x1",
+      "input": {
+        "text": "foo",
+        "point": 3,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x1"
+        ],
+        "message": true
+      },
+      "text": "foo\n   |   |   |\n",
+      "visible": "foo\n   |   |   |\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "bol-1x1",
+      "input": {
+        "text": "foo bar\n",
+        "point": 0,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1x1"
+        ],
+        "message": true
+      },
+      "text": "|   |\nfoo bar\n",
+      "visible": "|   |\nfoo bar\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "mid-1x1",
+      "input": {
+        "text": "foo bar\n",
+        "point": 3,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1x1"
+        ],
+        "message": true
+      },
+      "text": "foo\n   |   |\n bar\n",
+      "visible": "foo\n   |   |\n bar\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "eol-1x1",
+      "input": {
+        "text": "foo bar\n",
+        "point": 7,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1x1"
+        ],
+        "message": true
+      },
+      "text": "foo bar\n       |   |\n\n",
+      "visible": "foo bar\n       |   |\n\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "blanks-1x1",
+      "input": {
+        "text": "   foo\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1x1"
+        ],
+        "message": true
+      },
+      "text": "  |   |\n   foo\n",
+      "visible": "  |   |\n   foo\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "empty-1x1",
+      "input": {
+        "text": "a\n\nb\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1x1"
+        ],
+        "message": true
+      },
+      "text": "a\n|   |\n\nb\n",
+      "visible": "a\n|   |\n\nb\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "indented-mid-1x1",
+      "input": {
+        "text": "  foo bar\n",
+        "point": 5,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1x1"
+        ],
+        "message": true
+      },
+      "text": "  foo\n     |   |\n bar\n",
+      "visible": "  foo\n     |   |\n bar\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "eob-1x1",
+      "input": {
+        "text": "foo",
+        "point": 3,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1x1"
+        ],
+        "message": true
+      },
+      "text": "foo\n   |   |\n",
+      "visible": "foo\n   |   |\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "bol-5x2",
+      "input": {
+        "text": "foo bar\n",
+        "point": 0,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "5x2"
+        ],
+        "message": true
+      },
+      "text": "|   |   |   |   |   |\n|---+---+---+---+---|\n|   |   |   |   |   |\nfoo bar\n",
+      "visible": "|   |   |   |   |   |\n|---+---+---+---+---|\n|   |   |   |   |   |\nfoo bar\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "mid-5x2",
+      "input": {
+        "text": "foo bar\n",
+        "point": 3,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "5x2"
+        ],
+        "message": true
+      },
+      "text": "foo\n|---+---+---+---+---|\n|   |   |   |   |   |\n|   |   |   |   |   |\n bar\n",
+      "visible": "foo\n|---+---+---+---+---|\n|   |   |   |   |   |\n|   |   |   |   |   |\n bar\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "eol-5x2",
+      "input": {
+        "text": "foo bar\n",
+        "point": 7,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "5x2"
+        ],
+        "message": true
+      },
+      "text": "foo bar\n|---+---+---+---+---|\n|   |   |   |   |   |\n|   |   |   |   |   |\n\n",
+      "visible": "foo bar\n|---+---+---+---+---|\n|   |   |   |   |   |\n|   |   |   |   |   |\n\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "blanks-5x2",
+      "input": {
+        "text": "   foo\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "5x2"
+        ],
+        "message": true
+      },
+      "text": "  |   |   |   |   |   |\n  |---+---+---+---+---|\n  |   |   |   |   |   |\n   foo\n",
+      "visible": "  |   |   |   |   |   |\n  |---+---+---+---+---|\n  |   |   |   |   |   |\n   foo\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "empty-5x2",
+      "input": {
+        "text": "a\n\nb\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "5x2"
+        ],
+        "message": true
+      },
+      "text": "a\n|   |   |   |   |   |\n|---+---+---+---+---|\n|   |   |   |   |   |\n\nb\n",
+      "visible": "a\n|   |   |   |   |   |\n|---+---+---+---+---|\n|   |   |   |   |   |\n\nb\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "indented-mid-5x2",
+      "input": {
+        "text": "  foo bar\n",
+        "point": 5,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "5x2"
+        ],
+        "message": true
+      },
+      "text": "  foo\n|---+---+---+---+---|\n|   |   |   |   |   |\n|   |   |   |   |   |\n bar\n",
+      "visible": "  foo\n|---+---+---+---+---|\n|   |   |   |   |   |\n|   |   |   |   |   |\n bar\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "eob-5x2",
+      "input": {
+        "text": "foo",
+        "point": 3,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "5x2"
+        ],
+        "message": true
+      },
+      "text": "foo\n|---+---+---+---+---|\n|   |   |   |   |   |\n|   |   |   |   |   |\n",
+      "visible": "foo\n|---+---+---+---+---|\n|   |   |   |   |   |\n|   |   |   |   |   |\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "bol-default",
+      "input": {
+        "text": "foo bar\n",
+        "point": 0,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          ""
+        ],
+        "message": true
+      },
+      "text": "|   |   |   |   |   |\n|---+---+---+---+---|\n|   |   |   |   |   |\nfoo bar\n",
+      "visible": "|   |   |   |   |   |\n|---+---+---+---+---|\n|   |   |   |   |   |\nfoo bar\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "mid-default",
+      "input": {
+        "text": "foo bar\n",
+        "point": 3,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          ""
+        ],
+        "message": true
+      },
+      "text": "foo\n|---+---+---+---+---|\n|   |   |   |   |   |\n|   |   |   |   |   |\n bar\n",
+      "visible": "foo\n|---+---+---+---+---|\n|   |   |   |   |   |\n|   |   |   |   |   |\n bar\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "eol-default",
+      "input": {
+        "text": "foo bar\n",
+        "point": 7,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          ""
+        ],
+        "message": true
+      },
+      "text": "foo bar\n|---+---+---+---+---|\n|   |   |   |   |   |\n|   |   |   |   |   |\n\n",
+      "visible": "foo bar\n|---+---+---+---+---|\n|   |   |   |   |   |\n|   |   |   |   |   |\n\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "blanks-default",
+      "input": {
+        "text": "   foo\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          ""
+        ],
+        "message": true
+      },
+      "text": "  |   |   |   |   |   |\n  |---+---+---+---+---|\n  |   |   |   |   |   |\n   foo\n",
+      "visible": "  |   |   |   |   |   |\n  |---+---+---+---+---|\n  |   |   |   |   |   |\n   foo\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "empty-default",
+      "input": {
+        "text": "a\n\nb\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          ""
+        ],
+        "message": true
+      },
+      "text": "a\n|   |   |   |   |   |\n|---+---+---+---+---|\n|   |   |   |   |   |\n\nb\n",
+      "visible": "a\n|   |   |   |   |   |\n|---+---+---+---+---|\n|   |   |   |   |   |\n\nb\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "indented-mid-default",
+      "input": {
+        "text": "  foo bar\n",
+        "point": 5,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          ""
+        ],
+        "message": true
+      },
+      "text": "  foo\n|---+---+---+---+---|\n|   |   |   |   |   |\n|   |   |   |   |   |\n bar\n",
+      "visible": "  foo\n|---+---+---+---+---|\n|   |   |   |   |   |\n|   |   |   |   |   |\n bar\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "eob-default",
+      "input": {
+        "text": "foo",
+        "point": 3,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          ""
+        ],
+        "message": true
+      },
+      "text": "foo\n|---+---+---+---+---|\n|   |   |   |   |   |\n|   |   |   |   |   |\n",
+      "visible": "foo\n|---+---+---+---+---|\n|   |   |   |   |   |\n|   |   |   |   |   |\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "in-item",
+      "input": {
+        "text": "- item text\n",
+        "point": 6,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "- item\n|---+---|\n|   |   |\n|   |   |\n text\n",
+      "visible": "- item\n|---+---|\n|   |   |\n|   |   |\n text\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "heading-mid",
+      "input": {
+        "text": "* Heading here\n",
+        "point": 6,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "* Head\n|---+---|\n|   |   |\n|   |   |\ning here\n",
+      "visible": "* Head\n|---+---|\n|   |   |\n|   |   |\ning here\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "empty-buffer",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "|   |   |\n|---+---|\n|   |   |\n",
+      "visible": "|   |   |\n|---+---|\n|   |   |\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "blank-line-spaces",
+      "input": {
+        "text": "a\n   \nb\n",
+        "point": 4,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "a\n  |   |   |\n  |---+---|\n  |   |   |\n   \nb\n",
+      "visible": "a\n  |   |   |\n  |---+---|\n  |   |   |\n   \nb\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-size-0x0-blank",
+      "input": {
+        "text": "a\n\nb\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "0x0"
+        ],
+        "message": true
+      },
+      "text": "a\n\nb\n",
+      "visible": "a\n\nb\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Search failed: \"|\"",
+      "message": null
+    },
+    {
+      "name": "review-size-1x0-blank",
+      "input": {
+        "text": "a\n\nb\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1x0"
+        ],
+        "message": true
+      },
+      "text": "a\n\nb\n",
+      "visible": "a\n\nb\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Search failed: \"|\"",
+      "message": null
+    },
+    {
+      "name": "review-size-3x0-blank",
+      "input": {
+        "text": "a\n\nb\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3x0"
+        ],
+        "message": true
+      },
+      "text": "a\n\nb\n",
+      "visible": "a\n\nb\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Search failed: \"|\"",
+      "message": null
+    },
+    {
+      "name": "review-size-0x2-blank",
+      "input": {
+        "text": "a\n\nb\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "0x2"
+        ],
+        "message": true
+      },
+      "text": "a\n||\n||\n||\n\nb\n",
+      "visible": "a\n||\n||\n||\n\nb\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-size-0x1-blank",
+      "input": {
+        "text": "a\n\nb\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "0x1"
+        ],
+        "message": true
+      },
+      "text": "a\n||\n\nb\n",
+      "visible": "a\n||\n\nb\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-size-10x3-blank",
+      "input": {
+        "text": "a\n\nb\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "10x3"
+        ],
+        "message": true
+      },
+      "text": "a\n|   |   |   |   |   |   |   |   |   |   |\n|---+---+---+---+---+---+---+---+---+---|\n|   |   |   |   |   |   |   |   |   |   |\n|   |   |   |   |   |   |   |   |   |   |\n\nb\n",
+      "visible": "a\n|   |   |   |   |   |   |   |   |   |   |\n|---+---+---+---+---+---+---+---+---+---|\n|   |   |   |   |   |   |   |   |   |   |\n|   |   |   |   |   |   |   |   |   |   |\n\nb\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-size-spaced-blank",
+      "input": {
+        "text": "a\n\nb\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3 x 2"
+        ],
+        "message": true
+      },
+      "text": "a\n|   |   |   |\n|---+---+---|\n|   |   |   |\n\nb\n",
+      "visible": "a\n|   |   |   |\n|---+---+---|\n|   |   |   |\n\nb\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-size-3x-blank",
+      "input": {
+        "text": "a\n\nb\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3x"
+        ],
+        "message": true
+      },
+      "text": "a\n\nb\n",
+      "visible": "a\n\nb\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Wrong type argument: stringp, nil",
+      "message": null
+    },
+    {
+      "name": "review-size-x2-blank",
+      "input": {
+        "text": "a\n\nb\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "x2"
+        ],
+        "message": true
+      },
+      "text": "a\n\nb\n",
+      "visible": "a\n\nb\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Wrong type argument: stringp, nil",
+      "message": null
+    },
+    {
+      "name": "review-size-abc-blank",
+      "input": {
+        "text": "a\n\nb\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "abc"
+        ],
+        "message": true
+      },
+      "text": "a\n\nb\n",
+      "visible": "a\n\nb\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Wrong type argument: stringp, nil",
+      "message": null
+    },
+    {
+      "name": "review-size-upper-blank",
+      "input": {
+        "text": "a\n\nb\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3X2"
+        ],
+        "message": true
+      },
+      "text": "a\n|   |   |   |\n|---+---+---|\n|   |   |   |\n\nb\n",
+      "visible": "a\n|   |   |   |\n|---+---+---|\n|   |   |   |\n\nb\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-size-padded-blank",
+      "input": {
+        "text": "a\n\nb\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          " 3x2 "
+        ],
+        "message": true
+      },
+      "text": "a\n|   |   |   |\n|---+---+---|\n|   |   |   |\n\nb\n",
+      "visible": "a\n|   |   |   |\n|---+---+---|\n|   |   |   |\n\nb\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-size-3x2x4-blank",
+      "input": {
+        "text": "a\n\nb\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3x2x4"
+        ],
+        "message": true
+      },
+      "text": "a\n|   |   |   |\n|---+---+---|\n|   |   |   |\n\nb\n",
+      "visible": "a\n|   |   |   |\n|---+---+---|\n|   |   |   |\n\nb\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-size-frac-blank",
+      "input": {
+        "text": "a\n\nb\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3x2.5"
+        ],
+        "message": true
+      },
+      "text": "a\n|   |   |   |\n|---+---+---|\n|   |   |   |\n|   |   |   |\n\nb\n",
+      "visible": "a\n|   |   |   |\n|---+---+---|\n|   |   |   |\n|   |   |   |\n\nb\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-size-neg-blank",
+      "input": {
+        "text": "a\n\nb\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x-1"
+        ],
+        "message": true
+      },
+      "text": "a\n\nb\n",
+      "visible": "a\n\nb\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Search failed: \"|\"",
+      "message": null
+    },
+    {
+      "name": "review-size-trail-blank",
+      "input": {
+        "text": "a\n\nb\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3x2abc"
+        ],
+        "message": true
+      },
+      "text": "a\n|   |   |   |\n|---+---+---|\n|   |   |   |\n\nb\n",
+      "visible": "a\n|   |   |   |\n|---+---+---|\n|   |   |   |\n\nb\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-size-0x0-mid",
+      "input": {
+        "text": "foo bar\n",
+        "point": 3,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "0x0"
+        ],
+        "message": true
+      },
+      "text": "foo\n bar\n",
+      "visible": "foo\n bar\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Search failed: \"|\"",
+      "message": null
+    },
+    {
+      "name": "review-size-1x0-mid",
+      "input": {
+        "text": "foo bar\n",
+        "point": 3,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1x0"
+        ],
+        "message": true
+      },
+      "text": "foo\n bar\n",
+      "visible": "foo\n bar\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Search failed: \"|\"",
+      "message": null
+    },
+    {
+      "name": "review-size-0x2-mid",
+      "input": {
+        "text": "foo bar\n",
+        "point": 3,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "0x2"
+        ],
+        "message": true
+      },
+      "text": "foo\n||\n||\n||\n bar\n",
+      "visible": "foo\n||\n||\n||\n bar\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-size-3x-mid",
+      "input": {
+        "text": "foo bar\n",
+        "point": 3,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3x"
+        ],
+        "message": true
+      },
+      "text": "foo bar\n",
+      "visible": "foo bar\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Wrong type argument: stringp, nil",
+      "message": null
+    },
+    {
+      "name": "review-size-upper-mid",
+      "input": {
+        "text": "foo bar\n",
+        "point": 3,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3X2"
+        ],
+        "message": true
+      },
+      "text": "foo\n|---+---+---|\n|   |   |   |\n|   |   |   |\n bar\n",
+      "visible": "foo\n|---+---+---|\n|   |   |   |\n|   |   |   |\n bar\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-size-frac-mid",
+      "input": {
+        "text": "foo bar\n",
+        "point": 3,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3x2.5"
+        ],
+        "message": true
+      },
+      "text": "foo\n|---+---+---|\n|   |   |   |\n|   |   |   |\n|   |   |   |\n bar\n",
+      "visible": "foo\n|---+---+---|\n|   |   |   |\n|   |   |   |\n|   |   |   |\n bar\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-size-1x0-blanks",
+      "input": {
+        "text": "   foo\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1x0"
+        ],
+        "message": true
+      },
+      "text": "   foo\n",
+      "visible": "   foo\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Search failed: \"|\"",
+      "message": null
+    },
+    {
+      "name": "review-size-1x0-intable",
+      "input": {
+        "text": "| a | b |\n",
+        "point": 0,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1x0"
+        ],
+        "message": true
+      },
+      "text": "| a | b |\n",
+      "visible": "| a | b |\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tab-mid",
+      "input": {
+        "text": "\tfoo bar\n",
+        "point": 4,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3x2"
+        ],
+        "message": true
+      },
+      "text": "\tfoo\n|---+---+---|\n|   |   |   |\n|   |   |   |\n bar\n",
+      "visible": "\tfoo\n|---+---+---|\n|   |   |   |\n|   |   |   |\n bar\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tab-only",
+      "input": {
+        "text": "\tfoo\n",
+        "point": 1,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3x2"
+        ],
+        "message": true
+      },
+      "text": "        |   |   |   |\n        |---+---+---|\n        |   |   |   |\n\tfoo\n",
+      "visible": "        |   |   |   |\n        |---+---+---|\n        |   |   |   |\n\tfoo\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tab-after-text",
+      "input": {
+        "text": "foo\tbar\n",
+        "point": 4,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "foo\t\n|---+---|\n|   |   |\n|   |   |\nbar\n",
+      "visible": "foo\t\n|---+---|\n|   |   |\n|   |   |\nbar\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tab-space-blank",
+      "input": {
+        "text": "\t foo\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "         |   |   |\n         |---+---|\n         |   |   |\n\t foo\n",
+      "visible": "         |   |   |\n         |---+---|\n         |   |   |\n\t foo\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-wide-before",
+      "input": {
+        "text": "日本 foo\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "日本\n|---+---|\n|   |   |\n|   |   |\n foo\n",
+      "visible": "日本\n|---+---|\n|   |   |\n|   |   |\n foo\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-trailing-space",
+      "input": {
+        "text": "foo bar\n",
+        "point": 4,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "foo \n|---+---|\n|   |   |\n|   |   |\nbar\n",
+      "visible": "foo \n|---+---|\n|   |   |\n|   |   |\nbar\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-deep-indent",
+      "input": {
+        "text": "    foo bar\n",
+        "point": 6,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "    fo\n|---+---|\n|   |   |\n|   |   |\no bar\n",
+      "visible": "    fo\n|---+---|\n|   |   |\n|   |   |\no bar\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-heading-bol",
+      "input": {
+        "text": "* Heading here\n",
+        "point": 0,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "|   |   |\n|---+---|\n|   |   |\n* Heading here\n",
+      "visible": "|   |   |\n|---+---|\n|   |   |\n* Heading here\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-heading-stars",
+      "input": {
+        "text": "* Heading here\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "* \n|---+---|\n|   |   |\n|   |   |\nHeading here\n",
+      "visible": "* \n|---+---|\n|   |   |\n|   |   |\nHeading here\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-heading-eol",
+      "input": {
+        "text": "* Heading here\n",
+        "point": 14,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "* Heading here\n|---+---|\n|   |   |\n|   |   |\n\n",
+      "visible": "* Heading here\n|---+---|\n|   |   |\n|   |   |\n\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-heading-tags",
+      "input": {
+        "text": "* Heading   :tag:\n",
+        "point": 5,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "* Hea\n|---+---|\n|   |   |\n|   |   |\nding   :tag:\n",
+      "visible": "* Hea\n|---+---|\n|   |   |\n|   |   |\nding   :tag:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-heading-body",
+      "input": {
+        "text": "* H\nbody text\n",
+        "point": 9,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "* H\nbody \n|---+---|\n|   |   |\n|   |   |\ntext\n",
+      "visible": "* H\nbody \n|---+---|\n|   |   |\n|   |   |\ntext\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-item-bol",
+      "input": {
+        "text": "- item text\n",
+        "point": 0,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "|   |   |\n|---+---|\n|   |   |\n- item text\n",
+      "visible": "|   |   |\n|---+---|\n|   |   |\n- item text\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-item-bullet",
+      "input": {
+        "text": "- item text\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "- \n|---+---|\n|   |   |\n|   |   |\nitem text\n",
+      "visible": "- \n|---+---|\n|   |   |\n|   |   |\nitem text\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-item-eol",
+      "input": {
+        "text": "- item text\n",
+        "point": 11,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "- item text\n|---+---|\n|   |   |\n|   |   |\n\n",
+      "visible": "- item text\n|---+---|\n|   |   |\n|   |   |\n\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-subitem",
+      "input": {
+        "text": "- a\n  - sub item\n",
+        "point": 12,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "- a\n  - sub \n|---+---|\n|   |   |\n|   |   |\nitem\n",
+      "visible": "- a\n  - sub \n|---+---|\n|   |   |\n|   |   |\nitem\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-item-continuation",
+      "input": {
+        "text": "- item\n  text more\n",
+        "point": 14,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "- item\n  text \n|---+---|\n|   |   |\n|   |   |\nmore\n",
+      "visible": "- item\n  text \n|---+---|\n|   |   |\n|   |   |\nmore\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-paragraph-second",
+      "input": {
+        "text": "one two\nthree four\n",
+        "point": 12,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "one two\nthre\n|---+---|\n|   |   |\n|   |   |\ne four\n",
+      "visible": "one two\nthre\n|---+---|\n|   |   |\n|   |   |\ne four\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-comment-line",
+      "input": {
+        "text": "# a comment\n",
+        "point": 5,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "# a c\n|---+---|\n|   |   |\n|   |   |\nomment\n",
+      "visible": "# a c\n|---+---|\n|   |   |\n|   |   |\nomment\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-keyword-line",
+      "input": {
+        "text": "#+TITLE: x y\n",
+        "point": 9,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "#+TITLE: \n|---+---|\n|   |   |\n|   |   |\nx y\n",
+      "visible": "#+TITLE: \n|---+---|\n|   |   |\n|   |   |\nx y\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-src-mid",
+      "input": {
+        "text": "#+begin_src emacs-lisp\n(foo bar)\n#+end_src\n",
+        "point": 28,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "#+begin_src emacs-lisp\n(foo \n|---+---|\n|   |   |\n|   |   |\nbar)\n#+end_src\n",
+      "visible": "#+begin_src emacs-lisp\n(foo \n|---+---|\n|   |   |\n|   |   |\nbar)\n#+end_src\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-src-bol",
+      "input": {
+        "text": "#+begin_src emacs-lisp\n(foo bar)\n#+end_src\n",
+        "point": 23,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "#+begin_src emacs-lisp\n|   |   |\n|---+---|\n|   |   |\n(foo bar)\n#+end_src\n",
+      "visible": "#+begin_src emacs-lisp\n|   |   |\n|---+---|\n|   |   |\n(foo bar)\n#+end_src\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-example-mid",
+      "input": {
+        "text": "#+begin_example\nsome text\n#+end_example\n",
+        "point": 21,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "#+begin_example\nsome \n|---+---|\n|   |   |\n|   |   |\ntext\n#+end_example\n",
+      "visible": "#+begin_example\nsome \n|---+---|\n|   |   |\n|   |   |\ntext\n#+end_example\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-drawer-mid",
+      "input": {
+        "text": "* H\n:PROPERTIES:\n:A: 1\n:END:\n",
+        "point": 17,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "* H\n:PROPERTIES:\n|   |   |\n|---+---|\n|   |   |\n:A: 1\n:END:\n",
+      "visible": "* H\n:PROPERTIES:\n|   |   |\n|---+---|\n|   |   |\n:A: 1\n:END:\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-drawer-value",
+      "input": {
+        "text": "* H\n:PROPERTIES:\n:A: 1\n:END:\n",
+        "point": 21,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "* H\n:PROPERTIES:\n:A: \n|---+---|\n|   |   |\n|   |   |\n1\n:END:\n",
+      "visible": "* H\n:PROPERTIES:\n:A: \n|---+---|\n|   |   |\n|   |   |\n1\n:END:\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-table-bol",
+      "input": {
+        "text": "| a | b |\n| c | d |\n",
+        "point": 0,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3x2"
+        ],
+        "message": true
+      },
+      "text": "|   |   |   |\n|---+---+---|\n|   |   |   |\n| a | b |   |\n| c | d |   |\n",
+      "visible": "|   |   |   |\n|---+---+---|\n|   |   |   |\n| a | b |   |\n| c | d |   |\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-table-mid",
+      "input": {
+        "text": "| a | b |\n| c | d |\n",
+        "point": 4,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3x2"
+        ],
+        "message": true
+      },
+      "text": "| a |   |   |\n|---+---+---|\n|   |   |   |\n|   |   |   |\n| b |   |   |\n| c | d |   |\n",
+      "visible": "| a |   |   |\n|---+---+---|\n|   |   |   |\n|   |   |   |\n| b |   |   |\n| c | d |   |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-table-eol",
+      "input": {
+        "text": "| a | b |\n| c | d |\n",
+        "point": 9,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3x2"
+        ],
+        "message": true
+      },
+      "text": "| a | b |   |\n|---+---+---|\n|   |   |   |\n|   |   |   |\n\n| c | d |\n",
+      "visible": "| a | b |   |\n|---+---+---|\n|   |   |   |\n|   |   |   |\n\n| c | d |\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-table-second-bol",
+      "input": {
+        "text": "| a | b |\n| c | d |\n",
+        "point": 10,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "| a | b |\n|   |   |\n|---+---|\n|   |   |\n| c | d |\n",
+      "visible": "| a | b |\n|   |   |\n|---+---|\n|   |   |\n| c | d |\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-table-1row-mid",
+      "input": {
+        "text": "| a | b |\n| c | d |\n",
+        "point": 4,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x1"
+        ],
+        "message": true
+      },
+      "text": "| a |   |\n|   |   |\n| b |   |\n| c | d |\n",
+      "visible": "| a |   |\n|   |   |\n| b |   |\n| c | d |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-table-eob",
+      "input": {
+        "text": "| a | b |",
+        "point": 9,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "| a | b |\n|---+---|\n|   |   |\n|   |   |\n",
+      "visible": "| a | b |\n|---+---|\n|   |   |\n|   |   |\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-table-hline",
+      "input": {
+        "text": "| a |\n|---|\n| b |\n",
+        "point": 8,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "| a |   |\n|---+---|\n|---+---|\n|   |   |\n|   |   |\n--|\n| b |\n",
+      "visible": "| a |   |\n|---+---|\n|---+---|\n|   |   |\n|   |   |\n--|\n| b |\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-before-table-eol",
+      "input": {
+        "text": "foo\n| a | b |\n",
+        "point": 3,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "foo\n|---+---|\n|   |   |\n|   |   |\n\n| a | b |\n",
+      "visible": "foo\n|---+---|\n|   |   |\n|   |   |\n\n| a | b |\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-before-table-mid",
+      "input": {
+        "text": "foo bar\n| a | b |\n",
+        "point": 3,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "foo\n|---+---|\n|   |   |\n|   |   |\n bar\n| a | b |\n",
+      "visible": "foo\n|---+---|\n|   |   |\n|   |   |\n bar\n| a | b |\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-before-table-blank",
+      "input": {
+        "text": "foo\n\n| a | b |\n",
+        "point": 4,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "foo\n|   |   |\n|---+---|\n|   |   |\n\n| a | b |\n",
+      "visible": "foo\n|   |   |\n|---+---|\n|   |   |\n\n| a | b |\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-before-table-blanks",
+      "input": {
+        "text": "  \n| a | b |\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "  |   |   |\n  |---+---|\n  |   |   |\n  \n| a | b |\n",
+      "visible": "  |   |   |\n  |---+---|\n  |   |   |\n  \n| a | b |\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-after-table-eol",
+      "input": {
+        "text": "| a | b |\nfoo\n",
+        "point": 13,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "| a | b |\nfoo\n|---+---|\n|   |   |\n|   |   |\n\n",
+      "visible": "| a | b |\nfoo\n|---+---|\n|   |   |\n|   |   |\n\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-after-table-bol",
+      "input": {
+        "text": "| a | b |\nfoo\n",
+        "point": 10,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "| a | b |\n|   |   |\n|---+---|\n|   |   |\nfoo\n",
+      "visible": "| a | b |\n|   |   |\n|---+---|\n|   |   |\nfoo\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-after-table-blank",
+      "input": {
+        "text": "| a | b |\n\nfoo\n",
+        "point": 10,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "| a | b |\n|   |   |\n|---+---|\n|   |   |\n\nfoo\n",
+      "visible": "| a | b |\n|   |   |\n|---+---|\n|   |   |\n\nfoo\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-after-table-mid",
+      "input": {
+        "text": "| a | b |\nfoo bar\n",
+        "point": 13,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "| a | b |\nfoo\n|---+---|\n|   |   |\n|   |   |\n bar\n",
+      "visible": "| a | b |\nfoo\n|---+---|\n|   |   |\n|   |   |\n bar\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-table-el",
+      "input": {
+        "text": "+---+\n| a |\n+---+\n",
+        "point": 8,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "+---+\n|   |   |\n|---+---|\n|   |   |\n|   |   |\na |\n+---+\n",
+      "visible": "+---+\n|   |   |\n|---+---|\n|   |   |\n|   |   |\na |\n+---+\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-eob-mid",
+      "input": {
+        "text": "foo",
+        "point": 1,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "f\n|---+---|\n|   |   |\n|   |   |\noo",
+      "visible": "f\n|---+---|\n|   |   |\n|   |   |\noo",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-eob-blanks",
+      "input": {
+        "text": "a\n  ",
+        "point": 4,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "a\n  |   |   |\n  |---+---|\n  |   |   |\n  ",
+      "visible": "a\n  |   |   |\n  |---+---|\n  |   |   |\n  ",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-eob-heading",
+      "input": {
+        "text": "* H",
+        "point": 3,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "* H\n|---+---|\n|   |   |\n|   |   |\n",
+      "visible": "* H\n|---+---|\n|   |   |\n|   |   |\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-narrow-mid",
+      "input": {
+        "text": "* A\ntext here\n* B\nmore\n",
+        "point": 9,
+        "keys": "C-x n s C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "* A\ntext \n|---+---|\n|   |   |\n|   |   |\nhere\n* B\nmore\n",
+      "visible": "* A\ntext \n|---+---|\n|   |   |\n|   |   |\nhere\n* B\nmore\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-narrow-eol",
+      "input": {
+        "text": "* A\ntext here\n* B\nmore\n",
+        "point": 13,
+        "keys": "C-x n s C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "* A\ntext here\n|---+---|\n|   |   |\n|   |   |\n\n* B\nmore\n",
+      "visible": "* A\ntext here\n|---+---|\n|   |   |\n|   |   |\n\n* B\nmore\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-narrow-table-below",
+      "input": {
+        "text": "* A\nfoo\n* B\n| x |\n",
+        "point": 7,
+        "keys": "C-x n s C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "* A\nfoo\n|---+---|\n|   |   |\n|   |   |\n\n* B\n| x |\n",
+      "visible": "* A\nfoo\n|---+---|\n|   |   |\n|   |   |\n\n* B\n| x |\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-default-size-global",
+      "input": {
+        "text": "a\n\nb\n",
+        "point": 2,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          ""
+        ],
+        "message": true,
+        "globals": {
+          "org-table-default-size": "3x3"
+        }
+      },
+      "text": "a\n|   |   |   |\n|---+---+---|\n|   |   |   |\n|   |   |   |\n\nb\n",
+      "visible": "a\n|   |   |   |\n|---+---+---|\n|   |   |   |\n|   |   |   |\n\nb\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-default-size-local",
+      "input": {
+        "text": "foo bar\n",
+        "point": 3,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          ""
+        ],
+        "message": true,
+        "vars": {
+          "org-table-default-size": "2x1"
+        }
+      },
+      "text": "foo\n   |   |   |\n bar\n",
+      "visible": "foo\n   |   |   |\n bar\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-prefix-cu",
+      "input": {
+        "text": "a\n\nb\n",
+        "point": 2,
+        "keys": "C-u C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3x2"
+        ],
+        "message": true
+      },
+      "text": "a\n\nb\n",
+      "visible": "a\n\nb\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Wrong type argument: stringp, (4)",
+      "message": null
+    },
+    {
+      "name": "review-prefix-num",
+      "input": {
+        "text": "a\n\nb\n",
+        "point": 2,
+        "keys": "C-u 3 C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3x2"
+        ],
+        "message": true
+      },
+      "text": "a\n\nb\n",
+      "visible": "a\n\nb\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Wrong type argument: stringp, 3",
+      "message": null
+    },
+    {
+      "name": "review-realign-off",
+      "input": {
+        "text": "foo bar\n",
+        "point": 3,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true,
+        "vars": {
+          "org-table-automatic-realign": false
+        }
+      },
+      "text": "foo\n|---+---|\n|   |   |\n|   |   |\n bar\n",
+      "visible": "foo\n|---+---|\n|   |   |\n|   |   |\n bar\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-then-type",
+      "input": {
+        "text": "a\n\nb\n",
+        "point": 2,
+        "keys": "C-c | x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "a\nx|   |   |\n|---+---|\n|   |   |\n\nb\n",
+      "visible": "a\nx|   |   |\n|---+---|\n|   |   |\n\nb\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-then-tab-type",
+      "input": {
+        "text": "a\n\nb\n",
+        "point": 2,
+        "keys": "C-c | TAB x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "a\n| x |   |\n|---+---|\n|   |   |\n\nb\n",
+      "visible": "a\n| x |   |\n|---+---|\n|   |   |\n\nb\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-mid-then-tab",
+      "input": {
+        "text": "foo bar\n",
+        "point": 3,
+        "keys": "C-c | C-n TAB x TAB y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x2"
+        ],
+        "message": true
+      },
+      "text": "foo\n|---+---|\n| x | y |\n|   |   |\n bar\n",
+      "visible": "foo\n|---+---|\n| x | y |\n|   |   |\n bar\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-undo-mid",
+      "input": {
+        "text": "foo bar\n",
+        "point": 3,
+        "keys": "C-c | C-/",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3x2"
+        ],
+        "message": true
+      },
+      "text": "foo bar\n",
+      "visible": "foo bar\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Undo"
+    },
+    {
+      "name": "review-undo-blank",
+      "input": {
+        "text": "a\n\nb\n",
+        "point": 2,
+        "keys": "C-c | C-/",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3x2"
+        ],
+        "message": true
+      },
+      "text": "a\n\nb\n",
+      "visible": "a\n\nb\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Undo"
+    },
+    {
+      "name": "review-undo-table",
+      "input": {
+        "text": "| a | b |\n| c | d |\n",
+        "point": 4,
+        "keys": "C-c | C-/",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3x2"
+        ],
+        "message": true
+      },
+      "text": "| a | b |\n| c | d |\n",
+      "visible": "| a | b |\n| c | d |\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Undo"
+    },
+    {
+      "name": "review-undo-twice",
+      "input": {
+        "text": "foo bar\n",
+        "point": 3,
+        "keys": "C-c | C-/ C-/",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3x2"
+        ],
+        "message": true
+      },
+      "text": "foo bar\n",
+      "visible": "foo bar\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No further undo information",
+      "message": "Undo"
+    },
+    {
+      "name": "review-zero-rows-heading-mid",
+      "input": {
+        "text": "* Heading\n",
+        "point": 5,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x0"
+        ],
+        "message": true
+      },
+      "text": "* Hea\nding\n",
+      "visible": "* Hea\nding\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Search failed: \"|\"",
+      "message": null
+    },
+    {
+      "name": "review-zero-rows-eol-before-heading",
+      "input": {
+        "text": "foo\n* B\n",
+        "point": 3,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x0"
+        ],
+        "message": true
+      },
+      "text": "foo\n\n* B\n",
+      "visible": "foo\n\n* B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Search failed: \"|\"",
+      "message": null
+    },
+    {
+      "name": "review-zero-rows-table-mid",
+      "input": {
+        "text": "| a | b |\n",
+        "point": 4,
+        "keys": "C-c |",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2x0"
+        ],
+        "message": true
+      },
+      "text": "| a |\n| b |\n",
+      "visible": "| a |\n| b |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    }
+  ]
+}

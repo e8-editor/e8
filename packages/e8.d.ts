@@ -7301,11 +7301,11 @@ declare global {
       /**
        * Make a table: from the active region, splitting lines at tabs, else commas, else runs of spaces; otherwise an empty one of a size read in the minibuffer, such as 3x2.
        *
-       * @param size text
+       * @param arg raw prefix argument
        *
        * Defined in packages/org-table.ts.
        */
-      "org-table-create-or-convert-from-region": [size: string];
+      "org-table-create-or-convert-from-region": [arg?: PrefixArg | boolean];
       /**
        * Blank the field at point, or the fields in the region, as cutting them does.
        *
@@ -15828,6 +15828,12 @@ declare global {
        * Defined in packages/org-table.ts.
        */
       "org-table-copy-increment": Value;
+      /**
+       * The size C-c | offers for a new table, as columns x rows.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-default-size": Value;
       /**
        * A column whose fields are at least this fraction numbers is aligned to the right.
        *

@@ -297,10 +297,11 @@ fn links_are_inserted_and_followed() {
 #[test]
 fn a_table_is_made_from_a_size() {
     let (mut ed, _s) = org("");
-    call(&mut ed, "org-table-create-or-convert-from-region", &["3x2"]);
+    ed.press("C-c | 3 x 2 RET").unwrap();
     assert_eq!(text(&ed), "|   |   |   |\n|---+---+---|\n|   |   |   |\n");
-    assert_eq!(ed.window_buffer().point(), 2);
-    ed.press("a TAB b TAB c TAB").unwrap();
+    // Point stays where it was, before the table's first bar, as Org's org-table-create leaves it.
+    assert_eq!(ed.window_buffer().point(), 0);
+    ed.press("TAB a TAB b TAB c TAB").unwrap();
     assert_eq!(text(&ed), "| a | b | c |\n|---+---+---|\n|   |   |   |\n");
 }
 
