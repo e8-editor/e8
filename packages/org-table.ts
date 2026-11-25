@@ -1591,8 +1591,21 @@ e8.defineVariable({
   value: true,
 });
 
-/** The field each edit buffer edits and the windows to go back to, as Org's org-field-marker and org-window-configuration, which keep script objects. */
-const fieldEdits = new Map<string, { marker: e8.Marker; windows: e8.WindowConfiguration }>();
+/**
+ * The field each edit buffer edits and the windows to go back to, by the
+ * buffer's id, as Org's buffer-local org-field-marker and
+ * org-window-configuration, which hold script objects here. Each goes with
+ * its buffer, renamed or killed.
+ */
+const fieldEdits = new Map<number, { marker: e8.Marker; windows: e8.WindowConfiguration }>();
+
+/** Drops the current buffer's edit, its marker freed, as killing the buffer drops its variables. */
+function dropFieldEdit(): void {
+  const id = e8.currentBuffer().id;
+  const edit = fieldEdits.get(id);
+  if (edit) e8.deleteMarker(edit.marker);
+  fieldEdits.delete(id);
+}
 
 const EDIT_FIELD_BUFFER = "*Org Table Edit Field*";
 
@@ -1633,8 +1646,7 @@ function editField(): void {
   const windows = e8.currentWindowConfiguration();
   e8.gotoChar(e8.markerPosition(pos)!);
   e8.call("switch-to-buffer-other-window", EDIT_FIELD_BUFFER);
-  const old = fieldEdits.get(EDIT_FIELD_BUFFER);
-  if (old) e8.deleteMarker(old.marker);
+  dropFieldEdit();
   e8.call("erase-buffer");
   e8.insert(`#\n# Edit field ${coord} and finish with C-c C-c\n#\n`);
   e8.letBind({ "org-inhibit-startup": true }, () => e8.call("org-mode"));
@@ -1649,26 +1661,31 @@ function editField(): void {
   e8.gotoChar(p);
   e8.makeLocalVariable("org-finish-function");
   e8.setVariable("org-finish-function", "org-table-finish-edit-field");
-  fieldEdits.set(EDIT_FIELD_BUFFER, { marker: pos, windows });
+  fieldEdits.set(e8.currentBuffer().id, { marker: pos, windows });
+  e8.addHook("kill-buffer-hook", dropFieldEdit, { local: true });
   e8.message("Edit and finish with C-c C-c");
 }
 
 e8.defun("org-table-finish-edit-field", () => {
-  const edit = fieldEdits.get(e8.bufferName());
+  const edit = fieldEdits.get(e8.currentBuffer().id);
   if (!edit) e8.userError("No field is being edited here");
   const cb = e8.bufferName();
   e8.gotoChar(e8.pointMin());
   while (e8.reSearchForward("^#.*\n?", { noerror: true }) !== undefined) e8.replaceMatch("", { literal: true });
   while (e8.reSearchForward("[ \t]*\n[ \t\n]*", { noerror: true }) !== undefined) e8.replaceMatch(" ", { literal: true });
   const text = orgTrim(e8.bufferText(e8.pointMin(), e8.pointMax()));
-  e8.setWindowConfiguration(edit!.windows);
-  fieldEdits.delete(cb);
+  const { marker, windows } = edit!;
+  fieldEdits.delete(e8.currentBuffer().id);
+  e8.setWindowConfiguration(windows);
   e8.call("kill-buffer", cb);
-  const buffer = e8.markerBuffer(edit!.marker);
+  const buffer = e8.markerBuffer(marker);
   const window = buffer === undefined ? undefined : getBufferWindow(buffer);
   if (window !== undefined) e8.selectWindow(window);
-  e8.gotoChar(e8.markerPosition(edit!.marker)!);
-  e8.deleteMarker(edit!.marker);
+  const at = e8.markerPosition(marker);
+  e8.deleteMarker(marker);
+  // Its buffer killed meanwhile, as goto-char on a marker pointing nowhere fails.
+  if (at === undefined) e8.signal("error", "Marker does not point anywhere", ["Marker does not point anywhere"]);
+  e8.gotoChar(at!);
   checkInsideDataField();
   getField(undefined, text);
   align();
@@ -1691,6 +1708,8 @@ e8.defineCommand({
       const e = saveExcursion(() => (e8.skipCharsForward("^|\r\n"), e8.point()));
       e8.removeTextProperty(b, e, "invisible");
       e8.removeTextProperty(b, e, "intangible");
+      // Fontified again, as Org's font-lock-fontify-block, which hides a link's brackets once more.
+      e8.call("font-lock-flush");
     } else editField();
   },
 });
@@ -1721,9 +1740,7 @@ e8.defineMinorMode({
     if (e8.getBuffer(EDIT_FIELD_BUFFER) === undefined) return;
     const win = getBufferWindow(EDIT_FIELD_BUFFER);
     if (win !== undefined) e8.deleteWindow(win);
-    const edit = fieldEdits.get(EDIT_FIELD_BUFFER);
-    if (edit) e8.deleteMarker(edit.marker);
-    fieldEdits.delete(EDIT_FIELD_BUFFER);
+    e8.withCurrentBuffer(EDIT_FIELD_BUFFER, dropFieldEdit);
     e8.call("kill-buffer", EDIT_FIELD_BUFFER);
   },
 });
