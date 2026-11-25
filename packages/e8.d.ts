@@ -4917,6 +4917,14 @@ declare global {
        */
       "move-end-of-line": [n?: number];
       /**
+       * Move point to a column of its line, the prefix argument's, else one asked for; or to the line's end if it is shorter.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/simple.ts.
+       */
+      "move-to-column": [arg?: PrefixArg | boolean];
+      /**
        * Move point to the start of the line in the middle of the window.
        *
        * With a numeric prefix argument N, to line N of the window instead, counting from 0 at the top, or from the bottom if N is negative.

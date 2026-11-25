@@ -190,6 +190,734 @@
       "modified": false,
       "error": null,
       "message": "Char: c (99, #o143, #x63) point=7 of 14 (43%) <6-15> column=1"
+    },
+    {
+      "name": "zzc-goal-column-var-c-p",
+      "input": {
+        "text": "abcdefgh\nijklmnopqrst\nuv\n",
+        "point": 4,
+        "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-n C-p C-x =",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "goal-column": 2
+        }
+      },
+      "text": "abcdefgh\nijklmnopqrst\nuv\n",
+      "visible": "abcdefgh\nijklmnopqrst\nuv\n",
+      "point": 6,
+      "mark": 25,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Char: g (103, #o147, #x67) point=7 of 25 (24%) <5-26> column=2"
+    },
+    {
+      "name": "zzc-logical-c-p",
+      "input": {
+        "text": "abcdefgh\nijklmnopqrst\nuv\n",
+        "point": 4,
+        "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-n C-f C-f C-p C-x =",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "line-move-visual": false
+        }
+      },
+      "text": "abcdefgh\nijklmnopqrst\nuv\n",
+      "visible": "abcdefgh\nijklmnopqrst\nuv\n",
+      "point": 6,
+      "mark": 25,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Char: g (103, #o147, #x67) point=7 of 25 (24%) <5-26> column=2"
+    },
+    {
+      "name": "zzc-visual-c-p",
+      "input": {
+        "text": "abcdefgh\nijklmnopqrst\nuv\n",
+        "point": 4,
+        "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-n C-f C-f C-p C-x =",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "abcdefgh\nijklmnopqrst\nuv\n",
+      "visible": "abcdefgh\nijklmnopqrst\nuv\n",
+      "point": 6,
+      "mark": 25,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Char: g (103, #o147, #x67) point=7 of 25 (24%) <5-26> column=2"
+    },
+    {
+      "name": "zzc-logical-c-n-end-mid-line",
+      "input": {
+        "text": "abcdefgh\nijklmnopqrst\nuv\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-f C-f C-f C-x n n C-SPC C-SPC M-< C-e C-n C-x =",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "line-move-visual": false
+        }
+      },
+      "text": "abcdefgh\nijklmnopqrst\nuv\n",
+      "visible": "abcdefgh\nijklmnopqrst\nuv\n",
+      "point": 12,
+      "mark": 12,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "point=13 of 25 (48%) <1-13> column=3"
+    },
+    {
+      "name": "zzc-goal-column-var-end-mid-line",
+      "input": {
+        "text": "abcdefgh\nijklmnopqrst\nuv\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-f C-f C-f C-x n n C-SPC C-SPC M-< C-n C-x =",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "goal-column": 6
+        }
+      },
+      "text": "abcdefgh\nijklmnopqrst\nuv\n",
+      "visible": "abcdefgh\nijklmnopqrst\nuv\n",
+      "point": 15,
+      "mark": 18,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Char: o (111, #o157, #x6f) point=16 of 25 (60%) <1-19> column=6"
+    },
+    {
+      "name": "zzc-indent-rigidly-start-mid-line",
+      "input": {
+        "text": "ab  cd\n  ef\n",
+        "point": 2,
+        "keys": "C-SPC M-> C-x n n C-x h C-u 2 C-x TAB",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "ab    cd\n    ef\n",
+      "visible": "ab    cd\n    ef\n",
+      "point": 2,
+      "mark": 16,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "zzc-indent-rigidly-end-in-indentation",
+      "input": {
+        "text": "x\n    ab\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-f C-f C-x n n C-x h C-u 1 C-x TAB",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": " x\n  ab\n",
+      "visible": " x\n  ab\n",
+      "point": 0,
+      "mark": 3,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "zzc-tab-relative-line-above-narrowed",
+      "input": {
+        "text": "xxxx  ab cd\nz\n",
+        "point": 4,
+        "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-n C-e TAB",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "xxxx  ab cd\nz     \n",
+      "visible": "xxxx  ab cd\nz     \n",
+      "point": 18,
+      "mark": 19,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "zzc-tab-relative-empty-line",
+      "input": {
+        "text": "xxxx  ab cd\n\n",
+        "point": 4,
+        "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-n TAB",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "xxxx  ab cd\n      \n",
+      "visible": "xxxx  ab cd\n      \n",
+      "point": 18,
+      "mark": 19,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "zzc-tab-relative-own-line-narrowed",
+      "input": {
+        "text": "ab cd\nxx  ef\n",
+        "point": 8,
+        "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< TAB",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "ab cd\nxx   ef\n",
+      "visible": "ab cd\nxx   ef\n",
+      "point": 9,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "zzc-ret-electric-indent",
+      "input": {
+        "text": "  ab  cd\n",
+        "point": 5,
+        "keys": "C-SPC C-e C-x n n C-SPC C-SPC C-e RET",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "  ab  cd\n  \n",
+      "visible": "  ab  cd\n  \n",
+      "point": 11,
+      "mark": 8,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "zzc-indent-according-to-mode",
+      "input": {
+        "text": "  ab  cd\nx\n",
+        "point": 5,
+        "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-n M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "indent-according-to-mode"
+        ]
+      },
+      "text": "  ab  cd\n  x\n",
+      "visible": "  ab  cd\n  x\n",
+      "point": 11,
+      "mark": 13,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "zzc-tab-to-tab-stop",
+      "input": {
+        "text": "abcd  e\n",
+        "point": 2,
+        "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-f C-f C-f C-f M-i C-x =",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "tab-width": 4
+        }
+      },
+      "text": "abcd\t\te\n",
+      "visible": "abcd\t\te\n",
+      "point": 6,
+      "mark": 8,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Char: e (101, #o145, #x65) point=7 of 8 (75%) <3-9> column=8"
+    },
+    {
+      "name": "zzc-kill-rectangle-from-bobp",
+      "input": {
+        "text": "abcdef\nghijkl\n",
+        "point": 2,
+        "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-SPC C-n C-f C-f C-x r k",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "abef\nijkl\n",
+      "visible": "abef\nijkl\n",
+      "point": 5,
+      "mark": 2,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "zzc-kill-rectangle-mid",
+      "input": {
+        "text": "abcdef\nghijkl\n",
+        "point": 2,
+        "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-f C-SPC C-n C-f C-f C-x r k",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "abcf\ngjkl\n",
+      "visible": "abcf\ngjkl\n",
+      "point": 6,
+      "mark": 3,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "zzc-open-rectangle-end-mid-line",
+      "input": {
+        "text": "abcdef\nghijkl\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-f C-f C-x n n C-SPC C-SPC M-< C-f C-f C-f C-f C-SPC C-n C-x r o",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "ab  cdef\nghijkl\n",
+      "visible": "ab  cdef\nghijkl\n",
+      "point": 4,
+      "mark": 6,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "zzc-string-rectangle-tab",
+      "input": {
+        "text": "xab\tcd\nxxxxxxxxxxxx\n",
+        "point": 1,
+        "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-f C-f C-f C-f C-SPC C-n C-x r t",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "Z"
+        ]
+      },
+      "text": "xab\tcZd\nxxxxxxxxxZxxx\n",
+      "visible": "xab\tcZd\nxxxxxxxxxZxxx\n",
+      "point": 18,
+      "mark": 5,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "zzc-fill-paragraph",
+      "input": {
+        "text": "xxxx aaa bbb ccc ddd eee\n",
+        "point": 5,
+        "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 10
+        }
+      },
+      "text": "xxxx aaa bbb\nccc ddd\neee\n",
+      "visible": "xxxx aaa bbb\nccc ddd\neee\n",
+      "point": 5,
+      "mark": 25,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "zzc-auto-fill",
+      "input": {
+        "text": "xxxxxxxx aaa\n",
+        "point": 9,
+        "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-e SPC b b b SPC c c c SPC d d d SPC",
+        "modes": [
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 10
+        }
+      },
+      "text": "xxxxxxxx aaa bbb\nccc ddd \n",
+      "visible": "xxxxxxxx aaa bbb\nccc ddd \n",
+      "point": 25,
+      "mark": 26,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "zzc-split-line",
+      "input": {
+        "text": "abcd efg\n",
+        "point": 2,
+        "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-f C-f C-M-o",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "abcd \n   efg\n",
+      "visible": "abcd \n   efg\n",
+      "point": 5,
+      "mark": 13,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "zzc-overwrite-end-mid-line",
+      "input": {
+        "text": "abcdef\n",
+        "point": 0,
+        "keys": "C-SPC C-f C-f C-f C-x n n C-SPC C-SPC M-< C-f C-f x y",
+        "modes": [
+          "overwrite-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "abxydef\n",
+      "visible": "abxydef\n",
+      "point": 4,
+      "mark": 3,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "zzc-overwrite-tab-start-mid-line",
+      "input": {
+        "text": "xxxxxab\tcd\n",
+        "point": 5,
+        "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-f C-f x y z",
+        "modes": [
+          "overwrite-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "xxxxxabxyz\tcd\n",
+      "visible": "xxxxxabxyz\tcd\n",
+      "point": 10,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "zzc-set-goal-column-message",
+      "input": {
+        "text": "abcdefgh\nijklmnopqrst\nuv\n",
+        "point": 4,
+        "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-n C-n C-p C-p C-x =",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "goal-column": 3
+        }
+      },
+      "text": "abcdefgh\nijklmnopqrst\nuv\n",
+      "visible": "abcdefgh\nijklmnopqrst\nuv\n",
+      "point": 7,
+      "mark": 25,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Char: h (104, #o150, #x68) point=8 of 25 (28%) <5-26> column=3"
+    },
+    {
+      "name": "zzc-indent-region-col",
+      "input": {
+        "text": "ab  cd\n  ef\n",
+        "point": 2,
+        "keys": "C-SPC M-> C-x n n C-x h C-u 4 C-M-\\",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "ab    cd\n    ef\n",
+      "visible": "ab    cd\n    ef\n",
+      "point": 2,
+      "mark": 16,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "zzc-mx-indent-relative-empty-line",
+      "input": {
+        "text": "xxxx  ab cd\n\n",
+        "point": 4,
+        "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-n M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "indent-relative"
+        ]
+      },
+      "text": "xxxx  ab cd\n  \n",
+      "visible": "xxxx  ab cd\n  \n",
+      "point": 14,
+      "mark": 15,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "zzc-mx-indent-relative-z",
+      "input": {
+        "text": "xxxx  ab cd\nz\n",
+        "point": 4,
+        "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-n C-e M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "indent-relative"
+        ]
+      },
+      "text": "xxxx  ab cd\nz \n",
+      "visible": "xxxx  ab cd\nz \n",
+      "point": 14,
+      "mark": 15,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "zzc-org-table-align",
+      "input": {
+        "text": "xx| a | bbb |\n| cc | d |\n",
+        "point": 2,
+        "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-f C-f C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "xx| a | bbb |\n| cc | d |\n",
+      "visible": "xx| a | bbb |\n| cc | d |\n",
+      "point": 4,
+      "mark": 25,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here"
+    },
+    {
+      "name": "zzc-set-fill-column-here",
+      "input": {
+        "text": "abcdefgh\n",
+        "point": 3,
+        "keys": "C-SPC C-e C-x n n C-SPC C-SPC M-< C-f C-f C-u C-x f",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "abcdefgh\n",
+      "visible": "abcdefgh\n",
+      "point": 5,
+      "mark": 8,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Fill column set to 2 (was 70)"
+    },
+    {
+      "name": "zzc-c-j-indent",
+      "input": {
+        "text": "  ab  cd\n",
+        "point": 5,
+        "keys": "C-SPC C-e C-x n n C-SPC C-SPC C-e C-j",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "  ab  cd\n\n",
+      "visible": "  ab  cd\n\n",
+      "point": 9,
+      "mark": 8,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "zzc-logical-c-p-long-goal",
+      "input": {
+        "text": "abcdefgh\nijklmnopqrst\nuv\n",
+        "point": 4,
+        "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-n C-e C-p C-x =",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "line-move-visual": false
+        }
+      },
+      "text": "abcdefgh\nijklmnopqrst\nuv\n",
+      "visible": "abcdefgh\nijklmnopqrst\nuv\n",
+      "point": 8,
+      "mark": 25,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Char: C-j (10, #o12, #xa) point=9 of 25 (32%) <5-26> column=4"
+    },
+    {
+      "name": "zzc-logical-c-n-from-narrowed-first",
+      "input": {
+        "text": "abcdefgh\nijklmnopqrst\nuv\n",
+        "point": 4,
+        "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-f C-f C-n C-x =",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "line-move-visual": false
+        }
+      },
+      "text": "abcdefgh\nijklmnopqrst\nuv\n",
+      "visible": "abcdefgh\nijklmnopqrst\nuv\n",
+      "point": 11,
+      "mark": 25,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Char: k (107, #o153, #x6b) point=12 of 25 (44%) <5-26> column=2"
+    },
+    {
+      "name": "m-g-tab",
+      "input": {
+        "text": "abcdefgh\nijklmnopqrst\nuv\n",
+        "point": 4,
+        "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-n M-g TAB C-x =",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3"
+        ],
+        "message": true
+      },
+      "text": "abcdefgh\nijklmnopqrst\nuv\n",
+      "visible": "abcdefgh\nijklmnopqrst\nuv\n",
+      "point": 12,
+      "mark": 25,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Char: l (108, #o154, #x6c) point=13 of 25 (48%) <5-26> column=3"
+    },
+    {
+      "name": "m-g-tab-prefix",
+      "input": {
+        "text": "abcdefgh\nijklmnopqrst\nuv\n",
+        "point": 4,
+        "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-n M-5 M-g TAB C-x =",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "abcdefgh\nijklmnopqrst\nuv\n",
+      "visible": "abcdefgh\nijklmnopqrst\nuv\n",
+      "point": 14,
+      "mark": 25,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Char: n (110, #o156, #x6e) point=15 of 25 (56%) <5-26> column=5"
+    },
+    {
+      "name": "m-g-tab-past-end",
+      "input": {
+        "text": "abcdefgh\nijklmnopqrst\nuv\n",
+        "point": 4,
+        "keys": "C-SPC M-> C-x n n C-SPC C-SPC M-< C-n C-n M-g TAB C-x =",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "9"
+        ],
+        "message": true
+      },
+      "text": "abcdefgh\nijklmnopqrst\nuv\n",
+      "visible": "abcdefgh\nijklmnopqrst\nuv\n",
+      "point": 24,
+      "mark": 25,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Char: C-j (10, #o12, #xa) point=25 of 25 (96%) <5-26> column=2"
     }
   ]
 }

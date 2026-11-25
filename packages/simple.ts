@@ -542,12 +542,16 @@ function electricIndentAfterNewline(): void {
   const text = e8.lineText(line - 1);
   const trailing = text.length - text.replace(/[ \t]+$/, "").length;
   if (trailing > 0) e8.deleteRegion(before - trailing, before);
-  const column = /^[ \t]*$/.test(e8.lineText(line - 1)) ? 0 : lineIndentation(line - 1);
-  const start = e8.lineStart(line);
-  if (e8.point() - start <= (/^[ \t]*/.exec(e8.lineText(line))?.[0].length ?? 0)) {
-    indentLineToColumn(line, column);
-    e8.gotoChar(start + (/^[ \t]*/.exec(e8.lineText(line))?.[0].length ?? 0));
-  } else indentLineToColumn(line, column);
+  // Widened, as indent-according-to-mode indents.
+  e8.saveRestriction(() => {
+    e8.widen();
+    const column = /^[ \t]*$/.test(e8.lineText(line - 1)) ? 0 : lineIndentation(line - 1);
+    const start = e8.lineStart(line);
+    if (e8.point() - start <= (/^[ \t]*/.exec(e8.lineText(line))?.[0].length ?? 0)) {
+      indentLineToColumn(line, column);
+      e8.gotoChar(start + (/^[ \t]*/.exec(e8.lineText(line))?.[0].length ?? 0));
+    } else indentLineToColumn(line, column);
+  });
 }
 
 e8.defineVariable({
@@ -1258,6 +1262,19 @@ e8.defineCommand({
   },
 });
 e8.bindKey("M-g c", "goto-char");
+
+e8.defineCommand({
+  name: "move-to-column",
+  doc: "Move point to a column of its line, the prefix argument's, else one asked for; or to the line's end if it is shorter.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: async (arg: e8.PrefixArg) => {
+    // As interactive "N": the prefix argument as a number, else one read.
+    const column = arg !== null ? e8.prefixNumericValue(arg) : Number(await e8.readString("Move to column: "));
+    if (!Number.isInteger(column) || column < 0) e8.signal("wrong-type-argument", `Wrong type argument: wholenump, ${column}`, [e8.intern("wholenump"), column]);
+    e8.moveToColumn(column);
+  },
+});
+e8.bindKey("M-g TAB", "move-to-column");
 
 e8.defineCommand({
   name: "what-line",

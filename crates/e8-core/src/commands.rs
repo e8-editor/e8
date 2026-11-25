@@ -849,9 +849,10 @@ pub(crate) fn move_to_column_on(ed: &Editor, b: &Buffer, line: usize, goal: usiz
 /// the line's end.
 fn position_at_goal_column(ed: &Editor, b: &Buffer, line: usize, goal: usize) -> usize {
     let tab = ed.tab_width_in(b).max(1);
-    let end = b.line_end(line);
+    // Within the narrowing, as move-to-column counts.
+    let end = b.line_end(line).min(b.point_max());
     let mut col = 0;
-    let mut p = b.line_start(line);
+    let mut p = b.line_start(line).max(b.point_min());
     while p < end && col < goal {
         if ed.invisible_in(b, p) == Some(false) {
             p += 1;
