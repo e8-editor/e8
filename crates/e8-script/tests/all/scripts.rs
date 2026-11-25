@@ -711,3 +711,31 @@ fn editor_functions_a_script_holds_survive_collection() {
     let got = scripting.eval_expression(&mut ed, r#"(e8.insert("ab"), e8.gotoChar(0), globalThis.kept(), e8.point())"#).unwrap();
     assert_eq!(got, "1");
 }
+
+/// Engines started after the first in a process run the shipped packages as
+/// the first did: on QuickJS they read the bytecode the second compiled
+/// rather than compiling, so a function's source, an error's place in a
+/// package and a library package required must come out the same.
+#[test]
+fn later_engines_in_a_process_run_the_packages_alike() {
+    let probe = r#"(() => {
+        const source = String(e8.symbolFunction("org-toggle-tag")).slice(0, 80);
+        let place = "";
+        try {
+            e8.symbolFunction("org-toggle-tag")(Symbol("no-such-tag"), Symbol("bogus"));
+        } catch (e) {
+            place = String(e && e.stack || e).split("\n").find((l) => l.includes("packages/")) ?? "";
+        }
+        e8.require("org-tempo");
+        return [source, place, e8.boundp("org-tempo-keywords-alist")];
+    })()"#;
+    let runs: Vec<String> = (0..3)
+        .map(|_| {
+            let (mut ed, scripting) = setup();
+            scripting.eval_expression(&mut ed, probe).unwrap()
+        })
+        .collect();
+    assert!(runs[0].contains("(tag") && runs[0].contains("packages/org.ts:") && runs[0].ends_with("true]"), "{}", runs[0]);
+    assert_eq!(runs[1], runs[0]);
+    assert_eq!(runs[2], runs[0]);
+}
