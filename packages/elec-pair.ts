@@ -367,6 +367,7 @@ function willUseRegion(): boolean {
 
 e8.defineCommand({
   name: "electric-pair-delete-pair",
+  barfIfReadOnly: true,
   doc: "Delete the open and close pair point is between, as DEL does there in Electric Pair mode.",
   run: () => {
     e8.deleteRegion(e8.point(), e8.point() + 1);

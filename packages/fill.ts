@@ -676,6 +676,7 @@ e8.defineCommand({
 
 e8.defineCommand({
   name: "fill-region",
+  barfIfReadOnly: true,
   doc: "Fill each paragraph in the region. With a prefix argument, justify as well.",
   run: () => {
     barfIfReadOnly();
@@ -687,6 +688,7 @@ e8.defineCommand({
 
 e8.defineCommand({
   name: "fill-region-as-paragraph",
+  barfIfReadOnly: true,
   doc: "Fill the region as one paragraph, joining its paragraphs. With a prefix argument, justify as well.",
   run: () => {
     barfIfReadOnly();

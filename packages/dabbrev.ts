@@ -229,6 +229,7 @@ function substitute(s: State, old: string | undefined, abbrev: string, expansion
 
 e8.defineCommand({
   name: "dabbrev-expand",
+  barfIfReadOnly: true,
   doc:
     "Expand the word before point to the nearest word before it that starts with it, else one after it, else one " +
     "in another buffer. Again, try the next one.\n\nA positive prefix argument takes the Nth distinct word back; " +

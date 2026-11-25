@@ -864,6 +864,12 @@ impl Editor {
             self.message(format!("No such command: {name}"));
             return;
         };
+        // As call-interactively reads `*`: a read-only buffer is refused
+        // first, unless inhibit-read-only or point's text says otherwise.
+        if command.barf_if_read_only && let Err(e) = self.barf_if_buffer_read_only_at(self.buffer().point()) {
+            self.fail(e);
+            return;
+        }
         let prompts = command.params.iter().any(|p| !p.kind.from_state());
         if prompts && self.keyboard.reading_keys.is_some() {
             self.message("Command attempted to use minibuffer while in minibuffer");

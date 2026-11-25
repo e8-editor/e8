@@ -371,9 +371,10 @@ fn install_native<'js>(ctx: &Ctx<'js>) -> rquickjs::Result<()> {
     // script's functions for its prompts, collections and starting input.
     native.set(
         "defineCommand",
-        Function::new(ctx.clone(), move |ctx: Ctx<'js>, name: Value<'js>, doc: Value<'js>, params: Value<'js>, run: Value<'js>, shift_select: Opt<Value<'js>>| {
+        Function::new(ctx.clone(), move |ctx: Ctx<'js>, name: Value<'js>, doc: Value<'js>, params: Value<'js>, run: Value<'js>, shift_select: Opt<Value<'js>>, barf_if_read_only: Opt<Value<'js>>| {
             let shift_select = shift_select.0.unwrap_or_else(|| Value::new_undefined(ctx.clone()));
-            let command = values::command_from_js(&mut ctx.clone(), [name, doc, params, run, shift_select])?;
+            let barf_if_read_only = barf_if_read_only.0.unwrap_or_else(|| Value::new_undefined(ctx.clone()));
+            let command = values::command_from_js(&mut ctx.clone(), [name, doc, params, run, shift_select, barf_if_read_only])?;
             with_editor(&ctx, |ed| {
                 ed.define_command(command);
                 Ok(())

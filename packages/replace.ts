@@ -628,9 +628,10 @@ const forwardLineFrom = (pos: number): number => {
 
 e8.defineCommand({
   name: "keep-lines",
+  barfIfReadOnly: true,
   doc: "Delete the lines after point, or in the region, that have no match for a regexp. A match across lines keeps them all.",
   run: async () => {
-    if (e8.bufferReadOnly()) e8.signal("buffer-read-only", `Buffer is read-only: ${e8.bufferName()}`);
+    if (e8.bufferReadOnly()) e8.signal("buffer-read-only", `Buffer is read-only: #<buffer ${e8.bufferName()}>`);
     const regexp = await readLinesRegexp("Keep lines containing match for regexp");
     const [, rend] = linesRange(true);
     const caseFold = regexpFoldsCase(regexp);
@@ -673,9 +674,10 @@ function matchingLines(regexp: string, act: (from: number, to: number, first: bo
 
 e8.defineCommand({
   name: "flush-lines",
+  barfIfReadOnly: true,
   doc: "Delete the lines after point, or in the region, that have a match for a regexp.",
   run: async () => {
-    if (e8.bufferReadOnly()) e8.signal("buffer-read-only", `Buffer is read-only: ${e8.bufferName()}`);
+    if (e8.bufferReadOnly()) e8.signal("buffer-read-only", `Buffer is read-only: #<buffer ${e8.bufferName()}>`);
     const regexp = await readLinesRegexp("Flush lines containing match for regexp");
     matchingLines(regexp, (from, to) => e8.deleteRegion(from, to), "Deleted");
   },
@@ -683,9 +685,10 @@ e8.defineCommand({
 
 e8.defineCommand({
   name: "kill-matching-lines",
+  barfIfReadOnly: true,
   doc: "Kill the lines after point, or in the region, that have a match for a regexp, together as one kill.",
   run: async () => {
-    if (e8.bufferReadOnly()) e8.signal("buffer-read-only", `Buffer is read-only: ${e8.bufferName()}`);
+    if (e8.bufferReadOnly()) e8.signal("buffer-read-only", `Buffer is read-only: #<buffer ${e8.bufferName()}>`);
     const regexp = await readLinesRegexp("Kill lines containing match for regexp");
     matchingLines(regexp, (from, to, first) => {
       if (!first) e8.setLastCommand("kill-region");

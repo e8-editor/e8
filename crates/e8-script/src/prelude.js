@@ -696,7 +696,7 @@
       if (typeof definition !== "object" || definition === null) {
         throw new TypeError("defineCommand takes an object: { name, doc, params, run }");
       }
-      const { name, doc = "", params = [], run, shiftSelect = false } = definition;
+      const { name, doc = "", params = [], run, shiftSelect = false, barfIfReadOnly = false } = definition;
       if (typeof name !== "string" || name === "") {
         throw new TypeError("A command needs a name");
       }
@@ -720,6 +720,7 @@
         })),
         run,
         Boolean(shiftSelect),
+        Boolean(barfIfReadOnly),
       );
       return name;
     },

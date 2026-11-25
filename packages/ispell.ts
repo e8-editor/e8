@@ -2512,6 +2512,7 @@ e8.defun("ispell-parse-output", (s: string) => parseOutput(s) ?? null);
 
 const minorCheck = e8.defineCommand({
   name: "ispell-minor-check",
+  barfIfReadOnly: true,
   doc: "Check the word before point, then do what the key does without ispell-minor-mode.",
   run: () => {
     const last = e8.charBefore(e8.point());

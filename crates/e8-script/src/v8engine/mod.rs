@@ -690,7 +690,7 @@ fn require<'s>(scope: &mut v8::PinScope<'s, '_>, args: v8::FunctionCallbackArgum
     });
 }
 
-/// `native.defineCommand(name, doc, params, run, shiftSelect)`.
+/// `native.defineCommand(name, doc, params, run, shiftSelect, barfIfReadOnly)`.
 fn define_command<'s>(scope: &mut v8::PinScope<'s, '_>, args: v8::FunctionCallbackArguments<'s>, _rv: v8::ReturnValue<'s, v8::Value>) {
     catching(scope, |scope| {
         let _ = define_command_with(scope, &args);
@@ -698,7 +698,7 @@ fn define_command<'s>(scope: &mut v8::PinScope<'s, '_>, args: v8::FunctionCallba
 }
 
 fn define_command_with<'s>(scope: &mut v8::PinScope<'s, '_>, args: &v8::FunctionCallbackArguments<'s>) -> std::result::Result<(), Thrown> {
-    let command = values::command_from_js(scope, [args.get(0), args.get(1), args.get(2), args.get(3), args.get(4)])?;
+    let command = values::command_from_js(scope, [args.get(0), args.get(1), args.get(2), args.get(3), args.get(4), args.get(5)])?;
     with_editor(scope, true, |ed| {
         ed.define_command(command);
         Ok(())

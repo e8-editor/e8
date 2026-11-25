@@ -108,7 +108,7 @@ natives! {
     /// parameters, each with its kind, a description of the kind and its
     /// prompt, the file that defined it, whether Shift selects as it moves,
     /// and the command it is an alias of; undefined if there is no such command.
-    #[ts = "(name: CommandName | DefinedCommand | (string & {})): { doc: string; params: { name: string; kind: ParamKind; description: string; prompt: string }[]; source?: string; shiftSelect: boolean; aliasOf?: string } | undefined"]
+    #[ts = "(name: CommandName | DefinedCommand | (string & {})): { doc: string; params: { name: string; kind: ParamKind; description: string; prompt: string }[]; source?: string; shiftSelect: boolean; barfIfReadOnly: boolean; aliasOf?: string } | undefined"]
     pub fn commandInfo(ed, name: String) -> Option<Record> {
         Ok(ed.command(&name).map(|c| {
             let params: Vec<Record> = c
@@ -127,6 +127,7 @@ natives! {
                 .with("params", params)
                 .with("source", c.source.clone())
                 .with("shiftSelect", c.shift_select)
+                .with("barfIfReadOnly", c.barf_if_read_only)
                 .with("aliasOf", c.alias_of.clone())
         }))
     }

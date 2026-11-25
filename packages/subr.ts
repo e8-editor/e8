@@ -389,7 +389,7 @@ export const directoryNameP = (name: string): boolean => name.endsWith("/");
 export function barfIfBufferReadOnly(position: number = e8.point()): void {
   if (!e8.bufferReadOnly() || truthy(e8.variable("inhibit-read-only"))) return;
   if (truthy(e8.getTextProperty(position, "inhibit-read-only"))) return;
-  e8.signal("buffer-read-only", `Buffer is read-only: ${e8.bufferName(e8.currentBuffer())}`);
+  e8.signal("buffer-read-only", `Buffer is read-only: #<buffer ${e8.bufferName(e8.currentBuffer())}>`);
 }
 
 /** As e8.replaceBufferContents, here since subr had it first. */

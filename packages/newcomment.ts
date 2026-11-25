@@ -444,6 +444,7 @@ const barf = (): void => {
 
 e8.defineCommand({
   name: "comment-dwim",
+  barfIfReadOnly: true,
   doc:
     "Comment or uncomment the region if it is active. Otherwise put a comment at the end of the line, or indent the one there, " +
     "or start one on a blank line. With a prefix argument and no region, kill the line's comment.",
@@ -480,6 +481,7 @@ e8.defineCommand({
 
 e8.defineCommand({
   name: "comment-region",
+  barfIfReadOnly: true,
   doc: "Comment out each line of the region. With a prefix argument N, use N comment starts; negative, uncomment instead.",
   run: () => {
     barf();
@@ -490,6 +492,7 @@ e8.defineCommand({
 
 e8.defineCommand({
   name: "uncomment-region",
+  barfIfReadOnly: true,
   doc: "Take the comment starts and ends out of the region's lines. With a prefix argument, take out that many levels.",
   run: () => {
     barf();
@@ -502,6 +505,7 @@ e8.defineCommand({
 
 e8.defineCommand({
   name: "comment-or-uncomment-region",
+  barfIfReadOnly: true,
   doc: "Uncomment the region's lines if they are all comments, else comment them.",
   run: () => {
     barf();
@@ -545,6 +549,7 @@ e8.defineCommand({
 
 e8.defineCommand({
   name: "comment-indent",
+  barfIfReadOnly: true,
   doc: "Put a comment at the end of the line at comment-column, or indent the comment there to it.",
   run: () => {
     barf();

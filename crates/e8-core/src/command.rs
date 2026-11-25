@@ -318,6 +318,10 @@ pub struct Command {
     /// `^` interactive spec in Emacs. With Shift it starts or extends the
     /// region; without, it ends a region Shift started.
     pub shift_select: bool,
+    /// Whether running it from a key or M-x first refuses a read-only
+    /// buffer, as Emacs's `*` interactive spec does, before it reads its
+    /// arguments or does anything else.
+    pub barf_if_read_only: bool,
     /// The command this one is an alias of, found by a name `defalias` made,
     /// whose advice applies after the alias's own.
     pub alias_of: Option<String>,
@@ -333,6 +337,7 @@ impl Command {
             run: self.run.clone(),
             source: self.source.clone(),
             shift_select: self.shift_select,
+            barf_if_read_only: self.barf_if_read_only,
             alias_of: Some(self.alias_of.clone().unwrap_or_else(|| self.name.clone())),
         }
     }
@@ -349,6 +354,7 @@ impl Command {
             run: Rc::new(run),
             source: None,
             shift_select: false,
+            barf_if_read_only: false,
             alias_of: None,
         }
     }
@@ -425,6 +431,13 @@ impl Command {
         if let Some(param) = self.params.last_mut() {
             param.history = Some(variable.to_string());
         }
+        self
+    }
+
+    /// Marks the command as one that refuses a read-only buffer when run
+    /// interactively, as Emacs's `*` interactive spec does.
+    pub fn barf_if_read_only(mut self) -> Command {
+        self.barf_if_read_only = true;
         self
     }
 

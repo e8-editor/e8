@@ -131,11 +131,12 @@ const region = [
 ] as const;
 
 const readOnly = () => {
-  if (e8.bufferReadOnly()) e8.signal("buffer-read-only", `Buffer is read-only: ${e8.bufferName()}`);
+  if (e8.bufferReadOnly()) e8.signal("buffer-read-only", `Buffer is read-only: #<buffer ${e8.bufferName()}>`);
 };
 
 e8.defineCommand({
   name: "delete-rectangle",
+  barfIfReadOnly: true,
   doc: "Delete the text in the rectangle between point and the mark; with a prefix argument, lines too short are padded first.",
   params: [...region, { name: "fill", kind: "prefix" }],
   run: (start: number, end: number, fill: e8.PrefixArg) => {
@@ -158,7 +159,7 @@ e8.defineCommand({
   run: (start: number, end: number, fill: e8.PrefixArg) => {
     if (e8.bufferReadOnly()) {
       killedRectangle = extract(start, end, false);
-      e8.signal("buffer-read-only", `Buffer is read-only: ${e8.bufferName()}`);
+      e8.signal("buffer-read-only", `Buffer is read-only: #<buffer ${e8.bufferName()}>`);
     }
     killedRectangle = extract(start, end, true, fill !== null);
   },
@@ -176,6 +177,7 @@ e8.defineCommand({
 
 e8.defineCommand({
   name: "yank-rectangle",
+  barfIfReadOnly: true,
   doc: "Insert the rectangle killed last, its top left corner at point.",
   run: () => {
     readOnly();
@@ -186,6 +188,7 @@ e8.defineCommand({
 
 e8.defineCommand({
   name: "open-rectangle",
+  barfIfReadOnly: true,
   doc: "Insert blank space filling the rectangle between point and the mark, pushing its text right; with a prefix argument, short lines too.",
   params: [...region, { name: "fill", kind: "prefix" }],
   run: (start: number, end: number, fill: e8.PrefixArg) => {
@@ -201,6 +204,7 @@ e8.defineCommand({
 
 e8.defineCommand({
   name: "clear-rectangle",
+  barfIfReadOnly: true,
   doc: "Replace the text in the rectangle between point and the mark with spaces; with a prefix argument, short lines are padded too.",
   params: [...region, { name: "fill", kind: "prefix" }],
   run: (start: number, end: number, fill: e8.PrefixArg) => {

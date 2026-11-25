@@ -3012,7 +3012,7 @@ e8.defineCommand({
     "With the region active, fill each of the elements in it.",
   params: [{ name: "justify", kind: "prefix" }],
   run: (justify: e8.PrefixArg) => {
-    if (truthy(e8.variable("buffer-read-only"))) e8.signal("buffer-read-only", `Buffer is read-only: ${e8.bufferName()}`);
+    if (truthy(e8.variable("buffer-read-only"))) e8.signal("buffer-read-only", `Buffer is read-only: #<buffer ${e8.bufferName()}>`);
     // As a command it fills the region, as Emacs's interactive spec passes REGION t.
     orgFillParagraph(justify === null ? undefined : "full", true);
   },
@@ -3849,6 +3849,7 @@ e8.defineVariable({
 
 e8.defineCommand({
   name: "org-open-line",
+  barfIfReadOnly: true,
   doc: "C-o in Org: in a table, insert a row above; elsewhere, or at the very start of the buffer, open-line.",
   run: () => {
     const p = e8.point();
@@ -13407,6 +13408,7 @@ e8.defun("org-comment-or-uncomment-region", (beg: number, end: number) => {
 
 const orgCommentDwim = e8.defineCommand({
   name: "org-comment-dwim",
+  barfIfReadOnly: true,
   doc: "M-; in Org: on a heading, make it a comment or take that away, as org-toggle-comment; elsewhere as comment-dwim.",
   run: () => {
     if (e8.bufferReadOnly()) e8.signal("buffer-read-only", `Buffer is read-only: #<buffer ${e8.bufferName()}>`);

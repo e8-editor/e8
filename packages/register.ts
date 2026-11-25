@@ -171,10 +171,11 @@ e8.defineCommand({
 
 e8.defineCommand({
   name: "insert-register",
+  barfIfReadOnly: true,
   doc: "Insert what a register holds, leaving point before it and the mark after; with a prefix argument, point after it.",
   params: [{ name: "arg", kind: "prefix" }],
   run: async (arg: e8.PrefixArg) => {
-    if (e8.bufferReadOnly()) e8.signal("buffer-read-only", `Buffer is read-only: ${e8.bufferName()}`);
+    if (e8.bufferReadOnly()) e8.signal("buffer-read-only", `Buffer is read-only: #<buffer ${e8.bufferName()}>`);
     const r = await readRegister("Insert register: ");
     e8.pushMark(e8.point());
     const val = registers.get(r);

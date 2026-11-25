@@ -1567,6 +1567,7 @@ e8.bindKey("M-~", "not-modified");
 
 const insertFile = e8.defineCommand({
   name: "insert-file",
+  barfIfReadOnly: true,
   doc: "Insert a file's text after point, leaving point before it and the mark after it.",
   params: [{ name: "file", kind: "file", prompt: "Insert file: " }],
   run: (file) => {

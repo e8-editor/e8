@@ -432,6 +432,7 @@ export function transposeSubr(mover: ((n: number) => void) | ((n: number) => [nu
 
 const transposeLines = e8.defineCommand({
   name: "transpose-lines",
+  barfIfReadOnly: true,
   doc:
     "Exchange the line point is on with the line before it, leaving point after both.\n\n" +
     "With a prefix argument, move the line before point past that many lines; with 0, exchange the line point " +
@@ -470,6 +471,7 @@ function forwardChar(n: number): void {
 
 const transposeChars = e8.defineCommand({
   name: "transpose-chars",
+  barfIfReadOnly: true,
   doc:
     "Exchange the characters around point, moving forward one character.\n\n" +
     "At the end of a line, exchange the two characters before point. With a prefix argument, move the " +
@@ -486,6 +488,7 @@ e8.bindKey("C-t", transposeChars);
 
 const transposeWords = e8.defineCommand({
   name: "transpose-words",
+  barfIfReadOnly: true,
   doc:
     "Exchange the words around point, leaving point after both.\n\n" +
     "With a prefix argument, move the word before point past that many words; with 0, exchange the words " +
@@ -496,6 +499,7 @@ e8.bindKey("M-t", transposeWords);
 
 const openLine = e8.defineCommand({
   name: "open-line",
+  barfIfReadOnly: true,
   doc: "Insert a newline after point, leaving point where it is; with a prefix argument, that many.",
   run: () => {
     const n = e8.prefixNumericValue();
@@ -602,6 +606,7 @@ e8.addHook("post-self-insert-hook", electricIndentChar);
 
 e8.defineCommand({
   name: "newline",
+  barfIfReadOnly: true,
   doc:
     "Insert a newline, or as many as the prefix argument says.\n\n" +
     "Typed, with electric-indent-mode on, it also indents the new line as the mode says, as RET does in Emacs.",
@@ -632,6 +637,7 @@ e8.defineCommand({
 
 const electricNewline = e8.defineCommand({
   name: "electric-newline-and-maybe-indent",
+  barfIfReadOnly: true,
   doc:
     "Insert a newline. With electric-indent-mode on, as it is by default, that is all; RET is the key " +
     "that indents.",
@@ -770,7 +776,7 @@ e8.defineCommand({
       return;
     }
     if (arg !== null) {
-      if (e8.bufferReadOnly()) e8.signal("buffer-read-only", `Buffer is read-only: ${e8.bufferName()}`);
+      if (e8.bufferReadOnly()) e8.signal("buffer-read-only", `Buffer is read-only: #<buffer ${e8.bufferName()}>`);
       const at = e8.point();
       const { output } = callShell(command);
       e8.insert(output);
@@ -836,6 +842,7 @@ function deleteSpace(chars: string, backwardOnly: boolean): void {
 
 e8.defineCommand({
   name: "delete-horizontal-space",
+  barfIfReadOnly: true,
   doc: "Delete the spaces and tabs around point; with a prefix argument, only those before it.",
   params: [{ name: "arg", kind: "prefix" }],
   run: (arg: e8.PrefixArg) => deleteSpace(" \t", arg !== null),
@@ -844,6 +851,7 @@ e8.bindKey("M-\\", "delete-horizontal-space");
 
 e8.defineCommand({
   name: "delete-all-space",
+  barfIfReadOnly: true,
   doc: "Delete the spaces, tabs and newlines around point; with a prefix argument, only those before it.",
   params: [{ name: "arg", kind: "prefix" }],
   run: (arg: e8.PrefixArg) => deleteSpace(" \t\r\n", arg !== null),
@@ -867,6 +875,7 @@ function justOneSpace(n = 1): void {
 
 e8.defineCommand({
   name: "just-one-space",
+  barfIfReadOnly: true,
   doc: "Leave one space where there are spaces and tabs around point; with a prefix argument, that many, and newlines go too if it is negative.",
   params: [{ name: "n", kind: "count" }],
   run: (n: number) => justOneSpace(n),
@@ -883,6 +892,7 @@ let cycleSpacing: { origPos: number; whitespace: string; n: e8.PrefixArg; last: 
 
 e8.defineCommand({
   name: "cycle-spacing",
+  barfIfReadOnly: true,
   doc:
     "Change the space around point, a different way each time in a row, as cycle-spacing-actions says: " +
     "first one space, then none, then as it was.\n\n" +
@@ -940,6 +950,7 @@ e8.bindKey("M-SPC", "cycle-spacing");
 
 e8.defineCommand({
   name: "fixup-whitespace",
+  barfIfReadOnly: true,
   doc: "Leave one space or none around point, as the text on either side calls for.",
   run: () => {
     e8.saveExcursion(() => {
@@ -952,6 +963,7 @@ e8.defineCommand({
 
 e8.defineCommand({
   name: "delete-indentation",
+  barfIfReadOnly: true,
   doc:
     "Join this line to the one before it, leaving one space or none between them; with a prefix argument, to the one after.\n\n" +
     "A fill prefix at the start of the joined line is deleted too.",
@@ -996,6 +1008,7 @@ e8.bindKey("M-^", "delete-indentation");
 
 e8.defineCommand({
   name: "delete-blank-lines",
+  barfIfReadOnly: true,
   doc: "On a blank line, delete the blank lines around it but one; on a lone blank line, delete it; else delete the blank lines after this one.",
   run: () => {
     const [thisBlank, singleBlank] = e8.saveExcursion(() => {
@@ -1034,6 +1047,7 @@ e8.defineVariable({ name: "delete-trailing-lines", doc: "Whether delete-trailing
 
 e8.defineCommand({
   name: "delete-trailing-whitespace",
+  barfIfReadOnly: true,
   doc:
     "Delete the spaces and tabs at the ends of lines, in the region if it is active, else in the whole buffer, " +
     "where empty lines at the end go too, as delete-trailing-lines says. Form feeds stay.",
@@ -1438,6 +1452,7 @@ e8.bindKey("M-@", "mark-word");
 
 e8.defineCommand({
   name: "split-line",
+  barfIfReadOnly: true,
   doc:
     "Split the line at point, moving the rest of it down to the column it was at. " +
     "A fill prefix the line starts with goes on the new line too, unless there is a prefix argument.",
@@ -1461,6 +1476,7 @@ e8.defineVariable({ name: "read-quoted-char-radix", doc: "The radix C-q reads a 
 
 e8.defineCommand({
   name: "quoted-insert",
+  barfIfReadOnly: true,
   doc:
     "Insert the next character typed, whatever it is, such as a control character; with a prefix argument, that many.\n\n" +
     "Octal digits, as read-quoted-char-radix says, give a character's code instead: the first other key ends them, " +
@@ -1540,6 +1556,7 @@ function transposeSexpsDefault(arg: number): [number, number] {
 
 e8.defineCommand({
   name: "transpose-sexps",
+  barfIfReadOnly: true,
   doc:
     "Exchange the balanced expressions around point, leaving point after both.\n\n" +
     "With a prefix argument, move the one before point past that many; with 0, exchange those at point and the mark.",
@@ -1626,7 +1643,7 @@ function regionToBuffer(buffer: string, start: number, end: number, how: "append
   const from = e8.bufferName();
   e8.getBufferCreate(buffer);
   e8.withCurrentBuffer(buffer, () => {
-    if (e8.bufferReadOnly()) e8.signal("buffer-read-only", `Buffer is read-only: ${buffer}`);
+    if (e8.bufferReadOnly()) e8.signal("buffer-read-only", `Buffer is read-only: #<buffer ${buffer}>`);
     const point = e8.point();
     // Windows showing the buffer with their point where text goes in follow it, as append-to-buffer moves them.
     const windows = e8.windowList().filter((w) => e8.windowBuffer(w) === buffer && e8.windowPoint(w) === point);
@@ -1702,6 +1719,7 @@ for (const [name, doc, region, word] of [
   e8.defineCommand({
     name,
     doc,
+    barfIfReadOnly: true,
     params: [{ name: "arg", kind: "prefix" }],
     run: (arg: e8.PrefixArg) => {
       const mark = e8.mark();

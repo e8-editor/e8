@@ -383,12 +383,14 @@ e8.defineCommand({
 
 e8.defineCommand({
   name: "transpose-paragraphs",
+  barfIfReadOnly: true,
   doc: "Exchange this paragraph with the one before; with a prefix argument, move it past that many.",
   run: () => transposeSubr((n) => forwardParagraph(n), e8.prefixNumericValue()),
 });
 
 e8.defineCommand({
   name: "transpose-sentences",
+  barfIfReadOnly: true,
   doc: "Exchange this sentence with the one before; with a prefix argument, move it past that many.",
   run: () =>
     transposeSubr((n) => {

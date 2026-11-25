@@ -112,6 +112,11 @@ const API: &str = r##"
      * Shift started.
      */
     shiftSelect?: boolean;
+    /**
+     * Whether, run from a key or M-x, it first refuses a read-only buffer,
+     * as Emacs's * interactive spec does, before reading its arguments.
+     */
+    barfIfReadOnly?: boolean;
   }
 
   /**

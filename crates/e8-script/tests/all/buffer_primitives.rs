@@ -179,3 +179,20 @@ fn property_changes_count_in_the_modified_tick_not_the_chars_tick() {
     // Emacs: add-face-text-property makes buffer-modified-tick larger, not buffer-chars-modified-tick
     assert_eq!(got, "[true,true]");
 }
+
+#[test]
+fn only_interactive_calls_refuse_a_read_only_buffer_first() {
+    let (mut ed, s) = setup();
+    // From code, as a Lisp call in Emacs, the command runs and has nothing to
+    // delete; from a key it is refused first, as its * interactive spec says.
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(e8.insert("ab"), e8.setVariable("buffer-read-only", true), e8.gotoChar(1), e8.call("delete-horizontal-space"),
+          JSON.stringify([e8.bufferText(e8.pointMin(), e8.pointMax()), e8.commandInfo("delete-horizontal-space").barfIfReadOnly,
+            e8.commandInfo("forward-char").barfIfReadOnly, e8.bufferLocalVariables().find(([name]) => name === "buffer-read-only")]))"#,
+    );
+    assert_eq!(got, r#"["ab",true,false,["buffer-read-only",true]]"#);
+    ed.press("M-\\").unwrap();
+    assert_eq!(ed.echo(), Some("Buffer is read-only: #<buffer *scratch*>"));
+}

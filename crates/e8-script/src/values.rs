@@ -528,13 +528,14 @@ pub(crate) fn prefix_from_js<S: Scope>(s: &mut S, value: S::Value) -> Result<Opt
 /// requireMatch, initial, history }` with functions for what is worked out
 /// from the arguments before it, its run function, and whether it selects
 /// as it moves with shift.
-pub(crate) fn command_from_js<S: Scope>(s: &mut S, [name, doc, params, run, shift_select]: [S::Value; 5]) -> Result<Command, S::Error> {
+pub(crate) fn command_from_js<S: Scope>(s: &mut S, [name, doc, params, run, shift_select, barf_if_read_only]: [S::Value; 6]) -> Result<Command, S::Error> {
     let name = s.as_string(&name).unwrap_or_default();
     let doc = s.as_string(&doc).unwrap_or_default();
     let Some(params) = s.array_items(&params)? else { return Err(s.throw(&Error::new("A command's params are a list"))) };
     let Some(run) = s.hold(&run) else { return Err(s.throw(&Error::new("A command needs a run function"))) };
     let mut command = Command::new(&name, &doc, move |ed, args| run.call(ed, args));
     command.shift_select = s.as_bool(&shift_select) == Some(true);
+    command.barf_if_read_only = s.as_bool(&barf_if_read_only) == Some(true);
     command.source = LOADING.with_borrow(|files| files.last().cloned());
     for param in params {
         if !s.is_plain_object(&param) {
