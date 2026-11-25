@@ -1092,14 +1092,14 @@ e8.defineCommand({
     // Only the first line keeps the table's indentation, as in Org.
     e8.deleteRegion(e8.point(), orgTableEnd());
     e8.insert(contents.map((x) => `| ${x.join(" | ")}  |\n`).join(""));
-    if (contents.length === 0) {
-      // With no rows, Org's align from here fails looking for a bar, and a
-      // table further down is left as it is, as is point.
-      if (e8.bufferText(e8.point(), e8.pointMax()).includes("|")) return;
-      e8.signal("search-failed", 'Search failed: "|"', ['"|"']);
-    }
     orgTableGotoLine(colOld);
     gotoColumn(dlineOld);
+    if (contents.length === 0) {
+      // With no rows, Org's align from here fails looking for a bar, and
+      // does nothing off a table line.
+      if (!e8.bufferText(e8.point(), e8.pointMax()).includes("|")) e8.signal("search-failed", 'Search failed: "|"', ['"|"']);
+      if (!isTableLine(lineAt())) return;
+    }
     align();
   },
 });
