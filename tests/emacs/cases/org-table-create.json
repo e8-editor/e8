@@ -505,5 +505,1132 @@
    "org-mode"
   ],
   "message": true
+ },
+ {
+  "name": "review-size-0x0-blank",
+  "text": "a\n\nb\n",
+  "point": 2,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "0x0"
+  ]
+ },
+ {
+  "name": "review-size-1x0-blank",
+  "text": "a\n\nb\n",
+  "point": 2,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "1x0"
+  ]
+ },
+ {
+  "name": "review-size-3x0-blank",
+  "text": "a\n\nb\n",
+  "point": 2,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "3x0"
+  ]
+ },
+ {
+  "name": "review-size-0x2-blank",
+  "text": "a\n\nb\n",
+  "point": 2,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "0x2"
+  ]
+ },
+ {
+  "name": "review-size-0x1-blank",
+  "text": "a\n\nb\n",
+  "point": 2,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "0x1"
+  ]
+ },
+ {
+  "name": "review-size-10x3-blank",
+  "text": "a\n\nb\n",
+  "point": 2,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "10x3"
+  ]
+ },
+ {
+  "name": "review-size-spaced-blank",
+  "text": "a\n\nb\n",
+  "point": 2,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "3 x 2"
+  ]
+ },
+ {
+  "name": "review-size-3x-blank",
+  "text": "a\n\nb\n",
+  "point": 2,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "3x"
+  ]
+ },
+ {
+  "name": "review-size-x2-blank",
+  "text": "a\n\nb\n",
+  "point": 2,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "x2"
+  ]
+ },
+ {
+  "name": "review-size-abc-blank",
+  "text": "a\n\nb\n",
+  "point": 2,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "abc"
+  ]
+ },
+ {
+  "name": "review-size-upper-blank",
+  "text": "a\n\nb\n",
+  "point": 2,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "3X2"
+  ]
+ },
+ {
+  "name": "review-size-padded-blank",
+  "text": "a\n\nb\n",
+  "point": 2,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   " 3x2 "
+  ]
+ },
+ {
+  "name": "review-size-3x2x4-blank",
+  "text": "a\n\nb\n",
+  "point": 2,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "3x2x4"
+  ]
+ },
+ {
+  "name": "review-size-frac-blank",
+  "text": "a\n\nb\n",
+  "point": 2,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "3x2.5"
+  ]
+ },
+ {
+  "name": "review-size-neg-blank",
+  "text": "a\n\nb\n",
+  "point": 2,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x-1"
+  ]
+ },
+ {
+  "name": "review-size-trail-blank",
+  "text": "a\n\nb\n",
+  "point": 2,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "3x2abc"
+  ]
+ },
+ {
+  "name": "review-size-0x0-mid",
+  "text": "foo bar\n",
+  "point": 3,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "0x0"
+  ]
+ },
+ {
+  "name": "review-size-1x0-mid",
+  "text": "foo bar\n",
+  "point": 3,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "1x0"
+  ]
+ },
+ {
+  "name": "review-size-0x2-mid",
+  "text": "foo bar\n",
+  "point": 3,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "0x2"
+  ]
+ },
+ {
+  "name": "review-size-3x-mid",
+  "text": "foo bar\n",
+  "point": 3,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "3x"
+  ]
+ },
+ {
+  "name": "review-size-upper-mid",
+  "text": "foo bar\n",
+  "point": 3,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "3X2"
+  ]
+ },
+ {
+  "name": "review-size-frac-mid",
+  "text": "foo bar\n",
+  "point": 3,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "3x2.5"
+  ]
+ },
+ {
+  "name": "review-size-1x0-blanks",
+  "text": "   foo\n",
+  "point": 2,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "1x0"
+  ]
+ },
+ {
+  "name": "review-size-1x0-intable",
+  "text": "| a | b |\n",
+  "point": 0,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "1x0"
+  ]
+ },
+ {
+  "name": "review-tab-mid",
+  "text": "\tfoo bar\n",
+  "point": 4,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "3x2"
+  ]
+ },
+ {
+  "name": "review-tab-only",
+  "text": "\tfoo\n",
+  "point": 1,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "3x2"
+  ]
+ },
+ {
+  "name": "review-tab-after-text",
+  "text": "foo\tbar\n",
+  "point": 4,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-tab-space-blank",
+  "text": "\t foo\n",
+  "point": 2,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-wide-before",
+  "text": "\u65e5\u672c foo\n",
+  "point": 2,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-trailing-space",
+  "text": "foo bar\n",
+  "point": 4,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-deep-indent",
+  "text": "    foo bar\n",
+  "point": 6,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-heading-bol",
+  "text": "* Heading here\n",
+  "point": 0,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-heading-stars",
+  "text": "* Heading here\n",
+  "point": 2,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-heading-eol",
+  "text": "* Heading here\n",
+  "point": 14,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-heading-tags",
+  "text": "* Heading   :tag:\n",
+  "point": 5,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-heading-body",
+  "text": "* H\nbody text\n",
+  "point": 9,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-item-bol",
+  "text": "- item text\n",
+  "point": 0,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-item-bullet",
+  "text": "- item text\n",
+  "point": 2,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-item-eol",
+  "text": "- item text\n",
+  "point": 11,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-subitem",
+  "text": "- a\n  - sub item\n",
+  "point": 12,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-item-continuation",
+  "text": "- item\n  text more\n",
+  "point": 14,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-paragraph-second",
+  "text": "one two\nthree four\n",
+  "point": 12,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-comment-line",
+  "text": "# a comment\n",
+  "point": 5,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-keyword-line",
+  "text": "#+TITLE: x y\n",
+  "point": 9,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-src-mid",
+  "text": "#+begin_src emacs-lisp\n(foo bar)\n#+end_src\n",
+  "point": 28,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-src-bol",
+  "text": "#+begin_src emacs-lisp\n(foo bar)\n#+end_src\n",
+  "point": 23,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-example-mid",
+  "text": "#+begin_example\nsome text\n#+end_example\n",
+  "point": 21,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-drawer-mid",
+  "text": "* H\n:PROPERTIES:\n:A: 1\n:END:\n",
+  "point": 17,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-drawer-value",
+  "text": "* H\n:PROPERTIES:\n:A: 1\n:END:\n",
+  "point": 21,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-table-bol",
+  "text": "| a | b |\n| c | d |\n",
+  "point": 0,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "3x2"
+  ]
+ },
+ {
+  "name": "review-table-mid",
+  "text": "| a | b |\n| c | d |\n",
+  "point": 4,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "3x2"
+  ]
+ },
+ {
+  "name": "review-table-eol",
+  "text": "| a | b |\n| c | d |\n",
+  "point": 9,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "3x2"
+  ]
+ },
+ {
+  "name": "review-table-second-bol",
+  "text": "| a | b |\n| c | d |\n",
+  "point": 10,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-table-1row-mid",
+  "text": "| a | b |\n| c | d |\n",
+  "point": 4,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x1"
+  ]
+ },
+ {
+  "name": "review-table-eob",
+  "text": "| a | b |",
+  "point": 9,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-table-hline",
+  "text": "| a |\n|---|\n| b |\n",
+  "point": 8,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-before-table-eol",
+  "text": "foo\n| a | b |\n",
+  "point": 3,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-before-table-mid",
+  "text": "foo bar\n| a | b |\n",
+  "point": 3,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-before-table-blank",
+  "text": "foo\n\n| a | b |\n",
+  "point": 4,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-before-table-blanks",
+  "text": "  \n| a | b |\n",
+  "point": 2,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-after-table-eol",
+  "text": "| a | b |\nfoo\n",
+  "point": 13,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-after-table-bol",
+  "text": "| a | b |\nfoo\n",
+  "point": 10,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-after-table-blank",
+  "text": "| a | b |\n\nfoo\n",
+  "point": 10,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-after-table-mid",
+  "text": "| a | b |\nfoo bar\n",
+  "point": 13,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-table-el",
+  "text": "+---+\n| a |\n+---+\n",
+  "point": 8,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-eob-mid",
+  "text": "foo",
+  "point": 1,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-eob-blanks",
+  "text": "a\n  ",
+  "point": 4,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-eob-heading",
+  "text": "* H",
+  "point": 3,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-narrow-mid",
+  "text": "* A\ntext here\n* B\nmore\n",
+  "point": 9,
+  "keys": "C-x n s C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-narrow-eol",
+  "text": "* A\ntext here\n* B\nmore\n",
+  "point": 13,
+  "keys": "C-x n s C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-narrow-table-below",
+  "text": "* A\nfoo\n* B\n| x |\n",
+  "point": 7,
+  "keys": "C-x n s C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-default-size-global",
+  "text": "a\n\nb\n",
+  "point": 2,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   ""
+  ],
+  "globals": {
+   "org-table-default-size": "3x3"
+  }
+ },
+ {
+  "name": "review-default-size-local",
+  "text": "foo bar\n",
+  "point": 3,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   ""
+  ],
+  "vars": {
+   "org-table-default-size": "2x1"
+  }
+ },
+ {
+  "name": "review-prefix-cu",
+  "text": "a\n\nb\n",
+  "point": 2,
+  "keys": "C-u C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "3x2"
+  ]
+ },
+ {
+  "name": "review-prefix-num",
+  "text": "a\n\nb\n",
+  "point": 2,
+  "keys": "C-u 3 C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "3x2"
+  ]
+ },
+ {
+  "name": "review-realign-off",
+  "text": "foo bar\n",
+  "point": 3,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ],
+  "vars": {
+   "org-table-automatic-realign": false
+  }
+ },
+ {
+  "name": "review-then-type",
+  "text": "a\n\nb\n",
+  "point": 2,
+  "keys": "C-c | x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-then-tab-type",
+  "text": "a\n\nb\n",
+  "point": 2,
+  "keys": "C-c | TAB x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-mid-then-tab",
+  "text": "foo bar\n",
+  "point": 3,
+  "keys": "C-c | C-n TAB x TAB y",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x2"
+  ]
+ },
+ {
+  "name": "review-undo-mid",
+  "text": "foo bar\n",
+  "point": 3,
+  "keys": "C-c | C-/",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "3x2"
+  ]
+ },
+ {
+  "name": "review-undo-blank",
+  "text": "a\n\nb\n",
+  "point": 2,
+  "keys": "C-c | C-/",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "3x2"
+  ]
+ },
+ {
+  "name": "review-undo-table",
+  "text": "| a | b |\n| c | d |\n",
+  "point": 4,
+  "keys": "C-c | C-/",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "3x2"
+  ]
+ },
+ {
+  "name": "review-undo-twice",
+  "text": "foo bar\n",
+  "point": 3,
+  "keys": "C-c | C-/ C-/",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "3x2"
+  ]
+ },
+ {
+  "name": "review-zero-rows-heading-mid",
+  "text": "* Heading\n",
+  "point": 5,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x0"
+  ]
+ },
+ {
+  "name": "review-zero-rows-eol-before-heading",
+  "text": "foo\n* B\n",
+  "point": 3,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x0"
+  ]
+ },
+ {
+  "name": "review-zero-rows-table-mid",
+  "text": "| a | b |\n",
+  "point": 4,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "2x0"
+  ]
  }
 ]

@@ -1148,6 +1148,31 @@ e8.defineCommand({
 });
 
 
+e8.defineVariable({
+  name: "org-table-default-size",
+  doc: "The size C-c | offers for a new table, as columns x rows.",
+  value: "5x2",
+});
+
+/** A string split at a regexp's matches, those at its very start and end ignored, as org-split-string. */
+function splitString(text: string, separators: RegExp): string[] {
+  const out: string[] = [];
+  let i = 0;
+  for (const m of allMatches(separators, text)) {
+    const at = m.index ?? 0;
+    if (!(at === 0 && out.length === 0 && i === 0)) out.push(text.slice(i, at));
+    i = at + m[0].length;
+  }
+  if (i !== text.length || out.length === 0 && i === 0) out.push(text.slice(i));
+  return out;
+}
+
+/** The number a string starts with, or 0, as string-to-number reads it. */
+function stringToNumber(text: string): number {
+  const m = /^[ \t\n]*([-+]?(?:\d+\.?\d*(?:e[-+]?\d+)?|\.\d+(?:e[-+]?\d+)?))/i.exec(text);
+  return m ? Number(m[1]) : 0;
+}
+
 /** Rows laid out as an aligned table, for making a new one. */
 function formatRows(indent: string, rows: Row[]): string[] {
   const data = rows.filter((r): r is string[] => r !== "hline");
@@ -1174,8 +1199,8 @@ e8.defineCommand({
   doc:
     "Make a table: from the active region, splitting lines at tabs, else commas, else runs of spaces; " +
     "otherwise an empty one of a size read in the minibuffer, such as 3x2.",
-  params: [{ name: "size", prompt: "Table size Columns x Rows [e.g. 5x2]: " }],
-  run: (size) => {
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg: e8.PrefixArg) => {
     if (orgRegionActive()) {
       const mark = e8.mark() ?? e8.point();
       const from = e8.lineStart(e8.lineOf(Math.min(mark, e8.point())));
@@ -1195,9 +1220,21 @@ e8.defineCommand({
       gotoColumn(1);
       return;
     }
-    const match = /^\s*(\d+)\s*x\s*(\d+)\s*$/.exec(size === "" ? "5x2" : size);
-    if (!match) throw new Error("Table size should be columns x rows, such as 5x2");
-    const [cols, rowCount] = [Number(match[1]), Number(match[2])];
+    // As org-table-create: a prefix argument is taken for the size, which
+    // Org then fails on, as it is no string; else the size is read.
+    if (arg !== null && arg !== undefined) {
+      const shown = Array.isArray(arg) ? `(${arg[0]})` : String(arg);
+      e8.signal("wrong-type-argument", `Wrong type argument: stringp, ${shown}`, [e8.intern("stringp"), arg]);
+    }
+    const fallback = String(e8.variable("org-table-default-size") ?? "5x2");
+    const size = e8.readString(`Table size Columns x Rows [e.g. ${fallback}]: `, { default: fallback });
+    // Split on x, whatever its case, ignoring one at either end, as org-split-string does; each part read as string-to-number reads it.
+    const parts = splitString(size === "" ? fallback : size, / *x */gi);
+    if (parts.length < 2) e8.signal("wrong-type-argument", "Wrong type argument: stringp, nil", [e8.intern("stringp"), null]);
+    const [cols, rowNumber] = [stringToNumber(parts[0]), stringToNumber(parts[1])];
+    if (!Number.isInteger(cols) || cols < 0) e8.signal("wrong-type-argument", `Wrong type argument: wholenump, ${cols}`, [e8.intern("wholenump"), cols]);
+    // As dotimes counts: rows while below the number.
+    const rowCount = Math.max(0, Math.ceil(rowNumber));
     // As org-table-create: rows of empty fields indented to point's column,
     // after a line break at point unless only blanks come before it, then a
     // rule after the first row, and the table aligned around point.
@@ -1215,8 +1252,14 @@ e8.defineCommand({
       e8.gotoChar(pos);
     }
     // Org aligns from point; on the line before the table, which is no
-    // table line, its search for the table's bounds finds the new one.
+    // table line, its search for the table's bounds finds the new one;
+    // with no rows made there is none, and its search for a bar fails.
     if (isTableLine(lineAt())) align();
+    else if (rowCount === 0) {
+      // From the start of point's line, where Org's align has gone by then.
+      e8.gotoChar(e8.lineStart(lineAt(pos)));
+      e8.signal("search-failed", 'Search failed: "|"', ['"|"']);
+    }
     else {
       e8.gotoChar(rowCount > 1 && pos < first ? e8.lineStart(lineAt(pos) + 1) : first);
       align();
