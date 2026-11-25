@@ -1,0 +1,455 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "review-local-par-mret-dot",
+      "input": {
+        "text": "1. a\n2. b\n",
+        "point": 8,
+        "keys": "C-e M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "1. a\n2. b\n* x\n",
+      "visible": "1. a\n2. b\n* x\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-local-dot-mret-par",
+      "input": {
+        "text": "1) a\n2) b\n",
+        "point": 8,
+        "keys": "C-e M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "1) a\n2) b\n* x\n",
+      "visible": "1) a\n2) b\n* x\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-local-dot-cycle",
+      "input": {
+        "text": "- a\n- b\n",
+        "point": 2,
+        "keys": "C-c - C-c - C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "- a\n- b\n",
+      "visible": "- a\n- b\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-local-par-cycle",
+      "input": {
+        "text": "- a\n- b\n",
+        "point": 2,
+        "keys": "C-c - C-c - C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "- a\n- b\n",
+      "visible": "- a\n- b\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-local-par-cminus-region",
+      "input": {
+        "text": "1. a\n2. b\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "vars": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "- 1. a\n- 2. b\n",
+      "visible": "- 1. a\n- 2. b\n",
+      "point": 14,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-local-mret",
+      "input": {
+        "text": "a. one\nb. two\n",
+        "point": 10,
+        "keys": "C-e M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "a. one\nb. two\nc. x\n",
+      "visible": "a. one\nb. two\nc. x\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "alpha-local-cycle",
+      "input": {
+        "text": "- a\n- b\n",
+        "point": 0,
+        "keys": "C-c - C-c - C-c - C-c - C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "A. a\nB. b\n",
+      "visible": "A. a\nB. b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "alpha-local-ca",
+      "input": {
+        "text": "a. one\nb. two\n",
+        "point": 10,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-list-allow-alphabetical": true
+        },
+        "globals": {
+          "org-special-ctrl-a/e": true
+        }
+      },
+      "text": "a. one\nb. two\n",
+      "visible": "a. one\nb. two\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "alpha-local-tab",
+      "input": {
+        "text": "a. one\nb. \n",
+        "point": 7,
+        "keys": "C-e TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "a. one\n   a. \n",
+      "visible": "a. one\n   a. \n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "alpha-local-mdown",
+      "input": {
+        "text": "a. one\nb. two\n",
+        "point": 3,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "a. two\nb. one\n",
+      "visible": "a. two\nb. one\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "alpha-local-sright",
+      "input": {
+        "text": "a. one\nb. two\n",
+        "point": 3,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "A. one\nB. two\n",
+      "visible": "A. one\nB. two\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "alpha-off-local",
+      "input": {
+        "text": "a. one\nb. two\n",
+        "point": 10,
+        "keys": "C-e M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-list-allow-alphabetical": false
+        },
+        "globals": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "a. one\nb. two\n* x\n",
+      "visible": "a. one\nb. two\n* x\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "alpha-global-unchanged",
+      "input": {
+        "text": "a. one\nb. two\n",
+        "point": 10,
+        "keys": "C-e M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "message": true
+      },
+      "text": "a. one\nb. two\n* x\n",
+      "visible": "a. one\nb. two\n* x\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "term-local-dot-tab",
+      "input": {
+        "text": "1) a\n2) b\n",
+        "point": 8,
+        "keys": "C-e M-RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "1) a\n2) b\n* \n",
+      "visible": "1) a\n2) b\n* \n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "term-local-paren-sright",
+      "input": {
+        "text": "1. a\n2. b\n",
+        "point": 3,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-plain-list-ordered-item-terminator": 41
+        }
+      },
+      "text": "1. a\n2. b\n",
+      "visible": "1. a\n2. b\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "To use shift-selection with Org mode, customize ‘org-support-shift-select’",
+      "message": null
+    },
+    {
+      "name": "term-local-dot-cstar",
+      "input": {
+        "text": "* H\n1. a\n2. b\n",
+        "point": 7,
+        "keys": "C-c *",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-plain-list-ordered-item-terminator": 46
+        }
+      },
+      "text": "* H\n** a\n2. b\n",
+      "visible": "* H\n** a\n2. b\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    }
+  ]
+}

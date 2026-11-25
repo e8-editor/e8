@@ -1,0 +1,260 @@
+[
+ {
+  "name": "review-local-par-mret-dot",
+  "text": "1. a\n2. b\n",
+  "point": 8,
+  "keys": "C-e M-RET x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "call": [
+   "org-element-update-syntax"
+  ],
+  "vars": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "review-local-dot-mret-par",
+  "text": "1) a\n2) b\n",
+  "point": 8,
+  "keys": "C-e M-RET x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "call": [
+   "org-element-update-syntax"
+  ],
+  "vars": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "review-local-dot-cycle",
+  "text": "- a\n- b\n",
+  "point": 2,
+  "keys": "C-c - C-c - C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "call": [
+   "org-element-update-syntax"
+  ],
+  "vars": {
+   "org-plain-list-ordered-item-terminator": 46
+  }
+ },
+ {
+  "name": "review-local-par-cycle",
+  "text": "- a\n- b\n",
+  "point": 2,
+  "keys": "C-c - C-c - C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "call": [
+   "org-element-update-syntax"
+  ],
+  "vars": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "review-local-par-cminus-region",
+  "text": "1. a\n2. b\n",
+  "point": 0,
+  "keys": "C-SPC M-> C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "call": [
+   "org-element-update-syntax"
+  ],
+  "vars": {
+   "org-plain-list-ordered-item-terminator": 41
+  }
+ },
+ {
+  "name": "alpha-local-mret",
+  "text": "a. one\nb. two\n",
+  "point": 10,
+  "keys": "C-e M-RET x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "org-list-allow-alphabetical": true
+  },
+  "call": [
+   "org-element-update-syntax"
+  ]
+ },
+ {
+  "name": "alpha-local-cycle",
+  "text": "- a\n- b\n",
+  "point": 0,
+  "keys": "C-c - C-c - C-c - C-c - C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "org-list-allow-alphabetical": true
+  },
+  "call": [
+   "org-element-update-syntax"
+  ]
+ },
+ {
+  "name": "alpha-local-ca",
+  "text": "a. one\nb. two\n",
+  "point": 10,
+  "keys": "C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "org-list-allow-alphabetical": true
+  },
+  "globals": {
+   "org-special-ctrl-a/e": true
+  },
+  "call": [
+   "org-element-update-syntax"
+  ]
+ },
+ {
+  "name": "alpha-local-tab",
+  "text": "a. one\nb. \n",
+  "point": 7,
+  "keys": "C-e TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "org-list-allow-alphabetical": true
+  },
+  "call": [
+   "org-element-update-syntax"
+  ]
+ },
+ {
+  "name": "alpha-local-mdown",
+  "text": "a. one\nb. two\n",
+  "point": 3,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "org-list-allow-alphabetical": true
+  },
+  "call": [
+   "org-element-update-syntax"
+  ]
+ },
+ {
+  "name": "alpha-local-sright",
+  "text": "a. one\nb. two\n",
+  "point": 3,
+  "keys": "S-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "org-list-allow-alphabetical": true
+  },
+  "call": [
+   "org-element-update-syntax"
+  ]
+ },
+ {
+  "name": "alpha-off-local",
+  "text": "a. one\nb. two\n",
+  "point": 10,
+  "keys": "C-e M-RET x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-list-allow-alphabetical": true
+  },
+  "vars": {
+   "org-list-allow-alphabetical": false
+  },
+  "call": [
+   "org-element-update-syntax"
+  ]
+ },
+ {
+  "name": "alpha-global-unchanged",
+  "text": "a. one\nb. two\n",
+  "point": 10,
+  "keys": "C-e M-RET x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "call": [
+   "org-element-update-syntax"
+  ]
+ },
+ {
+  "name": "term-local-dot-tab",
+  "text": "1) a\n2) b\n",
+  "point": 8,
+  "keys": "C-e M-RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "org-plain-list-ordered-item-terminator": 46
+  },
+  "call": [
+   "org-element-update-syntax"
+  ]
+ },
+ {
+  "name": "term-local-paren-sright",
+  "text": "1. a\n2. b\n",
+  "point": 3,
+  "keys": "S-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "org-plain-list-ordered-item-terminator": 41
+  },
+  "call": [
+   "org-element-update-syntax"
+  ]
+ },
+ {
+  "name": "term-local-dot-cstar",
+  "text": "* H\n1. a\n2. b\n",
+  "point": 7,
+  "keys": "C-c *",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "org-plain-list-ordered-item-terminator": 46
+  },
+  "call": [
+   "org-element-update-syntax"
+  ]
+ }
+]
