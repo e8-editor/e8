@@ -429,6 +429,49 @@ e8.defineCommand({
   },
 });
 
+/** Moves to the start of the field point is in, or of the one before if at or before its start, after moving back n - 1 fields, as org-table-beginning-of-field. */
+function beginningOfField(n: number): void {
+  const pos = e8.point();
+  for (; n > 1; n--) e8.call("org-table-previous-field");
+  // Back to a bar on this line or the one before.
+  const line = lineAt();
+  const from = line > 0 ? e8.lineStart(line - 1) : e8.lineStart(line);
+  const before = e8.bufferText(from, e8.point());
+  const i = before.lastIndexOf("|");
+  if (i < 0) e8.userError("No more table fields before the current");
+  e8.gotoChar(from + charCount(before.slice(0, i)) + 1);
+  if (charAt(e8.point()) === " ") e8.gotoChar(e8.point() + 1);
+  if (e8.point() >= pos) beginningOfField(2);
+}
+
+/** Moves to the end of the field point is in, or of the one after if at or after its end, after moving on n - 1 fields, as org-table-end-of-field. */
+function endOfField(n: number): void {
+  const pos = e8.point();
+  for (; n > 1; n--) e8.call("org-table-next-field");
+  const rest = e8.bufferText(e8.point(), e8.lineEnd(lineAt()));
+  const i = rest.indexOf("|");
+  if (i >= 0) {
+    e8.gotoChar(e8.point() + charCount(rest.slice(0, i)));
+    e8.skipCharsBackward(" ");
+    if (e8.point() > 0 && e8.bufferText(e8.point() - 1, e8.point()) === "|" && charAt(e8.point()) === " ") e8.gotoChar(e8.point() + 1);
+  }
+  if (e8.point() <= pos) endOfField(2);
+}
+
+e8.defineCommand({
+  name: "org-table-beginning-of-field",
+  doc: "Move to the start of the table field point is in, or of the one before if already there; with a prefix argument, back that many fields.",
+  params: [{ name: "n", kind: "count" }],
+  run: (n: number) => beginningOfField(n),
+});
+
+e8.defineCommand({
+  name: "org-table-end-of-field",
+  doc: "Move to the end of the table field point is in, or of the one after if already there; with a prefix argument, on that many fields.",
+  params: [{ name: "n", kind: "count" }],
+  run: (n: number) => endOfField(n),
+});
+
 e8.defineCommand({
   name: "org-table-next-row",
   doc: "Move to the same field in the next row, adding a row before a rule or at the end. The table is aligned first if it changed.",

@@ -1,0 +1,2241 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "fn-bwd-second",
+      "input": {
+        "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+        "point": 26,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "visible": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fn-fwd-second",
+      "input": {
+        "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+        "point": 26,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "visible": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fn-bwd-one",
+      "input": {
+        "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+        "point": 20,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "visible": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fn-fwd-one",
+      "input": {
+        "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+        "point": 20,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "visible": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fn-bwd-first",
+      "input": {
+        "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+        "point": 14,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "visible": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fn-fwd-first",
+      "input": {
+        "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+        "point": 14,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "visible": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fn-bwd-label",
+      "input": {
+        "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+        "point": 7,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "visible": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fn-fwd-label",
+      "input": {
+        "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+        "point": 7,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "visible": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fn-bwd-next",
+      "input": {
+        "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+        "point": 51,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "visible": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "point": 39,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fn-fwd-next",
+      "input": {
+        "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+        "point": 51,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "visible": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "point": 55,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fn-bwd-para",
+      "input": {
+        "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+        "point": 0,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "visible": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fn-fwd-para",
+      "input": {
+        "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+        "point": 0,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "visible": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fn-bwd-twice",
+      "input": {
+        "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+        "point": 26,
+        "keys": "M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "visible": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fn-fwd-twice",
+      "input": {
+        "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+        "point": 14,
+        "keys": "M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "visible": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fn-bwd-all",
+      "input": {
+        "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+        "point": 51,
+        "keys": "M-a M-a M-a M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "visible": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fn-fwd-all",
+      "input": {
+        "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+        "point": 0,
+        "keys": "M-e M-e M-e M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "visible": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+      "point": 55,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "item-bwd-second",
+      "input": {
+        "text": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+        "point": 13,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+      "visible": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "item-fwd-second",
+      "input": {
+        "text": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+        "point": 13,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+      "visible": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "item-bwd-more",
+      "input": {
+        "text": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+        "point": 27,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+      "visible": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "item-fwd-more",
+      "input": {
+        "text": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+        "point": 27,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+      "visible": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "item-bwd-last",
+      "input": {
+        "text": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+        "point": 39,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+      "visible": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "item-fwd-last",
+      "input": {
+        "text": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+        "point": 39,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+      "visible": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+      "point": 44,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "item-bwd-two",
+      "input": {
+        "text": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+        "point": 47,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+      "visible": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+      "point": 45,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "item-fwd-two",
+      "input": {
+        "text": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+        "point": 47,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+      "visible": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+      "point": 56,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "item-bwd-after",
+      "input": {
+        "text": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+        "point": 58,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+      "visible": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+      "point": 45,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "item-fwd-after",
+      "input": {
+        "text": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+        "point": 58,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+      "visible": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+      "point": 64,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-bwd-q1",
+      "input": {
+        "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+        "point": 22,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+      "visible": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-fwd-q1",
+      "input": {
+        "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+        "point": 22,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+      "visible": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-bwd-q2",
+      "input": {
+        "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+        "point": 35,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+      "visible": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-fwd-q2",
+      "input": {
+        "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+        "point": 35,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+      "visible": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-bwd-a1",
+      "input": {
+        "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+        "point": 59,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+      "visible": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+      "point": 47,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-fwd-a1",
+      "input": {
+        "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+        "point": 59,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+      "visible": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+      "point": 69,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-bwd-a2",
+      "input": {
+        "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+        "point": 71,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+      "visible": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+      "point": 59,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-fwd-a2",
+      "input": {
+        "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+        "point": 71,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+      "visible": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+      "point": 81,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-bwd-begin",
+      "input": {
+        "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+        "point": 8,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+      "visible": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "quote-fwd-begin",
+      "input": {
+        "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+        "point": 8,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+      "visible": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "head-bwd-head",
+      "input": {
+        "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+        "point": 4,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "visible": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "head-fwd-head",
+      "input": {
+        "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+        "point": 4,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "visible": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "head-bwd-with",
+      "input": {
+        "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+        "point": 14,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "visible": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "head-fwd-with",
+      "input": {
+        "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+        "point": 14,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "visible": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "head-bwd-eol",
+      "input": {
+        "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+        "point": 19,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "visible": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "head-fwd-eol",
+      "input": {
+        "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+        "point": 19,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "visible": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "head-bwd-body",
+      "input": {
+        "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+        "point": 23,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "visible": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "head-fwd-body",
+      "input": {
+        "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+        "point": 23,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "visible": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "head-bwd-body2",
+      "input": {
+        "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+        "point": 34,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "visible": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "head-fwd-body2",
+      "input": {
+        "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+        "point": 34,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "visible": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "point": 43,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "head-bwd-sub",
+      "input": {
+        "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+        "point": 47,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "visible": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "point": 44,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "head-fwd-sub",
+      "input": {
+        "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+        "point": 47,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "visible": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "point": 58,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "head-bwd-subbody",
+      "input": {
+        "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+        "point": 59,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "visible": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "point": 44,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "head-fwd-subbody",
+      "input": {
+        "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+        "point": 59,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "visible": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "point": 68,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "head-bwd-stars",
+      "input": {
+        "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+        "point": 0,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "visible": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "head-fwd-stars",
+      "input": {
+        "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+        "point": 0,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "visible": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "head-fwd-all",
+      "input": {
+        "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+        "point": 0,
+        "keys": "M-e M-e M-e M-e M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "visible": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "point": 68,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "head-bwd-all",
+      "input": {
+        "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+        "point": 63,
+        "keys": "M-a M-a M-a M-a M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "visible": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "table-bwd-a",
+      "input": {
+        "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+        "point": 8,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "visible": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move to previous table field",
+      "message": null
+    },
+    {
+      "name": "table-fwd-a",
+      "input": {
+        "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+        "point": 8,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "visible": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "table-bwd-b",
+      "input": {
+        "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+        "point": 10,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "visible": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "table-fwd-b",
+      "input": {
+        "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+        "point": 10,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "visible": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "table-bwd-cc",
+      "input": {
+        "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+        "point": 14,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "visible": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "table-fwd-cc",
+      "input": {
+        "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+        "point": 14,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "visible": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "table-bwd-bar",
+      "input": {
+        "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+        "point": 12,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "visible": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "table-fwd-bar",
+      "input": {
+        "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+        "point": 12,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "visible": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "table-bwd-rule",
+      "input": {
+        "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "visible": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Wrong type argument: number-or-marker-p, nil",
+      "message": null
+    },
+    {
+      "name": "table-fwd-rule",
+      "input": {
+        "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "visible": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Wrong type argument: number-or-marker-p, nil",
+      "message": null
+    },
+    {
+      "name": "table-bwd-d",
+      "input": {
+        "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+        "point": 34,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "visible": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "table-fwd-d",
+      "input": {
+        "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+        "point": 34,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "visible": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "table-bwd-e",
+      "input": {
+        "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+        "point": 40,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "visible": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "table-fwd-e",
+      "input": {
+        "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+        "point": 40,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "visible": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "point": 41,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "table-bwd-start",
+      "input": {
+        "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+        "point": 6,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "visible": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "table-fwd-start",
+      "input": {
+        "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+        "point": 6,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "visible": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "table-bwd-end",
+      "input": {
+        "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+        "point": 17,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "visible": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "table-fwd-end",
+      "input": {
+        "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+        "point": 17,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "visible": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "table-fwd-many",
+      "input": {
+        "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+        "point": 8,
+        "keys": "M-e M-e M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "visible": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "point": 41,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "table-bwd-many",
+      "input": {
+        "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+        "point": 40,
+        "keys": "M-a M-a M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "visible": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move to previous table field",
+      "message": null
+    },
+    {
+      "name": "table-fwd-count",
+      "input": {
+        "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+        "point": 8,
+        "keys": "M-3 M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "visible": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "table-bwd-count",
+      "input": {
+        "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+        "point": 40,
+        "keys": "M-2 M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "visible": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "field-bof",
+      "input": {
+        "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+        "point": 10,
+        "keys": "M-x o r g - t a b l e - b e g i n n i n g - o f - f i e l d RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a org-table-beginning-of-fieldb | cc |\n|                                 |    |\n|---------------------------------+----|\n| d                               | e  |\n\nAfter.\n",
+      "visible": "Text.\n| a org-table-beginning-of-fieldb | cc |\n|                                 |    |\n|---------------------------------+----|\n| d                               | e  |\n\nAfter.\n",
+      "point": 49,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Minibuffer read in batch",
+      "message": null
+    },
+    {
+      "name": "field-eof",
+      "input": {
+        "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+        "point": 8,
+        "keys": "M-x o r g - t a b l e - e n d - o f - f i e l d RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| org-table-end-of-fielda b | cc |\n|                           |    |\n|---------------------------+----|\n| d                         | e  |\n\nAfter.\n",
+      "visible": "Text.\n| org-table-end-of-fielda b | cc |\n|                           |    |\n|---------------------------+----|\n| d                         | e  |\n\nAfter.\n",
+      "point": 43,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Minibuffer read in batch",
+      "message": null
+    },
+    {
+      "name": "field-eof-last",
+      "input": {
+        "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+        "point": 41,
+        "keys": "M-x o r g - t a b l e - e n d - o f - f i e l d RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a b | cc                      |\n|-----+-------------------------|\n| d   | eorg-table-end-of-field |\n|     |                         |\n\nAfter.\n",
+      "visible": "Text.\n| a b | cc                      |\n|-----+-------------------------|\n| d   | eorg-table-end-of-field |\n|     |                         |\n\nAfter.\n",
+      "point": 116,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Minibuffer read in batch",
+      "message": null
+    },
+    {
+      "name": "field-bof-first",
+      "input": {
+        "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+        "point": 8,
+        "keys": "M-x o r g - t a b l e - b e g i n n i n g - o f - f i e l d RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| org-table-beginning-of-fielda b | cc |\n|                                 |    |\n|---------------------------------+----|\n| d                               | e  |\n\nAfter.\n",
+      "visible": "Text.\n| org-table-beginning-of-fielda b | cc |\n|                                 |    |\n|---------------------------------+----|\n| d                               | e  |\n\nAfter.\n",
+      "point": 49,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Minibuffer read in batch",
+      "message": null
+    },
+    {
+      "name": "count-fwd",
+      "input": {
+        "text": "One.  Two.  Three.\n\nFour.  Five.\n",
+        "point": 0,
+        "keys": "M-2 M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "One.  Two.  Three.\n\nFour.  Five.\n",
+      "visible": "One.  Two.  Three.\n\nFour.  Five.\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "count-bwd",
+      "input": {
+        "text": "One.  Two.  Three.\n\nFour.  Five.\n",
+        "point": 29,
+        "keys": "M-2 M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "One.  Two.  Three.\n\nFour.  Five.\n",
+      "visible": "One.  Two.  Three.\n\nFour.  Five.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "count-fwd-across",
+      "input": {
+        "text": "One.  Two.  Three.\n\nFour.  Five.\n",
+        "point": 6,
+        "keys": "M-3 M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "One.  Two.  Three.\n\nFour.  Five.\n",
+      "visible": "One.  Two.  Three.\n\nFour.  Five.\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "blank-fwd",
+      "input": {
+        "text": "One.  Two.  Three.\n\nFour.  Five.\n",
+        "point": 19,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "One.  Two.  Three.\n\nFour.  Five.\n",
+      "visible": "One.  Two.  Three.\n\nFour.  Five.\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "blank-bwd",
+      "input": {
+        "text": "One.  Two.  Three.\n\nFour.  Five.\n",
+        "point": 19,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "One.  Two.  Three.\n\nFour.  Five.\n",
+      "visible": "One.  Two.  Three.\n\nFour.  Five.\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "kill-sentence",
+      "input": {
+        "text": "One.  Two.  Three.\n\nFour.  Five.\n",
+        "point": 6,
+        "keys": "M-k",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "One.    Three.\n\nFour.  Five.\n",
+      "visible": "One.    Three.\n\nFour.  Five.\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "Two."
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "bwd-kill-sentence",
+      "input": {
+        "text": "One.  Two.  Three.\n\nFour.  Five.\n",
+        "point": 27,
+        "keys": "C-x DEL",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "One.  Two.  Three.\n\nFive.\n",
+      "visible": "One.  Two.  Three.\n\nFive.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "Four.  "
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "indented-next-fwd",
+      "input": {
+        "text": "Para one.  Two.\n\n  Indented next.  Second.\n",
+        "point": 11,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para one.  Two.\n\n  Indented next.  Second.\n",
+      "visible": "Para one.  Two.\n\n  Indented next.  Second.\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "indented-next-fwd-2",
+      "input": {
+        "text": "Para one.  Two.\n\n  Indented next.  Second.\n",
+        "point": 0,
+        "keys": "M-e M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para one.  Two.\n\n  Indented next.  Second.\n",
+      "visible": "Para one.  Two.\n\n  Indented next.  Second.\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "indented-bwd",
+      "input": {
+        "text": "Para one.  Two.\n\n  Indented next.  Second.\n",
+        "point": 35,
+        "keys": "M-a M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para one.  Two.\n\n  Indented next.  Second.\n",
+      "visible": "Para one.  Two.\n\n  Indented next.  Second.\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "drawer-fwd",
+      "input": {
+        "text": "* H\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+        "point": 12,
+        "keys": "M-e M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+      "visible": "* H\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+      "point": 41,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "drawer-bwd",
+      "input": {
+        "text": "* H\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+        "point": 35,
+        "keys": "M-a M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+      "visible": "* H\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "src-fwd",
+      "input": {
+        "text": "#+begin_src emacs-lisp\n(foo) (bar).  Baz.\n#+end_src\n",
+        "point": 23,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+begin_src emacs-lisp\n(foo) (bar).  Baz.\n#+end_src\n",
+      "visible": "#+begin_src emacs-lisp\n(foo) (bar).  Baz.\n#+end_src\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "src-bwd",
+      "input": {
+        "text": "#+begin_src emacs-lisp\n(foo) (bar).  Baz.\n#+end_src\n",
+        "point": 37,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+begin_src emacs-lisp\n(foo) (bar).  Baz.\n#+end_src\n",
+      "visible": "#+begin_src emacs-lisp\n(foo) (bar).  Baz.\n#+end_src\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "narrow-quirk-fwd",
+      "input": {
+        "text": "A.\n\n          B.  C.\n",
+        "point": 2,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "A.\n\n          B.  C.\n",
+      "visible": "A.\n\n          B.  C.\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "narrow-quirk-fwd-twice",
+      "input": {
+        "text": "A.\n\n          B.  C.\n",
+        "point": 0,
+        "keys": "M-e M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "A.\n\n          B.  C.\n",
+      "visible": "A.\n\n          B.  C.\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "narrow-quirk-far",
+      "input": {
+        "text": "Para one.\n\n          B.  C.\n",
+        "point": 9,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para one.\n\n          B.  C.\n",
+      "visible": "Para one.\n\n          B.  C.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    }
+  ]
+}
