@@ -1605,5 +1605,1955 @@
    "org-mode"
   ],
   "message": true
+ },
+ {
+  "name": "cb-heading-latex",
+  "text": "* H\n\\begin{itemize}\n- [ ] a\n\\end{itemize}\n- [ ] b\n",
+  "point": 0,
+  "keys": "C-c C-x C-b",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cb-region-latex",
+  "text": "* H\n\\begin{itemize}\n- [ ] a\n\\end{itemize}\n- [ ] b\n",
+  "point": 4,
+  "keys": "C-SPC M-> C-c C-x C-b",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cb-heading-cu-latex",
+  "text": "* H\n\\begin{itemize}\n- [ ] a\n\\end{itemize}\n- [ ] b\n",
+  "point": 0,
+  "keys": "C-u C-c C-x C-b",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cb-heading-latexx",
+  "text": "* H\n\\begin{itemize}\n- [X] a\n\\end{itemize}\n- [ ] b\n",
+  "point": 0,
+  "keys": "C-c C-x C-b",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cb-region-latexx",
+  "text": "* H\n\\begin{itemize}\n- [X] a\n\\end{itemize}\n- [ ] b\n",
+  "point": 4,
+  "keys": "C-SPC M-> C-c C-x C-b",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cb-heading-cu-latexx",
+  "text": "* H\n\\begin{itemize}\n- [X] a\n\\end{itemize}\n- [ ] b\n",
+  "point": 0,
+  "keys": "C-u C-c C-x C-b",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cb-heading-comment",
+  "text": "* H\n#+begin_comment\n- [ ] a\n#+end_comment\n- [ ] b\n",
+  "point": 0,
+  "keys": "C-c C-x C-b",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cb-region-comment",
+  "text": "* H\n#+begin_comment\n- [ ] a\n#+end_comment\n- [ ] b\n",
+  "point": 4,
+  "keys": "C-SPC M-> C-c C-x C-b",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cb-heading-cu-comment",
+  "text": "* H\n#+begin_comment\n- [ ] a\n#+end_comment\n- [ ] b\n",
+  "point": 0,
+  "keys": "C-u C-c C-x C-b",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cb-heading-quote",
+  "text": "* H\n#+begin_quote\n- [ ] a\n#+end_quote\n- [ ] b\n",
+  "point": 0,
+  "keys": "C-c C-x C-b",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cb-region-quote",
+  "text": "* H\n#+begin_quote\n- [ ] a\n#+end_quote\n- [ ] b\n",
+  "point": 4,
+  "keys": "C-SPC M-> C-c C-x C-b",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cb-heading-cu-quote",
+  "text": "* H\n#+begin_quote\n- [ ] a\n#+end_quote\n- [ ] b\n",
+  "point": 0,
+  "keys": "C-u C-c C-x C-b",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cb-heading-src",
+  "text": "* H\n#+begin_src emacs-lisp\n- [ ] a\n#+end_src\n- [ ] b\n",
+  "point": 0,
+  "keys": "C-c C-x C-b",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cb-region-src",
+  "text": "* H\n#+begin_src emacs-lisp\n- [ ] a\n#+end_src\n- [ ] b\n",
+  "point": 4,
+  "keys": "C-SPC M-> C-c C-x C-b",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cb-heading-cu-src",
+  "text": "* H\n#+begin_src emacs-lisp\n- [ ] a\n#+end_src\n- [ ] b\n",
+  "point": 0,
+  "keys": "C-u C-c C-x C-b",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cb-heading-only-latex",
+  "text": "* H\n\\begin{itemize}\n- [ ] a\n- [ ] b\n\\end{itemize}\n",
+  "point": 0,
+  "keys": "C-c C-x C-b",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cb-region-only-latex",
+  "text": "* H\n\\begin{itemize}\n- [ ] a\n- [ ] b\n\\end{itemize}\n",
+  "point": 4,
+  "keys": "C-SPC M-> C-c C-x C-b",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cb-heading-only-comment",
+  "text": "* H\n#+begin_comment\n- [ ] a\n#+end_comment\n",
+  "point": 0,
+  "keys": "C-c C-x C-b",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "stats-latex",
+  "text": "* H [/]\n\\begin{itemize}\n- [X] a\n\\end{itemize}\n- [ ] b\n- [X] c\n",
+  "point": 5,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "stats-comment",
+  "text": "* H [/]\n#+begin_comment\n- [X] a\n#+end_comment\n- [ ] b\n- [X] c\n",
+  "point": 5,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "stats-latex-toggle",
+  "text": "* H [/]\n\\begin{itemize}\n- [X] a\n\\end{itemize}\n- [ ] b\n- [X] c\n",
+  "point": 49,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "stats-item-latex",
+  "text": "- top [/]\n  \\begin{x}\n  - [X] a\n  \\end{x}\n  - [ ] b\n",
+  "point": 7,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-after-heading-dash",
+  "text": "* H\n- a\n- b\n",
+  "point": 11,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-after-heading-mup",
+  "text": "* H\n- a\n- b\n",
+  "point": 11,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-after-keyword-dash",
+  "text": "#+NAME: l\n- a\n- b\n",
+  "point": 17,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-after-keyword-mup",
+  "text": "#+NAME: l\n- a\n- b\n",
+  "point": 17,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-after-attr-dash",
+  "text": "#+ATTR_ORG: :x y\n- a\n- b\n",
+  "point": 20,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-after-attr-mup",
+  "text": "#+ATTR_ORG: :x y\n- a\n- b\n",
+  "point": 20,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-after-para-dash",
+  "text": "text\n- a\n- b\n",
+  "point": 8,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-after-para-mup",
+  "text": "text\n- a\n- b\n",
+  "point": 8,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-footnote-dash",
+  "text": "[fn:1] note\n- a\n- b\n",
+  "point": 15,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-footnote-mup",
+  "text": "[fn:1] note\n- a\n- b\n",
+  "point": 15,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-footnote-first-dash",
+  "text": "[fn:1] - a\n- b\n",
+  "point": 14,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-footnote-first-mup",
+  "text": "[fn:1] - a\n- b\n",
+  "point": 14,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-center-dash",
+  "text": "#+begin_center\n- a\n- b\n#+end_center\n",
+  "point": 22,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-center-mup",
+  "text": "#+begin_center\n- a\n- b\n#+end_center\n",
+  "point": 22,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-special-dash",
+  "text": "#+begin_foo\n- a\n- b\n#+end_foo\n",
+  "point": 19,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-special-mup",
+  "text": "#+begin_foo\n- a\n- b\n#+end_foo\n",
+  "point": 19,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-dynblock-dash",
+  "text": "#+BEGIN: clocktable\n- a\n- b\n#+END:\n",
+  "point": 27,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-dynblock-mup",
+  "text": "#+BEGIN: clocktable\n- a\n- b\n#+END:\n",
+  "point": 27,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-verse-dash",
+  "text": "#+begin_verse\n- a\n- b\n#+end_verse\n",
+  "point": 21,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-verse-mup",
+  "text": "#+begin_verse\n- a\n- b\n#+end_verse\n",
+  "point": 21,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-example-dash",
+  "text": "#+begin_example\n- a\n- b\n#+end_example\n",
+  "point": 23,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-example-mup",
+  "text": "#+begin_example\n- a\n- b\n#+end_example\n",
+  "point": 23,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-export-dash",
+  "text": "#+begin_export latex\n- a\n- b\n#+end_export\n",
+  "point": 28,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-export-mup",
+  "text": "#+begin_export latex\n- a\n- b\n#+end_export\n",
+  "point": 28,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-propdrawer-dash",
+  "text": "* H\n:PROPERTIES:\n- a\n:END:\n",
+  "point": 20,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-propdrawer-mup",
+  "text": "* H\n:PROPERTIES:\n- a\n:END:\n",
+  "point": 20,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-unclosed-dash",
+  "text": "\\begin{itemize}\n- a\n- b\n",
+  "point": 23,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-unclosed-mup",
+  "text": "\\begin{itemize}\n- a\n- b\n",
+  "point": 23,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-mismatch-dash",
+  "text": "\\begin{a}\n- a\n- b\n\\end{b}\n",
+  "point": 17,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-mismatch-mup",
+  "text": "\\begin{a}\n- a\n- b\n\\end{b}\n",
+  "point": 17,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-indented-dash",
+  "text": "  \\begin{itemize}\n  - a\n  - b\n  \\end{itemize}\n",
+  "point": 29,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-indented-mup",
+  "text": "  \\begin{itemize}\n  - a\n  - b\n  \\end{itemize}\n",
+  "point": 29,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-star-dash",
+  "text": "\\begin{align*}\n- a\n- b\n\\end{align*}\n",
+  "point": 22,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-star-mup",
+  "text": "\\begin{align*}\n- a\n- b\n\\end{align*}\n",
+  "point": 22,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-after-para-dash",
+  "text": "text\n\\begin{x}\n- a\n- b\n\\end{x}\n",
+  "point": 22,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-after-para-mup",
+  "text": "text\n\\begin{x}\n- a\n- b\n\\end{x}\n",
+  "point": 22,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-after-kw-dash",
+  "text": "#+NAME: e\n\\begin{x}\n- a\n- b\n\\end{x}\n",
+  "point": 27,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-after-kw-mup",
+  "text": "#+NAME: e\n\\begin{x}\n- a\n- b\n\\end{x}\n",
+  "point": 27,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-in-item-dash",
+  "text": "- a\n  \\begin{x}\n  - b\n  \\end{x}\n- c\n",
+  "point": 21,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-in-item-mup",
+  "text": "- a\n  \\begin{x}\n  - b\n  \\end{x}\n- c\n",
+  "point": 21,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-in-item-c-dash",
+  "text": "- a\n  \\begin{x}\n  - b\n  \\end{x}\n- c\n",
+  "point": 35,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-in-item-c-mup",
+  "text": "- a\n  \\begin{x}\n  - b\n  \\end{x}\n- c\n",
+  "point": 35,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-in-item-a-dash",
+  "text": "- a\n  \\begin{x}\n  - b\n  \\end{x}\n- c\n",
+  "point": 3,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-in-item-a-mup",
+  "text": "- a\n  \\begin{x}\n  - b\n  \\end{x}\n- c\n",
+  "point": 3,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-splits-dash",
+  "text": "- a\n\\begin{x}\n- b\n\\end{x}\n- c\n",
+  "point": 29,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-splits-mup",
+  "text": "- a\n\\begin{x}\n- b\n\\end{x}\n- c\n",
+  "point": 29,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-same-line-end-dash",
+  "text": "\\begin{x}\n- a\n- b \\end{x}\n",
+  "point": 13,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-same-line-end-mup",
+  "text": "\\begin{x}\n- a\n- b \\end{x}\n",
+  "point": 13,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-trailing-dash",
+  "text": "\\begin{x}\n- a\n- b\n\\end{x} tail\n",
+  "point": 17,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-trailing-mup",
+  "text": "\\begin{x}\n- a\n- b\n\\end{x} tail\n",
+  "point": 17,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-item-begin-dash",
+  "text": "- \\begin{x}\n  - b\n  \\end{x}\n- c\n",
+  "point": 17,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-item-begin-mup",
+  "text": "- \\begin{x}\n  - b\n  \\end{x}\n- c\n",
+  "point": 17,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-inline-math-dash",
+  "text": "- a $x$\n- b \\(y\\)\n",
+  "point": 11,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-inline-math-mup",
+  "text": "- a $x$\n- b \\(y\\)\n",
+  "point": 11,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-in-item-msright",
+  "text": "- a\n  \\begin{x}\n  - b\n  \\end{x}\n- c\n",
+  "point": 21,
+  "keys": "M-S-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-in-item-cc",
+  "text": "- a\n  \\begin{x}\n  - b\n  \\end{x}\n- c\n",
+  "point": 21,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-in-item-a-msright",
+  "text": "- a\n  \\begin{x}\n  - b\n  \\end{x}\n- c\n",
+  "point": 3,
+  "keys": "M-S-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-in-item-a-cc",
+  "text": "- a\n  \\begin{x}\n  - b\n  \\end{x}\n- c\n",
+  "point": 3,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-splits-msright",
+  "text": "- a\n\\begin{x}\n- b\n\\end{x}\n- c\n",
+  "point": 29,
+  "keys": "M-S-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-splits-cc",
+  "text": "- a\n\\begin{x}\n- b\n\\end{x}\n- c\n",
+  "point": 29,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-footnote-msright",
+  "text": "[fn:1] note\n- a\n- b\n",
+  "point": 15,
+  "keys": "M-S-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-footnote-cc",
+  "text": "[fn:1] note\n- a\n- b\n",
+  "point": 15,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-after-keyword-msright",
+  "text": "#+NAME: l\n- a\n- b\n",
+  "point": 17,
+  "keys": "M-S-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-after-keyword-cc",
+  "text": "#+NAME: l\n- a\n- b\n",
+  "point": 17,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-unclosed-msright",
+  "text": "\\begin{itemize}\n- a\n- b\n",
+  "point": 23,
+  "keys": "M-S-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-latex-unclosed-cc",
+  "text": "\\begin{itemize}\n- a\n- b\n",
+  "point": 23,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-center-msright",
+  "text": "#+begin_center\n- a\n- b\n#+end_center\n",
+  "point": 22,
+  "keys": "M-S-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-center-cc",
+  "text": "#+begin_center\n- a\n- b\n#+end_center\n",
+  "point": 22,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-item-begin-msright",
+  "text": "- \\begin{x}\n  - b\n  \\end{x}\n- c\n",
+  "point": 17,
+  "keys": "M-S-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctx-item-begin-cc",
+  "text": "- \\begin{x}\n  - b\n  \\end{x}\n- c\n",
+  "point": 17,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "latex-msleft",
+  "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+  "point": 29,
+  "keys": "M-S-<left>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "latex-msup",
+  "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+  "point": 29,
+  "keys": "M-S-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "latex-msdown",
+  "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+  "point": 23,
+  "keys": "M-S-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "latex-msret",
+  "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+  "point": 29,
+  "keys": "M-S-RET x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "latex-sdown",
+  "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+  "point": 23,
+  "keys": "S-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "latex-sdown-shift",
+  "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+  "point": 23,
+  "keys": "S-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "name": "latex-sright-shift-bullet",
+  "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+  "point": 20,
+  "keys": "S-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-support-shift-select": true
+  }
+ },
+ {
+  "name": "latex-sright-always",
+  "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+  "point": 20,
+  "keys": "S-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-support-shift-select": "'always"
+  }
+ },
+ {
+  "name": "latex-ret",
+  "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-e RET x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "latex-cj",
+  "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-e C-j x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "latex-mq",
+  "text": "\\begin{x}\n- one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen\n\\end{x}\n",
+  "point": 13,
+  "keys": "M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "fill-column": 30
+  }
+ },
+ {
+  "name": "latex-ca",
+  "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-e C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "latex-ca-twice",
+  "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-e C-a C-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "org-special-ctrl-a/e": true
+  }
+ },
+ {
+  "name": "latex-ck",
+  "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+  "point": 22,
+  "keys": "C-k",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "org-special-ctrl-k": true
+  }
+ },
+ {
+  "name": "latex-repair",
+  "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+  "point": 29,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-list-repair"
+  ]
+ },
+ {
+  "name": "plain-repair",
+  "text": "* H\n- one\n   - two\n",
+  "point": 16,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-list-repair"
+  ]
+ },
+ {
+  "name": "latex-cu-star",
+  "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+  "point": 23,
+  "keys": "C-u C-c *",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "latex-region-star",
+  "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-SPC C-n C-e C-c *",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "latex-region-dash",
+  "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-SPC C-n C-e C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "latex-region-dash-from-text",
+  "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+  "point": 4,
+  "keys": "C-SPC C-n C-n C-e C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mixed-region-dash",
+  "text": "* H\n- x\n\\begin{itemize}\n- one\n\\end{itemize}\n- y\n",
+  "point": 4,
+  "keys": "C-SPC M-> C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mixed-region-star",
+  "text": "* H\n- x\n\\begin{itemize}\n- one\n\\end{itemize}\n- y\n",
+  "point": 4,
+  "keys": "C-SPC M-> C-c *",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "latex-insert-subheading",
+  "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-e M-x x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-insert-subheading"
+  ]
+ },
+ {
+  "name": "latex-insert-todo",
+  "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-e M-S-RET x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "latex-metaright-region",
+  "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-SPC C-n M-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "latex-metaleft-region",
+  "text": "* H\n\\begin{itemize}\n- one\n- two [ ] box\n\\end{itemize}\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-SPC C-n M-<left>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "latex-cycle-empty",
+  "text": "* H\n\\begin{itemize}\n- one\n- \n\\end{itemize}\n",
+  "point": 26,
+  "keys": "C-e TAB TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "plain-cycle-empty",
+  "text": "* H\n- one\n- \n",
+  "point": 10,
+  "keys": "C-e TAB TAB TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "latex-radio",
+  "text": "#+ATTR_ORG: :radio t\n\\begin{itemize}\n- [ ] a\n- [ ] b\n\\end{itemize}\n",
+  "point": 48,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "alpha-cycle",
+  "text": "a. one\nb. two\n",
+  "point": 10,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-list-allow-alphabetical": true
+  }
+ },
+ {
+  "name": "alpha-mup",
+  "text": "a. one\nb. two\n",
+  "point": 10,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-list-allow-alphabetical": true
+  }
+ },
+ {
+  "name": "alpha-off-dash",
+  "text": "a. one\nb. two\n",
+  "point": 10,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "alpha-latex",
+  "text": "\\begin{x}\na. one\nb. two\n\\end{x}\n",
+  "point": 20,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-list-allow-alphabetical": true
+  }
+ },
+ {
+  "name": "narrow-in-latex-dash",
+  "text": "* H\n\\begin{itemize}\n- one\n- two\n\\end{itemize}\n",
+  "point": 20,
+  "keys": "C-SPC C-n C-e C-x n n C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-verse-tab",
+  "text": "#+begin_verse\n| a | b |\n| c | d |\n#+end_verse\n",
+  "point": 26,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-verse-type",
+  "text": "#+begin_verse\n| a | b |\n| c | d |\n#+end_verse\n",
+  "point": 27,
+  "keys": "x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-example-tab",
+  "text": "#+begin_example\n| a | b |\n| c | d |\n#+end_example\n",
+  "point": 28,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-example-type",
+  "text": "#+begin_example\n| a | b |\n| c | d |\n#+end_example\n",
+  "point": 29,
+  "keys": "x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-src-tab",
+  "text": "#+begin_src text\n| a | b |\n| c | d |\n#+end_src\n",
+  "point": 29,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-src-type",
+  "text": "#+begin_src text\n| a | b |\n| c | d |\n#+end_src\n",
+  "point": 30,
+  "keys": "x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-center-tab",
+  "text": "#+begin_center\n| a | b |\n| c | d |\n#+end_center\n",
+  "point": 27,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-center-type",
+  "text": "#+begin_center\n| a | b |\n| c | d |\n#+end_center\n",
+  "point": 28,
+  "keys": "x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-special-tab",
+  "text": "#+begin_foo\n| a | b |\n| c | d |\n#+end_foo\n",
+  "point": 24,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-special-type",
+  "text": "#+begin_foo\n| a | b |\n| c | d |\n#+end_foo\n",
+  "point": 25,
+  "keys": "x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-dynblock-tab",
+  "text": "#+BEGIN: x\n| a | b |\n| c | d |\n#+END:\n",
+  "point": 23,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-dynblock-type",
+  "text": "#+BEGIN: x\n| a | b |\n| c | d |\n#+END:\n",
+  "point": 24,
+  "keys": "x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-drawer-tab",
+  "text": ":NOTES:\n| a | b |\n| c | d |\n:END:\n",
+  "point": 20,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-drawer-type",
+  "text": ":NOTES:\n| a | b |\n| c | d |\n:END:\n",
+  "point": 21,
+  "keys": "x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-footnote-tab",
+  "text": "[fn:1] note\n| a | b |\n| c | d |\n",
+  "point": 24,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-footnote-type",
+  "text": "[fn:1] note\n| a | b |\n| c | d |\n",
+  "point": 25,
+  "keys": "x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-item-tab",
+  "text": "- x\n  | a | b |\n  | c | d |\n",
+  "point": 20,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-item-type",
+  "text": "- x\n  | a | b |\n  | c | d |\n",
+  "point": 21,
+  "keys": "x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-after-para-tab",
+  "text": "text\n| a | b |\n| c | d |\n",
+  "point": 17,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-after-para-type",
+  "text": "text\n| a | b |\n| c | d |\n",
+  "point": 18,
+  "keys": "x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-latex-unclosed-tab",
+  "text": "\\begin{x}\n| a | b |\n| c | d |\n",
+  "point": 22,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-latex-unclosed-type",
+  "text": "\\begin{x}\n| a | b |\n| c | d |\n",
+  "point": 23,
+  "keys": "x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-tableel-type",
+  "text": "+---+---+\n| a | b |\n| c | d |\n+---+---+\n",
+  "point": 23,
+  "keys": "x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-propdrawer-tab",
+  "text": "* H\n:PROPERTIES:\n| a | b |\n| c | d |\n:END:\n",
+  "point": 29,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-propdrawer-type",
+  "text": "* H\n:PROPERTIES:\n| a | b |\n| c | d |\n:END:\n",
+  "point": 30,
+  "keys": "x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-verse-cret",
+  "text": "#+begin_verse\n| a | b |\n| c | d |\n#+end_verse\n",
+  "point": 26,
+  "keys": "C-c RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-verse-del",
+  "text": "#+begin_verse\n| a | b |\n| c | d |\n#+end_verse\n",
+  "point": 27,
+  "keys": "C-d",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-verse-mdown",
+  "text": "#+begin_verse\n| a | b |\n| c | d |\n#+end_verse\n",
+  "point": 16,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-tableel-cret",
+  "text": "+---+---+\n| a | b |\n| c | d |\n+---+---+\n",
+  "point": 22,
+  "keys": "C-c RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-dynblock-cret",
+  "text": "#+BEGIN: x\n| a | b |\n| c | d |\n#+END:\n",
+  "point": 23,
+  "keys": "C-c RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-dynblock-del",
+  "text": "#+BEGIN: x\n| a | b |\n| c | d |\n#+END:\n",
+  "point": 24,
+  "keys": "C-d",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-dynblock-mdown",
+  "text": "#+BEGIN: x\n| a | b |\n| c | d |\n#+END:\n",
+  "point": 13,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-propdrawer-cret",
+  "text": "* H\n:PROPERTIES:\n| a | b |\n| c | d |\n:END:\n",
+  "point": 29,
+  "keys": "C-c RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-propdrawer-del",
+  "text": "* H\n:PROPERTIES:\n| a | b |\n| c | d |\n:END:\n",
+  "point": 30,
+  "keys": "C-d",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-propdrawer-mdown",
+  "text": "* H\n:PROPERTIES:\n| a | b |\n| c | d |\n:END:\n",
+  "point": 19,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-latex-unclosed-cret",
+  "text": "\\begin{x}\n| a | b |\n| c | d |\n",
+  "point": 22,
+  "keys": "C-c RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-latex-unclosed-del",
+  "text": "\\begin{x}\n| a | b |\n| c | d |\n",
+  "point": 23,
+  "keys": "C-d",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-latex-unclosed-mdown",
+  "text": "\\begin{x}\n| a | b |\n| c | d |\n",
+  "point": 12,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-latex-align",
+  "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+  "point": 36,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-align"
+  ]
+ },
+ {
+  "name": "tbl-latex-sentence",
+  "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+  "point": 36,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-latex-sentence-back",
+  "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+  "point": 41,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-latex-kill-row",
+  "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+  "point": 36,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-kill-row"
+  ]
+ },
+ {
+  "name": "tbl-latex-cminus",
+  "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+  "point": 36,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-latex-cstar",
+  "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+  "point": 36,
+  "keys": "C-c *",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-latex-ret-eol",
+  "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+  "point": 36,
+  "keys": "C-e RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-latex-insert-row",
+  "text": "* H\n\\begin{tabular}{ll}\n| a | b |\n| c | d |\n\\end{tabular}\n\nAfter.\n",
+  "point": 36,
+  "keys": "M-S-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-after-latex-mup",
+  "text": "\\begin{x}\n| q |\n\\end{x}\n| a | b |\n| c | d |\n",
+  "point": 26,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-after-latex-tab-last",
+  "text": "\\begin{x}\n| q |\n\\end{x}\n| a | b |\n| c | d |\n",
+  "point": 40,
+  "keys": "TAB TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-before-latex-mdown",
+  "text": "| a | b |\n| c | d |\n\\begin{x}\n| q |\n\\end{x}\n",
+  "point": 12,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-before-latex-ret",
+  "text": "| a | b |\n| c | d |\n\\begin{x}\n| q |\n\\end{x}\n",
+  "point": 12,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-before-latex-tab",
+  "text": "| a | b |\n| c | d |\n\\begin{x}\n| q |\n\\end{x}\n",
+  "point": 17,
+  "keys": "TAB TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "narrow-table-tab",
+  "text": "| a | b |\n| c | d |\n| e | f |\n",
+  "point": 12,
+  "keys": "C-SPC C-n C-e C-x n n C-p TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "narrow-latex-table-tab",
+  "text": "\\begin{x}\n| a | b |\n| c | d |\n\\end{x}\n",
+  "point": 12,
+  "keys": "C-SPC C-n C-e C-x n n TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tbl-latex-align-misaligned",
+  "text": "* H\n\\begin{tabular}{ll}\n| a | bb |\n| ccc | d |\n\\end{tabular}\n",
+  "point": 26,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-align"
+  ]
+ },
+ {
+  "name": "tbl-latex-next-field",
+  "text": "* H\n\\begin{tabular}{ll}\n| a | bb |\n| ccc | d |\n\\end{tabular}\n",
+  "point": 26,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-next-field"
+  ]
+ },
+ {
+  "name": "tbl-latex-next-field-last",
+  "text": "* H\n\\begin{tabular}{ll}\n| a | bb |\n| ccc | d |\n\\end{tabular}\n",
+  "point": 43,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-next-field"
+  ]
+ },
+ {
+  "name": "tbl-comment-align-misaligned",
+  "text": "#+begin_comment\n| a | bb |\n| ccc | d |\n#+end_comment\n",
+  "point": 18,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-align"
+  ]
+ },
+ {
+  "name": "tbl-plain-align-misaligned",
+  "text": "| a | bb |\n| ccc | d |\n",
+  "point": 2,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-align"
+  ]
+ },
+ {
+  "name": "cc-latex-in-boxed-item",
+  "text": "- [ ] a\n  \\begin{x}\n  foo\n  \\end{x}\n",
+  "point": 22,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cc-dash-in-latex-in-boxed-item",
+  "text": "- [ ] a\n  \\begin{x}\n  - b\n  \\end{x}\n",
+  "point": 25,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cc-comment-in-boxed-item",
+  "text": "- [ ] a\n  #+begin_comment\n  foo\n  #+end_comment\n",
+  "point": 28,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cb-item-latex-in-item",
+  "text": "- [ ] a\n  \\begin{x}\n  - [ ] b\n  \\end{x}\n- [ ] c\n",
+  "point": 25,
+  "keys": "C-c C-x C-b",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cb-heading-latex-in-item",
+  "text": "* H\n- [ ] a\n  \\begin{x}\n  - [ ] b\n  \\end{x}\n- [ ] c\n",
+  "point": 0,
+  "keys": "C-c C-x C-b",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
  }
 ]

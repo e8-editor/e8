@@ -1418,9 +1418,10 @@ export function toggleCheckbox(arg: e8.PrefixArg): void {
   try {
     let limUp: number;
     let limDown: Marker;
+    // By the text, as org-list-search-forward finds items, not asking the parser.
     const firstItemFrom = (from: number, limit: number): number | undefined => {
       for (let l = lineAt(from); l < e8.lineCount() && e8.lineStart(l) < limit; l++) {
-        if (e8.lineStart(l) >= from && itemLine(l)) return e8.lineStart(l);
+        if (e8.lineStart(l) >= from && itemLineByText(l)) return e8.lineStart(l);
       }
       return undefined;
     };
@@ -1443,8 +1444,8 @@ export function toggleCheckbox(arg: e8.PrefixArg): void {
       limUp = e8.lineStart(lineAt());
       limDown = marker(e8.lineEnd(lineAt()));
     } else throw new Error("Not at an item or heading, and no active region");
-    // As org-at-item-checkbox-p sees it: a box needs blanks after it.
-    const parts = itemParts(lineAt(limUp));
+    // As org-at-item-checkbox-p sees it: a box needs blanks after it, on what the parser takes for an item.
+    const parts = itemLine(lineAt(limUp)) ? itemParts(lineAt(limUp)) : undefined;
     const box = parts?.boxAt !== undefined && /^[ \t]/.test(e8.bufferText(parts.boxAt + 3, parts.boxAt + 4)) ? parts.checkbox : undefined;
     const ref = Array.isArray(arg) && arg[0] === 16 ? "[-]" : presence ? (box ? undefined : "[ ]") : box === "[X]" ? "[ ]" : "[X]";
     let at = limUp;

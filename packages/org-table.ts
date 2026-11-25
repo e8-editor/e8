@@ -369,7 +369,8 @@ e8.defineCommand({
   name: "org-table-align",
   doc: "Align the table at point: every column as wide as its widest field, numbers to the right.",
   run: () => {
-    tableHere();
+    // By the line's text, as org-table-align works from org-table-begin, not asking the parser.
+    if (!isTableLine(lineAt())) e8.userError("Not at a table");
     align();
   },
 });

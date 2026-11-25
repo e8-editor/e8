@@ -77,6 +77,7 @@ import {
   ITEM_RE,
   itemEndBeforeBlank,
   itemLine,
+  itemLineByText,
   itemParts,
   type ItemParts,
   type ListItem,
@@ -5320,7 +5321,8 @@ function blockFromCheckboxes(change: e8.Value[]): boolean | null {
   if (i === undefined) return true;
   const end = all[i + 1]?.line ?? e8.lineCount();
   for (let l = all[i].line + 1; l < end; l++) {
-    if (itemLine(l) && /^[ \t]*(?:[-+*]|[0-9]+[.)]|[A-Za-z][.)])[ \t]+(?:\[@(?:start:)?(?:[0-9]+|[A-Za-z])\][ \t]*)?\[[- ]\]/.test(e8.lineText(l))) {
+    // By the text, as org-list-search-forward finds them, not asking the parser.
+    if (itemLineByText(l) && /^[ \t]*(?:[-+*]|[0-9]+[.)]|[A-Za-z][.)])[ \t]+(?:\[@(?:start:)?(?:[0-9]+|[A-Za-z])\][ \t]*)?\[[- ]\]/.test(e8.lineText(l))) {
       blockedByCheckboxes = true;
       return null;
     }
@@ -9876,7 +9878,7 @@ const ctrlCCtrlC = e8.defineCommand({
     }
     // A LaTeX environment's text is raw: a table row or a checkbox in it is
     // no table or item, as Org's context there is the environment.
-    if (elementAt(e8.point())?.type === "latex-environment") nothingUseful();
+    if (elementAt(e8.point())?.type === "latex-environment") return holdingItemOrNothing(line);
     const here = elementAt(e8.point());
     const inTable = here?.type === "table" || here?.type === "table-row";
     // A table.el table, its rows between lines of +-+, Org leaves to C-c '.
@@ -9939,7 +9941,7 @@ const ctrlCCtrlC = e8.defineCommand({
       }
     }
     // Inside an example, export or comment block, a #+ line is the block's text.
-    if (/^(?:example|export|comment)-block$/.test(elementAt(e8.point())?.type ?? "") && /^[ \t]*#\+/.test(text)) nothingUseful();
+    if (/^(?:example|export|comment)-block$/.test(elementAt(e8.point())?.type ?? "") && /^[ \t]*#\+/.test(text)) return holdingItemOrNothing(line);
     const dblock = elementAt(e8.point());
     if (dblock?.type === "dynamic-block") {
       e8.saveExcursion(() => {
@@ -9986,9 +9988,36 @@ const ctrlCCtrlC = e8.defineCommand({
       else ctrlCCtrlCItem(line, e8.prefixArg());
       return;
     }
-    nothingUseful();
+    holdingItemOrNothing(line);
   },
 });
+
+/** The contexts C-c C-c acts on, as org-ctrl-c-ctrl-c limits org-element-lineage to them; an element's among them. */
+const CTRL_C_CTRL_C_ELEMENTS = ["babel-call", "clock", "dynamic-block", "footnote-definition", "inlinetask", "item", "keyword", "node-property", "paragraph", "plain-list", "planning", "property-drawer", "src-block", "table", "table-row"];
+
+/**
+ * Up from an element C-c C-c has nothing for, as a LaTeX environment or a
+ * block in an item, to the item holding it, as Org's lineage of the
+ * contexts it acts on goes; with none, nothing useful to do.
+ */
+function holdingItemOrNothing(line: number): void {
+  const holder = itemHolding(e8.point());
+  if (holder === undefined || isBlank(e8.lineText(line))) nothingUseful();
+  e8.saveExcursion(() => {
+    e8.gotoChar(holder!);
+    if (radioButtonsHere()) toggleRadioButton(e8.prefixArg());
+    else ctrlCCtrlCItem(lineAt(holder!), e8.prefixArg());
+  });
+}
+
+/** Where the item starts that C-c C-c's lineage reaches from a position, past elements it does not act on, if it reaches one. */
+function itemHolding(pos: number): number | undefined {
+  for (let e = elementAt(pos); e; e = e.parent) {
+    if (e.type === "item") return e.begin;
+    if (CTRL_C_CTRL_C_ELEMENTS.includes(e.type) || e.type === "headline" || e.type === "section") return undefined;
+  }
+  return undefined;
+}
 
 // Dynamic blocks, as org.el has them: #+BEGIN: NAME PARAMETERS, written
 // again by the function org-dblock-write:NAME.
