@@ -1192,7 +1192,7 @@ fn editing(ed: &mut Editor) {
                 if ed.buffer().can_undo_in_region() {
                     ed.before_undo(continuing, false)?;
                 }
-                ed.buffer_mut().undo_in_region(count.max(0) as usize)?;
+                ed.with_read_only_inhibited(|b| b.undo_in_region(count.max(0) as usize))?;
             } else {
                 // Emacs's undo starts with (undo-more 1) to take off the boundary
                 // the command loop put at the head of the list. With edits since
@@ -1203,7 +1203,7 @@ fn editing(ed: &mut Editor) {
                     if ed.buffer().can_undo(continuing) {
                         ed.before_undo(continuing, false)?;
                     }
-                    redid = match ed.buffer_mut().undo(continuing) {
+                    redid = match ed.with_read_only_inhibited(|b| b.undo(continuing)) {
                         Err(_) if k > 0 => break,
                         Err(_) if in_region => return err("No further undo information for region"),
                         result => result?,
@@ -1239,7 +1239,7 @@ fn editing(ed: &mut Editor) {
             ed.claim_undo(ed.current);
             for _ in 0..args[0].as_int()?.max(1) {
                 ed.before_undo(false, true)?;
-                ed.buffer_mut().undo_redo()?;
+                ed.with_read_only_inhibited(|b| b.undo_redo())?;
                 ed.run_undo_applies()?;
             }
             // So that a following undo carries on from here.

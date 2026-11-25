@@ -582,6 +582,10 @@ impl Editor {
     pub fn make_local_variable(&mut self, name: &str) {
         let resolved;
         let name = if self.variable_aliases.is_empty() { name } else { resolved = self.base_variable(name).into_owned(); &resolved };
+        // The buffer keeps these itself, its own in every buffer already.
+        if name == "buffer-undo-list" || name == "buffer-read-only" {
+            return;
+        }
         let value = self.variable(name).unwrap_or(Value::Null);
         self.buffer_mut().locals.entry(name.to_string()).or_insert(value);
     }

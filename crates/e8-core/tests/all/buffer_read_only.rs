@@ -32,3 +32,25 @@ fn let_binding_it_puts_it_back() {
     ed.unbind(binding);
     assert!(ed.buffer().read_only, "read-only again once the binding ends");
 }
+
+#[test]
+fn undo_gives_way_to_inhibit_read_only() {
+    let mut ed = Editor::new();
+    ed.type_text("abc");
+    ed.buffer_mut().undo_boundary();
+    ed.set_variable("buffer-read-only", Value::Bool(true));
+    // Refused while read-only, as Emacs's undo is.
+    assert!(ed.call("undo", vec![]).is_err());
+    assert_eq!(ed.buffer().text(), "abc");
+    // Let through with inhibit-read-only, as (let ((inhibit-read-only t)) (undo)) is in Emacs.
+    let binding = ed.specbind("inhibit-read-only", Value::Bool(true));
+    ed.call("undo", vec![]).unwrap();
+    ed.unbind(binding);
+    assert_eq!(ed.buffer().text(), "");
+    assert!(ed.buffer().read_only, "still read-only afterwards");
+    // A local copy made on the way leaves nothing stale behind.
+    ed.make_local_variable("buffer-read-only");
+    ed.set_variable("buffer-read-only", Value::Bool(false));
+    assert_eq!(ed.variable("buffer-read-only"), Some(Value::Bool(false)));
+    assert!(ed.buffer().local_variables().all(|(name, _)| name != "buffer-read-only"));
+}

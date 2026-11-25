@@ -453,8 +453,21 @@ impl Editor {
             let end = self.buffer().len();
             self.run_before_change_functions(start.min(end), end)?;
         }
-        self.buffer_mut().undo_step(index)?;
+        self.with_read_only_inhibited(|b| b.undo_step(index))?;
         self.run_undo_applies()
+    }
+
+    /// Runs a change to the current buffer that checks its read-only state
+    /// itself, as undo does, letting `inhibit-read-only` through as the
+    /// editor's own changes do.
+    pub(crate) fn with_read_only_inhibited<T>(&mut self, f: impl FnOnce(&mut Buffer) -> T) -> T {
+        let inhibit = self.variable("inhibit-read-only").is_some_and(|v| v.is_true());
+        let b = self.buffer_mut();
+        let read_only = b.read_only;
+        b.read_only &= !inhibit;
+        let result = f(b);
+        self.buffer_mut().read_only = read_only;
+        result
     }
 
     /// Whether `inhibit-modification-hooks` is set, so no change hooks run.

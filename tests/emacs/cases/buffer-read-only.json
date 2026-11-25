@@ -105,5 +105,155 @@
   "vars": {
    "inhibit-read-only": true
   }
+ },
+ {
+  "name": "c-t-at-start",
+  "text": "abc def\n",
+  "point": 1,
+  "keys": "C-t",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true
+  }
+ },
+ {
+  "name": "m-semicolon",
+  "text": "abc def\n",
+  "point": 1,
+  "keys": "M-;",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true
+  }
+ },
+ {
+  "name": "c-j",
+  "text": "abc def\n",
+  "point": 1,
+  "keys": "C-j",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true
+  }
+ },
+ {
+  "name": "m-j",
+  "text": "abc def\n",
+  "point": 1,
+  "keys": "M-j",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true
+  }
+ },
+ {
+  "name": "c-m-o",
+  "text": "abc def\n",
+  "point": 1,
+  "keys": "C-M-o",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true
+  }
+ },
+ {
+  "name": "fixup-whitespace",
+  "text": "abc def\n",
+  "point": 1,
+  "keys": "M-x",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true
+  },
+  "answers": [
+   "fixup-whitespace"
+  ]
+ },
+ {
+  "name": "fill-paragraph",
+  "text": "abc def\n",
+  "point": 1,
+  "keys": "M-q",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true
+  }
+ },
+ {
+  "name": "open-line",
+  "text": "abc def\n",
+  "point": 1,
+  "keys": "C-o",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true
+  }
+ },
+ {
+  "name": "tab-to-tab-stop",
+  "text": "abc def\n",
+  "point": 1,
+  "keys": "M-i",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true
+  }
+ },
+ {
+  "name": "major-mode-keeps-it",
+  "text": "abc def\n",
+  "point": 1,
+  "keys": "M-x x",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true
+  },
+  "answers": [
+   "text-mode"
+  ]
+ },
+ {
+  "name": "m-u-nothing",
+  "text": "abc def\n",
+  "point": 1,
+  "keys": "M-> M-u",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true
+  }
+ },
+ {
+  "name": "file-local-prop-line",
+  "text": "",
+  "files": {
+   "a.txt": "-*- buffer-read-only: t -*-\nabc\n"
+  },
+  "find": "a.txt",
+  "keys": "x",
+  "message": true
+ },
+ {
+  "name": "file-local-vars",
+  "text": "",
+  "files": {
+   "a.txt": "abc\nLocal Variables:\nbuffer-read-only: t\nEnd:\n"
+  },
+  "find": "a.txt",
+  "keys": "x",
+  "message": true
+ },
+ {
+  "name": "undo-after-edit",
+  "text": "abc\n",
+  "point": 1,
+  "keys": "x C-x C-q C-/",
+  "message": true
+ },
+ {
+  "name": "toggle-then-yank-pop-mark",
+  "text": "abc\n",
+  "point": 2,
+  "keys": "C-a C-k C-x C-q C-e C-y C-x C-x",
+  "message": true
  }
 ]
