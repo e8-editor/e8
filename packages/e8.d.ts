@@ -20343,6 +20343,13 @@ declare global {
      */
     function handleShiftSelection(shifted?: boolean): void;
     /**
+     * Whether the key that ran the current command had Shift removed to
+     * find its binding, as this-command-keys-shift-translated: a command
+     * that moves only in some places passes it to handleShiftSelection
+     * there, as a Lisp command does with an interactive spec of ^.
+     */
+    function thisCommandKeysShiftTranslated(): boolean;
+    /**
      * Whether an agent is acting rather than the user, so that effects
      * outside buffers, as running a program, wait for the user's approval.
      */

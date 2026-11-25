@@ -25,6 +25,14 @@ natives! {
         Ok(())
     }
 
+    /// Whether the key that ran the current command had Shift removed to
+    /// find its binding, as this-command-keys-shift-translated: a command
+    /// that moves only in some places passes it to handleShiftSelection
+    /// there, as a Lisp command does with an interactive spec of ^.
+    pub fn thisCommandKeysShiftTranslated(ed) -> bool {
+        Ok(ed.this_command_keys_shift_translated())
+    }
+
     fn message(ed, text: String, log: Opt<bool>) {
         if log.0 == Some(false) {
             ed.message_unlogged(text);

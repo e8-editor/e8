@@ -12741,7 +12741,6 @@ function needNumber(n: number | undefined): number {
 const orgBackwardSentenceCommand = e8.defineCommand({
   name: "org-backward-sentence",
   doc: "Move to the start of the sentence, kept inside the element point is in, or of the table field, as backward-sentence or org-table-beginning-of-field.",
-  shiftSelect: true,
   params: [{ name: "arg", kind: "count" }],
   run: (arg: number) => {
     const p = e8.point();
@@ -12752,6 +12751,8 @@ const orgBackwardSentenceCommand = e8.defineCommand({
       e8.call("org-table-beginning-of-field", arg);
       return;
     }
+    // Shift selects as backward-sentence's ^ would, not in a table, as Org's field commands do not.
+    e8.handleShiftSelection(e8.thisCommandKeysShiftTranslated());
     e8.saveRestriction(() => {
       if (cb !== undefined && e8.pointMin() < cb && p > cb) e8.narrowToRegion(cb, needNumber(ce));
       e8.call("backward-sentence", arg);
@@ -12762,12 +12763,14 @@ const orgBackwardSentenceCommand = e8.defineCommand({
 const orgForwardSentenceCommand = e8.defineCommand({
   name: "org-forward-sentence",
   doc: "Move to the end of the sentence, kept inside the element point is in or a heading's line, or of the table field, as forward-sentence or org-table-end-of-field.",
-  shiftSelect: true,
   params: [{ name: "arg", kind: "count" }],
   run: (arg: number) => {
     const p = e8.point();
     const line = lineAt();
+    // Shift selects as forward-sentence's ^ would, not in a table, as Org's field commands do not.
+    const shiftSelect = (): void => e8.handleShiftSelection(e8.thisCommandKeysShiftTranslated());
     if (isHeadingLine(e8.lineText(line)) && /\S/.test(e8.bufferText(p, e8.lineEnd(line)))) {
+      shiftSelect();
       e8.saveRestriction(() => {
         e8.narrowToRegion(e8.lineStart(line), e8.lineEnd(line));
         e8.call("forward-sentence", arg);
@@ -12781,6 +12784,7 @@ const orgForwardSentenceCommand = e8.defineCommand({
       e8.call("org-table-end-of-field", arg);
       return;
     }
+    shiftSelect();
     e8.saveRestriction(() => {
       if (el && ce !== undefined && e8.pointMax() > ce) {
         // Org means to stop at blank lines between elements, but compares

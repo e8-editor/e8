@@ -2236,6 +2236,5451 @@
       "modified": false,
       "error": null,
       "message": null
+    },
+    {
+      "name": "rv-h-fwd-stars",
+      "input": {
+        "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+        "point": 7,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+      "visible": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-h-fwd-todo",
+      "input": {
+        "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+        "point": 9,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+      "visible": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-h-fwd-two",
+      "input": {
+        "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+        "point": 33,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+      "visible": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+      "point": 42,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-h-fwd-tag",
+      "input": {
+        "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+        "point": 37,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+      "visible": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+      "point": 42,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-h-fwd-eol",
+      "input": {
+        "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+        "point": 42,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+      "visible": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+      "point": 52,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-h-fwd-eol-twice",
+      "input": {
+        "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+        "point": 42,
+        "keys": "M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+      "visible": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+      "point": 63,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-h-bwd-stars",
+      "input": {
+        "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+        "point": 7,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+      "visible": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-h-bwd-two",
+      "input": {
+        "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+        "point": 33,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+      "visible": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-h-bwd-eol",
+      "input": {
+        "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+        "point": 42,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+      "visible": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-h-bwd-body",
+      "input": {
+        "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+        "point": 43,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+      "visible": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-h-bwd-body2",
+      "input": {
+        "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+        "point": 54,
+        "keys": "M-a M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+      "visible": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-h-fwd-all",
+      "input": {
+        "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+        "point": 0,
+        "keys": "M-e M-e M-e M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+      "visible": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+      "point": 64,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-empty-h-fwd",
+      "input": {
+        "text": "Text.\n* \nAfter one.  Two.\n",
+        "point": 8,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n* \nAfter one.  Two.\n",
+      "visible": "Text.\n* \nAfter one.  Two.\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-empty-h-fwd-bol",
+      "input": {
+        "text": "Text.\n* \nAfter one.  Two.\n",
+        "point": 6,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n* \nAfter one.  Two.\n",
+      "visible": "Text.\n* \nAfter one.  Two.\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-empty-h-bwd",
+      "input": {
+        "text": "Text.\n* \nAfter one.  Two.\n",
+        "point": 8,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n* \nAfter one.  Two.\n",
+      "visible": "Text.\n* \nAfter one.  Two.\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-trail-sp-fwd",
+      "input": {
+        "text": "* Head   \nBody\n* Next\n",
+        "point": 6,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* Head   \nBody\n* Next\n",
+      "visible": "* Head   \nBody\n* Next\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-trail-sp-fwd2",
+      "input": {
+        "text": "* Head   \nBody\n* Next\n",
+        "point": 7,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* Head   \nBody\n* Next\n",
+      "visible": "* Head   \nBody\n* Next\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-stars-sp-fwd",
+      "input": {
+        "text": "*   Spaced head.  Two\nx\n",
+        "point": 1,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "*   Spaced head.  Two\nx\n",
+      "visible": "*   Spaced head.  Two\nx\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-tab-not-heading",
+      "input": {
+        "text": "Para.\n*\tx one.  y.\nz.\n",
+        "point": 8,
+        "keys": "M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n*\tx one.  y.\nz.\n",
+      "visible": "Para.\n*\tx one.  y.\nz.\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-h-two-sentences-fwd",
+      "input": {
+        "text": "* One.  Two.  Three\n",
+        "point": 0,
+        "keys": "M-e M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* One.  Two.  Three\n",
+      "visible": "* One.  Two.  Three\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-h-two-sentences-count",
+      "input": {
+        "text": "* One.  Two.  Three\n",
+        "point": 0,
+        "keys": "M-2 M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* One.  Two.  Three\n",
+      "visible": "* One.  Two.  Three\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-h-neg-fwd",
+      "input": {
+        "text": "* One.  Two.  Three\n",
+        "point": 14,
+        "keys": "M-- M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* One.  Two.  Three\n",
+      "visible": "* One.  Two.  Three\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-plan-bwd",
+      "input": {
+        "text": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+        "point": 15,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+      "visible": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-plan-fwd",
+      "input": {
+        "text": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+        "point": 4,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+      "visible": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-prop-bwd-open",
+      "input": {
+        "text": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+        "point": 43,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+      "visible": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-prop-fwd-open",
+      "input": {
+        "text": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+        "point": 32,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+      "visible": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+      "point": 53,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-prop-bwd-node",
+      "input": {
+        "text": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+        "point": 55,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+      "visible": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+      "point": 45,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-prop-fwd-node",
+      "input": {
+        "text": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+        "point": 49,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+      "visible": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+      "point": 53,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-prop-bwd-end-eol",
+      "input": {
+        "text": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+        "point": 65,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+      "visible": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+      "point": 55,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-prop-fwd-end",
+      "input": {
+        "text": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+        "point": 60,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+      "visible": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+      "point": 75,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-prop-bwd-text",
+      "input": {
+        "text": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+        "point": 66,
+        "keys": "M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+      "visible": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+      "point": 55,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-drawer-bwd-end-eol",
+      "input": {
+        "text": "Intro.\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+        "point": 37,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+      "visible": "Intro.\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-drawer-bwd-end-bol",
+      "input": {
+        "text": "Intro.\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+        "point": 32,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+      "visible": "Intro.\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-drawer-bwd-end-mid",
+      "input": {
+        "text": "Intro.\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+        "point": 34,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+      "visible": "Intro.\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-drawer-fwd-open",
+      "input": {
+        "text": "Intro.\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+        "point": 7,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+      "visible": "Intro.\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-drawer-bwd-open",
+      "input": {
+        "text": "Intro.\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+        "point": 10,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+      "visible": "Intro.\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-drawer-bwd-two",
+      "input": {
+        "text": "Intro.\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+        "point": 27,
+        "keys": "M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+      "visible": "Intro.\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-drawer-fwd-end",
+      "input": {
+        "text": "Intro.\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+        "point": 32,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+      "visible": "Intro.\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+      "point": 44,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-item-bwd-bullet",
+      "input": {
+        "text": "Intro.\n- one.  Two.\n- three.\n",
+        "point": 7,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- one.  Two.\n- three.\n",
+      "visible": "Intro.\n- one.  Two.\n- three.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-item-fwd-bullet",
+      "input": {
+        "text": "Intro.\n- one.  Two.\n- three.\n",
+        "point": 7,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- one.  Two.\n- three.\n",
+      "visible": "Intro.\n- one.  Two.\n- three.\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-item-bwd-two-twice",
+      "input": {
+        "text": "Intro.\n- one.  Two.\n- three.\n",
+        "point": 15,
+        "keys": "M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- one.  Two.\n- three.\n",
+      "visible": "Intro.\n- one.  Two.\n- three.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-item-bwd-three",
+      "input": {
+        "text": "Intro.\n- one.  Two.\n- three.\n",
+        "point": 22,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- one.  Two.\n- three.\n",
+      "visible": "Intro.\n- one.  Two.\n- three.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-item-next-bwd-two",
+      "input": {
+        "text": "Intro.\n- \n  Text one.  Two.\n- b.\n",
+        "point": 23,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- \n  Text one.  Two.\n- b.\n",
+      "visible": "Intro.\n- \n  Text one.  Two.\n- b.\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-item-next-bwd-twice",
+      "input": {
+        "text": "Intro.\n- \n  Text one.  Two.\n- b.\n",
+        "point": 23,
+        "keys": "M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- \n  Text one.  Two.\n- b.\n",
+      "visible": "Intro.\n- \n  Text one.  Two.\n- b.\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-item-next-bwd-thrice",
+      "input": {
+        "text": "Intro.\n- \n  Text one.  Two.\n- b.\n",
+        "point": 23,
+        "keys": "M-a M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- \n  Text one.  Two.\n- b.\n",
+      "visible": "Intro.\n- \n  Text one.  Two.\n- b.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-item-next-fwd-bullet",
+      "input": {
+        "text": "Intro.\n- \n  Text one.  Two.\n- b.\n",
+        "point": 7,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- \n  Text one.  Two.\n- b.\n",
+      "visible": "Intro.\n- \n  Text one.  Two.\n- b.\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-item-next-bwd-indent",
+      "input": {
+        "text": "Intro.\n- \n  Text one.  Two.\n- b.\n",
+        "point": 11,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- \n  Text one.  Two.\n- b.\n",
+      "visible": "Intro.\n- \n  Text one.  Two.\n- b.\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-check-bwd-two",
+      "input": {
+        "text": "Intro.\n- [ ] Task one.  Two.\n- [X] Done.\n",
+        "point": 24,
+        "keys": "M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- [ ] Task one.  Two.\n- [X] Done.\n",
+      "visible": "Intro.\n- [ ] Task one.  Two.\n- [X] Done.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-check-fwd-box",
+      "input": {
+        "text": "Intro.\n- [ ] Task one.  Two.\n- [X] Done.\n",
+        "point": 9,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- [ ] Task one.  Two.\n- [X] Done.\n",
+      "visible": "Intro.\n- [ ] Task one.  Two.\n- [X] Done.\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-check-bwd-box",
+      "input": {
+        "text": "Intro.\n- [ ] Task one.  Two.\n- [X] Done.\n",
+        "point": 10,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- [ ] Task one.  Two.\n- [X] Done.\n",
+      "visible": "Intro.\n- [ ] Task one.  Two.\n- [X] Done.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-check-bwd-task",
+      "input": {
+        "text": "Intro.\n- [ ] Task one.  Two.\n- [X] Done.\n",
+        "point": 13,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- [ ] Task one.  Two.\n- [X] Done.\n",
+      "visible": "Intro.\n- [ ] Task one.  Two.\n- [X] Done.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-desc-bwd-two",
+      "input": {
+        "text": "Intro.\n- term :: Desc one.  Two.\n- other :: x.\n",
+        "point": 28,
+        "keys": "M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- term :: Desc one.  Two.\n- other :: x.\n",
+      "visible": "Intro.\n- term :: Desc one.  Two.\n- other :: x.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-desc-bwd-term",
+      "input": {
+        "text": "Intro.\n- term :: Desc one.  Two.\n- other :: x.\n",
+        "point": 11,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- term :: Desc one.  Two.\n- other :: x.\n",
+      "visible": "Intro.\n- term :: Desc one.  Two.\n- other :: x.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-desc-fwd-term",
+      "input": {
+        "text": "Intro.\n- term :: Desc one.  Two.\n- other :: x.\n",
+        "point": 9,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- term :: Desc one.  Two.\n- other :: x.\n",
+      "visible": "Intro.\n- term :: Desc one.  Two.\n- other :: x.\n",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-odesc-bwd-two",
+      "input": {
+        "text": "Intro.\n1. term :: Desc one.  Two.\n",
+        "point": 29,
+        "keys": "M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n1. term :: Desc one.  Two.\n",
+      "visible": "Intro.\n1. term :: Desc one.  Two.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-nest-bwd",
+      "input": {
+        "text": "Intro.\n- a.\n  - b one.  b two.\n  - c.\n- d.\n",
+        "point": 24,
+        "keys": "M-a M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- a.\n  - b one.  b two.\n  - c.\n- d.\n",
+      "visible": "Intro.\n- a.\n  - b one.  b two.\n  - c.\n- d.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-nest-fwd",
+      "input": {
+        "text": "Intro.\n- a.\n  - b one.  b two.\n  - c.\n- d.\n",
+        "point": 16,
+        "keys": "M-e M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- a.\n  - b one.  b two.\n  - c.\n- d.\n",
+      "visible": "Intro.\n- a.\n  - b one.  b two.\n  - c.\n- d.\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-nest-bwd-c",
+      "input": {
+        "text": "Intro.\n- a.\n  - b one.  b two.\n  - c.\n- d.\n",
+        "point": 35,
+        "keys": "M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- a.\n  - b one.  b two.\n  - c.\n- d.\n",
+      "visible": "Intro.\n- a.\n  - b one.  b two.\n  - c.\n- d.\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-fn-next-bwd",
+      "input": {
+        "text": "Para.\n\n[fn:1]\nDef one.  Two.\n",
+        "point": 24,
+        "keys": "M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:1]\nDef one.  Two.\n",
+      "visible": "Para.\n\n[fn:1]\nDef one.  Two.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-fn-next-fwd-label",
+      "input": {
+        "text": "Para.\n\n[fn:1]\nDef one.  Two.\n",
+        "point": 7,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:1]\nDef one.  Two.\n",
+      "visible": "Para.\n\n[fn:1]\nDef one.  Two.\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-quote-bwd-end",
+      "input": {
+        "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter.\n",
+        "point": 58,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter.\n",
+      "visible": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter.\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-quote-bwd-end-bol",
+      "input": {
+        "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter.\n",
+        "point": 47,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter.\n",
+      "visible": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter.\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-quote-fwd-end",
+      "input": {
+        "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter.\n",
+        "point": 47,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter.\n",
+      "visible": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter.\n",
+      "point": 65,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-center-bwd-two",
+      "input": {
+        "text": "Before.\n#+begin_center\nCentred one.  Two.\n#+end_center\nAfter.\n",
+        "point": 37,
+        "keys": "M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+begin_center\nCentred one.  Two.\n#+end_center\nAfter.\n",
+      "visible": "Before.\n#+begin_center\nCentred one.  Two.\n#+end_center\nAfter.\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-center-bwd-end",
+      "input": {
+        "text": "Before.\n#+begin_center\nCentred one.  Two.\n#+end_center\nAfter.\n",
+        "point": 46,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+begin_center\nCentred one.  Two.\n#+end_center\nAfter.\n",
+      "visible": "Before.\n#+begin_center\nCentred one.  Two.\n#+end_center\nAfter.\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-special-bwd-two",
+      "input": {
+        "text": "Before.\n#+begin_note\nNoted one.  Two.\n#+end_note\nAfter.\n",
+        "point": 33,
+        "keys": "M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+begin_note\nNoted one.  Two.\n#+end_note\nAfter.\n",
+      "visible": "Before.\n#+begin_note\nNoted one.  Two.\n#+end_note\nAfter.\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-special-fwd-begin",
+      "input": {
+        "text": "Before.\n#+begin_note\nNoted one.  Two.\n#+end_note\nAfter.\n",
+        "point": 8,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+begin_note\nNoted one.  Two.\n#+end_note\nAfter.\n",
+      "visible": "Before.\n#+begin_note\nNoted one.  Two.\n#+end_note\nAfter.\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-src-bwd-two-twice",
+      "input": {
+        "text": "Before.\n#+begin_src text\nCode one.  Two.\n#+end_src\nAfter.\n",
+        "point": 36,
+        "keys": "M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+begin_src text\nCode one.  Two.\n#+end_src\nAfter.\n",
+      "visible": "Before.\n#+begin_src text\nCode one.  Two.\n#+end_src\nAfter.\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-src-bwd-end",
+      "input": {
+        "text": "Before.\n#+begin_src text\nCode one.  Two.\n#+end_src\nAfter.\n",
+        "point": 45,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+begin_src text\nCode one.  Two.\n#+end_src\nAfter.\n",
+      "visible": "Before.\n#+begin_src text\nCode one.  Two.\n#+end_src\nAfter.\n",
+      "point": 41,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-src-fwd-code",
+      "input": {
+        "text": "Before.\n#+begin_src text\nCode one.  Two.\n#+end_src\nAfter.\n",
+        "point": 25,
+        "keys": "M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+begin_src text\nCode one.  Two.\n#+end_src\nAfter.\n",
+      "visible": "Before.\n#+begin_src text\nCode one.  Two.\n#+end_src\nAfter.\n",
+      "point": 40,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-example-bwd",
+      "input": {
+        "text": "Before.\n#+begin_example\nEx one.  Two.\n#+end_example\nAfter.\n",
+        "point": 33,
+        "keys": "M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+begin_example\nEx one.  Two.\n#+end_example\nAfter.\n",
+      "visible": "Before.\n#+begin_example\nEx one.  Two.\n#+end_example\nAfter.\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-example-fwd",
+      "input": {
+        "text": "Before.\n#+begin_example\nEx one.  Two.\n#+end_example\nAfter.\n",
+        "point": 24,
+        "keys": "M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+begin_example\nEx one.  Two.\n#+end_example\nAfter.\n",
+      "visible": "Before.\n#+begin_example\nEx one.  Two.\n#+end_example\nAfter.\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-verse-bwd",
+      "input": {
+        "text": "Before.\n#+begin_verse\nVerse one.  Two.\n#+end_verse\nAfter.\n",
+        "point": 34,
+        "keys": "M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+begin_verse\nVerse one.  Two.\n#+end_verse\nAfter.\n",
+      "visible": "Before.\n#+begin_verse\nVerse one.  Two.\n#+end_verse\nAfter.\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-verse-bwd-end",
+      "input": {
+        "text": "Before.\n#+begin_verse\nVerse one.  Two.\n#+end_verse\nAfter.\n",
+        "point": 43,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+begin_verse\nVerse one.  Two.\n#+end_verse\nAfter.\n",
+      "visible": "Before.\n#+begin_verse\nVerse one.  Two.\n#+end_verse\nAfter.\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-dyn-bwd",
+      "input": {
+        "text": "Before.\n#+BEGIN: myblock\nDyn one.  Two.\n#+END:\nAfter.\n",
+        "point": 35,
+        "keys": "M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+BEGIN: myblock\nDyn one.  Two.\n#+END:\nAfter.\n",
+      "visible": "Before.\n#+BEGIN: myblock\nDyn one.  Two.\n#+END:\nAfter.\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-dyn-bwd-end",
+      "input": {
+        "text": "Before.\n#+BEGIN: myblock\nDyn one.  Two.\n#+END:\nAfter.\n",
+        "point": 46,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+BEGIN: myblock\nDyn one.  Two.\n#+END:\nAfter.\n",
+      "visible": "Before.\n#+BEGIN: myblock\nDyn one.  Two.\n#+END:\nAfter.\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-dyn-fwd-begin",
+      "input": {
+        "text": "Before.\n#+BEGIN: myblock\nDyn one.  Two.\n#+END:\nAfter.\n",
+        "point": 8,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+BEGIN: myblock\nDyn one.  Two.\n#+END:\nAfter.\n",
+      "visible": "Before.\n#+BEGIN: myblock\nDyn one.  Two.\n#+END:\nAfter.\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-tbl-bwd-tblfm",
+      "input": {
+        "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+        "point": 40,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "visible": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-tbl-fwd-tblfm",
+      "input": {
+        "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+        "point": 40,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "visible": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-tbl-bwd-empty",
+      "input": {
+        "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+        "point": 32,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "visible": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-tbl-fwd-empty",
+      "input": {
+        "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+        "point": 32,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n|   |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "visible": "Text.\n| a | b |\n|---+---|\n| c |   |\n|   |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "point": 38,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "rv-tbl-bwd-first",
+      "input": {
+        "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+        "point": 8,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "visible": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move to previous table field",
+      "message": null
+    },
+    {
+      "name": "rv-tbl-bwd-first-bar",
+      "input": {
+        "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+        "point": 6,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "visible": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-tbl-fwd-eol",
+      "input": {
+        "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+        "point": 15,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "visible": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-tbl-bwd-eol",
+      "input": {
+        "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+        "point": 15,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "visible": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-tbl-fwd-last",
+      "input": {
+        "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+        "point": 32,
+        "keys": "M-e M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n|   |   |\n|   |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "visible": "Text.\n| a | b |\n|---+---|\n| c |   |\n|   |   |\n|   |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "point": 48,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "rv-tbl-fwd-zero",
+      "input": {
+        "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+        "point": 8,
+        "keys": "M-0 M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "visible": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-tbl-fwd-neg",
+      "input": {
+        "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+        "point": 12,
+        "keys": "M-- M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "visible": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-tbl-bwd-neg",
+      "input": {
+        "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+        "point": 28,
+        "keys": "M-- M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "visible": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-tbl-bwd-cu",
+      "input": {
+        "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+        "point": 32,
+        "keys": "C-u M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "visible": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-tbl-shift-fwd",
+      "input": {
+        "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+        "point": 8,
+        "keys": "M-S-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "visible": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-tbl-shift-bwd",
+      "input": {
+        "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+        "point": 12,
+        "keys": "M-S-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "visible": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-tbl1-fwd-last",
+      "input": {
+        "text": "| a | b |\n",
+        "point": 6,
+        "keys": "M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b |\n|   |   |\n",
+      "visible": "| a | b |\n|   |   |\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-tbl1-bwd-first",
+      "input": {
+        "text": "| a | b |\n",
+        "point": 2,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b |\n",
+      "visible": "| a | b |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move to previous table field",
+      "message": null
+    },
+    {
+      "name": "rv-tbli-fwd-indent",
+      "input": {
+        "text": "Text.\n  | a | b |\n  | c | d |\n",
+        "point": 7,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n  | a | b |\n  | c | d |\n",
+      "visible": "Text.\n  | a | b |\n  | c | d |\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-tbli-bwd-indent",
+      "input": {
+        "text": "Text.\n  | a | b |\n  | c | d |\n",
+        "point": 19,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n  | a | b |\n  | c | d |\n",
+      "visible": "Text.\n  | a | b |\n  | c | d |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-tbli-bwd-indent0",
+      "input": {
+        "text": "Text.\n  | a | b |\n  | c | d |\n",
+        "point": 18,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n  | a | b |\n  | c | d |\n",
+      "visible": "Text.\n  | a | b |\n  | c | d |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-field-cu-end",
+      "input": {
+        "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+        "point": 8,
+        "keys": "C-u 2 M-x o r g - t a b l e - e n d - o f - f i e l d RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Text.\n| org-table-end-of-fielda | b |\n|                         |   |\n|-------------------------+---|\n| c                       |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "visible": "Text.\n| org-table-end-of-fielda | b |\n|                         |   |\n|-------------------------+---|\n| c                       |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "point": 40,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Minibuffer read in batch"
+    },
+    {
+      "name": "rv-field-bof-text",
+      "input": {
+        "text": "Text.\n| a | b |\n",
+        "point": 8,
+        "keys": "M-x o r g - t a b l e - b e g i n n i n g - o f - f i e l d RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| org-table-beginning-of-fielda | b |\n|                               |   |\n",
+      "visible": "Text.\n| org-table-beginning-of-fielda | b |\n|                               |   |\n",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Minibuffer read in batch",
+      "message": null
+    },
+    {
+      "name": "rv-field-eof-outside",
+      "input": {
+        "text": "Text.\n",
+        "point": 0,
+        "keys": "M-x o r g - t a b l e - e n d - o f - f i e l d RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "org-table-end-of-field\nText.\n",
+      "visible": "org-table-end-of-field\nText.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Minibuffer read in batch",
+      "message": null
+    },
+    {
+      "name": "rv-kw-bwd",
+      "input": {
+        "text": "#+TITLE: The title.  Two.\nText one.  Two.\n",
+        "point": 21,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+TITLE: The title.  Two.\nText one.  Two.\n",
+      "visible": "#+TITLE: The title.  Two.\nText one.  Two.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-kw-fwd",
+      "input": {
+        "text": "#+TITLE: The title.  Two.\nText one.  Two.\n",
+        "point": 9,
+        "keys": "M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+TITLE: The title.  Two.\nText one.  Two.\n",
+      "visible": "#+TITLE: The title.  Two.\nText one.  Two.\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-kw-bwd-text",
+      "input": {
+        "text": "#+TITLE: The title.  Two.\nText one.  Two.\n",
+        "point": 26,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+TITLE: The title.  Two.\nText one.  Two.\n",
+      "visible": "#+TITLE: The title.  Two.\nText one.  Two.\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-comment-bwd",
+      "input": {
+        "text": "Intro.\n# Comment one.  Two.\nText.\n",
+        "point": 23,
+        "keys": "M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n# Comment one.  Two.\nText.\n",
+      "visible": "Intro.\n# Comment one.  Two.\nText.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-comment-fwd",
+      "input": {
+        "text": "Intro.\n# Comment one.  Two.\nText.\n",
+        "point": 9,
+        "keys": "M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n# Comment one.  Two.\nText.\n",
+      "visible": "Intro.\n# Comment one.  Two.\nText.\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-fixed-bwd",
+      "input": {
+        "text": "Intro.\n: fixed one.  Two.\nText.\n",
+        "point": 21,
+        "keys": "M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n: fixed one.  Two.\nText.\n",
+      "visible": "Intro.\n: fixed one.  Two.\nText.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-latex-bwd",
+      "input": {
+        "text": "Intro.\n\\begin{equation}\nx.  y.\n\\end{equation}\nText.\n",
+        "point": 28,
+        "keys": "M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n\\begin{equation}\nx.  y.\n\\end{equation}\nText.\n",
+      "visible": "Intro.\n\\begin{equation}\nx.  y.\n\\end{equation}\nText.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-latex-fwd",
+      "input": {
+        "text": "Intro.\n\\begin{equation}\nx.  y.\n\\end{equation}\nText.\n",
+        "point": 24,
+        "keys": "M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n\\begin{equation}\nx.  y.\n\\end{equation}\nText.\n",
+      "visible": "Intro.\n\\begin{equation}\nx.  y.\n\\end{equation}\nText.\n",
+      "point": 30,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-affil-bwd",
+      "input": {
+        "text": "Intro.\n#+NAME: p\nPara one.  Two.\n",
+        "point": 28,
+        "keys": "M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n#+NAME: p\nPara one.  Two.\n",
+      "visible": "Intro.\n#+NAME: p\nPara one.  Two.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-affil-bwd-kw",
+      "input": {
+        "text": "Intro.\n#+NAME: p\nPara one.  Two.\n",
+        "point": 9,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n#+NAME: p\nPara one.  Two.\n",
+      "visible": "Intro.\n#+NAME: p\nPara one.  Two.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-affil-fwd-kw",
+      "input": {
+        "text": "Intro.\n#+NAME: p\nPara one.  Two.\n",
+        "point": 9,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n#+NAME: p\nPara one.  Two.\n",
+      "visible": "Intro.\n#+NAME: p\nPara one.  Two.\n",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-clock-fwd",
+      "input": {
+        "text": "* H\nCLOCK: [2026-11-25 Wed 10:00]--[2026-11-25 Wed 11:00] =>  1:00\nText.\n",
+        "point": 4,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nCLOCK: [2026-11-25 Wed 10:00]--[2026-11-25 Wed 11:00] =>  1:00\nText.\n",
+      "visible": "* H\nCLOCK: [2026-11-25 Wed 10:00]--[2026-11-25 Wed 11:00] =>  1:00\nText.\n",
+      "point": 72,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-clock-bwd",
+      "input": {
+        "text": "* H\nCLOCK: [2026-11-25 Wed 10:00]--[2026-11-25 Wed 11:00] =>  1:00\nText.\n",
+        "point": 58,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nCLOCK: [2026-11-25 Wed 10:00]--[2026-11-25 Wed 11:00] =>  1:00\nText.\n",
+      "visible": "* H\nCLOCK: [2026-11-25 Wed 10:00]--[2026-11-25 Wed 11:00] =>  1:00\nText.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-hr-bwd",
+      "input": {
+        "text": "One.\n-----\nTwo.  Three.\n",
+        "point": 17,
+        "keys": "M-a M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "One.\n-----\nTwo.  Three.\n",
+      "visible": "One.\n-----\nTwo.  Three.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-blank-bwd-two",
+      "input": {
+        "text": "One.\n\n\nTwo.  Three.\n",
+        "point": 7,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "One.\n\n\nTwo.  Three.\n",
+      "visible": "One.\n\n\nTwo.  Three.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-blank-bwd-blank",
+      "input": {
+        "text": "One.\n\n\nTwo.  Three.\n",
+        "point": 6,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "One.\n\n\nTwo.  Three.\n",
+      "visible": "One.\n\n\nTwo.  Three.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-blank-fwd-blank",
+      "input": {
+        "text": "One.\n\n\nTwo.  Three.\n",
+        "point": 6,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "One.\n\n\nTwo.  Three.\n",
+      "visible": "One.\n\n\nTwo.  Three.\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-bob-bwd",
+      "input": {
+        "text": "One.\n\n\nTwo.  Three.\n",
+        "point": 0,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "One.\n\n\nTwo.  Three.\n",
+      "visible": "One.\n\n\nTwo.  Three.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-eob-fwd",
+      "input": {
+        "text": "One.\n\n\nTwo.  Three.\n",
+        "point": 20,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "One.\n\n\nTwo.  Three.\n",
+      "visible": "One.\n\n\nTwo.  Three.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-eob-bwd",
+      "input": {
+        "text": "One.\n\n\nTwo.  Three.\n",
+        "point": 20,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "One.\n\n\nTwo.  Three.\n",
+      "visible": "One.\n\n\nTwo.  Three.\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-eob-nonl-fwd",
+      "input": {
+        "text": "Text one.  Two",
+        "point": 11,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text one.  Two",
+      "visible": "Text one.  Two",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-eob-nonl-bwd",
+      "input": {
+        "text": "Text one.  Two",
+        "point": 14,
+        "keys": "M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text one.  Two",
+      "visible": "Text one.  Two",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-narrow-bwd",
+      "input": {
+        "text": "* A\nOne.  Two.\n* B\nThree.  Four.\n",
+        "point": 27,
+        "keys": "C-x n s M-a M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nOne.  Two.\n* B\nThree.  Four.\n",
+      "visible": "* A\nOne.  Two.\n* B\nThree.  Four.\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-narrow-fwd",
+      "input": {
+        "text": "* A\nOne.  Two.\n* B\nThree.  Four.\n",
+        "point": 19,
+        "keys": "C-x n s M-e M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nOne.  Two.\n* B\nThree.  Four.\n",
+      "visible": "* A\nOne.  Two.\n* B\nThree.  Four.\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-narrow-h-fwd",
+      "input": {
+        "text": "* A\nOne.  Two.\n* B\nThree.  Four.\n",
+        "point": 15,
+        "keys": "C-x n s M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nOne.  Two.\n* B\nThree.  Four.\n",
+      "visible": "* A\nOne.  Two.\n* B\nThree.  Four.\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-fold-fwd-eol",
+      "input": {
+        "text": "* A\nOne.  Two.\n* B\nThree.  Four.\n",
+        "point": 3,
+        "keys": "S-TAB M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nOne.  Two.\n* B\nThree.  Four.\n",
+      "visible": "* A\n* B",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-fold-fwd-head",
+      "input": {
+        "text": "* A\nOne.  Two.\n* B\nThree.  Four.\n",
+        "point": 0,
+        "keys": "TAB M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nOne.  Two.\n* B\nThree.  Four.\n",
+      "visible": "* A\n* B\nThree.  Four.\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-fold-bwd",
+      "input": {
+        "text": "* A\nOne.  Two.\n* B\nThree.  Four.\n",
+        "point": 19,
+        "keys": "S-TAB M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nOne.  Two.\n* B\nThree.  Four.\n",
+      "visible": "* A\n* B",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-sds-fwd-item",
+      "input": {
+        "text": "Intro.\n* A. B\n- One. Two. Three.\n",
+        "point": 16,
+        "keys": "M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "sentence-end-double-space": false
+        }
+      },
+      "text": "Intro.\n* A. B\n- One. Two. Three.\n",
+      "visible": "Intro.\n* A. B\n- One. Two. Three.\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-sds-bwd-item",
+      "input": {
+        "text": "Intro.\n* A. B\n- One. Two. Three.\n",
+        "point": 26,
+        "keys": "M-a M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "sentence-end-double-space": false
+        }
+      },
+      "text": "Intro.\n* A. B\n- One. Two. Three.\n",
+      "visible": "Intro.\n* A. B\n- One. Two. Three.\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-sds-fwd-head",
+      "input": {
+        "text": "Intro.\n* A. B\n- One. Two. Three.\n",
+        "point": 7,
+        "keys": "M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "sentence-end-double-space": false
+        }
+      },
+      "text": "Intro.\n* A. B\n- One. Two. Three.\n",
+      "visible": "Intro.\n* A. B\n- One. Two. Three.\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-pfx-neg-bwd",
+      "input": {
+        "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+        "point": 9,
+        "keys": "M-- M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+      "visible": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-pfx-neg2-bwd",
+      "input": {
+        "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+        "point": 9,
+        "keys": "M-- M-2 M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+      "visible": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-pfx-zero-bwd",
+      "input": {
+        "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+        "point": 15,
+        "keys": "M-0 M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+      "visible": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-pfx-2-bwd",
+      "input": {
+        "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+        "point": 21,
+        "keys": "M-2 M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+      "visible": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-pfx-3-bwd",
+      "input": {
+        "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+        "point": 21,
+        "keys": "M-3 M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+      "visible": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-pfx-cu-fwd",
+      "input": {
+        "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+        "point": 9,
+        "keys": "C-u M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+      "visible": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-kill-item",
+      "input": {
+        "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+        "point": 15,
+        "keys": "M-k",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- One.    Three.\n- Four.\n",
+      "visible": "Intro.\n- One.    Three.\n- Four.\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "Two."
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-kill-item-2",
+      "input": {
+        "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+        "point": 15,
+        "keys": "M-2 M-k",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- One.  \n- Four.\n",
+      "visible": "Intro.\n- One.  \n- Four.\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "Two.  Three."
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-bkill-item",
+      "input": {
+        "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+        "point": 15,
+        "keys": "C-x DEL",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\nTwo.  Three.\n- Four.\n",
+      "visible": "Intro.\nTwo.  Three.\n- Four.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "- One.  "
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-bkill-item-2",
+      "input": {
+        "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+        "point": 21,
+        "keys": "M-3 C-x DEL",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Three.\n- Four.\n",
+      "visible": "Three.\n- Four.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "Intro.\n- One.  Two.  "
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-kill-heading",
+      "input": {
+        "text": "* One.  Two\nBody.\n",
+        "point": 2,
+        "keys": "M-k",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "*   Two\nBody.\n",
+      "visible": "*   Two\nBody.\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "One."
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-bkill-table",
+      "input": {
+        "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+        "point": 12,
+        "keys": "C-x DEL",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\nb |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "visible": "Text.\nb |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "| a | "
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-shift-item-bwd",
+      "input": {
+        "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+        "point": 21,
+        "keys": "M-S-a M-S-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+      "visible": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+      "point": 9,
+      "mark": 21,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "rv-shift-item-fwd",
+      "input": {
+        "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+        "point": 9,
+        "keys": "M-S-e M-S-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+      "visible": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+      "point": 19,
+      "mark": 9,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "rv-shift-head-fwd",
+      "input": {
+        "text": "* One.  Two\nBody.\n",
+        "point": 0,
+        "keys": "M-S-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* One.  Two\nBody.\n",
+      "visible": "* One.  Two\nBody.\n",
+      "point": 6,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "rv-mark-eos",
+      "input": {
+        "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+        "point": 9,
+        "keys": "M-x m a r k - e n d - o f - s e n t e n c e RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- mark-end-of-sentence\n  One.  Two.  Three.\n- Four.\n",
+      "visible": "Intro.\n- mark-end-of-sentence\n  One.  Two.  Three.\n- Four.\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Minibuffer read in batch",
+      "message": null
+    },
+    {
+      "name": "rv-sh-right-fwd-tbl",
+      "input": {
+        "text": "Text.\n| a | b |\n|---+---|\n| c | d |\n\nAfter.\n",
+        "point": 8,
+        "keys": "S-<right> M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| b | a |\n|---+---|\n| c | d |\n\nAfter.\n",
+      "visible": "Text.\n| b | a |\n|---+---|\n| c | d |\n\nAfter.\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-sh-right-shfwd-tbl",
+      "input": {
+        "text": "Text.\n| a | b |\n|---+---|\n| c | d |\n\nAfter.\n",
+        "point": 8,
+        "keys": "S-<right> M-S-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| b | a |\n|---+---|\n| c | d |\n\nAfter.\n",
+      "visible": "Text.\n| b | a |\n|---+---|\n| c | d |\n\nAfter.\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-sh-right-shbwd-tbl",
+      "input": {
+        "text": "Text.\n| a | b |\n|---+---|\n| c | d |\n\nAfter.\n",
+        "point": 32,
+        "keys": "S-<left> M-S-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a | b |\n|---+---|\n| d | c |\n\nAfter.\n",
+      "visible": "Text.\n| a | b |\n|---+---|\n| d | c |\n\nAfter.\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-sh-right-fwd-para",
+      "input": {
+        "text": "One.  Two.  Three.\n",
+        "point": 6,
+        "keys": "S-<right> M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "One.  Two.  Three.\n",
+      "visible": "One.  Two.  Three.\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "To use shift-selection with Org mode, customize ‘org-support-shift-select’",
+      "message": null
+    },
+    {
+      "name": "rv-sh-bwd-tbl-rule",
+      "input": {
+        "text": "Text.\n| a | b |\n|---+---|\n| c | d |\n\nAfter.\n",
+        "point": 17,
+        "keys": "M-S-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a | b |\n|---+---|\n| c | d |\n\nAfter.\n",
+      "visible": "Text.\n| a | b |\n|---+---|\n| c | d |\n\nAfter.\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Wrong type argument: number-or-marker-p, nil",
+      "message": null
+    },
+    {
+      "name": "rv-sh-fwd-tbl-twice",
+      "input": {
+        "text": "Text.\n| a | b |\n|---+---|\n| c | d |\n\nAfter.\n",
+        "point": 8,
+        "keys": "M-S-e M-S-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a | b |\n|---+---|\n| c | d |\n\nAfter.\n",
+      "visible": "Text.\n| a | b |\n|---+---|\n| c | d |\n\nAfter.\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-kill-tbl",
+      "input": {
+        "text": "Text.\n| a | b |\n|---+---|\n| c | d |\n\nAfter.\n",
+        "point": 8,
+        "keys": "M-k",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| \n",
+      "visible": "Text.\n| \n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "a | b |\n|---+---|\n| c | d |\n\nAfter."
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-kill-tbl-2",
+      "input": {
+        "text": "Text.\n| a | b |\n|---+---|\n| c | d |\n\nAfter.\n",
+        "point": 12,
+        "keys": "M-2 M-k",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a | ",
+      "visible": "Text.\n| a | ",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "b |\n|---+---|\n| c | d |\n\nAfter.\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-item-tbl-bwd",
+      "input": {
+        "text": "- item\n  | a | b |\n  | c | d |\n- next.\n",
+        "point": 27,
+        "keys": "M-a M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- item\n  | a | b |\n  | c | d |\n- next.\n",
+      "visible": "- item\n  | a | b |\n  | c | d |\n- next.\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-item-tbl-fwd",
+      "input": {
+        "text": "- item\n  | a | b |\n  | c | d |\n- next.\n",
+        "point": 11,
+        "keys": "M-e M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- item\n  | a | b |\n  | c | d |\n- next.\n",
+      "visible": "- item\n  | a | b |\n  | c | d |\n- next.\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-quote-tbl-fwd",
+      "input": {
+        "text": "#+begin_quote\n| a | b |\n#+end_quote\n",
+        "point": 16,
+        "keys": "M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+begin_quote\n| a | b |\n#+end_quote\n",
+      "visible": "#+begin_quote\n| a | b |\n#+end_quote\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-tbl-trail-fwd",
+      "input": {
+        "text": "Text.\n| a | b |   \n",
+        "point": 12,
+        "keys": "M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a | b |\n|   |   |\n",
+      "visible": "Text.\n| a | b |\n|   |   |\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-tbl-trail-bwd-eol",
+      "input": {
+        "text": "Text.\n| a | b |   \n",
+        "point": 18,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a | b |   \n",
+      "visible": "Text.\n| a | b |   \n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-tbl-empty2-bwd",
+      "input": {
+        "text": "Text.\n| x |   |   |\n",
+        "point": 16,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| x |   |   |\n",
+      "visible": "Text.\n| x |   |   |\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-tbl-lead-bwd",
+      "input": {
+        "text": "Text.\n|  a  | b |\n",
+        "point": 8,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a | b |\n",
+      "visible": "Text.\n| a | b |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Cannot move to previous table field",
+      "message": null
+    },
+    {
+      "name": "rv-tbl-lead-fwd",
+      "input": {
+        "text": "Text.\n|  a  | b |\n",
+        "point": 11,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a | b |\n",
+      "visible": "Text.\n| a | b |\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-tbl-big-fwd",
+      "input": {
+        "text": "Text.\n| a | b |\n|---+---|\n| c | d |\n\nAfter.\n",
+        "point": 8,
+        "keys": "M-9 M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a | b |\n|---+---|\n| c | d |\n|   |   |\n|   |   |\n|   |   |\n\nAfter.\n",
+      "visible": "Text.\n| a | b |\n|---+---|\n| c | d |\n|   |   |\n|   |   |\n|   |   |\n\nAfter.\n",
+      "point": 58,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-field-cu3-bof",
+      "input": {
+        "text": "Text.\n| a | b |\n|---+---|\n| c | d |\n\nAfter.\n",
+        "point": 12,
+        "keys": "C-u 3 M-x o r g - t a b l e - b e g i n n i n g - o f - f i e l d RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a | org-table-beginning-of-fieldb |\n|   |                               |\n|---+-------------------------------|\n| c | d                             |\n\nAfter.\n",
+      "visible": "Text.\n| a | org-table-beginning-of-fieldb |\n|   |                               |\n|---+-------------------------------|\n| c | d                             |\n\nAfter.\n",
+      "point": 50,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Minibuffer read in batch",
+      "message": null
+    },
+    {
+      "name": "rv-field-eof-rule",
+      "input": {
+        "text": "Text.\n| a | b |\n|---+---|\n| c | d |\n\nAfter.\n",
+        "point": 17,
+        "keys": "M-x o r g - t a b l e - e n d - o f - f i e l d RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a                             | b |\n| org-table-end-of-field---+--- |   |\n| c                             | d |\n\nAfter.\n",
+      "visible": "Text.\n| a                             | b |\n| org-table-end-of-field---+--- |   |\n| c                             | d |\n\nAfter.\n",
+      "point": 84,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Minibuffer read in batch",
+      "message": null
+    },
+    {
+      "name": "rv-field-bof-after",
+      "input": {
+        "text": "| a | b |\nText.\n",
+        "point": 12,
+        "keys": "M-x o r g - t a b l e - b e g i n n i n g - o f - f i e l d RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b |\nTeorg-table-beginning-of-field\nxt.\n",
+      "visible": "| a | b |\nTeorg-table-beginning-of-field\nxt.\n",
+      "point": 41,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Minibuffer read in batch",
+      "message": null
+    },
+    {
+      "name": "rv-field-eof-eob",
+      "input": {
+        "text": "| a | b |",
+        "point": 6,
+        "keys": "M-x o r g - t a b l e - e n d - o f - f i e l d RET M-x o r g - t a b l e - e n d - o f - f i e l d RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | org-table-end-of-fieldb |\n|   | org-table-end-of-field  |\n|   |                         |\n",
+      "visible": "| a | org-table-end-of-fieldb |\n|   | org-table-end-of-field  |\n|   |                         |\n",
+      "point": 70,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Minibuffer read in batch",
+      "message": null
+    },
+    {
+      "name": "rv-blank-after-head-bwd",
+      "input": {
+        "text": "* H\n\n\nText one.  Two.\n",
+        "point": 17,
+        "keys": "M-a M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\n\nText one.  Two.\n",
+      "visible": "* H\n\n\nText one.  Two.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-blank-after-head-at-bwd",
+      "input": {
+        "text": "* H\n\nText.\n",
+        "point": 4,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\nText.\n",
+      "visible": "* H\n\nText.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-blank-after-head-at-fwd",
+      "input": {
+        "text": "* H\n\nText.\n",
+        "point": 4,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n\nText.\n",
+      "visible": "* H\n\nText.\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-blank-end-sec-bwd",
+      "input": {
+        "text": "* A\nText one.\n\n* B\n",
+        "point": 14,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nText one.\n\n* B\n",
+      "visible": "* A\nText one.\n\n* B\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-blank-end-sec-fwd",
+      "input": {
+        "text": "* A\nText one.\n\n* B\n",
+        "point": 14,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nText one.\n\n* B\n",
+      "visible": "* A\nText one.\n\n* B\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-blank-list-bwd",
+      "input": {
+        "text": "- a.\n\n- b one.  Two.\n",
+        "point": 5,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- a.\n\n- b one.  Two.\n",
+      "visible": "- a.\n\n- b one.  Two.\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-blank-list-fwd",
+      "input": {
+        "text": "- a.\n\n- b one.  Two.\n",
+        "point": 5,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- a.\n\n- b one.  Two.\n",
+      "visible": "- a.\n\n- b one.  Two.\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-blank-eob-bwd",
+      "input": {
+        "text": "Text.\n\n\n",
+        "point": 9,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n\n",
+      "visible": "Text.\n\n\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-empty-buf-bwd",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "",
+      "visible": "",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-empty-buf-fwd",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "",
+      "visible": "",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "End of buffer",
+      "message": null
+    },
+    {
+      "name": "rv-only-head-fwd",
+      "input": {
+        "text": "* H",
+        "point": 3,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H",
+      "visible": "* H",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "End of buffer",
+      "message": null
+    },
+    {
+      "name": "rv-only-head-bwd",
+      "input": {
+        "text": "* H",
+        "point": 3,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H",
+      "visible": "* H",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-only-stars-fwd",
+      "input": {
+        "text": "** ",
+        "point": 0,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "** ",
+      "visible": "** ",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-only-stars-fwd-end",
+      "input": {
+        "text": "** \nx.\n",
+        "point": 3,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "** \nx.\n",
+      "visible": "** \nx.\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-body-to-head-fwd",
+      "input": {
+        "text": "Body one\n* Next heading.  X\n",
+        "point": 0,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Body one\n* Next heading.  X\n",
+      "visible": "Body one\n* Next heading.  X\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-body-to-head-fwd3",
+      "input": {
+        "text": "Text.  More\n* H one.  two\nZ.\n",
+        "point": 0,
+        "keys": "M-e M-e M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.  More\n* H one.  two\nZ.\n",
+      "visible": "Text.  More\n* H one.  two\nZ.\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-head-to-body-bwd",
+      "input": {
+        "text": "Body one.  two\n* H\n",
+        "point": 15,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Body one.  two\n* H\n",
+      "visible": "Body one.  two\n* H\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-head-to-body-bwd-h",
+      "input": {
+        "text": "Body one.  two\n* H\n",
+        "point": 17,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Body one.  two\n* H\n",
+      "visible": "Body one.  two\n* H\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-head-comment-fwd",
+      "input": {
+        "text": "* COMMENT Note one.  Two :ARCHIVE:\n",
+        "point": 10,
+        "keys": "M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* COMMENT Note one.  Two :ARCHIVE:\n",
+      "visible": "* COMMENT Note one.  Two :ARCHIVE:\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-head-bwd-eob",
+      "input": {
+        "text": "* A\n** B one.  two",
+        "point": 15,
+        "keys": "M-a M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\n** B one.  two",
+      "visible": "* A\n** B one.  two",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-head-fwd-sub",
+      "input": {
+        "text": "* A\n** B one.  two\n",
+        "point": 2,
+        "keys": "M-e M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\n** B one.  two\n",
+      "visible": "* A\n** B one.  two\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-narrow-elem-bwd",
+      "input": {
+        "text": "Intro.\n\nPara one.  Two.\n",
+        "point": 19,
+        "keys": "C-x n e M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n\nPara one.  Two.\n",
+      "visible": "Intro.\n\nPara one.  Two.\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-fn-space-bwd",
+      "input": {
+        "text": "Para.\n\n[fn:1]   Def one.  Two.\n",
+        "point": 15,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:1]   Def one.  Two.\n",
+      "visible": "Para.\n\n[fn:1]   Def one.  Two.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-fn-space-fwd",
+      "input": {
+        "text": "Para.\n\n[fn:1]   Def one.  Two.\n",
+        "point": 15,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n\n[fn:1]   Def one.  Two.\n",
+      "visible": "Para.\n\n[fn:1]   Def one.  Two.\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-counter-bwd",
+      "input": {
+        "text": "Intro.\n3. [@3] Text one.  Two.\n",
+        "point": 26,
+        "keys": "M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n3. [@3] Text one.  Two.\n",
+      "visible": "Intro.\n3. [@3] Text one.  Two.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-counter-bwd-cookie",
+      "input": {
+        "text": "Intro.\n3. [@3] Text one.  Two.\n",
+        "point": 11,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n3. [@3] Text one.  Two.\n",
+      "visible": "Intro.\n3. [@3] Text one.  Two.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-nest-bullet-bwd",
+      "input": {
+        "text": "Intro.\n- a one.  a two.\n  - b.\n",
+        "point": 26,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- a one.  a two.\n  - b.\n",
+      "visible": "Intro.\n- a one.  a two.\n  - b.\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-nest-bullet-bwd2",
+      "input": {
+        "text": "Intro.\n- a one.  a two.\n  - b.\n",
+        "point": 27,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- a one.  a two.\n  - b.\n",
+      "visible": "Intro.\n- a one.  a two.\n  - b.\n",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-item-multi-bwd",
+      "input": {
+        "text": "Intro.\n- one.\n  two.  three.\n",
+        "point": 22,
+        "keys": "M-a M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- one.\n  two.  three.\n",
+      "visible": "Intro.\n- one.\n  two.  three.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-item-multi-fwd",
+      "input": {
+        "text": "Intro.\n- one\n  two.  three.\n",
+        "point": 9,
+        "keys": "M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- one\n  two.  three.\n",
+      "visible": "Intro.\n- one\n  two.  three.\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-fold-bwd-into",
+      "input": {
+        "text": "* A\nOne.  Two.\n* B\nThree.\n",
+        "point": 15,
+        "keys": "S-TAB M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nOne.  Two.\n* B\nThree.\n",
+      "visible": "* A\n* B",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-fold-bwd-into-h",
+      "input": {
+        "text": "* A\nOne.  Two.\n* B\nThree.\n",
+        "point": 17,
+        "keys": "S-TAB M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nOne.  Two.\n* B\nThree.\n",
+      "visible": "* A\n* B",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-drawer-fold-fwd",
+      "input": {
+        "text": "* H\n:LOGBOOK:\n- note.\n:END:\nText.\n",
+        "point": 3,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:LOGBOOK:\n- note.\n:END:\nText.\n",
+      "visible": "* H\n:LOGBOOK:\n- note.\n:END:\nText.\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-drawer-fold-bwd",
+      "input": {
+        "text": "* H\n:LOGBOOK:\n- note.\n:END:\nText.\n",
+        "point": 28,
+        "keys": "M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:LOGBOOK:\n- note.\n:END:\nText.\n",
+      "visible": "* H\n:LOGBOOK:\n- note.\n:END:\nText.\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-pfx-neg-fwd-quote",
+      "input": {
+        "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter.\n",
+        "point": 35,
+        "keys": "M-- M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter.\n",
+      "visible": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter.\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-pfx-neg-bwd-quote",
+      "input": {
+        "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter.\n",
+        "point": 22,
+        "keys": "M-- M-a M-- M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter.\n",
+      "visible": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter.\n",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-pfx-3-bwd-quote",
+      "input": {
+        "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter.\n",
+        "point": 59,
+        "keys": "M-3 M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter.\n",
+      "visible": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter.\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-pfx-3-fwd-quote",
+      "input": {
+        "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter.\n",
+        "point": 0,
+        "keys": "M-3 M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter.\n",
+      "visible": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter.\n",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-pfx-zero-fwd-head",
+      "input": {
+        "text": "* One.  Two\n",
+        "point": 0,
+        "keys": "M-0 M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* One.  Two\n",
+      "visible": "* One.  Two\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-bkill-quote",
+      "input": {
+        "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter.\n",
+        "point": 35,
+        "keys": "M-2 C-x DEL",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Before.\nQuoted two.\n#+end_quote\nAfter.\n",
+      "visible": "Before.\nQuoted two.\n#+end_quote\nAfter.\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "#+begin_quote\nQuoted one.  "
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-sds-bwd-head",
+      "input": {
+        "text": "Intro.\n* A. B. C\n",
+        "point": 15,
+        "keys": "M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "sentence-end-double-space": false
+        }
+      },
+      "text": "Intro.\n* A. B. C\n",
+      "visible": "Intro.\n* A. B. C\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-sds-tbl",
+      "input": {
+        "text": "| a. b | c |\n",
+        "point": 5,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "sentence-end-double-space": false
+        }
+      },
+      "text": "| a. b | c |\n",
+      "visible": "| a. b | c |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-fund-eob-nonl",
+      "input": {
+        "text": "Text",
+        "point": 4,
+        "keys": "M-e",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text",
+      "visible": "Text",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "End of buffer",
+      "message": null
+    },
+    {
+      "name": "rv-fund-empty",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "M-e",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "",
+      "visible": "",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "End of buffer",
+      "message": null
+    },
+    {
+      "name": "rv-fund-eob-nl",
+      "input": {
+        "text": "Text.\n",
+        "point": 6,
+        "keys": "M-e",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n",
+      "visible": "Text.\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-eob-nonl-fwd2",
+      "input": {
+        "text": "Text one.  Two",
+        "point": 11,
+        "keys": "M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text one.  Two",
+      "visible": "Text one.  Two",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "End of buffer",
+      "message": null
+    },
+    {
+      "name": "rv-cmark-shfwd-tbl",
+      "input": {
+        "text": "Text.\n| a | b |\n",
+        "point": 8,
+        "keys": "C-SPC M-S-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a | b |\n",
+      "visible": "Text.\n| a | b |\n",
+      "point": 9,
+      "mark": 8,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "rv-cmark-shfwd-tbl-deact",
+      "input": {
+        "text": "Text.\n| a | b |\n| c | d |\n",
+        "point": 8,
+        "keys": "M-S-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n| a | b |\n| c | d |\n",
+      "visible": "Text.\n| a | b |\n| c | d |\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-shift-para-then-tbl",
+      "input": {
+        "text": "Para one.  Two.\n| a | b |\n",
+        "point": 0,
+        "keys": "M-S-e M-S-e M-S-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para one.  Two.\n| a | b |\n",
+      "visible": "Para one.  Two.\n| a | b |\n",
+      "point": 25,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "rv-src-star-fwd",
+      "input": {
+        "text": "#+begin_src text\n* Star line.  Two\n#+end_src\n",
+        "point": 19,
+        "keys": "M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+begin_src text\n* Star line.  Two\n#+end_src\n",
+      "visible": "#+begin_src text\n* Star line.  Two\n#+end_src\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-src-star-bwd",
+      "input": {
+        "text": "#+begin_src text\n* Star line.  Two\n#+end_src\n",
+        "point": 31,
+        "keys": "M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+begin_src text\n* Star line.  Two\n#+end_src\n",
+      "visible": "#+begin_src text\n* Star line.  Two\n#+end_src\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-comment-block-bwd",
+      "input": {
+        "text": "Intro.\n#+begin_comment\nC one.  Two.\n#+end_comment\n",
+        "point": 31,
+        "keys": "M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n#+begin_comment\nC one.  Two.\n#+end_comment\n",
+      "visible": "Intro.\n#+begin_comment\nC one.  Two.\n#+end_comment\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-export-block-fwd",
+      "input": {
+        "text": "Intro.\n#+begin_export html\nE one.  Two.\n#+end_export\n",
+        "point": 27,
+        "keys": "M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n#+begin_export html\nE one.  Two.\n#+end_export\n",
+      "visible": "Intro.\n#+begin_export html\nE one.  Two.\n#+end_export\n",
+      "point": 39,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-diary-fwd",
+      "input": {
+        "text": "Intro.\n%%(diary-anniversary 1 1 2000) One.  Two.\n",
+        "point": 38,
+        "keys": "M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n%%(diary-anniversary 1 1 2000) One.  Two.\n",
+      "visible": "Intro.\n%%(diary-anniversary 1 1 2000) One.  Two.\n",
+      "point": 48,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-call-bwd",
+      "input": {
+        "text": "Intro.\n#+CALL: foo() One.  Two.\n",
+        "point": 27,
+        "keys": "M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n#+CALL: foo() One.  Two.\n",
+      "visible": "Intro.\n#+CALL: foo() One.  Two.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-fn-paras-bwd",
+      "input": {
+        "text": "Intro.\n\n[fn:1] One.  Two.\n\n  Three.  Four.\n",
+        "point": 37,
+        "keys": "M-a M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n\n[fn:1] One.  Two.\n\n  Three.  Four.\n",
+      "visible": "Intro.\n\n[fn:1] One.  Two.\n\n  Three.  Four.\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-deep-sec-bwd",
+      "input": {
+        "text": "* A\n** B\n*** C\nText one.  Two.\n",
+        "point": 26,
+        "keys": "M-a M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\n** B\n*** C\nText one.  Two.\n",
+      "visible": "* A\n** B\n*** C\nText one.  Two.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-stars-col1-bwd",
+      "input": {
+        "text": "Intro.\n** H one.  two\n",
+        "point": 8,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n** H one.  two\n",
+      "visible": "Intro.\n** H one.  two\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-plan-two-fwd",
+      "input": {
+        "text": "* H\nDEADLINE: <2026-11-25 Wed> SCHEDULED: <2026-11-26 Thu>\nText.\n",
+        "point": 4,
+        "keys": "M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nDEADLINE: <2026-11-25 Wed> SCHEDULED: <2026-11-26 Thu>\nText.\n",
+      "visible": "* H\nDEADLINE: <2026-11-25 Wed> SCHEDULED: <2026-11-26 Thu>\nText.\n",
+      "point": 65,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-quirk-table",
+      "input": {
+        "text": "| a |\n\n\n\n\n\n\n\n\nText.\n",
+        "point": 5,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a |\n\n\n\n\n\n\n\n\nText.\n",
+      "visible": "| a |\n\n\n\n\n\n\n\n\nText.\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "End of buffer",
+      "message": null
+    },
+    {
+      "name": "rv-quirk-table-bwd",
+      "input": {
+        "text": "| a |\n\n\n\n\n\n\n\n\nText one.  Two.\n",
+        "point": 25,
+        "keys": "M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a |\n\n\n\n\n\n\n\n\nText one.  Two.\n",
+      "visible": "| a |\n\n\n\n\n\n\n\n\nText one.  Two.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-pfx-cucu-fwd",
+      "input": {
+        "text": "Intro.\n- One.  Two.  Three.\n- Four.  Five.\n",
+        "point": 9,
+        "keys": "C-u C-u M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Intro.\n- One.  Two.  Three.\n- Four.  Five.\n",
+      "visible": "Intro.\n- One.  Two.  Three.\n- Four.  Five.\n",
+      "point": 43,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-inline-task-fwd",
+      "input": {
+        "text": "* H\n*************** Task one.  Two\nBody.\n*************** END\n",
+        "point": 20,
+        "keys": "M-e M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n*************** Task one.  Two\nBody.\n*************** END\n",
+      "visible": "* H\n*************** Task one.  Two\nBody.\n*************** END\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-verse-blank-bwd",
+      "input": {
+        "text": "#+begin_verse\nOne.\n\nTwo.  Three.\n#+end_verse\n",
+        "point": 26,
+        "keys": "M-a M-a M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+begin_verse\nOne.\n\nTwo.  Three.\n#+end_verse\n",
+      "visible": "#+begin_verse\nOne.\n\nTwo.  Three.\n#+end_verse\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-cmark-shfwd-para",
+      "input": {
+        "text": "One.  Two.  Three.\n",
+        "point": 6,
+        "keys": "C-SPC M-S-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "One.  Two.  Three.\n",
+      "visible": "One.  Two.  Three.\n",
+      "point": 10,
+      "mark": 6,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set [2 times]"
+    },
+    {
+      "name": "rv-fund-cmark-shright",
+      "input": {
+        "text": "One.  Two.  Three.\n",
+        "point": 6,
+        "keys": "C-SPC S-<right>",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "One.  Two.  Three.\n",
+      "visible": "One.  Two.  Three.\n",
+      "point": 7,
+      "mark": 6,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set [2 times]"
+    },
+    {
+      "name": "rv-fund-cmark-shfwd",
+      "input": {
+        "text": "One.  Two.  Three.\n",
+        "point": 6,
+        "keys": "C-SPC M-S-e",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "One.  Two.  Three.\n",
+      "visible": "One.  Two.  Three.\n",
+      "point": 10,
+      "mark": 6,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set [2 times]"
+    },
+    {
+      "name": "rv-cmark-shfwd-head",
+      "input": {
+        "text": "* One.  Two\n",
+        "point": 0,
+        "keys": "C-SPC M-S-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* One.  Two\n",
+      "visible": "* One.  Two\n",
+      "point": 6,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set [2 times]"
     }
   ]
 }
