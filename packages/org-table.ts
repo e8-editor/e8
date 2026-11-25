@@ -553,7 +553,7 @@ e8.defineVariable({
 });
 
 /** A number as string-to-number reads it: an integer exactly, as a bignum, or a float. */
-type LispNumber = { int: bigint; float?: undefined } | { float: number; int?: undefined };
+type LispNumber = { int: bigint; float?: undefined } | { float: number; int?: undefined; nan?: string };
 
 function lispNumber(text: string): LispNumber {
   // A float has digits after its point, or an exponent with digits.
@@ -578,7 +578,7 @@ function formatG(x: number, prec: number): string {
 function numberString(n: LispNumber): string {
   if (n.int !== undefined) return String(n.int);
   const x = n.float;
-  if (Number.isNaN(x)) return "0.0e+NaN";
+  if (Number.isNaN(x)) return n.nan ?? "0.0e+NaN";
   if (!Number.isFinite(x)) return x > 0 ? "1.0e+INF" : "-1.0e+INF";
   let text = Object.is(x, -0) ? "-0" : formatG(x, 15);
   for (let prec = 16; prec <= 17 && Number(text) !== x; prec++) text = formatG(x, prec);
@@ -1120,21 +1120,40 @@ function numberForSumming(field: string, times: { count: number }): LispNumber |
   return n.int === 0n ? undefined : n;
 }
 
-/** A string's leading number as string-to-number reads it, an integer or a float, or the integer 0. */
+/**
+ * A string's leading number as string-to-number reads it, an integer or a
+ * float, or the integer 0: after blanks, a sign, digits and a point, then an
+ * exponent, or e+INF for an infinity or e+NaN for a NaN carrying the whole
+ * digits, as Emacs prints it, 2.0e+NaN.
+ */
 function stringToLispNumber(text: string): LispNumber {
-  const m = /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?/.exec(text.replace(/^[ \t]+/, ""));
-  return m ? lispNumber(m[0]) : { int: 0n };
+  const t = text.replace(/^[ \t]+/, "");
+  const [mantissa, sign, lead, trail] = /^([+-]?)(\d*)(?:\.(\d*))?/.exec(t)!;
+  if (!lead && !trail) return { int: 0n };
+  const rest = t.slice(mantissa.length);
+  const special = /^[eE]\+(INF|NaN)/.exec(rest);
+  if (special?.[1] === "INF") return { float: sign === "-" ? -Infinity : Infinity };
+  if (special) return { float: NaN, nan: `${sign === "-" ? "-" : ""}${BigInt(lead || "0")}.0e+NaN` };
+  return lispNumber(mantissa + (/^[eE][+-]?\d+/.exec(rest)?.[0] ?? ""));
 }
 
-/** The sum of numbers as + adds them: integers exactly until the first float, then floats. */
+/**
+ * The sum of numbers as + adds them: from the first, so a lone -0.0 stays
+ * one, integers exactly until the first float, then floats, a NaN keeping
+ * the first NaN's sign and payload, as the hardware passes it on.
+ */
 function sumNumbers(numbers: LispNumber[]): LispNumber {
   let int = 0n;
   let float: number | undefined;
-  for (const n of numbers) {
+  let nan: string | undefined;
+  numbers.forEach((n, i) => {
+    if (n.float !== undefined && Number.isNaN(n.float)) nan ??= n.nan;
     if (float === undefined && n.int !== undefined) int += n.int;
+    else if (i === 0) float = n.float!;
     else float = (float ?? Number(int)) + (n.int !== undefined ? Number(n.int) : n.float!);
-  }
-  return float === undefined ? { int } : { float };
+  });
+  if (float === undefined) return { int };
+  return Number.isNaN(float) ? { float, nan } : { float };
 }
 
 /** A float rounded to a whole number as printf's %.0f rounds it, halves to even. */
@@ -1146,7 +1165,8 @@ function roundHalfEven(x: number): number {
 /** A number as printf's %0W.0f writes it: rounded halves to even, zero-padded to width after any sign, and -0 for a negative zero. */
 function printfFloat(x: number, width: number): string {
   const sign = x < 0 || Object.is(x, -0) ? "-" : "";
-  const digits = String(Math.abs(roundHalfEven(x)));
+  // Every digit of a whole number, as printf writes even 1e21.
+  const digits = BigInt(Math.abs(roundHalfEven(x))).toString();
   return sign + digits.padStart(width - sign.length, "0");
 }
 
@@ -1188,6 +1208,8 @@ export function tableSum(beg?: number, end?: number, nlast?: number, interactive
     if (times.count === 0) sres = numberString(res);
     else {
       let diff = 3600 * (res.int !== undefined ? Number(res.int) : res.float);
+      // As floor fails on an infinity or a NaN.
+      if (!Number.isFinite(diff)) e8.signal("overflow-error", "Arithmetic overflow error", []);
       // floor gives integers, never a negative zero.
       const h = Math.floor(diff / 3600) + 0;
       diff = floatMod(diff, 3600);

@@ -493,5 +493,258 @@
   "modes": [
    "org-mode"
   ]
+ },
+ {
+  "name": "inf",
+  "text": "| 1.0e+INF |\n| 2 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "inf-int",
+  "text": "| 1e+INF |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "neg-inf",
+  "text": "| -1.0e+INF |\n| 5 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "nan",
+  "text": "| 0.0e+NaN |\n| 1 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "nan-payload",
+  "text": "| 1.0e+NaN |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "inf-time",
+  "text": "| 1.0e+INF |\n| 0:30 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "neg-zero-float",
+  "text": "| -0.0e1 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "neg-zero-two",
+  "text": "| -0.0e1 |\n| -0.0e1 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "int-then-neg-zero",
+  "text": "| 1 |\n| -0.0e1 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "huge-time",
+  "text": "| 1e21 |\n| 0:00 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "bignum-time",
+  "text": "| 123456789012345678901234 |\n| 0:30 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "time-60s",
+  "text": "| 0:00:59 |\n| 0.00015 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "time-neg-zero",
+  "text": "| -1 |\n| 0:00 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "time-neg-half",
+  "text": "| -0.5 |\n| 0:00 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "odd-strings",
+  "text": "| 1e |\n| +.e1 |\n| 1.e5 |\n| 5e+ |\n| 1e-INF |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "tab-dot",
+  "text": "| \t5 |\n| 1. |\n| .5 |\n| -.25 |\n",
+  "point": 2,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "eob-after-table",
+  "text": "| 1 |\n| 2 |\n",
+  "point": 12,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "eob-after-table-col",
+  "text": "| a | 1 |\n| b | 2 |\n",
+  "point": 20,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "blank-line-mid",
+  "text": "| 1 |\n  \n| 2 |\n",
+  "point": 7,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "blank-line-end",
+  "text": "| 1 |\n  \n| 2 |\n",
+  "point": 8,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "blank-line-start",
+  "text": "| 1 |\n  \n| 2 |\n",
+  "point": 6,
+  "keys": "C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "region-twice",
+  "text": "| a | 1 |\n| b | 2 |\n| c | 3 |\n",
+  "point": 6,
+  "keys": "C-SPC C-n C-c + C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "region-empty",
+  "text": "| a | 1 |\n| b | 2 |\n| c | 3 |\n",
+  "point": 6,
+  "keys": "C-SPC C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "region-then-yank",
+  "text": "| a | 1 |\n| b | 2 |\n| c | 3 |\n",
+  "point": 6,
+  "keys": "C-SPC C-n C-c + C-y",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "sum-twice",
+  "text": "| a | 1 |\n| b | 2 |\n",
+  "point": 6,
+  "keys": "C-c + C-c +",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "dsel-org-yank",
+  "text": "one two",
+  "point": 0,
+  "keys": "M-d C-e M-S-b C-y",
+  "modes": [
+   "org-mode",
+   "delete-selection-mode"
+  ]
+ },
+ {
+  "name": "yank-pop",
+  "text": "| a | 1 |\n| b | 2 |\n",
+  "point": 6,
+  "keys": "C-c + C-e C-c + C-y M-y",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "prefix-yank",
+  "text": "| a | 1 |\n",
+  "point": 6,
+  "keys": "C-c + C-e C-u C-y",
+  "modes": [
+   "org-mode"
+  ]
  }
 ]

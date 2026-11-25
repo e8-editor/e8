@@ -1240,6 +1240,641 @@
       ],
       "modified": false,
       "error": null
+    },
+    {
+      "name": "inf",
+      "input": {
+        "text": "| 1.0e+INF |\n| 2 |\n",
+        "point": 2,
+        "keys": "C-c +",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1.0e+INF |\n| 2 |\n",
+      "visible": "| 1.0e+INF |\n| 2 |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "1.0e+INF"
+      ],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inf-int",
+      "input": {
+        "text": "| 1e+INF |\n",
+        "point": 2,
+        "keys": "C-c +",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1e+INF |\n",
+      "visible": "| 1e+INF |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "1.0e+INF"
+      ],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "neg-inf",
+      "input": {
+        "text": "| -1.0e+INF |\n| 5 |\n",
+        "point": 2,
+        "keys": "C-c +",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| -1.0e+INF |\n| 5 |\n",
+      "visible": "| -1.0e+INF |\n| 5 |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "-1.0e+INF"
+      ],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "nan",
+      "input": {
+        "text": "| 0.0e+NaN |\n| 1 |\n",
+        "point": 2,
+        "keys": "C-c +",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 0.0e+NaN |\n| 1 |\n",
+      "visible": "| 0.0e+NaN |\n| 1 |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "0.0e+NaN"
+      ],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "nan-payload",
+      "input": {
+        "text": "| 1.0e+NaN |\n",
+        "point": 2,
+        "keys": "C-c +",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1.0e+NaN |\n",
+      "visible": "| 1.0e+NaN |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "1.0e+NaN"
+      ],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inf-time",
+      "input": {
+        "text": "| 1.0e+INF |\n| 0:30 |\n",
+        "point": 2,
+        "keys": "C-c +",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1.0e+INF |\n| 0:30 |\n",
+      "visible": "| 1.0e+INF |\n| 0:30 |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Arithmetic overflow error"
+    },
+    {
+      "name": "neg-zero-float",
+      "input": {
+        "text": "| -0.0e1 |\n",
+        "point": 2,
+        "keys": "C-c +",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| -0.0e1 |\n",
+      "visible": "| -0.0e1 |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "-0.0"
+      ],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "neg-zero-two",
+      "input": {
+        "text": "| -0.0e1 |\n| -0.0e1 |\n",
+        "point": 2,
+        "keys": "C-c +",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| -0.0e1 |\n| -0.0e1 |\n",
+      "visible": "| -0.0e1 |\n| -0.0e1 |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "-0.0"
+      ],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "int-then-neg-zero",
+      "input": {
+        "text": "| 1 |\n| -0.0e1 |\n",
+        "point": 2,
+        "keys": "C-c +",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1 |\n| -0.0e1 |\n",
+      "visible": "| 1 |\n| -0.0e1 |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "1.0"
+      ],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "huge-time",
+      "input": {
+        "text": "| 1e21 |\n| 0:00 |\n",
+        "point": 2,
+        "keys": "C-c +",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1e21 |\n| 0:00 |\n",
+      "visible": "| 1e21 |\n| 0:00 |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "1000000000000000000000:37:20"
+      ],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "bignum-time",
+      "input": {
+        "text": "| 123456789012345678901234 |\n| 0:30 |\n",
+        "point": 2,
+        "keys": "C-c +",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 123456789012345678901234 |\n| 0:30 |\n",
+      "visible": "| 123456789012345678901234 |\n| 0:30 |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "123456789012345685803008:37:36"
+      ],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "time-60s",
+      "input": {
+        "text": "| 0:00:59 |\n| 0.00015 |\n",
+        "point": 2,
+        "keys": "C-c +",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 0:00:59 |\n| 0.00015 |\n",
+      "visible": "| 0:00:59 |\n| 0.00015 |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "0:00:60"
+      ],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "time-neg-zero",
+      "input": {
+        "text": "| -1 |\n| 0:00 |\n",
+        "point": 2,
+        "keys": "C-c +",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| -1 |\n| 0:00 |\n",
+      "visible": "| -1 |\n| 0:00 |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "-1:00:-0"
+      ],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "time-neg-half",
+      "input": {
+        "text": "| -0.5 |\n| 0:00 |\n",
+        "point": 2,
+        "keys": "C-c +",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| -0.5 |\n| 0:00 |\n",
+      "visible": "| -0.5 |\n| 0:00 |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "-1:30:00"
+      ],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "odd-strings",
+      "input": {
+        "text": "| 1e |\n| +.e1 |\n| 1.e5 |\n| 5e+ |\n| 1e-INF |\n",
+        "point": 2,
+        "keys": "C-c +",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1e |\n| +.e1 |\n| 1.e5 |\n| 5e+ |\n| 1e-INF |\n",
+      "visible": "| 1e |\n| +.e1 |\n| 1.e5 |\n| 5e+ |\n| 1e-INF |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "100007.0"
+      ],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "tab-dot",
+      "input": {
+        "text": "| \t5 |\n| 1. |\n| .5 |\n| -.25 |\n",
+        "point": 2,
+        "keys": "C-c +",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| \t5 |\n| 1. |\n| .5 |\n| -.25 |\n",
+      "visible": "| \t5 |\n| 1. |\n| .5 |\n| -.25 |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "6.25"
+      ],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "eob-after-table",
+      "input": {
+        "text": "| 1 |\n| 2 |\n",
+        "point": 12,
+        "keys": "C-c +",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1 |\n| 2 |\n",
+      "visible": "| 1 |\n| 2 |\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not in table data field"
+    },
+    {
+      "name": "eob-after-table-col",
+      "input": {
+        "text": "| a | 1 |\n| b | 2 |\n",
+        "point": 20,
+        "keys": "C-c +",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | 1 |\n| b | 2 |\n",
+      "visible": "| a | 1 |\n| b | 2 |\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not in table data field"
+    },
+    {
+      "name": "blank-line-mid",
+      "input": {
+        "text": "| 1 |\n  \n| 2 |\n",
+        "point": 7,
+        "keys": "C-c +",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1 |\n  \n| 2 |\n",
+      "visible": "| 1 |\n  \n| 2 |\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not in table data field"
+    },
+    {
+      "name": "blank-line-end",
+      "input": {
+        "text": "| 1 |\n  \n| 2 |\n",
+        "point": 8,
+        "keys": "C-c +",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1 |\n  \n| 2 |\n",
+      "visible": "| 1 |\n  \n| 2 |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not in table data field"
+    },
+    {
+      "name": "blank-line-start",
+      "input": {
+        "text": "| 1 |\n  \n| 2 |\n",
+        "point": 6,
+        "keys": "C-c +",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1 |\n  \n| 2 |\n",
+      "visible": "| 1 |\n  \n| 2 |\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not in table data field"
+    },
+    {
+      "name": "region-twice",
+      "input": {
+        "text": "| a | 1 |\n| b | 2 |\n| c | 3 |\n",
+        "point": 6,
+        "keys": "C-SPC C-n C-c + C-c +",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | 1 |\n| b | 2 |\n| c | 3 |\n",
+      "visible": "| a | 1 |\n| b | 2 |\n| c | 3 |\n",
+      "point": 16,
+      "mark": 6,
+      "mark_active": true,
+      "kill_ring": [
+        "3",
+        "3"
+      ],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "region-empty",
+      "input": {
+        "text": "| a | 1 |\n| b | 2 |\n| c | 3 |\n",
+        "point": 6,
+        "keys": "C-SPC C-c +",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | 1 |\n| b | 2 |\n| c | 3 |\n",
+      "visible": "| a | 1 |\n| b | 2 |\n| c | 3 |\n",
+      "point": 6,
+      "mark": 6,
+      "mark_active": true,
+      "kill_ring": [
+        "6"
+      ],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "region-then-yank",
+      "input": {
+        "text": "| a | 1 |\n| b | 2 |\n| c | 3 |\n",
+        "point": 6,
+        "keys": "C-SPC C-n C-c + C-y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | 1 |\n| b | 32 |\n| c | 3 |\n",
+      "visible": "| a | 1 |\n| b | 32 |\n| c | 3 |\n",
+      "point": 17,
+      "mark": 16,
+      "mark_active": false,
+      "kill_ring": [
+        "3"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sum-twice",
+      "input": {
+        "text": "| a | 1 |\n| b | 2 |\n",
+        "point": 6,
+        "keys": "C-c + C-c +",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | 1 |\n| b | 2 |\n",
+      "visible": "| a | 1 |\n| b | 2 |\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "3",
+        "3"
+      ],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "dsel-org-yank",
+      "input": {
+        "text": "one two",
+        "point": 0,
+        "keys": "M-d C-e M-S-b C-y",
+        "modes": [
+          "org-mode",
+          "delete-selection-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": " one",
+      "visible": " one",
+      "point": 4,
+      "mark": 1,
+      "mark_active": false,
+      "kill_ring": [
+        "one"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "yank-pop",
+      "input": {
+        "text": "| a | 1 |\n| b | 2 |\n",
+        "point": 6,
+        "keys": "C-c + C-e C-c + C-y M-y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | 1 |3\n| b | 2 |\n",
+      "visible": "| a | 1 |3\n| b | 2 |\n",
+      "point": 10,
+      "mark": 9,
+      "mark_active": false,
+      "kill_ring": [
+        "3"
+      ],
+      "modified": true,
+      "error": "Not in table data field"
+    },
+    {
+      "name": "prefix-yank",
+      "input": {
+        "text": "| a | 1 |\n",
+        "point": 6,
+        "keys": "C-c + C-e C-u C-y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | 1 |1\n",
+      "visible": "| a | 1 |1\n",
+      "point": 9,
+      "mark": 10,
+      "mark_active": false,
+      "kill_ring": [
+        "1"
+      ],
+      "modified": true,
+      "error": null
     }
   ]
 }
