@@ -7319,6 +7319,14 @@ declare global {
        */
       "org-table-delete-column": [];
       /**
+       * Edit the table field at point in a window of its own, finishing with C-c C-c. With C-u, show the whole field where it is instead; with C-u C-u, turn org-table-follow-field-mode on or off.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-edit-field": [arg?: PrefixArg | boolean];
+      /**
        * Move to the end of the table field point is in, or of the one after if already there; with a prefix argument, on that many fields.
        *
        * @param n prefix count
@@ -7326,6 +7334,14 @@ declare global {
        * Defined in packages/org-table.ts.
        */
       "org-table-end-of-field": [n?: number];
+      /**
+       * Make the field editor window follow point through the table; leaving the table turns it off, as org-table-exit-follow-field-mode-when-leaving-table says.
+       *
+       * Run from a key or M-x, it turns the mode on if it is off and off if it is on. A positive prefix argument turns it on and zero or a negative one turns it off. Called from code without an argument, it turns the mode on.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-follow-field-mode": [];
       /**
        * Insert a rule below the table's row and move to the row after it, or to a new one. With a prefix argument, to the same column.
        *
@@ -15857,6 +15873,22 @@ declare global {
        */
       "org-table-default-size": Value;
       /**
+       * Whether org-table-follow-field-mode turns itself off when point leaves the table.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-exit-follow-field-mode-when-leaving-table": Value;
+      /**
+       * Whether Org-Table-Follow-Field mode is on in this buffer. Use the command org-table-follow-field-mode to change it.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-follow-field-mode": Value;
+      /**
+       * Keymap org-table-follow-field-mode-map.
+       */
+      "org-table-follow-field-mode-map": Value;
+      /**
        * A column whose fields are at least this fraction numbers is aligned to the right.
        *
        * Defined in packages/org-table.ts.
@@ -15868,6 +15900,12 @@ declare global {
        * Defined in packages/org-table.ts.
        */
       "org-table-tab-jumps-over-hlines": Value;
+      /**
+       * Whether field references are written as spreadsheets write them, as B3, rather than as @3$2: t always, from to read them only.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-use-standard-references": Value;
       /**
        * The tags to offer, as [tag, key] lists, a key a character, or [":startgroup"] and [":endgroup"] around tags of which a heading has only one, and [":newline"]. With keys, C-c C-q picks tags by them.
        *
@@ -20045,6 +20083,18 @@ declare global {
        * Functions TAB in Org tries where it would indent, not being on a heading, an item, a table or a block, each until one gives true.
        */
       "org-tab-before-tab-emulation-hook": Value;
+      /**
+       * Run after Org-Table-Follow-Field mode is turned on or off.
+       */
+      "org-table-follow-field-mode-hook": Value;
+      /**
+       * Run after Org-Table-Follow-Field mode is turned off.
+       */
+      "org-table-follow-field-mode-off-hook": Value;
+      /**
+       * Run after Org-Table-Follow-Field mode is turned on.
+       */
+      "org-table-follow-field-mode-on-hook": Value;
       /**
        * Functions run after a TODO state changes, each given the property list org-blocker-hook gets.
        */

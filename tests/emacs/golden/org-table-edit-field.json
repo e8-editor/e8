@@ -1,0 +1,2438 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "open",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-c `",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#\n# Edit field @1$2 and finish with C-c C-c\n#\nbb",
+      "visible": "#\n# Edit field @1$2 and finish with C-c C-c\n#\nbb",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit and finish with C-c C-c"
+    },
+    {
+      "name": "open-second-row",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 34,
+        "keys": "C-c `",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#\n# Edit field @2$2 and finish with C-c C-c\n#\nd",
+      "visible": "#\n# Edit field @2$2 and finish with C-c C-c\n#\nd",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit and finish with C-c C-c"
+    },
+    {
+      "name": "edit-and-finish",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-c ` C-e SPC x y z C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a   | bb xyz |\n|-----+--------|\n| ccc | d      |\n",
+      "visible": "| a   | bb xyz |\n|-----+--------|\n| ccc | d      |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "New field value inserted"
+    },
+    {
+      "name": "edit-lines",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 28,
+        "keys": "C-c ` C-e RET RET n e w SPC SPC RET C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a       | bb |\n|---------+----|\n| ccc new | d  |\n",
+      "visible": "| a       | bb |\n|---------+----|\n| ccc new | d  |\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "New field value inserted"
+    },
+    {
+      "name": "kill-finishes",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-c ` C-e x C-c C-k",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a   | bbx |\n|-----+-----|\n| ccc | d   |\n",
+      "visible": "| a   | bbx |\n|-----+-----|\n| ccc | d   |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "New field value inserted"
+    },
+    {
+      "name": "empty-field",
+      "input": {
+        "text": "| a |   |\n",
+        "point": 6,
+        "keys": "C-c ` n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | new |\n",
+      "visible": "| a | new |\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "New field value inserted"
+    },
+    {
+      "name": "standard-references",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 34,
+        "keys": "C-c `",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-table-use-standard-references": true
+        }
+      },
+      "text": "#\n# Edit field B2 and finish with C-c C-c\n#\nd",
+      "visible": "#\n# Edit field B2 and finish with C-c C-c\n#\nd",
+      "point": 44,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit and finish with C-c C-c"
+    },
+    {
+      "name": "not-at-table",
+      "input": {
+        "text": "text\n",
+        "point": 0,
+        "keys": "C-c `",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "text\n",
+      "visible": "text\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not at a table",
+      "message": null
+    },
+    {
+      "name": "on-hline",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 19,
+        "keys": "C-c `",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#\n# Edit field @1$1 and finish with C-c C-c\n#\n-----+----",
+      "visible": "#\n# Edit field @1$1 and finish with C-c C-c\n#\n-----+----",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit and finish with C-c C-c"
+    },
+    {
+      "name": "at-bol",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 0,
+        "keys": "C-c `",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#\n# Edit field @1$0 and finish with C-c C-c\n#\n",
+      "visible": "#\n# Edit field @1$0 and finish with C-c C-c\n#\n",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit and finish with C-c C-c"
+    },
+    {
+      "name": "cu-props",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-u C-c `",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "visible": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "hash-in-field",
+      "input": {
+        "text": "| #x | y |\n",
+        "point": 3,
+        "keys": "C-c ` C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "|   | y |\n",
+      "visible": "|   | y |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "New field value inserted"
+    },
+    {
+      "name": "indented",
+      "input": {
+        "text": "  | a | b |\n",
+        "point": 8,
+        "keys": "C-c ` C-e c C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "  | a | bc |\n",
+      "visible": "  | a | bc |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "New field value inserted"
+    },
+    {
+      "name": "wide",
+      "input": {
+        "text": "| 日本 | b |\n",
+        "point": 3,
+        "keys": "C-c ` C-e x C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| 日本x | b |\n",
+      "visible": "| 日本x | b |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "New field value inserted"
+    },
+    {
+      "name": "twice",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-c ` C-c C-c C-n C-c ` C-e ! C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "visible": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Not in table data field",
+      "message": "Edit and finish with C-c C-c"
+    },
+    {
+      "name": "follow-on",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-u C-u C-c `",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "visible": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Edit and finish with C-c C-c"
+    },
+    {
+      "name": "follow-move",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-u C-u C-c ` C-n C-n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "visible": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Edit and finish with C-c C-c [2 times]"
+    },
+    {
+      "name": "follow-off",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-u C-u C-c ` C-u C-u C-c `",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "visible": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Edit and finish with C-c C-c [3 times]"
+    },
+    {
+      "name": "follow-leave",
+      "input": {
+        "text": "before\n| a   | bb |\n|-----+----|\n| ccc | d  |\nafter\n",
+        "point": 15,
+        "keys": "C-u C-u C-c ` M->",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "before\n| a   | bb |\n|-----+----|\n| ccc | d  |\nafter\n",
+      "visible": "before\n| a   | bb |\n|-----+----|\n| ccc | d  |\nafter\n",
+      "point": 52,
+      "mark": 15,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "open-windows",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-c `",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true
+      },
+      "text": "#\n# Edit field @1$2 and finish with C-c C-c\n#\nbb",
+      "visible": "#\n# Edit field @1$2 and finish with C-c C-c\n#\nbb",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 8,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Table Edit Field*",
+          "point": 46,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Edit and finish with C-c C-c"
+    },
+    {
+      "name": "finish-windows",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-c ` C-e x C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true
+      },
+      "text": "| a   | bbx |\n|-----+-----|\n| ccc | d   |\n",
+      "visible": "| a   | bbx |\n|-----+-----|\n| ccc | d   |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 8,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": "New field value inserted"
+    },
+    {
+      "name": "split-open",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-x 2 C-c `",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true
+      },
+      "text": "#\n# Edit field @1$2 and finish with C-c C-c\n#\nbb",
+      "visible": "#\n# Edit field @1$2 and finish with C-c C-c\n#\nbb",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 8,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Table Edit Field*",
+          "point": 46,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Edit and finish with C-c C-c"
+    },
+    {
+      "name": "split-finish",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-x 2 C-c ` C-e x C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true
+      },
+      "text": "| a   | bbx |\n|-----+-----|\n| ccc | d   |\n",
+      "visible": "| a   | bbx |\n|-----+-----|\n| ccc | d   |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 8,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 14,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        }
+      ],
+      "message": "New field value inserted"
+    },
+    {
+      "name": "twice-open-again",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-c ` C-x o C-n C-n C-c `",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true
+      },
+      "text": "#\n# Edit field @2$2 and finish with C-c C-c\n#\nd",
+      "visible": "#\n# Edit field @2$2 and finish with C-c C-c\n#\nd",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 34,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Table Edit Field*",
+          "point": 46,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Edit and finish with C-c C-c [2 times]"
+    },
+    {
+      "name": "twice-finish",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-c ` C-x o C-n C-n C-c ` C-e ! C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true
+      },
+      "text": "| a   | bb |\n|-----+----|\n| ccc | d! |\n",
+      "visible": "| a   | bb |\n|-----+----|\n| ccc | d! |\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 34,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 39,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        }
+      ],
+      "message": "New field value inserted"
+    },
+    {
+      "name": "hash-middle",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-c ` C-e RET # x RET y C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | bb |\ny|\n|-----+----|\n| ccc | d  |\n",
+      "visible": "| a | bb |\ny|\n|-----+----|\n| ccc | d  |\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "New field value inserted"
+    },
+    {
+      "name": "hash-last-line",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-c ` C-e RET # x C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "visible": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "New field value inserted"
+    },
+    {
+      "name": "empty-edit",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-c ` C-k C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a   |   |\n|-----+---|\n| ccc | d |\n",
+      "visible": "| a   |   |\n|-----+---|\n| ccc | d |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "bb"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "New field value inserted"
+    },
+    {
+      "name": "eol-open",
+      "input": {
+        "text": "| a | b |\n",
+        "point": 9,
+        "keys": "C-c `",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#\n# Edit field @1$3 and finish with C-c C-c\n#\n",
+      "visible": "#\n# Edit field @1$3 and finish with C-c C-c\n#\n",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit and finish with C-c C-c"
+    },
+    {
+      "name": "eol-finish",
+      "input": {
+        "text": "| a | b |\n",
+        "point": 9,
+        "keys": "C-c ` x C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true
+      },
+      "text": "| a | b |\n",
+      "visible": "| a | b |\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not in table data field",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 9,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": "Edit and finish with C-c C-c"
+    },
+    {
+      "name": "on-bar",
+      "input": {
+        "text": "| a | b |\n",
+        "point": 4,
+        "keys": "C-c ` C-e z C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| az | b |\n",
+      "visible": "| az | b |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "New field value inserted"
+    },
+    {
+      "name": "bol-indented",
+      "input": {
+        "text": "  | a |\n",
+        "point": 1,
+        "keys": "C-c ` x C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "  | a |\n",
+      "visible": "  | a |\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not in table data field",
+      "message": "Edit and finish with C-c C-c"
+    },
+    {
+      "name": "blanks",
+      "input": {
+        "text": "|  a  b  | c |\n",
+        "point": 3,
+        "keys": "C-c `",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#\n# Edit field @1$1 and finish with C-c C-c\n#\na  b",
+      "visible": "#\n# Edit field @1$1 and finish with C-c C-c\n#\na  b",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit and finish with C-c C-c"
+    },
+    {
+      "name": "blanks-finish",
+      "input": {
+        "text": "|  a  b  | c |\n",
+        "point": 3,
+        "keys": "C-c ` C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a  b | c |\n",
+      "visible": "| a  b | c |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "New field value inserted"
+    },
+    {
+      "name": "read-only",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-c ` C-e x C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "visible": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 7,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": "Edit and finish with C-c C-c"
+    },
+    {
+      "name": "narrow-open",
+      "input": {
+        "text": "| a |\n| b |\n| c |\n| d |\n",
+        "point": 6,
+        "keys": "C-SPC C-n C-n C-x n n C-p C-f C-f C-c `",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#\n# Edit field @2$1 and finish with C-c C-c\n#\nc",
+      "visible": "#\n# Edit field @2$1 and finish with C-c C-c\n#\nc",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit and finish with C-c C-c"
+    },
+    {
+      "name": "narrow-finish",
+      "input": {
+        "text": "| a |\n| b |\n| c |\n| d |\n",
+        "point": 6,
+        "keys": "C-SPC C-n C-n C-x n n C-p C-f C-f C-c ` C-e x C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a |\n| b  |\n| cx |\n| d |\n",
+      "visible": "| a |\n| b  |\n| cx |\n| d |\n",
+      "point": 15,
+      "mark": 6,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "New field value inserted"
+    },
+    {
+      "name": "follow-back",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-u C-u C-c ` C-b C-b C-b C-b",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true
+      },
+      "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "visible": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 4,
+          "width": 80,
+          "height": 19,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Table Edit Field*",
+          "point": 46,
+          "width": 80,
+          "height": 5,
+          "selected": false
+        }
+      ],
+      "message": "Edit and finish with C-c C-c [5 times]"
+    },
+    {
+      "name": "follow-hline",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-u C-u C-c ` C-n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true
+      },
+      "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "visible": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 21,
+          "width": 80,
+          "height": 19,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Table Edit Field*",
+          "point": 46,
+          "width": 80,
+          "height": 5,
+          "selected": false
+        }
+      ],
+      "message": "Edit and finish with C-c C-c"
+    },
+    {
+      "name": "follow-off-windows",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-u C-u C-c ` C-u C-u C-c `",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true
+      },
+      "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "visible": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 8,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": "Edit and finish with C-c C-c [3 times]"
+    },
+    {
+      "name": "follow-leave-windows",
+      "input": {
+        "text": "before\n| a   | bb |\n|-----+----|\n| ccc | d  |\nafter\n",
+        "point": 15,
+        "keys": "C-u C-u C-c ` M->",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true
+      },
+      "text": "before\n| a   | bb |\n|-----+----|\n| ccc | d  |\nafter\n",
+      "visible": "before\n| a   | bb |\n|-----+----|\n| ccc | d  |\nafter\n",
+      "point": 52,
+      "mark": 15,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 52,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": "Mark set"
+    },
+    {
+      "name": "follow-mx",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "answers": [
+          "org-table-follow-field-mode"
+        ],
+        "message": true
+      },
+      "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "visible": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 8,
+          "width": 80,
+          "height": 19,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Table Edit Field*",
+          "point": 46,
+          "width": 80,
+          "height": 5,
+          "selected": false
+        }
+      ],
+      "message": "Edit and finish with C-c C-c"
+    },
+    {
+      "name": "follow-mx-off",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "M-x M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "answers": [
+          "org-table-follow-field-mode",
+          "org-table-follow-field-mode"
+        ],
+        "message": true
+      },
+      "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "visible": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 8,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": "Org-Table-Follow-Field mode disabled in current buffer"
+    },
+    {
+      "name": "follow-side",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-x 3 C-u C-u C-c `",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true
+      },
+      "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "visible": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 8,
+          "width": 40,
+          "height": 24,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Table Edit Field*",
+          "point": 46,
+          "width": 40,
+          "height": 24,
+          "selected": false
+        }
+      ],
+      "message": "Edit and finish with C-c C-c"
+    },
+    {
+      "name": "follow-type",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-u C-u C-c ` x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true
+      },
+      "text": "| a   | xbb |\n|-----+----|\n| ccc | d  |\n",
+      "visible": "| a   | xbb |\n|-----+----|\n| ccc | d  |\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 9,
+          "width": 80,
+          "height": 19,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Table Edit Field*",
+          "point": 46,
+          "width": 80,
+          "height": 5,
+          "selected": false
+        }
+      ],
+      "message": "Edit and finish with C-c C-c [2 times]"
+    },
+    {
+      "name": "follow-finish",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-u C-u C-c ` C-x o C-e x C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true
+      },
+      "text": "| a   | bbx |\n|-----+-----|\n| ccc | d   |\n",
+      "visible": "| a   | bbx |\n|-----+-----|\n| ccc | d   |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 8,
+          "width": 80,
+          "height": 19,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Table Edit Field*",
+          "point": 46,
+          "width": 80,
+          "height": 5,
+          "selected": false
+        }
+      ],
+      "message": "Edit and finish with C-c C-c"
+    },
+    {
+      "name": "numeric-arg",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "M-1 C-c `",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "visible": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "pipe-in-edit",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-c ` C-e | z C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a   | bb | z |\n|-----+----+---|\n| ccc | d  |   |\n",
+      "visible": "| a   | bb | z |\n|-----+----+---|\n| ccc | d  |   |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "New field value inserted"
+    },
+    {
+      "name": "follow-bol",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-u C-u C-c ` C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true
+      },
+      "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "visible": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 19,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Table Edit Field*",
+          "point": 46,
+          "width": 80,
+          "height": 5,
+          "selected": false
+        }
+      ],
+      "message": "Edit and finish with C-c C-c"
+    },
+    {
+      "name": "follow-down-row",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-u C-u C-c ` C-n C-n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true
+      },
+      "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "visible": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 34,
+          "width": 80,
+          "height": 19,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Table Edit Field*",
+          "point": 46,
+          "width": 80,
+          "height": 5,
+          "selected": false
+        }
+      ],
+      "message": "Edit and finish with C-c C-c [2 times]"
+    },
+    {
+      "name": "kill-by-hand",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-c ` C-x k",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "answers": [
+          ""
+        ],
+        "message": true
+      },
+      "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "visible": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 8,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 8,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Edit and finish with C-c C-c"
+    },
+    {
+      "name": "kill-by-hand-reopen",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-c ` C-x k C-c ` C-e y C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "answers": [
+          ""
+        ],
+        "message": true
+      },
+      "text": "| a   | bby |\n|-----+-----|\n| ccc | d   |\n",
+      "visible": "| a   | bby |\n|-----+-----|\n| ccc | d   |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 14,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 8,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "New field value inserted"
+    },
+    {
+      "name": "follow-kill-then-off",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-u C-u C-c ` C-x o C-x k C-x o C-u C-u C-c `",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "answers": [
+          ""
+        ],
+        "message": true
+      },
+      "text": "#\n# Edit field @1$2 and finish with C-c C-c\n#\nbb",
+      "visible": "#\n# Edit field @1$2 and finish with C-c C-c\n#\nbb",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Not at a table",
+      "windows": [
+        {
+          "buffer": "*Org Table Edit Field*",
+          "point": 46,
+          "width": 80,
+          "height": 5,
+          "selected": true
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 8,
+          "width": 80,
+          "height": 19,
+          "selected": false
+        }
+      ],
+      "message": "Edit and finish with C-c C-c [2 times]"
+    },
+    {
+      "name": "follow-kill-then-move",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-u C-u C-c ` C-x o C-x k C-x o C-b C-b C-b C-b",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "answers": [
+          ""
+        ],
+        "message": true
+      },
+      "text": "#\n# Edit field @1$2 and finish with C-c C-c\n#\nbb",
+      "visible": "#\n# Edit field @1$2 and finish with C-c C-c\n#\nbb",
+      "point": 42,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*Org Table Edit Field*",
+          "point": 42,
+          "width": 80,
+          "height": 5,
+          "selected": true
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 8,
+          "width": 80,
+          "height": 19,
+          "selected": false
+        }
+      ],
+      "message": "Edit and finish with C-c C-c [2 times]"
+    },
+    {
+      "name": "link-cu",
+      "input": {
+        "text": "| [[https://x.org][desc]] | b |\n",
+        "point": 3,
+        "keys": "C-u C-c `",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| [[https://x.org][desc]] | b |\n",
+      "visible": "| desc | b |\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "link-open",
+      "input": {
+        "text": "| [[https://x.org][desc]] | b |\n",
+        "point": 3,
+        "keys": "C-c `",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#\n# Edit field @1$1 and finish with C-c C-c\n#\n[[https://x.org][desc]]",
+      "visible": "#\n# Edit field @1$1 and finish with C-c C-c\n#\ndesc",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit and finish with C-c C-c"
+    },
+    {
+      "name": "link-finish",
+      "input": {
+        "text": "| [[https://x.org][desc]] | b |\n",
+        "point": 3,
+        "keys": "C-c ` C-e x C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| [[https://x.org][desc]]x | b |\n",
+      "visible": "| descx | b |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "New field value inserted"
+    },
+    {
+      "name": "follow-tab",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-u C-u C-c ` TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true
+      },
+      "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "visible": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 34,
+          "width": 80,
+          "height": 19,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Table Edit Field*",
+          "point": 46,
+          "width": 80,
+          "height": 5,
+          "selected": false
+        }
+      ],
+      "message": "Edit and finish with C-c C-c [3 times]"
+    },
+    {
+      "name": "follow-stab",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-u C-u C-c ` S-TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true
+      },
+      "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "visible": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 2,
+          "width": 80,
+          "height": 19,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Table Edit Field*",
+          "point": 46,
+          "width": 80,
+          "height": 5,
+          "selected": false
+        }
+      ],
+      "message": "Edit and finish with C-c C-c [2 times]"
+    },
+    {
+      "name": "follow-noexit",
+      "input": {
+        "text": "before\n| a   | bb |\n|-----+----|\n| ccc | d  |\nafter\n",
+        "point": 15,
+        "keys": "C-u C-u C-c ` M->",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true,
+        "vars": {
+          "org-table-exit-follow-field-mode-when-leaving-table": false
+        }
+      },
+      "text": "before\n| a   | bb |\n|-----+----|\n| ccc | d  |\nafter\n",
+      "visible": "before\n| a   | bb |\n|-----+----|\n| ccc | d  |\nafter\n",
+      "point": 52,
+      "mark": 15,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 52,
+          "width": 80,
+          "height": 19,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Table Edit Field*",
+          "point": 46,
+          "width": 80,
+          "height": 5,
+          "selected": false
+        }
+      ],
+      "message": "Mark set"
+    },
+    {
+      "name": "follow-noexit-back",
+      "input": {
+        "text": "before\n| a   | bb |\n|-----+----|\n| ccc | d  |\nafter\n",
+        "point": 15,
+        "keys": "C-u C-u C-c ` M-> C-p C-p C-f C-f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true,
+        "vars": {
+          "org-table-exit-follow-field-mode-when-leaving-table": false
+        }
+      },
+      "text": "before\n| a   | bb |\n|-----+----|\n| ccc | d  |\nafter\n",
+      "visible": "before\n| a   | bb |\n|-----+----|\n| ccc | d  |\nafter\n",
+      "point": 35,
+      "mark": 15,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 35,
+          "width": 80,
+          "height": 19,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Table Edit Field*",
+          "point": 46,
+          "width": 80,
+          "height": 5,
+          "selected": false
+        }
+      ],
+      "message": "Edit and finish with C-c C-c [2 times]"
+    },
+    {
+      "name": "follow-one-window",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-u C-u C-c ` C-x 1 C-b",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true
+      },
+      "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "visible": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 7,
+          "width": 80,
+          "height": 19,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Table Edit Field*",
+          "point": 46,
+          "width": 80,
+          "height": 5,
+          "selected": false
+        }
+      ],
+      "message": "Edit and finish with C-c C-c [3 times]"
+    },
+    {
+      "name": "follow-long",
+      "input": {
+        "text": "| word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word | b |\n",
+        "point": 4,
+        "keys": "C-u C-u C-c `",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true
+      },
+      "text": "| word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word | b |\n",
+      "visible": "| word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word | b |\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 4,
+          "width": 80,
+          "height": 16,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Table Edit Field*",
+          "point": 46,
+          "width": 80,
+          "height": 8,
+          "selected": false
+        }
+      ],
+      "message": "Edit and finish with C-c C-c"
+    },
+    {
+      "name": "open-long",
+      "input": {
+        "text": "| word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word | b |\n",
+        "point": 4,
+        "keys": "C-c `",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true
+      },
+      "text": "#\n# Edit field @1$1 and finish with C-c C-c\n#\nword word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word",
+      "visible": "#\n# Edit field @1$1 and finish with C-c C-c\n#\nword word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 4,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Table Edit Field*",
+          "point": 46,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Edit and finish with C-c C-c"
+    },
+    {
+      "name": "tab-in-edit",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-c ` C-e C-q TAB x C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a   | bb\tx |\n|-----+-----------|\n| ccc | d         |\n",
+      "visible": "| a   | bb\tx |\n|-----+-----------|\n| ccc | d         |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "New field value inserted"
+    },
+    {
+      "name": "trailing-newlines",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-c ` C-e RET RET C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "visible": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "New field value inserted"
+    },
+    {
+      "name": "cc-in-edit-buffer-on-table",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-c ` C-c `",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#\n# Edit field @1$2 and finish with C-c C-c\n#\nbb",
+      "visible": "#\n# Edit field @1$2 and finish with C-c C-c\n#\nbb",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Not at a table",
+      "message": "Edit and finish with C-c C-c"
+    },
+    {
+      "name": "follow-cck",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-u C-u C-c ` C-x o C-e x C-c C-k",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true
+      },
+      "text": "| a   | bbx |\n|-----+-----|\n| ccc | d   |\n",
+      "visible": "| a   | bbx |\n|-----+-----|\n| ccc | d   |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 8,
+          "width": 80,
+          "height": 19,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Table Edit Field*",
+          "point": 46,
+          "width": 80,
+          "height": 5,
+          "selected": false
+        }
+      ],
+      "message": "Edit and finish with C-c C-c"
+    },
+    {
+      "name": "follow-noeol",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |",
+        "point": 8,
+        "keys": "C-u C-u C-c ` C-n C-n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true
+      },
+      "text": "| a   | bb |\n|-----+----|\n| ccc | d  |",
+      "visible": "| a   | bb |\n|-----+----|\n| ccc | d  |",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 34,
+          "width": 80,
+          "height": 19,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Table Edit Field*",
+          "point": 46,
+          "width": 80,
+          "height": 5,
+          "selected": false
+        }
+      ],
+      "message": "Edit and finish with C-c C-c [2 times]"
+    },
+    {
+      "name": "hline-plus",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 19,
+        "keys": "C-c `",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#\n# Edit field @1$1 and finish with C-c C-c\n#\n-----+----",
+      "visible": "#\n# Edit field @1$1 and finish with C-c C-c\n#\n-----+----",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit and finish with C-c C-c"
+    },
+    {
+      "name": "three-windows",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-x 2 C-x 2 C-c ` C-e x C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true
+      },
+      "text": "| a   | bbx |\n|-----+-----|\n| ccc | d   |\n",
+      "visible": "| a   | bbx |\n|-----+-----|\n| ccc | d   |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 8,
+          "width": 80,
+          "height": 6,
+          "selected": true
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 14,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 14,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        }
+      ],
+      "message": "New field value inserted"
+    },
+    {
+      "name": "three-windows-open",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-x 2 C-x 2 C-c `",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true
+      },
+      "text": "#\n# Edit field @1$2 and finish with C-c C-c\n#\nbb",
+      "visible": "#\n# Edit field @1$2 and finish with C-c C-c\n#\nbb",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 8,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Table Edit Field*",
+          "point": 46,
+          "width": 80,
+          "height": 6,
+          "selected": true
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 8,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        }
+      ],
+      "message": "Edit and finish with C-c C-c"
+    },
+    {
+      "name": "follow-two-tables",
+      "input": {
+        "text": "| a | b |\n\n| c | d |\n",
+        "point": 3,
+        "keys": "C-u C-u C-c ` C-n C-n C-n C-n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true
+      },
+      "text": "| a | b |\n\n| c | d |\n",
+      "visible": "| a | b |\n\n| c | d |\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "End of buffer",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 21,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": "Edit and finish with C-c C-c"
+    },
+    {
+      "name": "standard-refs-hline",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 34,
+        "keys": "C-c `",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-table-use-standard-references": true
+        }
+      },
+      "text": "#\n# Edit field B2 and finish with C-c C-c\n#\nd",
+      "visible": "#\n# Edit field B2 and finish with C-c C-c\n#\nd",
+      "point": 44,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit and finish with C-c C-c"
+    },
+    {
+      "name": "cu-cu-off-not-table",
+      "input": {
+        "text": "before\n| a   | bb |\n|-----+----|\n| ccc | d  |\nafter\n",
+        "point": 15,
+        "keys": "C-u C-u C-c ` M-> C-u C-u C-c `",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "before\n| a   | bb |\n|-----+----|\n| ccc | d  |\nafter\n",
+      "visible": "before\n| a   | bb |\n|-----+----|\n| ccc | d  |\nafter\n",
+      "point": 52,
+      "mark": 15,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not at a table",
+      "message": "Mark set"
+    },
+    {
+      "name": "other-buffer-finish",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-c ` C-x o C-x b RET C-x o C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "answers": [
+          "*scratch*"
+        ],
+        "message": true
+      },
+      "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "visible": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 8,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": "New field value inserted"
+    },
+    {
+      "name": "renamed-finish",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-c ` M-x C-e x C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "answers": [
+          "rename-buffer",
+          "fld"
+        ],
+        "message": true
+      },
+      "text": "| a   | bbx |\n|-----+-----|\n| ccc | d   |\n",
+      "visible": "| a   | bbx |\n|-----+-----|\n| ccc | d   |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 8,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": "New field value inserted"
+    },
+    {
+      "name": "renamed-then-new",
+      "input": {
+        "text": "| a   | bb |\n|-----+----|\n| ccc | d  |\n",
+        "point": 8,
+        "keys": "C-c ` M-x C-x o C-n C-n C-c ` C-x b C-e y C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "answers": [
+          "rename-buffer",
+          "fld",
+          "fld"
+        ],
+        "message": true
+      },
+      "text": "| a   | bby |\n|-----+-----|\n| ccc | d   |\n",
+      "visible": "| a   | bby |\n|-----+-----|\n| ccc | d   |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 8,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": "New field value inserted"
+    }
+  ]
+}
