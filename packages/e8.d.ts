@@ -15489,6 +15489,12 @@ declare global {
        */
       "org-outline-path-complete-in-steps": Value;
       /**
+       * What may end an ordered item's number or letter: t for either . or ), or the character ?. or ?) for that one alone.
+       *
+       * Defined in packages/org-list.ts.
+       */
+      "org-plain-list-ordered-item-terminator": Value;
+      /**
        * The priority S-<up> and S-<down> start from, and that headings without one count as.
        *
        * Defined in packages/org.ts.
