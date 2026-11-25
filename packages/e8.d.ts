@@ -8703,7 +8703,7 @@ declare global {
        */
       "set-language-environment": [language: string];
       /**
-       * Set the mark at point and activate the region, saving the old mark on the mark ring.
+       * Set the mark at point and activate the region, saving the old mark on the mark ring. If the mark is already at point, only activate it.
        *
        * Repeating it straight away deactivates the region, leaving the mark set. With C-u, jump to the mark instead and take the previous one from the mark ring, so repeating C-u C-SPC goes back through earlier marks.
        */
