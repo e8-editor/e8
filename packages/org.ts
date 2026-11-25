@@ -1973,6 +1973,108 @@ e8.defineCommand({
   },
 });
 
+/**
+ * Hides everything but the headings of the top LEVELS levels, as
+ * org-fold-hide-sublevels: from the first heading to the end, the last
+ * empty line left showing.
+ */
+function hideSublevels(levels: number): void {
+  if (levels < 1) throw new Error("Must keep at least one level of headers");
+  e8.saveExcursion(() => {
+    const all = headings().filter((h) => h.start >= e8.pointMin() && h.start < e8.pointMax());
+    let beg = all[0]?.start ?? e8.pointMax();
+    const max = e8.pointMax();
+    let end = Math.max(e8.pointMin(), max > e8.pointMin() && max === e8.lineStart(lineAt(max)) ? max - 1 : max);
+    if (end < beg) [beg, end] = [end, beg];
+    flag(beg, end, true);
+    // Each heading of those levels shown, from the end of the line before it, as org-fold-heading.
+    for (const h of all) {
+      if (h.start < beg || h.start > end || h.level > levels) continue;
+      flag(h.line > 0 ? e8.lineEnd(h.line - 1) : h.start, h.end, false);
+    }
+    if (max > e8.pointMin() && max === e8.lineStart(lineAt(max)) && e8.invisibleAt(max - 1)) flag(max - 1, max, false);
+  });
+}
+
+e8.defineCommand({
+  name: "org-fold-hide-sublevels",
+  doc: "Hide everything but the headings of the top levels: as many as the prefix argument says, or the heading point is on's level, or 1.",
+  params: [{ name: "levels", kind: "prefix" }],
+  run: (levels: e8.PrefixArg) => {
+    const h = parseHeading(lineAt());
+    hideSublevels(levels !== null && levels !== undefined ? e8.prefixNumericValue() : h ? h.level : 1);
+  },
+});
+
+/** The heading point is under, as org-back-to-heading finds it, within the narrowing. */
+function headingAbove(): { all: Heading[]; i: number } | undefined {
+  const all = headings();
+  const i = headingIndex(all, lineAt());
+  return i === undefined || all[i].start < e8.pointMin() ? undefined : { all, i };
+}
+
+/** Where the subtree of heading i ends, as org-end-of-subtree with TO-HEADING: the next heading at its level or above, or the narrowing's end. */
+function subtreeEndHere(all: Heading[], i: number): number {
+  return Math.min(subtreeRegion(all, i)[1], e8.pointMax());
+}
+
+/** Folds the subtree point is under after its heading's line, as org-fold-hide-subtree. */
+function hideSubtreeHere(): void {
+  const found = headingAbove();
+  if (!found) e8.userError("Before first heading");
+  const { all, i } = found!;
+  const end = subtreeEndHere(all, i);
+  flag(all[i].end, end === e8.pointMax() ? end : end - 1, true);
+}
+
+/**
+ * Shows the subheadings of the heading point is under down to LEVEL levels
+ * below it, and the first child however deep, as org-fold-show-children.
+ */
+function showChildrenHere(level: number): void {
+  const found = headingAbove();
+  if (!found) return;
+  const { all, i } = found;
+  const parent = all[i];
+  const maxLevel = validLevel(parent.level, level);
+  const end = subtreeEndHere(all, i);
+  const show = (h: Heading): void => flag(h.line > 0 ? e8.lineEnd(h.line - 1) : h.start, h.end, false);
+  show(parent);
+  let minDirect = Infinity;
+  for (let j = i + 1; j < all.length && all[j].start < end; j++) {
+    const h = all[j];
+    // Until the first child, any level at or below the parent's; then up to the deeper of it and LEVEL below.
+    const upper = minDirect === Infinity ? Infinity : Math.max(minDirect, maxLevel);
+    if (h.level < parent.level || h.level > upper) continue;
+    if (h.level < minDirect) minDirect = h.level;
+    show(h);
+  }
+}
+
+e8.defineCommand({
+  name: "org-ctrl-c-tab",
+  doc:
+    "C-c TAB in Org: in a table, shrink or widen its columns; before the first heading, hide the text there and show the headings " +
+    "of as many levels as the prefix argument says; else fold the subtree and show its children, that many levels of them.",
+  params: [{ name: "arg", kind: "count" }],
+  run: (arg: number) => {
+    if (atTableP()) e8.userError("E8 cannot shrink a table's columns yet");
+    const all = headings();
+    const first = all.find((h) => h.start >= e8.pointMin());
+    if (!first || e8.point() < first.start) {
+      e8.saveExcursion(() => {
+        // The text above the first heading, as org-fold-flag-above-first-heading.
+        const to = first ? first.start : e8.pointMax();
+        if (to > e8.pointMin()) flag(e8.pointMin(), to - 1, true);
+        hideSublevels(arg);
+      });
+      return;
+    }
+    hideSubtreeHere();
+    showChildrenHere(arg);
+  },
+});
+
 e8.defineCommand({
   name: "org-kill-note-or-show-branches",
   doc: "Abort storing current note, or show just branches.",
@@ -11153,6 +11255,7 @@ const keys: { [keys: string]: e8.CommandName | e8.DefinedCommand } = {
   "C-c C-t": todoCommand,
   "C-c C-z": "org-add-note",
   "C-c C-k": "org-kill-note-or-show-branches",
+  "C-c TAB": "org-ctrl-c-tab",
   "C-c ,": "org-priority",
   "C-c C-q": setTagsCommand,
   "C-c /": "org-sparse-tree",

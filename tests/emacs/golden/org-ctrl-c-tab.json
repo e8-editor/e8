@@ -1,0 +1,673 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "top-ctab",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 0,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "\n* A\n* B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "top-mid-ctab",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 10,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "\n* A\n* B\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "top-ctab2",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 0,
+        "keys": "C-u 2 C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "\n* A\n** A1\n* B\n** B1\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "top-mid-ctab2",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 10,
+        "keys": "C-u 2 C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "\n* A\n** A1\n* B\n** B1\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "top-ctab3",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 0,
+        "keys": "C-u 3 C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "\n* A\n** A1\n*** A11\n* B\n** B1\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "top-mid-ctab3",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 10,
+        "keys": "C-u 3 C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "\n* A\n** A1\n*** A11\n* B\n** B1\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "top-ctab-twice",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 0,
+        "keys": "C-c TAB C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "\n* A\n* B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "top-mid-ctab-twice",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 10,
+        "keys": "C-c TAB C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "\n* A\n* B\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "head-ctab",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 21,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "Top text.\nMore top.\n\n* A\n** A1\n* B\nBody b.\n** B1\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "body-ctab",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 25,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "Top text.\nMore top.\n\n* A\n** A1\n* B\nBody b.\n** B1\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "sub-ctab",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 33,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\n*** A11\n* B\nBody b.\n** B1\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "head-ctab2",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 21,
+        "keys": "C-u 2 C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "Top text.\nMore top.\n\n* A\n** A1\n*** A11\n* B\nBody b.\n** B1\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "body-ctab2",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 25,
+        "keys": "C-u 2 C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "Top text.\nMore top.\n\n* A\n** A1\n*** A11\n* B\nBody b.\n** B1\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "sub-ctab2",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 33,
+        "keys": "C-u 2 C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\n*** A11\n* B\nBody b.\n** B1\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "head-ctab0",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 21,
+        "keys": "C-u 0 C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "Top text.\nMore top.\n\n* A\n** A1\n* B\nBody b.\n** B1\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "body-ctab0",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 25,
+        "keys": "C-u 0 C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "Top text.\nMore top.\n\n* A\n** A1\n* B\nBody b.\n** B1\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "sub-ctab0",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 33,
+        "keys": "C-u 0 C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\n*** A11\n* B\nBody b.\n** B1\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "none",
+      "input": {
+        "text": "Just text.\nMore.\n",
+        "point": 0,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Just text.\nMore.\n",
+      "visible": "\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "none-nl",
+      "input": {
+        "text": "Just text.\n",
+        "point": 0,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Just text.\n",
+      "visible": "\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "only-headings",
+      "input": {
+        "text": "* A\n* B\n",
+        "point": 0,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\n* B\n",
+      "visible": "* A\n* B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "top-no-newline",
+      "input": {
+        "text": "Top.\n* A\nBody",
+        "point": 0,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top.\n* A\nBody",
+      "visible": "\n* A",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "top-blank-last",
+      "input": {
+        "text": "Top.\n* A\nBody\n\n",
+        "point": 0,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top.\n* A\nBody\n\n",
+      "visible": "\n* A\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "top-then-tab",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 0,
+        "keys": "C-c TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "\n* A\n* B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "top-then-stab",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 0,
+        "keys": "C-c TAB S-TAB S-TAB S-TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "top-narrowed",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 25,
+        "keys": "C-x n s C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "Top text.\nMore top.\n\n* A\n** A1\n* B\nBody b.\n** B1\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "hide-sublevels",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 33,
+        "keys": "M-x o r g - f o l d - h i d e - s u b l e v e l s RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\norg-fold-hide-sublevels\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "Top text.\nMore top.\n\n* A\nBody a.\norg-fold-hide-sublevels\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Minibuffer read in batch",
+      "message": null
+    },
+    {
+      "name": "hide-sublevels-1",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 33,
+        "keys": "C-u 1 M-x o r g - f o l d - h i d e - s u b l e v e l s RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\norg-fold-hide-sublevels\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "Top text.\nMore top.\n\n* A\nBody a.\norg-fold-hide-sublevels\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Minibuffer read in batch",
+      "message": null
+    },
+    {
+      "name": "hide-sublevels-0",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 33,
+        "keys": "C-u 0 M-x o r g - f o l d - h i d e - s u b l e v e l s RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\norg-fold-hide-sublevels\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "Top text.\nMore top.\n\n* A\nBody a.\norg-fold-hide-sublevels\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Minibuffer read in batch",
+      "message": null
+    },
+    {
+      "name": "drawer-top",
+      "input": {
+        "text": ":PROPERTIES:\n:ID: x\n:END:\nTop.\n* A\nB.\n",
+        "point": 0,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": ":PROPERTIES:\n:ID: x\n:END:\nTop.\n* A\nB.\n",
+      "visible": "\n* A\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    }
+  ]
+}
