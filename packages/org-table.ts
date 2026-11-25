@@ -169,27 +169,26 @@ type Row = "hline" | string[];
 /** The table at point as rows of fields, as org-table-to-lisp reads it. */
 function tableToLisp(line = lineAt()): Row[] {
   const rows: Row[] = [];
-  for (let l = firstLine(line); l <= lastLine(line); l++) {
-    const text = e8.lineText(l);
-    let i = (/^[ \t]*/.exec(text)?.[0].length ?? 0) + 1;
-    if (text[i] === "-") {
-      rows.push("hline");
-      continue;
-    }
-    const fields: string[] = [];
-    for (;;) {
-      while (text[i] === " " || text[i] === "\t") i++;
-      if (i >= text.length) break;
-      const q = i;
-      while (i < text.length && text[i] !== "|") i++;
-      let e = i;
-      while (e > q && (text[e - 1] === " " || text[e - 1] === "\t")) e--;
-      fields.push(text.slice(q, e));
-      if (i < text.length) i++;
-    }
-    rows.push(fields);
-  }
+  for (let l = firstLine(line); l <= lastLine(line); l++) rows.push(parseRow(e8.lineText(l)));
   return rows;
+}
+
+/** A table line's fields, without the blanks around them, or "hline" for a rule, as org-table-to-lisp reads a line. */
+function parseRow(text: string): Row {
+  let i = (/^[ \t]*/.exec(text)?.[0].length ?? 0) + 1;
+  if (text[i] === "-") return "hline";
+  const fields: string[] = [];
+  for (;;) {
+    while (text[i] === " " || text[i] === "\t") i++;
+    if (i >= text.length) break;
+    const q = i;
+    while (i < text.length && text[i] !== "|") i++;
+    let e = i;
+    while (e > q && (text[e - 1] === " " || text[e - 1] === "\t")) e--;
+    fields.push(text.slice(q, e));
+    if (i < text.length) i++;
+  }
+  return fields;
 }
 
 export function needsAlign(): boolean {
@@ -1037,6 +1036,71 @@ e8.defineCommand({
     edInsert(e8.point(), `${rule}\n`);
     forwardLine(above ? 0 : -2);
     moveToColumn(col);
+  },
+});
+
+/**
+ * The table org-table-begin finds from point, as org-table-to-lisp reads it:
+ * the lines from there that start with a bar, which outside a table may be
+ * none.
+ */
+function orgTableToLisp(): Row[] {
+  const rows: Row[] = [];
+  for (let l = lineAt(orgTableBegin()); l < e8.lineCount() && e8.lineStart(l) <= e8.pointMax(); l++) {
+    const text = e8.bufferText(e8.lineStart(l), Math.min(e8.lineEnd(l), e8.pointMax()));
+    if (!/^[ \t]*\|/.test(text)) break;
+    rows.push(parseRow(text));
+  }
+  return rows;
+}
+
+/** Which data line point is on, as org-table-current-line counts them from org-table-begin. */
+function orgTableCurrentLine(): number {
+  const pos = e8.point();
+  const end = orgTableEnd();
+  return saveExcursion(() => {
+    e8.gotoChar(orgTableBegin());
+    let count = 0;
+    while (e8.reSearchForward("^[ \t]*|[^-]", { bound: end, noerror: true }) !== undefined) {
+      count++;
+      if (e8.lineEnd(lineAt()) >= pos) break;
+    }
+    return count;
+  });
+}
+
+/** Goes to the nth data line, or after the last if there are fewer, as org-table-goto-line does. */
+function orgTableGotoLine(n: number): void {
+  e8.gotoChar(orgTableBegin());
+  const end = orgTableEnd();
+  let count = 0;
+  while (e8.reSearchForward("^[ \t]*|[^-]", { bound: end, noerror: true }) !== undefined && ++count < n);
+}
+
+e8.defineCommand({
+  name: "org-table-transpose-table-at-point",
+  doc: "Transpose the table at point, its rows becoming its columns, as Org's does; its rules are dropped.",
+  run: () => {
+    const table = orgTableToLisp().filter((r): r is string[] => r !== "hline");
+    const dlineOld = orgTableCurrentLine();
+    const colOld = currentColumn();
+    // A column of each row's field there, or "" for a row too short; as many as the first row has.
+    const contents = (table[0] ?? []).map((_, i) => table.map((row) => row[i] ?? ""));
+    e8.gotoChar(orgTableBegin());
+    e8.reSearchForward("|");
+    e8.gotoChar(e8.point() - 1);
+    // Only the first line keeps the table's indentation, as in Org.
+    e8.deleteRegion(e8.point(), orgTableEnd());
+    e8.insert(contents.map((x) => `| ${x.join(" | ")}  |\n`).join(""));
+    orgTableGotoLine(colOld);
+    gotoColumn(dlineOld);
+    if (contents.length === 0) {
+      // With no rows, Org's align from here fails looking for a bar, and
+      // does nothing off a table line.
+      if (!e8.bufferText(e8.point(), e8.pointMax()).includes("|")) e8.signal("search-failed", 'Search failed: "|"', ['"|"']);
+      if (!isTableLine(lineAt())) return;
+    }
+    align();
   },
 });
 
