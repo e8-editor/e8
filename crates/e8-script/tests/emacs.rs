@@ -36,8 +36,9 @@ fn known_gaps() -> BTreeMap<String, String> {
 
 /// How many tests the cases are shared among: each a process of its own,
 /// so each has nextest's three minutes, which all the cases in one ran past
-/// on CI's runners with QuickJS.
-const SHARDS: usize = 4;
+/// on CI's runners with QuickJS, and a quarter of them each did too once
+/// there were 7,000 cases.
+const SHARDS: usize = 8;
 
 /// What gathering the cases finds: every case's id, the cases to run with
 /// what Emacs did, the problems found, and how many cases there are to run.
@@ -173,6 +174,26 @@ fn e8_behaves_like_emacs_3() {
 #[test]
 fn e8_behaves_like_emacs_4() {
     compare(3);
+}
+
+#[test]
+fn e8_behaves_like_emacs_5() {
+    compare(4);
+}
+
+#[test]
+fn e8_behaves_like_emacs_6() {
+    compare(5);
+}
+
+#[test]
+fn e8_behaves_like_emacs_7() {
+    compare(6);
+}
+
+#[test]
+fn e8_behaves_like_emacs_8() {
+    compare(7);
 }
 
 /// Every known gap names a case there is, so the list stays accurate.

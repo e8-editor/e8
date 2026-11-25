@@ -5,7 +5,7 @@ These tests check that E8 behaves like GNU Emacs by running the same keys on the
 - `cases/*.json`: the cases, one file per chapter of the Emacs manual.
 - `golden/*.json`: what Emacs did, recorded by `record.el`. Committed, so the tests run without Emacs.
 - `known-gaps.txt`: cases where E8 does not match Emacs yet, with the reason. This is the to-do list.
-- `crates/e8-script/tests/emacs.rs`: the tests that compare E8, with its bundled packages, against the golden files: four shards of the cases, each a test nextest runs alone on every core, so each stays well inside its three minutes, and one that checks `known-gaps.txt` names only cases there are.
+- `crates/e8-script/tests/emacs.rs`: the tests that compare E8, with its bundled packages, against the golden files: eight shards of the cases, each a test nextest runs alone on every core, so each stays well inside its three minutes, and one that checks `known-gaps.txt` names only cases there are.
 
 ## Adding a case
 
