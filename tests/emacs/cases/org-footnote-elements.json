@@ -1,0 +1,3437 @@
+[
+ {
+  "name": "fwd-element-label",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 18,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "bwd-element-label",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 18,
+  "keys": "M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fwd-para-label",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 18,
+  "keys": "C-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "bwd-para-label",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 18,
+  "keys": "C-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mark-label",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 18,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fwd-element-first",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 25,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "bwd-element-first",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 25,
+  "keys": "M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fwd-para-first",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 25,
+  "keys": "C-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "bwd-para-first",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 25,
+  "keys": "C-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mark-first",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 25,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fwd-element-note",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 43,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "bwd-element-note",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 43,
+  "keys": "M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fwd-para-note",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 43,
+  "keys": "C-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "bwd-para-note",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 43,
+  "keys": "C-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mark-note",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 43,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fwd-element-second",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 50,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "bwd-element-second",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 50,
+  "keys": "M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fwd-para-second",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 50,
+  "keys": "C-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "bwd-para-second",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 50,
+  "keys": "C-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mark-second",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 50,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fwd-element-blank",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 48,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "bwd-element-blank",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 48,
+  "keys": "M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fwd-para-blank",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 48,
+  "keys": "C-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "bwd-para-blank",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 48,
+  "keys": "C-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mark-blank",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 48,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fwd-element-after",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 77,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "bwd-element-after",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 77,
+  "keys": "M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fwd-para-after",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 77,
+  "keys": "C-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "bwd-para-after",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 77,
+  "keys": "C-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mark-after",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 77,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fwd-element-text",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 0,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "bwd-element-text",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 0,
+  "keys": "M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fwd-para-text",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 0,
+  "keys": "C-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "bwd-para-text",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 0,
+  "keys": "C-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mark-text",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 0,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fwd-element-twice",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 0,
+  "keys": "M-} M-} M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "bwd-element-twice",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 94,
+  "keys": "M-{ M-{ M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fwd-para-all",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 0,
+  "keys": "C-<down> C-<down> C-<down> C-<down> C-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "bwd-para-all",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 94,
+  "keys": "C-<up> C-<up> C-<up> C-<up> C-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mark-twice",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 25,
+  "keys": "M-h M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "drag-def-down",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 18,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "drag-def-up",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 18,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "drag-after-up",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 77,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "drag-text-down",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 0,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "drag-second-up",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 50,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "drag-second-down",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 50,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "drag-first-down",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 25,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "drag-first-up",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 25,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "two-fwd-element-a",
+  "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+  "point": 14,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "two-bwd-element-a",
+  "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+  "point": 14,
+  "keys": "M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "two-mark-a",
+  "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+  "point": 14,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "two-drag-down-a",
+  "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+  "point": 14,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "two-drag-up-a",
+  "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+  "point": 14,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "two-fwd-element-on",
+  "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+  "point": 21,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "two-bwd-element-on",
+  "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+  "point": 21,
+  "keys": "M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "two-mark-on",
+  "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+  "point": 21,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "two-drag-down-on",
+  "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+  "point": 21,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "two-drag-up-on",
+  "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+  "point": 21,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "two-fwd-element-name",
+  "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+  "point": 30,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "two-bwd-element-name",
+  "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+  "point": 30,
+  "keys": "M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "two-mark-name",
+  "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+  "point": 30,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "two-drag-down-name",
+  "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+  "point": 30,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "two-drag-up-name",
+  "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+  "point": 30,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "two-fwd-element-b",
+  "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+  "point": 47,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "two-bwd-element-b",
+  "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+  "point": 47,
+  "keys": "M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "two-mark-b",
+  "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+  "point": 47,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "two-drag-down-b",
+  "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+  "point": 47,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "two-drag-up-b",
+  "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+  "point": 47,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "two-fwd-element-more",
+  "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+  "point": 56,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "two-bwd-element-more",
+  "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+  "point": 56,
+  "keys": "M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "two-mark-more",
+  "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+  "point": 56,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "two-drag-down-more",
+  "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+  "point": 56,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "two-drag-up-more",
+  "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+  "point": 56,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "two-fwd-element-c",
+  "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+  "point": 84,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "two-bwd-element-c",
+  "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+  "point": 84,
+  "keys": "M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "two-mark-c",
+  "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+  "point": 84,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "two-drag-down-c",
+  "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+  "point": 84,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "two-drag-up-c",
+  "text": "Para.\n\n[fn:a] Note a\ngoes on.\n#+NAME: b\n[fn:b] Note b.\n\nMore of b.\n* Heading\n[fn:c] Note c.\n",
+  "point": 84,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-fwd-element-x",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 0,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-bwd-element-x",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 0,
+  "keys": "M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-fwd-para-x",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 0,
+  "keys": "C-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-mark-x",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 0,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-tab-x",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 0,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-fwd-element-blank",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 6,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-bwd-element-blank",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 6,
+  "keys": "M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-fwd-para-blank",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 6,
+  "keys": "C-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-mark-blank",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 6,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-tab-blank",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 6,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-fwd-element-ind",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 10,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-bwd-element-ind",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 10,
+  "keys": "M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-fwd-para-ind",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 10,
+  "keys": "C-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-mark-ind",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 10,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-tab-ind",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 10,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-fwd-element-text",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 24,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-bwd-element-text",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 24,
+  "keys": "M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-fwd-para-text",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 24,
+  "keys": "C-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-mark-text",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 24,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-tab-text",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 24,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-fwd-element-y",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 33,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-bwd-element-y",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 33,
+  "keys": "M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-fwd-para-y",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 33,
+  "keys": "C-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-mark-y",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 33,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-tab-y",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 33,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-fwd-element-para",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 41,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-bwd-element-para",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 41,
+  "keys": "M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-fwd-para-para",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 41,
+  "keys": "C-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-mark-para",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 41,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-tab-para",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 41,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-drag-y-up",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 33,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "pre-drag-x-down",
+  "text": "[fn:x]\n\n  Indented note\n  text.\n\n[fn:y]\n\nPara.\n",
+  "point": 0,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "upper-fwd-element",
+  "text": "Para.\n[FN:1] Upper\ncase.\n\nNext.\n",
+  "point": 0,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "upper-mark",
+  "text": "Para.\n[FN:1] Upper\ncase.\n\nNext.\n",
+  "point": 13,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "upper-fwd-para",
+  "text": "[FN:1] Upper\ncase.\n\nNext para.\n\n\nOut.\n",
+  "point": 7,
+  "keys": "C-<down> C-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "drawer-fwd-element",
+  "text": "* H\n:NOTES:\n[fn:d] In a drawer.\n\nStill in it.\n:END:\nAfter.\n",
+  "point": 19,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "drawer-mark",
+  "text": "* H\n:NOTES:\n[fn:d] In a drawer.\n\nStill in it.\n:END:\nAfter.\n",
+  "point": 33,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "drawer-drag-up",
+  "text": "* H\n:NOTES:\n[fn:d] In a drawer.\n\nStill in it.\n:END:\nAfter.\n",
+  "point": 33,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "drawer-fwd-para",
+  "text": "* H\n:NOTES:\n[fn:d] In a drawer.\n\nStill in it.\n:END:\nAfter.\n",
+  "point": 12,
+  "keys": "C-<down> C-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "quote-fwd-element",
+  "text": "#+begin_quote\n[fn:q] Quoted note.\n\nMore.\n#+end_quote\n",
+  "point": 21,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "quote-mark",
+  "text": "#+begin_quote\n[fn:q] Quoted note.\n\nMore.\n#+end_quote\n",
+  "point": 35,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "quote-mark-label",
+  "text": "#+begin_quote\n[fn:q] Quoted note.\n\nMore.\n#+end_quote\n",
+  "point": 14,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fill-first",
+  "text": "[fn:1] A rather long footnote whose first paragraph runs well past the fill column here.\nAnd on.\n\nSecond paragraph of it also long enough to need filling at the column.\n",
+  "point": 9,
+  "keys": "M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "fill-column": 30
+  }
+ },
+ {
+  "name": "fill-label",
+  "text": "[fn:1] A rather long footnote whose first paragraph runs well past the fill column here.\nAnd on.\n\nSecond paragraph of it also long enough to need filling at the column.\n",
+  "point": 0,
+  "keys": "M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "fill-column": 30
+  }
+ },
+ {
+  "name": "fill-second",
+  "text": "[fn:1] A rather long footnote whose first paragraph runs well past the fill column here.\nAnd on.\n\nSecond paragraph of it also long enough to need filling at the column.\n",
+  "point": 98,
+  "keys": "M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "fill-column": 30
+  }
+ },
+ {
+  "name": "fill-region",
+  "text": "[fn:1] A rather long footnote whose first paragraph runs well past the fill column here.\nAnd on.\n\nSecond paragraph of it also long enough to need filling at the column.\n",
+  "point": 0,
+  "keys": "C-SPC M-> M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "fill-column": 30
+  }
+ },
+ {
+  "name": "auto-fill",
+  "text": "[fn:1] Some note text that is",
+  "point": 29,
+  "keys": "SPC f o o SPC b a r SPC b a z",
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "message": true,
+  "vars": {
+   "fill-column": 30
+  }
+ },
+ {
+  "name": "indent-label",
+  "text": "* H\n  Para.\n\n[fn:1] Note\n     text.\n\n     More note.\n\n\n   After.\n",
+  "point": 13,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "indent-text",
+  "text": "* H\n  Para.\n\n[fn:1] Note\n     text.\n\n     More note.\n\n\n   After.\n",
+  "point": 25,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "indent-more",
+  "text": "* H\n  Para.\n\n[fn:1] Note\n     text.\n\n     More note.\n\n\n   After.\n",
+  "point": 37,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "indent-after",
+  "text": "* H\n  Para.\n\n[fn:1] Note\n     text.\n\n     More note.\n\n\n   After.\n",
+  "point": 55,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "indent-region",
+  "text": "* H\n  Para.\n\n[fn:1] Note\n     text.\n\n     More note.\n\n\n   After.\n",
+  "point": 0,
+  "keys": "C-x h C-M-\\",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "indent-after-def",
+  "text": "Para.\n\n[fn:1] Note.\nNext.",
+  "point": 20,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "indent-after-def-in-item",
+  "text": "- item\n  text\n[fn:1] Note.\n\n\nAfter.",
+  "point": 29,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "demote-skips-def",
+  "text": "* H\n  Text.\n[fn:1] Note\n  goes on.\n\n\n  After.\n",
+  "point": 0,
+  "keys": "M-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "promote-skips-def",
+  "text": "** H\n   Text.\n[fn:1] Note\n   goes on.\n\n\n   After.\n",
+  "point": 0,
+  "keys": "M-<left>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "narrow-element",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 50,
+  "keys": "C-x n e C-a C-k",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": false
+  }
+ },
+ {
+  "name": "ctrl-c-label",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 18,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctrl-c-text",
+  "text": "Text[fn:1] here.\n\n[fn:1] First para of the\nnote.\n\nSecond para of the note.\n\n\nAfter the note.\n\nLast.\n",
+  "point": 43,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "up-goto",
+  "text": "* H\nA[fn:1] b.\n\n[FN:1] Upper def.\n",
+  "point": 6,
+  "keys": "C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "no"
+  ]
+ },
+ {
+  "name": "up-label-cc",
+  "text": "* H\nA[fn:1] b.\n\n[FN:1] Upper def.\n",
+  "point": 17,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "up-text-cx",
+  "text": "* H\nA[fn:1] b.\n\n[FN:1] Upper def.\n",
+  "point": 23,
+  "keys": "C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "q"
+  ]
+ },
+ {
+  "name": "up-label-co",
+  "text": "* H\nA[fn:1] b.\n\n[FN:1] Upper def.\n",
+  "point": 17,
+  "keys": "C-c C-o",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "up-sort",
+  "text": "* H\nA[fn:2] b[fn:1].\n\n[fn:1] One.\n\n[FN:2] Two.\n",
+  "point": 4,
+  "keys": "C-u C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "s"
+  ]
+ },
+ {
+  "name": "up-delete",
+  "text": "* H\nA[fn:2] b.\n\n[FN:2] Two.\n\nAfter.\n",
+  "point": 6,
+  "keys": "C-u C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "d"
+  ]
+ },
+ {
+  "name": "apos-goto",
+  "text": "* H\nA[fn:it's] b.\n\n[fn:it's] Def.\n",
+  "point": 6,
+  "keys": "C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "no"
+  ]
+ },
+ {
+  "name": "apos-mark",
+  "text": "Para.\n[fn:it's] Def\nmore.\n\nNext.\n",
+  "point": 16,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "sup-mark",
+  "text": "Para.\n[fn:a\u00b2] Def\nmore.\n\nNext.\n",
+  "point": 14,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "half-mark",
+  "text": "Para.\n[fn:a\u00bd] Def\nmore.\n\nNext.\n",
+  "point": 14,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "combining-mark",
+  "text": "Para.\n[fn:e\u0301] Def\nmore.\n\nNext.\n",
+  "point": 14,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "unicode-goto",
+  "text": "* H\nA[fn:\u00e4\u00f6] b.\n\n[fn:\u00e4\u00f6] Def.\n",
+  "point": 6,
+  "keys": "C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "digits-dash-mark",
+  "text": "Para.\n[fn:my-note_2] Def\nmore.\n\nNext.\n",
+  "point": 25,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "src-split-mark-text",
+  "text": "[fn:1] Text\n#+begin_src emacs-lisp\n[fn:2] code\n#+end_src\nAfter.\n",
+  "point": 7,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "src-split-mark-code",
+  "text": "[fn:1] Text\n#+begin_src emacs-lisp\n[fn:2] code\n#+end_src\nAfter.\n",
+  "point": 42,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "src-split-bwd-after",
+  "text": "[fn:1] Text\n#+begin_src emacs-lisp\n[fn:2] code\n#+end_src\nAfter.\n",
+  "point": 57,
+  "keys": "M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "src-split-fwd-label",
+  "text": "[fn:1] Text\n#+begin_src emacs-lisp\n[fn:2] code\n#+end_src\nAfter.\n",
+  "point": 0,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "example-blank-fwd",
+  "text": "[fn:1] Start\n#+begin_example\na\n\n\nb\n#+end_example\nTail.\n",
+  "point": 7,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "example-blank-mark-b",
+  "text": "[fn:1] Start\n#+begin_example\na\n\n\nb\n#+end_example\nTail.\n",
+  "point": 33,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "example-blank-mark-label",
+  "text": "[fn:1] Start\n#+begin_example\na\n\n\nb\n#+end_example\nTail.\n",
+  "point": 0,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tab-2nd-para",
+  "text": "* H\n[fn:1] First.\n\n   Second para.\n",
+  "point": 22,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "tab-cont-line",
+  "text": "* H\n[fn:1] First line\n     continued.\n",
+  "point": 27,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "tab-item-cont",
+  "text": "* H\n[fn:1] Note:\n- one\ntwo\n- three\n",
+  "point": 23,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "tab-after-list",
+  "text": "[fn:1] Note:\n- one\n\n   After list.\n",
+  "point": 23,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tab-after-def-intro",
+  "text": "* H\n  Intro.\n\n[fn:1] Def.\n\n\nAfter.\n",
+  "point": 28,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "tab-after-two-defs",
+  "text": "* H\n[fn:1] A.\n[fn:2] B.\n\n\nAfter.\n",
+  "point": 26,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "tab-after-two-defs-nil",
+  "text": "* H\n   Intro.\n[fn:1] A.\n[fn:2] B.\n\n\nAfter.\n",
+  "point": 36,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tab-after-def-hd",
+  "text": "* H\nSCHEDULED: <2026-11-20 Fri>\n[fn:1] Def.\n\n\n   After.\n",
+  "point": 49,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": "'headline-data"
+  }
+ },
+ {
+  "name": "tab-def-in-quote",
+  "text": "#+begin_quote\n  Quoted.\n[fn:1] Def.\n\n\n     Text.\n#+end_quote\n",
+  "point": 43,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tab-diary",
+  "text": "* H\n  Para.\n%%(diary-float t 4 2)\n     Next.\n",
+  "point": 39,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "tab-blank-in-def",
+  "text": "* H\n[fn:1] A\n   still a.\n\nB.\n",
+  "point": 25,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "tab-blank-after-def",
+  "text": "* H\n  P.\n[fn:1] A.\n\n",
+  "point": 19,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "tab-after-def-affiliated",
+  "text": "* H\n   Intro.\n#+NAME: n\n[fn:1] A.\n\n\nAfter.\n",
+  "point": 36,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tab-nextline-contents",
+  "text": "* H\n[fn:1]\n    Indented contents.\n",
+  "point": 15,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "tab-def-in-item-text",
+  "text": "- item\n  text\n\n[fn:1] Note.\n   more.\n",
+  "point": 31,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "indent-region-list",
+  "text": "* H\n  Para.\n[fn:1] Note:\n   - a\n     b\n   - c\n\n\n After.\n",
+  "point": 0,
+  "keys": "C-x h C-M-\\",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "ret-in-def",
+  "text": "* H\n  Intro.\n[fn:1] Some text\n",
+  "point": 29,
+  "keys": "RET x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "ret-in-def-list",
+  "text": "[fn:1] Note:\n- item one\n",
+  "point": 23,
+  "keys": "RET z",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ret-after-def-in-section",
+  "text": "* H\n  Intro.\n\n[fn:1] Def.\n\n\n  After.\n",
+  "point": 36,
+  "keys": "RET y",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "fill-cont-indented",
+  "text": "[fn:1] First line of a note that\n   goes on and on for quite a while more.\n",
+  "point": 36,
+  "keys": "M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "fill-column": 30
+  }
+ },
+ {
+  "name": "fill-nextline-indented",
+  "text": "[fn:1]\n   Indented note text that goes on for a while longer.\n",
+  "point": 19,
+  "keys": "M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "fill-column": 25
+  }
+ },
+ {
+  "name": "fill-2nd-para",
+  "text": "[fn:1] A.\n\n  Second paragraph text that runs on and on.\n",
+  "point": 13,
+  "keys": "M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "fill-column": 20
+  }
+ },
+ {
+  "name": "fill-on-bare-label",
+  "text": "[fn:1]\nLong text that will need filling when it is filled.\n",
+  "point": 0,
+  "keys": "M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "fill-column": 20
+  }
+ },
+ {
+  "name": "auto-fill-2nd-line",
+  "text": "[fn:1] A note\n  then more",
+  "point": 25,
+  "keys": "SPC w o r d s SPC a n d SPC m o r e",
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "message": true,
+  "vars": {
+   "fill-column": 20
+  }
+ },
+ {
+  "name": "auto-fill-2nd-para",
+  "text": "[fn:1] A.\n\n  Second",
+  "point": 19,
+  "keys": "SPC w o r d s SPC a n d SPC m o r e SPC t e x t",
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "message": true,
+  "vars": {
+   "fill-column": 20
+  }
+ },
+ {
+  "name": "fill-item-in-def",
+  "text": "[fn:1] Note:\n- an item in a note whose text runs on for a while\n",
+  "point": 15,
+  "keys": "M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "fill-column": 25
+  }
+ },
+ {
+  "name": "narrow-nextline",
+  "text": "[fn:1]\nNote text.\n\nMore.\n\n\nOut.\n",
+  "point": 0,
+  "keys": "C-x n e M-> C-SPC M-< C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "narrow-label-line",
+  "text": "Para.\n\n[fn:1] Note text.\n\nMore.\n\n\nOut.\n",
+  "point": 7,
+  "keys": "C-x n e M-> C-SPC M-< C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mark-empty-def",
+  "text": "Para.\n\n[fn:1]\n* H\n",
+  "point": 7,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fwd-eob-no-newline",
+  "text": "Para.\n\n[fn:1] Last def",
+  "point": 0,
+  "keys": "M-} M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mark-eob-no-newline",
+  "text": "Para.\n\n[fn:1] Last def",
+  "point": 7,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fwd-one-blank-eob",
+  "text": "Para.\n\n[fn:1] Def.\n\n",
+  "point": 0,
+  "keys": "M-} M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mark-one-blank-eob",
+  "text": "Para.\n\n[fn:1] Def.\n\n",
+  "point": 14,
+  "keys": "M-h M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "after-heading-mark",
+  "text": "* H\n[fn:1] Def.\n* H2\nx\n",
+  "point": 4,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "after-heading-bwd",
+  "text": "* H\n[fn:1] Def.\n* H2\nx\n",
+  "point": 11,
+  "keys": "M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "after-planning-bwd",
+  "text": "* H\nSCHEDULED: <2026-11-20 Fri>\n[fn:1] Def.\n",
+  "point": 39,
+  "keys": "M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "after-planning-mark",
+  "text": "* H\nSCHEDULED: <2026-11-20 Fri>\n[fn:1] Def.\nMore.\n",
+  "point": 32,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "clock-bwd-more",
+  "text": "[fn:1] Def.\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\nMore.\n\n\nOut.\n",
+  "point": 75,
+  "keys": "M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "clock-mark",
+  "text": "[fn:1] Def.\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\nMore.\n\n\nOut.\n",
+  "point": 12,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "clock-mark-label",
+  "text": "[fn:1] Def.\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\nMore.\n\n\nOut.\n",
+  "point": 0,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "comment-fwd",
+  "text": "[fn:1] Def.\n# a comment\nMore.\n\n\nOut.\n",
+  "point": 7,
+  "keys": "M-} M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "comment-mark",
+  "text": "[fn:1] Def.\n# a comment\nMore.\n\n\nOut.\n",
+  "point": 12,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "list-drag-item",
+  "text": "[fn:1] Note:\n- a\n- b\n\nTail.\n\n\nOut.\n",
+  "point": 17,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "list-bwd-tail",
+  "text": "[fn:1] Note:\n- a\n- b\n\nTail.\n\n\nOut.\n",
+  "point": 22,
+  "keys": "M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "list-fwd-note",
+  "text": "[fn:1] Note:\n- a\n- b\n\nTail.\n\n\nOut.\n",
+  "point": 7,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "list-mark-label",
+  "text": "[fn:1] Note:\n- a\n- b\n\nTail.\n\n\nOut.\n",
+  "point": 0,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "quote-two-mark",
+  "text": "#+begin_quote\n[fn:1] One.\n[fn:2] Two.\n\n\nPlain.\n#+end_quote\n",
+  "point": 33,
+  "keys": "M-h M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "quote-plain-bwd",
+  "text": "#+begin_quote\n[fn:1] One.\n[fn:2] Two.\n\n\nPlain.\n#+end_quote\n",
+  "point": 40,
+  "keys": "M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "quote-drag-two",
+  "text": "#+begin_quote\n[fn:1] One.\n[fn:2] Two.\n\n\nPlain.\n#+end_quote\n",
+  "point": 26,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "center-mark",
+  "text": "#+begin_center\n[fn:1] Centred\nnote.\n#+end_center\nAfter.\n",
+  "point": 15,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "aff-fwd-para",
+  "text": "Para.\n\n#+CAPTION: cap\n#+NAME: n\n[fn:1] Def.\n",
+  "point": 0,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "aff-mark-name",
+  "text": "Para.\n\n#+CAPTION: cap\n#+NAME: n\n[fn:1] Def.\n",
+  "point": 22,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "aff-blank-mark",
+  "text": "#+NAME: n\n\n[fn:1] Def.\n",
+  "point": 18,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "checkbox-in-def",
+  "text": "[fn:1] Tasks:\n- [ ] a\n- [ ] b\n",
+  "point": 20,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "meta-ret-in-def",
+  "text": "[fn:1] Tasks:\n- a\n- b\n",
+  "point": 17,
+  "keys": "M-RET x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "table-in-def",
+  "text": "[fn:1] T:\n|a|b|\n|cc|d|\n",
+  "point": 10,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cc-2nd-para",
+  "text": "* H\nA[fn:1].\n\n[fn:1] One.\n\nTwo para.\n",
+  "point": 27,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cx-2nd-para",
+  "text": "* H\nA[fn:1].\n\n[fn:1] One.\n\nTwo para.\n",
+  "point": 27,
+  "keys": "C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "q"
+  ]
+ },
+ {
+  "name": "co-2nd-para",
+  "text": "* H\nA[fn:1].\n\n[fn:1] One.\n\nTwo para.\n",
+  "point": 27,
+  "keys": "C-c C-o",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cx-blank-in-def",
+  "text": "* H\nA[fn:1].\n\n[fn:1] One.\n\nTwo para.\n",
+  "point": 26,
+  "keys": "C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "q"
+  ]
+ },
+ {
+  "name": "cx-trailing-space",
+  "text": "* H\nA[fn:1].\n\n[fn:1] Def.   \n",
+  "point": 28,
+  "keys": "C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "q"
+  ]
+ },
+ {
+  "name": "cx-ref-in-list-in-def",
+  "text": "* H\nA[fn:1].\n\n[fn:1] Note:\n- see[fn:2]\n\n[fn:2] Two.\n",
+  "point": 33,
+  "keys": "C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cx-def-label-in-list-def",
+  "text": "* H\nA[fn:1] b[fn:2].\n\n[fn:1] Note:\n- see\n[fn:2] Two.\n",
+  "point": 42,
+  "keys": "C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "delete-in-quote",
+  "text": "* H\nA[fn:1].\n#+begin_quote\n[fn:1] In quote.\n\nMore quote.\n#+end_quote\n",
+  "point": 6,
+  "keys": "C-u C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "d"
+  ]
+ },
+ {
+  "name": "renumber-drawer",
+  "text": "* H\nA[fn:x] b[fn:y].\n:NOTES:\n[fn:y] Why.\n:END:\n\n[fn:x] Ex.\n",
+  "point": 4,
+  "keys": "C-u C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "S"
+  ]
+ },
+ {
+  "name": "delete-before-heading",
+  "text": "* H\nA[fn:1].\n[fn:1] Def.\n* Next\n",
+  "point": 6,
+  "keys": "C-u C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "d"
+  ]
+ },
+ {
+  "name": "sort-one-blank-eob",
+  "text": "* H\nA[fn:2] b[fn:1].\n\n[fn:2] Two.\n\n[fn:1] One.\n\n",
+  "point": 4,
+  "keys": "C-u C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "s"
+  ]
+ },
+ {
+  "name": "sort-def-list-blank",
+  "text": "* H\nA[fn:2] b[fn:1].\n\n[fn:2] Two:\n- x\n\n- y\n\n\n[fn:1] One.\n",
+  "point": 4,
+  "keys": "C-u C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "s"
+  ]
+ },
+ {
+  "name": "goto-def-empty-two-blank",
+  "text": "* H\nA[fn:1].\n\n[fn:1]\n\n\nText.\n",
+  "point": 6,
+  "keys": "C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "label-cc-empty-two-blank",
+  "text": "* H\nA[fn:1].\n\n[fn:1]\n\n\nText.\n",
+  "point": 15,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "text-after-empty-def-cc",
+  "text": "* H\nA[fn:1].\n\n[fn:1]\n\n\nText.\n",
+  "point": 23,
+  "keys": "C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "q"
+  ]
+ },
+ {
+  "name": "demote-one-blank",
+  "text": "* H\nPara.\n\n[fn:1] Def.\n\nStill def.\n",
+  "point": 0,
+  "keys": "M-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "demote-def-sub",
+  "text": "* H\nPara.\n[fn:1] Def\nmore.\n** Sub\nsubtext\n",
+  "point": 0,
+  "keys": "M-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "demote-upper",
+  "text": "* H\nPara.\n[FN:1] Upper def\nmore.\n\n\nOut.\n",
+  "point": 0,
+  "keys": "M-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "promote-forbidden",
+  "text": "** H\n [fn:1] not def\n",
+  "point": 0,
+  "keys": "M-<left>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "demote-def-drawer",
+  "text": "* H\n:NOTES:\n[fn:1] Def in drawer.\nmore\n:END:\nAfter.\n",
+  "point": 0,
+  "keys": "M-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "demote-def-src",
+  "text": "* H\n#+begin_src emacs-lisp\n[fn:1] x\n#+end_src\n",
+  "point": 0,
+  "keys": "M-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "demote-subtree-defs",
+  "text": "* H\n Para.\n[fn:1] Def.\n** Sub\n  Sub para.\n[fn:2] Two\nmore.\n",
+  "point": 0,
+  "keys": "M-S-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "promote-def-quote",
+  "text": "** H\n  Para.\n  #+begin_quote\n[fn:1] Q.\n  #+end_quote\n",
+  "point": 0,
+  "keys": "M-<left>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "edit-join",
+  "text": "Text.\n\n[fn:1] A.\n\n\nAfter.\n",
+  "point": 18,
+  "keys": "C-d M-< C-n C-n M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "edit-split",
+  "text": "Text.\n\n[fn:1] A.\n\nAfter.\n",
+  "point": 17,
+  "keys": "RET M-< C-n C-n M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "edit-type-def",
+  "text": "Para one.\nPara two.\n",
+  "point": 10,
+  "keys": "[ f n : 1 ] SPC M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "edit-kill-heading",
+  "text": "* A\n[fn:1] Def.\n* B\nText.\n",
+  "point": 16,
+  "keys": "C-k C-k M-< C-n M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "edit-type-blank-then-fill",
+  "text": "[fn:1] A b c d e f g h i j k l m n o p.\nMore.\n",
+  "point": 40,
+  "keys": "RET RET C-p C-p M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "fill-column": 12
+  }
+ },
+ {
+  "name": "mid-item",
+  "text": "[fn:1] - a\n- b\n\nNext.\n",
+  "point": 9,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mid-item-b",
+  "text": "[fn:1] - a\n- b\n\nNext.\n",
+  "point": 13,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mid-table",
+  "text": "[fn:1] | a |\n| b |\n\nNext.\n",
+  "point": 9,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mid-star",
+  "text": "[fn:1] * not heading\nmore\n\nNext.\n",
+  "point": 9,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mid-src",
+  "text": "[fn:1] #+begin_src emacs-lisp\nx\n#+end_src\n\nNext.\n",
+  "point": 9,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mid-comment",
+  "text": "[fn:1] # comment\nmore\n\nNext.\n",
+  "point": 9,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mid-fixed",
+  "text": "[fn:1] : fixed\n: more\n\nNext.\n",
+  "point": 9,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mid-clock",
+  "text": "[fn:1] CLOCK: [2026-11-20 Fri 10:00]\nmore\n\nNext.\n",
+  "point": 7,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mid-rule",
+  "text": "[fn:1] -----\nmore\n\nNext.\n",
+  "point": 7,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mid-keyword",
+  "text": "[fn:1] #+NAME: x\nmore\n\nNext.\n",
+  "point": 9,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mid-drawer",
+  "text": "[fn:1] :NOTES:\nx\n:END:\n\nNext.\n",
+  "point": 8,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mid-table-cc",
+  "text": "[fn:1] | a |\n| bb |\n",
+  "point": 9,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "mid-item-cc",
+  "text": "[fn:1] - [ ] a\n- [ ] b\n",
+  "point": 13,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "label-tab",
+  "text": "Para.\n[fn:1]\tTab text\nmore.\n\nNext.\n",
+  "point": 13,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "label-trailing-bwd",
+  "text": "[fn:1]   \nText on next.\n\nNext.\n",
+  "point": 10,
+  "keys": "M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "label-trailing-mark",
+  "text": "Para.\n\n[fn:1]   \nText on next.\n\nNext.\n",
+  "point": 7,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ws-blank-sep-bwd",
+  "text": "[fn:1] A.\n  \n\t\nAfter.\n",
+  "point": 15,
+  "keys": "M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ws-blank-sep-mark",
+  "text": "[fn:1] A.\n  \n\t\nAfter.\n",
+  "point": 0,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "star-alone",
+  "text": "[fn:1] A\n*\nB\n\n\nC.\n",
+  "point": 7,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "stars-empty-heading",
+  "text": "[fn:1] A\n** \nB\n",
+  "point": 7,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "dyn-block",
+  "text": "#+BEGIN: myblock\n[fn:1] In dyn.\nmore\n#+END:\nAfter.\n",
+  "point": 32,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "special-block",
+  "text": "#+begin_note\n[fn:1] A\nb\n#+end_note\nAfter\n",
+  "point": 22,
+  "keys": "M-{ M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tab-def-in-drawer",
+  "text": "* H\n  :NOTES:\n[fn:1] D.\n\n\n     Text.\n  :END:\n",
+  "point": 31,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "tab-label-in-quote",
+  "text": "  #+begin_quote\n[fn:1] D.\n  #+end_quote\n",
+  "point": 16,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tab-after-def-table",
+  "text": "* H\n  | a |\n[fn:1] D.\n\n\n     After.\n",
+  "point": 29,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tab-para-in-item-in-def",
+  "text": "[fn:1] Note:\n   - a\n\n         Para.\n",
+  "point": 30,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ret-indented-2nd-line",
+  "text": "* H\n[fn:1] A\n   b",
+  "point": 17,
+  "keys": "RET c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "tab-blank-after-def-nil",
+  "text": "* H\n   P.\n[fn:1] A.\n\n",
+  "point": 20,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tab-cont-after-blank-label",
+  "text": "* H\n[fn:1]\n\n     Text\n     more.\n",
+  "point": 27,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "cc-label-in-quote",
+  "text": "* H\nA[fn:1].\n#+begin_quote\n[fn:1] Q.\n#+end_quote\n",
+  "point": 28,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "renumber-affiliated",
+  "text": "* H\nA[fn:x].\n\n#+NAME: n\n[fn:x] Ex.\n",
+  "point": 4,
+  "keys": "C-u C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "r"
+  ]
+ },
+ {
+  "name": "normalize-drawer",
+  "text": "* H\nA[fn:x] b[fn:y].\n:NOTES:\n[fn:y] Why.\n:END:\n\n[fn:x] Ex.\n",
+  "point": 4,
+  "keys": "C-u C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "n"
+  ]
+ },
+ {
+  "name": "sort-affiliated-between",
+  "text": "* H\nA[fn:2] b[fn:1].\n\n[fn:2] Two.\n#+NAME: n\n[fn:1] One.\n",
+  "point": 4,
+  "keys": "C-u C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "s"
+  ]
+ },
+ {
+  "name": "delete-contents-after-blank",
+  "text": "* H\nA[fn:1] b.\n\n[fn:1]\n\nText.\n\nMore.\n",
+  "point": 6,
+  "keys": "C-u C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "d"
+  ]
+ },
+ {
+  "name": "cx-eob-def",
+  "text": "* H\nA[fn:1].\n\n[fn:1] Def.",
+  "point": 25,
+  "keys": "C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "q"
+  ]
+ },
+ {
+  "name": "cc-label-no-ref",
+  "text": "* H\nText.\n\n[fn:1] Lonely.\n",
+  "point": 12,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cc-blank-in-def",
+  "text": "* H\nA[fn:1].\n\n[fn:1] One.\n\nTwo.\n\n\nAfter.\n",
+  "point": 26,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cc-post-blank-def",
+  "text": "* H\nA[fn:1].\n\n[fn:1] One.\n\nTwo.\n\n\nAfter.\n",
+  "point": 32,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cx-post-blank-def",
+  "text": "* H\nA[fn:1].\n\n[fn:1] One.\n\nTwo.\n\n\nAfter.\n",
+  "point": 32,
+  "keys": "C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "q"
+  ]
+ },
+ {
+  "name": "co-post-blank-def",
+  "text": "* H\nA[fn:1].\n\n[fn:1] One.\n\nTwo.\n\n\nAfter.\n",
+  "point": 32,
+  "keys": "C-c C-o",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cc-eol-label-line",
+  "text": "* H\nA[fn:1].\n\n[fn:1] One.\n\nTwo.\n\n\nAfter.\n",
+  "point": 25,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fill-blank-in-def",
+  "text": "[fn:1] A b c.\n\nSecond para text that is long.\n",
+  "point": 14,
+  "keys": "M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "fill-column": 15
+  }
+ },
+ {
+  "name": "fill-label-blank-contents",
+  "text": "[fn:1]\n\nLong text that will need some filling here.\n",
+  "point": 0,
+  "keys": "M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "fill-column": 20
+  }
+ },
+ {
+  "name": "fill-region-two-defs",
+  "text": "[fn:1] Aaa bbb ccc ddd eee.\n[fn:2] Fff ggg hhh iii jjj.\n",
+  "point": 0,
+  "keys": "C-x h M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "vars": {
+   "fill-column": 12
+  }
+ },
+ {
+  "name": "fill-upper",
+  "text": "[FN:1] Aaa bbb ccc ddd eee fff ggg.\n",
+  "point": 11,
+  "keys": "M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "fill-column": 12
+  }
+ },
+ {
+  "name": "demote-eob-no-newline",
+  "text": "* H\n  A.\n[fn:1] D",
+  "point": 0,
+  "keys": "M-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "promote-def-col0-line",
+  "text": "** H\n  A.\n[fn:1] D\nx\n",
+  "point": 0,
+  "keys": "M-<left>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "promote-upper-def-col0-line",
+  "text": "** H\n  A.\n[FN:1] D\nx\n",
+  "point": 0,
+  "keys": "M-<left>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "promote-after-def-col0",
+  "text": "** H\n  A.\n[fn:1] D\n\n\nx\n",
+  "point": 0,
+  "keys": "M-<left>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "promote-half-label",
+  "text": "** H\n  A.\n[fn:a\u00bd] D\nx\n",
+  "point": 0,
+  "keys": "M-<left>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "promote-apos-label",
+  "text": "** H\n  A.\n[fn:it's] D\nx\n",
+  "point": 0,
+  "keys": "M-<left>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "edit-delete-bracket",
+  "text": "[fn:1] A.\nB.\n\nC.\n",
+  "point": 5,
+  "keys": "C-d M-< M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "edit-insert-heading",
+  "text": "[fn:1] A.\nB.\n",
+  "point": 10,
+  "keys": "* SPC M-< M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "edit-split-undo",
+  "text": "Text.\n\n[fn:1] A.\n\nAfter.\n",
+  "point": 17,
+  "keys": "RET C-/ M-< C-n C-n M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctrl-c-star-label",
+  "text": "Text.\n[fn:1] D.\n",
+  "point": 6,
+  "keys": "C-c *",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "ctrl-c-minus-label",
+  "text": "[fn:1] D.\nE.\n",
+  "point": 0,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "list-fwd-para-all",
+  "text": "[fn:1] Note:\n- a\n- b\n\nTail.\n\n\nOut.\n",
+  "point": 0,
+  "keys": "C-<down> C-<down> C-<down> C-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "list-bwd-para-all",
+  "text": "[fn:1] Note:\n- a\n- b\n\nTail.\n\n\nOut.\n",
+  "point": 30,
+  "keys": "C-<up> C-<up> C-<up> C-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "list-fwd-element-tail",
+  "text": "[fn:1] Note:\n- a\n- b\n\nTail.\n\n\nOut.\n",
+  "point": 22,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "drag-def-affiliated-down",
+  "text": "#+NAME: n\n[fn:1] D.\n\n\nPara.\n",
+  "point": 10,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "drag-out-up-def",
+  "text": "[fn:1] D.\n\nPara.\n\n\nOut.\n",
+  "point": 19,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "sentence-fwd",
+  "text": "[fn:1] First one.  Second one.\n\nNext.\n",
+  "point": 0,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "open-line-split",
+  "text": "Text.\n\n[fn:1] A.\n\nAfter.\n",
+  "point": 17,
+  "keys": "C-o M-< C-n C-n M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "kill-blank-join",
+  "text": "Text.\n\n[fn:1] A.\n\nB.\n\n\nAfter.\n",
+  "point": 22,
+  "keys": "C-k C-k M-< C-n C-n M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "type-label-in-def",
+  "text": "[fn:1] A.\nB.\n\nC.\n",
+  "point": 10,
+  "keys": "[ f n : 2 ] SPC M-< M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "yank-def",
+  "text": "Para.\n\n[fn:1] D\nmore.\n\n\nOut.\n",
+  "point": 7,
+  "keys": "M-h C-w M-> C-y M-< M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "new-section-nil-after-def",
+  "text": "* H\nA b.\n\n[fn:1] One.\n\nMore of one.\n* Next\n",
+  "point": 5,
+  "keys": "C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-footnote-section": false,
+   "org-footnote-auto-label": true
+  }
+ },
+ {
+  "name": "new-section-nil-def-two-blank",
+  "text": "* H\nA b.\n\n[fn:1] One.\n\n\nPara.\n* Next\n",
+  "point": 5,
+  "keys": "C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-footnote-section": false,
+   "org-footnote-auto-label": true
+  }
+ },
+ {
+  "name": "normalize-quote",
+  "text": "* H\nA[fn:1].\n#+begin_quote\n[fn:1] Q.\n#+end_quote\n",
+  "point": 4,
+  "keys": "C-u C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "n"
+  ]
+ },
+ {
+  "name": "sort-quote",
+  "text": "* H\nA[fn:2] b[fn:1].\n#+begin_quote\n[fn:1] Q.\n#+end_quote\n\n[fn:2] Two.\n",
+  "point": 4,
+  "keys": "C-u C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "s"
+  ]
+ },
+ {
+  "name": "promote-subtree-defs",
+  "text": "** H\n   Para.\n[fn:1] Def\nx\n*** Sub\n    Sub para.\n[fn:2] Two\ny\n",
+  "point": 0,
+  "keys": "M-S-<left>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "demote-def-two-blank-then-text",
+  "text": "* H\n  A.\n[fn:1] D.\n\n\n  B.\n\n[fn:2] E.\nF.\n",
+  "point": 0,
+  "keys": "M-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "auto-fill-label-line-long",
+  "text": "[fn:1] word",
+  "point": 11,
+  "keys": "SPC a SPC b SPC c SPC d SPC e SPC f",
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "message": true,
+  "vars": {
+   "fill-column": 12
+  }
+ },
+ {
+  "name": "auto-fill-2nd-para-indented",
+  "text": "[fn:1] A.\n\n   Some",
+  "point": 18,
+  "keys": "SPC m o r e SPC w o r d s SPC h e r e",
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "message": true,
+  "vars": {
+   "fill-column": 16
+  }
+ },
+ {
+  "name": "tab-region-defs-nil",
+  "text": "* H\n   Para.\n[fn:1] Note\n     text.\n   - item\n\n\n     After.\n",
+  "point": 0,
+  "keys": "C-x h C-M-\\",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "cx-ref-before-upper-def-section",
+  "text": "* H\nA[fn:3] b.\n\n* Footnotes\n\n[FN:3] Three.\n",
+  "point": 6,
+  "keys": "C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "no"
+  ]
+ },
+ {
+  "name": "cx-label-upper-ref",
+  "text": "* H\nA[FN:1] b.\n\n[fn:1] Def.\n",
+  "point": 17,
+  "keys": "C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ }
+]

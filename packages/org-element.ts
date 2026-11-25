@@ -38,7 +38,7 @@ import {
   writeStruct,
 } from "org-list";
 import { lineAt, lineStartOrEnd } from "org-macs";
-import { allMatches, escapeRegExp } from "subr";
+import { allMatches, charCount, escapeRegExp } from "subr";
 
 export interface Elem {
   type: string;
@@ -174,6 +174,62 @@ export function latexEnvironmentEnd(line: number, limit: number): number | undef
  */
 export const AFFILIATED = /^[ \t]*#\+(?:(?:CAPTION|RESULTS)(?:\[.*\])?|DATA|HEADERS?|LABEL|NAME|PLOT|RESNAME|RESULT|SOURCE|SRCNAME|TBLNAME|ATTR_[-_A-Za-z0-9]+):/i;
 
+/**
+ * A footnote label's characters, as Org's [-_[:word:]]: what Org mode's
+ * syntax table makes words, Unicode's letters, marks and numbers with $, %,
+ * ', ¥ and ·, but not ª, º or the fractions ¼, ½ and ¾. Beyond Latin-1 a
+ * few that Emacs does not take, as circled numbers, are taken.
+ */
+export const FOOTNOTE_LABEL = "(?:(?![\\u00AA\\u00BA\\u00BC-\\u00BE])[-_$%'\\p{L}\\p{M}\\p{N}\\u00A5\\u00B7])+";
+
+/**
+ * A footnote definition's first line, as org-footnote-definition-re, at
+ * the margin, whatever the case, as the parser matches it with
+ * case-fold-search.
+ */
+export const FOOTNOTE_DEFINITION = new RegExp(`^\\[fn:(${FOOTNOTE_LABEL})\\]`, "iu");
+
+/**
+ * Where a footnote definition whose label starts line ends, and its
+ * contents, as org-element-footnote-definition-parser finds them before
+ * limit: at the next heading, at the next definition, before any
+ * affiliated keywords above it, or after two blank lines, the blank lines
+ * its own. Its contents start after the label, on its line, or on the
+ * first line after it that is not blank, and end before its blank lines.
+ */
+export function footnoteDefinitionParts(line: number, limit: number): { end: number; contentsBegin?: number; contentsEnd?: number } {
+  let end = limit;
+  for (let l = line + 1; l < e8.lineCount() && e8.lineStart(l) < limit; l++) {
+    const t = e8.lineText(l);
+    if (isHeadingLine(t)) {
+      end = e8.lineStart(l);
+      break;
+    }
+    if (FOOTNOTE_DEFINITION.test(t)) {
+      let k = l - 1;
+      while (k > line && AFFILIATED.test(e8.lineText(k))) k--;
+      end = lineStartOrEnd(k + 1);
+      break;
+    }
+    // Two blank lines, each ending in a newline, as ^([ \t]*\n){2,} needs.
+    if (isBlank(t) && l + 2 < e8.lineCount() && e8.lineStart(l + 1) < limit && isBlank(e8.lineText(l + 1))) {
+      let k = l;
+      while (k < e8.lineCount() && e8.lineStart(k) < limit && isBlank(e8.lineText(k))) k++;
+      end = k >= e8.lineCount() || e8.lineStart(k) >= limit ? limit : e8.lineStart(k);
+      break;
+    }
+  }
+  const label = FOOTNOTE_DEFINITION.exec(e8.lineText(line))![0];
+  const afterLabel = e8.lineStart(line) + charCount(label);
+  const blank = /^[ \r\t\n]*/.exec(e8.bufferText(afterLabel, Math.max(afterLabel, end)))![0];
+  let contentsBegin: number | undefined = afterLabel + charCount(blank);
+  if (contentsBegin >= end) return { end };
+  if (lineAt(contentsBegin) !== line) contentsBegin = e8.lineStart(lineAt(contentsBegin));
+  let q = end;
+  while (q > 0 && /[ \r\t\n]/.test(e8.bufferText(q - 1, q))) q--;
+  return { end, contentsBegin, contentsEnd: lineStartOrEnd(lineAt(q) + 1) };
+}
+
 /** A comment line, as org-element reads one: a hash, then a space or nothing. */
 const COMMENT_LINE = /^[ \t]*#(?: |$)/;
 
@@ -198,7 +254,7 @@ export function startsElement(line: number, limit: number): boolean {
     // item, rules, footnote definitions, diary sexps, table.el tables and clocks.
     separatesParagraph(text) ||
     /^[ \t]*-{5,}[ \t]*$/.test(text) ||
-    /^\[fn:[-_\w]+\]/.test(text) ||
+    FOOTNOTE_DEFINITION.test(text) ||
     /^%%\(/.test(text) ||
     /^[ \t]*\+(?:-+\+)+[ \t]*$/.test(text) ||
     CLOCK_LINE.test(text) ||
@@ -312,6 +368,14 @@ function parseElements(
       if (inside) {
         e.contentsEnd = e8.lineStart(close);
         parseElements(e, e.contentsBegin as number, e.contentsEnd, false);
+      }
+    } else if (p === e8.lineStart(line) && FOOTNOTE_DEFINITION.test(text)) {
+      // A greater element, its contents from after the label, which may be on its line.
+      const parts = footnoteDefinitionParts(line, to);
+      e = elem("footnote-definition", p, parts.end, parent, parts.contentsBegin);
+      if (parts.contentsBegin !== undefined) {
+        e.contentsEnd = parts.contentsEnd;
+        parseElements(e, parts.contentsBegin, parts.contentsEnd as number, false);
       }
     } else if (p === e8.lineStart(line) && /^[ \t]*-{5,}[ \t]*$/.test(text)) {
       e = elem("horizontal-rule", p, Math.min(next, to), parent);
