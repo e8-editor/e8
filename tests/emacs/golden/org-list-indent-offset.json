@@ -1,0 +1,5888 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "off2-mright",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 6,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- one\n    - two\n    - sub\n- three\n",
+      "visible": "- one\n    - two\n    - sub\n- three\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off2-msright",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 6,
+        "keys": "M-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- one\n    - two\n\t- sub\n- three\n",
+      "visible": "- one\n    - two\n\t- sub\n- three\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off2-mleft-sub",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 14,
+        "keys": "M-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- one\n- two\n- sub\n- three\n",
+      "visible": "- one\n- two\n- sub\n- three\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off2-mret-sub",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 16,
+        "keys": "C-e M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- one\n- two\n    - sub\n    - x\n- three\n",
+      "visible": "- one\n- two\n    - sub\n    - x\n- three\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off2-mret",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 22,
+        "keys": "C-e M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- one\n- two\n    - sub\n- three\n- x\n",
+      "visible": "- one\n- two\n    - sub\n- three\n- x\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off2-repair",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 0,
+        "keys": "M-x o r g - l i s t - r e p a i r RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "org-list-repair\n- one\n- two\n  - sub\n- three\n",
+      "visible": "org-list-repair\n- one\n- two\n  - sub\n- three\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Minibuffer read in batch",
+      "message": null
+    },
+    {
+      "name": "off2-num-mright",
+      "input": {
+        "text": "1. one\n2. two\n3. three\n",
+        "point": 7,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "1. one\n     1. two\n2. three\n",
+      "visible": "1. one\n     1. two\n2. three\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off2-num-mright-twice",
+      "input": {
+        "text": "1. one\n2. two\n3. three\n",
+        "point": 7,
+        "keys": "M-<right> M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "1. one\n     1. two\n2. three\n",
+      "visible": "1. one\n     1. two\n2. three\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Cannot indent the first item of a list",
+      "message": null
+    },
+    {
+      "name": "off2-num-mret-tab",
+      "input": {
+        "text": "1. one\n2. two\n3. three\n",
+        "point": 10,
+        "keys": "C-e M-RET TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "1. one\n2. two\n     1. \n3. three\n",
+      "visible": "1. one\n2. two\n     1. \n3. three\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off2-tab-empty",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 22,
+        "keys": "C-e M-RET TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- one\n- two\n    - sub\n- three\n- \n",
+      "visible": "- one\n- two\n    - sub\n- three\n- \n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off2-cminus",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 0,
+        "keys": "C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "+ one\n+ two\n    - sub\n+ three\n",
+      "visible": "+ one\n+ two\n    - sub\n+ three\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off2-mdown-sub",
+      "input": {
+        "text": "- a\n  - x\n  - y\n- b\n",
+        "point": 6,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- a\n    - y\n    - x\n- b\n",
+      "visible": "- a\n    - y\n    - x\n- b\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off2-cc",
+      "input": {
+        "text": "- a\n    - x\n- b\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- a\n    - x\n- b\n",
+      "visible": "- a\n    - x\n- b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Cannot update this checkbox"
+    },
+    {
+      "name": "off2-star",
+      "input": {
+        "text": "- a\n- b\n",
+        "point": 0,
+        "keys": "C-c * C-c *",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "a\n- b\n",
+      "visible": "a\n- b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off2-mright-box",
+      "input": {
+        "text": "- [ ] a\n- [ ] b\n",
+        "point": 8,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- [ ] a\n    - [ ] b\n",
+      "visible": "- [ ] a\n    - [ ] b\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off2-region-mright",
+      "input": {
+        "text": "- a\n- b\n- c\n- d\n",
+        "point": 4,
+        "keys": "C-SPC C-n C-n M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- a\n    - b\n    - c\n- d\n",
+      "visible": "- a\n    - b\n    - c\n- d\n",
+      "point": 20,
+      "mark": 4,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "off4-mright",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 6,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 4
+        }
+      },
+      "text": "- one\n      - two\n      - sub\n- three\n",
+      "visible": "- one\n      - two\n      - sub\n- three\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off4-msright",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 6,
+        "keys": "M-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 4
+        }
+      },
+      "text": "- one\n      - two\n\t    - sub\n- three\n",
+      "visible": "- one\n      - two\n\t    - sub\n- three\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off4-mleft-sub",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 14,
+        "keys": "M-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 4
+        }
+      },
+      "text": "- one\n- two\n- sub\n- three\n",
+      "visible": "- one\n- two\n- sub\n- three\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off4-mret-sub",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 16,
+        "keys": "C-e M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 4
+        }
+      },
+      "text": "- one\n- two\n      - sub\n      - x\n- three\n",
+      "visible": "- one\n- two\n      - sub\n      - x\n- three\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off4-mret",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 22,
+        "keys": "C-e M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 4
+        }
+      },
+      "text": "- one\n- two\n      - sub\n- three\n- x\n",
+      "visible": "- one\n- two\n      - sub\n- three\n- x\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off4-repair",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 0,
+        "keys": "M-x o r g - l i s t - r e p a i r RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 4
+        }
+      },
+      "text": "org-list-repair\n- one\n- two\n  - sub\n- three\n",
+      "visible": "org-list-repair\n- one\n- two\n  - sub\n- three\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Minibuffer read in batch",
+      "message": null
+    },
+    {
+      "name": "off4-num-mright",
+      "input": {
+        "text": "1. one\n2. two\n3. three\n",
+        "point": 7,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 4
+        }
+      },
+      "text": "1. one\n       1. two\n2. three\n",
+      "visible": "1. one\n       1. two\n2. three\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off4-num-mright-twice",
+      "input": {
+        "text": "1. one\n2. two\n3. three\n",
+        "point": 7,
+        "keys": "M-<right> M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 4
+        }
+      },
+      "text": "1. one\n       1. two\n2. three\n",
+      "visible": "1. one\n       1. two\n2. three\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Cannot indent the first item of a list",
+      "message": null
+    },
+    {
+      "name": "off4-num-mret-tab",
+      "input": {
+        "text": "1. one\n2. two\n3. three\n",
+        "point": 10,
+        "keys": "C-e M-RET TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 4
+        }
+      },
+      "text": "1. one\n2. two\n       1. \n3. three\n",
+      "visible": "1. one\n2. two\n       1. \n3. three\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off4-tab-empty",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 22,
+        "keys": "C-e M-RET TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 4
+        }
+      },
+      "text": "- one\n- two\n      - sub\n- three\n- \n",
+      "visible": "- one\n- two\n      - sub\n- three\n- \n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off4-cminus",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 0,
+        "keys": "C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 4
+        }
+      },
+      "text": "+ one\n+ two\n      - sub\n+ three\n",
+      "visible": "+ one\n+ two\n      - sub\n+ three\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off4-mdown-sub",
+      "input": {
+        "text": "- a\n  - x\n  - y\n- b\n",
+        "point": 6,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 4
+        }
+      },
+      "text": "- a\n      - y\n      - x\n- b\n",
+      "visible": "- a\n      - y\n      - x\n- b\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off4-cc",
+      "input": {
+        "text": "- a\n    - x\n- b\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 4
+        }
+      },
+      "text": "- a\n      - x\n- b\n",
+      "visible": "- a\n      - x\n- b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off4-star",
+      "input": {
+        "text": "- a\n- b\n",
+        "point": 0,
+        "keys": "C-c * C-c *",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 4
+        }
+      },
+      "text": "a\n- b\n",
+      "visible": "a\n- b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off4-mright-box",
+      "input": {
+        "text": "- [ ] a\n- [ ] b\n",
+        "point": 8,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 4
+        }
+      },
+      "text": "- [ ] a\n      - [ ] b\n",
+      "visible": "- [ ] a\n      - [ ] b\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off4-region-mright",
+      "input": {
+        "text": "- a\n- b\n- c\n- d\n",
+        "point": 4,
+        "keys": "C-SPC C-n C-n M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 4
+        }
+      },
+      "text": "- a\n      - b\n      - c\n- d\n",
+      "visible": "- a\n      - b\n      - c\n- d\n",
+      "point": 24,
+      "mark": 4,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "off1-mright",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 6,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "- one\n   - two\n   - sub\n- three\n",
+      "visible": "- one\n   - two\n   - sub\n- three\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off1-msright",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 6,
+        "keys": "M-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "- one\n   - two\n      - sub\n- three\n",
+      "visible": "- one\n   - two\n      - sub\n- three\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off1-mleft-sub",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 14,
+        "keys": "M-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "- one\n- two\n- sub\n- three\n",
+      "visible": "- one\n- two\n- sub\n- three\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off1-mret-sub",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 16,
+        "keys": "C-e M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "- one\n- two\n   - sub\n   - x\n- three\n",
+      "visible": "- one\n- two\n   - sub\n   - x\n- three\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off1-mret",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 22,
+        "keys": "C-e M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "- one\n- two\n   - sub\n- three\n- x\n",
+      "visible": "- one\n- two\n   - sub\n- three\n- x\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off1-repair",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 0,
+        "keys": "M-x o r g - l i s t - r e p a i r RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "org-list-repair\n- one\n- two\n  - sub\n- three\n",
+      "visible": "org-list-repair\n- one\n- two\n  - sub\n- three\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Minibuffer read in batch",
+      "message": null
+    },
+    {
+      "name": "off1-num-mright",
+      "input": {
+        "text": "1. one\n2. two\n3. three\n",
+        "point": 7,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "1. one\n    1. two\n2. three\n",
+      "visible": "1. one\n    1. two\n2. three\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off1-num-mright-twice",
+      "input": {
+        "text": "1. one\n2. two\n3. three\n",
+        "point": 7,
+        "keys": "M-<right> M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "1. one\n    1. two\n2. three\n",
+      "visible": "1. one\n    1. two\n2. three\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Cannot indent the first item of a list",
+      "message": null
+    },
+    {
+      "name": "off1-num-mret-tab",
+      "input": {
+        "text": "1. one\n2. two\n3. three\n",
+        "point": 10,
+        "keys": "C-e M-RET TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "1. one\n2. two\n    1. \n3. three\n",
+      "visible": "1. one\n2. two\n    1. \n3. three\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off1-tab-empty",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 22,
+        "keys": "C-e M-RET TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "- one\n- two\n   - sub\n- three\n- \n",
+      "visible": "- one\n- two\n   - sub\n- three\n- \n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off1-cminus",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 0,
+        "keys": "C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "+ one\n+ two\n   - sub\n+ three\n",
+      "visible": "+ one\n+ two\n   - sub\n+ three\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off1-mdown-sub",
+      "input": {
+        "text": "- a\n  - x\n  - y\n- b\n",
+        "point": 6,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "- a\n   - y\n   - x\n- b\n",
+      "visible": "- a\n   - y\n   - x\n- b\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off1-cc",
+      "input": {
+        "text": "- a\n    - x\n- b\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "- a\n   - x\n- b\n",
+      "visible": "- a\n   - x\n- b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off1-star",
+      "input": {
+        "text": "- a\n- b\n",
+        "point": 0,
+        "keys": "C-c * C-c *",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "a\n- b\n",
+      "visible": "a\n- b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off1-mright-box",
+      "input": {
+        "text": "- [ ] a\n- [ ] b\n",
+        "point": 8,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "- [ ] a\n   - [ ] b\n",
+      "visible": "- [ ] a\n   - [ ] b\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off1-region-mright",
+      "input": {
+        "text": "- a\n- b\n- c\n- d\n",
+        "point": 4,
+        "keys": "C-SPC C-n C-n M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "- a\n   - b\n   - c\n- d\n",
+      "visible": "- a\n   - b\n   - c\n- d\n",
+      "point": 18,
+      "mark": 4,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "off0-mright",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 6,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 0
+        }
+      },
+      "text": "- one\n  - two\n  - sub\n- three\n",
+      "visible": "- one\n  - two\n  - sub\n- three\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off2-heading-to-list",
+      "input": {
+        "text": "* a\n** b\n",
+        "point": 0,
+        "keys": "C-x h C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- a\n  - b\n",
+      "visible": "- a\n  - b\n",
+      "point": 0,
+      "mark": 10,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "list-start-cc-plain",
+      "input": {
+        "text": "- a\n- b\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- a\n- b\n",
+      "visible": "- a\n- b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Cannot update this checkbox"
+    },
+    {
+      "name": "list-start-cc-plain-mid",
+      "input": {
+        "text": "- a\n- b\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- a\n- b\n",
+      "visible": "- a\n- b\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "list-start-cc-box",
+      "input": {
+        "text": "- [ ] a\n- [X] b\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [X] a\n- [X] b\n",
+      "visible": "- [X] a\n- [X] b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "list-start-cc-box-mid",
+      "input": {
+        "text": "- [ ] a\n- [X] b\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [X] a\n- [X] b\n",
+      "visible": "- [X] a\n- [X] b\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "list-start-cc-box-x",
+      "input": {
+        "text": "- [X] a\n- b\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [ ] a\n- b\n",
+      "visible": "- [ ] a\n- b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "list-start-cc-box-x-mid",
+      "input": {
+        "text": "- [X] a\n- b\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [ ] a\n- b\n",
+      "visible": "- [ ] a\n- b\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "list-start-cc-box-cu",
+      "input": {
+        "text": "- [ ] a\n- b\n",
+        "point": 0,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- a\n- b\n",
+      "visible": "- a\n- b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "list-start-cc-box-cu-mid",
+      "input": {
+        "text": "- [ ] a\n- b\n",
+        "point": 2,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- a\n- b\n",
+      "visible": "- a\n- b\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "list-start-cc-box-cucu",
+      "input": {
+        "text": "- [ ] a\n- b\n",
+        "point": 0,
+        "keys": "C-u C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [-] a\n- [-] b\n",
+      "visible": "- [-] a\n- [-] b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "list-start-cc-box-cucu-mid",
+      "input": {
+        "text": "- [ ] a\n- b\n",
+        "point": 2,
+        "keys": "C-u C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [-] a\n- b\n",
+      "visible": "- [-] a\n- b\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "list-start-cc-misindented",
+      "input": {
+        "text": "- a\n   - b\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- a\n  - b\n",
+      "visible": "- a\n  - b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "list-start-cc-misindented-mid",
+      "input": {
+        "text": "- a\n   - b\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- a\n  - b\n",
+      "visible": "- a\n  - b\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "list-start-cc-nested-box",
+      "input": {
+        "text": "- [ ] a\n  - [ ] x\n  - [X] y\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [-] a\n  - [ ] x\n  - [X] y\n",
+      "visible": "- [-] a\n  - [ ] x\n  - [X] y\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "list-start-cc-nested-box-mid",
+      "input": {
+        "text": "- [ ] a\n  - [ ] x\n  - [X] y\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [-] a\n  - [ ] x\n  - [X] y\n",
+      "visible": "- [-] a\n  - [ ] x\n  - [X] y\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "list-start-cc-ordered",
+      "input": {
+        "text": "* H\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [ ] a\n- [ ] b\n",
+        "point": 35,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] a\n- [ ] b\n",
+      "visible": "* H\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] a\n- [ ] b\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "list-start-cc-ordered-mid",
+      "input": {
+        "text": "* H\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [ ] a\n- [ ] b\n",
+        "point": 37,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] a\n- [ ] b\n",
+      "visible": "* H\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] a\n- [ ] b\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "list-start-cc-cookie",
+      "input": {
+        "text": "* H [0/2]\n- [ ] a\n- [ ] b\n",
+        "point": 10,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H [1/2]\n- [X] a\n- [ ] b\n",
+      "visible": "* H [1/2]\n- [X] a\n- [ ] b\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "list-start-cc-cookie-mid",
+      "input": {
+        "text": "* H [0/2]\n- [ ] a\n- [ ] b\n",
+        "point": 12,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H [1/2]\n- [X] a\n- [ ] b\n",
+      "visible": "* H [1/2]\n- [X] a\n- [ ] b\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "off2-local",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 6,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-list-indent-offset": 3
+        }
+      },
+      "text": "- one\n     - two\n     - sub\n- three\n",
+      "visible": "- one\n     - two\n     - sub\n- three\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o0-mright",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 6,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 0
+        }
+      },
+      "text": "- one\n  - two\n  - sub\n- three\n",
+      "visible": "- one\n  - two\n  - sub\n- three\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o0-msright-children",
+      "input": {
+        "text": "- a\n- b\n  - x\n    - y\n- c\n",
+        "point": 4,
+        "keys": "M-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 0
+        }
+      },
+      "text": "- a\n  - b\n    - x\n      - y\n- c\n",
+      "visible": "- a\n  - b\n    - x\n      - y\n- c\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o0-msleft-children",
+      "input": {
+        "text": "- a\n  - b\n    - x\n- c\n",
+        "point": 4,
+        "keys": "M-S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 0
+        }
+      },
+      "text": "- a\n- b\n  - x\n- c\n",
+      "visible": "- a\n- b\n  - x\n- c\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o0-mret-sub",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 19,
+        "keys": "M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 0
+        }
+      },
+      "text": "- one\n- two\n  - sub\n  - x\n- three\n",
+      "visible": "- one\n- two\n  - sub\n  - x\n- three\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o0-msret-sub",
+      "input": {
+        "text": "- a\n  - [ ] x\n",
+        "point": 13,
+        "keys": "M-S-RET y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 0
+        }
+      },
+      "text": "- a\n  - [ ] x\n  - [ ] y\n",
+      "visible": "- a\n  - [ ] x\n  - [ ] y\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o0-tab-empty",
+      "input": {
+        "text": "- a\n- ",
+        "point": 6,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 0
+        }
+      },
+      "text": "- a\n  - ",
+      "visible": "- a\n  - ",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o0-tab-empty-cycle",
+      "input": {
+        "text": "- a\n  - b\n  - ",
+        "point": 14,
+        "keys": "TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 0
+        }
+      },
+      "text": "- a\n  - b\n- ",
+      "visible": "- a\n  - b\n- ",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o0-tab-empty-sub-out",
+      "input": {
+        "text": "- a\n  - b\n  - ",
+        "point": 14,
+        "keys": "TAB TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 0
+        }
+      },
+      "text": "- a\n  - b\n  - ",
+      "visible": "- a\n  - b\n  - ",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o0-first-msright",
+      "input": {
+        "text": "- a\n  - x\n- b\n",
+        "point": 0,
+        "keys": "M-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 0
+        }
+      },
+      "text": " - a\n   - x\n - b\n",
+      "visible": " - a\n   - x\n - b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o0-bullet-num",
+      "input": {
+        "text": "+ a\n  - x\n",
+        "point": 0,
+        "keys": "C-c - C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 0
+        }
+      },
+      "text": "1) a\n   - x\n",
+      "visible": "1) a\n   - x\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o0-ten",
+      "input": {
+        "text": "1. a\n2. b\n3. c\n4. d\n5. e\n6. f\n7. g\n8. h\n9. i\n10. j\n11. k\n",
+        "point": 51,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 0
+        }
+      },
+      "text": "1. a\n2. b\n3. c\n4. d\n5. e\n6. f\n7. g\n8. h\n9. i\n10. j\n    1. k\n",
+      "visible": "1. a\n2. b\n3. c\n4. d\n5. e\n6. f\n7. g\n8. h\n9. i\n10. j\n    1. k\n",
+      "point": 58,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o0-repair",
+      "input": {
+        "text": "- a\n      - x\n         - y\n- b\n",
+        "point": 0,
+        "keys": "M-x o r g - l i s t - r e p a i r RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 0
+        }
+      },
+      "text": "org-list-repair\n- a\n      - x\n         - y\n- b\n",
+      "visible": "org-list-repair\n- a\n      - x\n         - y\n- b\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Minibuffer read in batch",
+      "message": null
+    },
+    {
+      "name": "review-o0-cc-repair-item",
+      "input": {
+        "text": "- a\n- b\n      - x\n",
+        "point": 4,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 0
+        }
+      },
+      "text": "- a\n- b\n  - x\n",
+      "visible": "- a\n- b\n  - x\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o0-cc-box-child",
+      "input": {
+        "text": "- [ ] a\n  - [ ] x\n  - [ ] y\n",
+        "point": 20,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 0
+        }
+      },
+      "text": "- [-] a\n  - [ ] x\n  - [X] y\n",
+      "visible": "- [-] a\n  - [ ] x\n  - [X] y\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o0-body-shift",
+      "input": {
+        "text": "- a\n- b\n  text of b\n  more\n",
+        "point": 4,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 0
+        }
+      },
+      "text": "- a\n  - b\n    text of b\n    more\n",
+      "visible": "- a\n  - b\n    text of b\n    more\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o0-region-mright",
+      "input": {
+        "text": "- a\n- b\n- c\n  - z\n- d\n",
+        "point": 4,
+        "keys": "C-SPC C-n C-n M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 0
+        }
+      },
+      "text": "- a\n  - b\n  - c\n  - z\n- d\n",
+      "visible": "- a\n  - b\n  - c\n  - z\n- d\n",
+      "point": 16,
+      "mark": 4,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "review-o1-mright",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 6,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "- one\n   - two\n   - sub\n- three\n",
+      "visible": "- one\n   - two\n   - sub\n- three\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o1-msright-children",
+      "input": {
+        "text": "- a\n- b\n  - x\n    - y\n- c\n",
+        "point": 4,
+        "keys": "M-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "- a\n   - b\n      - x\n\t - y\n- c\n",
+      "visible": "- a\n   - b\n      - x\n\t - y\n- c\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o1-msleft-children",
+      "input": {
+        "text": "- a\n  - b\n    - x\n- c\n",
+        "point": 4,
+        "keys": "M-S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "- a\n- b\n   - x\n- c\n",
+      "visible": "- a\n- b\n   - x\n- c\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o1-mret-sub",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 19,
+        "keys": "M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "- one\n- two\n   - sub\n   - x\n- three\n",
+      "visible": "- one\n- two\n   - sub\n   - x\n- three\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o1-msret-sub",
+      "input": {
+        "text": "- a\n  - [ ] x\n",
+        "point": 13,
+        "keys": "M-S-RET y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "- a\n   - [ ] x\n   - [ ] y\n",
+      "visible": "- a\n   - [ ] x\n   - [ ] y\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o1-tab-empty",
+      "input": {
+        "text": "- a\n- ",
+        "point": 6,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "- a\n   - ",
+      "visible": "- a\n   - ",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o1-tab-empty-cycle",
+      "input": {
+        "text": "- a\n  - b\n  - ",
+        "point": 14,
+        "keys": "TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "- a\n   - b\n- ",
+      "visible": "- a\n   - b\n- ",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o1-tab-empty-sub-out",
+      "input": {
+        "text": "- a\n  - b\n  - ",
+        "point": 14,
+        "keys": "TAB TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "- a\n   - b\n   - ",
+      "visible": "- a\n   - b\n   - ",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o1-first-msright",
+      "input": {
+        "text": "- a\n  - x\n- b\n",
+        "point": 0,
+        "keys": "M-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": " - a\n   - x\n - b\n",
+      "visible": " - a\n   - x\n - b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o1-bullet-num",
+      "input": {
+        "text": "+ a\n  - x\n",
+        "point": 0,
+        "keys": "C-c - C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "1) a\n    - x\n",
+      "visible": "1) a\n    - x\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o1-ten",
+      "input": {
+        "text": "1. a\n2. b\n3. c\n4. d\n5. e\n6. f\n7. g\n8. h\n9. i\n10. j\n11. k\n",
+        "point": 51,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "1. a\n2. b\n3. c\n4. d\n5. e\n6. f\n7. g\n8. h\n9. i\n10. j\n     1. k\n",
+      "visible": "1. a\n2. b\n3. c\n4. d\n5. e\n6. f\n7. g\n8. h\n9. i\n10. j\n     1. k\n",
+      "point": 59,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o1-repair",
+      "input": {
+        "text": "- a\n      - x\n         - y\n- b\n",
+        "point": 0,
+        "keys": "M-x o r g - l i s t - r e p a i r RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "org-list-repair\n- a\n      - x\n         - y\n- b\n",
+      "visible": "org-list-repair\n- a\n      - x\n         - y\n- b\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Minibuffer read in batch",
+      "message": null
+    },
+    {
+      "name": "review-o1-cc-repair-item",
+      "input": {
+        "text": "- a\n- b\n      - x\n",
+        "point": 4,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "- a\n- b\n   - x\n",
+      "visible": "- a\n- b\n   - x\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o1-cc-box-child",
+      "input": {
+        "text": "- [ ] a\n  - [ ] x\n  - [ ] y\n",
+        "point": 20,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "- [-] a\n   - [ ] x\n   - [X] y\n",
+      "visible": "- [-] a\n   - [ ] x\n   - [X] y\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o1-body-shift",
+      "input": {
+        "text": "- a\n- b\n  text of b\n  more\n",
+        "point": 4,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "- a\n   - b\n     text of b\n     more\n",
+      "visible": "- a\n   - b\n     text of b\n     more\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o1-region-mright",
+      "input": {
+        "text": "- a\n- b\n- c\n  - z\n- d\n",
+        "point": 4,
+        "keys": "C-SPC C-n C-n M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "- a\n   - b\n   - c\n   - z\n- d\n",
+      "visible": "- a\n   - b\n   - c\n   - z\n- d\n",
+      "point": 18,
+      "mark": 4,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "review-o3-mright",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 6,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 3
+        }
+      },
+      "text": "- one\n     - two\n     - sub\n- three\n",
+      "visible": "- one\n     - two\n     - sub\n- three\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o3-msright-children",
+      "input": {
+        "text": "- a\n- b\n  - x\n    - y\n- c\n",
+        "point": 4,
+        "keys": "M-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 3
+        }
+      },
+      "text": "- a\n     - b\n\t  - x\n\t       - y\n- c\n",
+      "visible": "- a\n     - b\n\t  - x\n\t       - y\n- c\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o3-msleft-children",
+      "input": {
+        "text": "- a\n  - b\n    - x\n- c\n",
+        "point": 4,
+        "keys": "M-S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 3
+        }
+      },
+      "text": "- a\n- b\n     - x\n- c\n",
+      "visible": "- a\n- b\n     - x\n- c\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o3-mret-sub",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 19,
+        "keys": "M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 3
+        }
+      },
+      "text": "- one\n- two\n     - sub\n     - x\n- three\n",
+      "visible": "- one\n- two\n     - sub\n     - x\n- three\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o3-msret-sub",
+      "input": {
+        "text": "- a\n  - [ ] x\n",
+        "point": 13,
+        "keys": "M-S-RET y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 3
+        }
+      },
+      "text": "- a\n     - [ ] x\n     - [ ] y\n",
+      "visible": "- a\n     - [ ] x\n     - [ ] y\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o3-tab-empty",
+      "input": {
+        "text": "- a\n- ",
+        "point": 6,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 3
+        }
+      },
+      "text": "- a\n     - ",
+      "visible": "- a\n     - ",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o3-tab-empty-cycle",
+      "input": {
+        "text": "- a\n  - b\n  - ",
+        "point": 14,
+        "keys": "TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 3
+        }
+      },
+      "text": "- a\n     - b\n- ",
+      "visible": "- a\n     - b\n- ",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o3-tab-empty-sub-out",
+      "input": {
+        "text": "- a\n  - b\n  - ",
+        "point": 14,
+        "keys": "TAB TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 3
+        }
+      },
+      "text": "- a\n     - b\n     - ",
+      "visible": "- a\n     - b\n     - ",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o3-first-msright",
+      "input": {
+        "text": "- a\n  - x\n- b\n",
+        "point": 0,
+        "keys": "M-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 3
+        }
+      },
+      "text": " - a\n   - x\n - b\n",
+      "visible": " - a\n   - x\n - b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o3-bullet-num",
+      "input": {
+        "text": "+ a\n  - x\n",
+        "point": 0,
+        "keys": "C-c - C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 3
+        }
+      },
+      "text": "1) a\n      - x\n",
+      "visible": "1) a\n      - x\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o3-ten",
+      "input": {
+        "text": "1. a\n2. b\n3. c\n4. d\n5. e\n6. f\n7. g\n8. h\n9. i\n10. j\n11. k\n",
+        "point": 51,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 3
+        }
+      },
+      "text": "1. a\n2. b\n3. c\n4. d\n5. e\n6. f\n7. g\n8. h\n9. i\n10. j\n       1. k\n",
+      "visible": "1. a\n2. b\n3. c\n4. d\n5. e\n6. f\n7. g\n8. h\n9. i\n10. j\n       1. k\n",
+      "point": 61,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o3-repair",
+      "input": {
+        "text": "- a\n      - x\n         - y\n- b\n",
+        "point": 0,
+        "keys": "M-x o r g - l i s t - r e p a i r RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 3
+        }
+      },
+      "text": "org-list-repair\n- a\n      - x\n         - y\n- b\n",
+      "visible": "org-list-repair\n- a\n      - x\n         - y\n- b\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Minibuffer read in batch",
+      "message": null
+    },
+    {
+      "name": "review-o3-cc-repair-item",
+      "input": {
+        "text": "- a\n- b\n      - x\n",
+        "point": 4,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 3
+        }
+      },
+      "text": "- a\n- b\n     - x\n",
+      "visible": "- a\n- b\n     - x\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o3-cc-box-child",
+      "input": {
+        "text": "- [ ] a\n  - [ ] x\n  - [ ] y\n",
+        "point": 20,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 3
+        }
+      },
+      "text": "- [-] a\n     - [ ] x\n     - [X] y\n",
+      "visible": "- [-] a\n     - [ ] x\n     - [X] y\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o3-body-shift",
+      "input": {
+        "text": "- a\n- b\n  text of b\n  more\n",
+        "point": 4,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 3
+        }
+      },
+      "text": "- a\n     - b\n       text of b\n       more\n",
+      "visible": "- a\n     - b\n       text of b\n       more\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o3-region-mright",
+      "input": {
+        "text": "- a\n- b\n- c\n  - z\n- d\n",
+        "point": 4,
+        "keys": "C-SPC C-n C-n M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 3
+        }
+      },
+      "text": "- a\n     - b\n     - c\n     - z\n- d\n",
+      "visible": "- a\n     - b\n     - c\n     - z\n- d\n",
+      "point": 22,
+      "mark": 4,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "review-o2-alpha",
+      "input": {
+        "text": "a) one\nb) two\n",
+        "point": 7,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2,
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "a) one\n     a) two\n",
+      "visible": "a) one\n     a) two\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o2-two-spaces",
+      "input": {
+        "text": "1. a\n2. b\n",
+        "point": 5,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2,
+          "org-list-two-spaces-after-bullet-regexp": "[0-9]"
+        }
+      },
+      "text": "1.  a\n      1.  b\n",
+      "visible": "1.  a\n      1.  b\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o2-demote-modify",
+      "input": {
+        "text": "- a\n- b\n",
+        "point": 4,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2,
+          "org-list-demote-modify-bullet": {
+            "-": "1."
+          }
+        }
+      },
+      "text": "- a\n    1. b\n",
+      "visible": "- a\n    1. b\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o2-demote-modify-num",
+      "input": {
+        "text": "1. a\n2. b\n",
+        "point": 5,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2,
+          "org-list-demote-modify-bullet": {
+            "1.": "a)"
+          },
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "1. a\n     a) b\n",
+      "visible": "1. a\n     a) b\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o2-desc",
+      "input": {
+        "text": "- t1 :: d\n- t2 :: e\n",
+        "point": 10,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- t1 :: d\n    - t2 :: e\n",
+      "visible": "- t1 :: d\n    - t2 :: e\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o2-already-offset-cc",
+      "input": {
+        "text": "- [ ] a\n    - [ ] x\n",
+        "point": 8,
+        "keys": "C-e C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- [X] a\n    - [X] x\n",
+      "visible": "- [X] a\n    - [X] x\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o2-tabs",
+      "input": {
+        "text": "- a\n  - b\n    - c\n",
+        "point": 10,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "indent-tabs-mode": true
+        },
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- a\n  - b\n    - c\n",
+      "visible": "- a\n  - b\n    - c\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot indent the first item of a list",
+      "message": null
+    },
+    {
+      "name": "review-o2-tab-continuation",
+      "input": {
+        "text": "- a\n   - x\n more\n",
+        "point": 11,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- a\n   - x\n   more\n",
+      "visible": "- a\n   - x\n   more\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o2-tab-continuation-sub",
+      "input": {
+        "text": "- a\n    - x\n      text\n  more\n",
+        "point": 23,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- a\n    - x\n      text\n    more\n",
+      "visible": "- a\n    - x\n      text\n    more\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o2-mq-sub",
+      "input": {
+        "text": "- a\n    - x one two three four five six seven eight\n",
+        "point": 15,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "fill-column": 20
+        },
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- a\n    - x one two\n      three four\n      five six seven\n      eight\n",
+      "visible": "- a\n    - x one two\n      three four\n      five six seven\n      eight\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o2-mdown-sub",
+      "input": {
+        "text": "- a\n  - x\n  - y\n- b\n",
+        "point": 4,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- a\n    - y\n    - x\n- b\n",
+      "visible": "- a\n    - y\n    - x\n- b\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o2-sort",
+      "input": {
+        "text": "- b\n  - q\n- a\n",
+        "point": 0,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ],
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- a\n- b\n    - q\n",
+      "visible": "- a\n- b\n    - q\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Sorting items...done"
+    },
+    {
+      "name": "review-o2-heading-todo-adapt",
+      "input": {
+        "text": "* top\n** a\n*** TODO b\n",
+        "point": 6,
+        "keys": "C-SPC M-> C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2,
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* top\n  - a\n      - [ ] b\n",
+      "visible": "* top\n  - a\n      - [ ] b\n",
+      "point": 26,
+      "mark": 6,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "review-o2-c-star",
+      "input": {
+        "text": "- a\n  - b\n",
+        "point": 0,
+        "keys": "C-c *",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "* a\n  - b\n",
+      "visible": "* a\n  - b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o2-mret-before",
+      "input": {
+        "text": "- a\n  - x\n",
+        "point": 4,
+        "keys": "M-RET y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- a\n    - y\n    - x\n",
+      "visible": "- a\n    - y\n    - x\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o2-outdent-sub",
+      "input": {
+        "text": "- a\n    - x\n    - y\n",
+        "point": 12,
+        "keys": "M-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- a\n    - x\n- y\n",
+      "visible": "- a\n    - x\n- y\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o2-outdent-deep",
+      "input": {
+        "text": "- a\n  - x\n    - y\n",
+        "point": 10,
+        "keys": "M-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- a\n    - x\n    - y\n",
+      "visible": "- a\n    - x\n    - y\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o2-shift-right-bullet",
+      "input": {
+        "text": "- a\n  - x\n",
+        "point": 0,
+        "keys": "S-<right> S-<right> S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "1) a\n     - x\n",
+      "visible": "1) a\n     - x\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-o-neg1-mright",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 6,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": -1
+        }
+      },
+      "text": "- one\n - two\n - sub\n- three\n",
+      "visible": "- one\n - two\n - sub\n- three\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-local3-mright",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 6,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-list-indent-offset": 3
+        }
+      },
+      "text": "- one\n     - two\n     - sub\n- three\n",
+      "visible": "- one\n     - two\n     - sub\n- three\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-local3-mret",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 16,
+        "keys": "C-e M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-list-indent-offset": 3
+        }
+      },
+      "text": "- one\n- two\n     - sub\n     - x\n- three\n",
+      "visible": "- one\n- two\n     - sub\n     - x\n- three\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-local3-tab-empty",
+      "input": {
+        "text": "- a\n- ",
+        "point": 6,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-list-indent-offset": 3
+        }
+      },
+      "text": "- a\n     - ",
+      "visible": "- a\n     - ",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-local3-repair",
+      "input": {
+        "text": "- a\n      - x\n",
+        "point": 0,
+        "keys": "M-x o r g - l i s t - r e p a i r RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-list-indent-offset": 3
+        }
+      },
+      "text": "org-list-repair\n- a\n      - x\n",
+      "visible": "org-list-repair\n- a\n      - x\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Minibuffer read in batch",
+      "message": null
+    },
+    {
+      "name": "review-local3-cc",
+      "input": {
+        "text": "- a\n- [ ] b\n      - [ ] x\n",
+        "point": 4,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-list-indent-offset": 3
+        }
+      },
+      "text": "- a\n- [ ] b\n     - [ ] x\n",
+      "visible": "- a\n- [ ] b\n     - [ ] x\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-local3-cc-start",
+      "input": {
+        "text": "- [ ] a\n- b\n      - c\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-list-indent-offset": 3
+        }
+      },
+      "text": "- [X] a\n- b\n     - c\n",
+      "visible": "- [X] a\n- b\n     - c\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-local3-global1",
+      "input": {
+        "text": "- one\n- two\n  - sub\n- three\n",
+        "point": 6,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-list-indent-offset": 3
+        },
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "- one\n     - two\n     - sub\n- three\n",
+      "visible": "- one\n     - two\n     - sub\n- three\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-indented-bol",
+      "input": {
+        "text": "  - [ ] a\n  - [ ] b\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "  - [X] a\n  - [ ] b\n",
+      "visible": "  - [X] a\n  - [ ] b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-indented-col1",
+      "input": {
+        "text": "  - [ ] a\n  - [ ] b\n",
+        "point": 1,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "  - [X] a\n  - [ ] b\n",
+      "visible": "  - [X] a\n  - [ ] b\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-indented-bullet",
+      "input": {
+        "text": "  - [ ] a\n  - [ ] b\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "  - [X] a\n  - [ ] b\n",
+      "visible": "  - [X] a\n  - [ ] b\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-indented-bol-cu",
+      "input": {
+        "text": "  - [ ] a\n  - [ ] b\n",
+        "point": 0,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "  - a\n  - b\n",
+      "visible": "  - a\n  - b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-indented-col1-cu",
+      "input": {
+        "text": "  - [ ] a\n  - [ ] b\n",
+        "point": 1,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "  - a\n  - [ ] b\n",
+      "visible": "  - a\n  - [ ] b\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-sub-bol",
+      "input": {
+        "text": "- a\n  - [ ] x\n  - [ ] y\n- b\n",
+        "point": 4,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- a\n  - [X] x\n  - [ ] y\n- b\n",
+      "visible": "- a\n  - [X] x\n  - [ ] y\n- b\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-sub-bullet",
+      "input": {
+        "text": "- a\n  - [ ] x\n  - [ ] y\n- b\n",
+        "point": 6,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- a\n  - [X] x\n  - [ ] y\n- b\n",
+      "visible": "- a\n  - [X] x\n  - [ ] y\n- b\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-sub-bol-cu",
+      "input": {
+        "text": "- a\n  - [ ] x\n  - [ ] y\n- b\n",
+        "point": 4,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- a\n  - x\n  - y\n- b\n",
+      "visible": "- a\n  - x\n  - y\n- b\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-sub-bol-cucu",
+      "input": {
+        "text": "- a\n  - [ ] x\n  - [ ] y\n- b\n",
+        "point": 4,
+        "keys": "C-u C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- a\n  - [-] x\n  - [-] y\n- b\n",
+      "visible": "- a\n  - [-] x\n  - [-] y\n- b\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-sub-bol-c1",
+      "input": {
+        "text": "- a\n  - [ ] x\n  - [ ] y\n- b\n",
+        "point": 4,
+        "keys": "C-1 C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- a\n  - [X] x\n  - [X] y\n- b\n",
+      "visible": "- a\n  - [X] x\n  - [X] y\n- b\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-sub-children",
+      "input": {
+        "text": "- a\n  - [X] x\n    - [X] p\n",
+        "point": 4,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- a\n  - [X] x\n    - [X] p\n",
+      "visible": "- a\n  - [X] x\n    - [X] p\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Cannot update this checkbox"
+    },
+    {
+      "name": "review-cc-sub-children-bullet",
+      "input": {
+        "text": "- a\n  - [X] x\n    - [X] p\n",
+        "point": 6,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- a\n  - [X] x\n    - [X] p\n",
+      "visible": "- a\n  - [X] x\n    - [X] p\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot toggle this checkbox: all subitems checked",
+      "message": null
+    },
+    {
+      "name": "review-cc-top-boxed-sub-bol",
+      "input": {
+        "text": "- [ ] a\n  - [ ] x\n  - [ ] y\n",
+        "point": 8,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [-] a\n  - [X] x\n  - [ ] y\n",
+      "visible": "- [-] a\n  - [X] x\n  - [ ] y\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-second-sub-bol",
+      "input": {
+        "text": "- a\n  - [ ] x\n- b\n  - [ ] y\n",
+        "point": 18,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- a\n  - [ ] x\n- b\n  - [X] y\n",
+      "visible": "- a\n  - [ ] x\n- b\n  - [X] y\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-second-item-bol",
+      "input": {
+        "text": "- [ ] a\n- [ ] b\n",
+        "point": 8,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [ ] a\n- [X] b\n",
+      "visible": "- [ ] a\n- [X] b\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-name-bol",
+      "input": {
+        "text": "#+NAME: l\n- [ ] a\n- [ ] b\n",
+        "point": 10,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: l\n- [X] a\n- [ ] b\n",
+      "visible": "#+NAME: l\n- [X] a\n- [ ] b\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-name-bol-cu",
+      "input": {
+        "text": "#+NAME: l\n- [ ] a\n- [ ] b\n",
+        "point": 10,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: l\n- a\n- b\n",
+      "visible": "#+NAME: l\n- a\n- b\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-name-bullet-cu",
+      "input": {
+        "text": "#+NAME: l\n- [ ] a\n- [ ] b\n",
+        "point": 12,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: l\n- a\n- [ ] b\n",
+      "visible": "#+NAME: l\n- a\n- [ ] b\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-name-kw",
+      "input": {
+        "text": "#+NAME: l\n- [ ] a\n- [ ] b\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: l\n- [ ] a\n- [ ] b\n",
+      "visible": "#+NAME: l\n- [ ] a\n- [ ] b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Cannot update this checkbox"
+    },
+    {
+      "name": "review-cc-name-kw-cu",
+      "input": {
+        "text": "#+NAME: l\n- [ ] a\n- [ ] b\n",
+        "point": 0,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: l\n- a\n- b\n",
+      "visible": "#+NAME: l\n- a\n- b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-name-bol-children",
+      "input": {
+        "text": "#+NAME: l\n- [X] a\n  - [X] x\n",
+        "point": 10,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: l\n- [X] a\n  - [X] x\n",
+      "visible": "#+NAME: l\n- [X] a\n  - [X] x\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Cannot update this checkbox"
+    },
+    {
+      "name": "review-cc-radio-bol",
+      "input": {
+        "text": "#+ATTR_ORG: :radio t\n- [ ] a\n- [ ] b\n",
+        "point": 21,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+ATTR_ORG: :radio t\n- [X] a\n- [ ] b\n",
+      "visible": "#+ATTR_ORG: :radio t\n- [X] a\n- [ ] b\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-radio-bullet",
+      "input": {
+        "text": "#+ATTR_ORG: :radio t\n- [ ] a\n- [ ] b\n",
+        "point": 23,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+ATTR_ORG: :radio t\n- [X] a\n- [ ] b\n",
+      "visible": "#+ATTR_ORG: :radio t\n- [X] a\n- [ ] b\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-radio-kw",
+      "input": {
+        "text": "#+ATTR_ORG: :radio t\n- [ ] a\n- [ ] b\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+ATTR_ORG: :radio t\n- [ ] a\n- [ ] b\n",
+      "visible": "#+ATTR_ORG: :radio t\n- [ ] a\n- [ ] b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Cannot update this checkbox"
+    },
+    {
+      "name": "review-cc-radio-second",
+      "input": {
+        "text": "#+ATTR_ORG: :radio t\n- [ ] a\n- [ ] b\n",
+        "point": 29,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+ATTR_ORG: :radio t\n- [ ] a\n- [X] b\n",
+      "visible": "#+ATTR_ORG: :radio t\n- [ ] a\n- [X] b\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-radio-mode-bol",
+      "input": {
+        "text": "- [ ] a\n- [X] b\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode",
+          "org-list-checkbox-radio-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [X] a\n- [ ] b\n",
+      "visible": "- [X] a\n- [ ] b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-radio-mode-mid",
+      "input": {
+        "text": "- [ ] a\n- [X] b\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode",
+          "org-list-checkbox-radio-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [X] a\n- [ ] b\n",
+      "visible": "- [X] a\n- [ ] b\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-ordered-bol",
+      "input": {
+        "text": "* H\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] a\n- [X] b\n",
+        "point": 35,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [ ] a\n- [X] b\n",
+      "visible": "* H\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [ ] a\n- [X] b\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-ordered-bullet",
+      "input": {
+        "text": "* H\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] a\n- [X] b\n",
+        "point": 37,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [ ] a\n- [ ] b\n",
+      "visible": "* H\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [ ] a\n- [ ] b\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Checkboxes were removed due to empty box at line 5"
+    },
+    {
+      "name": "review-cc-ordered-unchecked-bol",
+      "input": {
+        "text": "* H\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [ ] a\n- [X] b\n",
+        "point": 35,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] a\n- [X] b\n",
+      "visible": "* H\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] a\n- [X] b\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-ordered-unchecked-cu",
+      "input": {
+        "text": "* H\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [ ] a\n- [X] b\n",
+        "point": 35,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:PROPERTIES:\n:ORDERED: t\n:END:\n- a\n- b\n",
+      "visible": "* H\n:PROPERTIES:\n:ORDERED: t\n:END:\n- a\n- b\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-cookie-pct",
+      "input": {
+        "text": "* H [%]\n- [ ] a\n- [ ] b\n",
+        "point": 8,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H [50%]\n- [X] a\n- [ ] b\n",
+      "visible": "* H [50%]\n- [X] a\n- [ ] b\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-cookie-sub",
+      "input": {
+        "text": "* H\n- a [0/2]\n  - [ ] x\n  - [ ] y\n",
+        "point": 14,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n- a [1/2]\n  - [X] x\n  - [ ] y\n",
+      "visible": "* H\n- a [1/2]\n  - [X] x\n  - [ ] y\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-cucu-reset",
+      "input": {
+        "text": "- [-] a\n- [-] b\n",
+        "point": 0,
+        "keys": "C-u C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [-] a\n- [-] b\n",
+      "visible": "- [-] a\n- [-] b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Cannot update this checkbox"
+    },
+    {
+      "name": "review-cc-cucu-reset-mid",
+      "input": {
+        "text": "- [-] a\n- [-] b\n",
+        "point": 2,
+        "keys": "C-u C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [-] a\n- [-] b\n",
+      "visible": "- [-] a\n- [-] b\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Checkboxes already reset"
+    },
+    {
+      "name": "review-cc-dash-first",
+      "input": {
+        "text": "- [-] a\n  - [X] x\n  - [ ] y\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [-] a\n  - [X] x\n  - [ ] y\n",
+      "visible": "- [-] a\n  - [X] x\n  - [ ] y\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Cannot update this checkbox"
+    },
+    {
+      "name": "review-cc-dash-first-mid",
+      "input": {
+        "text": "- [-] a\n  - [X] x\n  - [ ] y\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [-] a\n  - [X] x\n  - [ ] y\n",
+      "visible": "- [-] a\n  - [X] x\n  - [ ] y\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot toggle this checkbox: unchecked subitems",
+      "message": null
+    },
+    {
+      "name": "review-cc-checked-children",
+      "input": {
+        "text": "- [X] a\n  - [X] x\n  - [X] y\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [X] a\n  - [X] x\n  - [X] y\n",
+      "visible": "- [X] a\n  - [X] x\n  - [X] y\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Cannot update this checkbox"
+    },
+    {
+      "name": "review-cc-checked-children-mid",
+      "input": {
+        "text": "- [X] a\n  - [X] x\n  - [X] y\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [X] a\n  - [X] x\n  - [X] y\n",
+      "visible": "- [X] a\n  - [X] x\n  - [X] y\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot toggle this checkbox: all subitems checked",
+      "message": null
+    },
+    {
+      "name": "review-cc-unchecked-children",
+      "input": {
+        "text": "- [ ] a\n  - [ ] x\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [ ] a\n  - [ ] x\n",
+      "visible": "- [ ] a\n  - [ ] x\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Cannot update this checkbox"
+    },
+    {
+      "name": "review-cc-unchecked-children-mid",
+      "input": {
+        "text": "- [ ] a\n  - [ ] x\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [ ] a\n  - [ ] x\n",
+      "visible": "- [ ] a\n  - [ ] x\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot toggle this checkbox: unchecked subitems",
+      "message": null
+    },
+    {
+      "name": "review-cc-nobox-later-box",
+      "input": {
+        "text": "- a\n- [ ] b\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- a\n- [ ] b\n",
+      "visible": "- a\n- [ ] b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Cannot update this checkbox"
+    },
+    {
+      "name": "review-cc-nobox-later-box-cu",
+      "input": {
+        "text": "- a\n- [ ] b\n",
+        "point": 0,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [ ] a\n- [ ] b\n",
+      "visible": "- [ ] a\n- [ ] b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-c1",
+      "input": {
+        "text": "- [X] a\n- b\n",
+        "point": 0,
+        "keys": "C-1 C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [ ] a\n- [ ] b\n",
+      "visible": "- [ ] a\n- [ ] b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-c1-mid",
+      "input": {
+        "text": "- [X] a\n- b\n",
+        "point": 2,
+        "keys": "C-1 C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [ ] a\n- b\n",
+      "visible": "- [ ] a\n- b\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-cminus",
+      "input": {
+        "text": "- [ ] a\n- b\n",
+        "point": 0,
+        "keys": "C-- C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [X] a\n- [X] b\n",
+      "visible": "- [X] a\n- [X] b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-numbered",
+      "input": {
+        "text": "1. [ ] a\n2. [ ] b\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "1. [X] a\n2. [ ] b\n",
+      "visible": "1. [X] a\n2. [ ] b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-after-heading",
+      "input": {
+        "text": "* H\n- [ ] a\n",
+        "point": 4,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n- [X] a\n",
+      "visible": "* H\n- [X] a\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-after-paragraph",
+      "input": {
+        "text": "text\n- [ ] a\n",
+        "point": 5,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "text\n- [X] a\n",
+      "visible": "text\n- [X] a\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-after-blank",
+      "input": {
+        "text": "text\n\n- [ ] a\n",
+        "point": 6,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "text\n\n- [X] a\n",
+      "visible": "text\n\n- [X] a\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-in-quote",
+      "input": {
+        "text": "#+begin_quote\n- [ ] a\n#+end_quote\n",
+        "point": 14,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+begin_quote\n- [X] a\n#+end_quote\n",
+      "visible": "#+begin_quote\n- [X] a\n#+end_quote\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-in-drawer",
+      "input": {
+        "text": "* H\n:NOTES:\n- [ ] a\n:END:\n",
+        "point": 12,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:NOTES:\n- [X] a\n:END:\n",
+      "visible": "* H\n:NOTES:\n- [X] a\n:END:\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-eob-no-newline",
+      "input": {
+        "text": "- [ ] a",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [X] a",
+      "visible": "- [X] a",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-desc",
+      "input": {
+        "text": "- [ ] t :: d\n- u :: e\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [X] t :: d\n- u :: e\n",
+      "visible": "- [X] t :: d\n- u :: e\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-misindent-repair",
+      "input": {
+        "text": "- [ ] a\n   - b\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [X] a\n  - b\n",
+      "visible": "- [X] a\n  - b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-misindent-nobox",
+      "input": {
+        "text": "- a\n   - b\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- a\n  - b\n",
+      "visible": "- a\n  - b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-cookie-in-first",
+      "input": {
+        "text": "- [ ] a [0/1]\n  - [ ] x\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [ ] a [0/1]\n  - [ ] x\n",
+      "visible": "- [ ] a [0/1]\n  - [ ] x\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Cannot update this checkbox"
+    },
+    {
+      "name": "review-cc-planning",
+      "input": {
+        "text": "* H\nSCHEDULED: <2026-11-25 Wed>\n- [ ] a\n",
+        "point": 32,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nSCHEDULED: <2026-11-25 Wed>\n- [X] a\n",
+      "visible": "* H\nSCHEDULED: <2026-11-25 Wed>\n- [X] a\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-in-footnote",
+      "input": {
+        "text": "[fn:1] note\n- [ ] a\n",
+        "point": 12,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:1] note\n- [X] a\n",
+      "visible": "[fn:1] note\n- [X] a\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-cc-bol-offset2",
+      "input": {
+        "text": "- [ ] a\n  - [ ] x\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- [ ] a\n    - [ ] x\n",
+      "visible": "- [ ] a\n    - [ ] x\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-r2-repair-renumber",
+      "input": {
+        "text": "1. x1\n2. x2\n3. x3\n4. x4\n5. x5\n6. x6\n7. x7\n8. x8\n9. x9\n9. j\n   - s\n",
+        "point": 0,
+        "keys": "M-x o r g - l i s t - r e p a i r RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "org-list-repair\n1. x1\n2. x2\n3. x3\n4. x4\n5. x5\n6. x6\n7. x7\n8. x8\n9. x9\n9. j\n   - s\n",
+      "visible": "org-list-repair\n1. x1\n2. x2\n3. x3\n4. x4\n5. x5\n6. x6\n7. x7\n8. x8\n9. x9\n9. j\n   - s\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Minibuffer read in batch",
+      "message": null
+    },
+    {
+      "name": "review-r2-cminus-to-num",
+      "input": {
+        "text": "- x1\n- x2\n- x3\n- x4\n- x5\n- x6\n- x7\n- x8\n- x9\n- j\n  - s\n",
+        "point": 0,
+        "keys": "C-c - C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "1. x1\n2. x2\n3. x3\n4. x4\n5. x5\n6. x6\n7. x7\n8. x8\n9. x9\n10. j\n      - s\n",
+      "visible": "1. x1\n2. x2\n3. x3\n4. x4\n5. x5\n6. x6\n7. x7\n8. x8\n9. x9\n10. j\n      - s\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-r2-counter",
+      "input": {
+        "text": "1. a\n2. [@5] b\n   - x\n",
+        "point": 5,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "1. a\n     5. [@5] b\n     6. x\n",
+      "visible": "1. a\n     5. [@5] b\n     6. x\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-r2-counter-cc",
+      "input": {
+        "text": "1. [@10] a\n    - x\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "10. [@10] a\n      - x\n",
+      "visible": "10. [@10] a\n      - x\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-r2-tab-bullet",
+      "input": {
+        "text": "-\ta\n-\tb\n",
+        "point": 4,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 1
+        }
+      },
+      "text": "- a\n   - b\n",
+      "visible": "- a\n   - b\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-r2-mright-prev-has-sub",
+      "input": {
+        "text": "- a\n  - x\n- b\n",
+        "point": 10,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- a\n    - x\n    - b\n",
+      "visible": "- a\n    - x\n    - b\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-r2-tab-cycle-4",
+      "input": {
+        "text": "- a\n  - b\n    - c\n    - ",
+        "point": 24,
+        "keys": "TAB TAB TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- a\n    - b\n\t- c\n\t- ",
+      "visible": "- a\n    - b\n\t- c\n\t- ",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-r2-mret-parent-with-sub",
+      "input": {
+        "text": "- a\n  - x\n- b\n",
+        "point": 3,
+        "keys": "M-RET y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- a\n- y\n    - x\n- b\n",
+      "visible": "- a\n- y\n    - x\n- b\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-r2-mret-bol",
+      "input": {
+        "text": "- a\n  - x\n",
+        "point": 0,
+        "keys": "M-RET y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- y\n- a\n    - x\n",
+      "visible": "- y\n- a\n    - x\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-r2-star-bullets",
+      "input": {
+        "text": "  * a\n  * b\n",
+        "point": 6,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "  * a\n      * b\n",
+      "visible": "  * a\n      * b\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-r2-plus-sub",
+      "input": {
+        "text": "+ a\n+ b\n",
+        "point": 4,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "+ a\n    + b\n",
+      "visible": "+ a\n    + b\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-r2-ccxb-misindent",
+      "input": {
+        "text": "- [ ] a\n      - [ ] b\n",
+        "point": 8,
+        "keys": "C-c C-x C-b",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- [X] a\n      - [X] b\n",
+      "visible": "- [X] a\n      - [X] b\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-r2-radio-misindent",
+      "input": {
+        "text": "#+ATTR_ORG: :radio t\n- [ ] a\n      - [ ] b\n",
+        "point": 21,
+        "keys": "C-e C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "#+ATTR_ORG: :radio t\n- [ ] a\n      - [ ] b\n",
+      "visible": "#+ATTR_ORG: :radio t\n- [ ] a\n      - [ ] b\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-r2-msdown-misindent",
+      "input": {
+        "text": "- a\n- b\n      - x\n- c\n",
+        "point": 0,
+        "keys": "M-S-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- b\n- a\n      - x\n- c\n",
+      "visible": "- b\n- a\n      - x\n- c\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-r2-reset-subtree",
+      "input": {
+        "text": "* H\n- [X] a\n      - [X] b\n",
+        "point": 0,
+        "keys": "M-x o r g - r e s e t - c h e c k b o x - s t a t e - s u b t r e e RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "org-reset-checkbox-state-subtree\n* H\n- [X] a\n      - [X] b\n",
+      "visible": "org-reset-checkbox-state-subtree\n* H\n- [X] a\n      - [X] b\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Minibuffer read in batch",
+      "message": null
+    },
+    {
+      "name": "review-r2-sort-sub",
+      "input": {
+        "text": "- b\n  - q\n- a\n",
+        "point": 0,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ],
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- a\n- b\n    - q\n",
+      "visible": "- a\n- b\n    - q\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Sorting items...done"
+    },
+    {
+      "name": "review-r2-mleft-top-sub",
+      "input": {
+        "text": "- a\n  - x\n  - y\n",
+        "point": 4,
+        "keys": "M-S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-list-indent-offset": 2
+        }
+      },
+      "text": "- a\n- x\n    - y\n",
+      "visible": "- a\n- x\n    - y\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-r2-para-then-sub",
+      "input": {
+        "text": "- a\n\n  para\n  - [ ] x\n  - [ ] y\n",
+        "point": 12,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- a\n\n  para\n  - x\n  - y\n",
+      "visible": "- a\n\n  para\n  - x\n  - y\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-r2-cc-blank-before-sub",
+      "input": {
+        "text": "- a\n\n  - [ ] x\n  - [ ] y\n",
+        "point": 5,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- a\n\n  - x\n  - y\n",
+      "visible": "- a\n\n  - x\n  - y\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-r2-cc-two-lists",
+      "input": {
+        "text": "- [ ] a\n\n\n- [ ] b\n- c\n",
+        "point": 10,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [ ] a\n\n\n- b\n- c\n",
+      "visible": "- [ ] a\n\n\n- b\n- c\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-r2-cc-star-indented",
+      "input": {
+        "text": "  * [ ] a\n  * b\n",
+        "point": 0,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "  * a\n  * b\n",
+      "visible": "  * a\n  * b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-r2-cc-tab-indent",
+      "input": {
+        "text": "\t- [ ] a\n\t- b\n",
+        "point": 0,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "\t- a\n\t- b\n",
+      "visible": "\t- a\n\t- b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-r2-cc-tab-indent-col1",
+      "input": {
+        "text": "\t- [ ] a\n\t- b\n",
+        "point": 1,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "\t- a\n\t- b\n",
+      "visible": "\t- a\n\t- b\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-r2-cc-name-sub",
+      "input": {
+        "text": "- a\n  #+NAME: s\n  - [ ] x\n  - y\n",
+        "point": 16,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- a\n  #+NAME: s\n  - x\n  - y\n",
+      "visible": "- a\n  #+NAME: s\n  - x\n  - y\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-r2-cc-name-sub-kw",
+      "input": {
+        "text": "- a\n  #+NAME: s\n  - [ ] x\n  - y\n",
+        "point": 4,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- a\n  #+NAME: s\n  - x\n  - y\n",
+      "visible": "- a\n  #+NAME: s\n  - x\n  - y\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-r2-cc-sub-first-of-second",
+      "input": {
+        "text": "- a\n  - [ ] x\n- b\n  - [X] y\n  - z\n",
+        "point": 18,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- a\n  - [ ] x\n- b\n  - [ ] y\n  - z\n",
+      "visible": "- a\n  - [ ] x\n- b\n  - [ ] y\n  - z\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-r2-cc-inlinetask",
+      "input": {
+        "text": "* H\n- [ ] a\n- [ ] b\n",
+        "point": 4,
+        "keys": "C-u C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n- [-] a\n- [-] b\n",
+      "visible": "* H\n- [-] a\n- [-] b\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-r2-cc-attr-plus-name",
+      "input": {
+        "text": "#+NAME: n\n#+ATTR_ORG: :radio t\n- [ ] a\n- [X] b\n",
+        "point": 31,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: n\n#+ATTR_ORG: :radio t\n- [X] a\n- [ ] b\n",
+      "visible": "#+NAME: n\n#+ATTR_ORG: :radio t\n- [X] a\n- [ ] b\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-r2-cc-mid-line",
+      "input": {
+        "text": "- [ ] a\n- b\n",
+        "point": 6,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [X] a\n- b\n",
+      "visible": "- [X] a\n- b\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-r2-cc-empty-first",
+      "input": {
+        "text": "- \n- [ ] b\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- \n- [ ] b\n",
+      "visible": "- \n- [ ] b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Cannot update this checkbox"
+    },
+    {
+      "name": "review-r2-cc-ordered-children",
+      "input": {
+        "text": "* H\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [ ] a\n  - [X] x\n  - [ ] y\n",
+        "point": 43,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [ ] a\n  - [ ] x\n  - [ ] y\n",
+      "visible": "* H\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [ ] a\n  - [ ] x\n  - [ ] y\n",
+      "point": 43,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-r2-cc-ordered-children-bullet",
+      "input": {
+        "text": "* H\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [ ] a\n  - [X] x\n  - [ ] y\n",
+        "point": 45,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [ ] a\n  - [ ] x\n  - [ ] y\n",
+      "visible": "* H\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [ ] a\n  - [ ] x\n  - [ ] y\n",
+      "point": 45,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-r2-cc-checkbox-blocked-sub",
+      "input": {
+        "text": "* H\n:PROPERTIES:\n:ORDERED: t\n:END:\n- a\n  - [ ] x\n  - [ ] y\n",
+        "point": 39,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:PROPERTIES:\n:ORDERED: t\n:END:\n- a\n  - [X] x\n  - [ ] y\n",
+      "visible": "* H\n:PROPERTIES:\n:ORDERED: t\n:END:\n- a\n  - [X] x\n  - [ ] y\n",
+      "point": 39,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    }
+  ]
+}
