@@ -1,4 +1,4 @@
-import { allMatches, autoFillAllowed, charCount, defineGlobalizedMinorMode, eraseBuffer, forwardLine, readCharFromMinibuffer, truthy } from "subr";
+import { allMatches, autoFillAllowed, barfIfBufferReadOnly, charCount, defineGlobalizedMinorMode, forwardLine, eraseBuffer, readCharFromMinibuffer, truthy } from "subr";
 // Basic editing commands that Emacs writes in Lisp, after its simple.el.
 // E8 loads this file at startup, before init.ts.
 
@@ -776,7 +776,7 @@ e8.defineCommand({
       return;
     }
     if (arg !== null) {
-      if (e8.bufferReadOnly()) e8.signal("buffer-read-only", `Buffer is read-only: #<buffer ${e8.bufferName()}>`);
+      barfIfBufferReadOnly();
       const at = e8.point();
       const { output } = callShell(command);
       e8.insert(output);
@@ -1678,6 +1678,7 @@ for (const [name, doc, prompt, how] of [
 
 e8.defineCommand({
   name: "insert-buffer",
+  barfIfReadOnly: true,
   doc: "Insert another buffer's text after point, leaving the mark after it.",
   params: [{ name: "buffer", kind: "buffer", prompt: "Insert buffer: " }],
   run: (buffer: string) => {
@@ -1841,6 +1842,7 @@ e8.bindKey("C-x C-n", "set-goal-column");
 // As buffer.c's erase-buffer, which Emacs disables for new users (novice.ts).
 e8.defineCommand({
   name: "erase-buffer",
+  barfIfReadOnly: true,
   doc: "Delete the entire contents of the current buffer.\nAny narrowing restriction in effect (see `narrow-to-region') is removed,\nso the buffer is truly empty after this.",
   run: () => eraseBuffer(),
 });

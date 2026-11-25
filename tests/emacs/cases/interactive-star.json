@@ -423,5 +423,370 @@
   "keys": "C-x C-q C-x C-q",
   "message": true,
   "vars": {}
+ },
+ {
+  "name": "inh-comment-dwim",
+  "text": "(foo)\n",
+  "point": 0,
+  "modes": [
+   "emacs-lisp-mode"
+  ],
+  "keys": "M-;",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true,
+   "inhibit-read-only": true
+  }
+ },
+ {
+  "name": "inh-delete-rectangle",
+  "text": "abc\ndef\n",
+  "point": 0,
+  "keys": "C-SPC C-n C-f C-x r d",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true,
+   "inhibit-read-only": true
+  }
+ },
+ {
+  "name": "inh-string-rectangle",
+  "text": "abc\ndef\n",
+  "point": 0,
+  "keys": "C-SPC C-n C-f C-x r t",
+  "answers": [
+   "X"
+  ],
+  "message": true,
+  "vars": {
+   "buffer-read-only": true,
+   "inhibit-read-only": true
+  }
+ },
+ {
+  "name": "inh-yank-rectangle",
+  "text": "abc\ndef\n",
+  "point": 0,
+  "keys": "C-SPC C-n C-f C-x r M-w C-x r y",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true,
+   "inhibit-read-only": true
+  }
+ },
+ {
+  "name": "inh-open-rectangle",
+  "text": "abc\ndef\n",
+  "point": 0,
+  "keys": "C-SPC C-n C-f C-x r o",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true,
+   "inhibit-read-only": true
+  }
+ },
+ {
+  "name": "inh-flush-lines",
+  "text": "abc\ndef\nabd\n",
+  "point": 0,
+  "keys": "M-x",
+  "answers": [
+   "flush-lines",
+   "ab"
+  ],
+  "message": true,
+  "vars": {
+   "buffer-read-only": true,
+   "inhibit-read-only": true
+  }
+ },
+ {
+  "name": "inh-keep-lines",
+  "text": "abc\ndef\nabd\n",
+  "point": 0,
+  "keys": "M-x",
+  "answers": [
+   "keep-lines",
+   "ab"
+  ],
+  "message": true,
+  "vars": {
+   "buffer-read-only": true,
+   "inhibit-read-only": true
+  }
+ },
+ {
+  "name": "inh-fill-region",
+  "text": "aaa bbb ccc ddd eee fff\n",
+  "point": 0,
+  "keys": "C-x h M-x",
+  "answers": [
+   "fill-region"
+  ],
+  "vars": {
+   "buffer-read-only": true,
+   "inhibit-read-only": true,
+   "fill-column": 10
+  }
+ },
+ {
+  "name": "inh-fill-paragraph",
+  "text": "aaa bbb ccc ddd eee fff\n",
+  "point": 0,
+  "keys": "M-q",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true,
+   "inhibit-read-only": true,
+   "fill-column": 10
+  }
+ },
+ {
+  "name": "inh-org-fill-paragraph",
+  "text": "aaa bbb ccc ddd eee fff\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "M-q",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true,
+   "inhibit-read-only": true,
+   "fill-column": 10
+  }
+ },
+ {
+  "name": "inh-org-comment-dwim",
+  "text": "* Head\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "M-;",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true,
+   "inhibit-read-only": true
+  }
+ },
+ {
+  "name": "inh-shell-command-insert",
+  "text": "abc\n",
+  "point": 0,
+  "keys": "C-u M-!",
+  "answers": [
+   "echo hi"
+  ],
+  "message": true,
+  "vars": {
+   "buffer-read-only": true,
+   "inhibit-read-only": true
+  }
+ },
+ {
+  "name": "inh-org-open-line",
+  "text": "* Head\n",
+  "point": 2,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-o",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true,
+   "inhibit-read-only": true
+  }
+ },
+ {
+  "name": "ro-insert-buffer",
+  "text": "abc\n",
+  "point": 0,
+  "keys": "M-x",
+  "answers": [
+   "insert-buffer",
+   "*Messages*"
+  ],
+  "message": true,
+  "vars": {
+   "buffer-read-only": true
+  }
+ },
+ {
+  "name": "ro-delete-duplicate-lines-none",
+  "text": "abc\ndef\n",
+  "point": 0,
+  "keys": "C-x h M-x",
+  "answers": [
+   "delete-duplicate-lines"
+  ],
+  "vars": {
+   "buffer-read-only": true
+  }
+ },
+ {
+  "name": "ro-string-rectangle",
+  "text": "abc\ndef\n",
+  "point": 0,
+  "keys": "C-SPC C-n C-f C-x r t",
+  "answers": [
+   "X"
+  ],
+  "message": true,
+  "vars": {
+   "buffer-read-only": true
+  }
+ },
+ {
+  "name": "ro-key-delete-rectangle-no-mark",
+  "text": "abc\ndef\n",
+  "point": 0,
+  "keys": "C-x r d",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true
+  }
+ },
+ {
+  "name": "ro-mx-delete-rectangle-no-mark",
+  "text": "abc\ndef\n",
+  "point": 0,
+  "keys": "M-x",
+  "answers": [
+   "delete-rectangle"
+  ],
+  "message": true,
+  "vars": {
+   "buffer-read-only": true
+  }
+ },
+ {
+  "name": "ro-mx-then-repeat-complex",
+  "text": "abc\n",
+  "point": 0,
+  "keys": "M-x C-x ESC ESC",
+  "answers": [
+   "upcase-dwim",
+   ""
+  ],
+  "message": true,
+  "vars": {
+   "buffer-read-only": true
+  }
+ },
+ {
+  "name": "ro-org-yank-empty",
+  "text": "* Head\n",
+  "point": 2,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-y",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true
+  }
+ },
+ {
+  "name": "ro-org-yank-copied",
+  "text": "* Head\nbody\n",
+  "point": 2,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-SPC C-f M-w C-n C-y",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true
+  }
+ },
+ {
+  "name": "ro-org-fill-paragraph",
+  "text": "aaa bbb ccc ddd eee fff\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "M-q",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true,
+   "fill-column": 10
+  }
+ },
+ {
+  "name": "ro-yank-then-C-x-z",
+  "text": "abc\n",
+  "point": 0,
+  "keys": "C-SPC C-f M-w C-y C-x z",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true
+  }
+ },
+ {
+  "name": "dired-open-line",
+  "files": {
+   "a.txt": "one\n",
+   "b.txt": "two\n"
+  },
+  "find": "a.txt",
+  "text": "",
+  "keys": "C-x C-j C-o",
+  "message": true
+ },
+ {
+  "name": "kmacro-stops-at-barf",
+  "text": "abc\nabc\n",
+  "point": 0,
+  "keys": "C-x ( C-f C-o C-x ) C-x C-q M-< C-x e",
+  "message": true
+ },
+ {
+  "name": "ctl-repeat-writable",
+  "text": "abc def\n",
+  "point": 0,
+  "keys": "C-f C-x z",
+  "message": true
+ },
+ {
+  "name": "ro-mhs-then-repeat",
+  "text": "abc def\n",
+  "point": 0,
+  "keys": "C-f M-\\ C-x z",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true
+  }
+ },
+ {
+  "name": "ro-org-cu-yank",
+  "text": "* Head\n",
+  "point": 2,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-SPC C-f M-w C-u C-y",
+  "message": true,
+  "vars": {
+   "buffer-read-only": true
+  }
+ },
+ {
+  "name": "repeat-with-prefix",
+  "text": "abcdef\n",
+  "point": 0,
+  "keys": "C-f C-u C-x z",
+  "message": true
+ },
+ {
+  "name": "repeat-after-m-x",
+  "text": "abcdef\n",
+  "point": 0,
+  "keys": "M-x C-x z",
+  "answers": [
+   "forward-char"
+  ],
+  "message": true
  }
 ]

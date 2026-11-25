@@ -9,7 +9,7 @@
 
 import { commentNormalizeVars, commentSearchForward, commentStringStrip, otherLineBreak } from "newcomment";
 import { forwardParagraph as paragraphsForward } from "paragraphs";
-import { allMatches, escapeRegExp, forwardLine, regexpQuote, truthy } from "subr";
+import { allMatches, barfIfBufferReadOnly, forwardLine, regexpQuote, truthy, escapeRegExp } from "subr";
 
 e8.defineVariable({
   name: "fill-column",
@@ -116,7 +116,7 @@ const at = (m: e8.Marker): number => e8.markerPosition(m)!;
 const free = (...ms: e8.Marker[]): void => ms.forEach((m) => e8.deleteMarker(m));
 const saveExcursion = <T>(fn: () => T): T => e8.saveExcursion(fn);
 function barfIfReadOnly(): void {
-  if (e8.bufferReadOnly()) throw new Error(`Buffer is read-only: #<buffer ${e8.bufferName()}>`);
+  barfIfBufferReadOnly();
 }
 
 /** How to justify, as current-justification: undefined for none. */
@@ -622,6 +622,7 @@ const justifyArg = (): string | undefined => (e8.prefixArg() !== null ? "full" :
 
 e8.defineCommand({
   name: "fill-paragraph",
+  barfIfReadOnly: true,
   doc:
     "Fill the paragraph at or after point, breaking lines so none passes fill-column, or each paragraph in the region if it is active.\n\n" +
     "With a prefix argument, justify as well, so the lines end at fill-column too. The lines keep the prefix the paragraph's lines share, as adaptive-fill-mode finds it.",

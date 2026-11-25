@@ -9,7 +9,7 @@
 // and stops, "," replaces and stays, ^ goes back to the last match, and q or
 // RET stops. Any other key stops and then runs.
 
-import { regexpQuote } from "subr";
+import { barfIfBufferReadOnly, regexpQuote } from "subr";
 import { readBuffer } from "minibuffer";
 
 e8.defineFace({
@@ -631,7 +631,7 @@ e8.defineCommand({
   barfIfReadOnly: true,
   doc: "Delete the lines after point, or in the region, that have no match for a regexp. A match across lines keeps them all.",
   run: async () => {
-    if (e8.bufferReadOnly()) e8.signal("buffer-read-only", `Buffer is read-only: #<buffer ${e8.bufferName()}>`);
+    barfIfBufferReadOnly();
     const regexp = await readLinesRegexp("Keep lines containing match for regexp");
     const [, rend] = linesRange(true);
     const caseFold = regexpFoldsCase(regexp);
@@ -677,7 +677,7 @@ e8.defineCommand({
   barfIfReadOnly: true,
   doc: "Delete the lines after point, or in the region, that have a match for a regexp.",
   run: async () => {
-    if (e8.bufferReadOnly()) e8.signal("buffer-read-only", `Buffer is read-only: #<buffer ${e8.bufferName()}>`);
+    barfIfBufferReadOnly();
     const regexp = await readLinesRegexp("Flush lines containing match for regexp");
     matchingLines(regexp, (from, to) => e8.deleteRegion(from, to), "Deleted");
   },
@@ -688,7 +688,7 @@ e8.defineCommand({
   barfIfReadOnly: true,
   doc: "Kill the lines after point, or in the region, that have a match for a regexp, together as one kill.",
   run: async () => {
-    if (e8.bufferReadOnly()) e8.signal("buffer-read-only", `Buffer is read-only: #<buffer ${e8.bufferName()}>`);
+    barfIfBufferReadOnly();
     const regexp = await readLinesRegexp("Kill lines containing match for regexp");
     matchingLines(regexp, (from, to, first) => {
       if (!first) e8.setLastCommand("kill-region");
