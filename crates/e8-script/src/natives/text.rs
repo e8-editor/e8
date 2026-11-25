@@ -661,7 +661,11 @@ natives! {
             None => ed.buffer(),
         };
         Ok(EditorValue::List(
-            b.local_variables().map(|(name, value)| EditorValue::List(vec![EditorValue::Str(name.to_string()), value.clone()])).collect(),
+            b.local_variables()
+                .map(|(name, value)| EditorValue::List(vec![EditorValue::Str(name.to_string()), value.clone()]))
+                // Which the buffer keeps itself, as Emacs lists it too.
+                .chain(std::iter::once(EditorValue::List(vec![EditorValue::Str("buffer-read-only".into()), EditorValue::Bool(b.read_only)])))
+                .collect(),
         ))
     }
 

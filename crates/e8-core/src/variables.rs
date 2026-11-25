@@ -484,6 +484,10 @@ impl Editor {
         if name == "buffer-undo-list" {
             return Some(b.undo_list().unwrap_or(Value::Bool(true)));
         }
+        // Whether the buffer is read-only, which it keeps itself too.
+        if name == "buffer-read-only" {
+            return Some(Value::Bool(b.read_only));
+        }
         if let Some(value) = b.locals.get(name) {
             return Some(value.clone());
         }
@@ -512,6 +516,10 @@ impl Editor {
         }
         if name == "buffer-undo-list" {
             self.buffer_mut().set_undo_list(&value);
+            return;
+        }
+        if name == "buffer-read-only" {
+            self.buffer_mut().read_only = value.is_true();
             return;
         }
         if self.var(name).is_some_and(|v| v.hook) {
@@ -574,6 +582,10 @@ impl Editor {
     pub fn make_local_variable(&mut self, name: &str) {
         let resolved;
         let name = if self.variable_aliases.is_empty() { name } else { resolved = self.base_variable(name).into_owned(); &resolved };
+        // The buffer keeps these itself, its own in every buffer already.
+        if name == "buffer-undo-list" || name == "buffer-read-only" {
+            return;
+        }
         let value = self.variable(name).unwrap_or(Value::Null);
         self.buffer_mut().locals.entry(name.to_string()).or_insert(value);
     }
@@ -594,6 +606,7 @@ impl Editor {
         // A hook is local when the buffer has its own functions for it;
         // each buffer has its own undo history.
         name == "buffer-undo-list"
+            || name == "buffer-read-only"
             || self.buffer().locals.contains_key(name) || self.buffer().local_hooks.contains_key(name)
     }
 
@@ -1171,6 +1184,12 @@ pub(crate) fn install(ed: &mut Editor) {
         .local(),
         Variable::new("left-margin-width", "Columns of left margin a window showing the buffer has, beside its text, for `(margin left-margin)` display strings.", 0.0).local(),
         Variable::new("right-margin-width", "Columns of right margin a window showing the buffer has, for `(margin right-margin)` display strings.", 0.0).local(),
+        Variable::new(
+            "buffer-read-only",
+            "Non-nil if this buffer is read-only: commands that change its text signal buffer-read-only, unless inhibit-read-only is set. Every buffer has its own value; C-x C-q toggles it.",
+            false,
+        )
+        .local(),
         Variable::new(
             "buffer-undo-list",
             "The current buffer's undo history, newest first: nil between commands, a number for where point was before one, [beg, end] for text inserted there, [text, pos] for text deleted at pos (negative if point was after it), [nil, prop, value, beg, end] for a text property's old value, [apply, fn, ...args] for a function undo calls, and [t] where the buffer was unmodified. t while changes are not recorded. Setting it sets the history, t to stop recording.",
