@@ -1185,6 +1185,12 @@ pub(crate) fn install(ed: &mut Editor) {
         Variable::new("left-margin-width", "Columns of left margin a window showing the buffer has, beside its text, for `(margin left-margin)` display strings.", 0.0).local(),
         Variable::new("right-margin-width", "Columns of right margin a window showing the buffer has, for `(margin right-margin)` display strings.", 0.0).local(),
         Variable::new(
+            "minor-mode-overriding-map-alist",
+            "Keymaps a buffer uses for its minor modes in place of their own: a list of [mode, keymap], a keymap of nil meaning none. Org sets it so visual-line-mode leaves its C-a, C-e and C-k alone.",
+            Value::Null,
+        )
+        .local(),
+        Variable::new(
             "disable-point-adjustment",
             "Non-nil if the command just run asked not to have point moved out of invisible text after it, as the command loop otherwise does. Reset to nil before each command.",
             Value::Null,

@@ -100,7 +100,9 @@ struct Map {
     default: Option<String>,
     /// Commands that run in place of others when keys in any keymap name
     /// them, as an Emacs keymap's `[remap COMMAND]` bindings.
-    remaps: BTreeMap<String, String>,
+    /// Remapped commands, `None` for a remap bound to nil, which hides a
+    /// parent keymap's, as `(define-key map [remap FROM] nil)` does.
+    remaps: BTreeMap<String, Option<String>>,
     parent: Option<KeymapId>,
     /// What the echo area shows while a key is read in this keymap, as an
     /// Emacs keymap's overall prompt string, which `make-sparse-keymap`
@@ -436,16 +438,13 @@ impl Keymaps {
     /// Makes `to` run wherever keys run `from` while this keymap is active,
     /// or stops that with `None`.
     pub fn remap(&mut self, map: KeymapId, from: &str, to: Option<&str>) {
-        let remaps = &mut self.maps[map].remaps;
-        match to {
-            Some(to) => remaps.insert(from.to_string(), to.to_string()),
-            None => remaps.remove(from),
-        };
+        // Nil is kept, hiding a parent's remap, as in Emacs; alone it is no remap.
+        self.maps[map].remaps.insert(from.to_string(), to.map(str::to_string));
     }
 
     /// The command that runs in place of `command`, if this keymap or its parents remap it.
     pub fn remapped(&self, map: KeymapId, command: &str) -> Option<&str> {
-        self.chain(map).find_map(|m| m.remaps.get(command)).map(String::as_str)
+        self.chain(map).find_map(|m| m.remaps.get(command)).and_then(|to| to.as_deref())
     }
 
     /// Sets or removes the command for keys with no binding of their own.

@@ -295,6 +295,30 @@ fn links_are_inserted_and_followed() {
 }
 
 #[test]
+fn visual_line_mode_leaves_org_s_line_keys_alone() {
+    // A heading longer than the window, so screen lines and the logical line differ.
+    let long = (0..30).map(|i| format!("word{i:02}")).collect::<Vec<_>>().join(" ");
+    let text = format!("* TODO {long} :tag:\nbody\n");
+    let (mut ed, _s) = org(&text);
+    ed.call("visual-line-mode", vec![]).unwrap();
+    ed.redisplay();
+    // As in Emacs, where org-mode puts visual-line-mode in minor-mode-overriding-map-alist without its remaps.
+    assert_eq!(ed.command_remapping("move-end-of-line").as_deref(), Some("org-end-of-line"));
+    assert_eq!(ed.command_remapping("move-beginning-of-line").as_deref(), Some("org-beginning-of-line"));
+    ed.window_buffer_mut().set_point(10);
+    ed.press("C-e").unwrap();
+    // Org's own command, which with visual-line-mode moves by screen lines itself, as Org's does.
+    assert_eq!(ed.last_command(), Some("org-end-of-line"));
+    // In another buffer, visual-line-mode's remaps work on screen lines, as in Emacs.
+    ed.call("switch-to-buffer", vec![e8_core::Arg::Str("plain".into())]).unwrap();
+    ed.call("text-mode", vec![]).unwrap();
+    ed.type_text(&long);
+    ed.call("visual-line-mode", vec![]).unwrap();
+    assert_eq!(ed.command_remapping("move-end-of-line").as_deref(), Some("end-of-visual-line"));
+    assert_eq!(ed.command_remapping("kill-line").as_deref(), Some("kill-visual-line"));
+}
+
+#[test]
 fn a_table_is_made_from_a_size() {
     let (mut ed, _s) = org("");
     ed.press("C-c | 3 x 2 RET").unwrap();

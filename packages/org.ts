@@ -12717,6 +12717,13 @@ e8.defineMajorMode({
       e8.setCharTableExtraSlot(table, 4, e8.propertize(ellipsis, { face: "org-ellipsis" }));
       e8.setVariable("buffer-display-table", table);
     }
+    // visual-line-mode's keymap without its remaps of C-a, C-e and C-k,
+    // so Org's stay, as org-mode puts it in minor-mode-overriding-map-alist.
+    const visualLineMap = e8.makeSparseKeymap("visual-line-mode-map");
+    for (const command of ["move-beginning-of-line", "move-end-of-line", "kill-line"] as const) e8.remapCommand(visualLineMap, command, null);
+    e8.makeLocalVariable("minor-mode-overriding-map-alist");
+    const overriding = e8.variable("minor-mode-overriding-map-alist");
+    e8.setVariable("minor-mode-overriding-map-alist", [["visual-line-mode", visualLineMap], ...(Array.isArray(overriding) ? overriding : [])]);
     // As org-mode turns org-indent-mode on, from the variable or a #+STARTUP: line.
     let indented = e8.variable("org-startup-indented") === true;
     for (const [, , text] of keywordLines()) {

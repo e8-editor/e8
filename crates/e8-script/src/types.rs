@@ -1069,8 +1069,9 @@ const API: &str = r##"
   function setKeymapDefault(keymap: string | Keymap, command: CommandName | DefinedCommand | null): void;
   /**
    * While a keymap is active, run `to` wherever keys would run `from`, or
-   * stop that with null, as Emacs's [remap FROM] bindings. Org remaps
-   * self-insert-command to keep tables aligned as you type.
+   * with null remap it to nothing, which also hides a parent keymap's remap
+   * of it, as Emacs's [remap FROM] bindings. Org remaps self-insert-command
+   * to keep tables aligned as you type.
    */
   function remapCommand(
     keymap: string | Keymap,
