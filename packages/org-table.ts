@@ -91,7 +91,8 @@ function isTableLine(line: number): boolean {
 export function atTable(pos = e8.point()): boolean {
   if (!isTableLine(lineAt(pos))) return false;
   if (!e8.derivedModeP("org-mode")) return true;
-  for (let e = elementAt(pos); e; e = e.parent) if (e.type === "table") return true;
+  // An Org table, not a table.el one, as org-at-table-p without its argument.
+  for (let e = elementAt(pos); e; e = e.parent) if (e.type === "table") return e.tableType !== "table.el";
   return false;
 }
 

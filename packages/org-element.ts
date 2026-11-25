@@ -57,6 +57,8 @@ export interface Elem {
   shifts?: { from: number[]; sums: number[] };
   /** Where it starts after its affiliated keywords, as :post-affiliated, in an element withAffiliated gives with them. */
   postAffiliated?: number;
+  /** A table's kind, as Org's :type: an Org table, or a table.el one, which has no rows. */
+  tableType?: "org" | "table.el";
   /** How many of its parent's `shifts` this element has been moved by. */
   applied?: number;
 }
@@ -236,6 +238,31 @@ const COMMENT_LINE = /^[ \t]*#(?: |$)/;
 /** A fixed-width line, as org-element reads one: a colon, then a space or nothing. */
 const FIXED_WIDTH = /^[ \t]*:(?: |$)/;
 
+/** A table.el table's rule, as Org's parser recognises one: + and runs of - between +, alone on its line. */
+const TABLE_EL_RULE = /^[ \t]*\+(?:-+\+)+[ \t]*$/;
+
+/**
+ * Where a table.el table a line starts ends, as Org's parser finds one,
+ * if it is one: a full rule, then lines starting with + or |, up to a line
+ * that does not, the last of them a full rule too, all before limit.
+ * Its end is the line it stops at.
+ */
+export function tableElEnd(line: number, limit: number): number | undefined {
+  if (!TABLE_EL_RULE.test(e8.lineText(line))) return undefined;
+  if (lineStartOrEnd(line + 1) >= limit) return undefined;
+  const nonTable = /^[ \t]*(?:$|[^+| \t])/;
+  let l = line + 1;
+  while (l < e8.lineCount() && e8.lineStart(l) < limit && !nonTable.test(e8.lineText(l))) l++;
+  const stopped = l < e8.lineCount() && e8.lineStart(l) < limit;
+  // A pseudo-table of a single rule, the next line not part of it.
+  if (stopped && l === line + 1) return undefined;
+  // Its last line a full rule: the one before where it stopped, or before the end.
+  let last = l - 1;
+  if (!stopped && last >= e8.lineCount()) last = e8.lineCount() - 1;
+  if (!TABLE_EL_RULE.test(e8.lineText(last))) return undefined;
+  return lineStartOrEnd(l);
+}
+
 /** Blocks whose contents are elements, which org-element parses inside them. */
 const GREATER_BLOCKS = ["center-block", "quote-block", "special-block"];
 
@@ -305,14 +332,22 @@ function parseElements(
       e = elem("property-drawer", p, Math.min(lineStartOrEnd(close + 1), to), parent, lineStartOrEnd(line + 1));
       e.contentsEnd = e8.lineStart(close);
       for (let l = line + 1; l < close; l++) elem("node-property", e8.lineStart(l), e8.lineStart(l + 1), e);
+    } else if (p === e8.lineStart(line) && !/^[ \t]*\|/.test(text) && tableElEnd(line, to) !== undefined) {
+      // A table.el table: no rows, its text Org's :value; its formula lines after it, as an Org table's.
+      const close = tableElEnd(line, to) as number;
+      let formulas = lineAt(close);
+      while (close < to && formulas < e8.lineCount() && e8.lineStart(formulas) < to && /^[ \t]*#\+TBLFM: +/i.test(e8.lineText(formulas))) formulas++;
+      e = elem("table", p, close >= to ? to : Math.min(lineStartOrEnd(formulas), to), parent);
+      e.tableType = "table.el";
     } else if (p === e8.lineStart(line) && /^[ \t]*\|/.test(text)) {
       // Anchored at the line's start, as Org's is: an item's text that starts with a bar is no table.
       let last = line;
       while (last + 1 < e8.lineCount() && lineStartOrEnd(last + 1) < to && /^[ \t]*\|/.test(e8.lineText(last + 1))) last++;
       // Its formula lines belong to it, after its rows, as Org's table parser takes them.
       let formulas = last;
-      while (formulas + 1 < e8.lineCount() && lineStartOrEnd(formulas + 1) < to && /^[ \t]*#\+TBLFM:/i.test(e8.lineText(formulas + 1))) formulas++;
+      while (formulas + 1 < e8.lineCount() && lineStartOrEnd(formulas + 1) < to && /^[ \t]*#\+TBLFM: +/i.test(e8.lineText(formulas + 1))) formulas++;
       e = elem("table", p, Math.min(lineStartOrEnd(formulas + 1), to), parent, p);
+      e.tableType = "org";
       e.contentsEnd = Math.min(lineStartOrEnd(last + 1), to);
       for (let l = line; l <= last; l++) elem("table-row", e8.lineStart(l), Math.min(lineStartOrEnd(l + 1), to), e);
     } else if (p === e8.lineStart(line) && itemLineByText(line)) {

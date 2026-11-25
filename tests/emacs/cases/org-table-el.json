@@ -1,0 +1,2178 @@
+[
+ {
+  "name": "row-tab",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "row-stab",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "S-TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "row-cc",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "row-del",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-d",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "row-bs",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "DEL",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "row-type",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "row-mdown",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "row-mup",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "row-fwd-el",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "row-bwd-el",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "row-mark",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "row-cret",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-c RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "row-ret",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "row-dash",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "row-sright",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "S-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "row-mright",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "row-msdown",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-S-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "row-fill",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "row-cbar",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-c |",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "row-star",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-c *",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "row-fwd-para",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "row-bwd-para",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "row-ce",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "row-ca",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "row-co",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-o",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "row-ck",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-k",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "row-space",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "SPC",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rule-tab",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 10,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rule-cc",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 10,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rule-type",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 10,
+  "keys": "x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rule-mdown",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 10,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rule-mark",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 10,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rule-fwd-el",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 10,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rule-cret",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 10,
+  "keys": "C-c RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "text-mdown",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 0,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "after-mup",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 63,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "after-bwd-el",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 63,
+  "keys": "M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "text-fwd-el",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 0,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "align",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-x o r g - t a b l e - a l i g n RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "single-rule",
+  "text": "Para.\n+---+\nmore text\n",
+  "point": 12,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "single-rule-mup",
+  "text": "Para.\n\n+---+\nmore text\n",
+  "point": 13,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "unclosed",
+  "text": "+---+---+\n| a | b |\nText.\n",
+  "point": 12,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "unclosed-tab",
+  "text": "+---+---+\n| a | b |\nText.\n",
+  "point": 12,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "eob-nonl",
+  "text": "Para.\n\n+---+\n| a |\n+---+",
+  "point": 15,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "eob-nonl-tab",
+  "text": "Para.\n\n+---+\n| a |\n+---+",
+  "point": 15,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "eob-nl-mup",
+  "text": "Para.\n\n+---+\n| a |\n+---+\n",
+  "point": 15,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tblfm",
+  "text": "+---+\n| a |\n+---+\n#+TBLFM: $1=2\nAfter.\n",
+  "point": 8,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "tblfm-mdown",
+  "text": "+---+\n| a |\n+---+\n#+TBLFM: $1=2\n\nAfter.\n",
+  "point": 8,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "equals-rule",
+  "text": "+---+\n| a |\n+===+\n| b |\n+---+\n\nAfter.\n",
+  "point": 8,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "equals-rule-tab",
+  "text": "+---+\n| a |\n+===+\n| b |\n+---+\n",
+  "point": 20,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "not-closed-by-rule",
+  "text": "+---+\n| a |\n| b |\n\nAfter.\n",
+  "point": 8,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "not-closed-tab",
+  "text": "+---+\n| a |\n| b |\n\nAfter.\n",
+  "point": 8,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "indented",
+  "text": "  +---+\n  | a |\n  +---+\n\nAfter.\n",
+  "point": 12,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "in-item",
+  "text": "- item\n  +---+\n  | a |\n  +---+\n- next\n",
+  "point": 19,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "in-item-tab",
+  "text": "- item\n  +---+\n  | a |\n  +---+\n- next\n",
+  "point": 19,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "in-drawer",
+  "text": "* H\n:NOTES:\n+---+\n| a |\n+---+\n:END:\n",
+  "point": 20,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "before-org-table",
+  "text": "+---+\n| a |\n+---+\n| b | c |\n",
+  "point": 20,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "heading-after",
+  "text": "* H\n+---+\n| a |\n+---+\n* Next\n",
+  "point": 12,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "named",
+  "text": "#+NAME: t\n+---+\n| a |\n+---+\n\nAfter.\n",
+  "point": 18,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "plus-in-cell",
+  "text": "+---+---+\n| + | b |\n+---+---+\n",
+  "point": 12,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "row-only-plus",
+  "text": "+-+\n+-+\n",
+  "point": 4,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tbl-tableel-tab",
+  "text": "+---+---+\n| a | b |\n| c | d |\n+---+---+\n",
+  "point": 22,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tbl-tableel-del",
+  "text": "+---+---+\n| a | b |\n| c | d |\n+---+---+\n",
+  "point": 23,
+  "keys": "C-d",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tbl-tableel-mdown",
+  "text": "+---+---+\n| a | b |\n| c | d |\n+---+---+\n",
+  "point": 12,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-bob-rule-tab",
+  "text": "+---+\n| a |\n+---+\nText.\n",
+  "point": 0,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-bob-row-mark",
+  "text": "+---+\n| a |\n+---+\nText.\n",
+  "point": 8,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-bob-fwd-el",
+  "text": "+---+\n| a |\n+---+\nText.\n",
+  "point": 0,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-bob-mdown",
+  "text": "+---+\n| a |\n+---+\n\nText.\n",
+  "point": 0,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-two-adjacent-mark",
+  "text": "+--+\n|a|\n+--+\n+--+\n|b|\n+--+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-two-adjacent-tab",
+  "text": "+--+\n|a|\n+--+\n+--+\n|b|\n+--+\n\nAfter.\n",
+  "point": 20,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-two-blank-mdown",
+  "text": "+--+\n|a|\n+--+\n\n+--+\n|b|\n+--+\n\nAfter.\n",
+  "point": 6,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-two-blank-mark-blank",
+  "text": "+--+\n|a|\n+--+\n\n+--+\n|b|\n+--+\n\nAfter.\n",
+  "point": 14,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-two-blank-bwd-el",
+  "text": "+--+\n|a|\n+--+\n\n+--+\n|b|\n+--+\n\nAfter.\n",
+  "point": 21,
+  "keys": "M-{",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-rule-text-tab-row",
+  "text": "+---+\ntext\n| a |\n",
+  "point": 13,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-rule-text-mark",
+  "text": "+---+\ntext\n| a |\n",
+  "point": 0,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-rule-text-tab-rule",
+  "text": "+---+\ntext\n| a |\n",
+  "point": 0,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-unclosed-eob-tab",
+  "text": "+---+\n| a |\n| b |",
+  "point": 14,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-unclosed-eob-mup",
+  "text": "+---+\n| a |\n| b |",
+  "point": 14,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-unclosed-heading-tab",
+  "text": "* H\n+---+\n| a |\n* I\n",
+  "point": 12,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-then-org-tab",
+  "text": "+---+\n| a |\n+---+\n\n| b | c |\n",
+  "point": 21,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-then-org-mup",
+  "text": "+---+\n| a |\n+---+\n\n| b | c |\n",
+  "point": 21,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-then-org-cc",
+  "text": "+---+\n| a |\n+---+\n\n| b | c |\n",
+  "point": 21,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-org-then-tel-tab-x",
+  "text": "| x |\n+---+\n| a |\n+---+\n",
+  "point": 2,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-org-then-tel-mdown-x",
+  "text": "| x |\n+---+\n| a |\n+---+\n",
+  "point": 2,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-org-then-tel-tab-a",
+  "text": "| x |\n+---+\n| a |\n+---+\n",
+  "point": 14,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-org-then-tel-cret-x",
+  "text": "| x |\n+---+\n| a |\n+---+\n",
+  "point": 2,
+  "keys": "C-c RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-org-then-tel-ret-x",
+  "text": "| x |\n+---+\n| a |\n+---+\n",
+  "point": 2,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-tabs-mark",
+  "text": "\t+---+\n\t| a |\n\t+---+\n\nAfter.\n",
+  "point": 10,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-tabs-tab",
+  "text": "\t+---+\n\t| a |\n\t+---+\n\nAfter.\n",
+  "point": 10,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-trailing-space-tab",
+  "text": "+---+  \n| a |\n+---+ \n",
+  "point": 10,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-eq-start-tab",
+  "text": "+===+\n| a |\n+===+\n",
+  "point": 8,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-eq-end-tab",
+  "text": "+---+\n| a |\n+===+\n",
+  "point": 8,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-eq-end-mark",
+  "text": "+---+\n| a |\n+===+\n\nAfter.\n",
+  "point": 0,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-mixed-start-tab",
+  "text": "+---+===+\n| a | b |\n+---+---+\n",
+  "point": 12,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-bad-rule-tab",
+  "text": "+--++\n| a |\n+--++\n",
+  "point": 8,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-item-first-line-tab",
+  "text": "- +---+\n  | a |\n  +---+\n",
+  "point": 12,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-item-first-line-mark",
+  "text": "- +---+\n  | a |\n  +---+\n\nAfter.\n",
+  "point": 12,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-item-less-indented-tab",
+  "text": "- a\n+--+\n|x|\n+--+\n",
+  "point": 10,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-item-then-more-mark",
+  "text": "- a\n  +--+\n  |x|\n  +--+\n  more\n",
+  "point": 14,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-quote-tab",
+  "text": "#+begin_quote\n+--+\n|x|\n+--+\n#+end_quote\n",
+  "point": 20,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-quote-mark",
+  "text": "#+begin_quote\n+--+\n|x|\n+--+\n#+end_quote\n",
+  "point": 20,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-src-tab",
+  "text": "#+begin_src text\n+--+\n|x|\n+--+\n#+end_src\n",
+  "point": 23,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-fn-tab",
+  "text": "[fn:1] +---+\n| a |\n+---+\n",
+  "point": 15,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-fn-own-line-tab",
+  "text": "[fn:1] Note.\n+---+\n| a |\n+---+\n",
+  "point": 21,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-para-mark",
+  "text": "Para.\n+---+\n| a |\n+---+\nMore.\n",
+  "point": 0,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-para-tab",
+  "text": "Para.\n+---+\n| a |\n+---+\nMore.\n",
+  "point": 14,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-para-more-mark",
+  "text": "Para.\n+---+\n| a |\n+---+\nMore.\n",
+  "point": 24,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-para-mdown",
+  "text": "Para.\n+---+\n| a |\n+---+\nMore.\n",
+  "point": 0,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-narrow-rows-tab",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-a C-SPC C-n C-n C-n C-x n n M-< C-f C-f TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-narrow-all-tab",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 7,
+  "keys": "C-SPC C-n C-n C-n C-n C-n C-n C-x n n M-< C-n C-f C-f TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-aff-mark-name",
+  "text": "#+NAME: t\n#+CAPTION: c\n+---+\n| a |\n+---+\n\nAfter.\n",
+  "point": 0,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-aff-mdown-caption",
+  "text": "#+NAME: t\n#+CAPTION: c\n+---+\n| a |\n+---+\n\nAfter.\n",
+  "point": 10,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-aff-cc-name",
+  "text": "#+NAME: t\n#+CAPTION: c\n+---+\n| a |\n+---+\n\nAfter.\n",
+  "point": 0,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-aff-tab-name",
+  "text": "#+NAME: t\n#+CAPTION: c\n+---+\n| a |\n+---+\n\nAfter.\n",
+  "point": 0,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-tblfm-nospace-mark",
+  "text": "+---+\n| a |\n+---+\n#+TBLFM:\nAfter.\n",
+  "point": 8,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-tblfm-lower-mark",
+  "text": "+---+\n| a |\n+---+\n#+tblfm: $1=2\nAfter.\n",
+  "point": 8,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-tblfm-two-fwd",
+  "text": "+---+\n| a |\n+---+\n#+TBLFM: $1=2\n#+TBLFM: $1=3\n\nAfter.\n",
+  "point": 0,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-tblfm-cc",
+  "text": "+---+\n| a |\n+---+\n#+TBLFM: $1=2\n#+TBLFM: $1=3\n\nAfter.\n",
+  "point": 21,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-tblfm-tab",
+  "text": "+---+\n| a |\n+---+\n#+TBLFM: $1=2\n#+TBLFM: $1=3\n\nAfter.\n",
+  "point": 21,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-tblfm-mup-after",
+  "text": "+---+\n| a |\n+---+\n#+TBLFM: $1=2\n#+TBLFM: $1=3\n\nAfter.\n",
+  "point": 47,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-blank-after-cc",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 62,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-blank-after-tab",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 62,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-row-sort",
+  "text": "* B\n+---+\n| a |\n+---+\n* A\n",
+  "point": 12,
+  "keys": "C-c ^",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "a"
+  ]
+ },
+ {
+  "name": "review-tr-row-msup",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-S-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-row-msleft",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-S-<left>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-row-msright",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-S-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-row-mleft",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-<left>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-row-sup",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "S-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-row-sret",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "S-<return>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-row-copy-special",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-c C-x M-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-row-cut-special",
+  "text": "* H\n+---+\n| a |\n+---+\n* I\n",
+  "point": 12,
+  "keys": "C-c C-x C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-row-checkbox",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-c C-x C-b",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-row-footnote",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "s"
+  ]
+ },
+ {
+  "name": "review-tr-rule-footnote",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 10,
+  "keys": "C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "s"
+  ]
+ },
+ {
+  "name": "review-tr-after-footnote",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 68,
+  "keys": "C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-sparse-tree",
+  "text": "* H\n+---+\n| a |\n+---+\n* I\nb\n",
+  "point": 0,
+  "keys": "C-c / r",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "a"
+  ]
+ },
+ {
+  "name": "review-tr-row-bar",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "|",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-row-tab-twice",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "TAB TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-rule-mup",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 10,
+  "keys": "M-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-row-end-cc",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 22,
+  "keys": "C-e C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-row-ck-special",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-k",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "org-special-ctrl-k": true
+  }
+ },
+ {
+  "name": "review-tr-row-co-special",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "C-o",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "org-special-ctrl-o": true
+  }
+ },
+ {
+  "name": "review-tr-mx-next-field",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-next-field"
+  ]
+ },
+ {
+  "name": "review-tr-mx-previous-field",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-previous-field"
+  ]
+ },
+ {
+  "name": "review-tr-mx-next-row",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-next-row"
+  ]
+ },
+ {
+  "name": "review-tr-mx-insert-row",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-insert-row"
+  ]
+ },
+ {
+  "name": "review-tr-mx-kill-row",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-kill-row"
+  ]
+ },
+ {
+  "name": "review-tr-mx-insert-column",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-insert-column"
+  ]
+ },
+ {
+  "name": "review-tr-mx-delete-column",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-delete-column"
+  ]
+ },
+ {
+  "name": "review-tr-mx-move-row-down",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-move-row-down"
+  ]
+ },
+ {
+  "name": "review-tr-mx-move-row-up",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-move-row-up"
+  ]
+ },
+ {
+  "name": "review-tr-mx-move-column-right",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-move-column-right"
+  ]
+ },
+ {
+  "name": "review-tr-mx-move-column-left",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-move-column-left"
+  ]
+ },
+ {
+  "name": "review-tr-mx-blank-field",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-blank-field"
+  ]
+ },
+ {
+  "name": "review-tr-mx-beginning-of-field",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-beginning-of-field"
+  ]
+ },
+ {
+  "name": "review-tr-mx-end-of-field",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-end-of-field"
+  ]
+ },
+ {
+  "name": "review-tr-mx-insert-hline",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-insert-hline"
+  ]
+ },
+ {
+  "name": "review-tr-mx-hline-and-move",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-hline-and-move"
+  ]
+ },
+ {
+  "name": "review-tr-mx-recalculate",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-recalculate"
+  ]
+ },
+ {
+  "name": "review-tr-mx-copy-down",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-copy-down"
+  ]
+ },
+ {
+  "name": "review-tr-mx-align",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-align"
+  ]
+ },
+ {
+  "name": "review-tr-mx-move-cell-down",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-move-cell-down"
+  ]
+ },
+ {
+  "name": "review-tr-mx-move-cell-right",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-move-cell-right"
+  ]
+ },
+ {
+  "name": "review-tr-mx-sort-lines",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-table-sort-lines",
+   "a"
+  ]
+ },
+ {
+  "name": "review-tr-org-tab",
+  "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+  "point": 9,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-org-stab",
+  "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+  "point": 9,
+  "keys": "S-TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-org-cc",
+  "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+  "point": 9,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-org-mdown",
+  "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+  "point": 9,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-org-dash",
+  "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+  "point": 9,
+  "keys": "C-c -",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-org-cret",
+  "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+  "point": 9,
+  "keys": "C-c RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-org-tab-type",
+  "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+  "point": 9,
+  "keys": "TAB x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-org-del",
+  "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+  "point": 9,
+  "keys": "C-d",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-org-fill",
+  "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+  "point": 9,
+  "keys": "M-q",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-org-mark",
+  "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+  "point": 9,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-org-fwd-el",
+  "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+  "point": 9,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-org-me",
+  "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+  "point": 9,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-org-ma",
+  "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+  "point": 9,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-org-sort",
+  "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+  "point": 9,
+  "keys": "C-c ^",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "a"
+  ]
+ },
+ {
+  "name": "review-tr-org-item-tab",
+  "text": "- item\n  | a | b |\n  | c | d |\n",
+  "point": 11,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-org-plus-cell-tab",
+  "text": "| + | b |\n| +---+ | d |\n",
+  "point": 2,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-org-rule-cell-tab",
+  "text": "| +---+ |\n",
+  "point": 3,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-org-then-plus-text-tab",
+  "text": "| a |\n+ item\n",
+  "point": 2,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-row-mret2",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-row-sret2",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 20,
+  "keys": "S-RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-org-tblfm-nospace-mark",
+  "text": "| a |\n#+TBLFM:\nAfter.\n",
+  "point": 2,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-capture-tel",
+  "text": "* one\n* Inbox\n+---+\n| a |\n+---+\n* two\n",
+  "point": 2,
+  "keys": "n e w C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "answers": [
+   "t"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "table-line",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "| %? | x |"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ]
+ },
+ {
+  "name": "review-tr-capture-tel-then-org",
+  "text": "* one\n* Inbox\n+---+\n| a |\n+---+\n\n| b | c |\n* two\n",
+  "point": 2,
+  "keys": "n e w C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "answers": [
+   "t"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "table-line",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "| %? | x |"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ]
+ },
+ {
+  "name": "review-tr-link-open",
+  "text": "* H\n+--------+\n| [[*H]] |\n+--------+\nText.\n",
+  "point": 20,
+  "keys": "C-c C-o",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-ts-sup",
+  "text": "Text.\n+------------------+\n| <2026-11-25 Wed> |\n+------------------+\n",
+  "point": 36,
+  "keys": "S-<up>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-ts-cc",
+  "text": "Text.\n+------------------+\n| <2026-11-25 Wed> |\n+------------------+\n",
+  "point": 36,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-ts-sright",
+  "text": "Text.\n+------------------+\n| <2026-11-25 Wed> |\n+------------------+\n",
+  "point": 36,
+  "keys": "S-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-cache-delete-rule-tab",
+  "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+  "point": 51,
+  "keys": "C-k C-k C-p C-p C-f C-f TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-cache-type-rule-tab",
+  "text": "+---+\n| a |\n\nAfter.\n",
+  "point": 12,
+  "keys": "RET + - - - + C-p C-a C-f C-f TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-cache-type-rule-mark",
+  "text": "+---+\n| a |\n\nAfter.\n",
+  "point": 12,
+  "keys": "RET + - - - + C-p C-a M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-checkbox-item-cc",
+  "text": "- [ ] item\n  +---+\n  | a |\n  +---+\n",
+  "point": 23,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-org-footnote",
+  "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+  "point": 9,
+  "keys": "C-c C-x f",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-org-nohline-cc",
+  "text": "| a | b |\n| c | d |\n#+TBLFM: $2=3\n",
+  "point": 2,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-empty-item-tab",
+  "text": "-\n  +---+\n  | a |\n  +---+\n",
+  "point": 14,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-tblfm-between-mark",
+  "text": "+--+\n|a|\n+--+\n#+TBLFM: x\n+--+\n|b|\n+--+\n\nAfter.\n",
+  "point": 31,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-drawer-cut-tab",
+  "text": ":NOTES:\n+---+\n| a |\n:END:\n+---+\n",
+  "point": 16,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-rule-blank-rows-tab",
+  "text": "+---+\n\n| a |\n",
+  "point": 9,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-two-blank-after-mark",
+  "text": "+---+\n| a |\n+---+\n\n\nAfter.\n",
+  "point": 8,
+  "keys": "M-h C-w",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-org-tblfm-nospace-mdown",
+  "text": "| a |\n#+TBLFM:\n\nPara.\n",
+  "point": 2,
+  "keys": "M-<down>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-org-tblfm-nospace-fwd",
+  "text": "| a |\n#+TBLFM:\n\nPara.\n",
+  "point": 2,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-tr-tel-tblfm-nospace-fwd",
+  "text": "+---+\n| a |\n+---+\n#+TBLFM:\n\nPara.\n",
+  "point": 8,
+  "keys": "M-}",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ }
+]
