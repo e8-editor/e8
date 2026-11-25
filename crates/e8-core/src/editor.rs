@@ -855,6 +855,9 @@ impl Editor {
     /// for any parameters, and showing errors in the echo area.
     pub fn run_interactive(&mut self, name: &str) {
         let shifted = std::mem::take(&mut self.keyboard.shift_translated);
+        if self.running == 0 {
+            self.keyboard.command_shift_translated = shifted;
+        }
         let prefix = self.prefix_arg.take();
         let record = std::mem::take(&mut self.record_next_command);
         let Some(command) = self.command(name) else {
@@ -925,6 +928,12 @@ impl Editor {
     /// started ends.
     pub fn handle_shift_selection(&mut self, shifted: bool) {
         self.shift_select(shifted);
+    }
+
+    /// Whether the key that ran the command running now had Shift removed to
+    /// find its binding, as Emacs's `this-command-keys-shift-translated`.
+    pub fn this_command_keys_shift_translated(&self) -> bool {
+        self.keyboard.command_shift_translated
     }
 
     /// Emacs's shift selection: a movement with Shift starts a region at

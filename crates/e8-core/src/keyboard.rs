@@ -81,6 +81,9 @@ pub(crate) struct Keyboard {
     /// Whether the key that ran the current command had Shift removed to find
     /// its binding. Shift selection uses it.
     pub(crate) shift_translated: bool,
+    /// Whether the key that ran the command running now had Shift removed to
+    /// find its binding, as Emacs's `this-command-keys-shift-translated`.
+    pub(crate) command_shift_translated: bool,
     /// Keys to read next, after the current one, as Emacs's `unread-command-events`.
     pub(crate) unread_keys: VecDeque<Key>,
     /// Keys typed ahead, as [`Editor::press`] gives them: a command they
@@ -145,6 +148,7 @@ impl Default for Keyboard {
             pending_keys: Vec::new(),
             esc_prefix: false,
             shift_translated: false,
+            command_shift_translated: false,
             unread_keys: VecDeque::new(),
             typeahead: VecDeque::new(),
             input_serial: 0,

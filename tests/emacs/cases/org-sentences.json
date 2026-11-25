@@ -1,0 +1,3334 @@
+[
+ {
+  "name": "fn-bwd-second",
+  "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+  "point": 26,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fn-fwd-second",
+  "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+  "point": 26,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fn-bwd-one",
+  "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+  "point": 20,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fn-fwd-one",
+  "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+  "point": 20,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fn-bwd-first",
+  "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+  "point": 14,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fn-fwd-first",
+  "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+  "point": 14,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fn-bwd-label",
+  "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+  "point": 7,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fn-fwd-label",
+  "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+  "point": 7,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fn-bwd-next",
+  "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+  "point": 51,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fn-fwd-next",
+  "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+  "point": 51,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fn-bwd-para",
+  "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+  "point": 0,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fn-fwd-para",
+  "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+  "point": 0,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fn-bwd-twice",
+  "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+  "point": 26,
+  "keys": "M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fn-fwd-twice",
+  "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+  "point": 14,
+  "keys": "M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fn-bwd-all",
+  "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+  "point": 51,
+  "keys": "M-a M-a M-a M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "fn-fwd-all",
+  "text": "Para.\n\n[fn:1] First one.  Second one.\n\nNext para.  Two.\n",
+  "point": 0,
+  "keys": "M-e M-e M-e M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "item-bwd-second",
+  "text": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+  "point": 13,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "item-fwd-second",
+  "text": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+  "point": 13,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "item-bwd-more",
+  "text": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+  "point": 27,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "item-fwd-more",
+  "text": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+  "point": 27,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "item-bwd-last",
+  "text": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+  "point": 39,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "item-fwd-last",
+  "text": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+  "point": 39,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "item-bwd-two",
+  "text": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+  "point": 47,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "item-fwd-two",
+  "text": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+  "point": 47,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "item-bwd-after",
+  "text": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+  "point": 58,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "item-fwd-after",
+  "text": "- item one.  Its second.\n  More text.  Last.\n- item two.\n\nAfter.\n",
+  "point": 58,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "quote-bwd-q1",
+  "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+  "point": 22,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "quote-fwd-q1",
+  "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+  "point": 22,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "quote-bwd-q2",
+  "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+  "point": 35,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "quote-fwd-q2",
+  "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+  "point": 35,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "quote-bwd-a1",
+  "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+  "point": 59,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "quote-fwd-a1",
+  "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+  "point": 59,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "quote-bwd-a2",
+  "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+  "point": 71,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "quote-fwd-a2",
+  "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+  "point": 71,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "quote-bwd-begin",
+  "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+  "point": 8,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "quote-fwd-begin",
+  "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter one.  After two.\n",
+  "point": 8,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "head-bwd-head",
+  "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+  "point": 4,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "head-fwd-head",
+  "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+  "point": 4,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "head-bwd-with",
+  "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+  "point": 14,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "head-fwd-with",
+  "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+  "point": 14,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "head-bwd-eol",
+  "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+  "point": 19,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "head-fwd-eol",
+  "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+  "point": 19,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "head-bwd-body",
+  "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+  "point": 23,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "head-fwd-body",
+  "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+  "point": 23,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "head-bwd-body2",
+  "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+  "point": 34,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "head-fwd-body2",
+  "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+  "point": 34,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "head-bwd-sub",
+  "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+  "point": 47,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "head-fwd-sub",
+  "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+  "point": 47,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "head-bwd-subbody",
+  "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+  "point": 59,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "head-fwd-subbody",
+  "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+  "point": 59,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "head-bwd-stars",
+  "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+  "point": 0,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "head-fwd-stars",
+  "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+  "point": 0,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "head-fwd-all",
+  "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+  "point": 0,
+  "keys": "M-e M-e M-e M-e M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "head-bwd-all",
+  "text": "* A heading.  With two\nBody one.  Body two.\n** Sub heading\nSub body.\n",
+  "point": 63,
+  "keys": "M-a M-a M-a M-a M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "table-bwd-a",
+  "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+  "point": 8,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "table-fwd-a",
+  "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+  "point": 8,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "table-bwd-b",
+  "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+  "point": 10,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "table-fwd-b",
+  "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+  "point": 10,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "table-bwd-cc",
+  "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+  "point": 14,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "table-fwd-cc",
+  "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+  "point": 14,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "table-bwd-bar",
+  "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+  "point": 12,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "table-fwd-bar",
+  "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+  "point": 12,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "table-bwd-rule",
+  "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "table-fwd-rule",
+  "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+  "point": 20,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "table-bwd-d",
+  "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+  "point": 34,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "table-fwd-d",
+  "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+  "point": 34,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "table-bwd-e",
+  "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+  "point": 40,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "table-fwd-e",
+  "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+  "point": 40,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "table-bwd-start",
+  "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+  "point": 6,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "table-fwd-start",
+  "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+  "point": 6,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "table-bwd-end",
+  "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+  "point": 17,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "table-fwd-end",
+  "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+  "point": 17,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "table-fwd-many",
+  "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+  "point": 8,
+  "keys": "M-e M-e M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "table-bwd-many",
+  "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+  "point": 40,
+  "keys": "M-a M-a M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "table-fwd-count",
+  "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+  "point": 8,
+  "keys": "M-3 M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "table-bwd-count",
+  "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+  "point": 40,
+  "keys": "M-2 M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "field-bof",
+  "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+  "point": 10,
+  "keys": "M-x o r g - t a b l e - b e g i n n i n g - o f - f i e l d RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "field-eof",
+  "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+  "point": 8,
+  "keys": "M-x o r g - t a b l e - e n d - o f - f i e l d RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "field-eof-last",
+  "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+  "point": 41,
+  "keys": "M-x o r g - t a b l e - e n d - o f - f i e l d RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "field-bof-first",
+  "text": "Text.\n| a b | cc |\n|-----+----|\n| d   | e  |\n\nAfter.\n",
+  "point": 8,
+  "keys": "M-x o r g - t a b l e - b e g i n n i n g - o f - f i e l d RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "count-fwd",
+  "text": "One.  Two.  Three.\n\nFour.  Five.\n",
+  "point": 0,
+  "keys": "M-2 M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "count-bwd",
+  "text": "One.  Two.  Three.\n\nFour.  Five.\n",
+  "point": 29,
+  "keys": "M-2 M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "count-fwd-across",
+  "text": "One.  Two.  Three.\n\nFour.  Five.\n",
+  "point": 6,
+  "keys": "M-3 M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "blank-fwd",
+  "text": "One.  Two.  Three.\n\nFour.  Five.\n",
+  "point": 19,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "blank-bwd",
+  "text": "One.  Two.  Three.\n\nFour.  Five.\n",
+  "point": 19,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "kill-sentence",
+  "text": "One.  Two.  Three.\n\nFour.  Five.\n",
+  "point": 6,
+  "keys": "M-k",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "bwd-kill-sentence",
+  "text": "One.  Two.  Three.\n\nFour.  Five.\n",
+  "point": 27,
+  "keys": "C-x DEL",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "indented-next-fwd",
+  "text": "Para one.  Two.\n\n  Indented next.  Second.\n",
+  "point": 11,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "indented-next-fwd-2",
+  "text": "Para one.  Two.\n\n  Indented next.  Second.\n",
+  "point": 0,
+  "keys": "M-e M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "indented-bwd",
+  "text": "Para one.  Two.\n\n  Indented next.  Second.\n",
+  "point": 35,
+  "keys": "M-a M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "drawer-fwd",
+  "text": "* H\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+  "point": 12,
+  "keys": "M-e M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "drawer-bwd",
+  "text": "* H\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+  "point": 35,
+  "keys": "M-a M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "src-fwd",
+  "text": "#+begin_src emacs-lisp\n(foo) (bar).  Baz.\n#+end_src\n",
+  "point": 23,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "src-bwd",
+  "text": "#+begin_src emacs-lisp\n(foo) (bar).  Baz.\n#+end_src\n",
+  "point": 37,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "narrow-quirk-fwd",
+  "text": "A.\n\n          B.  C.\n",
+  "point": 2,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "narrow-quirk-fwd-twice",
+  "text": "A.\n\n          B.  C.\n",
+  "point": 0,
+  "keys": "M-e M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "narrow-quirk-far",
+  "text": "Para one.\n\n          B.  C.\n",
+  "point": 9,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-h-fwd-stars",
+  "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+  "point": 7,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-h-fwd-todo",
+  "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+  "point": 9,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-h-fwd-two",
+  "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+  "point": 33,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-h-fwd-tag",
+  "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+  "point": 37,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-h-fwd-eol",
+  "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+  "point": 42,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-h-fwd-eol-twice",
+  "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+  "point": 42,
+  "keys": "M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-h-bwd-stars",
+  "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+  "point": 7,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-h-bwd-two",
+  "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+  "point": 33,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-h-bwd-eol",
+  "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+  "point": 42,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-h-bwd-body",
+  "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+  "point": 43,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-h-bwd-body2",
+  "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+  "point": 54,
+  "keys": "M-a M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-h-fwd-all",
+  "text": "Intro.\n* TODO [#A] Heading one.  Two :tag:\nBody one.  Body two.\n",
+  "point": 0,
+  "keys": "M-e M-e M-e M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-empty-h-fwd",
+  "text": "Text.\n* \nAfter one.  Two.\n",
+  "point": 8,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-empty-h-fwd-bol",
+  "text": "Text.\n* \nAfter one.  Two.\n",
+  "point": 6,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-empty-h-bwd",
+  "text": "Text.\n* \nAfter one.  Two.\n",
+  "point": 8,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-trail-sp-fwd",
+  "text": "* Head   \nBody\n* Next\n",
+  "point": 6,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-trail-sp-fwd2",
+  "text": "* Head   \nBody\n* Next\n",
+  "point": 7,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-stars-sp-fwd",
+  "text": "*   Spaced head.  Two\nx\n",
+  "point": 1,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-tab-not-heading",
+  "text": "Para.\n*\tx one.  y.\nz.\n",
+  "point": 8,
+  "keys": "M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-h-two-sentences-fwd",
+  "text": "* One.  Two.  Three\n",
+  "point": 0,
+  "keys": "M-e M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-h-two-sentences-count",
+  "text": "* One.  Two.  Three\n",
+  "point": 0,
+  "keys": "M-2 M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-h-neg-fwd",
+  "text": "* One.  Two.  Three\n",
+  "point": 14,
+  "keys": "M-- M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-plan-bwd",
+  "text": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+  "point": 15,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-plan-fwd",
+  "text": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+  "point": 4,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-prop-bwd-open",
+  "text": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+  "point": 43,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-prop-fwd-open",
+  "text": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+  "point": 32,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-prop-bwd-node",
+  "text": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+  "point": 55,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-prop-fwd-node",
+  "text": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+  "point": 49,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-prop-bwd-end-eol",
+  "text": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+  "point": 65,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-prop-fwd-end",
+  "text": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+  "point": 60,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-prop-bwd-text",
+  "text": "* H\nSCHEDULED: <2026-11-25 Wed>\n:PROPERTIES:\n:A: one.  two.\n:END:\nText one.  Two.\n",
+  "point": 66,
+  "keys": "M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-drawer-bwd-end-eol",
+  "text": "Intro.\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+  "point": 37,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-drawer-bwd-end-bol",
+  "text": "Intro.\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+  "point": 32,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-drawer-bwd-end-mid",
+  "text": "Intro.\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+  "point": 34,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-drawer-fwd-open",
+  "text": "Intro.\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+  "point": 7,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-drawer-bwd-open",
+  "text": "Intro.\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+  "point": 10,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-drawer-bwd-two",
+  "text": "Intro.\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+  "point": 27,
+  "keys": "M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-drawer-fwd-end",
+  "text": "Intro.\n:NOTES:\nIn drawer.  Two.\n:END:\nAfter.\n",
+  "point": 32,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-item-bwd-bullet",
+  "text": "Intro.\n- one.  Two.\n- three.\n",
+  "point": 7,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-item-fwd-bullet",
+  "text": "Intro.\n- one.  Two.\n- three.\n",
+  "point": 7,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-item-bwd-two-twice",
+  "text": "Intro.\n- one.  Two.\n- three.\n",
+  "point": 15,
+  "keys": "M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-item-bwd-three",
+  "text": "Intro.\n- one.  Two.\n- three.\n",
+  "point": 22,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-item-next-bwd-two",
+  "text": "Intro.\n- \n  Text one.  Two.\n- b.\n",
+  "point": 23,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-item-next-bwd-twice",
+  "text": "Intro.\n- \n  Text one.  Two.\n- b.\n",
+  "point": 23,
+  "keys": "M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-item-next-bwd-thrice",
+  "text": "Intro.\n- \n  Text one.  Two.\n- b.\n",
+  "point": 23,
+  "keys": "M-a M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-item-next-fwd-bullet",
+  "text": "Intro.\n- \n  Text one.  Two.\n- b.\n",
+  "point": 7,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-item-next-bwd-indent",
+  "text": "Intro.\n- \n  Text one.  Two.\n- b.\n",
+  "point": 11,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-check-bwd-two",
+  "text": "Intro.\n- [ ] Task one.  Two.\n- [X] Done.\n",
+  "point": 24,
+  "keys": "M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-check-fwd-box",
+  "text": "Intro.\n- [ ] Task one.  Two.\n- [X] Done.\n",
+  "point": 9,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-check-bwd-box",
+  "text": "Intro.\n- [ ] Task one.  Two.\n- [X] Done.\n",
+  "point": 10,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-check-bwd-task",
+  "text": "Intro.\n- [ ] Task one.  Two.\n- [X] Done.\n",
+  "point": 13,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-desc-bwd-two",
+  "text": "Intro.\n- term :: Desc one.  Two.\n- other :: x.\n",
+  "point": 28,
+  "keys": "M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-desc-bwd-term",
+  "text": "Intro.\n- term :: Desc one.  Two.\n- other :: x.\n",
+  "point": 11,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-desc-fwd-term",
+  "text": "Intro.\n- term :: Desc one.  Two.\n- other :: x.\n",
+  "point": 9,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-odesc-bwd-two",
+  "text": "Intro.\n1. term :: Desc one.  Two.\n",
+  "point": 29,
+  "keys": "M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-nest-bwd",
+  "text": "Intro.\n- a.\n  - b one.  b two.\n  - c.\n- d.\n",
+  "point": 24,
+  "keys": "M-a M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-nest-fwd",
+  "text": "Intro.\n- a.\n  - b one.  b two.\n  - c.\n- d.\n",
+  "point": 16,
+  "keys": "M-e M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-nest-bwd-c",
+  "text": "Intro.\n- a.\n  - b one.  b two.\n  - c.\n- d.\n",
+  "point": 35,
+  "keys": "M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-fn-next-bwd",
+  "text": "Para.\n\n[fn:1]\nDef one.  Two.\n",
+  "point": 24,
+  "keys": "M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-fn-next-fwd-label",
+  "text": "Para.\n\n[fn:1]\nDef one.  Two.\n",
+  "point": 7,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-quote-bwd-end",
+  "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter.\n",
+  "point": 58,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-quote-bwd-end-bol",
+  "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter.\n",
+  "point": 47,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-quote-fwd-end",
+  "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter.\n",
+  "point": 47,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-center-bwd-two",
+  "text": "Before.\n#+begin_center\nCentred one.  Two.\n#+end_center\nAfter.\n",
+  "point": 37,
+  "keys": "M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-center-bwd-end",
+  "text": "Before.\n#+begin_center\nCentred one.  Two.\n#+end_center\nAfter.\n",
+  "point": 46,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-special-bwd-two",
+  "text": "Before.\n#+begin_note\nNoted one.  Two.\n#+end_note\nAfter.\n",
+  "point": 33,
+  "keys": "M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-special-fwd-begin",
+  "text": "Before.\n#+begin_note\nNoted one.  Two.\n#+end_note\nAfter.\n",
+  "point": 8,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-src-bwd-two-twice",
+  "text": "Before.\n#+begin_src text\nCode one.  Two.\n#+end_src\nAfter.\n",
+  "point": 36,
+  "keys": "M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-src-bwd-end",
+  "text": "Before.\n#+begin_src text\nCode one.  Two.\n#+end_src\nAfter.\n",
+  "point": 45,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-src-fwd-code",
+  "text": "Before.\n#+begin_src text\nCode one.  Two.\n#+end_src\nAfter.\n",
+  "point": 25,
+  "keys": "M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-example-bwd",
+  "text": "Before.\n#+begin_example\nEx one.  Two.\n#+end_example\nAfter.\n",
+  "point": 33,
+  "keys": "M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-example-fwd",
+  "text": "Before.\n#+begin_example\nEx one.  Two.\n#+end_example\nAfter.\n",
+  "point": 24,
+  "keys": "M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-verse-bwd",
+  "text": "Before.\n#+begin_verse\nVerse one.  Two.\n#+end_verse\nAfter.\n",
+  "point": 34,
+  "keys": "M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-verse-bwd-end",
+  "text": "Before.\n#+begin_verse\nVerse one.  Two.\n#+end_verse\nAfter.\n",
+  "point": 43,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-dyn-bwd",
+  "text": "Before.\n#+BEGIN: myblock\nDyn one.  Two.\n#+END:\nAfter.\n",
+  "point": 35,
+  "keys": "M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-dyn-bwd-end",
+  "text": "Before.\n#+BEGIN: myblock\nDyn one.  Two.\n#+END:\nAfter.\n",
+  "point": 46,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-dyn-fwd-begin",
+  "text": "Before.\n#+BEGIN: myblock\nDyn one.  Two.\n#+END:\nAfter.\n",
+  "point": 8,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-tbl-bwd-tblfm",
+  "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+  "point": 40,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-tbl-fwd-tblfm",
+  "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+  "point": 40,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-tbl-bwd-empty",
+  "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+  "point": 32,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-tbl-fwd-empty",
+  "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+  "point": 32,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "rv-tbl-bwd-first",
+  "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+  "point": 8,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-tbl-bwd-first-bar",
+  "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+  "point": 6,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-tbl-fwd-eol",
+  "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+  "point": 15,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-tbl-bwd-eol",
+  "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+  "point": 15,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-tbl-fwd-last",
+  "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+  "point": 32,
+  "keys": "M-e M-e M-e",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "rv-tbl-fwd-zero",
+  "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+  "point": 8,
+  "keys": "M-0 M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-tbl-fwd-neg",
+  "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+  "point": 12,
+  "keys": "M-- M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-tbl-bwd-neg",
+  "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+  "point": 28,
+  "keys": "M-- M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-tbl-bwd-cu",
+  "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+  "point": 32,
+  "keys": "C-u M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-tbl-shift-fwd",
+  "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+  "point": 8,
+  "keys": "M-S-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-tbl-shift-bwd",
+  "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+  "point": 12,
+  "keys": "M-S-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-tbl1-fwd-last",
+  "text": "| a | b |\n",
+  "point": 6,
+  "keys": "M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-tbl1-bwd-first",
+  "text": "| a | b |\n",
+  "point": 2,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-tbli-fwd-indent",
+  "text": "Text.\n  | a | b |\n  | c | d |\n",
+  "point": 7,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-tbli-bwd-indent",
+  "text": "Text.\n  | a | b |\n  | c | d |\n",
+  "point": 19,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-tbli-bwd-indent0",
+  "text": "Text.\n  | a | b |\n  | c | d |\n",
+  "point": 18,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-field-cu-end",
+  "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+  "point": 8,
+  "keys": "C-u 2 M-x o r g - t a b l e - e n d - o f - f i e l d RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "rv-field-bof-text",
+  "text": "Text.\n| a | b |\n",
+  "point": 8,
+  "keys": "M-x o r g - t a b l e - b e g i n n i n g - o f - f i e l d RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-field-eof-outside",
+  "text": "Text.\n",
+  "point": 0,
+  "keys": "M-x o r g - t a b l e - e n d - o f - f i e l d RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-kw-bwd",
+  "text": "#+TITLE: The title.  Two.\nText one.  Two.\n",
+  "point": 21,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-kw-fwd",
+  "text": "#+TITLE: The title.  Two.\nText one.  Two.\n",
+  "point": 9,
+  "keys": "M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-kw-bwd-text",
+  "text": "#+TITLE: The title.  Two.\nText one.  Two.\n",
+  "point": 26,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-comment-bwd",
+  "text": "Intro.\n# Comment one.  Two.\nText.\n",
+  "point": 23,
+  "keys": "M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-comment-fwd",
+  "text": "Intro.\n# Comment one.  Two.\nText.\n",
+  "point": 9,
+  "keys": "M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-fixed-bwd",
+  "text": "Intro.\n: fixed one.  Two.\nText.\n",
+  "point": 21,
+  "keys": "M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-latex-bwd",
+  "text": "Intro.\n\\begin{equation}\nx.  y.\n\\end{equation}\nText.\n",
+  "point": 28,
+  "keys": "M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-latex-fwd",
+  "text": "Intro.\n\\begin{equation}\nx.  y.\n\\end{equation}\nText.\n",
+  "point": 24,
+  "keys": "M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-affil-bwd",
+  "text": "Intro.\n#+NAME: p\nPara one.  Two.\n",
+  "point": 28,
+  "keys": "M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-affil-bwd-kw",
+  "text": "Intro.\n#+NAME: p\nPara one.  Two.\n",
+  "point": 9,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-affil-fwd-kw",
+  "text": "Intro.\n#+NAME: p\nPara one.  Two.\n",
+  "point": 9,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-clock-fwd",
+  "text": "* H\nCLOCK: [2026-11-25 Wed 10:00]--[2026-11-25 Wed 11:00] =>  1:00\nText.\n",
+  "point": 4,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-clock-bwd",
+  "text": "* H\nCLOCK: [2026-11-25 Wed 10:00]--[2026-11-25 Wed 11:00] =>  1:00\nText.\n",
+  "point": 58,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-hr-bwd",
+  "text": "One.\n-----\nTwo.  Three.\n",
+  "point": 17,
+  "keys": "M-a M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-blank-bwd-two",
+  "text": "One.\n\n\nTwo.  Three.\n",
+  "point": 7,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-blank-bwd-blank",
+  "text": "One.\n\n\nTwo.  Three.\n",
+  "point": 6,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-blank-fwd-blank",
+  "text": "One.\n\n\nTwo.  Three.\n",
+  "point": 6,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-bob-bwd",
+  "text": "One.\n\n\nTwo.  Three.\n",
+  "point": 0,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-eob-fwd",
+  "text": "One.\n\n\nTwo.  Three.\n",
+  "point": 20,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-eob-bwd",
+  "text": "One.\n\n\nTwo.  Three.\n",
+  "point": 20,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-eob-nonl-fwd",
+  "text": "Text one.  Two",
+  "point": 11,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-eob-nonl-bwd",
+  "text": "Text one.  Two",
+  "point": 14,
+  "keys": "M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-narrow-bwd",
+  "text": "* A\nOne.  Two.\n* B\nThree.  Four.\n",
+  "point": 27,
+  "keys": "C-x n s M-a M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-narrow-fwd",
+  "text": "* A\nOne.  Two.\n* B\nThree.  Four.\n",
+  "point": 19,
+  "keys": "C-x n s M-e M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-narrow-h-fwd",
+  "text": "* A\nOne.  Two.\n* B\nThree.  Four.\n",
+  "point": 15,
+  "keys": "C-x n s M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-fold-fwd-eol",
+  "text": "* A\nOne.  Two.\n* B\nThree.  Four.\n",
+  "point": 3,
+  "keys": "S-TAB M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-fold-fwd-head",
+  "text": "* A\nOne.  Two.\n* B\nThree.  Four.\n",
+  "point": 0,
+  "keys": "TAB M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-fold-bwd",
+  "text": "* A\nOne.  Two.\n* B\nThree.  Four.\n",
+  "point": 19,
+  "keys": "S-TAB M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-sds-fwd-item",
+  "text": "Intro.\n* A. B\n- One. Two. Three.\n",
+  "point": 16,
+  "keys": "M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "sentence-end-double-space": false
+  }
+ },
+ {
+  "name": "rv-sds-bwd-item",
+  "text": "Intro.\n* A. B\n- One. Two. Three.\n",
+  "point": 26,
+  "keys": "M-a M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "sentence-end-double-space": false
+  }
+ },
+ {
+  "name": "rv-sds-fwd-head",
+  "text": "Intro.\n* A. B\n- One. Two. Three.\n",
+  "point": 7,
+  "keys": "M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "sentence-end-double-space": false
+  }
+ },
+ {
+  "name": "rv-pfx-neg-bwd",
+  "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+  "point": 9,
+  "keys": "M-- M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-pfx-neg2-bwd",
+  "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+  "point": 9,
+  "keys": "M-- M-2 M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-pfx-zero-bwd",
+  "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+  "point": 15,
+  "keys": "M-0 M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-pfx-2-bwd",
+  "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+  "point": 21,
+  "keys": "M-2 M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-pfx-3-bwd",
+  "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+  "point": 21,
+  "keys": "M-3 M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-pfx-cu-fwd",
+  "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+  "point": 9,
+  "keys": "C-u M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-kill-item",
+  "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+  "point": 15,
+  "keys": "M-k",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-kill-item-2",
+  "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+  "point": 15,
+  "keys": "M-2 M-k",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-bkill-item",
+  "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+  "point": 15,
+  "keys": "C-x DEL",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-bkill-item-2",
+  "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+  "point": 21,
+  "keys": "M-3 C-x DEL",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-kill-heading",
+  "text": "* One.  Two\nBody.\n",
+  "point": 2,
+  "keys": "M-k",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-bkill-table",
+  "text": "Text.\n| a | b |\n|---+---|\n| c |   |\n#+TBLFM: $2=1\n\nAfter.\n",
+  "point": 12,
+  "keys": "C-x DEL",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-shift-item-bwd",
+  "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+  "point": 21,
+  "keys": "M-S-a M-S-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-shift-item-fwd",
+  "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+  "point": 9,
+  "keys": "M-S-e M-S-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-shift-head-fwd",
+  "text": "* One.  Two\nBody.\n",
+  "point": 0,
+  "keys": "M-S-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-mark-eos",
+  "text": "Intro.\n- One.  Two.  Three.\n- Four.\n",
+  "point": 9,
+  "keys": "M-x m a r k - e n d - o f - s e n t e n c e RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-sh-right-fwd-tbl",
+  "text": "Text.\n| a | b |\n|---+---|\n| c | d |\n\nAfter.\n",
+  "point": 8,
+  "keys": "S-<right> M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-sh-right-shfwd-tbl",
+  "text": "Text.\n| a | b |\n|---+---|\n| c | d |\n\nAfter.\n",
+  "point": 8,
+  "keys": "S-<right> M-S-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-sh-right-shbwd-tbl",
+  "text": "Text.\n| a | b |\n|---+---|\n| c | d |\n\nAfter.\n",
+  "point": 32,
+  "keys": "S-<left> M-S-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-sh-right-fwd-para",
+  "text": "One.  Two.  Three.\n",
+  "point": 6,
+  "keys": "S-<right> M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-sh-bwd-tbl-rule",
+  "text": "Text.\n| a | b |\n|---+---|\n| c | d |\n\nAfter.\n",
+  "point": 17,
+  "keys": "M-S-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-sh-fwd-tbl-twice",
+  "text": "Text.\n| a | b |\n|---+---|\n| c | d |\n\nAfter.\n",
+  "point": 8,
+  "keys": "M-S-e M-S-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-kill-tbl",
+  "text": "Text.\n| a | b |\n|---+---|\n| c | d |\n\nAfter.\n",
+  "point": 8,
+  "keys": "M-k",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-kill-tbl-2",
+  "text": "Text.\n| a | b |\n|---+---|\n| c | d |\n\nAfter.\n",
+  "point": 12,
+  "keys": "M-2 M-k",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-item-tbl-bwd",
+  "text": "- item\n  | a | b |\n  | c | d |\n- next.\n",
+  "point": 27,
+  "keys": "M-a M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-item-tbl-fwd",
+  "text": "- item\n  | a | b |\n  | c | d |\n- next.\n",
+  "point": 11,
+  "keys": "M-e M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-quote-tbl-fwd",
+  "text": "#+begin_quote\n| a | b |\n#+end_quote\n",
+  "point": 16,
+  "keys": "M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-tbl-trail-fwd",
+  "text": "Text.\n| a | b |   \n",
+  "point": 12,
+  "keys": "M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-tbl-trail-bwd-eol",
+  "text": "Text.\n| a | b |   \n",
+  "point": 18,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-tbl-empty2-bwd",
+  "text": "Text.\n| x |   |   |\n",
+  "point": 16,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-tbl-lead-bwd",
+  "text": "Text.\n|  a  | b |\n",
+  "point": 8,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-tbl-lead-fwd",
+  "text": "Text.\n|  a  | b |\n",
+  "point": 11,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-tbl-big-fwd",
+  "text": "Text.\n| a | b |\n|---+---|\n| c | d |\n\nAfter.\n",
+  "point": 8,
+  "keys": "M-9 M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-field-cu3-bof",
+  "text": "Text.\n| a | b |\n|---+---|\n| c | d |\n\nAfter.\n",
+  "point": 12,
+  "keys": "C-u 3 M-x o r g - t a b l e - b e g i n n i n g - o f - f i e l d RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-field-eof-rule",
+  "text": "Text.\n| a | b |\n|---+---|\n| c | d |\n\nAfter.\n",
+  "point": 17,
+  "keys": "M-x o r g - t a b l e - e n d - o f - f i e l d RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-field-bof-after",
+  "text": "| a | b |\nText.\n",
+  "point": 12,
+  "keys": "M-x o r g - t a b l e - b e g i n n i n g - o f - f i e l d RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-field-eof-eob",
+  "text": "| a | b |",
+  "point": 6,
+  "keys": "M-x o r g - t a b l e - e n d - o f - f i e l d RET M-x o r g - t a b l e - e n d - o f - f i e l d RET",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-blank-after-head-bwd",
+  "text": "* H\n\n\nText one.  Two.\n",
+  "point": 17,
+  "keys": "M-a M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-blank-after-head-at-bwd",
+  "text": "* H\n\nText.\n",
+  "point": 4,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-blank-after-head-at-fwd",
+  "text": "* H\n\nText.\n",
+  "point": 4,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-blank-end-sec-bwd",
+  "text": "* A\nText one.\n\n* B\n",
+  "point": 14,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-blank-end-sec-fwd",
+  "text": "* A\nText one.\n\n* B\n",
+  "point": 14,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-blank-list-bwd",
+  "text": "- a.\n\n- b one.  Two.\n",
+  "point": 5,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-blank-list-fwd",
+  "text": "- a.\n\n- b one.  Two.\n",
+  "point": 5,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-blank-eob-bwd",
+  "text": "Text.\n\n\n",
+  "point": 9,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-empty-buf-bwd",
+  "text": "",
+  "point": 0,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-empty-buf-fwd",
+  "text": "",
+  "point": 0,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-only-head-fwd",
+  "text": "* H",
+  "point": 3,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-only-head-bwd",
+  "text": "* H",
+  "point": 3,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-only-stars-fwd",
+  "text": "** ",
+  "point": 0,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-only-stars-fwd-end",
+  "text": "** \nx.\n",
+  "point": 3,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-body-to-head-fwd",
+  "text": "Body one\n* Next heading.  X\n",
+  "point": 0,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-body-to-head-fwd3",
+  "text": "Text.  More\n* H one.  two\nZ.\n",
+  "point": 0,
+  "keys": "M-e M-e M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-head-to-body-bwd",
+  "text": "Body one.  two\n* H\n",
+  "point": 15,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-head-to-body-bwd-h",
+  "text": "Body one.  two\n* H\n",
+  "point": 17,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-head-comment-fwd",
+  "text": "* COMMENT Note one.  Two :ARCHIVE:\n",
+  "point": 10,
+  "keys": "M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-head-bwd-eob",
+  "text": "* A\n** B one.  two",
+  "point": 15,
+  "keys": "M-a M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-head-fwd-sub",
+  "text": "* A\n** B one.  two\n",
+  "point": 2,
+  "keys": "M-e M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-narrow-elem-bwd",
+  "text": "Intro.\n\nPara one.  Two.\n",
+  "point": 19,
+  "keys": "C-x n e M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-fn-space-bwd",
+  "text": "Para.\n\n[fn:1]   Def one.  Two.\n",
+  "point": 15,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-fn-space-fwd",
+  "text": "Para.\n\n[fn:1]   Def one.  Two.\n",
+  "point": 15,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-counter-bwd",
+  "text": "Intro.\n3. [@3] Text one.  Two.\n",
+  "point": 26,
+  "keys": "M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-counter-bwd-cookie",
+  "text": "Intro.\n3. [@3] Text one.  Two.\n",
+  "point": 11,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-nest-bullet-bwd",
+  "text": "Intro.\n- a one.  a two.\n  - b.\n",
+  "point": 26,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-nest-bullet-bwd2",
+  "text": "Intro.\n- a one.  a two.\n  - b.\n",
+  "point": 27,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-item-multi-bwd",
+  "text": "Intro.\n- one.\n  two.  three.\n",
+  "point": 22,
+  "keys": "M-a M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-item-multi-fwd",
+  "text": "Intro.\n- one\n  two.  three.\n",
+  "point": 9,
+  "keys": "M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-fold-bwd-into",
+  "text": "* A\nOne.  Two.\n* B\nThree.\n",
+  "point": 15,
+  "keys": "S-TAB M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-fold-bwd-into-h",
+  "text": "* A\nOne.  Two.\n* B\nThree.\n",
+  "point": 17,
+  "keys": "S-TAB M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-drawer-fold-fwd",
+  "text": "* H\n:LOGBOOK:\n- note.\n:END:\nText.\n",
+  "point": 3,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-drawer-fold-bwd",
+  "text": "* H\n:LOGBOOK:\n- note.\n:END:\nText.\n",
+  "point": 28,
+  "keys": "M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-pfx-neg-fwd-quote",
+  "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter.\n",
+  "point": 35,
+  "keys": "M-- M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-pfx-neg-bwd-quote",
+  "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter.\n",
+  "point": 22,
+  "keys": "M-- M-a M-- M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-pfx-3-bwd-quote",
+  "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter.\n",
+  "point": 59,
+  "keys": "M-3 M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-pfx-3-fwd-quote",
+  "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter.\n",
+  "point": 0,
+  "keys": "M-3 M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-pfx-zero-fwd-head",
+  "text": "* One.  Two\n",
+  "point": 0,
+  "keys": "M-0 M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-bkill-quote",
+  "text": "Before.\n#+begin_quote\nQuoted one.  Quoted two.\n#+end_quote\nAfter.\n",
+  "point": 35,
+  "keys": "M-2 C-x DEL",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-sds-bwd-head",
+  "text": "Intro.\n* A. B. C\n",
+  "point": 15,
+  "keys": "M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "sentence-end-double-space": false
+  }
+ },
+ {
+  "name": "rv-sds-tbl",
+  "text": "| a. b | c |\n",
+  "point": 5,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "sentence-end-double-space": false
+  }
+ },
+ {
+  "name": "rv-fund-eob-nonl",
+  "text": "Text",
+  "point": 4,
+  "keys": "M-e",
+  "modes": [],
+  "message": true
+ },
+ {
+  "name": "rv-fund-empty",
+  "text": "",
+  "point": 0,
+  "keys": "M-e",
+  "modes": [],
+  "message": true
+ },
+ {
+  "name": "rv-fund-eob-nl",
+  "text": "Text.\n",
+  "point": 6,
+  "keys": "M-e",
+  "modes": [],
+  "message": true
+ },
+ {
+  "name": "rv-eob-nonl-fwd2",
+  "text": "Text one.  Two",
+  "point": 11,
+  "keys": "M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-cmark-shfwd-tbl",
+  "text": "Text.\n| a | b |\n",
+  "point": 8,
+  "keys": "C-SPC M-S-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-cmark-shfwd-tbl-deact",
+  "text": "Text.\n| a | b |\n| c | d |\n",
+  "point": 8,
+  "keys": "M-S-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-shift-para-then-tbl",
+  "text": "Para one.  Two.\n| a | b |\n",
+  "point": 0,
+  "keys": "M-S-e M-S-e M-S-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-src-star-fwd",
+  "text": "#+begin_src text\n* Star line.  Two\n#+end_src\n",
+  "point": 19,
+  "keys": "M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-src-star-bwd",
+  "text": "#+begin_src text\n* Star line.  Two\n#+end_src\n",
+  "point": 31,
+  "keys": "M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-comment-block-bwd",
+  "text": "Intro.\n#+begin_comment\nC one.  Two.\n#+end_comment\n",
+  "point": 31,
+  "keys": "M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-export-block-fwd",
+  "text": "Intro.\n#+begin_export html\nE one.  Two.\n#+end_export\n",
+  "point": 27,
+  "keys": "M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-diary-fwd",
+  "text": "Intro.\n%%(diary-anniversary 1 1 2000) One.  Two.\n",
+  "point": 38,
+  "keys": "M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-call-bwd",
+  "text": "Intro.\n#+CALL: foo() One.  Two.\n",
+  "point": 27,
+  "keys": "M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-fn-paras-bwd",
+  "text": "Intro.\n\n[fn:1] One.  Two.\n\n  Three.  Four.\n",
+  "point": 37,
+  "keys": "M-a M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-deep-sec-bwd",
+  "text": "* A\n** B\n*** C\nText one.  Two.\n",
+  "point": 26,
+  "keys": "M-a M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-stars-col1-bwd",
+  "text": "Intro.\n** H one.  two\n",
+  "point": 8,
+  "keys": "M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-plan-two-fwd",
+  "text": "* H\nDEADLINE: <2026-11-25 Wed> SCHEDULED: <2026-11-26 Thu>\nText.\n",
+  "point": 4,
+  "keys": "M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-quirk-table",
+  "text": "| a |\n\n\n\n\n\n\n\n\nText.\n",
+  "point": 5,
+  "keys": "M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-quirk-table-bwd",
+  "text": "| a |\n\n\n\n\n\n\n\n\nText one.  Two.\n",
+  "point": 25,
+  "keys": "M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-pfx-cucu-fwd",
+  "text": "Intro.\n- One.  Two.  Three.\n- Four.  Five.\n",
+  "point": 9,
+  "keys": "C-u C-u M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-inline-task-fwd",
+  "text": "* H\n*************** Task one.  Two\nBody.\n*************** END\n",
+  "point": 20,
+  "keys": "M-e M-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-verse-blank-bwd",
+  "text": "#+begin_verse\nOne.\n\nTwo.  Three.\n#+end_verse\n",
+  "point": 26,
+  "keys": "M-a M-a M-a",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-cmark-shfwd-para",
+  "text": "One.  Two.  Three.\n",
+  "point": 6,
+  "keys": "C-SPC M-S-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rv-fund-cmark-shright",
+  "text": "One.  Two.  Three.\n",
+  "point": 6,
+  "keys": "C-SPC S-<right>",
+  "modes": [],
+  "message": true
+ },
+ {
+  "name": "rv-fund-cmark-shfwd",
+  "text": "One.  Two.  Three.\n",
+  "point": 6,
+  "keys": "C-SPC M-S-e",
+  "modes": [],
+  "message": true
+ },
+ {
+  "name": "rv-cmark-shfwd-head",
+  "text": "* One.  Two\n",
+  "point": 0,
+  "keys": "C-SPC M-S-e",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ }
+]

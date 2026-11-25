@@ -232,7 +232,9 @@ function endOfParagraphText(): void {
   forwardParagraph(1);
   if (e8.point() > 0 && e8.bufferText(e8.point() - 1, e8.point()) === "\n") e8.gotoChar(e8.point() - 1);
   if (e8.point() <= opoint) {
-    if (e8.point() < e8.pointMax()) e8.gotoChar(e8.point() + 1);
+    // As forward-char, which signals at the end.
+    if (e8.point() >= e8.pointMax()) e8.signal("end-of-buffer", "End of buffer");
+    e8.gotoChar(e8.point() + 1);
     if (e8.point() < e8.pointMax()) endOfParagraphText();
   }
 }

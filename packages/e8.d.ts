@@ -5919,6 +5919,14 @@ declare global {
        */
       "org-backward-paragraph": [arg?: number];
       /**
+       * Move to the start of the sentence, kept inside the element point is in, or of the table field, as backward-sentence or org-table-beginning-of-field.
+       *
+       * @param arg prefix count
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-backward-sentence": [arg?: number];
+      /**
        * Set the repeater of the entry's first timestamp to 0, so marking it done does not repeat it.
        *
        * Defined in packages/org.ts.
@@ -6452,6 +6460,14 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-forward-paragraph": [arg?: number];
+      /**
+       * Move to the end of the sentence, kept inside the element point is in or a heading's line, or of the table field, as forward-sentence or org-table-end-of-field.
+       *
+       * @param arg prefix count
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-forward-sentence": [arg?: number];
       /**
        * Cycle the whole buffer: top headings only, then all headings, then everything.
        *
@@ -7227,6 +7243,14 @@ declare global {
        */
       "org-table-align": [];
       /**
+       * Move to the start of the table field point is in, or of the one before if already there; with a prefix argument, back that many fields.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-beginning-of-field": [n?: number];
+      /**
        * Blank the field at point, keeping its width.
        *
        * Defined in packages/org-table.ts.
@@ -7266,6 +7290,14 @@ declare global {
        * Defined in packages/org-table.ts.
        */
       "org-table-delete-column": [];
+      /**
+       * Move to the end of the table field point is in, or of the one after if already there; with a prefix argument, on that many fields.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-end-of-field": [n?: number];
       /**
        * Insert a rule below the table's row and move to the row after it, or to a new one. With a prefix argument, to the same column.
        *
@@ -20310,6 +20342,13 @@ declare global {
      * have nothing else to do.
      */
     function handleShiftSelection(shifted?: boolean): void;
+    /**
+     * Whether the key that ran the current command had Shift removed to
+     * find its binding, as this-command-keys-shift-translated: a command
+     * that moves only in some places passes it to handleShiftSelection
+     * there, as a Lisp command does with an interactive spec of ^.
+     */
+    function thisCommandKeysShiftTranslated(): boolean;
     /**
      * Whether an agent is acting rather than the user, so that effects
      * outside buffers, as running a program, wait for the user's approval.

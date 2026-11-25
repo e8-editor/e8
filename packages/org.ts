@@ -122,6 +122,7 @@ import {
   placeMarkers,
 } from "org-macs";
 import { fillContextPrefix, fillRegionAsParagraph } from "fill";
+import { sentenceEnd } from "paragraphs";
 import { defineGuide } from "help-guide";
 import { withHelpWindow } from "help";
 import { refileCommand, refileCopyCommand, refileReverseCommand } from "org-refile";
@@ -12704,6 +12705,105 @@ const orgBackwardParagraphCommand = e8.defineCommand({
 });
 e8.remapCommand("org-mode-map", "forward-paragraph", orgForwardParagraphCommand);
 e8.remapCommand("org-mode-map", "backward-paragraph", orgBackwardParagraphCommand);
+
+/**
+ * Where the contents of the element at point begin and end for Org's
+ * sentence motion, as Org's parser has them: a headline's after its line,
+ * a paragraph's before its blank lines, and a standard table row's between
+ * its first bar and the end of its text, a rule having none.
+ */
+function sentenceContents(e: Elem): [number | undefined, number | undefined] {
+  if (e.type === "headline") return headlineContents(e);
+  if (e.type === "section") return [e.contentsBegin ?? e.begin, e.end];
+  if (e.type === "paragraph") return [e.contentsBegin ?? e.begin, lineStartOrEnd(lineAt(endBeforeBlank(e)) + 1)];
+  if (e.type === "table-row") {
+    const line = lineAt(e.begin);
+    const text = e8.lineText(line);
+    if (/^[ \t]*\|-/.test(text)) return [undefined, undefined];
+    const bar = /^[ \t]*\|/.exec(text)![0];
+    return [e.begin + charCount(bar), e8.lineStart(line) + charCount(text.replace(/[ \t]+$/, ""))];
+  }
+  return [e.contentsBegin, e.contentsEnd];
+}
+
+/** Org's table, holding an element or the element itself, as org-element-lineage with 'table. */
+function tableOf(e: Elem | undefined): Elem | undefined {
+  for (let x = e; x; x = x.parent) if (x.type === "table") return x;
+  return undefined;
+}
+
+/** Signals as Org's arithmetic does on a contents bound a table rule does not have. */
+function needNumber(n: number | undefined): number {
+  if (n === undefined) e8.signal("wrong-type-argument", "Wrong type argument: number-or-marker-p, nil", ["number-or-marker-p", null]);
+  return n as number;
+}
+
+const orgBackwardSentenceCommand = e8.defineCommand({
+  name: "org-backward-sentence",
+  doc: "Move to the start of the sentence, kept inside the element point is in, or of the table field, as backward-sentence or org-table-beginning-of-field.",
+  params: [{ name: "arg", kind: "count" }],
+  run: (arg: number) => {
+    const p = e8.point();
+    const el = elementAt(p);
+    const [cb, ce] = el ? sentenceContents(el) : [undefined, undefined];
+    const table = tableOf(el);
+    if (table && p > needNumber(cb) && p <= (table.contentsEnd ?? table.end)) {
+      e8.call("org-table-beginning-of-field", arg);
+      return;
+    }
+    // Shift selects as backward-sentence's ^ would, not in a table, as Org's field commands do not.
+    e8.handleShiftSelection(e8.thisCommandKeysShiftTranslated());
+    e8.saveRestriction(() => {
+      if (cb !== undefined && e8.pointMin() < cb && p > cb) e8.narrowToRegion(cb, needNumber(ce));
+      e8.call("backward-sentence", arg);
+    });
+  },
+});
+
+const orgForwardSentenceCommand = e8.defineCommand({
+  name: "org-forward-sentence",
+  doc: "Move to the end of the sentence, kept inside the element point is in or a heading's line, or of the table field, as forward-sentence or org-table-end-of-field.",
+  params: [{ name: "arg", kind: "count" }],
+  run: (arg: number) => {
+    const p = e8.point();
+    const line = lineAt();
+    // Shift selects as forward-sentence's ^ would, not in a table, as Org's field commands do not.
+    const shiftSelect = (): void => e8.handleShiftSelection(e8.thisCommandKeysShiftTranslated());
+    if (isHeadingLine(e8.lineText(line)) && /\S/.test(e8.bufferText(p, e8.lineEnd(line)))) {
+      shiftSelect();
+      e8.saveRestriction(() => {
+        e8.narrowToRegion(e8.lineStart(line), e8.lineEnd(line));
+        e8.call("forward-sentence", arg);
+      });
+      return;
+    }
+    const el = elementAt(p);
+    const [cb, ce] = el ? sentenceContents(el) : [undefined, undefined];
+    const table = tableOf(el);
+    if (table && p >= (table.contentsBegin ?? table.begin) && p < needNumber(ce)) {
+      e8.call("org-table-end-of-field", arg);
+      return;
+    }
+    shiftSelect();
+    e8.saveRestriction(() => {
+      if (el && ce !== undefined && e8.pointMax() > ce) {
+        // Org means to stop at blank lines between elements, but compares
+        // the element's end with how many blank characters follow its
+        // contents, which skip-chars-forward returns, rather than where
+        // they end; so only an element ending that near the buffer's start
+        // keeps the motion inside it.
+        let q = ce;
+        while (q < e8.pointMax() && /[ \r\t\n]/.test(e8.bufferText(q, q + 1))) q++;
+        if (el.end + 1 < q - ce) e8.narrowToRegion(needNumber(cb), ce);
+      }
+      // The end of a heading is the end of a sentence.
+      const end = `${sentenceEnd()}\\|^\\*+ .*$`;
+      e8.letBind({ "sentence-end": end }, () => e8.call("forward-sentence", arg));
+    });
+  },
+});
+e8.remapCommand("org-mode-map", "backward-sentence", orgBackwardSentenceCommand);
+e8.remapCommand("org-mode-map", "forward-sentence", orgForwardSentenceCommand);
 
 /** Where an element's contents end, as Org's parser has it: a section's are all of it, a headline's before its blank lines. */
 function contentsEndOf(e: Elem): number | undefined {
