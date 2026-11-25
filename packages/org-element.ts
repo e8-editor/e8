@@ -336,7 +336,7 @@ function parseElements(
       // A table.el table: no rows, its text Org's :value; its formula lines after it, as an Org table's.
       const close = tableElEnd(line, to) as number;
       let formulas = lineAt(close);
-      while (close < to && formulas < e8.lineCount() && e8.lineStart(formulas) < to && /^[ \t]*#\+TBLFM:/i.test(e8.lineText(formulas))) formulas++;
+      while (close < to && formulas < e8.lineCount() && e8.lineStart(formulas) < to && /^[ \t]*#\+TBLFM: +/i.test(e8.lineText(formulas))) formulas++;
       e = elem("table", p, close >= to ? to : Math.min(lineStartOrEnd(formulas), to), parent);
       e.tableType = "table.el";
     } else if (p === e8.lineStart(line) && /^[ \t]*\|/.test(text)) {
@@ -345,7 +345,7 @@ function parseElements(
       while (last + 1 < e8.lineCount() && lineStartOrEnd(last + 1) < to && /^[ \t]*\|/.test(e8.lineText(last + 1))) last++;
       // Its formula lines belong to it, after its rows, as Org's table parser takes them.
       let formulas = last;
-      while (formulas + 1 < e8.lineCount() && lineStartOrEnd(formulas + 1) < to && /^[ \t]*#\+TBLFM:/i.test(e8.lineText(formulas + 1))) formulas++;
+      while (formulas + 1 < e8.lineCount() && lineStartOrEnd(formulas + 1) < to && /^[ \t]*#\+TBLFM: +/i.test(e8.lineText(formulas + 1))) formulas++;
       e = elem("table", p, Math.min(lineStartOrEnd(formulas + 1), to), parent, p);
       e.tableType = "org";
       e.contentsEnd = Math.min(lineStartOrEnd(last + 1), to);

@@ -915,8 +915,9 @@ function placeTableLine(t: CaptureTemplate, where: Target, filled: Filled, prepe
   for (let l = lineAt(beg); l < e8.lineCount() && e8.lineStart(l) < end && !table; l++) {
     if (!/^[ \t]*\|[^-]/.test(e8.lineText(l))) continue;
     for (let e = elementAt(e8.lineStart(l)); e; e = e.parent) {
+      // An Org table, not a table.el one, which Org passes over.
       if (e.type === "table") {
-        table = e;
+        if (e.tableType !== "table.el") table = e;
         break;
       }
     }

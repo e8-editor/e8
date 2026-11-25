@@ -8271,9 +8271,14 @@ const openAtPoint = e8.defineCommand({
 /** Elements whose text is raw, with no links in it for C-c C-o, as org-element-context finds none there. */
 const RAW_TEXT = ["example-block", "export-block", "fixed-width", "latex-environment"];
 
+/** Whether an element's text is raw, holding no links or other objects: as RAW_TEXT's, or a table.el table's. */
+function rawTextElement(e: Elem | undefined): boolean {
+  return RAW_TEXT.includes(e?.type ?? "") || (e?.type === "table" && e.tableType === "table.el");
+}
+
 /** The link point is on, where Org's parser finds links: not in an element whose text is raw. */
 function linkAtPoint(): Link | undefined {
-  return RAW_TEXT.includes(elementAt(e8.point())?.type ?? "") ? undefined : linkHere();
+  return rawTextElement(elementAt(e8.point())) ? undefined : linkHere();
 }
 
 function openAtPoint_(): void {
@@ -8350,8 +8355,8 @@ export function linksIn(from: number, to: number): { links: string[]; last: numb
       after = m.index + m.text.length;
       // Only links Org's parser finds, as org-offer-links-in-entry asks
       // org-element-context: none in raw text or a source block's code.
-      const type = elementAt(at(l, text, m.index))?.type ?? "";
-      if (RAW_TEXT.includes(type) || type === "src-block") continue;
+      const el = elementAt(at(l, text, m.index));
+      if (rawTextElement(el) || el?.type === "src-block") continue;
       last = at(l, text, m.index);
       if (!out.includes(m.text)) out.push(m.text);
     }
@@ -10066,6 +10071,11 @@ const ctrlCCtrlC = e8.defineCommand({
       let next = first < e8.lineCount() ? elementAt(e8.lineStart(first)) : undefined;
       while (next?.parent && next.parent.begin === e8.lineStart(first)) next = next.parent;
       if (next && next.begin === e8.lineStart(first) && !/^[ \t]*#\+PLOT:/i.test(text)) {
+        // A table.el table is left to C-c ', as Org's table context says.
+        if (next.type === "table" && next.tableType === "table.el") {
+          e8.message("Use \u2018C-c '\u2019 to edit table.el tables");
+          return;
+        }
         if (next.type === "table") {
           e8.saveExcursion(() => {
             e8.gotoChar(next!.begin);

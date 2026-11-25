@@ -148,7 +148,8 @@ function objectsLimit(pos: number): number | undefined {
   } else {
     let e = elementAt(pos);
     while (e && e.type !== "paragraph" && e.type !== "table" && e.type !== "verse-block" && e.type !== "item") e = e.parent;
-    if (!e) return undefined;
+    // A table.el table's text holds no objects.
+    if (!e || (e.type === "table" && e.tableType === "table.el")) return undefined;
     // An item's bullet and checkbox hold no objects.
     if (e.type === "item" && pos - e8.lineStart(line) < charCount(/^[ \t]*\S+(?:[ \t]+\[[ X-]\])?[ \t]*/.exec(text)?.[0] ?? "")) return undefined;
     // In a cell: after the row's first bar and before its last.

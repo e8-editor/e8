@@ -1501,6 +1501,3415 @@
       "modified": false,
       "error": "Cannot drag element forward",
       "message": null
+    },
+    {
+      "name": "review-tr-bob-rule-tab",
+      "input": {
+        "text": "+---+\n| a |\n+---+\nText.\n",
+        "point": 0,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+---+\n| a |\n+---+\nText.\n",
+      "visible": "+---+\n| a |\n+---+\nText.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Use ‘C-c ’’ to edit table.el tables"
+    },
+    {
+      "name": "review-tr-bob-row-mark",
+      "input": {
+        "text": "+---+\n| a |\n+---+\nText.\n",
+        "point": 8,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n",
+      "visible": "Text.\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [
+        "+---+\n| a |\n+---+\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-bob-fwd-el",
+      "input": {
+        "text": "+---+\n| a |\n+---+\nText.\n",
+        "point": 0,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+---+\n| a |\n+---+\nText.\n",
+      "visible": "+---+\n| a |\n+---+\nText.\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-bob-mdown",
+      "input": {
+        "text": "+---+\n| a |\n+---+\n\nText.\n",
+        "point": 0,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n+---+\n| a |\n+---+\n",
+      "visible": "Text.\n\n+---+\n| a |\n+---+\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-two-adjacent-mark",
+      "input": {
+        "text": "+--+\n|a|\n+--+\n+--+\n|b|\n+--+\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "After.\n",
+      "visible": "After.\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [
+        "+--+\n|a|\n+--+\n+--+\n|b|\n+--+\n\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-two-adjacent-tab",
+      "input": {
+        "text": "+--+\n|a|\n+--+\n+--+\n|b|\n+--+\n\nAfter.\n",
+        "point": 20,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+--+\n|a|\n+--+\n+--+\n|b|\n+--+\n\nAfter.\n",
+      "visible": "+--+\n|a|\n+--+\n+--+\n|b|\n+--+\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Use ‘C-c ’’ to edit table.el tables"
+    },
+    {
+      "name": "review-tr-two-blank-mdown",
+      "input": {
+        "text": "+--+\n|a|\n+--+\n\n+--+\n|b|\n+--+\n\nAfter.\n",
+        "point": 6,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+--+\n|b|\n+--+\n\n+--+\n|a|\n+--+\n\nAfter.\n",
+      "visible": "+--+\n|b|\n+--+\n\n+--+\n|a|\n+--+\n\nAfter.\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-two-blank-mark-blank",
+      "input": {
+        "text": "+--+\n|a|\n+--+\n\n+--+\n|b|\n+--+\n\nAfter.\n",
+        "point": 14,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+--+\n|b|\n+--+\n\nAfter.\n",
+      "visible": "+--+\n|b|\n+--+\n\nAfter.\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [
+        "+--+\n|a|\n+--+\n\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-two-blank-bwd-el",
+      "input": {
+        "text": "+--+\n|a|\n+--+\n\n+--+\n|b|\n+--+\n\nAfter.\n",
+        "point": 21,
+        "keys": "M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+--+\n|a|\n+--+\n\n+--+\n|b|\n+--+\n\nAfter.\n",
+      "visible": "+--+\n|a|\n+--+\n\n+--+\n|b|\n+--+\n\nAfter.\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-rule-text-tab-row",
+      "input": {
+        "text": "+---+\ntext\n| a |\n",
+        "point": 13,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+---+\ntext\n| a |\n|   |\n",
+      "visible": "+---+\ntext\n| a |\n|   |\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-rule-text-mark",
+      "input": {
+        "text": "+---+\ntext\n| a |\n",
+        "point": 0,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a |\n",
+      "visible": "| a |\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [
+        "+---+\ntext\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-rule-text-tab-rule",
+      "input": {
+        "text": "+---+\ntext\n| a |\n",
+        "point": 0,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+---+\ntext\n| a |\n",
+      "visible": "+---+\ntext\n| a |\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-unclosed-eob-tab",
+      "input": {
+        "text": "+---+\n| a |\n| b |",
+        "point": 14,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+---+\n| a |\n| b |\n|   |\n",
+      "visible": "+---+\n| a |\n| b |\n|   |\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-unclosed-eob-mup",
+      "input": {
+        "text": "+---+\n| a |\n| b |",
+        "point": 14,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+---+\n| b |\n| a |\n",
+      "visible": "+---+\n| b |\n| a |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-unclosed-heading-tab",
+      "input": {
+        "text": "* H\n+---+\n| a |\n* I\n",
+        "point": 12,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n+---+\n| a |\n|   |\n* I\n",
+      "visible": "* H\n+---+\n| a |\n|   |\n* I\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-then-org-tab",
+      "input": {
+        "text": "+---+\n| a |\n+---+\n\n| b | c |\n",
+        "point": 21,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+---+\n| a |\n+---+\n\n| b | c |\n",
+      "visible": "+---+\n| a |\n+---+\n\n| b | c |\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-then-org-mup",
+      "input": {
+        "text": "+---+\n| a |\n+---+\n\n| b | c |\n",
+        "point": 21,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+---+\n| a |\n+---+\n\n| b | c |\n",
+      "visible": "+---+\n| a |\n+---+\n\n| b | c |\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move row further",
+      "message": null
+    },
+    {
+      "name": "review-tr-then-org-cc",
+      "input": {
+        "text": "+---+\n| a |\n+---+\n\n| b | c |\n",
+        "point": 21,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+---+\n| a |\n+---+\n\n| b | c |\n",
+      "visible": "+---+\n| a |\n+---+\n\n| b | c |\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-org-then-tel-tab-x",
+      "input": {
+        "text": "| x |\n+---+\n| a |\n+---+\n",
+        "point": 2,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| x |\n|   |\n+---+\n| a |\n+---+\n",
+      "visible": "| x |\n|   |\n+---+\n| a |\n+---+\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-org-then-tel-mdown-x",
+      "input": {
+        "text": "| x |\n+---+\n| a |\n+---+\n",
+        "point": 2,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| x |\n+---+\n| a |\n+---+\n",
+      "visible": "| x |\n+---+\n| a |\n+---+\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move row further",
+      "message": null
+    },
+    {
+      "name": "review-tr-org-then-tel-tab-a",
+      "input": {
+        "text": "| x |\n+---+\n| a |\n+---+\n",
+        "point": 14,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| x |\n+---+\n| a |\n+---+\n",
+      "visible": "| x |\n+---+\n| a |\n+---+\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Use ‘C-c ’’ to edit table.el tables"
+    },
+    {
+      "name": "review-tr-org-then-tel-cret-x",
+      "input": {
+        "text": "| x |\n+---+\n| a |\n+---+\n",
+        "point": 2,
+        "keys": "C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| x |\n|---|\n|   |\n+---+\n| a |\n+---+\n",
+      "visible": "| x |\n|---|\n|   |\n+---+\n| a |\n+---+\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-org-then-tel-ret-x",
+      "input": {
+        "text": "| x |\n+---+\n| a |\n+---+\n",
+        "point": 2,
+        "keys": "RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| x |\n|   |\n+---+\n| a |\n+---+\n",
+      "visible": "| x |\n|   |\n+---+\n| a |\n+---+\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-tabs-mark",
+      "input": {
+        "text": "\t+---+\n\t| a |\n\t+---+\n\nAfter.\n",
+        "point": 10,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "After.\n",
+      "visible": "After.\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [
+        "\t+---+\n\t| a |\n\t+---+\n\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-tabs-tab",
+      "input": {
+        "text": "\t+---+\n\t| a |\n\t+---+\n\nAfter.\n",
+        "point": 10,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "\t+---+\n\t| a |\n\t+---+\n\nAfter.\n",
+      "visible": "\t+---+\n\t| a |\n\t+---+\n\nAfter.\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Use ‘C-c ’’ to edit table.el tables"
+    },
+    {
+      "name": "review-tr-trailing-space-tab",
+      "input": {
+        "text": "+---+  \n| a |\n+---+ \n",
+        "point": 10,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+---+  \n| a |\n+---+ \n",
+      "visible": "+---+  \n| a |\n+---+ \n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Use ‘C-c ’’ to edit table.el tables"
+    },
+    {
+      "name": "review-tr-eq-start-tab",
+      "input": {
+        "text": "+===+\n| a |\n+===+\n",
+        "point": 8,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+===+\n| a |\n|   |\n+===+\n",
+      "visible": "+===+\n| a |\n|   |\n+===+\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-eq-end-tab",
+      "input": {
+        "text": "+---+\n| a |\n+===+\n",
+        "point": 8,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+---+\n| a |\n|   |\n+===+\n",
+      "visible": "+---+\n| a |\n|   |\n+===+\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-eq-end-mark",
+      "input": {
+        "text": "+---+\n| a |\n+===+\n\nAfter.\n",
+        "point": 0,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a |\n+===+\n\nAfter.\n",
+      "visible": "| a |\n+===+\n\nAfter.\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [
+        "+---+\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-mixed-start-tab",
+      "input": {
+        "text": "+---+===+\n| a | b |\n+---+---+\n",
+        "point": 12,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+---+===+\n| a | b |\n+---+---+\n",
+      "visible": "+---+===+\n| a | b |\n+---+---+\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-bad-rule-tab",
+      "input": {
+        "text": "+--++\n| a |\n+--++\n",
+        "point": 8,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+--++\n| a |\n|   |\n+--++\n",
+      "visible": "+--++\n| a |\n|   |\n+--++\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-item-first-line-tab",
+      "input": {
+        "text": "- +---+\n  | a |\n  +---+\n",
+        "point": 12,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- +---+\n  | a |\n  |   |\n  +---+\n",
+      "visible": "- +---+\n  | a |\n  |   |\n  +---+\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-item-first-line-mark",
+      "input": {
+        "text": "- +---+\n  | a |\n  +---+\n\nAfter.\n",
+        "point": 12,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- +---+\n  +---+\n\nAfter.\n",
+      "visible": "- +---+\n  +---+\n\nAfter.\n",
+      "point": 8,
+      "mark": 8,
+      "mark_active": false,
+      "kill_ring": [
+        "  | a |\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-item-less-indented-tab",
+      "input": {
+        "text": "- a\n+--+\n|x|\n+--+\n",
+        "point": 10,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- a\n+--+\n|x|\n+--+\n",
+      "visible": "- a\n+--+\n|x|\n+--+\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Use ‘C-c ’’ to edit table.el tables"
+    },
+    {
+      "name": "review-tr-item-then-more-mark",
+      "input": {
+        "text": "- a\n  +--+\n  |x|\n  +--+\n  more\n",
+        "point": 14,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- a\n  more\n",
+      "visible": "- a\n  more\n",
+      "point": 4,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [
+        "  +--+\n  |x|\n  +--+\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-quote-tab",
+      "input": {
+        "text": "#+begin_quote\n+--+\n|x|\n+--+\n#+end_quote\n",
+        "point": 20,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+begin_quote\n+--+\n|x|\n+--+\n#+end_quote\n",
+      "visible": "#+begin_quote\n+--+\n|x|\n+--+\n#+end_quote\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Use ‘C-c ’’ to edit table.el tables"
+    },
+    {
+      "name": "review-tr-quote-mark",
+      "input": {
+        "text": "#+begin_quote\n+--+\n|x|\n+--+\n#+end_quote\n",
+        "point": 20,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+begin_quote\n#+end_quote\n",
+      "visible": "#+begin_quote\n#+end_quote\n",
+      "point": 14,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [
+        "+--+\n|x|\n+--+\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-src-tab",
+      "input": {
+        "text": "#+begin_src text\n+--+\n|x|\n+--+\n#+end_src\n",
+        "point": 23,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+begin_src text\n  +--+\n  |x|\n  +--+\n#+end_src\n",
+      "visible": "#+begin_src text\n  +--+\n  |x|\n  +--+\n#+end_src\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-fn-tab",
+      "input": {
+        "text": "[fn:1] +---+\n| a |\n+---+\n",
+        "point": 15,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:1] +---+\n| a |\n|   |\n+---+\n",
+      "visible": "[fn:1] +---+\n| a |\n|   |\n+---+\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-fn-own-line-tab",
+      "input": {
+        "text": "[fn:1] Note.\n+---+\n| a |\n+---+\n",
+        "point": 21,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[fn:1] Note.\n+---+\n| a |\n+---+\n",
+      "visible": "[fn:1] Note.\n+---+\n| a |\n+---+\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Use ‘C-c ’’ to edit table.el tables"
+    },
+    {
+      "name": "review-tr-para-mark",
+      "input": {
+        "text": "Para.\n+---+\n| a |\n+---+\nMore.\n",
+        "point": 0,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+---+\n| a |\n+---+\nMore.\n",
+      "visible": "+---+\n| a |\n+---+\nMore.\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [
+        "Para.\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-para-tab",
+      "input": {
+        "text": "Para.\n+---+\n| a |\n+---+\nMore.\n",
+        "point": 14,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n+---+\n| a |\n+---+\nMore.\n",
+      "visible": "Para.\n+---+\n| a |\n+---+\nMore.\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Use ‘C-c ’’ to edit table.el tables"
+    },
+    {
+      "name": "review-tr-para-more-mark",
+      "input": {
+        "text": "Para.\n+---+\n| a |\n+---+\nMore.\n",
+        "point": 24,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para.\n+---+\n| a |\n+---+\n",
+      "visible": "Para.\n+---+\n| a |\n+---+\n",
+      "point": 24,
+      "mark": 24,
+      "mark_active": false,
+      "kill_ring": [
+        "More.\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-para-mdown",
+      "input": {
+        "text": "Para.\n+---+\n| a |\n+---+\nMore.\n",
+        "point": 0,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+---+\n| a |\n+---+\nPara.\nMore.\n",
+      "visible": "+---+\n| a |\n+---+\nPara.\nMore.\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-narrow-rows-tab",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "C-a C-SPC C-n C-n C-n C-x n n M-< C-f C-f TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 20,
+      "mark": 18,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Use ‘C-c ’’ to edit table.el tables"
+    },
+    {
+      "name": "review-tr-narrow-all-tab",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 7,
+        "keys": "C-SPC C-n C-n C-n C-n C-n C-n C-x n n M-< C-n C-f C-f TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 20,
+      "mark": 7,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Use ‘C-c ’’ to edit table.el tables"
+    },
+    {
+      "name": "review-tr-aff-mark-name",
+      "input": {
+        "text": "#+NAME: t\n#+CAPTION: c\n+---+\n| a |\n+---+\n\nAfter.\n",
+        "point": 0,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "After.\n",
+      "visible": "After.\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [
+        "#+NAME: t\n#+CAPTION: c\n+---+\n| a |\n+---+\n\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-aff-mdown-caption",
+      "input": {
+        "text": "#+NAME: t\n#+CAPTION: c\n+---+\n| a |\n+---+\n\nAfter.\n",
+        "point": 10,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "After.\n\n#+NAME: t\n#+CAPTION: c\n+---+\n| a |\n+---+\n",
+      "visible": "After.\n\n#+NAME: t\n#+CAPTION: c\n+---+\n| a |\n+---+\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-aff-cc-name",
+      "input": {
+        "text": "#+NAME: t\n#+CAPTION: c\n+---+\n| a |\n+---+\n\nAfter.\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: t\n#+CAPTION: c\n+---+\n| a |\n+---+\n\nAfter.\n",
+      "visible": "#+NAME: t\n#+CAPTION: c\n+---+\n| a |\n+---+\n\nAfter.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Use ‘C-c '’ to edit table.el tables"
+    },
+    {
+      "name": "review-tr-aff-tab-name",
+      "input": {
+        "text": "#+NAME: t\n#+CAPTION: c\n+---+\n| a |\n+---+\n\nAfter.\n",
+        "point": 0,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: t\n#+CAPTION: c\n+---+\n| a |\n+---+\n\nAfter.\n",
+      "visible": "#+NAME: t\n#+CAPTION: c\n+---+\n| a |\n+---+\n\nAfter.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-tblfm-nospace-mark",
+      "input": {
+        "text": "+---+\n| a |\n+---+\n#+TBLFM:\nAfter.\n",
+        "point": 8,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+TBLFM:\nAfter.\n",
+      "visible": "#+TBLFM:\nAfter.\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [
+        "+---+\n| a |\n+---+\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-tblfm-lower-mark",
+      "input": {
+        "text": "+---+\n| a |\n+---+\n#+tblfm: $1=2\nAfter.\n",
+        "point": 8,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "After.\n",
+      "visible": "After.\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [
+        "+---+\n| a |\n+---+\n#+tblfm: $1=2\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-tblfm-two-fwd",
+      "input": {
+        "text": "+---+\n| a |\n+---+\n#+TBLFM: $1=2\n#+TBLFM: $1=3\n\nAfter.\n",
+        "point": 0,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+---+\n| a |\n+---+\n#+TBLFM: $1=2\n#+TBLFM: $1=3\n\nAfter.\n",
+      "visible": "+---+\n| a |\n+---+\n#+TBLFM: $1=2\n#+TBLFM: $1=3\n\nAfter.\n",
+      "point": 47,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-tblfm-cc",
+      "input": {
+        "text": "+---+\n| a |\n+---+\n#+TBLFM: $1=2\n#+TBLFM: $1=3\n\nAfter.\n",
+        "point": 21,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+---+\n| a |\n+---+\n#+TBLFM: $1=2\n#+TBLFM: $1=3\n\nAfter.\n",
+      "visible": "+---+\n| a |\n+---+\n#+TBLFM: $1=2\n#+TBLFM: $1=3\n\nAfter.\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Use ‘C-c '’ to edit table.el tables"
+    },
+    {
+      "name": "review-tr-tblfm-tab",
+      "input": {
+        "text": "+---+\n| a |\n+---+\n#+TBLFM: $1=2\n#+TBLFM: $1=3\n\nAfter.\n",
+        "point": 21,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+---+\n| a |\n+---+\n#+TBLFM: $1=2\n#+TBLFM: $1=3\n\nAfter.\n",
+      "visible": "+---+\n| a |\n+---+\n#+TBLFM: $1=2\n#+TBLFM: $1=3\n\nAfter.\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-tblfm-mup-after",
+      "input": {
+        "text": "+---+\n| a |\n+---+\n#+TBLFM: $1=2\n#+TBLFM: $1=3\n\nAfter.\n",
+        "point": 47,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "After.\n\n+---+\n| a |\n+---+\n#+TBLFM: $1=2\n#+TBLFM: $1=3\n",
+      "visible": "After.\n\n+---+\n| a |\n+---+\n#+TBLFM: $1=2\n#+TBLFM: $1=3\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-blank-after-cc",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 62,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 62,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    },
+    {
+      "name": "review-tr-blank-after-tab",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 62,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 62,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-row-sort",
+      "input": {
+        "text": "* B\n+---+\n| a |\n+---+\n* A\n",
+        "point": 12,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ],
+        "message": true
+      },
+      "text": "* B\n+---+\n| a |\n+---+\n* A\n",
+      "visible": "* B\n+---+\n| a |\n+---+\n* A\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Nothing to sort",
+      "message": null
+    },
+    {
+      "name": "review-tr-row-msup",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n| a | bb |\n+---+----+\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n| a | bb |\n+---+----+\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-row-msleft",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "This command is active in special context like tables, headlines or items",
+      "message": null
+    },
+    {
+      "name": "review-tr-row-msright",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "This command is active in special context like tables, headlines or items",
+      "message": null
+    },
+    {
+      "name": "review-tr-row-mleft",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-row-sup",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "To use shift-selection with Org mode, customize ‘org-support-shift-select’",
+      "message": null
+    },
+    {
+      "name": "review-tr-row-sret",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "S-<return>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not in table data field",
+      "message": null
+    },
+    {
+      "name": "review-tr-row-copy-special",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "C-c C-x M-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Before first headline at position 19 in buffer *e8-oracle*",
+      "message": null
+    },
+    {
+      "name": "review-tr-row-cut-special",
+      "input": {
+        "text": "* H\n+---+\n| a |\n+---+\n* I\n",
+        "point": 12,
+        "keys": "C-c C-x C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* I\n",
+      "visible": "* I\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* H\n+---+\n| a |\n+---+\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "Cut: Subtree(s) with 22 characters"
+    },
+    {
+      "name": "review-tr-row-checkbox",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "C-c C-x C-b",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not at an item or heading, and no active region",
+      "message": null
+    },
+    {
+      "name": "review-tr-row-footnote",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "s"
+        ],
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n\n* Footnotes\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n\n* Footnotes\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "review-tr-rule-footnote",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 10,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "s"
+        ],
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n\n* Footnotes\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n\n* Footnotes\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "review-tr-after-footnote",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 68,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter[fn:1].\n\n* Footnotes\n\n[fn:1] \n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter[fn:1].\n\n* Footnotes\n\n[fn:1] \n",
+      "point": 96,
+      "mark": 74,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "review-tr-sparse-tree",
+      "input": {
+        "text": "* H\n+---+\n| a |\n+---+\n* I\nb\n",
+        "point": 0,
+        "keys": "C-c / r",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ],
+        "message": true
+      },
+      "text": "r* H\n+---+\n| a |\n+---+\n* I\nb\n",
+      "visible": "r* H\n+---+\n| a |\n+---+\n* I\nb\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Minibuffer read in batch",
+      "message": "             [c]ycle through date types: scheduled/deadline"
+    },
+    {
+      "name": "review-tr-row-bar",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "|",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| |a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| |a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-row-tab-twice",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Use ‘C-c ’’ to edit table.el tables [2 times]"
+    },
+    {
+      "name": "review-tr-rule-mup",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 10,
+        "keys": "M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nText.\n\nAfter.\n",
+      "visible": "+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nText.\n\nAfter.\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-row-end-cc",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 22,
+        "keys": "C-e C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Use ‘C-c '’ to edit table.el tables"
+    },
+    {
+      "name": "review-tr-row-ck-special",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "C-k",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-special-ctrl-k": true
+        }
+      },
+      "text": "Text.\n\n+---+----+\n| \n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| \n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "a | bb |"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-row-co-special",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-special-ctrl-o": true
+        }
+      },
+      "text": "Text.\n\n+---+----+\n| \na | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| \na | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-mx-next-field",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-next-field"
+        ],
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-mx-previous-field",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-previous-field"
+        ],
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move to previous table field",
+      "message": null
+    },
+    {
+      "name": "review-tr-mx-next-row",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-next-row"
+        ],
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not at a table",
+      "message": null
+    },
+    {
+      "name": "review-tr-mx-insert-row",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-insert-row"
+        ],
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not at a table",
+      "message": null
+    },
+    {
+      "name": "review-tr-mx-kill-row",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-kill-row"
+        ],
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not at a table",
+      "message": null
+    },
+    {
+      "name": "review-tr-mx-insert-column",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-insert-column"
+        ],
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not at a table",
+      "message": null
+    },
+    {
+      "name": "review-tr-mx-delete-column",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-delete-column"
+        ],
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not at a table",
+      "message": null
+    },
+    {
+      "name": "review-tr-mx-move-row-down",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-move-row-down"
+        ],
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move row further",
+      "message": null
+    },
+    {
+      "name": "review-tr-mx-move-row-up",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-move-row-up"
+        ],
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move row further",
+      "message": null
+    },
+    {
+      "name": "review-tr-mx-move-column-right",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-move-column-right"
+        ],
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not at a table",
+      "message": null
+    },
+    {
+      "name": "review-tr-mx-move-column-left",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-move-column-left"
+        ],
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not at a table",
+      "message": null
+    },
+    {
+      "name": "review-tr-mx-blank-field",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-blank-field"
+        ],
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not in table data field",
+      "message": null
+    },
+    {
+      "name": "review-tr-mx-beginning-of-field",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-beginning-of-field"
+        ],
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move to previous table field",
+      "message": null
+    },
+    {
+      "name": "review-tr-mx-end-of-field",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-end-of-field"
+        ],
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-mx-insert-hline",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-insert-hline"
+        ],
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not at a table",
+      "message": null
+    },
+    {
+      "name": "review-tr-mx-hline-and-move",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-hline-and-move"
+        ],
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not at a table",
+      "message": null
+    },
+    {
+      "name": "review-tr-mx-recalculate",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-recalculate"
+        ],
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not at a table",
+      "message": null
+    },
+    {
+      "name": "review-tr-mx-copy-down",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-copy-down"
+        ],
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not in table data field",
+      "message": null
+    },
+    {
+      "name": "review-tr-mx-align",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-align"
+        ],
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-mx-move-cell-down",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-move-cell-down"
+        ],
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not in table data field",
+      "message": null
+    },
+    {
+      "name": "review-tr-mx-move-cell-right",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-move-cell-right"
+        ],
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not in table data field",
+      "message": null
+    },
+    {
+      "name": "review-tr-mx-sort-lines",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-sort-lines",
+          "a"
+        ],
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not in table data field",
+      "message": null
+    },
+    {
+      "name": "review-tr-org-tab",
+      "input": {
+        "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+        "point": 9,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d  |\n#+TBLFM: $2=3\n\nAfter.\n",
+      "visible": "Text.\n\n| a | bb |\n|---+----|\n| c | d  |\n#+TBLFM: $2=3\n\nAfter.\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-org-stab",
+      "input": {
+        "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+        "point": 9,
+        "keys": "S-TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d  |\n#+TBLFM: $2=3\n\nAfter.\n",
+      "visible": "Text.\n\n| a | bb |\n|---+----|\n| c | d  |\n#+TBLFM: $2=3\n\nAfter.\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Cannot move to previous table field",
+      "message": null
+    },
+    {
+      "name": "review-tr-org-cc",
+      "input": {
+        "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+        "point": 9,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d  |\n#+TBLFM: $2=3\n\nAfter.\n",
+      "visible": "Text.\n\n| a | bb |\n|---+----|\n| c | d  |\n#+TBLFM: $2=3\n\nAfter.\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-org-mdown",
+      "input": {
+        "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+        "point": 9,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n|---+----|\n| a | bb |\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+      "visible": "Text.\n\n|---+----|\n| a | bb |\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-org-dash",
+      "input": {
+        "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+        "point": 9,
+        "keys": "C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n| a | bb |\n|---+----|\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+      "visible": "Text.\n\n| a | bb |\n|---+----|\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-org-cret",
+      "input": {
+        "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+        "point": 9,
+        "keys": "C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n| a | bb |\n|---+----|\n|   |    |\n|---+----|\n| c | d  |\n#+TBLFM: $2=3\n\nAfter.\n",
+      "visible": "Text.\n\n| a | bb |\n|---+----|\n|   |    |\n|---+----|\n| c | d  |\n#+TBLFM: $2=3\n\nAfter.\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-org-tab-type",
+      "input": {
+        "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+        "point": 9,
+        "keys": "TAB x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n| a | x  |\n|---+----|\n| c | d  |\n#+TBLFM: $2=3\n\nAfter.\n",
+      "visible": "Text.\n\n| a | x  |\n|---+----|\n| c | d  |\n#+TBLFM: $2=3\n\nAfter.\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-org-del",
+      "input": {
+        "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+        "point": 9,
+        "keys": "C-d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n|   | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+      "visible": "Text.\n\n|   | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-org-fill",
+      "input": {
+        "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+        "point": 9,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d  |\n#+TBLFM: $2=3\n\nAfter.\n",
+      "visible": "Text.\n\n| a | bb |\n|---+----|\n| c | d  |\n#+TBLFM: $2=3\n\nAfter.\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-org-mark",
+      "input": {
+        "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+        "point": 9,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+      "visible": "Text.\n\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+      "point": 7,
+      "mark": 7,
+      "mark_active": false,
+      "kill_ring": [
+        "| a | bb |\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-org-fwd-el",
+      "input": {
+        "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+        "point": 9,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+      "visible": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-org-me",
+      "input": {
+        "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+        "point": 9,
+        "keys": "M-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+      "visible": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-org-ma",
+      "input": {
+        "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+        "point": 9,
+        "keys": "M-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d  |\n#+TBLFM: $2=3\n\nAfter.\n",
+      "visible": "Text.\n\n| a | bb |\n|---+----|\n| c | d  |\n#+TBLFM: $2=3\n\nAfter.\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Cannot move to previous table field",
+      "message": null
+    },
+    {
+      "name": "review-tr-org-sort",
+      "input": {
+        "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+        "point": 9,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ],
+        "message": true
+      },
+      "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+      "visible": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-org-item-tab",
+      "input": {
+        "text": "- item\n  | a | b |\n  | c | d |\n",
+        "point": 11,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- item\n  | a | b |\n  | c | d |\n",
+      "visible": "- item\n  | a | b |\n  | c | d |\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-org-plus-cell-tab",
+      "input": {
+        "text": "| + | b |\n| +---+ | d |\n",
+        "point": 2,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| +     | b |\n| +---+ | d |\n",
+      "visible": "| +     | b |\n| +---+ | d |\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-org-rule-cell-tab",
+      "input": {
+        "text": "| +---+ |\n",
+        "point": 3,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| +---+ |\n|       |\n",
+      "visible": "| +---+ |\n|       |\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-org-then-plus-text-tab",
+      "input": {
+        "text": "| a |\n+ item\n",
+        "point": 2,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a |\n|   |\n+ item\n",
+      "visible": "| a |\n|   |\n+ item\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-row-mret2",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "M-RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| \n* a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| \n* a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-row-sret2",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "S-RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not in table data field",
+      "message": null
+    },
+    {
+      "name": "review-tr-org-tblfm-nospace-mark",
+      "input": {
+        "text": "| a |\n#+TBLFM:\nAfter.\n",
+        "point": 2,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+TBLFM:\nAfter.\n",
+      "visible": "#+TBLFM:\nAfter.\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [
+        "| a |\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-capture-tel",
+      "input": {
+        "text": "* one\n* Inbox\n+---+\n| a |\n+---+\n* two\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "table-line",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "| %? | x |"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* one\n* Inbox\n+---+\n| a |\n+---+\n|     |   |\n|-----+---|\n| new | x |\n* two\n",
+      "visible": "* one\n* Inbox\n+---+\n| a |\n+---+\n|     |   |\n|-----+---|\n| new | x |\n* two\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-tr-capture-tel-then-org",
+      "input": {
+        "text": "* one\n* Inbox\n+---+\n| a |\n+---+\n\n| b | c |\n* two\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "table-line",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "| %? | x |"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* one\n* Inbox\n+---+\n| a |\n+---+\n\n| b   | c |\n| new | x |\n* two\n",
+      "visible": "* one\n* Inbox\n+---+\n| a |\n+---+\n\n| b   | c |\n| new | x |\n* two\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-tr-link-open",
+      "input": {
+        "text": "* H\n+--------+\n| [[*H]] |\n+--------+\nText.\n",
+        "point": 20,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n+--------+\n| [[*H]] |\n+--------+\nText.\n",
+      "visible": "* H\n+--------+\n| *H |\n+--------+\nText.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "No links"
+    },
+    {
+      "name": "review-tr-ts-sup",
+      "input": {
+        "text": "Text.\n+------------------+\n| <2026-11-25 Wed> |\n+------------------+\n",
+        "point": 36,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n+------------------+\n| <2026-12-25 Fri> |\n+------------------+\n",
+      "visible": "Text.\n+------------------+\n| <2026-12-25 Fri> |\n+------------------+\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-ts-cc",
+      "input": {
+        "text": "Text.\n+------------------+\n| <2026-11-25 Wed> |\n+------------------+\n",
+        "point": 36,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n+------------------+\n| <2026-11-25 Wed> |\n+------------------+\n",
+      "visible": "Text.\n+------------------+\n| <2026-11-25 Wed> |\n+------------------+\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Use ‘C-c '’ to edit table.el tables"
+    },
+    {
+      "name": "review-tr-ts-sright",
+      "input": {
+        "text": "Text.\n+------------------+\n| <2026-11-25 Wed> |\n+------------------+\n",
+        "point": 36,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n+------------------+\n| <2026-11-26 Thu> |\n+------------------+\n",
+      "visible": "Text.\n+------------------+\n| <2026-11-26 Thu> |\n+------------------+\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-cache-delete-rule-tab",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 51,
+        "keys": "C-k C-k C-p C-p C-f C-f TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n\nAfter.\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "+---+----+\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-cache-type-rule-tab",
+      "input": {
+        "text": "+---+\n| a |\n\nAfter.\n",
+        "point": 12,
+        "keys": "RET + - - - + C-p C-a C-f C-f TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+---+\n| a |\n\n+---+\nAfter.\n",
+      "visible": "+---+\n| a |\n\n+---+\nAfter.\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-cache-type-rule-mark",
+      "input": {
+        "text": "+---+\n| a |\n\nAfter.\n",
+        "point": 12,
+        "keys": "RET + - - - + C-p C-a M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+---+\n+---+\nAfter.\n",
+      "visible": "+---+\n+---+\nAfter.\n",
+      "point": 6,
+      "mark": 6,
+      "mark_active": false,
+      "kill_ring": [
+        "| a |\n\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-checkbox-item-cc",
+      "input": {
+        "text": "- [ ] item\n  +---+\n  | a |\n  +---+\n",
+        "point": 23,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [ ] item\n  +---+\n  | a |\n  +---+\n",
+      "visible": "- [ ] item\n  +---+\n  | a |\n  +---+\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Use ‘C-c '’ to edit table.el tables"
+    },
+    {
+      "name": "review-tr-org-footnote",
+      "input": {
+        "text": "Text.\n\n| a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n",
+        "point": 9,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n| [fn:1]a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n\n* Footnotes\n\n[fn:1] \n",
+      "visible": "Text.\n\n| [fn:1]a | bb |\n|---+----|\n| c | d |\n#+TBLFM: $2=3\n\nAfter.\n\n* Footnotes\n\n[fn:1] \n",
+      "point": 87,
+      "mark": 15,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "review-tr-org-nohline-cc",
+      "input": {
+        "text": "| a | b |\n| c | d |\n#+TBLFM: $2=3\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b |\n| c | d |\n#+TBLFM: $2=3\n",
+      "visible": "| a | b |\n| c | d |\n#+TBLFM: $2=3\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-empty-item-tab",
+      "input": {
+        "text": "-\n  +---+\n  | a |\n  +---+\n",
+        "point": 14,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "-\n  +---+\n  | a |\n  +---+\n",
+      "visible": "-\n  +---+\n  | a |\n  +---+\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Use ‘C-c ’’ to edit table.el tables"
+    },
+    {
+      "name": "review-tr-tblfm-between-mark",
+      "input": {
+        "text": "+--+\n|a|\n+--+\n#+TBLFM: x\n+--+\n|b|\n+--+\n\nAfter.\n",
+        "point": 31,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+--+\n|a|\n+--+\n#+TBLFM: x\nAfter.\n",
+      "visible": "+--+\n|a|\n+--+\n#+TBLFM: x\nAfter.\n",
+      "point": 25,
+      "mark": 25,
+      "mark_active": false,
+      "kill_ring": [
+        "+--+\n|b|\n+--+\n\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-drawer-cut-tab",
+      "input": {
+        "text": ":NOTES:\n+---+\n| a |\n:END:\n+---+\n",
+        "point": 16,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": ":NOTES:\n+---+\n| a |\n|   |\n:END:\n+---+\n",
+      "visible": ":NOTES:\n+---+\n| a |\n|   |\n:END:\n+---+\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-rule-blank-rows-tab",
+      "input": {
+        "text": "+---+\n\n| a |\n",
+        "point": 9,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+---+\n\n| a |\n|   |\n",
+      "visible": "+---+\n\n| a |\n|   |\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-two-blank-after-mark",
+      "input": {
+        "text": "+---+\n| a |\n+---+\n\n\nAfter.\n",
+        "point": 8,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "After.\n",
+      "visible": "After.\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [
+        "+---+\n| a |\n+---+\n\n\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-org-tblfm-nospace-mdown",
+      "input": {
+        "text": "| a |\n#+TBLFM:\n\nPara.\n",
+        "point": 2,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a |\n#+TBLFM:\n\nPara.\n",
+      "visible": "| a |\n#+TBLFM:\n\nPara.\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move row further",
+      "message": null
+    },
+    {
+      "name": "review-tr-org-tblfm-nospace-fwd",
+      "input": {
+        "text": "| a |\n#+TBLFM:\n\nPara.\n",
+        "point": 2,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a |\n#+TBLFM:\n\nPara.\n",
+      "visible": "| a |\n#+TBLFM:\n\nPara.\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-tel-tblfm-nospace-fwd",
+      "input": {
+        "text": "+---+\n| a |\n+---+\n#+TBLFM:\n\nPara.\n",
+        "point": 8,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "+---+\n| a |\n+---+\n#+TBLFM:\n\nPara.\n",
+      "visible": "+---+\n| a |\n+---+\n#+TBLFM:\n\nPara.\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
     }
   ]
 }
