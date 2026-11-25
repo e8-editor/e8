@@ -1,0 +1,836 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "para-mark",
+      "input": {
+        "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+        "point": 19,
+        "keys": "C-SPC C-n C-x n n M-< M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+      "visible": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+      "point": 19,
+      "mark": 38,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "para-mark-kill",
+      "input": {
+        "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+        "point": 19,
+        "keys": "C-SPC C-n C-x n n M-< M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para one line one.\nPara one line three.\n\nNext para.\n",
+      "visible": "Para one line one.\nPara one line three.\n\nNext para.\n",
+      "point": 19,
+      "mark": 19,
+      "mark_active": false,
+      "kill_ring": [
+        "Para one line two.\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "para-mark-twice",
+      "input": {
+        "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+        "point": 19,
+        "keys": "C-SPC C-n C-x n n M-< M-h M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+      "visible": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+      "point": 19,
+      "mark": 38,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "para-mark-twice-kill",
+      "input": {
+        "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+        "point": 19,
+        "keys": "C-SPC C-n C-x n n M-< M-h M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para one line one.\nPara one line three.\n\nNext para.\n",
+      "visible": "Para one line one.\nPara one line three.\n\nNext para.\n",
+      "point": 19,
+      "mark": 19,
+      "mark_active": false,
+      "kill_ring": [
+        "Para one line two.\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "para-mark-end",
+      "input": {
+        "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+        "point": 19,
+        "keys": "C-SPC C-n C-x n n M-< M-> M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+      "visible": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+      "point": 38,
+      "mark": 38,
+      "mark_active": false,
+      "kill_ring": [
+        ""
+      ],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "para-mark-start",
+      "input": {
+        "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+        "point": 19,
+        "keys": "C-SPC C-n C-x n n M-< M-< M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para one line one.\nPara one line three.\n\nNext para.\n",
+      "visible": "Para one line one.\nPara one line three.\n\nNext para.\n",
+      "point": 19,
+      "mark": 19,
+      "mark_active": false,
+      "kill_ring": [
+        "Para one line two.\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "tableel-mark",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 18,
+        "keys": "C-SPC C-n C-x n n M-< M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 18,
+      "mark": 29,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "tableel-mark-kill",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 18,
+        "keys": "C-SPC C-n C-x n n M-< M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 18,
+      "mark": 18,
+      "mark_active": false,
+      "kill_ring": [
+        "| a | bb |\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "tableel-mark-twice",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 18,
+        "keys": "C-SPC C-n C-x n n M-< M-h M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 18,
+      "mark": 29,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "tableel-mark-twice-kill",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 18,
+        "keys": "C-SPC C-n C-x n n M-< M-h M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 18,
+      "mark": 18,
+      "mark_active": false,
+      "kill_ring": [
+        "| a | bb |\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "tableel-mark-end",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 18,
+        "keys": "C-SPC C-n C-x n n M-< M-> M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 29,
+      "mark": 29,
+      "mark_active": false,
+      "kill_ring": [
+        ""
+      ],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "tableel-mark-start",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 18,
+        "keys": "C-SPC C-n C-x n n M-< M-< M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 18,
+      "mark": 18,
+      "mark_active": false,
+      "kill_ring": [
+        "| a | bb |\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "item-mark",
+      "input": {
+        "text": "- one\n  more one\n- two\n- three\n\nAfter.\n",
+        "point": 6,
+        "keys": "C-SPC C-n C-n C-x n n M-< M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- one\n  more one\n- two\n- three\n\nAfter.\n",
+      "visible": "- one\n  more one\n- two\n- three\n\nAfter.\n",
+      "point": 6,
+      "mark": 17,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "item-mark-kill",
+      "input": {
+        "text": "- one\n  more one\n- two\n- three\n\nAfter.\n",
+        "point": 6,
+        "keys": "C-SPC C-n C-n C-x n n M-< M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- one\n- two\n- three\n\nAfter.\n",
+      "visible": "- one\n- two\n- three\n\nAfter.\n",
+      "point": 6,
+      "mark": 6,
+      "mark_active": false,
+      "kill_ring": [
+        "  more one\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "item-mark-twice",
+      "input": {
+        "text": "- one\n  more one\n- two\n- three\n\nAfter.\n",
+        "point": 6,
+        "keys": "C-SPC C-n C-n C-x n n M-< M-h M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- one\n  more one\n- two\n- three\n\nAfter.\n",
+      "visible": "- one\n  more one\n- two\n- three\n\nAfter.\n",
+      "point": 6,
+      "mark": 23,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "item-mark-twice-kill",
+      "input": {
+        "text": "- one\n  more one\n- two\n- three\n\nAfter.\n",
+        "point": 6,
+        "keys": "C-SPC C-n C-n C-x n n M-< M-h M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- one\n- three\n\nAfter.\n",
+      "visible": "- one\n- three\n\nAfter.\n",
+      "point": 6,
+      "mark": 6,
+      "mark_active": false,
+      "kill_ring": [
+        "  more one\n- two\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "item-mark-end",
+      "input": {
+        "text": "- one\n  more one\n- two\n- three\n\nAfter.\n",
+        "point": 6,
+        "keys": "C-SPC C-n C-n C-x n n M-< M-> M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- one\n  more one\n- three\n\nAfter.\n",
+      "visible": "- one\n  more one\n- three\n\nAfter.\n",
+      "point": 17,
+      "mark": 17,
+      "mark_active": false,
+      "kill_ring": [
+        "- two\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "item-mark-start",
+      "input": {
+        "text": "- one\n  more one\n- two\n- three\n\nAfter.\n",
+        "point": 6,
+        "keys": "C-SPC C-n C-n C-x n n M-< M-< M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- one\n- two\n- three\n\nAfter.\n",
+      "visible": "- one\n- two\n- three\n\nAfter.\n",
+      "point": 6,
+      "mark": 6,
+      "mark_active": false,
+      "kill_ring": [
+        "  more one\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "table-mark",
+      "input": {
+        "text": "| a | b |\n| c | d |\n| e | f |\n\nAfter.\n",
+        "point": 10,
+        "keys": "C-SPC C-n C-x n n M-< M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b |\n| c | d |\n| e | f |\n\nAfter.\n",
+      "visible": "| a | b |\n| c | d |\n| e | f |\n\nAfter.\n",
+      "point": 10,
+      "mark": 20,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "table-mark-kill",
+      "input": {
+        "text": "| a | b |\n| c | d |\n| e | f |\n\nAfter.\n",
+        "point": 10,
+        "keys": "C-SPC C-n C-x n n M-< M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b |\n| e | f |\n\nAfter.\n",
+      "visible": "| a | b |\n| e | f |\n\nAfter.\n",
+      "point": 10,
+      "mark": 10,
+      "mark_active": false,
+      "kill_ring": [
+        "| c | d |\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "table-mark-twice",
+      "input": {
+        "text": "| a | b |\n| c | d |\n| e | f |\n\nAfter.\n",
+        "point": 10,
+        "keys": "C-SPC C-n C-x n n M-< M-h M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b |\n| c | d |\n| e | f |\n\nAfter.\n",
+      "visible": "| a | b |\n| c | d |\n| e | f |\n\nAfter.\n",
+      "point": 10,
+      "mark": 20,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "table-mark-twice-kill",
+      "input": {
+        "text": "| a | b |\n| c | d |\n| e | f |\n\nAfter.\n",
+        "point": 10,
+        "keys": "C-SPC C-n C-x n n M-< M-h M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b |\n| e | f |\n\nAfter.\n",
+      "visible": "| a | b |\n| e | f |\n\nAfter.\n",
+      "point": 10,
+      "mark": 10,
+      "mark_active": false,
+      "kill_ring": [
+        "| c | d |\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "table-mark-end",
+      "input": {
+        "text": "| a | b |\n| c | d |\n| e | f |\n\nAfter.\n",
+        "point": 10,
+        "keys": "C-SPC C-n C-x n n M-< M-> M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b |\n| c | d |\n| e | f |\n\nAfter.\n",
+      "visible": "| a | b |\n| c | d |\n| e | f |\n\nAfter.\n",
+      "point": 20,
+      "mark": 20,
+      "mark_active": false,
+      "kill_ring": [
+        ""
+      ],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "table-mark-start",
+      "input": {
+        "text": "| a | b |\n| c | d |\n| e | f |\n\nAfter.\n",
+        "point": 10,
+        "keys": "C-SPC C-n C-x n n M-< M-< M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b |\n| e | f |\n\nAfter.\n",
+      "visible": "| a | b |\n| e | f |\n\nAfter.\n",
+      "point": 10,
+      "mark": 10,
+      "mark_active": false,
+      "kill_ring": [
+        "| c | d |\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "para-end-mark",
+      "input": {
+        "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+        "point": 38,
+        "keys": "C-SPC C-n C-n C-n C-x n n M-< M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+      "visible": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+      "point": 38,
+      "mark": 60,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "para-end-mark-kill",
+      "input": {
+        "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+        "point": 38,
+        "keys": "C-SPC C-n C-n C-n C-x n n M-< M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para one line one.\nPara one line two.\nNext para.\n",
+      "visible": "Para one line one.\nPara one line two.\nNext para.\n",
+      "point": 38,
+      "mark": 38,
+      "mark_active": false,
+      "kill_ring": [
+        "Para one line three.\n\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "para-end-mark-twice",
+      "input": {
+        "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+        "point": 38,
+        "keys": "C-SPC C-n C-n C-n C-x n n M-< M-h M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+      "visible": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+      "point": 38,
+      "mark": 71,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "para-end-mark-twice-kill",
+      "input": {
+        "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+        "point": 38,
+        "keys": "C-SPC C-n C-n C-n C-x n n M-< M-h M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para one line one.\nPara one line two.\n",
+      "visible": "Para one line one.\nPara one line two.\n",
+      "point": 38,
+      "mark": 38,
+      "mark_active": false,
+      "kill_ring": [
+        "Para one line three.\n\nNext para.\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "para-end-mark-end",
+      "input": {
+        "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+        "point": 38,
+        "keys": "C-SPC C-n C-n C-n C-x n n M-< M-> M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para one line one.\nPara one line two.\nPara one line three.\n\n",
+      "visible": "Para one line one.\nPara one line two.\nPara one line three.\n\n",
+      "point": 60,
+      "mark": 60,
+      "mark_active": false,
+      "kill_ring": [
+        "Next para.\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "para-end-mark-start",
+      "input": {
+        "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+        "point": 38,
+        "keys": "C-SPC C-n C-n C-n C-x n n M-< M-< M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Para one line one.\nPara one line two.\nNext para.\n",
+      "visible": "Para one line one.\nPara one line two.\nNext para.\n",
+      "point": 38,
+      "mark": 38,
+      "mark_active": false,
+      "kill_ring": [
+        "Para one line three.\n\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "wide-mark",
+      "input": {
+        "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+        "point": 33,
+        "keys": "M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Next para.\n",
+      "visible": "Next para.\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [
+        "Para one line one.\nPara one line two.\nPara one line three.\n\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "wide-mark-twice",
+      "input": {
+        "text": "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n",
+        "point": 33,
+        "keys": "M-h M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "",
+      "visible": "",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [
+        "Para one line one.\nPara one line two.\nPara one line three.\n\nNext para.\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-tr-narrow-rows-mark",
+      "input": {
+        "text": "Text.\n\n+---+----+\n| a | bb |\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+        "point": 20,
+        "keys": "C-a C-SPC C-n C-x n n M-< M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text.\n\n+---+----+\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "visible": "Text.\n\n+---+----+\n+---+----+\n| c | d  |\n+---+----+\n\nAfter.\n",
+      "point": 18,
+      "mark": 18,
+      "mark_active": false,
+      "kill_ring": [
+        "| a | bb |\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "review-tr-narrow-para-mark",
+      "input": {
+        "text": "One\ntwo\nthree\n",
+        "point": 4,
+        "keys": "C-SPC C-n C-x n n M-< M-h C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "One\nthree\n",
+      "visible": "One\nthree\n",
+      "point": 4,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [
+        "two\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    }
+  ]
+}

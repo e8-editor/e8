@@ -4092,7 +4092,9 @@ function markElement(): void {
   const mark = e8.mark();
   const again = e8.lastCommand() === e8.thisCommand() && mark !== undefined;
   if (e8.calledInteractively() && (again || (e8.regionActive() && mark !== undefined))) {
-    e8.setMark(elementWithAffiliated(mark as number)?.[0].end ?? (mark as number));
+    // Within the narrowing, as goto-char keeps to it.
+    const end = elementWithAffiliated(mark as number)?.[0].end ?? (mark as number);
+    e8.setMark(Math.max(e8.pointMin(), Math.min(e8.pointMax(), end)));
     return;
   }
   // With its affiliated keywords, as #+NAME: above it, which are its in Org's parse.
@@ -4101,7 +4103,8 @@ function markElement(): void {
   const [e, begin] = found;
   e8.gotoChar(e8.lineEnd(lineAt()));
   e8.pushMark(Math.min(e8.pointMax(), e.end), { activate: true });
-  e8.gotoChar(begin);
+  // Within the narrowing, as goto-char keeps to it: the element may start before it.
+  e8.gotoChar(Math.max(e8.pointMin(), begin));
 }
 
 e8.defineCommand({
