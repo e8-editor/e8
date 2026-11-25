@@ -56,20 +56,23 @@ e8.defineVariable({
   value: null,
 });
 
-// The settings' global values, kept by watchers rather than read for each
-// line tested, as the item tests run over whole buffers; once a buffer has a
-// value of its own, the current buffer's are read, as Org's org-item-re does.
+// The settings' global values, kept rather than read for each line tested,
+// as the item tests run over whole buffers; once a buffer has a value of its
+// own, the current buffer's are read, as Org's org-item-re does. A watcher
+// marks them stale, and they are read again, from the default values and
+// the buffers' own, when next used: a global change can reach buffers that
+// made the variable theirs without setting it, which calls no watcher, and
+// makunbound of a buffer's own value reaches the watchers as a global change.
 let globalLettered = truthy(e8.variable("org-list-allow-alphabetical") ?? null);
 let lettered = globalLettered;
 // Whether any buffer has had a value of its own of either setting.
 let localValues = false;
-// makunbound's value is nil.
-e8.addVariableWatcher("org-list-allow-alphabetical", (_symbol, value, _operation, where) => {
-  if (where === null || where === undefined) {
-    globalLettered = truthy(value ?? null);
-    if (!localValues) lettered = globalLettered;
-  } else localValues = true;
-});
+// Whether a watcher has seen a change since the values were read.
+let stale = false;
+const markStale = (): void => {
+  stale = true;
+};
+e8.addVariableWatcher("org-list-allow-alphabetical", markStale);
 
 /** Whether lettered bullets are allowed, as org-list-allow-alphabetical says. */
 export function alphabetical(): boolean {
@@ -133,19 +136,26 @@ function makeSeparators(): void {
   SEPARATE_LETTERED = new RegExp(`^[ \\t]*(?:[-+*]|(?:[0-9]+|[A-Za-z])${t})(?:[ \\t]|$)`);
 }
 makeSeparators();
-e8.addVariableWatcher("org-plain-list-ordered-item-terminator", (_symbol, value, _operation, where) => {
-  if (where === null || where === undefined) {
-    globalTerminator = terminatorOf(value ?? true);
-    makeSeparators();
-    if (!localValues) {
-      terminator = globalTerminator;
-      makeItemRegexps();
-    }
-  } else localValues = true;
-});
+e8.addVariableWatcher("org-plain-list-ordered-item-terminator", markStale);
+
+/** Reads the settings' global values again, and whether any buffer has its own, after a change. */
+function refresh(): void {
+  stale = false;
+  globalLettered = truthy(e8.defaultValue("org-list-allow-alphabetical") ?? null);
+  globalTerminator = terminatorOf(e8.defaultValue("org-plain-list-ordered-item-terminator") ?? true);
+  makeSeparators();
+  localValues =
+    localValues ||
+    e8.bufferList().some((b) => e8.localVariableP("org-list-allow-alphabetical", b) || e8.localVariableP("org-plain-list-ordered-item-terminator", b));
+  lettered = globalLettered;
+  terminator = globalTerminator;
+  makeItemRegexps();
+}
 
 /** Brings the settings up to the current buffer's values, once any buffer has its own. */
 function sync(): void {
+  // After the watchers run, as they run before the change.
+  if (stale) refresh();
   if (!localValues) return;
   lettered = truthy(e8.variable("org-list-allow-alphabetical") ?? null);
   terminator = terminatorOf(e8.variable("org-plain-list-ordered-item-terminator") ?? true);
@@ -173,7 +183,14 @@ export const ITEM_RE = {
  * not counting, so this reads them.
  */
 export function separatesParagraph(text: string): boolean {
+  if (stale) refresh();
   return (globalLettered ? SEPARATE_LETTERED : SEPARATE_NUMBERED).test(text);
+}
+
+/** What the item tests read now, for the parser's cache to be made again when it changes. */
+export function listSyntaxKey(): string {
+  sync();
+  return `${lettered}${terminator}${globalLettered}${globalTerminator}`;
 }
 export const DRAWER_RE = /^[ \t]*:((?:\w|[-_])+):[ \t]*$/;
 const LIST_FORBIDDEN_BLOCKS = ["example", "verse", "src", "export"];

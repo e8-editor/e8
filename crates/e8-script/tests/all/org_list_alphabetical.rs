@@ -101,3 +101,31 @@ fn capture_prepends_to_a_lettered_list() {
         assert_eq!(text, expected, "{template}");
     }
 }
+
+/// A buffer that made the variable its own without setting it keeps its
+/// value when the global one changes, as no watcher sees make-local-variable.
+#[test]
+fn a_buffer_made_local_keeps_its_value_when_the_global_changes() {
+    let (mut ed, s) = org("a. one\nb. two", 13);
+    s.eval_expression(&mut ed, "(() => { e8.makeLocalVariable(\"org-list-allow-alphabetical\"); e8.setDefault(\"org-list-allow-alphabetical\", true); })()").unwrap();
+    ed.press("M-RET x").unwrap();
+    assert_eq!(text(&ed), "a. one\nb. two\n* x");
+}
+
+/// makunbound of a buffer's own value leaves the global value as it is,
+/// though it reaches the watchers as a global change.
+#[test]
+fn makunbound_of_a_buffer_value_leaves_the_global_one() {
+    let (mut ed, s) = org("aaa\nb. c\n", 0);
+    s.eval_expression(
+        &mut ed,
+        "(() => { e8.setDefault(\"org-list-allow-alphabetical\", true); \
+         const other = e8.getBufferCreate(\"other.org\"); \
+         e8.withCurrentBuffer(other, () => { e8.makeLocalVariable(\"org-list-allow-alphabetical\"); e8.setVariable(\"org-list-allow-alphabetical\", true); e8.makunbound(\"org-list-allow-alphabetical\"); }); \
+         e8.makeLocalVariable(\"org-list-allow-alphabetical\"); e8.setVariable(\"org-list-allow-alphabetical\", null); })()",
+    )
+    .unwrap();
+    // The paragraph separator keeps to the global value, t, so b. ends the paragraph and M-q leaves it.
+    ed.press("M-q").unwrap();
+    assert_eq!(text(&ed), "aaa\nb. c\n");
+}
