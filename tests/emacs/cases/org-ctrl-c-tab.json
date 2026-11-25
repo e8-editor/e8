@@ -253,36 +253,929 @@
   "name": "hide-sublevels",
   "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
   "point": 33,
-  "keys": "M-x o r g - f o l d - h i d e - s u b l e v e l s RET",
+  "keys": "M-x",
   "modes": [
    "org-mode"
   ],
-  "message": true
- },
- {
-  "name": "hide-sublevels-1",
-  "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
-  "point": 33,
-  "keys": "C-u 1 M-x o r g - f o l d - h i d e - s u b l e v e l s RET",
-  "modes": [
-   "org-mode"
-  ],
-  "message": true
+  "message": true,
+  "answers": [
+   "org-fold-hide-sublevels"
+  ]
  },
  {
   "name": "hide-sublevels-0",
   "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
   "point": 33,
-  "keys": "C-u 0 M-x o r g - f o l d - h i d e - s u b l e v e l s RET",
+  "keys": "C-u 0 M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-fold-hide-sublevels"
+  ]
+ },
+ {
+  "name": "drawer-top",
+  "text": ":PROPERTIES:\n:ID: x\n:END:\nTop.\n* A\nB.\n",
+  "point": 0,
+  "keys": "C-c TAB",
   "modes": [
    "org-mode"
   ],
   "message": true
  },
  {
-  "name": "drawer-top",
-  "text": ":PROPERTIES:\n:ID: x\n:END:\nTop.\n* A\nB.\n",
+  "name": "review-ctr-e-a-none",
+  "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
   "point": 0,
+  "keys": "C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-e-a-0",
+  "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+  "point": 0,
+  "keys": "C-u 0 C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-e-a-2",
+  "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+  "point": 0,
+  "keys": "C-u 2 C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-e-a-3",
+  "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+  "point": 0,
+  "keys": "C-u 3 C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-e-a-cu",
+  "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+  "point": 0,
+  "keys": "C-u C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-e-a-neg",
+  "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+  "point": 0,
+  "keys": "C-u - C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-e-a-neg2",
+  "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+  "point": 0,
+  "keys": "C-u - 2 C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-e-a-100",
+  "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+  "point": 0,
+  "keys": "C-u 1 0 0 C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-e-a1-none",
+  "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+  "point": 12,
+  "keys": "C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-e-a1-2",
+  "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+  "point": 12,
+  "keys": "C-u 2 C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-e-a1-0",
+  "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+  "point": 12,
+  "keys": "C-u 0 C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-e-a1-neg",
+  "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+  "point": 12,
+  "keys": "C-u - C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-e-abody",
+  "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+  "point": 4,
+  "keys": "C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-e-a11body",
+  "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+  "point": 35,
+  "keys": "C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-e-a111",
+  "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+  "point": 41,
+  "keys": "C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-e-deeper-2",
+  "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+  "point": 51,
+  "keys": "C-u 2 C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-e-b",
+  "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+  "point": 82,
+  "keys": "C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-e-bbody",
+  "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+  "point": 86,
+  "keys": "C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-e-a21",
+  "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+  "point": 74,
+  "keys": "C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-e-a-eol",
+  "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+  "point": 3,
+  "keys": "C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-e-a-twice",
+  "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+  "point": 0,
+  "keys": "C-c TAB C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-e-a-tab",
+  "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+  "point": 0,
+  "keys": "C-c TAB TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-e-a-tab-tab",
+  "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+  "point": 0,
+  "keys": "C-c TAB TAB TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-e-a-stab",
+  "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+  "point": 0,
+  "keys": "C-c TAB S-<tab>",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-e-a-ck",
+  "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+  "point": 0,
+  "keys": "C-c TAB C-c C-k",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-e-a1-ck",
+  "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+  "point": 12,
+  "keys": "C-c TAB C-c C-k",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-e-overview-a",
+  "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+  "point": 0,
+  "keys": "S-<tab> C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-e-overview-a1",
+  "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+  "point": 12,
+  "keys": "S-<tab> C-u 2 C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-e-a-cn",
+  "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+  "point": 0,
+  "keys": "C-c TAB C-n C-n C-n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-e-a1-cn",
+  "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+  "point": 12,
+  "keys": "C-c TAB C-n C-n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-s-a-none",
+  "text": "* A\nBody.\n**** Deep first\nx\n** Second\ny\n*** Third\nz\n**** Fourth\n* B\n",
+  "point": 0,
+  "keys": "C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-s-a-0",
+  "text": "* A\nBody.\n**** Deep first\nx\n** Second\ny\n*** Third\nz\n**** Fourth\n* B\n",
+  "point": 0,
+  "keys": "C-u 0 C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-s-a-2",
+  "text": "* A\nBody.\n**** Deep first\nx\n** Second\ny\n*** Third\nz\n**** Fourth\n* B\n",
+  "point": 0,
+  "keys": "C-u 2 C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-s-a-neg",
+  "text": "* A\nBody.\n**** Deep first\nx\n** Second\ny\n*** Third\nz\n**** Fourth\n* B\n",
+  "point": 0,
+  "keys": "C-u - C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-s-second",
+  "text": "* A\nBody.\n**** Deep first\nx\n** Second\ny\n*** Third\nz\n**** Fourth\n* B\n",
+  "point": 28,
+  "keys": "C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-o-a-none",
+  "text": "* A\nbody\n*** B\nbody b\n***** C\ntext\n*** D\n* E\n",
+  "point": 0,
+  "keys": "C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "name": "review-ctr-o-a-2",
+  "text": "* A\nbody\n*** B\nbody b\n***** C\ntext\n*** D\n* E\n",
+  "point": 0,
+  "keys": "C-u 2 C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "name": "review-ctr-o-a-0",
+  "text": "* A\nbody\n*** B\nbody b\n***** C\ntext\n*** D\n* E\n",
+  "point": 0,
+  "keys": "C-u 0 C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "name": "review-ctr-o-a-neg",
+  "text": "* A\nbody\n*** B\nbody b\n***** C\ntext\n*** D\n* E\n",
+  "point": 0,
+  "keys": "C-u - C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "name": "review-ctr-o-b-none",
+  "text": "* A\nbody\n*** B\nbody b\n***** C\ntext\n*** D\n* E\n",
+  "point": 9,
+  "keys": "C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "name": "review-ctr-o-top-2",
+  "text": "Top\n* A\nbody\n*** B\nbody b\n***** C\ntext\n*** D\n* E\n",
+  "point": 0,
+  "keys": "C-u 2 C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "name": "review-ctr-o-top-3",
+  "text": "Top\n* A\nbody\n*** B\nbody b\n***** C\ntext\n*** D\n* E\n",
+  "point": 0,
+  "keys": "C-u 3 C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "name": "review-ctr-o-hsl-b",
+  "text": "* A\nbody\n*** B\nbody b\n***** C\ntext\n*** D\n* E\n",
+  "point": 9,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "vars": {
+   "org-odd-levels-only": true
+  },
+  "answers": [
+   "org-fold-hide-sublevels"
+  ]
+ },
+ {
+  "name": "review-ctr-top-0",
+  "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+  "point": 0,
+  "keys": "C-u 0 C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-top-neg",
+  "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+  "point": 0,
+  "keys": "C-u - C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-top-cu",
+  "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+  "point": 0,
+  "keys": "C-u C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-top-blank",
+  "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+  "point": 20,
+  "keys": "C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-top-noeol",
+  "text": "Text only",
+  "point": 0,
+  "keys": "C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-top-empty",
+  "text": "",
+  "point": 0,
+  "keys": "C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-top-newlines",
+  "text": "\n\n\n",
+  "point": 1,
+  "keys": "C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-top-cn",
+  "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+  "point": 0,
+  "keys": "C-c TAB C-n C-n",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-top-ck",
+  "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+  "point": 0,
+  "keys": "C-c TAB C-c C-k",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-top-trailing-blank",
+  "text": "Top\n* A\nx\n** B\n\n",
+  "point": 0,
+  "keys": "C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-top-last-heading-noeol",
+  "text": "Top\n* A\n** B",
+  "point": 0,
+  "keys": "C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-top-tab-on-a",
+  "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+  "point": 0,
+  "keys": "C-c TAB C-n TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-narrow-body",
+  "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+  "point": 25,
+  "keys": "C-SPC C-n C-n C-n C-n C-x n n M-< C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-narrow-body-2",
+  "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+  "point": 25,
+  "keys": "C-SPC C-n C-n C-n C-n C-x n n M-< C-u 2 C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-narrow-sub-0",
+  "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+  "point": 33,
+  "keys": "C-x n s C-u 0 C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-narrow-newline-stab-ctab",
+  "text": "* A\nbody\n** B\nbb\n*** C\ncc\n* D\n",
+  "point": 9,
+  "keys": "S-<tab> C-x n s C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-narrow-newline-stab-ctab2",
+  "text": "* A\nbody\n** B\nbb\n*** C\ncc\n* D\n",
+  "point": 9,
+  "keys": "S-<tab> C-x n s C-u 2 C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-narrow-newline-stab-hsl",
+  "text": "* A\nbody\n** B\nbb\n*** C\ncc\n* D\n",
+  "point": 9,
+  "keys": "S-<tab> C-x n s C-u 2 M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-fold-hide-sublevels"
+  ]
+ },
+ {
+  "name": "review-ctr-narrow-above-first",
+  "text": "* X\nxx\nTop.\n* A\nBody\n** A1\n",
+  "point": 7,
+  "keys": "C-SPC M-> C-x n n M-< C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-narrow-hsl-default",
+  "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+  "point": 33,
+  "keys": "C-x n s M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-fold-hide-sublevels"
+  ]
+ },
+ {
+  "name": "review-ctr-hsl-a11",
+  "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+  "point": 48,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-fold-hide-sublevels"
+  ]
+ },
+ {
+  "name": "review-ctr-hsl-cu",
+  "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+  "point": 21,
+  "keys": "C-u M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-fold-hide-sublevels"
+  ]
+ },
+ {
+  "name": "review-ctr-hsl-neg",
+  "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+  "point": 21,
+  "keys": "C-u - M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-fold-hide-sublevels"
+  ]
+ },
+ {
+  "name": "review-ctr-hsl-top",
+  "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+  "point": 0,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-fold-hide-sublevels"
+  ]
+ },
+ {
+  "name": "review-ctr-hsl-after-ctab",
+  "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+  "point": 0,
+  "keys": "C-c TAB C-u 2 M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-fold-hide-sublevels"
+  ]
+ },
+ {
+  "name": "review-ctr-hsl-none",
+  "text": "Just text\n",
+  "point": 0,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-fold-hide-sublevels"
+  ]
+ },
+ {
+  "name": "review-ctr-hsl-noeol",
+  "text": "* A\nx\n** B\ny",
+  "point": 0,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-fold-hide-sublevels"
+  ]
+ },
+ {
+  "name": "review-ctr-inline-deep",
+  "text": "* A\n*************** Inline\nx\n*************** END\n** A1\ny\n* B\n",
+  "point": 0,
+  "keys": "C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-drawer-tab",
+  "text": "* A\n:PROPERTIES:\n:ID: x\n:END:\nBody\n** A1\n:LOGBOOK:\n- n\n:END:\nz\n",
+  "point": 0,
+  "keys": "C-c TAB TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-drawer-tab-tab",
+  "text": "* A\n:PROPERTIES:\n:ID: x\n:END:\nBody\n** A1\n:LOGBOOK:\n- n\n:END:\nz\n",
+  "point": 0,
+  "keys": "C-c TAB TAB TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-block-folded",
+  "text": "* A\n#+begin_src\ncode\n#+end_src\n** A1\nx\n",
+  "point": 4,
+  "keys": "TAB M-< C-c TAB TAB TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-startup-content-a",
+  "text": "#+STARTUP: content\n* A\nbody\n** A1\nx\n",
+  "point": 19,
+  "keys": "C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-startup-content-top",
+  "text": "#+STARTUP: content\n* A\nbody\n** A1\nx\n",
+  "point": 0,
+  "keys": "C-u 2 C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-ck-top-fresh",
+  "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+  "point": 0,
+  "keys": "C-c C-k",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-ck-top-overview",
+  "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+  "point": 0,
+  "keys": "S-<tab> C-c C-k",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-ck-top-hsl",
+  "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+  "point": 0,
+  "keys": "C-u 1 M-x C-c C-k",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "answers": [
+   "org-fold-hide-sublevels"
+  ]
+ },
+ {
+  "name": "review-ctr-bare-stars-ck",
+  "text": "* A\n** A1\n*** A11\nx\n**\n* B\n",
+  "point": 0,
+  "keys": "C-c C-k",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-end-noeol-a",
+  "text": "* A\nx\n** B\ny",
+  "point": 0,
+  "keys": "C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-end-heading-noeol-a",
+  "text": "* A\n** B",
+  "point": 0,
+  "keys": "C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-end-blanks-a",
+  "text": "* A\n** B\n\n\n",
+  "point": 0,
+  "keys": "C-c TAB",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "review-ctr-end-blanks-b",
+  "text": "* A\n** B\n\n\n",
+  "point": 4,
   "keys": "C-c TAB",
   "modes": [
    "org-mode"

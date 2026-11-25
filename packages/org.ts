@@ -1973,6 +1973,24 @@ e8.defineCommand({
   },
 });
 
+/** Shows a heading's line, from the end of the line before it within the narrowing, as org-fold-heading. */
+function showHeadingInNarrowing(h: Heading): void {
+  flag(h.line > 0 ? Math.max(e8.pointMin(), e8.lineEnd(h.line - 1)) : h.start, h.end, false);
+}
+
+/**
+ * Hides the text above the first heading in the narrowing, as
+ * org-fold-flag-above-first-heading: from the buffer's very start, as its
+ * folds take positions in the whole buffer; nothing if the narrowing
+ * starts with a heading. Gives where the first heading starts, or the end.
+ */
+function flagAboveFirstHeading(): number {
+  const first = headings().find((h) => h.start >= e8.pointMin() && h.start < e8.pointMax());
+  const to = first ? first.start : e8.pointMax();
+  if (to > e8.pointMin()) flag(0, to - 1, true);
+  return to;
+}
+
 /**
  * Hides everything but the headings of the top LEVELS levels, as
  * org-fold-hide-sublevels: from the first heading to the end, the last
@@ -1990,7 +2008,7 @@ function hideSublevels(levels: number): void {
     // Each heading of those levels shown, from the end of the line before it, as org-fold-heading.
     for (const h of all) {
       if (h.start < beg || h.start > end || h.level > levels) continue;
-      flag(h.line > 0 ? e8.lineEnd(h.line - 1) : h.start, h.end, false);
+      showHeadingInNarrowing(h);
     }
     if (max > e8.pointMin() && max === e8.lineStart(lineAt(max)) && e8.invisibleAt(max - 1)) flag(max - 1, max, false);
   });
@@ -2038,7 +2056,7 @@ function showChildrenHere(level: number): void {
   const parent = all[i];
   const maxLevel = validLevel(parent.level, level);
   const end = subtreeEndHere(all, i);
-  const show = (h: Heading): void => flag(h.line > 0 ? e8.lineEnd(h.line - 1) : h.start, h.end, false);
+  const show = showHeadingInNarrowing;
   show(parent);
   let minDirect = Infinity;
   for (let j = i + 1; j < all.length && all[j].start < end; j++) {
@@ -2063,9 +2081,7 @@ e8.defineCommand({
     const first = all.find((h) => h.start >= e8.pointMin());
     if (!first || e8.point() < first.start) {
       e8.saveExcursion(() => {
-        // The text above the first heading, as org-fold-flag-above-first-heading.
-        const to = first ? first.start : e8.pointMax();
-        if (to > e8.pointMin()) flag(e8.pointMin(), to - 1, true);
+        flagAboveFirstHeading();
         hideSublevels(arg);
       });
       return;
@@ -2082,8 +2098,21 @@ e8.defineCommand({
     if (truthy(e8.variable("org-finish-function"))) {
       e8.letBind({ "org-note-abort": true }, () => e8.funcall(e8.variable("org-finish-function") as string));
     } else if (headings().every((h) => h.start > e8.point())) {
-      // Before the first heading, every heading in the buffer, as org-fold-show-branches-buffer.
-      e8.call("outline-hide-body");
+      // Before the first heading, every heading in the buffer, as org-fold-show-branches-buffer:
+      // the text above them hidden, then each top heading's branches shown.
+      const first = flagAboveFirstHeading();
+      hideSublevels(1);
+      if (first < e8.pointMax()) {
+        e8.gotoChar(first);
+        for (;;) {
+          showChildrenHere(1000);
+          const all = headings();
+          const i = headingIndex(all, lineAt());
+          const next = i === undefined ? undefined : nextSameOrHigher(all, i);
+          if (!next || next.level !== all[i!].level || next.start >= e8.pointMax()) break;
+          e8.gotoChar(next.start);
+        }
+      }
       e8.gotoChar(e8.pointMin());
     } else {
       // The subtree folded, then its headings shown, as org-fold-hide-subtree and org-fold-show-branches.

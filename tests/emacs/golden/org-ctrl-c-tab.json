@@ -582,45 +582,25 @@
       "input": {
         "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
         "point": 33,
-        "keys": "M-x o r g - f o l d - h i d e - s u b l e v e l s RET",
+        "keys": "M-x",
         "modes": [
           "org-mode"
         ],
         "call": [],
         "platform": null,
-        "message": true
-      },
-      "text": "Top text.\nMore top.\n\n* A\nBody a.\norg-fold-hide-sublevels\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
-      "visible": "Top text.\nMore top.\n\n* A\nBody a.\norg-fold-hide-sublevels\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
-      "point": 57,
-      "mark": null,
-      "mark_active": false,
-      "kill_ring": [],
-      "modified": true,
-      "error": "Minibuffer read in batch",
-      "message": null
-    },
-    {
-      "name": "hide-sublevels-1",
-      "input": {
-        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
-        "point": 33,
-        "keys": "C-u 1 M-x o r g - f o l d - h i d e - s u b l e v e l s RET",
-        "modes": [
-          "org-mode"
+        "answers": [
+          "org-fold-hide-sublevels"
         ],
-        "call": [],
-        "platform": null,
         "message": true
       },
-      "text": "Top text.\nMore top.\n\n* A\nBody a.\norg-fold-hide-sublevels\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
-      "visible": "Top text.\nMore top.\n\n* A\nBody a.\norg-fold-hide-sublevels\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
-      "point": 57,
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "Top text.\nMore top.\n\n* A\n** A1\n* B\n** B1\n",
+      "point": 33,
       "mark": null,
       "mark_active": false,
       "kill_ring": [],
-      "modified": true,
-      "error": "Minibuffer read in batch",
+      "modified": false,
+      "error": null,
       "message": null
     },
     {
@@ -628,22 +608,25 @@
       "input": {
         "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
         "point": 33,
-        "keys": "C-u 0 M-x o r g - f o l d - h i d e - s u b l e v e l s RET",
+        "keys": "C-u 0 M-x",
         "modes": [
           "org-mode"
         ],
         "call": [],
         "platform": null,
+        "answers": [
+          "org-fold-hide-sublevels"
+        ],
         "message": true
       },
-      "text": "Top text.\nMore top.\n\n* A\nBody a.\norg-fold-hide-sublevels\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
-      "visible": "Top text.\nMore top.\n\n* A\nBody a.\norg-fold-hide-sublevels\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
-      "point": 57,
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "point": 33,
       "mark": null,
       "mark_active": false,
       "kill_ring": [],
-      "modified": true,
-      "error": "Minibuffer read in batch",
+      "modified": false,
+      "error": "Must keep at least one level of headers",
       "message": null
     },
     {
@@ -662,6 +645,1995 @@
       "text": ":PROPERTIES:\n:ID: x\n:END:\nTop.\n* A\nB.\n",
       "visible": "\n* A\n",
       "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-e-a-none",
+      "input": {
+        "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+        "point": 0,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "visible": "* A\n** A1\n** A2\n* B\nBody b.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-e-a-0",
+      "input": {
+        "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+        "point": 0,
+        "keys": "C-u 0 C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "visible": "* A\n** A1\n** A2\n* B\nBody b.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-e-a-2",
+      "input": {
+        "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+        "point": 0,
+        "keys": "C-u 2 C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "visible": "* A\n** A1\n*** A11\n** A2\n*** A21\n* B\nBody b.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-e-a-3",
+      "input": {
+        "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+        "point": 0,
+        "keys": "C-u 3 C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "visible": "* A\n** A1\n*** A11\n**** A111\n** A2\n*** A21\n* B\nBody b.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-e-a-cu",
+      "input": {
+        "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+        "point": 0,
+        "keys": "C-u C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "visible": "* A\n** A1\n*** A11\n**** A111\n** A2\n*** A21\n* B\nBody b.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-e-a-neg",
+      "input": {
+        "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+        "point": 0,
+        "keys": "C-u - C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "visible": "* A\n** A1\n** A2\n* B\nBody b.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-e-a-neg2",
+      "input": {
+        "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+        "point": 0,
+        "keys": "C-u - 2 C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "visible": "* A\n** A1\n** A2\n* B\nBody b.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-e-a-100",
+      "input": {
+        "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+        "point": 0,
+        "keys": "C-u 1 0 0 C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "visible": "* A\n** A1\n*** A11\n**** A111\n** A2\n*** A21\n* B\nBody b.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-e-a1-none",
+      "input": {
+        "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+        "point": 12,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "visible": "* A\nBody a.\n** A1\n*** A11\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-e-a1-2",
+      "input": {
+        "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+        "point": 12,
+        "keys": "C-u 2 C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "visible": "* A\nBody a.\n** A1\n*** A11\n**** A111\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-e-a1-0",
+      "input": {
+        "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+        "point": 12,
+        "keys": "C-u 0 C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "visible": "* A\nBody a.\n** A1\n*** A11\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-e-a1-neg",
+      "input": {
+        "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+        "point": 12,
+        "keys": "C-u - C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "visible": "* A\nBody a.\n** A1\n*** A11\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-e-abody",
+      "input": {
+        "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+        "point": 4,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "visible": "* A\n** A1\n** A2\n* B\nBody b.\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-e-a11body",
+      "input": {
+        "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+        "point": 35,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "visible": "* A\nBody a.\n** A1\nBody a1.\n*** A11\n**** A111\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-e-a111",
+      "input": {
+        "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+        "point": 41,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "visible": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "point": 41,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-e-deeper-2",
+      "input": {
+        "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+        "point": 51,
+        "keys": "C-u 2 C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "visible": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "point": 51,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-e-b",
+      "input": {
+        "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+        "point": 82,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "visible": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B",
+      "point": 82,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-e-bbody",
+      "input": {
+        "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+        "point": 86,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "visible": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B",
+      "point": 86,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-e-a21",
+      "input": {
+        "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+        "point": 74,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "visible": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "point": 74,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-e-a-eol",
+      "input": {
+        "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+        "point": 3,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "visible": "* A\n** A1\n** A2\n* B\nBody b.\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-e-a-twice",
+      "input": {
+        "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+        "point": 0,
+        "keys": "C-c TAB C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "visible": "* A\n** A1\n** A2\n* B\nBody b.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-e-a-tab",
+      "input": {
+        "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+        "point": 0,
+        "keys": "C-c TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "visible": "* A\n* B\nBody b.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-e-a-tab-tab",
+      "input": {
+        "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+        "point": 0,
+        "keys": "C-c TAB TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "visible": "* A\nBody a.\n** A1\n** A2\n* B\nBody b.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-e-a-stab",
+      "input": {
+        "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+        "point": 0,
+        "keys": "C-c TAB S-<tab>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "visible": "* A\n* B",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-e-a-ck",
+      "input": {
+        "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+        "point": 0,
+        "keys": "C-c TAB C-c C-k",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "visible": "* A\n** A1\n*** A11\n**** A111\n** A2\n*** A21\n* B\nBody b.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-e-a1-ck",
+      "input": {
+        "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+        "point": 12,
+        "keys": "C-c TAB C-c C-k",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "visible": "* A\nBody a.\n** A1\n*** A11\n**** A111\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-e-overview-a",
+      "input": {
+        "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+        "point": 0,
+        "keys": "S-<tab> C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "visible": "* A\n** A1\n** A2\n* B",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-e-overview-a1",
+      "input": {
+        "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+        "point": 12,
+        "keys": "S-<tab> C-u 2 C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "visible": "* A\n** A1\n*** A11\n**** A111\n* B",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-e-a-cn",
+      "input": {
+        "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+        "point": 0,
+        "keys": "C-c TAB C-n C-n C-n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "visible": "* A\n** A1\n** A2\n* B\nBody b.\n",
+      "point": 82,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-e-a1-cn",
+      "input": {
+        "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+        "point": 12,
+        "keys": "C-c TAB C-n C-n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n**** A111\nDeeper.\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "visible": "* A\nBody a.\n** A1\n*** A11\n** A2\nBody a2.\n*** A21\n* B\nBody b.\n",
+      "point": 59,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-s-a-none",
+      "input": {
+        "text": "* A\nBody.\n**** Deep first\nx\n** Second\ny\n*** Third\nz\n**** Fourth\n* B\n",
+        "point": 0,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody.\n**** Deep first\nx\n** Second\ny\n*** Third\nz\n**** Fourth\n* B\n",
+      "visible": "* A\n**** Deep first\n** Second\n* B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-s-a-0",
+      "input": {
+        "text": "* A\nBody.\n**** Deep first\nx\n** Second\ny\n*** Third\nz\n**** Fourth\n* B\n",
+        "point": 0,
+        "keys": "C-u 0 C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody.\n**** Deep first\nx\n** Second\ny\n*** Third\nz\n**** Fourth\n* B\n",
+      "visible": "* A\n**** Deep first\n** Second\n* B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-s-a-2",
+      "input": {
+        "text": "* A\nBody.\n**** Deep first\nx\n** Second\ny\n*** Third\nz\n**** Fourth\n* B\n",
+        "point": 0,
+        "keys": "C-u 2 C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody.\n**** Deep first\nx\n** Second\ny\n*** Third\nz\n**** Fourth\n* B\n",
+      "visible": "* A\n**** Deep first\n** Second\n*** Third\n* B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-s-a-neg",
+      "input": {
+        "text": "* A\nBody.\n**** Deep first\nx\n** Second\ny\n*** Third\nz\n**** Fourth\n* B\n",
+        "point": 0,
+        "keys": "C-u - C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody.\n**** Deep first\nx\n** Second\ny\n*** Third\nz\n**** Fourth\n* B\n",
+      "visible": "* A\n**** Deep first\n** Second\n* B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-s-second",
+      "input": {
+        "text": "* A\nBody.\n**** Deep first\nx\n** Second\ny\n*** Third\nz\n**** Fourth\n* B\n",
+        "point": 28,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nBody.\n**** Deep first\nx\n** Second\ny\n*** Third\nz\n**** Fourth\n* B\n",
+      "visible": "* A\nBody.\n**** Deep first\nx\n** Second\n*** Third\n* B\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-o-a-none",
+      "input": {
+        "text": "* A\nbody\n*** B\nbody b\n***** C\ntext\n*** D\n* E\n",
+        "point": 0,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* A\nbody\n*** B\nbody b\n***** C\ntext\n*** D\n* E\n",
+      "visible": "* A\n*** B\n*** D\n* E\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-o-a-2",
+      "input": {
+        "text": "* A\nbody\n*** B\nbody b\n***** C\ntext\n*** D\n* E\n",
+        "point": 0,
+        "keys": "C-u 2 C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* A\nbody\n*** B\nbody b\n***** C\ntext\n*** D\n* E\n",
+      "visible": "* A\n*** B\n***** C\n*** D\n* E\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-o-a-0",
+      "input": {
+        "text": "* A\nbody\n*** B\nbody b\n***** C\ntext\n*** D\n* E\n",
+        "point": 0,
+        "keys": "C-u 0 C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* A\nbody\n*** B\nbody b\n***** C\ntext\n*** D\n* E\n",
+      "visible": "* A\n*** B\n*** D\n* E\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-o-a-neg",
+      "input": {
+        "text": "* A\nbody\n*** B\nbody b\n***** C\ntext\n*** D\n* E\n",
+        "point": 0,
+        "keys": "C-u - C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* A\nbody\n*** B\nbody b\n***** C\ntext\n*** D\n* E\n",
+      "visible": "* A\n*** B\n*** D\n* E\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-o-b-none",
+      "input": {
+        "text": "* A\nbody\n*** B\nbody b\n***** C\ntext\n*** D\n* E\n",
+        "point": 9,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* A\nbody\n*** B\nbody b\n***** C\ntext\n*** D\n* E\n",
+      "visible": "* A\nbody\n*** B\n***** C\n*** D\n* E\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-o-top-2",
+      "input": {
+        "text": "Top\n* A\nbody\n*** B\nbody b\n***** C\ntext\n*** D\n* E\n",
+        "point": 0,
+        "keys": "C-u 2 C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "Top\n* A\nbody\n*** B\nbody b\n***** C\ntext\n*** D\n* E\n",
+      "visible": "\n* A\n* E\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-o-top-3",
+      "input": {
+        "text": "Top\n* A\nbody\n*** B\nbody b\n***** C\ntext\n*** D\n* E\n",
+        "point": 0,
+        "keys": "C-u 3 C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "Top\n* A\nbody\n*** B\nbody b\n***** C\ntext\n*** D\n* E\n",
+      "visible": "\n* A\n*** B\n*** D\n* E\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-o-hsl-b",
+      "input": {
+        "text": "* A\nbody\n*** B\nbody b\n***** C\ntext\n*** D\n* E\n",
+        "point": 9,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-fold-hide-sublevels"
+        ],
+        "message": true,
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* A\nbody\n*** B\nbody b\n***** C\ntext\n*** D\n* E\n",
+      "visible": "* A\n*** B\n*** D\n* E\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-top-0",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 0,
+        "keys": "C-u 0 C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Must keep at least one level of headers",
+      "message": null
+    },
+    {
+      "name": "review-ctr-top-neg",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 0,
+        "keys": "C-u - C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Must keep at least one level of headers",
+      "message": null
+    },
+    {
+      "name": "review-ctr-top-cu",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 0,
+        "keys": "C-u C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "\n* A\n** A1\n*** A11\n* B\n** B1\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-top-blank",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 20,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "\n* A\n* B\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-top-noeol",
+      "input": {
+        "text": "Text only",
+        "point": 0,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text only",
+      "visible": "y",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-top-empty",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "",
+      "visible": "",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-top-newlines",
+      "input": {
+        "text": "\n\n\n",
+        "point": 1,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "\n\n\n",
+      "visible": "\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-top-cn",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 0,
+        "keys": "C-c TAB C-n C-n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "\n* A\n* B\n",
+      "point": 62,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-top-ck",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 0,
+        "keys": "C-c TAB C-c C-k",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "\n* A\n** A1\n*** A11\n* B\n** B1\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-top-trailing-blank",
+      "input": {
+        "text": "Top\n* A\nx\n** B\n\n",
+        "point": 0,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top\n* A\nx\n** B\n\n",
+      "visible": "\n* A\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-top-last-heading-noeol",
+      "input": {
+        "text": "Top\n* A\n** B",
+        "point": 0,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top\n* A\n** B",
+      "visible": "\n* A",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-top-tab-on-a",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 0,
+        "keys": "C-c TAB C-n TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "\n* A\nBody a.\n** A1\n* B\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-narrow-body",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 25,
+        "keys": "C-SPC C-n C-n C-n C-n C-x n n M-< C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "\n\nDeep.\n* B\nBody b.\n** B1\n",
+      "point": 25,
+      "mark": 25,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "review-ctr-narrow-body-2",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 25,
+        "keys": "C-SPC C-n C-n C-n C-n C-x n n M-< C-u 2 C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "\n** A1\nDeep.\n* B\nBody b.\n** B1\n",
+      "point": 25,
+      "mark": 25,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "review-ctr-narrow-sub-0",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 33,
+        "keys": "C-x n s C-u 0 C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\n*** A11\n* B\nBody b.\n** B1\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-narrow-newline-stab-ctab",
+      "input": {
+        "text": "* A\nbody\n** B\nbb\n*** C\ncc\n* D\n",
+        "point": 9,
+        "keys": "S-<tab> C-x n s C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nbody\n** B\nbb\n*** C\ncc\n* D\n",
+      "visible": "* A** B\n*** C\n* D\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-narrow-newline-stab-ctab2",
+      "input": {
+        "text": "* A\nbody\n** B\nbb\n*** C\ncc\n* D\n",
+        "point": 9,
+        "keys": "S-<tab> C-x n s C-u 2 C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nbody\n** B\nbb\n*** C\ncc\n* D\n",
+      "visible": "* A** B\n*** C\n* D\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-narrow-newline-stab-hsl",
+      "input": {
+        "text": "* A\nbody\n** B\nbb\n*** C\ncc\n* D\n",
+        "point": 9,
+        "keys": "S-<tab> C-x n s C-u 2 M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-fold-hide-sublevels"
+        ],
+        "message": true
+      },
+      "text": "* A\nbody\n** B\nbb\n*** C\ncc\n* D\n",
+      "visible": "* A** B\n* D\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-narrow-above-first",
+      "input": {
+        "text": "* X\nxx\nTop.\n* A\nBody\n** A1\n",
+        "point": 7,
+        "keys": "C-SPC M-> C-x n n M-< C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* X\nxx\nTop.\n* A\nBody\n** A1\n",
+      "visible": "\n* A\n",
+      "point": 7,
+      "mark": 7,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "review-ctr-narrow-hsl-default",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 33,
+        "keys": "C-x n s M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-fold-hide-sublevels"
+        ],
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\n* B\nBody b.\n** B1\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-hsl-a11",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 48,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-fold-hide-sublevels"
+        ],
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "Top text.\nMore top.\n\n* A\n** A1\n*** A11\n* B\n** B1\n",
+      "point": 48,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-hsl-cu",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 21,
+        "keys": "C-u M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-fold-hide-sublevels"
+        ],
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "Top text.\nMore top.\n\n* A\n** A1\n*** A11\n* B\n** B1\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-hsl-neg",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 21,
+        "keys": "C-u - M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-fold-hide-sublevels"
+        ],
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Must keep at least one level of headers",
+      "message": null
+    },
+    {
+      "name": "review-ctr-hsl-top",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-fold-hide-sublevels"
+        ],
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "Top text.\nMore top.\n\n* A\n* B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-hsl-after-ctab",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 0,
+        "keys": "C-c TAB C-u 2 M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-fold-hide-sublevels"
+        ],
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "\n* A\n** A1\n* B\n** B1\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-hsl-none",
+      "input": {
+        "text": "Just text\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-fold-hide-sublevels"
+        ],
+        "message": true
+      },
+      "text": "Just text\n",
+      "visible": "Just text\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-hsl-noeol",
+      "input": {
+        "text": "* A\nx\n** B\ny",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-fold-hide-sublevels"
+        ],
+        "message": true
+      },
+      "text": "* A\nx\n** B\ny",
+      "visible": "* A",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-inline-deep",
+      "input": {
+        "text": "* A\n*************** Inline\nx\n*************** END\n** A1\ny\n* B\n",
+        "point": 0,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\n*************** Inline\nx\n*************** END\n** A1\ny\n* B\n",
+      "visible": "* A\n*************** Inline\n*************** END\n** A1\n* B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-drawer-tab",
+      "input": {
+        "text": "* A\n:PROPERTIES:\n:ID: x\n:END:\nBody\n** A1\n:LOGBOOK:\n- n\n:END:\nz\n",
+        "point": 0,
+        "keys": "C-c TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\n:PROPERTIES:\n:ID: x\n:END:\nBody\n** A1\n:LOGBOOK:\n- n\n:END:\nz\n",
+      "visible": "* A",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-drawer-tab-tab",
+      "input": {
+        "text": "* A\n:PROPERTIES:\n:ID: x\n:END:\nBody\n** A1\n:LOGBOOK:\n- n\n:END:\nz\n",
+        "point": 0,
+        "keys": "C-c TAB TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\n:PROPERTIES:\n:ID: x\n:END:\nBody\n** A1\n:LOGBOOK:\n- n\n:END:\nz\n",
+      "visible": "* A\n:PROPERTIES:\n:ID: x\n:END:\nBody\n** A1",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-block-folded",
+      "input": {
+        "text": "* A\n#+begin_src\ncode\n#+end_src\n** A1\nx\n",
+        "point": 4,
+        "keys": "TAB M-< C-c TAB TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\n#+begin_src\ncode\n#+end_src\n** A1\nx\n",
+      "visible": "* A\n#+begin_src\n** A1",
+      "point": 0,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "review-ctr-startup-content-a",
+      "input": {
+        "text": "#+STARTUP: content\n* A\nbody\n** A1\nx\n",
+        "point": 19,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+STARTUP: content\n* A\nbody\n** A1\nx\n",
+      "visible": "#+STARTUP: content\n* A\n** A1",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-startup-content-top",
+      "input": {
+        "text": "#+STARTUP: content\n* A\nbody\n** A1\nx\n",
+        "point": 0,
+        "keys": "C-u 2 C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+STARTUP: content\n* A\nbody\n** A1\nx\n",
+      "visible": "\n* A\n** A1\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-ck-top-fresh",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 0,
+        "keys": "C-c C-k",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "\n* A\n** A1\n*** A11\n* B\n** B1\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-ck-top-overview",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 0,
+        "keys": "S-<tab> C-c C-k",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "\n* A\n** A1\n*** A11\n* B\n** B1\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-ck-top-hsl",
+      "input": {
+        "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+        "point": 0,
+        "keys": "C-u 1 M-x C-c C-k",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-fold-hide-sublevels"
+        ],
+        "message": true
+      },
+      "text": "Top text.\nMore top.\n\n* A\nBody a.\n** A1\nBody a1.\n*** A11\nDeep.\n* B\nBody b.\n** B1\n",
+      "visible": "\n* A\n** A1\n*** A11\n* B\n** B1\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-bare-stars-ck",
+      "input": {
+        "text": "* A\n** A1\n*** A11\nx\n**\n* B\n",
+        "point": 0,
+        "keys": "C-c C-k",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\n** A1\n*** A11\nx\n**\n* B\n",
+      "visible": "* A\n** A1\n*** A11\n* B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-end-noeol-a",
+      "input": {
+        "text": "* A\nx\n** B\ny",
+        "point": 0,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nx\n** B\ny",
+      "visible": "* A\n** B",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-end-heading-noeol-a",
+      "input": {
+        "text": "* A\n** B",
+        "point": 0,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\n** B",
+      "visible": "* A\n** B",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-end-blanks-a",
+      "input": {
+        "text": "* A\n** B\n\n\n",
+        "point": 0,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\n** B\n\n\n",
+      "visible": "* A\n** B",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "review-ctr-end-blanks-b",
+      "input": {
+        "text": "* A\n** B\n\n\n",
+        "point": 4,
+        "keys": "C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\n** B\n\n\n",
+      "visible": "* A\n** B",
+      "point": 4,
       "mark": null,
       "mark_active": false,
       "kill_ring": [],
