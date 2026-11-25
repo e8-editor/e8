@@ -7463,6 +7463,12 @@ declare global {
        */
       "org-table-sum": [];
       /**
+       * Transpose the table at point, its rows becoming its columns, as Org's does; its rules are dropped.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-transpose-table-at-point": [];
+      /**
        * Split the field at point, as M-RET does in a table: the text after point goes to the same field in the next row.
        *
        * Defined in packages/org-table.ts.
