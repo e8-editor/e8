@@ -22,6 +22,17 @@ fn def(
     ed.define_command(Command::new(name, doc, run));
 }
 
+/// Defines a command that refuses a read-only buffer when run
+/// interactively, as Emacs's `*` interactive spec.
+fn def_barf(
+    ed: &mut Editor,
+    name: &str,
+    doc: &str,
+    run: impl Fn(&mut Editor, &[Arg]) -> Result<()> + 'static,
+) {
+    ed.define_command(Command::new(name, doc, run).barf_if_read_only());
+}
+
 /// Defines a movement command that Shift selection applies to.
 fn def_motion(
     ed: &mut Editor,
@@ -36,6 +47,11 @@ fn def_motion(
 /// first parameter, as interactive "p" gives it: code can pass a number.
 fn def_counted(ed: &mut Editor, name: &str, doc: &str, run: impl Fn(&mut Editor, &[Arg]) -> Result<()> + 'static) {
     ed.define_command(Command::new(name, doc, run).param("n", ParamKind::Count, ""));
+}
+
+/// Defines a command that takes a count and refuses a read-only buffer when run interactively.
+fn def_counted_barf(ed: &mut Editor, name: &str, doc: &str, run: impl Fn(&mut Editor, &[Arg]) -> Result<()> + 'static) {
+    ed.define_command(Command::new(name, doc, run).param("n", ParamKind::Count, "").barf_if_read_only());
 }
 
 /// Defines a movement command that takes a count and that Shift selection applies to.
@@ -1150,7 +1166,7 @@ fn editing(ed: &mut Editor) {
         "Delete the character after point, or as many as the prefix argument says.\n\nWith a prefix argument, the characters are killed rather than deleted, so they can be yanked back.",
         |ed, args| delete_chars(ed, args[0].as_int()?),
     );
-    def(
+    def_barf(
         ed,
         "undo",
         "Undo the last change, or as many changes as the prefix argument says.\n\nRepeat to undo earlier changes. Undoing is itself a change, so after any other command, undo undoes the undos: it redoes.",
@@ -1217,7 +1233,7 @@ fn editing(ed: &mut Editor) {
             Ok(())
         },
     );
-    def(
+    def_barf(
         ed,
         "undo-only",
         "Undo the last change, or as many as the prefix argument says, passing over the last undo and the change it undid: undo without redoing them.",
@@ -1231,7 +1247,7 @@ fn editing(ed: &mut Editor) {
             result
         },
     );
-    def_counted(
+    def_counted_barf(
         ed,
         "undo-redo",
         "Undo the last undo, or as many as the prefix argument says: redo.\n\nUnlike undoing an undo with undo, this leaves no trace in the undo history.",
@@ -1410,14 +1426,12 @@ fn killing(ed: &mut Editor) {
         ed.buffer_mut().deactivate_mark();
         Ok(())
     });
-    def(
+    def_barf(
         ed,
         "yank",
         "Insert the most recent kill, leaving the mark at its start.\n\nWith a numeric prefix argument N, insert the Nth most recent kill. With plain C-u, leave point at the start and the mark at the end.",
         |ed, _| {
             let arg = ed.current_prefix_arg();
-            // A read-only buffer fails first, as yank's interactive "*" checks.
-            ed.barf_if_buffer_read_only()?;
             // Emacs sets the mark before it looks at the kill ring, even if it is empty.
             ed.push_mark(ed.buffer().point(), false);
             let back = match arg {

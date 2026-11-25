@@ -1,0 +1,1743 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "m-backslash-no-space",
+      "input": {
+        "text": "abc def\n",
+        "point": 1,
+        "keys": "M-\\",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "abc def\n",
+      "visible": "abc def\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "c-x-c-o-no-blank",
+      "input": {
+        "text": "abc def\n",
+        "point": 1,
+        "keys": "C-x C-o",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "abc def\n",
+      "visible": "abc def\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "m-caret-first-line",
+      "input": {
+        "text": "abc def\n",
+        "point": 1,
+        "keys": "M-^",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "abc def\n",
+      "visible": "abc def\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "c-t-at-eol",
+      "input": {
+        "text": "abc def\n",
+        "point": 1,
+        "keys": "C-e C-t",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "abc def\n",
+      "visible": "abc def\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "m-t-at-end",
+      "input": {
+        "text": "abc def\n",
+        "point": 1,
+        "keys": "M-> M-t",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "abc def\n",
+      "visible": "abc def\n",
+      "point": 8,
+      "mark": 1,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": "Mark set"
+    },
+    {
+      "name": "c-x-c-t-first-line",
+      "input": {
+        "text": "abc def\n",
+        "point": 1,
+        "keys": "C-x C-t",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "abc def\n",
+      "visible": "abc def\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "c-m-t-at-end",
+      "input": {
+        "text": "abc def\n",
+        "point": 1,
+        "keys": "M-> C-M-t",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "abc def\n",
+      "visible": "abc def\n",
+      "point": 8,
+      "mark": 1,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": "Mark set"
+    },
+    {
+      "name": "m-slash",
+      "input": {
+        "text": "abc def\n",
+        "point": 1,
+        "keys": "M-/",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "abc def\n",
+      "visible": "abc def\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "undo-none",
+      "input": {
+        "text": "abc def\n",
+        "point": 1,
+        "keys": "C-/",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "abc def\n",
+      "visible": "abc def\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "insert-register",
+      "input": {
+        "text": "abc def\n",
+        "point": 1,
+        "keys": "C-x r i a",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "abc def\n",
+      "visible": "abc def\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "yank-rectangle",
+      "input": {
+        "text": "abc def\n",
+        "point": 1,
+        "keys": "C-x r y",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "abc def\n",
+      "visible": "abc def\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "just-one-space",
+      "input": {
+        "text": "abc def\n",
+        "point": 1,
+        "keys": "C-f C-f C-f M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "just-one-space"
+        ],
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "abc def\n",
+      "visible": "abc def\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "delete-trailing-whitespace",
+      "input": {
+        "text": "abc def\n",
+        "point": 1,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "delete-trailing-whitespace"
+        ],
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "abc def\n",
+      "visible": "abc def\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "newline",
+      "input": {
+        "text": "foo  bar\n\n\nbaz qux\n",
+        "point": 4,
+        "keys": "RET",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "foo  bar\n\n\nbaz qux\n",
+      "visible": "foo  bar\n\n\nbaz qux\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "open-line",
+      "input": {
+        "text": "foo  bar\n\n\nbaz qux\n",
+        "point": 4,
+        "keys": "C-o",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "foo  bar\n\n\nbaz qux\n",
+      "visible": "foo  bar\n\n\nbaz qux\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "split-line",
+      "input": {
+        "text": "foo  bar\n\n\nbaz qux\n",
+        "point": 4,
+        "keys": "C-M-o",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "foo  bar\n\n\nbaz qux\n",
+      "visible": "foo  bar\n\n\nbaz qux\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "quoted-insert",
+      "input": {
+        "text": "foo  bar\n\n\nbaz qux\n",
+        "point": 4,
+        "keys": "C-q a",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "foo  bar\n\n\nbaz qux\n",
+      "visible": "foo  bar\n\n\nbaz qux\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "upcase-dwim",
+      "input": {
+        "text": "foo  bar\n\n\nbaz qux\n",
+        "point": 4,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "upcase-dwim"
+        ],
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "foo  bar\n\n\nbaz qux\n",
+      "visible": "foo  bar\n\n\nbaz qux\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "comment-dwim",
+      "input": {
+        "text": "foo  bar\n\n\nbaz qux\n",
+        "point": 4,
+        "keys": "M-;",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "foo  bar\n\n\nbaz qux\n",
+      "visible": "foo  bar\n\n\nbaz qux\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "delete-all-space",
+      "input": {
+        "text": "foo  bar\n\n\nbaz qux\n",
+        "point": 4,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "delete-all-space"
+        ],
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "foo  bar\n\n\nbaz qux\n",
+      "visible": "foo  bar\n\n\nbaz qux\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "fixup-whitespace",
+      "input": {
+        "text": "foo  bar\n\n\nbaz qux\n",
+        "point": 4,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "fixup-whitespace"
+        ],
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "foo  bar\n\n\nbaz qux\n",
+      "visible": "foo  bar\n\n\nbaz qux\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "cycle-spacing",
+      "input": {
+        "text": "foo  bar\n\n\nbaz qux\n",
+        "point": 4,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "cycle-spacing"
+        ],
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "foo  bar\n\n\nbaz qux\n",
+      "visible": "foo  bar\n\n\nbaz qux\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "transpose-sentences",
+      "input": {
+        "text": "foo  bar\n\n\nbaz qux\n",
+        "point": 4,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "transpose-sentences"
+        ],
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "foo  bar\n\n\nbaz qux\n",
+      "visible": "foo  bar\n\n\nbaz qux\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "transpose-paragraphs",
+      "input": {
+        "text": "foo  bar\n\n\nbaz qux\n",
+        "point": 4,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "transpose-paragraphs"
+        ],
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "foo  bar\n\n\nbaz qux\n",
+      "visible": "foo  bar\n\n\nbaz qux\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "flush-lines",
+      "input": {
+        "text": "foo  bar\n\n\nbaz qux\n",
+        "point": 4,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "flush-lines",
+          "baz"
+        ],
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "foo  bar\n\n\nbaz qux\n",
+      "visible": "foo  bar\n\n\nbaz qux\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "keep-lines",
+      "input": {
+        "text": "foo  bar\n\n\nbaz qux\n",
+        "point": 4,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "keep-lines",
+          "baz"
+        ],
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "foo  bar\n\n\nbaz qux\n",
+      "visible": "foo  bar\n\n\nbaz qux\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "fill-region",
+      "input": {
+        "text": "foo  bar\n\n\nbaz qux\n",
+        "point": 4,
+        "keys": "C-x h M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "fill-region"
+        ],
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "foo  bar\n\n\nbaz qux\n",
+      "visible": "foo  bar\n\n\nbaz qux\n",
+      "point": 0,
+      "mark": 19,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>"
+    },
+    {
+      "name": "delete-rectangle",
+      "input": {
+        "text": "foo  bar\n\n\nbaz qux\n",
+        "point": 4,
+        "keys": "C-SPC C-n C-f C-x r d",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "foo  bar\n\n\nbaz qux\n",
+      "visible": "foo  bar\n\n\nbaz qux\n",
+      "point": 10,
+      "mark": 4,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": "Mark set"
+    },
+    {
+      "name": "open-rectangle",
+      "input": {
+        "text": "foo  bar\n\n\nbaz qux\n",
+        "point": 4,
+        "keys": "C-SPC C-n C-f C-x r o",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "foo  bar\n\n\nbaz qux\n",
+      "visible": "foo  bar\n\n\nbaz qux\n",
+      "point": 10,
+      "mark": 4,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": "Mark set"
+    },
+    {
+      "name": "clear-rectangle",
+      "input": {
+        "text": "foo  bar\n\n\nbaz qux\n",
+        "point": 4,
+        "keys": "C-SPC C-n C-f C-x r c",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "foo  bar\n\n\nbaz qux\n",
+      "visible": "foo  bar\n\n\nbaz qux\n",
+      "point": 10,
+      "mark": 4,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": "Mark set"
+    },
+    {
+      "name": "comment-region",
+      "input": {
+        "text": "foo  bar\n\n\nbaz qux\n",
+        "point": 4,
+        "keys": "C-x h M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "comment-region"
+        ],
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "foo  bar\n\n\nbaz qux\n",
+      "visible": "foo  bar\n\n\nbaz qux\n",
+      "point": 0,
+      "mark": 19,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>"
+    },
+    {
+      "name": "undo-only",
+      "input": {
+        "text": "foo  bar\n\n\nbaz qux\n",
+        "point": 4,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "undo-only"
+        ],
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "foo  bar\n\n\nbaz qux\n",
+      "visible": "foo  bar\n\n\nbaz qux\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "undo-redo",
+      "input": {
+        "text": "foo  bar\n\n\nbaz qux\n",
+        "point": 4,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "undo-redo"
+        ],
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "foo  bar\n\n\nbaz qux\n",
+      "visible": "foo  bar\n\n\nbaz qux\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "org-open-line",
+      "input": {
+        "text": "foo  bar\n\n\nbaz qux\n",
+        "point": 4,
+        "keys": "C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "foo  bar\n\n\nbaz qux\n",
+      "visible": "foo  bar\n\n\nbaz qux\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "org-comment-dwim",
+      "input": {
+        "text": "foo  bar\n\n\nbaz qux\n",
+        "point": 4,
+        "keys": "M-;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "foo  bar\n\n\nbaz qux\n",
+      "visible": "foo  bar\n\n\nbaz qux\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "inhibit-read-only-var",
+      "input": {
+        "text": "foo  bar\n\n\nbaz qux\n",
+        "point": 4,
+        "keys": "M-\\",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true,
+          "inhibit-read-only": true
+        }
+      },
+      "text": "foobar\n\n\nbaz qux\n",
+      "visible": "foobar\n\n\nbaz qux\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "not-read-only",
+      "input": {
+        "text": "foo  bar\n\n\nbaz qux\n",
+        "point": 4,
+        "keys": "M-\\",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "foobar\n\n\nbaz qux\n",
+      "visible": "foobar\n\n\nbaz qux\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "from-code-not-checked",
+      "input": {
+        "text": "foo  bar\n\n\nbaz qux\n",
+        "point": 4,
+        "keys": "C-x C-q C-x C-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "foo  bar\n\n\nbaz qux\n",
+      "visible": "foo  bar\n\n\nbaz qux\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Read-Only mode disabled in current buffer"
+    },
+    {
+      "name": "inh-comment-dwim",
+      "input": {
+        "text": "(foo)\n",
+        "point": 0,
+        "keys": "M-;",
+        "modes": [
+          "emacs-lisp-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true,
+          "inhibit-read-only": true
+        }
+      },
+      "text": "(foo)\t\t\t\t\t;\n",
+      "visible": "(foo)\t\t\t\t\t;\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "inh-delete-rectangle",
+      "input": {
+        "text": "abc\ndef\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-f C-x r d",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true,
+          "inhibit-read-only": true
+        }
+      },
+      "text": "bc\nef\n",
+      "visible": "bc\nef\n",
+      "point": 3,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "inh-string-rectangle",
+      "input": {
+        "text": "abc\ndef\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-f C-x r t",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "X"
+        ],
+        "message": true,
+        "vars": {
+          "buffer-read-only": true,
+          "inhibit-read-only": true
+        }
+      },
+      "text": "Xbc\nXef\n",
+      "visible": "Xbc\nXef\n",
+      "point": 5,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "inh-yank-rectangle",
+      "input": {
+        "text": "abc\ndef\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-f C-x r M-w C-x r y",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true,
+          "inhibit-read-only": true
+        }
+      },
+      "text": "abc\ndaef\n d",
+      "visible": "abc\ndaef\n d",
+      "point": 11,
+      "mark": 5,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set [2 times]"
+    },
+    {
+      "name": "inh-open-rectangle",
+      "input": {
+        "text": "abc\ndef\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-f C-x r o",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true,
+          "inhibit-read-only": true
+        }
+      },
+      "text": " abc\n def\n",
+      "visible": " abc\n def\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "inh-flush-lines",
+      "input": {
+        "text": "abc\ndef\nabd\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "flush-lines",
+          "ab"
+        ],
+        "message": true,
+        "vars": {
+          "buffer-read-only": true,
+          "inhibit-read-only": true
+        }
+      },
+      "text": "def\n",
+      "visible": "def\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Deleted 2 matching lines"
+    },
+    {
+      "name": "inh-keep-lines",
+      "input": {
+        "text": "abc\ndef\nabd\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "keep-lines",
+          "ab"
+        ],
+        "message": true,
+        "vars": {
+          "buffer-read-only": true,
+          "inhibit-read-only": true
+        }
+      },
+      "text": "abc\nabd\n",
+      "visible": "abc\nabd\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "inh-fill-region",
+      "input": {
+        "text": "aaa bbb ccc ddd eee fff\n",
+        "point": 0,
+        "keys": "C-x h M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "fill-region"
+        ],
+        "vars": {
+          "buffer-read-only": true,
+          "inhibit-read-only": true,
+          "fill-column": 10
+        }
+      },
+      "text": "aaa bbb\nccc ddd\neee fff\n",
+      "visible": "aaa bbb\nccc ddd\neee fff\n",
+      "point": 0,
+      "mark": 24,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inh-fill-paragraph",
+      "input": {
+        "text": "aaa bbb ccc ddd eee fff\n",
+        "point": 0,
+        "keys": "M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true,
+          "inhibit-read-only": true,
+          "fill-column": 10
+        }
+      },
+      "text": "aaa bbb\nccc ddd\neee fff\n",
+      "visible": "aaa bbb\nccc ddd\neee fff\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "inh-org-fill-paragraph",
+      "input": {
+        "text": "aaa bbb ccc ddd eee fff\n",
+        "point": 0,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true,
+          "inhibit-read-only": true,
+          "fill-column": 10
+        }
+      },
+      "text": "aaa bbb\nccc ddd\neee fff\n",
+      "visible": "aaa bbb\nccc ddd\neee fff\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "inh-org-comment-dwim",
+      "input": {
+        "text": "* Head\n",
+        "point": 0,
+        "keys": "M-;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true,
+          "inhibit-read-only": true
+        }
+      },
+      "text": "* COMMENT Head\n",
+      "visible": "* COMMENT Head\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "inh-shell-command-insert",
+      "input": {
+        "text": "abc\n",
+        "point": 0,
+        "keys": "C-u M-!",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "echo hi"
+        ],
+        "message": true,
+        "vars": {
+          "buffer-read-only": true,
+          "inhibit-read-only": true
+        }
+      },
+      "text": "hi\nabc\n",
+      "visible": "hi\nabc\n",
+      "point": 0,
+      "mark": 3,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "inh-org-open-line",
+      "input": {
+        "text": "* Head\n",
+        "point": 2,
+        "keys": "C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true,
+          "inhibit-read-only": true
+        }
+      },
+      "text": "* \nHead\n",
+      "visible": "* \nHead\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "ro-insert-buffer",
+      "input": {
+        "text": "abc\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "insert-buffer",
+          "*Messages*"
+        ],
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "abc\n",
+      "visible": "abc\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "ro-delete-duplicate-lines-none",
+      "input": {
+        "text": "abc\ndef\n",
+        "point": 0,
+        "keys": "C-x h M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "delete-duplicate-lines"
+        ],
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "abc\ndef\n",
+      "visible": "abc\ndef\n",
+      "point": 0,
+      "mark": 8,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>"
+    },
+    {
+      "name": "ro-string-rectangle",
+      "input": {
+        "text": "abc\ndef\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-f C-x r t",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "X"
+        ],
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "abc\ndef\n",
+      "visible": "abc\ndef\n",
+      "point": 5,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": "Mark set"
+    },
+    {
+      "name": "ro-key-delete-rectangle-no-mark",
+      "input": {
+        "text": "abc\ndef\n",
+        "point": 0,
+        "keys": "C-x r d",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "abc\ndef\n",
+      "visible": "abc\ndef\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "ro-mx-delete-rectangle-no-mark",
+      "input": {
+        "text": "abc\ndef\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "delete-rectangle"
+        ],
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "abc\ndef\n",
+      "visible": "abc\ndef\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "The mark is not set now, so there is no region",
+      "message": null
+    },
+    {
+      "name": "ro-mx-then-repeat-complex",
+      "input": {
+        "text": "abc\n",
+        "point": 0,
+        "keys": "M-x C-x ESC ESC",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "upcase-dwim",
+          ""
+        ],
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "abc\n",
+      "visible": "abc\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "ro-org-yank-empty",
+      "input": {
+        "text": "* Head\n",
+        "point": 2,
+        "keys": "C-y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "* Head\n",
+      "visible": "* Head\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "ro-org-yank-copied",
+      "input": {
+        "text": "* Head\nbody\n",
+        "point": 2,
+        "keys": "C-SPC C-f M-w C-n C-y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "* Head\nbody\n",
+      "visible": "* Head\nbody\n",
+      "point": 10,
+      "mark": 2,
+      "mark_active": false,
+      "kill_ring": [
+        "H"
+      ],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": "Mark set"
+    },
+    {
+      "name": "ro-org-fill-paragraph",
+      "input": {
+        "text": "aaa bbb ccc ddd eee fff\n",
+        "point": 0,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true,
+          "fill-column": 10
+        }
+      },
+      "text": "aaa bbb ccc ddd eee fff\n",
+      "visible": "aaa bbb ccc ddd eee fff\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": null
+    },
+    {
+      "name": "ro-yank-then-C-x-z",
+      "input": {
+        "text": "abc\n",
+        "point": 0,
+        "keys": "C-SPC C-f M-w C-y C-x z",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "abc\n",
+      "visible": "abc\n",
+      "point": 1,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [
+        "a"
+      ],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": "Repeating command yank"
+    },
+    {
+      "name": "dired-open-line",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-x C-j C-o",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          "a.txt": "one\n",
+          "b.txt": "two\n"
+        },
+        "find": "a.txt",
+        "message": true
+      },
+      "text": "  DIR:\n  .\n  ..\n  a.txt\n  b.txt\n",
+      "visible": "  DIR:\n  .\n  ..\n  a.txt\n  b.txt\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.txt": "one\n",
+        "b.txt": "two\n"
+      },
+      "message": null
+    },
+    {
+      "name": "kmacro-stops-at-barf",
+      "input": {
+        "text": "abc\nabc\n",
+        "point": 0,
+        "keys": "C-x ( C-f C-o C-x ) C-x C-q M-< C-x e",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "a\nbc\nabc\n",
+      "visible": "a\nbc\nabc\n",
+      "point": 1,
+      "mark": 1,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": "Mark set"
+    },
+    {
+      "name": "ctl-repeat-writable",
+      "input": {
+        "text": "abc def\n",
+        "point": 0,
+        "keys": "C-f C-x z",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "abc def\n",
+      "visible": "abc def\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Repeating command forward-char"
+    },
+    {
+      "name": "ro-mhs-then-repeat",
+      "input": {
+        "text": "abc def\n",
+        "point": 0,
+        "keys": "C-f M-\\ C-x z",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "abc def\n",
+      "visible": "abc def\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": "Repeating command delete-horizontal-space"
+    },
+    {
+      "name": "ro-org-cu-yank",
+      "input": {
+        "text": "* Head\n",
+        "point": 2,
+        "keys": "C-SPC C-f M-w C-u C-y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "buffer-read-only": true
+        }
+      },
+      "text": "* Head\n",
+      "visible": "* Head\n",
+      "point": 3,
+      "mark": 2,
+      "mark_active": false,
+      "kill_ring": [
+        "H"
+      ],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>",
+      "message": "Mark set"
+    },
+    {
+      "name": "repeat-with-prefix",
+      "input": {
+        "text": "abcdef\n",
+        "point": 0,
+        "keys": "C-f C-u C-x z",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "abcdef\n",
+      "visible": "abcdef\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Repeating command (4) forward-char"
+    },
+    {
+      "name": "repeat-after-m-x",
+      "input": {
+        "text": "abcdef\n",
+        "point": 0,
+        "keys": "M-x C-x z",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "forward-char"
+        ],
+        "message": true
+      },
+      "text": "abcdef\n",
+      "visible": "abcdef\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Repeating (forward-char 1)"
+    }
+  ]
+}

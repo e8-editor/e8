@@ -873,6 +873,7 @@ e8.defineCommand({
 
 e8.defineCommand({
   name: "comint-previous-input",
+  barfIfReadOnly: true,
   doc: "Put the input sent before this one after the prompt, or as many back as the prefix argument says.",
   params: [{ name: "arg", kind: "count" }],
   run: (arg: number) => previousInput(arg),
@@ -880,6 +881,7 @@ e8.defineCommand({
 
 e8.defineCommand({
   name: "comint-next-input",
+  barfIfReadOnly: true,
   doc: "Put the input sent after this one after the prompt, or as many on as the prefix argument says.",
   params: [{ name: "arg", kind: "count" }],
   run: (arg: number) => previousInput(-arg),

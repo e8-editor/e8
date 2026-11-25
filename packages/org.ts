@@ -129,7 +129,7 @@ import { withHelpWindow } from "help";
 import { refileCommand, refileCopyCommand, refileReverseCommand } from "org-refile";
 import { atTable, beforeOnLine, blankField, markAligned, needsAlign, restOfLine } from "org-table";
 import { completingReadMultiple } from "crm";
-import { allMatches, autoFillAllowed, charCount, eraseBuffer, escapeRegExp, forwardLine, getBufferWindow, truthy } from "subr";
+import { allMatches, autoFillAllowed, barfIfBufferReadOnly, charCount, eraseBuffer, escapeRegExp, forwardLine, getBufferWindow, truthy } from "subr";
 import { isearchNoUpperCaseP } from "isearch";
 import { PARSE_TIME_WEEKDAYS, parseTimeString } from "parse-time";
 export { PLANNING } from "org-element";
@@ -3006,13 +3006,14 @@ function orgFillParagraph(justify: string | undefined, region: boolean): void {
 
 e8.defineCommand({
   name: "org-fill-paragraph",
+  barfIfReadOnly: true,
   doc:
     "Fill element at point, when applicable.\n\nThis function only applies to comment blocks, comments, example blocks and paragraphs. " +
     "Also, as a special case, re-align table when point is at one. With a prefix argument, justify as well. " +
     "With the region active, fill each of the elements in it.",
   params: [{ name: "justify", kind: "prefix" }],
   run: (justify: e8.PrefixArg) => {
-    if (truthy(e8.variable("buffer-read-only"))) e8.signal("buffer-read-only", `Buffer is read-only: ${e8.bufferName()}`);
+    barfIfBufferReadOnly();
     // As a command it fills the region, as Emacs's interactive spec passes REGION t.
     orgFillParagraph(justify === null ? undefined : "full", true);
   },
@@ -3849,6 +3850,7 @@ e8.defineVariable({
 
 e8.defineCommand({
   name: "org-open-line",
+  barfIfReadOnly: true,
   doc: "C-o in Org: in a table, insert a row above; elsewhere, or at the very start of the buffer, open-line.",
   run: () => {
     const p = e8.point();
@@ -5272,7 +5274,9 @@ e8.defineVariable({
  */
 function orgYank(arg: e8.PrefixArg): void {
   e8.setThisCommand("yank");
+  // Org calls yank with call-interactively, so its * refuses a read-only buffer first.
   if (arg !== null) {
+    barfIfBufferReadOnly();
     e8.callWithPrefix(arg, "yank");
     return;
   }
@@ -5297,12 +5301,16 @@ function orgYank(arg: e8.PrefixArg): void {
       e8.pushMark(lineBeg);
       return;
     }
+    barfIfBufferReadOnly();
     e8.call("yank");
     return;
   }
   const beg = p;
   if (adjusted) pasteSubtree(null, true);
-  else e8.call("yank");
+  else {
+    barfIfBufferReadOnly();
+    e8.call("yank");
+  }
   const end = e8.point();
   e8.gotoChar(beg);
   const swallows = (): boolean => {
@@ -13407,9 +13415,10 @@ e8.defun("org-comment-or-uncomment-region", (beg: number, end: number) => {
 
 const orgCommentDwim = e8.defineCommand({
   name: "org-comment-dwim",
+  barfIfReadOnly: true,
   doc: "M-; in Org: on a heading, make it a comment or take that away, as org-toggle-comment; elsewhere as comment-dwim.",
   run: () => {
-    if (e8.bufferReadOnly()) e8.signal("buffer-read-only", `Buffer is read-only: #<buffer ${e8.bufferName()}>`);
+    barfIfBufferReadOnly();
     if (isHeadingLine(e8.lineText(lineAt()))) e8.funcallInteractively("org-toggle-comment");
     else e8.funcallInteractively("comment-dwim");
   },

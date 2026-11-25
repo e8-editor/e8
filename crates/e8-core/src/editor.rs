@@ -864,6 +864,34 @@ impl Editor {
             self.message(format!("No such command: {name}"));
             return;
         };
+        // As call-interactively reads `*`: a read-only buffer is refused
+        // first, unless inhibit-read-only or point's text says otherwise.
+        if command.barf_if_read_only && let Err(e) = self.barf_if_buffer_read_only_at(self.buffer().point()) {
+            use ParamKind::*;
+            // Run from M-x with only the region and prefix argument for
+            // arguments, as `*r`, it works them out and is recorded first,
+            // as call-interactively does to record what it would have done,
+            // so a missing mark is what it says then.
+            let only_region_and_prefix = command.params.iter().all(|p| matches!(p.kind, RegionBeginning | RegionEnd | Count | Prefix));
+            let args = if only_region_and_prefix {
+                match command.params.iter().map(|p| self.state_arg(p.kind, prefix)).collect::<Result<Vec<_>>>() {
+                    Ok(args) => Some(args),
+                    Err(region) if record => return self.fail(region),
+                    Err(_) => None,
+                }
+            } else {
+                None
+            };
+            if record && let Some(args) = &args {
+                self.record_complex_command(&command, args);
+            }
+            // Refused, it is still what C-x z repeats, as Emacs sets
+            // last-repeatable-command before the command runs.
+            self.last_repeatable = Some(Repeatable { command, args: args.unwrap_or_default(), prefix, key: self.last_key });
+            self.repeatable_count += 1;
+            self.fail(e);
+            return;
+        }
         let prompts = command.params.iter().any(|p| !p.kind.from_state());
         if prompts && self.keyboard.reading_keys.is_some() {
             self.message("Command attempted to use minibuffer while in minibuffer");
@@ -1393,12 +1421,48 @@ impl Editor {
             .clone()
             .ok_or_else(|| Error::new("There is nothing to repeat"))?;
         self.last_key = last.key;
+        // What repeat says it does, as repeat-message: the form M-x and the
+        // like recorded for it, or the command, with a new prefix argument.
+        let recorded = match self.variable("command-history") {
+            Some(Value::List(items)) => items.into_iter().next().filter(|form| match form {
+                Value::List(parts) => parts.first() == Some(&Value::Symbol(last.command.name.clone())),
+                _ => false,
+            }),
+            _ => None,
+        };
+        let said = match (recorded, prefix) {
+            (Some(form), _) => format!("Repeating {}", self.prin1_to_string(&form, false)),
+            (None, None) => format!("Repeating command {}", last.command.name),
+            (None, Some(arg)) => {
+                let arg = match arg {
+                    PrefixArg::Universal(n) => format!("({n})"),
+                    PrefixArg::Number(n) => n.to_string(),
+                    PrefixArg::Minus => "-".to_string(),
+                };
+                format!("Repeating command {arg} {}", last.command.name)
+            }
+        };
+        self.message(said);
+        // As repeat calls it interactively again, its * refuses a read-only buffer again.
+        if last.command.barf_if_read_only {
+            self.barf_if_buffer_read_only_at(self.buffer().point())?;
+        }
         self.buffer_mut().undo_boundary();
         let prefix = prefix.or(last.prefix);
         // What the editor supplied, the count, point or the region, is
         // taken afresh, as repeat calls the command interactively again;
         // what was typed is used again.
         let mut args = last.args;
+        // Refused before it read what it asks for, it asks again, as repeat would.
+        if args.len() < last.command.params.len() && last.command.params.iter().any(|p| !p.kind.from_state()) {
+            self.prefix_arg = prefix;
+            self.run_interactive(&last.command.name.clone());
+            return Ok(());
+        }
+        if args.len() < last.command.params.len() {
+            // Refused before it worked them out, all from the editor.
+            args = last.command.params.iter().map(|p| self.state_arg(p.kind, prefix)).collect::<Result<Vec<_>>>()?;
+        }
         for (arg, param) in args.iter_mut().zip(&last.command.params) {
             if param.kind.from_state() {
                 *arg = self.state_arg(param.kind, prefix)?;

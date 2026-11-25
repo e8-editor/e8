@@ -20538,7 +20538,7 @@ declare global {
      * prompt, the file that defined it, whether Shift selects as it moves,
      * and the command it is an alias of; undefined if there is no such command.
      */
-    function commandInfo(name: CommandName | DefinedCommand | (string & {})): { doc: string; params: { name: string; kind: ParamKind; description: string; prompt: string }[]; source?: string; shiftSelect: boolean; aliasOf?: string } | undefined;
+    function commandInfo(name: CommandName | DefinedCommand | (string & {})): { doc: string; params: { name: string; kind: ParamKind; description: string; prompt: string }[]; source?: string; shiftSelect: boolean; barfIfReadOnly: boolean; aliasOf?: string } | undefined;
     /** The names of all variables, as all-completions over obarray with boundp. */
     function variableNames(): string[];
     /** The file the current buffer visits, if any. */
@@ -23330,6 +23330,11 @@ declare global {
        * Shift started.
        */
       shiftSelect?: boolean;
+      /**
+       * Whether, run from a key or M-x, it first refuses a read-only buffer,
+       * as Emacs's * interactive spec does, before reading its arguments.
+       */
+      barfIfReadOnly?: boolean;
     }
 
     /**

@@ -78,6 +78,7 @@ e8.defineCommand({
 
 e8.defineCommand({
   name: "delete-duplicate-lines",
+  barfIfReadOnly: true,
   doc:
     "Delete each line in the region that is the same as one before it.\n\n" +
     "With C-u, keep the last of each instead; with C-u C-u, only lines next to each other count; " +

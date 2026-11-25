@@ -5,7 +5,7 @@
 // comments go to. Each major mode says what its comments look like with
 // comment-start and comment-end, and its syntax table finds them.
 
-import { escapeRegExp, forwardLine, numberValue as num, regexpQuote, truthy } from "subr";
+import { barfIfBufferReadOnly, forwardLine, numberValue as num, regexpQuote, truthy, escapeRegExp } from "subr";
 
 const defvar = (name: string, value: e8.Value, doc: string, local = false) => e8.defineVariable({ name, value, doc, local });
 defvar("comment-start", null, "What starts a comment in this mode, with the space after it: \"// \" or \"# \". nil if the mode has no comments.", true);
@@ -439,11 +439,12 @@ function commentKill(count: number, moves = false): void {
 const regionUsed = (): boolean => e8.regionActive() && e8.mark() !== undefined && e8.mark() !== e8.point();
 const region = (): [number, number] => [Math.min(e8.point(), e8.mark()!), Math.max(e8.point(), e8.mark()!)];
 const barf = (): void => {
-  if (e8.bufferReadOnly()) throw new Error(`Buffer is read-only: #<buffer ${e8.bufferName()}>`);
+  barfIfBufferReadOnly();
 };
 
 e8.defineCommand({
   name: "comment-dwim",
+  barfIfReadOnly: true,
   doc:
     "Comment or uncomment the region if it is active. Otherwise put a comment at the end of the line, or indent the one there, " +
     "or start one on a blank line. With a prefix argument and no region, kill the line's comment.",
@@ -480,6 +481,7 @@ e8.defineCommand({
 
 e8.defineCommand({
   name: "comment-region",
+  barfIfReadOnly: true,
   doc: "Comment out each line of the region. With a prefix argument N, use N comment starts; negative, uncomment instead.",
   run: () => {
     barf();
@@ -490,6 +492,7 @@ e8.defineCommand({
 
 e8.defineCommand({
   name: "uncomment-region",
+  barfIfReadOnly: true,
   doc: "Take the comment starts and ends out of the region's lines. With a prefix argument, take out that many levels.",
   run: () => {
     barf();
@@ -502,6 +505,7 @@ e8.defineCommand({
 
 e8.defineCommand({
   name: "comment-or-uncomment-region",
+  barfIfReadOnly: true,
   doc: "Uncomment the region's lines if they are all comments, else comment them.",
   run: () => {
     barf();
@@ -545,6 +549,7 @@ e8.defineCommand({
 
 e8.defineCommand({
   name: "comment-indent",
+  barfIfReadOnly: true,
   doc: "Put a comment at the end of the line at comment-column, or indent the comment there to it.",
   run: () => {
     barf();

@@ -231,6 +231,16 @@ impl Editor {
         Ok(())
     }
 
+    /// Refuses a read-only buffer as Emacs's `barf-if-buffer-read-only` with
+    /// a position does: not with `inhibit-read-only`, nor where the text at
+    /// the position has an `inhibit-read-only` property.
+    pub fn barf_if_buffer_read_only_at(&self, pos: usize) -> Result<()> {
+        if self.buffer().text_property(pos, "inhibit-read-only").is_some_and(|v| v.is_true()) {
+            return Ok(());
+        }
+        self.barf_if_buffer_read_only()
+    }
+
     /// Refuses a change read-only text or a read-only buffer forbids, then
     /// runs the hooks of the text about to change, `before-change-functions`
     /// and those of the overlays there, as Emacs's prepare_to_modify_buffer.
