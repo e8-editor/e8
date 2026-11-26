@@ -723,6 +723,9 @@ export function saveCurrentBuffer<T>(fn: () => T): T {
 }
 e8.defun("save-current-buffer", saveCurrentBuffer);
 
+// t whatever the arguments, as subr.el's always, for options that take a function, as org-table-fix-formulas-confirm.
+e8.defun("always", (..._args: e8.Value[]) => true);
+
 /** Inserts text before markers there, inheriting the properties around it, as insert-before-markers-and-inherit. */
 export function insertBeforeMarkersAndInherit(...texts: (string | e8.PropertizedString)[]): void {
   for (const text of texts) {

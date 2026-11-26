@@ -15,6 +15,7 @@ import { type Elem, elementAt, endBeforeBlank } from "org-element";
 import { alphabetical, cycleListBullet, endOfMetaData, ITEM_RE } from "org-list";
 import { lineAt, lineStartOrEnd, orgMks, titleWithoutCookies } from "org-macs";
 import { charCount, forwardLine, getBufferWindow, truthy } from "subr";
+import { atTable, currentDline, fixFormulas, fixFormulasConfirmed, getStoredFormulas, recalculate } from "org-table";
 
 e8.defineVariable({
   name: "org-capture-templates",
@@ -969,12 +970,16 @@ function placeTableLine(t: CaptureTemplate, where: Target, filled: Filled, prepe
     }
   } else e8.gotoChar(tableEnd);
   const origin = e8.makeMarker(e8.point());
+  const sizeBefore = e8.bufferSize();
   if (e8.point() !== e8.lineStart(lineAt())) e8.insert("\n");
   const start = e8.point();
   e8.insert(text);
   let stop = e8.point();
   const cursor = takeCursor(start, stop);
   if (cursor !== undefined) stop--;
+  // Narrowed to the table, grown by the new line, as Org narrows before
+  // inserting, whether or not :unnarrowed, then to the line unless it.
+  e8.narrowToRegion(tableStart, tableEnd + e8.bufferSize() - sizeBefore);
   captureNarrow(t, start, stop - 1);
   e8.gotoChar(cursor ?? start);
   return { beg: start, end: stop, level: 0, cursor: e8.point(), killStart: origin, killEnd: stop };
@@ -1298,12 +1303,24 @@ function finalize(stay: boolean, refiling = false): void {
         ),
       );
     }
-    // A table line's table aligned, if point is still in it, as org-capture-finalize does.
+    // A table line's table, if point is still in it, aligned, or with
+    // formulas, its formulas fixed for the rows added and recalculated, as
+    // org-capture-finalize does.
     if (state?.type === "table-line") {
       e8.withCurrentBuffer(state.buffer, () =>
         e8.saveRestriction(() => {
           e8.widen();
-          if (/^[ \t]*\|/.test(e8.lineText(lineAt()))) e8.call("org-table-align");
+          if (!atTable()) return;
+          if (getStoredFormulas().length === 0) {
+            e8.call("org-table-align");
+            return;
+          }
+          if (truthy(option(state.template, ":immediate-finish") ?? null) || fixFormulasConfirmed()) {
+            const added = e8.bufferText(e8.markerPosition(state.killStart) ?? 0, e8.markerPosition(state.killEnd) ?? 0);
+            const lines = (added.match(/\n/g) ?? []).length + (added !== "" && !added.endsWith("\n") ? 1 : 0);
+            fixFormulas("@", [], currentDline() - 1, lines);
+          }
+          recalculate(true);
         }),
       );
     }

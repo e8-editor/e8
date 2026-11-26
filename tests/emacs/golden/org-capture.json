@@ -6478,6 +6478,90 @@
       "kill_ring": [],
       "modified": false,
       "error": null
+    },
+    {
+      "name": "capture-table-line-formulas",
+      "input": {
+        "text": "* one\n* Inbox\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n|---+---|\n|   |   |\n#+TBLFM: @>$1=vsum(@I..@II)::$2=$1*10\n* two\n",
+        "point": 2,
+        "keys": "7 C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "table-line",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "| %? |  |"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* one\n* Inbox\n| a |  b |\n|---+----|\n| 1 | 10 |\n| 3 | 30 |\n|---+----|\n|   |  0 |\n| 4 | 70 |\n#+TBLFM: @>$1=vsum(@I..@II)::$2=$1*10\n* two\n",
+      "visible": "* one\n* Inbox\n| a |  b |\n|---+----|\n| 1 | 10 |\n| 3 | 30 |\n|---+----|\n|   |  0 |\n| 4 | 70 |\n#+TBLFM: @>$1=vsum(@I..@II)::$2=$1*10\n* two\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-table-line-unnarrowed-up",
+      "input": {
+        "text": "* one\n* Inbox\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n#+TBLFM: @2$2=$1*10::@3$2=$1*100\n* two\n",
+        "point": 2,
+        "keys": "7 C-a C-p C-p C-p C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "table-line",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "| %? |  |",
+            ":prepend",
+            true,
+            ":unnarrowed",
+            true
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* one\n* Inbox\n| a |   b |\n|---+-----|\n| 7 |     |\n| 1 |  10 |\n| 3 | 300 |\n#+TBLFM: @3$2=$1*10::@4$2=$1*100\n* two\n",
+      "visible": "* one\n* Inbox\n| a |   b |\n|---+-----|\n| 7 |     |\n| 1 |  10 |\n| 3 | 300 |\n#+TBLFM: @3$2=$1*10::@4$2=$1*100\n* two\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Beginning of buffer"
     }
   ]
 }
