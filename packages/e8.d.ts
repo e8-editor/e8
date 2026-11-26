@@ -6339,7 +6339,31 @@ declare global {
        */
       "org-dynamic-block-insert-dblock": [type: string];
       /**
-       * Edit the element at point in a buffer of its own: a source or example block in its language's mode.
+       * Edit the comment block at point in a buffer of its own, in Org mode. C-c ' there puts it back.
+       *
+       * Defined in packages/org-src.ts.
+       */
+      "org-edit-comment-block": [];
+      /**
+       * Edit the export block at point in a buffer of its own, in the mode for its backend. C-c ' there puts it back.
+       *
+       * Defined in packages/org-src.ts.
+       */
+      "org-edit-export-block": [];
+      /**
+       * Edit the fixed-width area at point, its lines without their colons, in the mode org-edit-fixed-width-region-mode names. C-c ' there puts it back.
+       *
+       * Defined in packages/org-src.ts.
+       */
+      "org-edit-fixed-width-region": [];
+      /**
+       * Edit the LaTeX environment at point in a buffer of its own, in the mode for LaTeX if there is one. C-c ' there puts it back.
+       *
+       * Defined in packages/org-src.ts.
+       */
+      "org-edit-latex-environment": [];
+      /**
+       * Edit the element at point in a buffer of its own: a source, example, export or comment block, a fixed-width area or a LaTeX environment; a table's formulas; the file a #+INCLUDE: line names; a planning line's dates; a timestamp; a link.
        *
        * Defined in packages/org-src.ts.
        */
@@ -15145,6 +15169,12 @@ declare global {
        */
       "org-directory": Value;
       /**
+       * The major mode C-c ' edits a fixed-width area in.
+       *
+       * Defined in packages/org-src.ts.
+       */
+      "org-edit-fixed-width-region-mode": Value;
+      /**
        * How far the lines of a source block are indented past its #+begin_src line.
        *
        * Defined in packages/org.ts.
@@ -15928,6 +15958,12 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-speed-commands": Value;
+      /**
+       * Whether C-c ' asks before going back to an edit of the same text already under way; no discards that edit.
+       *
+       * Defined in packages/org-src.ts.
+       */
+      "org-src-ask-before-returning-to-edit-buffer": Value;
       /**
        * Faces for source blocks' text by language, as ["language", face] lists: a face's name, or an anonymous face, a list of attributes such as [":background", "#EEE2FF"]. "" is for blocks with no language.
        *

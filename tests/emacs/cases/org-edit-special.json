@@ -1,0 +1,524 @@
+[
+ {
+  "name": "export-js",
+  "text": "Text.\n#+begin_export js\nbold();\n#+end_export\nAfter.\n",
+  "point": 25,
+  "keys": "C-c ' C-e ! C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "export-html",
+  "text": "Text.\n#+begin_export html\n<b>bold</b>\n#+end_export\nAfter.\n",
+  "point": 30,
+  "keys": "C-c ' C-e ! C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "export-html-abort",
+  "text": "#+begin_export js\nbold();\n#+end_export\n",
+  "point": 19,
+  "keys": "C-c ' C-e ! C-c C-k",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "export-escaped",
+  "text": "#+begin_export sh\n,* not a heading\nx\n#+end_export\n",
+  "point": 35,
+  "keys": "C-c ' M-< C-k C-k C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "export-star-added",
+  "text": "#+begin_export sh\nx\n#+end_export\n",
+  "point": 18,
+  "keys": "C-c ' C-a * SPC h RET C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "export-no-mode",
+  "text": "#+begin_export nosuchlang\nx\n#+end_export\n",
+  "point": 26,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "export-no-type",
+  "text": "#+begin_export\nx\n#+end_export\n",
+  "point": 15,
+  "keys": "C-c ' y C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "export-indented",
+  "text": "- item\n  #+begin_export js\n  f(a);\n  #+end_export\n",
+  "point": 31,
+  "keys": "C-c ' C-e ! C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "comment-block",
+  "text": "#+begin_comment\nSome text.\n,* escaped\n#+end_comment\n",
+  "point": 21,
+  "keys": "C-c ' C-e ! C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "comment-block-star",
+  "text": "#+begin_comment\nx\n#+end_comment\n",
+  "point": 16,
+  "keys": "C-c ' C-a * SPC h RET C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "comment-block-blank-after",
+  "text": "#+begin_comment\nx\n#+end_comment\n\n\nmore\n",
+  "point": 33,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "fixed-width",
+  "text": ": one\n: two\n:\n: four\n",
+  "point": 10,
+  "keys": "C-c ' C-e ! C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "fixed-width-indented",
+  "text": "- item\n  : ab\n  : cd\n",
+  "point": 12,
+  "keys": "C-c ' C-e ! C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "latex-environment",
+  "text": "\\begin{equation}\nx = y\n\\end{equation}\n",
+  "point": 21,
+  "keys": "C-c ' C-e ! C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "latex-environment-abort",
+  "text": "\\begin{equation}\nx = y\n\\end{equation}\n",
+  "point": 21,
+  "keys": "C-c ' C-e ! C-c C-k",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "include-url",
+  "text": "#+INCLUDE: \"https://example.com/a.org\"\n",
+  "point": 37,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "include-empty",
+  "text": "#+INCLUDE:\n",
+  "point": 10,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "other-keyword",
+  "text": "#+TITLE: x\n",
+  "point": 10,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "paragraph",
+  "text": "Just text.\n",
+  "point": 5,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "example-block",
+  "text": "#+begin_example\nab\n#+end_example\n",
+  "point": 17,
+  "keys": "C-c ' C-e ! C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "src-point-return",
+  "text": "#+begin_src emacs-lisp\n  (a b)\n  (c d)\n#+end_src\n",
+  "point": 28,
+  "keys": "C-c ' C-n C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "name-on-export",
+  "text": "#+NAME: x\n#+begin_export js\nf(a);\n#+end_export\n",
+  "point": 8,
+  "keys": "C-c ' C-e ! C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "planning-deadline",
+  "text": "* T\nDEADLINE: <2026-11-20 Fri>\n",
+  "point": 30,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ],
+  "answers": [
+   "2026-12-01"
+  ]
+ },
+ {
+  "name": "planning-both",
+  "text": "* T\nSCHEDULED: <2026-11-20 Fri> DEADLINE: <2026-11-21 Sat>\n",
+  "point": 58,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ],
+  "answers": [
+   "2026-12-01",
+   "2026-12-02"
+  ]
+ },
+ {
+  "name": "timestamp-active",
+  "text": "* T\nSee <2026-11-20 Fri> then.\n",
+  "point": 21,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ],
+  "answers": [
+   "2026-12-24"
+  ]
+ },
+ {
+  "name": "timestamp-inactive",
+  "text": "* T\nSee [2026-11-20 Fri] then.\n",
+  "point": 21,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ],
+  "answers": [
+   "2026-12-24"
+  ]
+ },
+ {
+  "name": "src-escaped-shown",
+  "text": "#+begin_src emacs-lisp\n,* x\n(a)\n#+end_src\n",
+  "point": 23,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "src-star-written",
+  "text": "#+begin_src emacs-lisp\n(a)\n#+end_src\n",
+  "point": 23,
+  "keys": "C-c ' * SPC h RET C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "example-escaped-shown",
+  "text": "#+begin_example\n,#+begin\n#+end_example\n",
+  "point": 16,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "src-tab-in-content",
+  "text": "#+begin_src emacs-lisp\n  (a)\n\t(b)\n#+end_src\n",
+  "point": 25,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "src-deep-list-writeback",
+  "text": "- a\n  - b\n    - c\n      #+begin_src emacs-lisp\n        (x)\n      #+end_src\n",
+  "point": 55,
+  "keys": "C-c ' C-e ! C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "src-name-above",
+  "text": "#+NAME: x\n#+begin_src emacs-lisp\n(a)\n#+end_src\n",
+  "point": 8,
+  "keys": "C-c ' C-e ! C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "example-name-above",
+  "text": "#+NAME: x\n#+begin_example\nab\n#+end_example\n",
+  "point": 8,
+  "keys": "C-c ' C-e ! C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "src-existing-no",
+  "text": "#+begin_src emacs-lisp\n(a)\n#+end_src\n",
+  "point": 23,
+  "keys": "C-c ' C-e ! C-x o C-c '",
+  "modes": [
+   "org-mode"
+  ],
+  "answers": [
+   "n"
+  ],
+  "windows": true
+ },
+ {
+  "name": "export-existing-no",
+  "text": "#+begin_export js\nf();\n#+end_export\n",
+  "point": 18,
+  "keys": "C-c ' C-e ! C-x o C-c '",
+  "modes": [
+   "org-mode"
+  ],
+  "answers": [
+   "n"
+  ],
+  "windows": true
+ },
+ {
+  "name": "src-two-same-lang",
+  "text": "#+begin_src emacs-lisp\n(a)\n#+end_src\n#+begin_src emacs-lisp\n(b)\n#+end_src\n",
+  "point": 23,
+  "keys": "C-c ' C-e ! C-x o C-n C-n C-n C-c '",
+  "modes": [
+   "org-mode"
+  ],
+  "windows": true
+ },
+ {
+  "name": "src-two-same-lang-exit-first",
+  "text": "#+begin_src emacs-lisp\n(a)\n#+end_src\n#+begin_src emacs-lisp\n(b)\n#+end_src\n",
+  "point": 23,
+  "keys": "C-c ' C-e ! C-x o C-n C-n C-n C-c ' C-c ' C-x o C-c '",
+  "modes": [
+   "org-mode"
+  ],
+  "windows": true
+ },
+ {
+  "name": "win-exit-other-window",
+  "text": "#+begin_src emacs-lisp\n(a)\n#+end_src\n",
+  "point": 23,
+  "keys": "C-c ' C-e ! C-c '",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-src-window-setup": "'other-window"
+  },
+  "windows": true
+ },
+ {
+  "name": "fw-unchanged",
+  "text": ": a\n: b\n",
+  "point": 6,
+  "keys": "C-c ' C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "fw-no-final-newline",
+  "text": ": a\n: b",
+  "point": 6,
+  "keys": "C-c ' C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "fw-point-start",
+  "text": ": a\n: bc\n",
+  "point": 6,
+  "keys": "C-c ' C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "latex-no-final-newline",
+  "text": "\\begin{equation}\nx\n\\end{equation}",
+  "point": 17,
+  "keys": "C-c ' C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "ts-range-inactive",
+  "text": "* T\nSee [2026-11-20 Fri]--[2026-11-22 Sun] x.\n",
+  "point": 36,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ],
+  "answers": [
+   "2026-12-24"
+  ]
+ },
+ {
+  "name": "ts-after-space",
+  "text": "* T\nSee <2026-11-20 Fri> x.\n",
+  "point": 24,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ],
+  "answers": [
+   "2026-12-24"
+  ]
+ },
+ {
+  "name": "ts-in-space-after",
+  "text": "* T\nSee <2026-11-20 Fri>  x.\n",
+  "point": 25,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ],
+  "answers": [
+   "2026-12-24"
+  ]
+ },
+ {
+  "name": "ts-in-property",
+  "text": "* T\n:PROPERTIES:\n:CREATED: [2026-11-20 Fri]\n:END:\n",
+  "point": 36,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ],
+  "answers": [
+   "2026-12-24"
+  ]
+ },
+ {
+  "name": "ts-in-comment",
+  "text": "* T\n# <2026-11-20 Fri>\n",
+  "point": 15,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ],
+  "answers": [
+   "2026-12-24"
+  ]
+ },
+ {
+  "name": "ts-in-clock",
+  "text": "* T\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n",
+  "point": 20,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ],
+  "answers": [
+   "2026-12-24"
+  ]
+ },
+ {
+  "name": "undo-in-edit",
+  "text": "#+begin_src emacs-lisp\n  (a)\n#+end_src\n",
+  "point": 27,
+  "keys": "C-c ' C-/",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "region-carried",
+  "text": "#+begin_src emacs-lisp\n  (a)\n  (b)\n#+end_src\n",
+  "point": 25,
+  "keys": "C-SPC C-n C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "src-tab-indented-block",
+  "text": "#+begin_src emacs-lisp\n\t(a)\n#+end_src\n",
+  "point": 26,
+  "keys": "C-c ' C-e ! C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "export-tab-indented",
+  "text": "\t#+begin_export sh\n\ta\n\t#+end_export\n",
+  "point": 21,
+  "keys": "C-c ' C-e ! C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "fw-tab-indented",
+  "text": "\t: a\n",
+  "point": 4,
+  "keys": "C-c ' C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ }
+]

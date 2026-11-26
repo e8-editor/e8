@@ -1,7 +1,9 @@
-// Editing a source block in its own mode, after Org's org-src.el: C-c ' in
-// a #+begin_src or #+begin_example block shows its text in *Org Src ...*,
-// in the language's major mode; C-c ' there puts it back and C-c C-k leaves
-// the block as it was.
+// Editing an element's text in a buffer of its own, after Org's org-src.el:
+// C-c ' in a source, example, export or comment block, a fixed-width area
+// or a LaTeX environment shows its text in *Org Src ...*, in the mode for
+// its language; C-c ' there puts it back and C-c C-k leaves it as it was.
+// C-c ' elsewhere does what Org's org-edit-special does: a table's
+// formulas, an included file, a planning line's dates, a timestamp, a link.
 //
 // Copyright (C) 2004-2025 Free Software Foundation, Inc.
 // Ported to E8 in 2026.
@@ -11,8 +13,11 @@
 // Free Software Foundation, either version 3 of the License, or (at your
 // option) any later version.
 
-import { eraseBuffer, PerBuffer } from "subr";
-import { AFFILIATED, elementAt } from "org-element";
+import { barfIfBufferReadOnly, eraseBuffer, PerBuffer, truthy } from "subr";
+import { type Elem, elementAt, endBeforeBlank, withAffiliated } from "org-element";
+import { orgRegionActive } from "org-macs";
+import { linkHere } from "ol";
+import { openLink } from "org";
 import { commentOrUncommentRegion } from "newcomment";
 
 const defvar = (name: string, value: e8.Value, doc: string) => e8.defineVariable({ name, value, doc });
@@ -29,6 +34,8 @@ defvar(
   'Faces for source blocks\' text by language, as ["language", face] lists: a face\'s name, or an anonymous face, a list of attributes such as [":background", "#EEE2FF"]. "" is for blocks with no language.',
 );
 defvar("org-edit-src-persistent-message", true, "Whether the block's buffer says in its header line how to finish.");
+defvar("org-edit-fixed-width-region-mode", "artist-mode", "The major mode C-c ' edits a fixed-width area in.");
+defvar("org-src-ask-before-returning-to-edit-buffer", true, "Whether C-c ' asks before going back to an edit of the same text already under way; no discards that edit.");
 
 /** What a block's buffer edits: where in which buffer, and how its text goes back. */
 interface Edit {
@@ -39,6 +46,20 @@ interface Edit {
   contentIndentation: number;
   preserve: boolean;
   windows?: e8.WindowConfiguration;
+  /** What becomes of the text before it goes back, as org-src--allow-write-back's function: commas before lines Org would read, ": " before a fixed-width area's lines. */
+  writeBack?: (text: string) => string;
+  /** The Org buffer's tab width if it indents with tabs, else 0, as org-src--tab-width. */
+  tabWidth: number;
+}
+
+/** An element's text to edit, as org-src--contents-area gives it, and the element's own indentation. */
+interface Datum {
+  type: string;
+  beg: number;
+  end: number;
+  contents: string;
+  blockIndentation: number;
+  preserve: boolean;
 }
 
 const edits = new PerBuffer<Edit>();
@@ -72,31 +93,69 @@ export function langMode(lang: string): string {
   return `${entry ? String(entry[1]) : lang}-mode`;
 }
 
-/** The indentation all non-blank lines share. */
-function commonIndentation(text: string): number {
-  const indents = text.split("\n").filter((l) => l.trim() !== "").map((l) => /^[ \t]*/.exec(l)![0].replace(/\t/g, "        ").length);
-  return indents.length === 0 ? 0 : Math.min(...indents);
+/** A line's indentation in columns, tabs to the next multiple of eight. */
+function lineIndentation(l: string): number {
+  let col = 0;
+  for (const c of /^[ \t]*/.exec(l)![0]) col = c === "\t" ? (Math.floor(col / 8) + 1) * 8 : col + 1;
+  return col;
 }
 
-/** Takes `n` columns of indentation off each line, as org-do-remove-indentation. */
-function removeIndentation(text: string, n: number): string {
-  if (n === 0) return text;
-  return text.split("\n").map((l) => {
-    let col = 0;
-    let i = 0;
-    while (i < l.length && col < n && (l[i] === " " || l[i] === "\t")) {
-      col = l[i] === "\t" ? (Math.floor(col / 8) + 1) * 8 : col + 1;
-      i++;
-    }
-    return l.slice(i);
+/**
+ * Takes the indentation the non-blank lines share off them, as
+ * org-do-remove-indentation: nothing if one has none; a blank line's
+ * blanks go; a tab spanning the column stays, as move-to-column with
+ * indent-tabs-mode puts spaces before it rather than splitting it.
+ */
+function removeCommonIndentation(text: string): string {
+  const lines = text.split("\n");
+  // The least indentation, starting from the buffer's size, as Org starts it from point-max.
+  let n = charCountOf(text) + 1;
+  for (const l of lines) {
+    if (!/^[ \t]*\S/.test(l)) continue;
+    const ind = lineIndentation(l);
+    if (ind === 0) return text;
+    n = Math.min(n, ind);
+  }
+  return lines.map((l) => {
+    if (!/\S/.test(l)) return lineIndentation(l) < n ? "" : cutColumns(l, n);
+    return cutColumns(l, n);
   }).join("\n");
+}
+
+/** A line without its first n columns of indentation, a tab that spans the column kept. */
+function cutColumns(l: string, n: number): string {
+  let col = 0;
+  let i = 0;
+  while (i < l.length && col < n && (l[i] === " " || l[i] === "\t")) {
+    const next = l[i] === "\t" ? (Math.floor(col / 8) + 1) * 8 : col + 1;
+    if (next > n) break;
+    col = next;
+    i++;
+  }
+  return l.slice(i);
+}
+
+/** How many characters a string has, as Emacs counts them. */
+function charCountOf(s: string): number {
+  return [...s].length;
+}
+
+/** Indentation to a column, with tabs if the Org buffer indents with them, as indent-to makes it there. */
+function indentString(offset: number, tabWidth: number): string {
+  if (tabWidth <= 0) return " ".repeat(offset);
+  return "\t".repeat(Math.floor(offset / tabWidth)) + " ".repeat(offset % tabWidth);
 }
 
 /** Shows a block's buffer, or the Org buffer again, as org-src-switch-to-buffer does for org-src-window-setup. */
 function switchTo(buffer: string, context: "edit" | "exit"): void {
   const setup = String(e8.variable("org-src-window-setup") ?? "reorganize-frame");
   if (setup === "current-window") e8.call("switch-to-buffer", buffer);
-  else if (setup === "other-window") e8.call("switch-to-buffer-other-window", buffer);
+  else if (setup === "other-window") {
+    const current = e8.selectedWindow();
+    e8.call("switch-to-buffer-other-window", buffer);
+    // As quit-restore-window takes the edit buffer's window away.
+    if (context === "exit" && e8.windowList().length > 1 && e8.windowLiveP(current)) e8.deleteWindow(current);
+  }
   else if (setup === "split-window-below" || setup === "split-window-right") {
     if (context === "edit") e8.selectWindow(e8.splitWindow(undefined, setup === "split-window-below" ? "below" : "right"));
     e8.call("switch-to-buffer", buffer);
@@ -108,79 +167,169 @@ function switchTo(buffer: string, context: "edit" | "exit"): void {
 
 type Block = NonNullable<ReturnType<typeof blockAt>>;
 
+/** Where a position is within an area, by line and by column from the line's end, or the end, as org-src--coordinates. */
+function coordinates(pos: number, beg: number, end: number): [number, number] | "end" {
+  if (pos >= end) return "end";
+  return e8.saveRestriction(() => {
+    e8.widen();
+    const p = Math.max(beg, pos);
+    const line = e8.lineOf(p);
+    return [line - e8.lineOf(beg), p - Math.min(end, e8.lineEnd(line))];
+  });
+}
+
+/** Moves to coordinates within an area, as org-src--goto-coordinates. */
+function gotoCoordinates(c: [number, number] | "end", beg: number, end: number): void {
+  if (c === "end") {
+    e8.gotoChar(Math.max(end - 1, beg));
+    return;
+  }
+  const target = e8.saveRestriction(() => {
+    e8.widen();
+    const line = Math.min(e8.lineOf(beg) + c[0], e8.lineCount() - 1);
+    return Math.max(e8.lineStart(line), Math.min(end, e8.lineEnd(line)) + c[1]);
+  });
+  e8.gotoChar(target);
+}
+
 /**
- * Makes the buffer that edits a block, as org-src--edit-element does: its
- * text without the indentation its lines share, in the language's mode,
- * point where it was in the block. The current buffer stays as it was.
+ * Makes the buffer that edits an element's text, as org-src--edit-element
+ * does: its text without the indentation its lines share, in `mode`, point
+ * where it was in the element. The current buffer stays as it was.
+ */
+function openElement(d: Datum, base: string, mode: string | undefined, writeBack?: (text: string) => string): { name: string; edit: Edit } {
+  const source = e8.bufferName();
+  const coords = coordinates(e8.point(), d.beg, d.end);
+  // The region, if active and in the element, as org-src--edit-element carries it in.
+  const mark = e8.mark();
+  const markCoords = orgRegionActive() && mark !== undefined && mark >= d.beg && mark <= d.end ? coordinates(mark, d.beg, d.end) : undefined;
+  const text = d.preserve ? d.contents : removeCommonIndentation(d.contents);
+  const tabWidth = truthy(e8.variable("indent-tabs-mode") ?? null) ? Number(e8.variable("tab-width") ?? 8) : 0;
+  const edit: Edit = {
+    beg: e8.makeMarker(d.beg),
+    end: e8.makeMarker(d.end, { advances: true }),
+    source,
+    blockIndentation: d.blockIndentation,
+    contentIndentation: d.type === "src-block" || d.type === "example-block" ? Number(e8.variable("org-edit-src-content-indentation") ?? 2) : 0,
+    preserve: d.preserve,
+    writeBack,
+    tabWidth,
+  };
+  // A buffer of its own, as generate-new-buffer names it, <2> after another's.
+  const name = e8.generateNewBufferName(base);
+  e8.getBufferCreate(name);
+  e8.withCurrentBuffer(name, () => {
+    e8.insert(text);
+    // No undoing back to the empty buffer, as Org clears the undo list.
+    e8.bufferDisableUndo();
+    e8.bufferEnableUndo();
+    if (mode !== undefined) {
+      if (e8.commandNames().includes(mode)) e8.letBind({ "org-inhibit-startup": true }, () => e8.call(mode as e8.CommandName));
+      // As Org reports a mode that fails to start, and goes on.
+      else e8.message(`Initialization fails with: "Symbol\u2019s function definition is void: ${mode}"`);
+    }
+    edits.set(e8.currentBuffer(), edit);
+    e8.callWithPrefix(1, orgSrcMode);
+    e8.setBufferModified(false);
+    if (markCoords !== undefined) {
+      gotoCoordinates(markCoords, 0, e8.bufferSize());
+      e8.pushMark(e8.point(), { activate: true });
+    }
+    gotoCoordinates(coords, 0, e8.bufferSize());
+  });
+  return { name, edit };
+}
+
+/** The text of a source or example block to edit, as org-src--contents-area gives a block's. */
+function blockDatum(block: Block): Datum {
+  const beg = e8.lineStart(block.begin + 1);
+  const end = e8.lineStart(block.end);
+  return {
+    type: block.kind === "src" ? "src-block" : "example-block",
+    beg,
+    end,
+    // Their value, commas before lines Org would read taken off, as Org's parser gives it.
+    contents: unescapeCode(e8.bufferSubstringNoProperties(beg, end)),
+    blockIndentation: block.indent,
+    preserve: e8.variable("org-src-preserve-indentation") === true || /(^|\s)-i(\s|$)/.test(block.switches),
+  };
+}
+
+/**
+ * Makes the buffer that edits a block, in its language's mode, as
+ * org-edit-src-code does through org-src--edit-element.
  */
 function openEdit(block: Block): { name: string; edit: Edit } {
   const lang = block.kind === "src" ? block.lang ?? "" : "example";
   const mode = block.kind === "src" ? langMode(lang) : undefined;
   if (mode !== undefined && !e8.commandNames().includes(mode)) e8.signal("error", `No such language mode: ${mode}`);
-  const begPos = e8.lineStart(block.begin + 1);
-  const endPos = e8.lineStart(block.end);
-  const source = e8.bufferName();
-  // Where point is, by line and column within the block, as org-src--coordinates.
-  const point = e8.point();
-  const from = Math.max(point, begPos);
-  const coords: [number, number] | "end" = point >= endPos ? "end" : [e8.lineOf(from) - (block.begin + 1), from - e8.lineStart(e8.lineOf(from))];
-  const preserve = e8.variable("org-src-preserve-indentation") === true || /(^|\s)-i(\s|$)/.test(block.switches);
-  let text = e8.bufferSubstringNoProperties(begPos, endPos);
-  const removed = preserve ? 0 : commonIndentation(text);
-  text = removeIndentation(text, removed);
-  const edit: Edit = {
-    beg: e8.makeMarker(begPos),
-    end: e8.makeMarker(endPos, { advances: true }),
-    source,
-    blockIndentation: block.indent,
-    contentIndentation: Number(e8.variable("org-edit-src-content-indentation") ?? 2),
-    preserve,
-  };
-  const name = `*Org Src ${source}[ ${lang} ]*`;
-  e8.getBufferCreate(name);
-  e8.withCurrentBuffer(name, () => {
-    eraseBuffer();
-    e8.insert(text);
-    if (mode !== undefined) e8.call(mode as e8.CommandName);
-    edits.set(e8.currentBuffer(), edit);
-    e8.callWithPrefix(1, orgSrcMode);
-    e8.setBufferModified(false);
-    if (coords === "end") e8.gotoChar(Math.max(e8.bufferSize() - 1, 0));
-    else {
-      const line = Math.min(coords[0], e8.lineCount() - 1);
-      e8.gotoChar(Math.min(e8.lineStart(line) + Math.max(coords[1] - removed, 0), e8.lineEnd(line)));
-    }
-  });
-  return { name, edit };
+  return openElement(blockDatum(block), `*Org Src ${e8.bufferName()}[ ${lang} ]*`, mode, escapeCode);
 }
 
 /** Edits the block at point in its language's mode, as org-edit-src-code. */
 function editSrcCode(): void {
-  const block = blockAt();
-  if (!block) e8.userError("Not in a source or example block");
-  const source = e8.bufferName();
-  const begPos = e8.lineStart(block.begin + 1);
-  // An edit of this block already under way is gone back to, as org-src--edit-buffer finds it.
-  const existing = e8.bufferList().find((b) => {
-    const e = e8.getBuffer(b) && edits.get(b);
-    return e !== undefined && e8.markerBuffer(e.beg) === source && e8.markerPosition(e.beg) === begPos;
-  });
-  if (existing !== undefined) {
-    switchTo(existing, "edit");
-    return;
+  // From the block's affiliated keywords too, as #+NAME:, which Org's element includes.
+  let block = blockAt();
+  if (!block) {
+    const e = withAffiliated(elementAt(e8.point()));
+    if (e && (e.type === "src-block" || e.type === "example-block") && e.postAffiliated !== undefined) {
+      block = e8.saveExcursion(() => {
+        e8.gotoChar(e.postAffiliated!);
+        return blockAt();
+      });
+    }
   }
-  const windows = e8.currentWindowConfiguration();
+  if (!block) e8.userError("Not in a source or example block");
+  const d = blockDatum(block);
+  if (returnToExisting(d.beg, d.end)) return;
+  const windows = savedWindows();
   const { name, edit } = openEdit(block);
   edit.windows = windows;
   switchTo(name, "edit");
 }
 
+/** The windows to put back on leaving, as org-src--saved-temp-window-config keeps them for the setups that split. */
+function savedWindows(): e8.WindowConfiguration | undefined {
+  const setup = String(e8.variable("org-src-window-setup") ?? "reorganize-frame");
+  return ["reorganize-frame", "split-window-below", "split-window-right"].includes(setup) ? e8.currentWindowConfiguration() : undefined;
+}
+
+/**
+ * Goes back to an edit of the same area already under way, as
+ * org-src--edit-element does, asking first as
+ * org-src-ask-before-returning-to-edit-buffer says; no discards it.
+ */
+function returnToExisting(beg: number, end: number): boolean {
+  const source = e8.bufferName();
+  const existing = e8.bufferList().find((b) => {
+    const e = e8.getBuffer(b) && edits.get(b);
+    return e !== undefined && e8.markerBuffer(e.beg) === source && e8.markerPosition(e.beg) === beg && e8.markerPosition(e.end) === end;
+  });
+  if (existing === undefined) return false;
+  if (!truthy(e8.variable("org-src-ask-before-returning-to-edit-buffer") ?? null) || e8.yOrNP("Return to existing edit buffer ([n] will revert changes)? ")) {
+    switchTo(existing, "edit");
+    return true;
+  }
+  const old = edits.get(existing);
+  if (old) {
+    e8.deleteMarker(old.beg);
+    e8.deleteMarker(old.end);
+  }
+  e8.withCurrentBuffer(existing, () => {
+    edits.delete(e8.currentBuffer());
+    e8.setBufferModified(false);
+  });
+  e8.call("kill-buffer", existing);
+  return false;
+}
+
 /** The block's buffer's text as it goes back: each non-blank line indented by the block's and its content's indentation. */
 function contentsForWriteBack(edit: Edit): string {
-  const text = e8.bufferSubstringNoProperties(0, e8.bufferSize());
+  let text = e8.bufferSubstringNoProperties(0, e8.bufferSize());
+  if (edit.writeBack) text = edit.writeBack(text);
   const offset = edit.preserve ? 0 : edit.blockIndentation + edit.contentIndentation;
-  const body = offset > 0 ? text.split("\n").map((l) => (l === "" ? l : " ".repeat(offset) + l)).join("\n") : text;
-  return body === "" || body.endsWith("\n") ? body : `${body}\n`;
+  const indent = indentString(offset, edit.tabWidth);
+  return offset > 0 ? text.split("\n").map((l) => (l === "" ? l : indent + l)).join("\n") : text;
 }
 
 /** Puts the block's buffer's text back in place of the block's, if it changed. */
@@ -203,8 +352,16 @@ function writeBack(edit: Edit, text: string): void {
           // From the block's start after an undo boundary, as org-edit-src-exit puts one there, so undoing it comes back there.
           e8.gotoChar(beg);
           e8.undoBoundary();
+          const expectingBol = beg === e8.lineStart(e8.lineOf(beg));
           e8.narrowToRegion(beg, end);
           e8.replaceBufferContents(scratch, 0.1);
+          // Ending in a newline, as Org adds one after text that does not.
+          const stop = e8.pointMax();
+          e8.widen();
+          if (expectingBol && stop > beg && e8.bufferText(stop - 1, stop) !== "\n") {
+            e8.gotoChar(stop);
+            e8.insert("\n");
+          }
         }),
       );
     } finally {
@@ -217,8 +374,7 @@ function writeBack(edit: Edit, text: string): void {
 function exit(abort: boolean): void {
   const edit = edits.get(e8.currentBuffer());
   if (!edit) e8.signal("error", "Not in a sub-editing buffer");
-  const lineInEdit = e8.lineOf(e8.point());
-  const colInEdit = e8.point() - e8.lineStart(lineInEdit);
+  const at = coordinates(e8.point(), 0, e8.bufferSize());
   const text = contentsForWriteBack(edit);
   const name = e8.bufferName();
   if (!e8.bufferList().includes(edit.source)) e8.signal("error", "Source buffer disappeared.  Aborting");
@@ -228,18 +384,14 @@ function exit(abort: boolean): void {
   if (edit.windows) e8.setWindowConfiguration(edit.windows);
   switchTo(edit.source, "exit");
   e8.call("kill-buffer", name);
-  returnPoint(edit, abort ? undefined : [lineInEdit, colInEdit]);
+  returnPoint(edit, abort ? undefined : at);
 }
 
 /** Puts point back in the Org buffer where it was in the block's buffer, as org-src--goto-coordinates, and frees the edit's markers. */
-function returnPoint(edit: Edit, at: [number, number] | undefined): void {
+function returnPoint(edit: Edit, at: [number, number] | "end" | undefined): void {
   const beg = e8.markerPosition(edit.beg) ?? 0;
   if (at === undefined) e8.gotoChar(beg);
-  else {
-    const line = e8.lineOf(beg) + at[0];
-    const offset = edit.preserve ? 0 : edit.blockIndentation + edit.contentIndentation;
-    e8.gotoChar(Math.min(e8.lineStart(line) + at[1] + offset, e8.lineEnd(line)));
-  }
+  else gotoCoordinates(at, beg, e8.markerPosition(edit.end) ?? beg);
   e8.deleteMarker(edit.beg);
   e8.deleteMarker(edit.end);
 }
@@ -263,14 +415,13 @@ function doInEditBuffer(body: () => void): void {
     return;
   }
   const { name, edit } = opened;
-  let at: [number, number] = [0, 0];
+  let at: [number, number] | "end" = [0, 0];
   let text = "";
   e8.withCurrentBuffer(name, () => {
     try {
       body();
     } finally {
-      const line = e8.lineOf(e8.point());
-      at = [line, e8.point() - e8.lineStart(line)];
+      at = coordinates(e8.point(), 0, e8.bufferSize());
       text = contentsForWriteBack(edit);
       edits.delete(e8.currentBuffer());
       e8.setBufferModified(false);
@@ -336,31 +487,224 @@ e8.defineCommand({
   run: () => editSrcCode(),
 });
 
+/**
+ * The element point is in, for C-c ', as org-element-at-point gives it: on
+ * affiliated keywords, as #+NAME:, the element they belong to.
+ */
+function elementHere(): Elem | undefined {
+  return withAffiliated(elementAt(e8.point()));
+}
+
 /** Whether point is in an Org table, a row or its keywords and #+TBLFM: lines, where Org's C-c ' edits the formulas. */
 function orgTableHere(): boolean {
   if (!e8.derivedModeP("org-mode")) return false;
-  // On a table's affiliated keywords, as #+NAME:, the element is the table, as Org's parser says.
-  const here = e8.lineOf(e8.point());
-  let l = here;
-  while (AFFILIATED.test(e8.lineText(l)) && l + 1 < e8.lineCount()) l++;
-  const at = l === here ? e8.point() : e8.lineStart(l);
-  if (l !== here && !/^[ \t]*\|/.test(e8.lineText(l))) return false;
-  for (let e = elementAt(at); e; e = e.parent) {
+  for (let e = elementHere(); e; e = e.parent) {
     if (e.type === "table-row") return true;
     if (e.type === "table") return e.tableType !== "table.el";
   }
   return false;
 }
 
+/** Whether point is on an element, not the blank lines after it, as org-src--on-datum-p. */
+function onDatum(e: Elem): boolean {
+  return e8.point() >= e.begin && e8.point() <= endBeforeBlank(e);
+}
+
+/** An element's indentation, as org-current-text-indentation at its start. */
+function indentationAt(pos: number): number {
+  return /^[ \t]*/.exec(e8.lineText(e8.lineOf(pos)))![0].replace(/\t/g, "        ").length;
+}
+
+const ESCAPE = /^([ \t]*)(,*(?:\*|#\+))/gm;
+const UNESCAPE = /^([ \t]*,*),((?:\*|#\+))/gm;
+
+/** Puts a comma before lines Org would read as its own, as org-escape-code-in-region. */
+function escapeCode(text: string): string {
+  return text.replace(ESCAPE, "$1,$2");
+}
+
+/** Takes the comma off lines escaped so, as org-unescape-code-in-string. */
+function unescapeCode(text: string): string {
+  return text.replace(UNESCAPE, "$1$2");
+}
+
+/** The area between a block's #+begin and #+end lines, as org-src--contents-area finds a block's. */
+function blockArea(e: Elem): { beg: number; end: number } {
+  const begin = e.postAffiliated ?? e.begin;
+  return { beg: e8.lineStart(Math.min(e8.lineOf(begin) + 1, e8.lineCount() - 1)), end: e8.lineStart(e8.lineOf(endBeforeBlank(e))) };
+}
+
+/** The area from an element's first line to the line after its last, as org-src--contents-area finds a fixed-width area's or a LaTeX environment's. */
+function wholeArea(e: Elem): { beg: number; end: number } {
+  const last = e8.lineOf(endBeforeBlank(e));
+  return { beg: e.postAffiliated ?? e.begin, end: last + 1 < e8.lineCount() ? e8.lineStart(last + 1) : e8.bufferSize() };
+}
+
+/** The element of a type point is on, or Org's error for not being in one. */
+function elementOfType(type: string, error: string): Elem {
+  const e = elementHere();
+  if (!e || e.type !== type || !onDatum(e)) e8.userError(error);
+  return e!;
+}
+
+/** Edits an export block's text in the mode for its backend, as org-edit-export-block. */
+function editExportBlock(): void {
+  const e = elementOfType("export-block", "Not in an export block");
+  const first = e8.lineText(e8.lineOf(e.postAffiliated ?? e.begin));
+  const type = (/^[ \t]*#\+begin_export[ \t]+(\S+)/i.exec(first)?.[1] ?? "fundamental").toLowerCase();
+  const mode = langMode(type);
+  if (!e8.commandNames().includes(mode)) e8.signal("error", `No such language mode: ${mode}`);
+  const { beg, end } = blockArea(e);
+  const d: Datum = { type: "export-block", beg, end, contents: unescapeCode(e8.bufferSubstringNoProperties(beg, end)), blockIndentation: indentationAt(e.begin), preserve: false };
+  openAndShow(d, `*Org Src ${e8.bufferName()}[ ${type} ]*`, mode, escapeCode);
+}
+
+/** Edits a comment block's text in Org mode, as org-edit-comment-block. */
+function editCommentBlock(): void {
+  const e = elementOfType("comment-block", "Not in a comment block");
+  const { beg, end } = blockArea(e);
+  const d: Datum = { type: "comment-block", beg, end, contents: unescapeCode(e8.bufferSubstringNoProperties(beg, end)), blockIndentation: indentationAt(e.begin), preserve: false };
+  openAndShow(d, `*Org Src ${e8.bufferName()}[ org ]*`, "org-mode", escapeCode);
+}
+
+/** Edits a fixed-width area without its colons, as org-edit-fixed-width-region. */
+function editFixedWidth(): void {
+  const e = elementOfType("fixed-width", "Not in a fixed-width area");
+  const { beg, end } = wholeArea(e);
+  const value = e8.bufferSubstringNoProperties(beg, e8.lineEnd(e8.lineOf(endBeforeBlank(e)))).replace(/^[ \t]*: ?/gm, "");
+  const d: Datum = { type: "fixed-width", beg, end, contents: value, blockIndentation: indentationAt(e.begin), preserve: false };
+  const mode = e8.variable("org-edit-fixed-width-region-mode");
+  openAndShow(d, `*Org Src ${e8.bufferName()}[ Fixed Width ]*`, typeof mode === "string" ? mode : undefined, (text) =>
+    // ": " at the start of each line, as Org inserts it line by line up to the end.
+    text.split("\n").map((l, i, all) => (i === all.length - 1 && l === "" ? l : `: ${l}`)).join("\n"),
+  );
+}
+
+/** Edits a LaTeX environment in the mode for LaTeX, as org-edit-latex-environment. */
+function editLatexEnvironment(): void {
+  const e = elementOfType("latex-environment", "Not in a LaTeX environment");
+  const { beg, end } = wholeArea(e);
+  const d: Datum = { type: "latex-environment", beg, end, contents: e8.bufferSubstringNoProperties(beg, end), blockIndentation: indentationAt(e.begin), preserve: false };
+  // As Org starts the mode only if there is one.
+  const mode = langMode("latex");
+  openAndShow(d, `*Org Src ${e8.bufferName()}[ LaTeX environment ]*`, e8.commandNames().includes(mode) ? mode : undefined, (t) => t);
+}
+
+/** Opens an element's edit buffer and shows it, as org-src--edit-element does for the element editors. */
+function openAndShow(d: Datum, name: string, mode: string | undefined, writeBack: (text: string) => string): void {
+  if (returnToExisting(d.beg, d.end)) return;
+  const windows = savedWindows();
+  const opened = openElement(d, name, mode, writeBack);
+  opened.edit.windows = windows;
+  switchTo(opened.name, "edit");
+}
+
+/** Opens the file a #+INCLUDE:, #+SETUPFILE: or #+BIBLIOGRAPHY: line names, as org-edit-special does through a file link. */
+function editKeyword(line: string): void {
+  const m = /^[ \t]*#\+(\S+?):[ \t]*(.*?)[ \t]*$/.exec(line);
+  const key = m?.[1].toUpperCase() ?? "";
+  if (!["BIBLIOGRAPHY", "INCLUDE", "SETUPFILE"].includes(key)) e8.userError("No special environment to edit here");
+  const value = m![2];
+  if (!/\S/.test(value)) e8.userError("No file to edit");
+  const f = /^"(.*?)"|\S+/.exec(value)!;
+  const file = f[1] ?? f[0];
+  if (/^[a-z][-+.a-z0-9]*:\/\//i.test(file)) e8.userError("Files located with a URL cannot be edited");
+  openLink({ start: 0, end: 0, path: `file:${e8.expandFileName(file)}`, description: undefined, kind: "bracket" });
+}
+
+e8.defineCommand({
+  name: "org-edit-export-block",
+  doc: "Edit the export block at point in a buffer of its own, in the mode for its backend. C-c ' there puts it back.",
+  run: () => editExportBlock(),
+});
+
+e8.defineCommand({
+  name: "org-edit-comment-block",
+  doc: "Edit the comment block at point in a buffer of its own, in Org mode. C-c ' there puts it back.",
+  run: () => editCommentBlock(),
+});
+
+e8.defineCommand({
+  name: "org-edit-fixed-width-region",
+  doc: "Edit the fixed-width area at point, its lines without their colons, in the mode org-edit-fixed-width-region-mode names. C-c ' there puts it back.",
+  run: () => editFixedWidth(),
+});
+
+e8.defineCommand({
+  name: "org-edit-latex-environment",
+  doc: "Edit the LaTeX environment at point in a buffer of its own, in the mode for LaTeX if there is one. C-c ' there puts it back.",
+  run: () => editLatexEnvironment(),
+});
+
 const editSpecial = e8.defineCommand({
   name: "org-edit-special",
-  doc: "Edit the element at point in a buffer of its own: a source or example block in its language's mode.",
+  doc:
+    "Edit the element at point in a buffer of its own: a source, example, export or comment block, a fixed-width area or a LaTeX environment; " +
+    "a table's formulas; the file a #+INCLUDE: line names; a planning line's dates; a timestamp; a link.",
   run: () => {
-    if (blockAt()) editSrcCode();
-    else if (orgTableHere()) e8.call("org-table-edit-formulas");
-    else e8.userError("No special environment to edit here");
+    barfIfBufferReadOnly();
+    const e = elementHere();
+    switch (e?.type) {
+      case "src-block":
+      case "example-block":
+        editSrcCode();
+        return;
+      case "keyword":
+        editKeyword(e8.lineText(e8.lineOf(e.postAffiliated ?? e.begin)));
+        return;
+      case "table":
+      case "table-row":
+        if (orgTableHere()) e8.call("org-table-edit-formulas");
+        else e8.userError("No special environment to edit here");
+        return;
+      case "export-block":
+        editExportBlock();
+        return;
+      case "comment-block":
+        editCommentBlock();
+        return;
+      case "fixed-width":
+        editFixedWidth();
+        return;
+      case "latex-environment":
+        editLatexEnvironment();
+        return;
+      case "planning": {
+        const text = e8.lineText(e8.lineOf(e.begin));
+        if (/\bDEADLINE:/.test(text)) e8.callInteractively("org-deadline");
+        if (/\bSCHEDULED:/.test(text)) e8.callInteractively("org-schedule");
+        return;
+      }
+    }
+    // Objects, only in what Org parses for them: a paragraph, a heading's title, a table row, a verse block.
+    const headingLine = /^\*+ /.test(e8.lineText(e8.lineOf(e8.point())));
+    if (!headingLine && !["paragraph", "table-row", "table", "verse-block"].includes(e?.type ?? "")) e8.userError("No special environment to edit here");
+    const ts = timestampAtPoint();
+    if (ts !== undefined) {
+      e8.callInteractively(ts ? "org-timestamp" : "org-timestamp-inactive");
+      return;
+    }
+    if (linkHere()) {
+      e8.callInteractively("ffap");
+      return;
+    }
+    e8.userError("No special environment to edit here");
   },
 });
+
+/** Whether point is on a timestamp, active or inactive, as org-element-context finds one: true for active, false for inactive. */
+function timestampAtPoint(): boolean | undefined {
+  const line = e8.lineText(e8.lineOf(e8.point()));
+  const col = e8.point() - e8.lineStart(e8.lineOf(e8.point()));
+  for (const m of line.matchAll(/<\d{4}-\d{2}-\d{2}[^>\n]*>(?:--<\d{4}-\d{2}-\d{2}[^>\n]*>)?|\[\d{4}-\d{2}-\d{2}[^\]\n]*\](?:--\[\d{4}-\d{2}-\d{2}[^\]\n]*\])?/g)) {
+    const at = m.index ?? 0;
+    // With the blanks after it, as an object's end takes them.
+    const blanks = /^[ \t]*/.exec(line.slice(at + m[0].length))![0].length;
+    // An inactive range is no inactive timestamp to Org, which changes it with org-timestamp.
+    if (at <= col && col < at + m[0].length + blanks) return m[0].startsWith("<") || m[0].includes("--");
+  }
+  return undefined;
+}
 
 e8.defineKey("org-mode-map", "C-c '", editSpecial);
 
