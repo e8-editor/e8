@@ -12,6 +12,7 @@
 // option) any later version.
 
 import { eraseBuffer, PerBuffer } from "subr";
+import { AFFILIATED, elementAt } from "org-element";
 import { commentOrUncommentRegion } from "newcomment";
 
 const defvar = (name: string, value: e8.Value, doc: string) => e8.defineVariable({ name, value, doc });
@@ -335,11 +336,28 @@ e8.defineCommand({
   run: () => editSrcCode(),
 });
 
+/** Whether point is in an Org table, a row or its keywords and #+TBLFM: lines, where Org's C-c ' edits the formulas. */
+function orgTableHere(): boolean {
+  if (!e8.derivedModeP("org-mode")) return false;
+  // On a table's affiliated keywords, as #+NAME:, the element is the table, as Org's parser says.
+  const here = e8.lineOf(e8.point());
+  let l = here;
+  while (AFFILIATED.test(e8.lineText(l)) && l + 1 < e8.lineCount()) l++;
+  const at = l === here ? e8.point() : e8.lineStart(l);
+  if (l !== here && !/^[ \t]*\|/.test(e8.lineText(l))) return false;
+  for (let e = elementAt(at); e; e = e.parent) {
+    if (e.type === "table-row") return true;
+    if (e.type === "table") return e.tableType !== "table.el";
+  }
+  return false;
+}
+
 const editSpecial = e8.defineCommand({
   name: "org-edit-special",
   doc: "Edit the element at point in a buffer of its own: a source or example block in its language's mode.",
   run: () => {
     if (blockAt()) editSrcCode();
+    else if (orgTableHere()) e8.call("org-table-edit-formulas");
     else e8.userError("No special environment to edit here");
   },
 });

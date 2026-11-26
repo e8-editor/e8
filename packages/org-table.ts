@@ -306,6 +306,7 @@ function align(): void {
     gotoColumn(column);
   }
   markAligned(isTableLine(lineAt()) ? lineAt() : Math.max(0, lineAt() - 1), layout?.[0], layout?.[1]);
+  if (truthy(e8.variable("org-table-overlay-coordinates") ?? null)) overlayCoordinates();
 }
 
 /** Marks the table as needing alignment, keeping its last widths, as setting org-table-may-need-update does. */
@@ -432,7 +433,7 @@ function insertRow(below: boolean): void {
   e8.gotoChar(at);
   const m = /\| ?/.exec(restOfLine());
   if (m) e8.gotoChar(at + charCount(restOfLine().slice(0, (m.index ?? 0) + m[0].length)));
-  if (before) align();
+  if (before || truthy(e8.variable("org-table-overlay-coordinates") ?? null)) align();
   else markAligned();
   if (fixFormulasConfirmed()) fixFormulas("@", [], currentDline() - 1, 1);
 }
@@ -1109,6 +1110,7 @@ e8.defineCommand({
     edInsert(e8.point(), `${rule}\n`);
     forwardLine(above ? 0 : -2);
     moveToColumn(col);
+    if (truthy(e8.variable("org-table-overlay-coordinates") ?? null)) align();
   },
 });
 
@@ -2098,6 +2100,16 @@ function substituteNames(f: string): string {
   }
 }
 
+/** The formulas as written, by what substituting names made of them, for the debugger, as Org's :orig-formula property. */
+const origFormulas = new Map<string, string>();
+
+/** Substitutes names, remembering the formula as written while the debugger is on. */
+function substituteNamesKeeping(f: string): string {
+  const s = substituteNames(f);
+  if (truthy(e8.variable("org-table-formula-debug") ?? null)) origFormulas.set(s, f);
+  return s;
+}
+
 /** Letters as a column number, AB as 28, as org-letters-to-number. */
 function lettersToNumber(s: string): number {
   let n = 0;
@@ -2481,7 +2493,8 @@ export function evalFormula(
   const n0 = currentColumn();
   let fm: FormulaModes;
   [formula, fm] = parseFormulaModes(formula);
-  if (!suppressConst && truthy(e8.variable("org-table-formula-use-constants"))) formula = substituteNames(formula);
+  if (!suppressConst && truthy(e8.variable("org-table-formula-use-constants"))) formula = substituteNamesKeeping(formula);
+  const orig = formula.length > 1 ? (origFormulas.get(formula) ?? "?") : "?";
   // Org reads a text property at position 1 of the formula here, which an empty one has not.
   if (formula === "") e8.signal("args-out-of-range", "Args out of range: 1, 1", [formula, 1, 1]);
   formula = handleFirstLastRc(formula);
@@ -2518,6 +2531,7 @@ export function evalFormula(
       const to = (m[4] ? n0 : 0) + Number(m[3]);
       form = form.slice(0, m.index) + makeReference(subseq(fields, from, to), fm.keepEmpty, fm.numbers, lispp) + form.slice(m.index + m[0].length);
     }
+    const form0 = form;
     for (;;) {
       const m = /\$(([-+])?[0-9]+)/.exec(form);
       if (!m) break;
@@ -2544,6 +2558,7 @@ export function evalFormula(
         }
       }
     }
+    if (truthy(e8.variable("org-table-formula-debug") ?? null)) showSubstitutions(orig, formula, form0, form, ev, fmt);
     let result: string;
     if (typeof ev !== "string") {
       fmt = undefined;
@@ -2568,6 +2583,36 @@ function subseq<T>(list: T[], start: number, end: number): T[] {
   if (start < 0 || start > list.length) e8.signal("error", `Start index out of bounds: ${s0}`);
   if (end - start < 0 || end > list.length) e8.signal("error", `End index out of bounds: ${e0}`);
   return list.slice(start, end);
+}
+
+/**
+ * Shows how a formula's references were replaced and what it gave, and
+ * asks whether to go on, as org-table-eval-formula does with the formula
+ * debugger on; no aborts with "Abort".
+ */
+function showSubstitutions(orig: string, formula: string, form0: string, form: string, ev: string | [number, string], fmt: string | undefined): void {
+  const windows = e8.currentWindowConfiguration();
+  const name = "*Substitution History*";
+  const tail =
+    typeof ev !== "string"
+      ? `        ${"-".repeat(ev[0])}^\nError:  ${ev[1]}`
+      : `Result: ${ev}\nFormat: ${fmt ?? "NONE"}\nFinal:  ${fmt !== undefined ? formatNumber(fmt, stringToLispNumber(ev)) : ev}`;
+  e8.withCurrentBuffer(e8.getBufferCreate(name), () => {
+    e8.call("erase-buffer");
+    e8.insert(`Substitution history of formula\nOrig:   ${orig}\n$xyz->  ${formula}\n@r$c->  ${form0}\n$1->    ${form}\n${tail}\n`);
+    e8.setBufferModified(false);
+    e8.gotoChar(e8.pointMin());
+  });
+  e8.call("display-buffer", name);
+  const w = getBufferWindow(name);
+  if (w !== undefined) fitWindowToBuffer(w);
+  if (!e8.yOrNP("Debugging Formula.  Continue to next? ")) {
+    align();
+    e8.userError("Abort");
+  }
+  if (w !== undefined && e8.windowLiveP(w)) e8.deleteWindow(w);
+  e8.message("");
+  e8.setWindowConfiguration(windows);
 }
 
 /** A number as Lisp holds it, for arithmetic. */
@@ -2767,6 +2812,7 @@ export function recalculate(all: e8.PrefixArg | boolean | "iterate" = null, noal
     return;
   }
   const doAll = all !== null && all !== false && all !== undefined;
+  origFormulas.clear();
   analyze();
   const eqlist = getStoredFormulas().sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
   if (eqlist.length === 0) return;
@@ -2777,7 +2823,7 @@ export function recalculate(all: e8.PrefixArg | boolean | "iterate" = null, noal
     const eqlcol: [string, string][] = [];
     const eqlfield0: [string, string][] = [];
     for (const [oldLhs, rhs0] of eqlist) {
-      const rhs = substituteNames(handleFirstLastRc(rhs0));
+      const rhs = substituteNamesKeeping(handleFirstLastRc(rhs0));
       let lhs: string;
       if (/^@-?I+/.test(oldLhs)) e8.userError("Can’t assign to hline relative reference");
       else if (/^\$[<>]/.test(oldLhs)) {
@@ -3232,4 +3278,733 @@ export function fixFormulas(key: "@" | "$", replace: [string, string][], limit?:
       e8.message("The formulas in #+TBLFM have been updated");
     }
   });
+}
+
+// Editing a table's formulas in a buffer of their own, after org-table.el's
+// formula editor: C-c ' on a table or its #+TBLFM: line opens *Edit
+// Formulas*, a formula a line, where moving shows what each reference
+// names in the table, S-arrows shift a reference, and C-c C-c installs the
+// formulas (applying them with C-u) or C-c C-q leaves them. C-c } shows a
+// table's coordinates and C-c { turns on the formula debugger.
+
+e8.defineVariable({
+  name: "org-table-overlay-coordinates",
+  doc: "Whether the table's rows and columns are numbered beside and above it, as C-c } turns on.",
+  value: null,
+  local: true,
+});
+
+e8.defineVariable({
+  name: "org-table-formula-debug",
+  doc: "Whether working out a formula shows how its references were replaced, and asks before going on to the next.",
+  value: null,
+  local: true,
+});
+
+const FEDIT_BUFFER = "*Edit Formulas*";
+
+/** Where the formulas being edited came from, as Org's buffer-local org-pos, org-table--fedit-source and window configuration. */
+interface FormulaEdit {
+  pos: e8.Marker;
+  source: e8.Marker;
+  windows: e8.WindowConfiguration;
+  window: e8.Window;
+  /** Whether the references are written as B3, as org-table-buffer-is-an. */
+  isAn: boolean;
+}
+
+const formulaEdits = new Map<number, FormulaEdit>();
+
+function formulaEdit(): FormulaEdit {
+  const edit = formulaEdits.get(e8.currentBuffer().id);
+  if (!edit) e8.userError("Not in the formula editor");
+  return edit!;
+}
+
+/** The overlays highlighting a reference's fields, as org-table-rectangle-overlays, each with its buffer. */
+let rectangleOverlays: [string, number][] = [];
+let inhibitHighlightRemoval = false;
+/** Where highlighted rectangles are, so the table's window can show them all, as org-show-positions. */
+let showPositions: number[] | undefined;
+
+function addRectangleOverlay(beg: number, end: number, face = "secondary-selection"): void {
+  rectangleOverlays.push([e8.currentBuffer().name ?? "", e8.makeOverlay(beg, end, { face })]);
+}
+
+/** Highlights the rectangle of fields between two positions, or the field at point, as org-table-highlight-rectangle. */
+function highlightRectangle(beg = e8.point(), end = e8.point(), face?: string): void {
+  const [b, e] = [Math.min(beg, end), Math.max(beg, end)];
+  const start = saveExcursion(() => {
+    e8.gotoChar(b);
+    return [e8.lineStart(lineAt()), currentColumn()] as const;
+  });
+  const stop = saveExcursion(() => {
+    e8.gotoChar(e);
+    return [e8.lineStart(lineAt()), currentColumn()] as const;
+  });
+  showPositions?.push(b, e);
+  e8.gotoChar(start[0]);
+  const [c1, c2] = [Math.min(start[1], stop[1]), Math.max(start[1], stop[1])];
+  while (e8.point() <= stop[0]) {
+    if (DATALINE.test(e8.lineText(lineAt()))) {
+      gotoColumn(c1);
+      e8.skipCharsBackward("^|\n");
+      const p = e8.point();
+      gotoColumn(c2);
+      e8.skipCharsForward("^|\n");
+      addRectangleOverlay(p, e8.point(), face);
+    }
+    const before = e8.point();
+    forwardLine(1);
+    if (e8.point() === before) break;
+  }
+  e8.gotoChar(start[0]);
+  e8.addHook("before-change-functions", removeRectangleHighlight);
+}
+
+/** Removes the highlighting of references, as org-table-remove-rectangle-highlight. */
+function removeRectangleHighlight(): void {
+  if (inhibitHighlightRemoval) return;
+  e8.removeHook("before-change-functions", removeRectangleHighlight);
+  for (const [buffer, ov] of rectangleOverlays) {
+    if (e8.getBuffer(buffer)) e8.withCurrentBuffer(buffer, () => e8.deleteOverlay(ov));
+  }
+  rectangleOverlays = [];
+}
+
+/** The first match of a regexp on point's line that point is in or at the end of, as org-in-regexp finds it. */
+function inRegexp(re: RegExp): RegExpExecArray | undefined {
+  const line = e8.lineText(lineAt());
+  const col = beforeOnLine().length;
+  const g = new RegExp(re.source, re.flags.includes("g") ? re.flags : `${re.flags}g`);
+  for (const m of allMatches(g, line)) {
+    const at = m.index ?? 0;
+    if (at > col) break;
+    if (at + m[0].length >= col) return m as RegExpExecArray;
+  }
+  return undefined;
+}
+
+const RANGE2 = /(@[-0-9I$&]+|[a-zA-Z]{1,2}([0-9]+|&)|\$[a-zA-Z0-9]+)\.\.(@?[-0-9I$&]+|[a-zA-Z]{1,2}([0-9]+|&)|\$[a-zA-Z0-9]+)/;
+const TRANSLATE = /(@[-0-9I$]+|[a-zA-Z]{1,2}([0-9]+|&))/;
+
+/**
+ * Shows what the reference at point names, highlighting its fields in
+ * the table, and the field its formula sets, as org-table-show-reference:
+ * from the formula editor, in the table being edited; with local, in the
+ * table at point.
+ */
+function showReference(local = false): void {
+  removeRectangleHighlight();
+  if (local) analyze();
+  const edit = local ? undefined : formulaEdits.get(e8.currentBuffer().id);
+  const win = e8.selectedWindow();
+  inhibitHighlightRemoval = true;
+  showPositions = [];
+  try {
+    let what: "range" | "name" | "column" | undefined;
+    let match: string | undefined;
+    let m: RegExpExecArray | undefined;
+    const lineStart = e8.lineStart(lineAt());
+    if ((m = inRegexp(/^@[0-9]+[ \t=]/))) {
+      const head = m[0].slice(0, -1);
+      match = `${head}$1..${head}$100`;
+      what = "range";
+    } else if ((m = inRegexp(RANGE2) ?? inRegexp(TRANSLATE) ?? inRegexp(RANGE))) {
+      match = convertRefsToRc(m[0]);
+      what = "range";
+    } else if ((m = inRegexp(/\$[a-zA-Z][a-zA-Z0-9]*/))) what = "name";
+    else if ((m = inRegexp(/\$[0-9]+/))) what = "column";
+    else if (local) e8.userError("No reference at point");
+    if (what) match ??= m![0];
+    if (match !== undefined && m && (m.index ?? 0) !== 0) {
+      const beg = lineStart + charCount(e8.lineText(lineAt()).slice(0, m.index));
+      addRectangleOverlay(beg, beg + charCount(m[0]));
+    }
+    e8.addHook("before-change-functions", removeRectangleHighlight);
+    let variable: string | undefined;
+    if (what === "name") variable = match!.slice(1);
+    if (what === "range") {
+      if (!match!.startsWith("@")) match = `@${match}`;
+      match = substituteNames(match!);
+    }
+    let dest: string | undefined;
+    if (!local) {
+      saveExcursion(() => {
+        let l = lineAt();
+        while (l > 0 && !/^\S/.test(e8.lineText(l))) l--;
+        const d = /^(\$[0-9a-zA-Z]+|@[0-9]+\$[0-9]+|[a-zA-Z]+([0-9]+|&)) *=/.exec(e8.lineText(l));
+        if (d) {
+          dest = convertRefsToRc(d[1]);
+          addRectangleOverlay(e8.lineStart(l), e8.lineStart(l) + charCount(d[1]), "highlight");
+        }
+      });
+    }
+    const pos = local ? undefined : edit?.pos;
+    if (pos) {
+      const buffer = e8.markerBuffer(pos);
+      if (buffer === undefined) return;
+      const w = getBufferWindow(buffer);
+      if (w !== undefined) e8.selectWindow(w);
+      else e8.call("switch-to-buffer-other-window", buffer);
+      e8.gotoChar(e8.markerPosition(pos) ?? e8.point());
+    }
+    forceDataline();
+    if (!local) analyze();
+    const tableStart = local ? e8.lineStart(an.first) : orgTableBegin();
+    if (dest !== undefined) {
+      const name = dest.slice(1);
+      if (/^\$[a-zA-Z][a-zA-Z0-9]*/.test(dest) || /^@[1-9][0-9]*\$[1-9][0-9]*$/.test(dest)) gotoField(dest);
+      else gotoColumn(Number(name));
+      if (pos) e8.setMarker(pos, e8.point());
+      highlightRectangle(undefined, undefined, "highlight");
+    }
+    if (dest === match || match === undefined) {
+      // Nothing more to show.
+    } else if (what === "range") {
+      try {
+        highlightRange(match!);
+      } catch {
+        // As Org ignores a range it cannot read.
+      }
+    } else if (variable !== undefined && an.namedFields.some((f) => f[0] === variable)) {
+      const e = an.namedFields.find((f) => f[0] === variable)!;
+      gotoField(variable);
+      highlightRectangle();
+      e8.message(`Named field, column ${e[2]} of line ${e[1]}`);
+    } else if (variable !== undefined && an.columnNames.some((c) => c[0] === variable)) {
+      const e = an.columnNames.find((c) => c[0] === variable)!;
+      gotoColumn(e[1]);
+      highlightRectangle();
+      e8.gotoChar(tableStart);
+      const re = new RegExp(`^[ \\t]*\\| *! *.*?\\| *(${escapeRegExp(variable)}) *\\|`);
+      const end = orgTableEnd();
+      let found = false;
+      for (let l = lineAt(); l < e8.lineCount() && e8.lineStart(l) < end; l++) {
+        const r = re.exec(e8.lineText(l));
+        if (r) {
+          e8.gotoChar(e8.lineStart(l) + charCount(e8.lineText(l).slice(0, r.index + r[0].indexOf(r[1], r[0].indexOf("!")))));
+          highlightRectangle();
+          e8.message(`Named column (column ${e[1]})`);
+          found = true;
+          break;
+        }
+      }
+      if (!found) e8.userError("Column name not found");
+    } else if (what === "column") {
+      gotoColumn(Number(match!.slice(1)));
+      highlightRectangle();
+      e8.message(`Column ${match!.slice(1)}`);
+    } else if (variable !== undefined && an.parameters.some((p) => p[0] === variable)) {
+      e8.gotoChar(tableStart);
+      const re = new RegExp(`^[ \\t]*\\| *\\$ *.*?\\| *(${escapeRegExp(variable)}=)`);
+      let found = false;
+      for (let l = lineAt(); l < e8.lineCount(); l++) {
+        const r = re.exec(e8.lineText(l));
+        if (r) {
+          e8.gotoChar(e8.lineStart(l) + charCount(e8.lineText(l).slice(0, r[0].length - r[1].length)));
+          highlightRectangle();
+          e8.message("Local parameter.");
+          found = true;
+          break;
+        }
+      }
+      if (!found) e8.userError("Parameter not found");
+    } else if (variable === undefined) e8.userError("No reference at point");
+    else {
+      const local2 = localConstants().find((p) => p[0] === variable);
+      const global = (e8.variable("org-table-formula-constants") as e8.Value[] | null) ?? [];
+      const g = Array.isArray(global) ? global.find((e) => Array.isArray(e) && e[0] === variable) : undefined;
+      if (local2) e8.message(`Local Constant: $${variable}=${local2[1]} in #+CONSTANTS line.`);
+      else if (Array.isArray(g)) e8.message(`Constant: $${variable}=${String(g[1])} in ‘org-table-formula-constants’.`);
+      else e8.userError(`Undefined name $${variable}`);
+    }
+    if (pos) e8.gotoChar(e8.markerPosition(pos) ?? e8.point());
+    if (showPositions.length && !["org-table-fedit-scroll", "org-table-fedit-scroll-down"].includes(e8.thisCommand() ?? "")) {
+      const here = e8.point();
+      const all = [...showPositions, here, tableStart];
+      const min = Math.min(...all);
+      const max = Math.max(...all);
+      e8.setWindowStart(e8.selectedWindow(), e8.lineStart(lineAt(min)));
+      e8.gotoChar(max);
+      if (!e8.posVisibleInWindowP(max)) e8.setWindowStart(e8.selectedWindow(), e8.lineStart(lineAt(max)));
+    }
+    // Back to the editor, though not after an error, as Org has no unwind-protect here.
+    e8.selectWindow(win);
+  } finally {
+    inhibitHighlightRemoval = false;
+    showPositions = undefined;
+  }
+}
+
+/** Highlights the fields a range names, as org-table-get-range does with its highlight argument. */
+function highlightRange(desc: string): void {
+  const corners = getRange(desc, currentColumn(), true) as [number, number, number, number];
+  const [r1, c1, r2, c2] = corners;
+  if (r1 === r2 && c1 === c2) {
+    gotoRelLine(r1);
+    while (!DATALINE.test(e8.lineText(lineAt())) && lineAt() < e8.lineCount() - 1) forwardLine(1);
+    gotoColumn(c1);
+    highlightRectangle();
+    return;
+  }
+  let first = r1;
+  gotoRelLine(first);
+  while (!DATALINE.test(e8.lineText(lineAt())) && lineAt() < e8.lineCount() - 1) {
+    forwardLine(1);
+    first++;
+  }
+  gotoColumn(c1);
+  const beg = e8.point();
+  forwardLine(r2 - first);
+  while (!DATALINE.test(e8.lineText(lineAt())) && lineAt() > 0) forwardLine(-1);
+  gotoColumn(c2);
+  e8.skipCharsForward("^|\n");
+  highlightRectangle(beg, e8.point());
+}
+
+/** Moves to the nearest data row, keeping the column, as org-table--force-dataline. */
+function forceDataline(): void {
+  if (DATALINE.test(e8.lineText(lineAt()))) return;
+  const col = currentColumnOfPoint();
+  const beg = orgTableBegin();
+  const end = orgTableEnd();
+  let below: number | undefined;
+  let above: number | undefined;
+  for (let l = lineAt() + 1; l < e8.lineCount() && e8.lineStart(l) < end; l++) {
+    if (DATALINE.test(e8.lineText(l))) {
+      below = e8.lineStart(l);
+      break;
+    }
+  }
+  for (let l = lineAt() - 1; l >= 0 && e8.lineStart(l) >= beg; l--) {
+    if (DATALINE.test(e8.lineText(l))) {
+      above = e8.lineStart(l);
+      break;
+    }
+  }
+  if (below === undefined && above === undefined) e8.userError("No table data line around here");
+  const p = e8.point();
+  const pick = below !== undefined && above !== undefined ? (Math.abs(below - p) < Math.abs(above - p) ? below : above) : (below ?? above)!;
+  e8.gotoChar(pick);
+  moveToColumn(col);
+}
+
+/** Opens the table's formulas in *Edit Formulas*, as org-table-edit-formulas. */
+function editFormulas(): void {
+  const atTblfm = atTBLFM();
+  if (!atTblfm && !atTable()) e8.userError("Not at a table");
+  saveExcursion(() => {
+    if (atTblfm) {
+      let l = lineAt();
+      while (l > 0 && !/^[ \t]*\|/.test(e8.lineText(l))) l--;
+      e8.gotoChar(e8.lineStart(l));
+    }
+    analyze();
+  });
+  const key = currentFieldFormula(true, true);
+  const eql = sortFormulas(getStoredFormulas(true, atTblfm ? e8.point() : undefined));
+  const pos = e8.makeMarker(e8.point());
+  const source = e8.makeMarker(e8.lineStart(lineAt()));
+  const windows = e8.currentWindowConfiguration();
+  const window = e8.selectedWindow();
+  e8.call("switch-to-buffer-other-window", FEDIT_BUFFER);
+  dropFormulaEdit();
+  e8.call("erase-buffer");
+  e8.call("fundamental-mode");
+  formulaEdits.set(e8.currentBuffer().id, { pos, source, windows, window, isAn: false });
+  e8.addHook("kill-buffer-hook", dropFormulaEdit, { local: true });
+  e8.useLocalMap("org-table-fedit-map");
+  e8.addHook("post-command-hook", feditPostCommand, { local: true, append: true });
+  let startLine = lineAt();
+  const titles: [string, string][] = [
+    ["column", "# Column Formulas\n"],
+    ["field", "# Field and Range Formulas\n"],
+    ["named", "# Named Field Formulas\n"],
+  ];
+  for (const [lhs, rhs] of eql) {
+    const type = /^\$([0-9]+|[<>]+)$/.test(lhs) ? "column" : lhs.startsWith("@") ? "field" : "named";
+    const title = titles.findIndex((t) => t[0] === type);
+    if (title >= 0) {
+      if (e8.point() !== e8.pointMin()) e8.insert("\n");
+      const at = e8.point();
+      e8.insert(titles[title][1]);
+      e8.putTextProperty(at, e8.point(), "face", "font-lock-comment-face");
+      titles.splice(title, 1);
+    }
+    if (key === lhs) startLine = lineAt();
+    e8.insert(`${/^[@$]/.test(lhs) ? "" : "$"}${lhs} = ${rhs}\n`);
+  }
+  if (e8.variable("org-table-use-standard-references") === true) toggleRefType();
+  e8.gotoChar(lineStartOrEnd(startLine));
+  e8.message("Edit formulas, finish with ‘C-c C-c’ or ‘C-c '’.  See menu for more commands.");
+}
+
+function dropFormulaEdit(): void {
+  const edit = formulaEdits.get(e8.currentBuffer().id);
+  if (edit) {
+    e8.deleteMarker(edit.pos);
+    e8.deleteMarker(edit.source);
+  }
+  formulaEdits.delete(e8.currentBuffer().id);
+}
+
+function feditPostCommand(): void {
+  if (e8.thisCommand() === "lisp-complete-symbol") return;
+  const win = e8.selectedWindow();
+  saveExcursion(() => {
+    try {
+      showReference();
+    } catch {
+      // As Org ignores errors showing a reference while editing.
+    }
+    e8.selectWindow(win);
+  });
+}
+
+/** Rewrites every line of the formula editor with `f`, as org-table-fedit-convert-buffer. */
+function feditConvertBuffer(f: (s: string) => string): void {
+  const origin = marker(e8.lineStart(lineAt()));
+  try {
+    for (let l = 0; l < e8.lineCount(); l++) {
+      const text = e8.lineText(l);
+      const fresh = f(text);
+      if (fresh !== text) {
+        edDelete(e8.lineStart(l), e8.lineEnd(l));
+        edInsert(e8.lineStart(l), fresh);
+      }
+    }
+  } finally {
+    e8.gotoChar(origin.pos);
+    dropMarker(origin);
+  }
+}
+
+/** Switches the editor's references between B3 and @3$2, as org-table-fedit-toggle-ref-type. */
+function toggleRefType(): void {
+  const edit = formulaEdit();
+  edit.isAn = !edit.isAn;
+  feditConvertBuffer(edit.isAn ? convertRefsToAn : convertRefsToRc);
+  e8.message(`Reference type switched to ${edit.isAn ? "A1 etc" : "@row$column"}`);
+}
+
+/** A reference's row or column moved by one, as org-table-shift-refpart. */
+function shiftRefpart(ref: string, decr: boolean, hline: boolean): string {
+  let sign = /^[-+]/.test(ref) ? ref[0] : undefined;
+  if (sign) ref = ref.slice(1);
+  if (hline && /^I+/i.test(ref)) {
+    let n = Number(`${sign ?? ""}${/^I+/i.exec(ref)![0].length}`) + (decr ? -1 : 1);
+    if (n === 0) n += decr ? -1 : 1;
+    if (sign) {
+      sign = n < 0 ? "-" : "+";
+      n = Math.abs(n);
+    } else n = Math.max(1, n);
+    return `${sign ?? ""}${"I".repeat(n)}`;
+  }
+  if (/^[0-9]+/.test(ref)) {
+    const n = Number(`${sign ?? ""}${/^[0-9]+/.exec(ref)![0]}`) + (decr ? -1 : 1);
+    return sign ? `${n < 0 ? "-" : "+"}${Math.abs(n)}` : String(Math.max(1, n));
+  }
+  if (/^[a-zA-Z]+/.test(ref)) return numberToLetters(Math.max(1, lettersToNumber(/^[a-zA-Z]+/.exec(ref)![0]) + (decr ? -1 : 1)));
+  e8.userError("Cannot shift reference");
+}
+
+/** Moves the reference at point a row or field, as org-table-fedit-shift-reference. */
+function shiftReference(dir: "up" | "down" | "left" | "right"): void {
+  const vertical = dir === "up" || dir === "down";
+  const decr = dir === "up" || dir === "left";
+  // Replaces a group, found `offset` characters into the match.
+  const replaceGroup = (m: RegExpExecArray, group: number, offset: number, hline = false): void => {
+    if (m[group] === undefined) e8.userError("Cannot shift reference in this direction");
+    const line = e8.lineText(lineAt());
+    const at = (m.index ?? 0) + offset;
+    const start = e8.lineStart(lineAt()) + charCount(line.slice(0, at));
+    e8.gotoChar(start);
+    const fresh = shiftRefpart(m[group], decr, hline);
+    edDelete(start, start + charCount(m[group]));
+    edInsert(start, fresh);
+    // After it, as replace-match leaves point.
+    e8.gotoChar(start + charCount(fresh));
+  };
+  let m: RegExpExecArray | undefined;
+  // Word boundaries as fundamental mode's syntax has them, $ a word character, and case folded, as Org searches.
+  if ((m = inRegexp(/((?<![A-Za-z0-9$])[a-zA-Z])&/i))) {
+    if (!vertical) replaceGroup(m, 1, 0);
+    else e8.userError("Cannot shift reference in this direction");
+  } else if ((m = inRegexp(/((?<![A-Za-z0-9$])[a-zA-Z]{1,2})([0-9]+)/i))) replaceGroup(m, vertical ? 2 : 1, vertical ? m[1].length : 0);
+  else if ((m = inRegexp(/(@|\.\.)([-+]?(I+(?![A-Za-z0-9$])|[0-9]+))(\$([-+]?[0-9]+))?/i))) {
+    if (vertical) replaceGroup(m, 2, m[1].length, m[3] !== undefined);
+    else replaceGroup(m, 5, m[1].length + m[2].length + 1);
+  }
+}
+
+/** Installs the edited formulas below the table, applying them with an argument, as org-table-fedit-finish. */
+function feditFinish(arg: e8.PrefixArg): void {
+  removeRectangleHighlight();
+  const edit = formulaEdit();
+  if (truthy(e8.variable("org-table-use-standard-references"))) {
+    feditConvertBuffer(convertRefsToRc);
+    edit.isAn = false;
+  }
+  const eql: [string, string][] = [];
+  const text = e8.bufferText(e8.pointMin(), e8.pointMax());
+  for (const m of allMatches(/^(@[-+I<>0-9.$@]+|@?[0-9]+|\$([a-zA-Z0-9]+|[<>]+)) *= *(.*(\n[ \t]+.*$)*)/gm, text)) {
+    let form = orgTrim(m[3]);
+    if (form === "") continue;
+    form = form.replace(/[ \t]*\n[ \t]*/g, " ");
+    if (eql.some((e) => e[0] === m[1])) {
+      // Point at the end of the second, as Org's search leaves it.
+      e8.gotoChar(e8.pointMin() + charCount(text.slice(0, (m.index ?? 0) + m[0].length)));
+      e8.userError(`Double formulas for ${m[1]}`);
+    }
+    eql.unshift([m[1], form]);
+  }
+  e8.setWindowConfiguration(edit.windows);
+  if (e8.windowLiveP(edit.window)) e8.selectWindow(edit.window);
+  const source = e8.markerPosition(edit.source);
+  const buffer = e8.markerBuffer(edit.source);
+  if (source === undefined || buffer === undefined) e8.signal("error", "Marker does not point anywhere");
+  if (e8.windowBuffer() !== buffer) e8.call("switch-to-buffer", buffer!);
+  e8.gotoChar(source!);
+  storeFormulas(eql);
+  e8.deleteMarker(edit.pos);
+  e8.deleteMarker(edit.source);
+  for (const [id, e] of formulaEdits) if (e === edit) formulaEdits.delete(id);
+  const w = getBufferWindow(FEDIT_BUFFER);
+  if (w !== undefined) {
+    const current = e8.selectedWindow();
+    e8.selectWindow(w);
+    e8.callWithPrefix([4], "quit-window");
+    if (e8.windowLiveP(current)) e8.selectWindow(current);
+  }
+  if (e8.getBuffer(FEDIT_BUFFER)) e8.call("kill-buffer", FEDIT_BUFFER);
+  if (arg !== null && arg !== undefined) recalculate(true);
+  else e8.message("New formulas installed - press C-u C-c C-c to apply.");
+}
+
+/** Leaves the formula editor without installing its formulas, as org-table-fedit-abort. */
+function feditAbort(): void {
+  removeRectangleHighlight();
+  const edit = formulaEdit();
+  e8.setWindowConfiguration(edit.windows);
+  if (e8.windowLiveP(edit.window)) e8.selectWindow(edit.window);
+  const pos = e8.markerPosition(edit.pos);
+  if (pos !== undefined) e8.gotoChar(pos);
+  e8.deleteMarker(edit.pos);
+  e8.deleteMarker(edit.source);
+  for (const [id, e] of formulaEdits) if (e === edit) formulaEdits.delete(id);
+  e8.message("Formula editing aborted without installing changes");
+}
+
+/** Moves point in the table's window, the row the references are shown for, skipping rules, as org-table-fedit-move. */
+function feditMove(command: "previous-line" | "next-line"): void {
+  const edit = formulaEdit();
+  const win = e8.selectedWindow();
+  const buffer = e8.markerBuffer(edit.pos);
+  const w = buffer === undefined ? undefined : getBufferWindow(buffer);
+  if (w === undefined) return;
+  e8.selectWindow(w);
+  e8.letBind({ "org-table-allow-automatic-line-recalculation": null }, () => {
+    const p = e8.point();
+    e8.call(command);
+    while (atTable() && atHline()) {
+      const before = e8.point();
+      e8.call(command);
+      if (e8.point() === before) break;
+    }
+    if (!atTable()) e8.gotoChar(p);
+    e8.setMarker(edit.pos, e8.point());
+  });
+  e8.selectWindow(win);
+}
+
+/** Scrolls the table's window, as org-table-fedit-scroll. */
+function feditScroll(n: number): void {
+  const edit = formulaEdit();
+  const buffer = e8.markerBuffer(edit.pos);
+  e8.letBind({ "other-window-scroll-buffer": buffer ?? null }, () => e8.callWithPrefix(n, "scroll-other-window"));
+}
+
+/** Numbers the rows beside the table and the columns over its rules, as org-table-overlay-coordinates. */
+function overlayCoordinates(): void {
+  for (const ov of coordinateOverlays.get(e8.currentBuffer().id) ?? []) e8.deleteOverlay(ov);
+  const ovs: number[] = [];
+  saveExcursion(() => {
+    let id = 0;
+    let ih = 0;
+    e8.gotoChar(orgTableBegin());
+    while (atTable()) {
+      const line = lineAt();
+      const bol = e8.lineStart(line);
+      const text = e8.lineText(line);
+      const hline = HLINE.test(text);
+      const label = hline ? `I*${String(++ih).padEnd(2)}` : String(++id).padStart(4);
+      ovs.push(e8.makeOverlay(bol, bol + 1, { "before-string": e8.propertize(label, { face: "org-special-keyword" }), evaporate: true }));
+      if (hline) {
+        let ic = 0;
+        for (const m of allMatches(/[+|](-+)/g, text)) {
+          ic++;
+          const s = e8.variable("org-table-use-standard-references") === true ? numberToLetters(ic) : `$${ic}`;
+          const beg = bol + charCount(text.slice(0, (m.index ?? 0) + 1));
+          ovs.push(e8.makeOverlay(beg, beg + s.length, { display: s, face: "org-special-keyword", evaporate: true }));
+        }
+      }
+      const before = e8.point();
+      forwardLine(1);
+      if (e8.point() === before) break;
+    }
+  });
+  coordinateOverlays.set(e8.currentBuffer().id, ovs);
+}
+
+/** The coordinate overlays of each buffer, as its org-table-coordinate-overlays. */
+const coordinateOverlays = new Map<number, number[]>();
+
+/** Turns the numbering of tables' rows and columns on or off, as org-table-toggle-coordinate-overlays. */
+function toggleCoordinateOverlays(): void {
+  if (!atTable()) e8.userError("Not on a table");
+  const on = !truthy(e8.variable("org-table-overlay-coordinates"));
+  e8.setVariable("org-table-overlay-coordinates", on);
+  if (atTable() && on) align();
+  if (!on) {
+    for (const ov of coordinateOverlays.get(e8.currentBuffer().id) ?? []) e8.deleteOverlay(ov);
+    coordinateOverlays.delete(e8.currentBuffer().id);
+  }
+  e8.message(`Tables Row/Column numbers display turned ${on ? "on" : "off"}`);
+}
+
+e8.defineCommand({
+  name: "org-table-edit-formulas",
+  doc: "Edit the table's formulas in *Edit Formulas*, one a line; C-c C-c installs them, C-u C-c C-c applies them too, C-c C-q leaves them.",
+  run: () => editFormulas(),
+});
+
+e8.defineCommand({
+  name: "org-table-show-reference",
+  doc: "Show what the reference at point names, highlighting its fields in the table.",
+  run: () => {
+    // Outside the editor Org's org-pos is nil, which it goes to.
+    if (!formulaEdits.has(e8.currentBuffer().id)) {
+      removeRectangleHighlight();
+      e8.signal("wrong-type-argument", "Wrong type argument: integer-or-marker-p, nil", ["integer-or-marker-p", null]);
+    }
+    showReference(false);
+  },
+});
+
+e8.defineCommand({
+  name: "org-table-fedit-finish",
+  doc: "Install the edited formulas below the table; with a prefix argument, apply them too.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg: e8.PrefixArg) => feditFinish(arg),
+});
+
+e8.defineCommand({
+  name: "org-table-fedit-abort",
+  doc: "Leave the formula editor without installing the formulas.",
+  run: () => feditAbort(),
+});
+
+e8.defineCommand({
+  name: "org-table-fedit-toggle-ref-type",
+  doc: "Write the editor's references as B3 rather than @3$2, or back.",
+  run: () => toggleRefType(),
+});
+
+for (const dir of ["up", "down", "left", "right"] as const) {
+  e8.defineCommand({
+    name: `org-table-fedit-ref-${dir}`,
+    doc: `Shift the reference at point one ${dir === "up" || dir === "down" ? "row or rule" : "field"} ${dir}.`,
+    run: () => shiftReference(dir),
+  });
+}
+
+e8.defineCommand({
+  name: "org-table-fedit-line-up",
+  doc: "Move point up a row in the table's window, to show the references for that row.",
+  run: () => feditMove("previous-line"),
+});
+
+e8.defineCommand({
+  name: "org-table-fedit-line-down",
+  doc: "Move point down a row in the table's window, to show the references for that row.",
+  run: () => feditMove("next-line"),
+});
+
+e8.defineCommand({
+  name: "org-table-fedit-scroll",
+  doc: "Scroll the table's window up.",
+  params: [{ name: "n", kind: "count" }],
+  run: (n: number) => feditScroll(n),
+});
+
+e8.defineCommand({
+  name: "org-table-fedit-scroll-down",
+  doc: "Scroll the table's window down.",
+  params: [{ name: "n", kind: "count" }],
+  run: (n: number) => feditScroll(-n),
+});
+
+e8.defineCommand({
+  name: "org-table-fedit-lisp-indent",
+  doc: "Indent a continued line of a formula. E8 has no Lisp, so a Lisp formula is not pretty-printed, as Org's is.",
+  run: () => {
+    if (/^[ \t]/.test(e8.lineText(lineAt()))) e8.call("lisp-indent-line");
+  },
+});
+
+e8.defineCommand({
+  name: "org-table-fedit-toggle-coordinates",
+  doc: "Number the rows and columns of the table being edited, or stop.",
+  run: () => {
+    const edit = formulaEdit();
+    const buffer = e8.markerBuffer(edit.pos);
+    const pos = e8.markerPosition(edit.pos);
+    if (buffer === undefined || pos === undefined) return;
+    e8.withCurrentBuffer(buffer, () =>
+      saveExcursion(() => {
+        e8.gotoChar(pos);
+        toggleCoordinateOverlays();
+      }),
+    );
+  },
+});
+
+e8.defineCommand({
+  name: "org-table-toggle-coordinate-overlays",
+  doc: "Number tables' rows beside them and columns over their rules, or stop.",
+  run: () => toggleCoordinateOverlays(),
+});
+
+e8.defineCommand({
+  name: "org-table-toggle-formula-debugger",
+  doc: "Turn the formula debugger on or off: working out a formula then shows how its references were replaced.",
+  run: () => {
+    const on = !truthy(e8.variable("org-table-formula-debug"));
+    e8.setVariable("org-table-formula-debug", on);
+    e8.message(`Formula debugging has been turned ${on ? "on" : "off"}`);
+  },
+});
+
+e8.defineKeymap("org-table-fedit-map");
+for (const [key, cmd] of [
+  ["C-x C-s", "org-table-fedit-finish"],
+  ["C-c C-s", "org-table-fedit-finish"],
+  ["C-c C-c", "org-table-fedit-finish"],
+  ["C-c '", "org-table-fedit-finish"],
+  ["C-c C-q", "org-table-fedit-abort"],
+  ["C-c ?", "org-table-show-reference"],
+  ["M-S-<up>", "org-table-fedit-line-up"],
+  ["M-S-<down>", "org-table-fedit-line-down"],
+  ["S-<up>", "org-table-fedit-ref-up"],
+  ["S-<down>", "org-table-fedit-ref-down"],
+  ["S-<left>", "org-table-fedit-ref-left"],
+  ["S-<right>", "org-table-fedit-ref-right"],
+  ["M-<up>", "org-table-fedit-scroll-down"],
+  ["M-<down>", "org-table-fedit-scroll"],
+  ["TAB", "org-table-fedit-lisp-indent"],
+  ["C-c C-r", "org-table-fedit-toggle-ref-type"],
+  ["C-c }", "org-table-fedit-toggle-coordinates"],
+] as const) {
+  e8.defineKey("org-table-fedit-map", key, cmd);
 }

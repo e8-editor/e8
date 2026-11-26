@@ -1,0 +1,321 @@
+[
+ {
+  "name": "open-finish",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=$1+$2::@2$1=7::$2=$1*2\n",
+  "point": 30,
+  "keys": "C-c ' C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "open-finish-apply",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=$1+$2::@2$1=7::$2=$1*2\n",
+  "point": 30,
+  "keys": "C-c ' C-u C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "edit-formula",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=$1+$2\n",
+  "point": 30,
+  "keys": "C-c ' C-n C-e * 1 0 C-u C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "add-formula",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=$1+$2\n",
+  "point": 30,
+  "keys": "C-c ' M-> $ 2 SPC = SPC $ 1 * 3 RET C-u C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "empty-formula-dropped",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=$1+$2::$2=$1\n",
+  "point": 30,
+  "keys": "C-c ' C-n C-n C-e C-SPC C-a C-f C-f C-f C-f C-f C-w C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "abort",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=$1+$2::@2$1=7::$2=$1*2\n",
+  "point": 30,
+  "keys": "C-c ' C-n C-k C-c C-q",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "double-formulas",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=$1\n",
+  "point": 30,
+  "keys": "C-c ' M-> $ 3 SPC = SPC 5 RET C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "continuation-lines",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=$1\n",
+  "point": 30,
+  "keys": "C-c ' C-n C-e RET SPC SPC + SPC $ 2 C-u C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "shift-ref-up",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: @3$3=@2$1\n",
+  "point": 30,
+  "keys": "C-c ' C-n C-e C-b S-<up> S-<down> S-<down> C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "shift-ref-left",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: @3$3=@2$2\n",
+  "point": 30,
+  "keys": "C-c ' C-n C-e S-<left> C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "shift-ref-hline",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: @3$3=vsum(@I..@II)\n",
+  "point": 30,
+  "keys": "C-c ' C-n C-e C-b C-b C-b C-b S-<down> C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "toggle-ref-type",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: @3$3=@2$1+$2\n",
+  "point": 30,
+  "keys": "C-c ' C-c C-r C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "at-tblfm",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=$1\n#+TBLFM: $3=$2\n",
+  "point": 80,
+  "keys": "C-c ' C-u C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "start-line-field",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=$1::@2$2=9::$1=1\n",
+  "point": 34,
+  "keys": "C-c ' C-k C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "standard-refs-t",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: @3$3=@2$1+$2\n",
+  "point": 30,
+  "keys": "C-c ' C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-table-use-standard-references": true
+  }
+ },
+ {
+  "name": "not-at-table",
+  "text": "text\n",
+  "point": 4,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "on-name-line",
+  "text": "#+NAME: t\n| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=$1+$2::@2$1=7::$2=$1*2\n",
+  "point": 8,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "coordinates-on",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n",
+  "point": 30,
+  "keys": "C-c }",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "coordinates-off",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n",
+  "point": 30,
+  "keys": "C-c } C-c }",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "coordinates-not-table",
+  "text": "x\n",
+  "point": 1,
+  "keys": "C-c }",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "debugger-toggle",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n",
+  "point": 30,
+  "keys": "C-c {",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "debugger-continue",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=$1+$2\n",
+  "point": 30,
+  "keys": "C-c { C-c *",
+  "modes": [
+   "org-mode"
+  ],
+  "answers": [
+   "y"
+  ]
+ },
+ {
+  "name": "debugger-abort",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=$1+$2\n",
+  "point": 30,
+  "keys": "C-c { C-u C-c *",
+  "modes": [
+   "org-mode"
+  ],
+  "answers": [
+   "n"
+  ]
+ },
+ {
+  "name": "show-reference-local",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=$1+$2\n",
+  "point": 30,
+  "keys": "C-c ?",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "show-ref-relative-row",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=@+1$1\n",
+  "point": 30,
+  "keys": "C-c ' C-n C-e",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "show-ref-relative-range",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=vsum(@+0$1..@+1$2)\n",
+  "point": 30,
+  "keys": "C-c ' C-n C-e C-b C-b",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "shift-b3",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=B2\n",
+  "point": 30,
+  "keys": "C-c ' C-n C-e S-<down> S-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-table-use-standard-references": true
+  }
+ },
+ {
+  "name": "shift-point-after",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: @3$3=@10$1\n",
+  "point": 30,
+  "keys": "C-c ' C-n C-e C-b C-b C-b S-<up> S-<up> x",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "shift-neg-hline",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: @3$3=@-I$1\n",
+  "point": 30,
+  "keys": "C-c ' C-n C-e C-b C-b C-b S-<down> x",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "shift-rel-col",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: @3$3=@2$-1\n",
+  "point": 30,
+  "keys": "C-c ' C-n C-e S-<left> x",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "show-ref-undefined",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=$zz\n",
+  "point": 30,
+  "keys": "C-c ' C-n C-e C-c ?",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "mx-show-reference",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=$1\n",
+  "point": 30,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "answers": [
+   "org-table-show-reference"
+  ]
+ },
+ {
+  "name": "coordinates-insert-row",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n",
+  "point": 30,
+  "keys": "C-c } M-S-<down> C-c -",
+  "modes": [
+   "org-mode"
+  ]
+ }
+]

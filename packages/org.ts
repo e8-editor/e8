@@ -11378,6 +11378,8 @@ const keys: { [keys: string]: e8.CommandName | e8.DefinedCommand } = {
   "C-c =": "org-table-eval-formula",
   "C-c ?": "org-table-field-info",
   "C-#": "org-table-rotate-recalc-marks",
+  "C-c }": "org-table-toggle-coordinate-overlays",
+  "C-c {": "org-table-toggle-formula-debugger",
   "C-c `": "org-table-edit-field",
   "C-c C-x C-w": "org-cut-special",
   "C-c C-x M-w": "org-copy-special",
