@@ -18,7 +18,7 @@ import { type Elem, elementAt, endBeforeBlank, withAffiliated } from "org-elemen
 import { orgRegionActive } from "org-macs";
 import { linkHere } from "ol";
 import { footnoteToEdit } from "org-footnote";
-import { openLink } from "org";
+import { expectedIndent, openLink } from "org";
 import { commentOrUncommentRegion } from "newcomment";
 
 const defvar = (name: string, value: e8.Value, doc: string) => e8.defineVariable({ name, value, doc });
@@ -728,10 +728,7 @@ const editSpecial = e8.defineCommand({
     // Objects, only in what Org parses for them: a paragraph, a heading's title, a table row, a verse block.
     const headingLine = /^\*+ /.test(e8.lineText(e8.lineOf(e8.point())));
     if (!headingLine && !["paragraph", "table-row", "table", "verse-block"].includes(e?.type ?? "")) e8.userError("No special environment to edit here");
-    if (footnoteToEdit()?.ref) {
-      editFootnoteReference();
-      return;
-    }
+    // The innermost object, as org-element-context gives it: what an inline footnote holds before the footnote.
     if (inlineSrcAt()) {
       editInlineSrcCode();
       return;
@@ -747,6 +744,10 @@ const editSpecial = e8.defineCommand({
     }
     if (linkHere()) {
       e8.callInteractively("ffap");
+      return;
+    }
+    if (footnoteToEdit()?.ref) {
+      editFootnoteReference();
       return;
     }
     e8.userError("No special environment to edit here");
@@ -859,15 +860,27 @@ interface ObjectSpan {
   match: RegExpExecArray;
 }
 
+/** Where =verbatim= and ~code~ are on a line, which hold no other objects, as Org's emphasis markers find them. */
+function verbatimSpans(line: string): [number, number][] {
+  const spans: [number, number][] = [];
+  for (const m of line.matchAll(/(^|[\s\-('"{])([=~])([^\s]|[^\s].*?[^\s])\2(?=[\s\-.,:!?;'")}\[\\]|$)/g)) {
+    const at = (m.index ?? 0) + m[1].length;
+    spans.push([at, at + m[0].length - m[1].length]);
+  }
+  return spans;
+}
+
 /** The first match of a pattern on point's line whose object, blanks after it included, holds point, as org-element-context finds one. */
 function objectOnLine(re: RegExp, accept: (m: RegExpExecArray, line: string) => boolean = () => true): ObjectSpan | undefined {
   const l = e8.lineOf(e8.point());
   const line = e8.lineText(l);
   const col = e8.point() - e8.lineStart(l);
   const g = new RegExp(re.source, re.flags.includes("g") ? re.flags : `${re.flags}g`);
+  const verbatim = verbatimSpans(line);
   for (const m of line.matchAll(g)) {
     const at = m.index ?? 0;
     if (!accept(m as RegExpExecArray, line)) continue;
+    if (verbatim.some(([a, b]) => at > a && at < b)) continue;
     const blanks = /^[ \t]*/.exec(line.slice(at + m[0].length))![0].length;
     if (at <= col && col < at + m[0].length + Math.max(blanks, 1)) {
       const begin = e8.lineStart(l) + [...line.slice(0, at)].length;
@@ -878,15 +891,58 @@ function objectOnLine(re: RegExp, accept: (m: RegExpExecArray, line: string) => 
   return undefined;
 }
 
-/** The inline source block on point, src_LANG[HEADERS]{CODE}, as Org's parser finds one. */
+/** Where the bracket opened at i closes, nested ones balanced, as org-element--parse-paired-brackets finds it. */
+function pairedClose(text: string, i: number, open: string, close: string): number | undefined {
+  let depth = 0;
+  for (let k = i; k < text.length; k++) {
+    if (text[k] === open) depth++;
+    else if (text[k] === close && --depth === 0) return k;
+  }
+  return undefined;
+}
+
+/**
+ * The inline source block on point, src_LANG[HEADERS]{CODE}, its brackets
+ * and braces balanced and over the paragraph's lines, as Org's parser finds
+ * one; none in a table, whose cells hold no inline source code.
+ */
 function inlineSrcAt(): ObjectSpan | undefined {
-  return objectOnLine(/(?<![\p{L}\p{N}_])src_([^ \t\n[{]+)(\[[^\n\]]*\])?\{([^\n}]*)\}/u);
+  const p = e8.point();
+  const e = elementAt(p);
+  if (e && (e.type === "table" || e.type === "table-row")) return undefined;
+  const heading = /^\*+ /.test(e8.lineText(e8.lineOf(p)));
+  const from = !heading && e?.type === "paragraph" ? (e.contentsBegin ?? e.begin) : e8.lineStart(e8.lineOf(p));
+  const to = !heading && e?.type === "paragraph" ? (e.contentsEnd ?? e.end) : e8.lineEnd(e8.lineOf(p));
+  const text = e8.bufferText(from, to);
+  const verbatim = text.split("\n").length === 1 ? verbatimSpans(text) : [];
+  for (const m of text.matchAll(/(?<![\p{L}\p{N}_])src_([^ \t\n[{]+)/gu)) {
+    let i = (m.index ?? 0) + m[0].length;
+    let headers: string | undefined;
+    if (text[i] === "[") {
+      const k = pairedClose(text, i, "[", "]");
+      if (k === undefined || text.slice(i, k).includes("\n")) continue;
+      headers = text.slice(i, k + 1);
+      i = k + 1;
+    }
+    if (text[i] !== "{") continue;
+    const k = pairedClose(text, i, "{", "}");
+    if (k === undefined) continue;
+    if (verbatim.some(([a, b]) => (m.index ?? 0) > a && (m.index ?? 0) < b)) continue;
+    const begin = from + [...text.slice(0, m.index ?? 0)].length;
+    const end = from + [...text.slice(0, k + 1)].length;
+    const blanks = /^[ \t]*/.exec(text.slice(k + 1))![0].length;
+    if (p >= begin && p < end + Math.max(blanks, 1)) {
+      const match = [text.slice(m.index ?? 0, k + 1), m[1], headers as string, text.slice(i + 1, k)] as unknown as RegExpExecArray;
+      return { begin, end, objectEnd: end + blanks, match };
+    }
+  }
+  return undefined;
 }
 
 /** The LaTeX fragment on point: $...$, $$...$$, \(...\), \[...\], or a command with arguments, as Org's parser finds one. */
 function latexFragmentAt(): ObjectSpan | undefined {
   return objectOnLine(
-    /\\\(.*?\\\)|\\\[.*?\\\]|\$\$.+?\$\$|\$(?:[^ \t\n,;.$]|[^ \t\n,;.$][^$\n]*?[^ \t\n,.$])\$(?=[- \t.,?;:'"]|$)|\\[a-zA-Z]+\*?(?:\[[^\][\n{}]*\]|\{[^{}\n]*\})+/,
+    /\\\(.*?\\\)|\\\[.*?\\\]|\$\$.*?\$\$|\$(?:[^ \t\n,;.$]|[^ \t\n,;.$][^$\n]*?[^ \t\n,.$])\$(?=[\s!"#'(),.:;<>?@[\]^`{}]|$)|\\[a-zA-Z]+\*?(?:\[[^\][\n{}]*\]|\{[^{}\n]*\})+/,
     (m, line) => !(m[0].startsWith("$") && !m[0].startsWith("$$") && (m.index ?? 0) > 0 && line[(m.index ?? 0) - 1] === "$"),
   );
 }
@@ -896,10 +952,16 @@ function onObject(o: { begin: number; end: number }): boolean {
   return e8.point() >= o.begin && e8.point() <= o.end;
 }
 
-/** The indentation of the line an object's element starts on, as Org takes an object's from its parent. */
+/**
+ * An object's indentation, as org-src--edit-element takes it: its line's,
+ * when only blanks come before it there, else the column its parent
+ * element is expected at, as org--get-expected-indentation says.
+ */
 function objectIndentation(begin: number): number {
+  const line = e8.lineOf(begin);
+  if (/^[ \t]*$/.test(e8.bufferText(e8.lineStart(line), begin))) return indentationAt(begin);
   const e = elementAt(begin);
-  return indentationAt(e?.begin ?? begin);
+  return e ? expectedIndent(e, false, line) : indentationAt(begin);
 }
 
 /** Whether a position is in a table's cell, where a newline would break the row. */

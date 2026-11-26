@@ -231,8 +231,9 @@ function referenceObjectAt(p: number, through: ("markup" | "link" | "timestamp")
  */
 export function footnoteToEdit(p = e8.point()): { ref: Reference; definition?: Definition; inline?: Reference } | undefined {
   const ref = referenceObjectAt(p);
-  if (!ref || p > ref.end) return undefined;
-  if (!ref.label) return { ref };
+  if (!ref) return undefined;
+  // On the blanks after it, Org's context is the reference, though C-c ' then refuses it.
+  if (!ref.label || p > ref.end) return { ref };
   const at = wide(() =>
     e8.saveExcursion(() => {
       gotoDefinition(ref.label!);

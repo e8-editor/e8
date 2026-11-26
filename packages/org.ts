@@ -3107,7 +3107,7 @@ function atHeadlineData(pos: number, el: Elem | undefined = elementAt(pos)): boo
  * org--get-expected-indentation works it out: with the buffer widened, so
  * a narrowing that starts inside an item still lines up with its text.
  */
-function expectedIndent(el: Elem | undefined, contentsp: boolean, line: number): number {
+export function expectedIndent(el: Elem | undefined, contentsp: boolean, line: number): number {
   return e8.saveRestriction(() => {
     e8.widen();
     return expectedIndentWide(el, contentsp, line);

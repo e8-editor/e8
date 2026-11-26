@@ -531,6 +531,491 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "fn-point-two-spaces",
+      "input": {
+        "text": "Text[fn:1]  more.\n\n[fn:1] The def.\n",
+        "point": 11,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Text[fn:1]  more.\n\n[fn:1] The def.\n",
+      "visible": "Text[fn:1]  more.\n\n[fn:1] The def.\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not on a footnote reference"
+    },
+    {
+      "name": "fn-inline-indented-exit",
+      "input": {
+        "text": "  Text[fn:x:one\n  two] more.\n",
+        "point": 15,
+        "keys": "C-c ' M-> C-b z RET w C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "  Text[fn:x:one\n  twoz\n  w] more.\n",
+      "visible": "  Text[fn:x:one\n  twoz\n  w] more.\n",
+      "point": 15,
+      "mark": 15,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "fn-inline-item-exit",
+      "input": {
+        "text": "- item[fn:x:one\n  two] more.\n",
+        "point": 15,
+        "keys": "C-c ' M-> C-b RET w C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- item[fn:x:  one\n    two\n    w] more.\n",
+      "visible": "- item[fn:x:  one\n    two\n    w] more.\n",
+      "point": 17,
+      "mark": 17,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "fn-inline-item-second-line",
+      "input": {
+        "text": "- item\n  more[fn:x:one] end.\n",
+        "point": 17,
+        "keys": "C-c ' C-e RET w C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- item\n  more[fn:x:  one] end.\n",
+      "visible": "- item\n  more[fn:x:  one] end.\n",
+      "point": 17,
+      "mark": 17,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Text is read-only: \"Cannot edit past footnote reference\""
+    },
+    {
+      "name": "fn-latex-inside-inline",
+      "input": {
+        "text": "Text[fn:x:see $a$ ok] more.\n",
+        "point": 16,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "$a$",
+      "visible": "$a$",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "fn-src-inside-inline",
+      "input": {
+        "text": "Text[fn:x:run src_python{ls} ok] more.\n",
+        "point": 26,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "ls",
+      "visible": "ls",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-dollar-paren",
+      "input": {
+        "text": "See ($x$) here.\n",
+        "point": 6,
+        "keys": "C-c ' C-e C-b q C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "See ($xq$) here.\n",
+      "visible": "See ($xq$) here.\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "latex-dollar-bang",
+      "input": {
+        "text": "See $x$! here.\n",
+        "point": 5,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "$x$",
+      "visible": "$x$",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-dollar-dash",
+      "input": {
+        "text": "See $x$- here.\n",
+        "point": 5,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "See $x$- here.\n",
+      "visible": "See $x$- here.\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No special environment to edit here"
+    },
+    {
+      "name": "latex-dollar-bracket",
+      "input": {
+        "text": "See [$x$] here.\n",
+        "point": 6,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "$x$",
+      "visible": "$x$",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-in-link-desc",
+      "input": {
+        "text": "See [[https://example.org][desc $x$]] here.\n",
+        "point": 33,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "$x$",
+      "visible": "$x$",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-in-code",
+      "input": {
+        "text": "See ~\\(x\\)~ here.\n",
+        "point": 7,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "See ~\\(x\\)~ here.\n",
+      "visible": "See ~\\(x\\)~ here.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No special environment to edit here"
+    },
+    {
+      "name": "latex-double-dollar-empty",
+      "input": {
+        "text": "See $$$$ here.\n",
+        "point": 6,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "$$$$",
+      "visible": "$$$$",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "src-nested-braces",
+      "input": {
+        "text": "Run src_python{a{b}} now.\n",
+        "point": 17,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "a{b}",
+      "visible": "a{b}",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "src-nested-braces-exit",
+      "input": {
+        "text": "Run src_python{a{b}} now.\n",
+        "point": 17,
+        "keys": "C-c ' C-e z C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Run src_python{a{b}z} now.\n",
+      "visible": "Run src_python{a{b}z} now.\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "src-nested-brackets",
+      "input": {
+        "text": "Run src_python[:var x='[1]']{print(x)} now.\n",
+        "point": 30,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "print(x)",
+      "visible": "print(x)",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "src-in-table-call",
+      "input": {
+        "text": "| src_python{a} | b |\n",
+        "point": 13,
+        "keys": "C-e RET x C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-edit-inline-src-code"
+        ],
+        "platform": null
+      },
+      "text": "| src_python{a} | b |\nx\n",
+      "visible": "| src_python{a} | b |\nx\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Not on inline source code"
+    },
+    {
+      "name": "src-multiline",
+      "input": {
+        "text": "Run src_python{a\nb} now.\n",
+        "point": 18,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "a\nb",
+      "visible": "a\nb",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-indented-ml2",
+      "input": {
+        "text": "  See \\[a\\] here.\n",
+        "point": 9,
+        "keys": "C-c ' C-a C-f C-f C-f RET RET y C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "  See \\[a\ny\\] here.\n",
+      "visible": "  See \\[a\ny\\] here.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "latex-item-ml2",
+      "input": {
+        "text": "- See \\[a\\] here.\n",
+        "point": 9,
+        "keys": "C-c ' C-a C-f C-f C-f RET y C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- See \\[a\n  y\\] here.\n",
+      "visible": "- See \\[a\n  y\\] here.\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "latex-item-second-line-ml",
+      "input": {
+        "text": "- See\n  more \\[a\\] here.\n",
+        "point": 16,
+        "keys": "C-c ' C-a C-f C-f C-f RET y C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- See\n  more \\[a\n  y\\] here.\n",
+      "visible": "- See\n  more \\[a\n  y\\] here.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "fn-inline-unchanged",
+      "input": {
+        "text": "  Text[fn:x:one\n  two] more.\n",
+        "point": 15,
+        "keys": "C-c ' C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "  Text[fn:x:one\n  two] more.\n",
+      "visible": "  Text[fn:x:one\n  two] more.\n",
+      "point": 15,
+      "mark": 15,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "fn-inline-item-unchanged",
+      "input": {
+        "text": "- item[fn:x:one\n  two] more.\n",
+        "point": 15,
+        "keys": "C-c ' C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- item[fn:x:  one\n    two] more.\n",
+      "visible": "- item[fn:x:  one\n    two] more.\n",
+      "point": 17,
+      "mark": 17,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }

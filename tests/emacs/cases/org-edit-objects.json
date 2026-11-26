@@ -227,5 +227,215 @@
   "answers": [
    "yes"
   ]
+ },
+ {
+  "name": "fn-point-two-spaces",
+  "text": "Text[fn:1]  more.\n\n[fn:1] The def.\n",
+  "point": 11,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "fn-inline-indented-exit",
+  "text": "  Text[fn:x:one\n  two] more.\n",
+  "point": 15,
+  "keys": "C-c ' M-> C-b z RET w C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "fn-inline-item-exit",
+  "text": "- item[fn:x:one\n  two] more.\n",
+  "point": 15,
+  "keys": "C-c ' M-> C-b RET w C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "fn-inline-item-second-line",
+  "text": "- item\n  more[fn:x:one] end.\n",
+  "point": 17,
+  "keys": "C-c ' C-e RET w C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "fn-latex-inside-inline",
+  "text": "Text[fn:x:see $a$ ok] more.\n",
+  "point": 16,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "fn-src-inside-inline",
+  "text": "Text[fn:x:run src_python{ls} ok] more.\n",
+  "point": 26,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "latex-dollar-paren",
+  "text": "See ($x$) here.\n",
+  "point": 6,
+  "keys": "C-c ' C-e C-b q C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "latex-dollar-bang",
+  "text": "See $x$! here.\n",
+  "point": 5,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "latex-dollar-dash",
+  "text": "See $x$- here.\n",
+  "point": 5,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "latex-dollar-bracket",
+  "text": "See [$x$] here.\n",
+  "point": 6,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "latex-in-link-desc",
+  "text": "See [[https://example.org][desc $x$]] here.\n",
+  "point": 33,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "latex-in-code",
+  "text": "See ~\\(x\\)~ here.\n",
+  "point": 7,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "latex-double-dollar-empty",
+  "text": "See $$$$ here.\n",
+  "point": 6,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "src-nested-braces",
+  "text": "Run src_python{a{b}} now.\n",
+  "point": 17,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "src-nested-braces-exit",
+  "text": "Run src_python{a{b}} now.\n",
+  "point": 17,
+  "keys": "C-c ' C-e z C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "src-nested-brackets",
+  "text": "Run src_python[:var x='[1]']{print(x)} now.\n",
+  "point": 30,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "src-in-table-call",
+  "text": "| src_python{a} | b |\n",
+  "point": 13,
+  "keys": "C-e RET x C-c '",
+  "modes": [
+   "org-mode"
+  ],
+  "call": [
+   "org-edit-inline-src-code"
+  ]
+ },
+ {
+  "name": "src-multiline",
+  "text": "Run src_python{a\nb} now.\n",
+  "point": 18,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "latex-indented-ml2",
+  "text": "  See \\[a\\] here.\n",
+  "point": 9,
+  "keys": "C-c ' C-a C-f C-f C-f RET RET y C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "latex-item-ml2",
+  "text": "- See \\[a\\] here.\n",
+  "point": 9,
+  "keys": "C-c ' C-a C-f C-f C-f RET y C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "latex-item-second-line-ml",
+  "text": "- See\n  more \\[a\\] here.\n",
+  "point": 16,
+  "keys": "C-c ' C-a C-f C-f C-f RET y C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "fn-inline-unchanged",
+  "text": "  Text[fn:x:one\n  two] more.\n",
+  "point": 15,
+  "keys": "C-c ' C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "fn-inline-item-unchanged",
+  "text": "- item[fn:x:one\n  two] more.\n",
+  "point": 15,
+  "keys": "C-c ' C-c '",
+  "modes": [
+   "org-mode"
+  ]
  }
 ]
