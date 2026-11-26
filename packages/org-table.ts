@@ -433,7 +433,7 @@ function insertRow(below: boolean): void {
   e8.gotoChar(at);
   const m = /\| ?/.exec(restOfLine());
   if (m) e8.gotoChar(at + charCount(restOfLine().slice(0, (m.index ?? 0) + m[0].length)));
-  if (before) align();
+  if (before || truthy(e8.variable("org-table-overlay-coordinates") ?? null)) align();
   else markAligned();
   if (fixFormulasConfirmed()) fixFormulas("@", [], currentDline() - 1, 1);
 }
@@ -1110,6 +1110,7 @@ e8.defineCommand({
     edInsert(e8.point(), `${rule}\n`);
     forwardLine(above ? 0 : -2);
     moveToColumn(col);
+    if (truthy(e8.variable("org-table-overlay-coordinates") ?? null)) align();
   },
 });
 
@@ -2493,7 +2494,7 @@ export function evalFormula(
   let fm: FormulaModes;
   [formula, fm] = parseFormulaModes(formula);
   if (!suppressConst && truthy(e8.variable("org-table-formula-use-constants"))) formula = substituteNamesKeeping(formula);
-  const orig = origFormulas.get(formula) ?? "?";
+  const orig = formula.length > 1 ? (origFormulas.get(formula) ?? "?") : "?";
   // Org reads a text property at position 1 of the formula here, which an empty one has not.
   if (formula === "") e8.signal("args-out-of-range", "Args out of range: 1, 1", [formula, 1, 1]);
   formula = handleFirstLastRc(formula);
@@ -2598,7 +2599,8 @@ function showSubstitutions(orig: string, formula: string, form0: string, form: s
       : `Result: ${ev}\nFormat: ${fmt ?? "NONE"}\nFinal:  ${fmt !== undefined ? formatNumber(fmt, stringToLispNumber(ev)) : ev}`;
   e8.withCurrentBuffer(e8.getBufferCreate(name), () => {
     e8.call("erase-buffer");
-    e8.insert(`Substitution history of formula\nOrig:   ${orig}\n$xyz->  ${formula}\n@r$c->  ${form0}\n$1->    ${form}\n${tail}`);
+    e8.insert(`Substitution history of formula\nOrig:   ${orig}\n$xyz->  ${formula}\n@r$c->  ${form0}\n$1->    ${form}\n${tail}\n`);
+    e8.setBufferModified(false);
     e8.gotoChar(e8.pointMin());
   });
   e8.call("display-buffer", name);
@@ -2810,6 +2812,7 @@ export function recalculate(all: e8.PrefixArg | boolean | "iterate" = null, noal
     return;
   }
   const doAll = all !== null && all !== false && all !== undefined;
+  origFormulas.clear();
   analyze();
   const eqlist = getStoredFormulas().sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
   if (eqlist.length === 0) return;
@@ -3447,6 +3450,7 @@ function showReference(local = false): void {
       e8.gotoChar(e8.markerPosition(pos) ?? e8.point());
     }
     forceDataline();
+    if (!local) analyze();
     const tableStart = local ? e8.lineStart(an.first) : orgTableBegin();
     if (dest !== undefined) {
       const name = dest.slice(1);
@@ -3459,10 +3463,7 @@ function showReference(local = false): void {
       // Nothing more to show.
     } else if (what === "range") {
       try {
-        saveExcursion(() => {
-          e8.gotoChar(tableStart);
-          highlightRange(match!);
-        });
+        highlightRange(match!);
       } catch {
         // As Org ignores a range it cannot read.
       }
@@ -3528,10 +3529,11 @@ function showReference(local = false): void {
       e8.gotoChar(max);
       if (!e8.posVisibleInWindowP(max)) e8.setWindowStart(e8.selectedWindow(), e8.lineStart(lineAt(max)));
     }
+    // Back to the editor, though not after an error, as Org has no unwind-protect here.
+    e8.selectWindow(win);
   } finally {
     inhibitHighlightRemoval = false;
     showPositions = undefined;
-    e8.selectWindow(win);
   }
 }
 
@@ -3639,6 +3641,11 @@ function editFormulas(): void {
 }
 
 function dropFormulaEdit(): void {
+  const edit = formulaEdits.get(e8.currentBuffer().id);
+  if (edit) {
+    e8.deleteMarker(edit.pos);
+    e8.deleteMarker(edit.source);
+  }
   formulaEdits.delete(e8.currentBuffer().id);
 }
 
@@ -3685,8 +3692,8 @@ function toggleRefType(): void {
 function shiftRefpart(ref: string, decr: boolean, hline: boolean): string {
   let sign = /^[-+]/.test(ref) ? ref[0] : undefined;
   if (sign) ref = ref.slice(1);
-  if (hline && /^I+/.test(ref)) {
-    let n = Number(`${sign ?? ""}${/^I+/.exec(ref)![0].length}`) + (decr ? -1 : 1);
+  if (hline && /^I+/i.test(ref)) {
+    let n = Number(`${sign ?? ""}${/^I+/i.exec(ref)![0].length}`) + (decr ? -1 : 1);
     if (n === 0) n += decr ? -1 : 1;
     if (sign) {
       sign = n < 0 ? "-" : "+";
@@ -3713,16 +3720,19 @@ function shiftReference(dir: "up" | "down" | "left" | "right"): void {
     const at = (m.index ?? 0) + offset;
     const start = e8.lineStart(lineAt()) + charCount(line.slice(0, at));
     e8.gotoChar(start);
+    const fresh = shiftRefpart(m[group], decr, hline);
     edDelete(start, start + charCount(m[group]));
-    edInsert(start, shiftRefpart(m[group], decr, hline));
-    e8.gotoChar(start);
+    edInsert(start, fresh);
+    // After it, as replace-match leaves point.
+    e8.gotoChar(start + charCount(fresh));
   };
   let m: RegExpExecArray | undefined;
-  if ((m = inRegexp(/(\b[a-zA-Z])&/))) {
+  // Word boundaries as fundamental mode's syntax has them, $ a word character, and case folded, as Org searches.
+  if ((m = inRegexp(/((?<![A-Za-z0-9$])[a-zA-Z])&/i))) {
     if (!vertical) replaceGroup(m, 1, 0);
     else e8.userError("Cannot shift reference in this direction");
-  } else if ((m = inRegexp(/(\b[a-zA-Z]{1,2})([0-9]+)/))) replaceGroup(m, vertical ? 2 : 1, vertical ? m[1].length : 0);
-  else if ((m = inRegexp(/(@|\.\.)([-+]?(I+\b|[0-9]+))(\$([-+]?[0-9]+))?/))) {
+  } else if ((m = inRegexp(/((?<![A-Za-z0-9$])[a-zA-Z]{1,2})([0-9]+)/i))) replaceGroup(m, vertical ? 2 : 1, vertical ? m[1].length : 0);
+  else if ((m = inRegexp(/(@|\.\.)([-+]?(I+(?![A-Za-z0-9$])|[0-9]+))(\$([-+]?[0-9]+))?/i))) {
     if (vertical) replaceGroup(m, 2, m[1].length, m[3] !== undefined);
     else replaceGroup(m, 5, m[1].length + m[2].length + 1);
   }
@@ -3759,6 +3769,7 @@ function feditFinish(arg: e8.PrefixArg): void {
   storeFormulas(eql);
   e8.deleteMarker(edit.pos);
   e8.deleteMarker(edit.source);
+  for (const [id, e] of formulaEdits) if (e === edit) formulaEdits.delete(id);
   const w = getBufferWindow(FEDIT_BUFFER);
   if (w !== undefined) {
     const current = e8.selectedWindow();
@@ -3780,6 +3791,8 @@ function feditAbort(): void {
   const pos = e8.markerPosition(edit.pos);
   if (pos !== undefined) e8.gotoChar(pos);
   e8.deleteMarker(edit.pos);
+  e8.deleteMarker(edit.source);
+  for (const [id, e] of formulaEdits) if (e === edit) formulaEdits.delete(id);
   e8.message("Formula editing aborted without installing changes");
 }
 
@@ -3869,7 +3882,14 @@ e8.defineCommand({
 e8.defineCommand({
   name: "org-table-show-reference",
   doc: "Show what the reference at point names, highlighting its fields in the table.",
-  run: () => showReference(!formulaEdits.has(e8.currentBuffer().id)),
+  run: () => {
+    // Outside the editor Org's org-pos is nil, which it goes to.
+    if (!formulaEdits.has(e8.currentBuffer().id)) {
+      removeRectangleHighlight();
+      e8.signal("wrong-type-argument", "Wrong type argument: integer-or-marker-p, nil", ["integer-or-marker-p", null]);
+    }
+    showReference(false);
+  },
 });
 
 e8.defineCommand({

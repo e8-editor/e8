@@ -2110,9 +2110,13 @@ fn coordinates_number_a_tables_rows_and_columns() {
     let shown = rows(&ed);
     // Data rows numbered, rules as I*1, and columns over the rule as $1 and $2.
     assert_eq!(&shown[..3], ["   1| a | b |", "I*1 |$1-+$2-|", "   2| 1 | 2 |"]);
+    // Rows and rules added, here above the first row and below it, are numbered, as Org aligns after them while the numbers show.
+    ed.press("M-S-<down> C-c -").unwrap();
+    ed.redisplay();
+    assert_eq!(&rows(&ed)[..5], ["   1|   |   |", "I*1 |$1-+$2-|", "   2| a | b |", "I*2 |$1-+$2-|", "   3| 1 | 2 |"]);
     ed.press("C-c }").unwrap();
     ed.redisplay();
-    assert_eq!(&rows(&ed)[..3], ["| a | b |", "|---+---|", "| 1 | 2 |"]);
+    assert_eq!(&rows(&ed)[..3], ["|   |   |", "|---+---|", "| a | b |"]);
 }
 
 #[test]
@@ -2130,7 +2134,7 @@ fn the_formula_debugger_shows_how_references_were_replaced() {
     assert_eq!(
         ed.echo(),
         // The original is ? with a format, as Org loses it taking the format off, as Emacs 30.2 shows.
-        Some("Substitution history of formula\nOrig:   ?\n$xyz->  $1+$2\n@r$c->  $1+$2\n$1->    (1)+(2)\nResult: 3\nFormat: %.1f\nFinal:  3.0")
+        Some("Substitution history of formula\nOrig:   ?\n$xyz->  $1+$2\n@r$c->  $1+$2\n$1->    (1)+(2)\nResult: 3\nFormat: %.1f\nFinal:  3.0\n")
     );
     // Without one, the formula as written, as Emacs 30.2 shows.
     let (mut ed, s) = org("| 1 | 2 |   |\n#+TBLFM: $3=$1+$2\n");
@@ -2144,6 +2148,6 @@ fn the_formula_debugger_shows_how_references_were_replaced() {
     .unwrap();
     assert_eq!(
         ed.echo(),
-        Some("Substitution history of formula\nOrig:   $1+$2\n$xyz->  $1+$2\n@r$c->  $1+$2\n$1->    (1)+(2)\nResult: 3\nFormat: NONE\nFinal:  3")
+        Some("Substitution history of formula\nOrig:   $1+$2\n$xyz->  $1+$2\n@r$c->  $1+$2\n$1->    (1)+(2)\nResult: 3\nFormat: NONE\nFinal:  3\n")
     );
 }

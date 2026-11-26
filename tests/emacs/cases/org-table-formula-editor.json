@@ -230,5 +230,92 @@
    "org-mode"
   ],
   "message": true
+ },
+ {
+  "name": "show-ref-relative-row",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=@+1$1\n",
+  "point": 30,
+  "keys": "C-c ' C-n C-e",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "show-ref-relative-range",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=vsum(@+0$1..@+1$2)\n",
+  "point": 30,
+  "keys": "C-c ' C-n C-e C-b C-b",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "shift-b3",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=B2\n",
+  "point": 30,
+  "keys": "C-c ' C-n C-e S-<down> S-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-table-use-standard-references": true
+  }
+ },
+ {
+  "name": "shift-point-after",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: @3$3=@10$1\n",
+  "point": 30,
+  "keys": "C-c ' C-n C-e C-b C-b C-b S-<up> S-<up> x",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "shift-neg-hline",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: @3$3=@-I$1\n",
+  "point": 30,
+  "keys": "C-c ' C-n C-e C-b C-b C-b S-<down> x",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "shift-rel-col",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: @3$3=@2$-1\n",
+  "point": 30,
+  "keys": "C-c ' C-n C-e S-<left> x",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "show-ref-undefined",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=$zz\n",
+  "point": 30,
+  "keys": "C-c ' C-n C-e C-c ?",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "mx-show-reference",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=$1\n",
+  "point": 30,
+  "keys": "M-x",
+  "modes": [
+   "org-mode"
+  ],
+  "answers": [
+   "org-table-show-reference"
+  ]
+ },
+ {
+  "name": "coordinates-insert-row",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n",
+  "point": 30,
+  "keys": "C-c } M-S-<down> C-c -",
+  "modes": [
+   "org-mode"
+  ]
  }
 ]

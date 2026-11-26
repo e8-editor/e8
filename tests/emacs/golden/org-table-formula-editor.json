@@ -532,6 +532,201 @@
       "modified": false,
       "error": null,
       "message": "line @2, col $1, ref @2$1 or A2"
+    },
+    {
+      "name": "show-ref-relative-row",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=@+1$1\n",
+        "point": 30,
+        "keys": "C-c ' C-n C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "# Column Formulas\n$3 = @+1$1\n",
+      "visible": "# Column Formulas\n$3 = @+1$1\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "show-ref-relative-range",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=vsum(@+0$1..@+1$2)\n",
+        "point": 30,
+        "keys": "C-c ' C-n C-e C-b C-b",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "# Column Formulas\n$3 = vsum(@+0$1..@+1$2)\n",
+      "visible": "# Column Formulas\n$3 = vsum(@+0$1..@+1$2)\n",
+      "point": 39,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "shift-b3",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=B2\n",
+        "point": 30,
+        "keys": "C-c ' C-n C-e S-<down> S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-table-use-standard-references": true
+        }
+      },
+      "text": "# Column Formulas\nC& = C3\n",
+      "visible": "# Column Formulas\nC& = C3\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "shift-point-after",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: @3$3=@10$1\n",
+        "point": 30,
+        "keys": "C-c ' C-n C-e C-b C-b C-b S-<up> S-<up> x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "# Field and Range Formulas\n@3$3 = @8x$1\n",
+      "visible": "# Field and Range Formulas\n@3$3 = @8x$1\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "shift-neg-hline",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: @3$3=@-I$1\n",
+        "point": 30,
+        "keys": "C-c ' C-n C-e C-b C-b C-b S-<down> x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "# Field and Range Formulas\n@3$3 = @-xI$1\n",
+      "visible": "# Field and Range Formulas\n@3$3 = @-xI$1\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "shift-rel-col",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: @3$3=@2$-1\n",
+        "point": 30,
+        "keys": "C-c ' C-n C-e S-<left> x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "# Field and Range Formulas\n@3$3 = @2$-2x\n",
+      "visible": "# Field and Range Formulas\n@3$3 = @2$-2x\n",
+      "point": 40,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "show-ref-undefined",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=$zz\n",
+        "point": 30,
+        "keys": "C-c ' C-n C-e C-c ?",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=$zz\n",
+      "visible": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=$zz\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Undefined name $zz"
+    },
+    {
+      "name": "mx-show-reference",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=$1\n",
+        "point": 30,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-table-show-reference"
+        ]
+      },
+      "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=$1\n",
+      "visible": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=$1\n",
+      "point": 30,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Wrong type argument: integer-or-marker-p, nil"
+    },
+    {
+      "name": "coordinates-insert-row",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n",
+        "point": 30,
+        "keys": "C-c } M-S-<down> C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b | c |\n|---+---+---|\n|   |   |   |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n",
+      "visible": "| a | b | c |\n|---+---+---|\n|   |   |   |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n",
+      "point": 30,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }
