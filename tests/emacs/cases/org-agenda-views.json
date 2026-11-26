@@ -1,0 +1,1287 @@
+[
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "default-n-block-agenda",
+  "answers": [
+   "n"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "todo-keyword",
+  "answers": [
+   "T",
+   "WAIT"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "flagged",
+  "answers": [
+   "?"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "stuck-projects",
+  "answers": [
+   "#"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "custom-tags-todo",
+  "answers": [
+   "w"
+  ],
+  "globals": {
+   "org-agenda-custom-commands": [
+    [
+     "w",
+     "Work",
+     "'tags-todo",
+     "work"
+    ]
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "custom-todo-keyword",
+  "answers": [
+   "x"
+  ],
+  "globals": {
+   "org-agenda-custom-commands": [
+    [
+     "x",
+     "Next",
+     "'todo",
+     "NEXT|WAIT"
+    ]
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "custom-search",
+  "answers": [
+   "x"
+  ],
+  "globals": {
+   "org-agenda-custom-commands": [
+    [
+     "x",
+     "",
+     "'search",
+     "Plan"
+    ]
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "custom-agenda-settings",
+  "answers": [
+   "x"
+  ],
+  "globals": {
+   "org-agenda-custom-commands": [
+    [
+     "x",
+     "Day",
+     "'agenda",
+     "",
+     [
+      [
+       "'org-agenda-span",
+       "''day"
+      ],
+      [
+       "'org-agenda-overriding-header",
+       "Today:"
+      ]
+     ]
+    ]
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "custom-block",
+  "answers": [
+   "x"
+  ],
+  "globals": {
+   "org-agenda-custom-commands": [
+    [
+     "x",
+     "Both",
+     [
+      [
+       "'agenda",
+       "",
+       [
+        [
+         "'org-agenda-span",
+         1
+        ]
+       ]
+      ],
+      [
+       "'tags",
+       "home"
+      ],
+      [
+       "'todo",
+       "NEXT"
+      ]
+     ],
+     [
+      [
+       "'org-agenda-overriding-header",
+       "Mine"
+      ]
+     ]
+    ]
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "custom-block-compact",
+  "answers": [
+   "x"
+  ],
+  "globals": {
+   "org-agenda-compact-blocks": true,
+   "org-agenda-custom-commands": [
+    [
+     "x",
+     "Both",
+     [
+      [
+       "'agenda",
+       ""
+      ],
+      [
+       "'alltodo",
+       ""
+      ]
+     ]
+    ]
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "custom-prefix-key",
+  "answers": [
+   "p",
+   "a"
+  ],
+  "globals": {
+   "org-agenda-custom-commands": [
+    {
+     "p": "Projects"
+    },
+    [
+     "pa",
+     "All of A",
+     "'search",
+     "Project A"
+    ],
+    [
+     "pb",
+     "B",
+     "'todo",
+     "NEXT"
+    ]
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "custom-menu",
+  "answers": [
+   "x"
+  ],
+  "globals": {
+   "org-agenda-custom-commands": [
+    {
+     "p": "Projects"
+    },
+    [
+     "pa",
+     "All of A",
+     "'search",
+     "Project A"
+    ],
+    [
+     "x",
+     "",
+     "'tags",
+     "home"
+    ],
+    [
+     "y",
+     "",
+     "'stuck",
+     ""
+    ]
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "restrict-buffer",
+  "answers": [
+   "<",
+   "t"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "restrict-subtree",
+  "answers": [
+   "<",
+   "<",
+   "t"
+  ],
+  "point": 97
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "f",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "block-later",
+  "answers": [
+   "n"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "r",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "block-redo",
+  "answers": [
+   "n"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "v",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "block-day-view",
+  "answers": [
+   "n",
+   "d"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "C-n C-n C-n C-n C-n C-n C-n C-n C-n C-n t",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "block-next-line",
+  "answers": [
+   "n"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "invalid-key",
+  "answers": [
+   "z"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "restrict-three-times-is-off",
+  "answers": [
+   "<",
+   "<",
+   "<",
+   "t"
+  ],
+  "point": 97
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "restrict-zero-is-subtree",
+  "answers": [
+   "0",
+   "t"
+  ],
+  "point": 97
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "restrict-one-is-buffer",
+  "answers": [
+   "0",
+   "1",
+   "t"
+  ],
+  "point": 97
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "restrict-removed",
+  "answers": [
+   "<",
+   ">",
+   "t"
+  ],
+  "point": 97
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "restrict-subtree-agenda",
+  "answers": [
+   "<",
+   "<",
+   "a"
+  ],
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "restrict-tags",
+  "answers": [
+   "0",
+   "m",
+   "work|FLAGGED"
+  ],
+  "point": 148
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "2 r",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "todo-list-numbered-redo",
+  "answers": [
+   "t"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "0 r",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "todo-list-zero-redo",
+  "answers": [
+   "T",
+   "NEXT"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "custom-tags-tree",
+  "answers": [
+   "x"
+  ],
+  "globals": {
+   "org-agenda-custom-commands": [
+    [
+     "x",
+     "",
+     "'tags-tree",
+     "work"
+    ]
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "custom-todo-tree",
+  "answers": [
+   "x"
+  ],
+  "globals": {
+   "org-agenda-custom-commands": [
+    [
+     "x",
+     "",
+     "'todo-tree",
+     "NEXT"
+    ]
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "custom-occur-tree",
+  "answers": [
+   "x"
+  ],
+  "globals": {
+   "org-agenda-custom-commands": [
+    [
+     "x",
+     "",
+     "'occur-tree",
+     "Project"
+    ]
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "custom-appointments",
+  "answers": [
+   "x"
+  ],
+  "globals": {
+   "org-agenda-custom-commands": [
+    [
+     "x",
+     "",
+     "'agenda*",
+     ""
+    ]
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "custom-no-description",
+  "answers": [
+   "x"
+  ],
+  "globals": {
+   "org-agenda-custom-commands": [
+    [
+     "x",
+     "'tags",
+     "home"
+    ]
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "custom-block-empty-header",
+  "answers": [
+   "x"
+  ],
+  "globals": {
+   "org-agenda-custom-commands": [
+    [
+     "x",
+     "",
+     [
+      [
+       "'tags",
+       "home",
+       [
+        [
+         "'org-agenda-overriding-header",
+         ""
+        ]
+       ]
+      ],
+      [
+       "'todo",
+       "TODO"
+      ]
+     ]
+    ]
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "custom-block-string-separator",
+  "answers": [
+   "x"
+  ],
+  "globals": {
+   "org-agenda-block-separator": "--",
+   "org-agenda-custom-commands": [
+    [
+     "x",
+     "",
+     [
+      [
+       "'tags",
+       "home"
+      ],
+      [
+       "'tags",
+       "work"
+      ]
+     ]
+    ]
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "custom-block-no-separator",
+  "answers": [
+   "x"
+  ],
+  "globals": {
+   "org-agenda-block-separator": false,
+   "org-agenda-custom-commands": [
+    [
+     "x",
+     "",
+     [
+      [
+       "'tags",
+       "home"
+      ],
+      [
+       "'tags",
+       "work"
+      ]
+     ]
+    ]
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "C-n C-n C-n C-n C-n C-n t",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "custom-block-done-from-it",
+  "answers": [
+   "x"
+  ],
+  "globals": {
+   "org-agenda-custom-commands": [
+    [
+     "x",
+     "",
+     [
+      [
+       "'tags",
+       "home"
+      ],
+      [
+       "'todo",
+       "TODO"
+      ]
+     ]
+    ]
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "C-n C-n C-n C-n C-n r",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "custom-block-tags-redo",
+  "answers": [
+   "x"
+  ],
+  "globals": {
+   "org-agenda-custom-commands": [
+    [
+     "x",
+     "",
+     [
+      [
+       "'tags",
+       "home"
+      ],
+      [
+       "'tags",
+       "work"
+      ]
+     ]
+    ]
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "custom-stuck-settings",
+  "answers": [
+   "x"
+  ],
+  "globals": {
+   "org-agenda-custom-commands": [
+    [
+     "x",
+     "",
+     "'stuck",
+     "",
+     [
+      [
+       "'org-stuck-projects",
+       [
+        "'quote",
+        [
+         "+LEVEL=1",
+         [
+          "TODO",
+          "WAIT"
+         ],
+         [],
+         ""
+        ]
+       ]
+      ]
+     ]
+    ]
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "stuck-custom-variable",
+  "answers": [
+   "#"
+  ],
+  "globals": {
+   "org-stuck-projects": [
+    "+LEVEL=2/-DONE",
+    [
+     "NEXT"
+    ],
+    [
+     "FLAGGED"
+    ],
+    ""
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "stuck-regexp",
+  "answers": [
+   "#"
+  ],
+  "globals": {
+   "org-stuck-projects": [
+    "+LEVEL=1",
+    [],
+    [],
+    "Plan"
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "stuck-star",
+  "answers": [
+   "#"
+  ],
+  "globals": {
+   "org-stuck-projects": [
+    "+LEVEL=1",
+    [
+     "*"
+    ],
+    [],
+    ""
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "custom-search-todo-settings",
+  "answers": [
+   "x"
+  ],
+  "globals": {
+   "org-agenda-custom-commands": [
+    [
+     "x",
+     "",
+     "'search",
+     "Project",
+     [
+      [
+       "'org-agenda-search-view-max-outline-level",
+       1
+      ]
+     ]
+    ]
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "custom-prefix-unknown",
+  "answers": [
+   "p",
+   "z"
+  ],
+  "globals": {
+   "org-agenda-custom-commands": [
+    {
+     "p": "Projects"
+    },
+    [
+     "pa",
+     "All of A",
+     "'search",
+     "Project A"
+    ]
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "custom-overrides-builtin",
+  "answers": [
+   "t"
+  ],
+  "globals": {
+   "org-agenda-custom-commands": [
+    [
+     "t",
+     "Mine",
+     "'tags",
+     "home"
+    ]
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "custom-two-key-no-description",
+  "answers": [
+   "p",
+   "a"
+  ],
+  "globals": {
+   "org-agenda-custom-commands": [
+    [
+     "pa",
+     "All of A",
+     "'search",
+     "Project A"
+    ]
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "custom-menu-show-matcher-off",
+  "answers": [
+   "x"
+  ],
+  "globals": {
+   "org-agenda-menu-show-matcher": false,
+   "org-agenda-custom-commands": [
+    [
+     "x",
+     "",
+     "'tags",
+     "home"
+    ]
+   ]
+  }
+ },
+ {
+  "modes": [
+   "text-mode"
+  ],
+  "visit": "e8-views.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "keys": "",
+  "call": [
+   "org-agenda"
+  ],
+  "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "name": "restrict-not-org",
+  "answers": [
+   "<",
+   "q"
+  ]
+ }
+]

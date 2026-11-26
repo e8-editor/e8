@@ -68,3 +68,10 @@ org-region-loops/region-sibling-narrowed  # region deactivated mid-command
 org-table-formulas/lisp-formula  # no Lisp for '(...) formulas
 org-table-formulas/comma-decimal  # 1,5 is a complex number to Calc, and E8's Calc has none
 org-edit-special/export-html  # E8 has no html-mode, so the export block's language has no mode (differences.md)
+
+# Org's org-agenda puts an org-lprops text property on the whole buffer it
+# was called from after a custom command of a sparse-tree type, marking an
+# unchanged Org file modified; E8 leaves it unmodified (deliberate).
+org-agenda-views/custom-tags-tree  # Org marks the buffer modified
+org-agenda-views/custom-todo-tree  # Org marks the buffer modified
+org-agenda-views/custom-occur-tree  # Org marks the buffer modified
