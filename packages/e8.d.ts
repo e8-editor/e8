@@ -15981,6 +15981,12 @@ declare global {
        */
       "org-table-exit-follow-field-mode-when-leaving-table": Value;
       /**
+       * A function asked, as y-or-n-p, whether to change the formulas when a column or row moves, or nil to change them without asking.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-fix-formulas-confirm": Value;
+      /**
        * Whether Org-Table-Follow-Field mode is on in this buffer. Use the command org-table-follow-field-mode to change it.
        *
        * Defined in packages/org-table.ts.
