@@ -350,23 +350,28 @@ answers come, and then from its answers, as save-some-buffers' do."
                 (if (eq (car data) 'quit) "Quit" (error-message-string data))))))
 
 (defun e8-oracle--value (v)
-  "A case's JSON value V as Lisp: true and false t and nil, a string starting with ' a symbol, a list of strings with such symbols, an object an alist of strings."
+  "A case's JSON value V as Lisp: true and false t and nil, a string starting with ' a symbol, with '' a quoted one, a list of such values, an object an alist of strings."
   (pcase v
     (:json-false nil)
     ('t t)
-    ;; A string starting with ' is a symbol, as 'headline-data.
+    ;; A string starting with '' is a quoted symbol, as ''day for 'day in a
+    ;; custom agenda command's settings; with ' a symbol, as 'headline-data.
+    ((and (pred stringp) v (guard (string-prefix-p "''" v))) (list 'quote (intern (substring v 2))))
     ((and (pred stringp) v (guard (string-prefix-p "'" v))) (intern (substring v 1)))
-    ;; A list of strings, those starting with ' symbols, as ("'time" "'todo"),
-    ;; numbers, and true and false as t and nil, as a plist (":link" false).
-    ((and (pred listp) v (guard (and v (cl-every (lambda (x) (or (stringp x) (numberp x) (memq x '(t :json-false)))) v))))
-     (mapcar (lambda (x)
-               (cond ((eq x :json-false) nil)
-                     ((and (stringp x) (string-prefix-p "'" x)) (intern (substring x 1)))
-                     (t x)))
-             v))
     ;; An object is an alist of strings, as (("NAME" . "value")).
-    ((and `((,(pred symbolp) . ,_) . ,_) v)
+    ((and `((,(and (pred symbolp) k) . ,_) . ,_) v (guard (not (memq k '(t :json-false)))))
      (mapcar (lambda (c) (cons (symbol-name (car c)) (cdr c))) v))
+    ;; A list, each item read as a value: strings, those starting with ' symbols,
+    ;; as ("'time" "'todo"), numbers, true and false as t and nil, as a plist
+    ;; (":link" false), and lists, as org-agenda-custom-commands'
+    ;; (("n" "Agenda" ((agenda "") (alltodo "")))), where an object of one
+    ;; string is a cons, as a prefix key's ("p" . "Projects").
+    ((pred consp)
+     (mapcar (lambda (x)
+               (pcase x
+                 (`((,(and k (pred symbolp)) . ,(and d (pred stringp)))) (cons (symbol-name k) d))
+                 (_ (e8-oracle--value x))))
+             v))
     (v v)))
 
 (defun e8-oracle--run (case)
@@ -637,6 +642,15 @@ buffer positions to positions in it."
                  lines)
                 (length out))))))
 
+(defun e8-oracle--json (v)
+  "A value V as `json-read' gave it, to write as it was read: its lists
+as arrays, an empty one among them too, and its objects as objects."
+  (cond
+   ((and (consp v) (consp (car v)) (symbolp (caar v)) (not (memq (caar v) '(t :json-false))))
+    (mapcar (lambda (c) (cons (car c) (e8-oracle--json (cdr c)))) v))
+   ((consp v) (vconcat (mapcar (lambda (x) (if (null x) [] (e8-oracle--json x))) v)))
+   (t v)))
+
 (defun e8-oracle--state (case text start keys)
   "The current buffer's state after CASE, as an alist.
 The whole buffer, even if the case left it narrowed."
@@ -666,7 +680,9 @@ The whole buffer, even if the case left it narrowed."
                   ,@(and (alist-get 'capf case) `((capf . ,(vconcat (alist-get 'capf case)))))
                   ,@(and (alist-get 'completions case) '((completions . t)))
                   ,@(and (alist-get 'vars case) `((vars . ,(alist-get 'vars case))))
-                  ,@(and (alist-get 'globals case) `((globals . ,(alist-get 'globals case))))
+                  ,@(and (alist-get 'globals case)
+                         `((globals . ,(mapcar (lambda (g) (cons (car g) (e8-oracle--json (cdr g))))
+                                               (alist-get 'globals case)))))
                   ,@(and (alist-get 'lockfiles case) '((lockfiles . t)))))
         ,@(if (derived-mode-p 'dired-mode)
               ;; Sizes and dates differ between runs: compare marks and names.

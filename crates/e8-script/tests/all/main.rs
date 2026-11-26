@@ -84,6 +84,7 @@ mod org_agenda_filters;
 mod org_agenda_quit;
 mod org_set_property;
 mod org_agenda_span;
+mod org_agenda_views;
 mod org_archive;
 mod org_src_block_faces;
 mod org_tab_emulation;

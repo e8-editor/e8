@@ -8672,6 +8672,9 @@ e8.defineVariable({
     ["Misc"],
     ["o", "org-open-at-point"],
     ["?", "org-speed-command-help"],
+    // At a heading, the subtree, as (org-agenda-set-restriction-lock 'subtree).
+    ["<", "org-agenda-set-restriction-lock"],
+    [">", "org-agenda-remove-restriction-lock"],
   ],
 });
 
@@ -12163,7 +12166,12 @@ export function makeTagsMatcher(match?: string, todoOnly = false): TagsMatcher {
  * "sparse-tree" makes a sparse tree of them. With `todoOnly`, only
  * headings with a TODO state count. Returns what the calls returned.
  */
-export function scanTags<T>(action: "sparse-tree" | ((h: Heading) => T), matcher: TagsMatcher | true, todoOnly: boolean): T[] {
+export function scanTags<T>(
+  action: "sparse-tree" | ((h: Heading) => T),
+  matcher: TagsMatcher | true,
+  todoOnly: boolean,
+  skip?: (h: Heading) => number | undefined,
+): T[] {
   const results: T[] = [];
   const keywords = allKeywords();
   const sublevels = truthy(e8.variable("org-tags-match-list-sublevels"));
@@ -12177,13 +12185,21 @@ export function scanTags<T>(action: "sparse-tree" | ((h: Heading) => T), matcher
     const all = e8.saveRestriction(() => (e8.widen(), headings()));
     const tags = allTagsOf(all);
     let cats: string[] | undefined;
+    // Where the agenda's skip function said to go on from, as org-agenda-skip moves point there.
+    let skipUntil = -1;
     for (let i = 0; i < all.length; i++) {
       const h = all[i];
-      if (h.start < min || h.start >= max) continue;
+      if (h.start < min || h.start >= max || h.start < skipUntil) continue;
       const at = i;
       const ctx: MatchContext = { todo: h.todo, tags: tags[i], level: h.level, h, category: () => (cats ??= e8.saveRestriction(() => (e8.widen(), categories(all))))[at] };
       if (todoOnly && (h.todo === undefined || !keywords.includes(h.todo))) continue;
       if (matcher !== true && !matcher.test(ctx)) continue;
+      // Asked once the match holds, as org-scan-tags calls org-agenda-skip.
+      const to = skip?.(h);
+      if (to !== undefined) {
+        skipUntil = to;
+        continue;
+      }
       // A TODO-only match leaves out entries the TODO list would, with org-agenda-tags-todo-honor-ignore-options.
       if (todoOnly && truthy(e8.variable("org-agenda-tags-todo-honor-ignore-options") ?? null) && e8.fboundp("org-agenda-check-for-timestamp-as-reason-to-ignore-todo-item")) {
         const ignored = e8.saveExcursion(() => (e8.gotoChar(h.start), e8.funcall("org-agenda-check-for-timestamp-as-reason-to-ignore-todo-item")));
@@ -13318,6 +13334,8 @@ const EXTRA_KEYS: [string, e8.CommandName][] = [
   ["C-c <left>", "org-shiftleft"],
   ["C-c <right>", "org-shiftright"],
   ["C-c C-x <right>", "org-shiftcontrolright"],
+  ["C-c C-x <", "org-agenda-set-restriction-lock"],
+  ["C-c C-x >", "org-agenda-remove-restriction-lock"],
   ["C-c C-x <left>", "org-shiftcontrolleft"],
 ];
 function bindExtraKeys(): void {

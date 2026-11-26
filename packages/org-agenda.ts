@@ -56,7 +56,11 @@ import {
   addPendingLogNote,
   toggleTag,
   todoFaceOf,
+  matchSparseTree,
+  orgOccur,
+  subtreeEnd,
 } from "org";
+import { completingReadMultiple } from "crm";
 import { linkUnescape, setAgendaEntryHere, storeLink } from "ol";
 import { entryGet } from "org-list";
 import { addArchiveFiles, archivingFromAgenda } from "org-archive";
@@ -394,6 +398,8 @@ interface AgendaItem {
   tagType?: TagType;
   /** Its entry's effort in minutes when the agenda was made, as the line's effort-minutes property. */
   effort?: number;
+  /** The kind of view whose block the line is in, as its org-agenda-type property. */
+  viewKind?: AgendaView["kind"];
 }
 
 /** Where the line's entry is now: its marker's place, as Org's org-marker follows edits. */
@@ -521,7 +527,8 @@ let archivesMode: null | "trees" | true = null;
 
 /** The files the agenda reads: org-agenda-files, and their archive files in archives mode t, as (org-agenda-files nil 'ifmode). */
 function agendaFilesIfMode(): string[] {
-  const files = agendaFiles();
+  // The file a restriction is to, as org-agenda-files gives its org-restrict.
+  const files = restriction ? [restriction.file] : agendaFiles();
   return archivesMode === true ? addArchiveFiles(files) : files;
 }
 
@@ -802,7 +809,18 @@ function scanBuffer(): { cat: string; entries: Scanned[] } {
     const habit = plan.scheduled !== undefined ? parseHabit(h) : undefined;
     return { h, done: isDone(h.todo), plan, priority: priorityValue(h), stamps, ranges, cat: cats[i], logs, ...(habit ? { habit } : {}) };
   });
-  return { cat: category(), entries: entries.filter((_, i) => !skipped[i]) };
+  // Where org-agenda-skip-function says to go on from, asked at each heading with something for the agenda.
+  let skipUntil = -1;
+  const skippedBy = entries.map((e, i) => {
+    if (skipped[i]) return false;
+    if (e.h.start < skipUntil) return true;
+    const has = e.plan.scheduled !== undefined || e.plan.deadline !== undefined || e.stamps.length > 0 || e.ranges.length > 0 || e.logs.length > 0;
+    const to = has ? skipTo(e.h.start) : undefined;
+    if (to === undefined) return false;
+    skipUntil = to;
+    return true;
+  });
+  return { cat: category(), entries: entries.filter((_, i) => !skipped[i] && !skippedBy[i]) };
 }
 
 /** org-agenda-inactive-leader, as the agenda puts it before what an inactive timestamp brought in. */
@@ -812,7 +830,7 @@ function inactiveLeader(): string {
 }
 
 /** The items for a day from the current buffer, scanned once, as org-agenda-get-day-entries collects them. */
-function dayItems(scan: { cat: string; entries: Scanned[] }, day: number, today: number, buffer: string): AgendaItem[] {
+function dayItems(scan: { cat: string; entries: Scanned[] }, day: number, today: number, buffer: string, withHour = false): AgendaItem[] {
   const deadlines: AgendaItem[] = [];
   const scheduled: AgendaItem[] = [];
   const stamps: AgendaItem[] = [];
@@ -852,7 +870,8 @@ function dayItems(scan: { cat: string; entries: Scanned[] }, day: number, today:
       blocks.push({ ...item, text: agendaLine(h, cat, leader, false, time, "", dotime), urgency: priority });
     }
     // Not with org-agenda-include-deadlines nil, as org-agenda-list leaves :deadline out of the entry types.
-    if (plan.deadline !== undefined && truthy(e8.variable("org-agenda-include-deadlines") ?? null)) {
+    // With times only, as agenda* asks with org-deadline-time-hour-regexp.
+    if (plan.deadline !== undefined && truthy(e8.variable("org-agenda-include-deadlines") ?? null) && (!withHour || timeOf(plan.deadlineText ?? "") !== undefined)) {
       const diff = plan.deadline - day;
       let leader: string | undefined;
       // Its date, and after today each of its repeats, as org-agenda-show-future-repeats has it.
@@ -868,7 +887,7 @@ function dayItems(scan: { cat: string; entries: Scanned[] }, day: number, today:
         deadlines.push({ ...item, text: agendaLine(h, cat, leader, false, time, "", dotime), urgency: priority - (day === today ? diff : 0) });
       }
     }
-    if (plan.scheduled !== undefined) {
+    if (plan.scheduled !== undefined && (!withHour || timeOf(plan.scheduledText ?? "") !== undefined)) {
       // A repeater's later dates show only after today; up to today, the
       // item counts from its base date, as org-agenda-get-scheduled has it.
       const ts = { day: plan.scheduled, repeat: plan.scheduledRepeat };
@@ -947,13 +966,22 @@ function byUrgency(items: AgendaItem[]): AgendaItem[] {
     .map((x) => x.item);
 }
 
-/** What the agenda buffer shows, for its keys to act on and g to rebuild. */
-let agendaView:
-  // What org-agenda-list was given, as its org-last-args: the prefix argument, the day asked for and the span.
-  | { kind: "agenda"; arg: e8.PrefixArg | null; startDay?: number; span: Span }
-  | { kind: "todo" }
-  | { kind: "tags"; todoOnly: boolean; match: string }
-  | { kind: "search"; todoOnly: boolean; todoOnlyArg: boolean; string: string; boolean: boolean } = { kind: "todo" };
+/** What the TODO list was asked for, as org-todo-list's argument: a keyword or several joined by |, the Nth keyword, 0 for all, or C-u to ask. */
+type TodoArg = string | number | [number] | null;
+
+/** What a view of the agenda shows, for its keys to act on and g to rebuild. */
+type AgendaView =
+  // What org-agenda-list was given, as its org-last-args: the prefix argument, the day asked for and the span;
+  // whether it shows only entries with times, as agenda* does, and its first day, as org-starting-day.
+  | { kind: "agenda"; arg: e8.PrefixArg | null; startDay?: number; span: Span; withHour?: boolean; start?: number }
+  // The keyword picked, as org-select-this-todo-keyword, and the argument it came from.
+  | { kind: "todo"; arg?: TodoArg; keyword?: string }
+  // Whether it lists stuck projects, as org-agenda-list-stuck-projects makes it again.
+  | { kind: "tags"; todoOnly: boolean; match: string; stuck?: boolean }
+  | { kind: "search"; todoOnly: boolean; todoOnlyArg: boolean; string: string; boolean: boolean };
+
+/** The view just made, for the agenda's block it goes in. */
+let agendaView: AgendaView = { kind: "todo" };
 let agendaLines: (AgendaItem | undefined)[] = [];
 /** Each line's day, and the count of the days shown up to it, as org-agenda-list puts day and org-day-cnt on them; the header has none. */
 let agendaLineDays: ({ day: number; cnt: number } | undefined)[] = [];
@@ -1014,14 +1042,70 @@ function hideLinksOn(line: number): void {
   }
 }
 
+/** One view's part of the agenda: its lines, the line point goes to and each line's day. */
+type Block = { view: AgendaView; lines: AgendaLines; point: number; days: typeof agendaLineDays; sep?: string | null };
+
+/** The blocks the agenda shows and the line each starts on, as the text properties of each block's text say what made it. */
+let shownBlocks: { view: AgendaView; from: number; to: number }[] = [];
+
+/** While a block agenda is made, the blocks made so far, as org-agenda-multi is bound. */
+let collecting: Block[] | undefined;
+
+/** Whether the views being made are blocks of a block agenda, which leave out their headers' hints, as with org-agenda-multi. */
+const multi = (): boolean => collecting !== undefined;
+
+/**
+ * Makes a view's lines a block of the agenda: the agenda itself, or while
+ * a block agenda is made, the next of its blocks, as org-agenda-prepare
+ * goes on after what is there when org-agenda-multi is bound.
+ */
 function showAgenda(given: AgendaLines | ((maxChars: number) => AgendaLines), pointLine: number, days: typeof agendaLineDays = []): void {
   agendaBuffer = bufferTmpName ?? AGENDA;
-  agendaLineDays = days;
   e8.getBufferCreate(agendaBuffer);
   // Lines that depend on the agenda window's width are made once it is placed, as org-agenda-prepare selects it first.
   if (typeof given === "function") placeAgendaWindow();
   const lines = typeof given === "function" ? given((e8.windowSize()?.width ?? 80) - 1) : given;
-  markBlocked(lines);
+  for (const l of lines) if (l.item) l.item.tagType ??= lineTagType;
+  const block: Block = { view: agendaView, lines, point: pointLine, days };
+  // The separator before it as its own settings say, as org-agenda-prepare puts it.
+  if (collecting) collecting.push({ ...block, sep: truthy(e8.variable("org-agenda-compact-blocks") ?? null) ? null : (blockSeparator() ?? null) });
+  else renderBlocks([block], pointLine);
+}
+
+/** The line separating two blocks, as org-agenda-block-separator says, or none. */
+function blockSeparator(): string | undefined {
+  const sep = e8.variable("org-agenda-block-separator") ?? null;
+  if (sep === null || sep === false) return undefined;
+  if (typeof sep === "string") return sep;
+  // A character, filling the window, as make-string with window-max-chars-per-line.
+  return String.fromCodePoint(Number(sep)).repeat(Math.max(0, (e8.windowSize()?.width ?? 80) - 1));
+}
+
+/**
+ * Puts blocks into the agenda buffer and shows it, as org-agenda-prepare
+ * and org-agenda-finalize do: each block after the one before, a blank line
+ * and the separator between them, unless org-agenda-compact-blocks.
+ */
+function renderBlocks(blocks: Block[], pointLine: number): void {
+  const lines: AgendaLines = [];
+  const days: typeof agendaLineDays = [];
+  shownBlocks = [];
+  for (const block of blocks) {
+    // Only after text, as org-agenda-prepare puts it unless at the buffer's start.
+    const sep = block.sep === undefined ? (truthy(e8.variable("org-agenda-compact-blocks") ?? null) ? null : (blockSeparator() ?? null)) : block.sep;
+    if (lines.length > 0 && sep !== null) {
+      lines.push({ text: "" }, ...sep.split("\n").map((text) => ({ text })));
+      while (days.length < lines.length) days.push(undefined);
+    }
+    for (const l of block.lines) if (l.item) l.item.viewKind = block.view.kind;
+    const at = lines.length;
+    lines.push(...block.lines);
+    shownBlocks.push({ view: block.view, from: at, to: lines.length });
+    block.lines.forEach((_l, k) => (days[at + k] = block.days[k]));
+    // Each block's blocked entries, as the view that made it decides.
+    markBlocked(block.lines, block.view);
+  }
+  agendaLineDays = days;
   e8.withCurrentBuffer(agendaBuffer, () => {
     // No line marked for bulk action, as org-agenda-mode starts with none.
     resetBulkMarks();
@@ -1041,7 +1125,6 @@ function showAgenda(given: AgendaLines | ((maxChars: number) => AgendaLines), po
   // org-marker and org-hd-marker; the last agenda's are freed.
   for (const old of agendaLines) if (old) freeMarks(old);
   agendaLines = lines.map((l) => l.item);
-  for (const item of agendaLines) if (item) item.tagType ??= lineTagType;
   // Each line's effort as it was then, as its effort-minutes property keeps it, though the entry's changes, as with e.
   for (const item of agendaLines) if (item) item.effort = readEffort(item);
   for (const item of agendaLines) {
@@ -1103,10 +1186,10 @@ function blockerHookSet(): boolean {
  * does while org-agenda-dim-blocked-tasks is on and org-blocker-hook is set:
  * those with a TODO state that org-entry-blocked-p says are blocked.
  */
-function markBlocked(lines: { item?: AgendaItem }[]): void {
+function markBlocked(lines: { item?: AgendaItem }[], view: AgendaView): void {
   const option = e8.variable("org-agenda-dim-blocked-tasks") ?? null;
   // Not the search view's lines, which have no todo-state for Org to look at.
-  if (!truthy(option) || !blockerHookSet() || agendaView.kind === "search") return;
+  if (!truthy(option) || !blockerHookSet() || view.kind === "search") return;
   for (const { item } of lines) {
     if (!item) continue;
     const blocked = e8.withCurrentBuffer(item.buffer, () => widened(() => {
@@ -1149,7 +1232,9 @@ function dimLine(l: number, item: AgendaItem | undefined): void {
  */
 function setModeName(): void {
   const tag = String(e8.variable("org-archive-tag") ?? "ARCHIVE");
-  const span = agendaView.kind === "agenda" ? spanName(agendaView.span) : "";
+  // The span of the last day agenda made in the buffer, as org-agenda-current-span is set.
+  const shown = [...shownBlocks].reverse().find((b) => b.view.kind === "agenda")?.view;
+  const span = shown?.kind === "agenda" ? spanName(shown.span) : "";
   const grid = truthy(e8.variable("org-agenda-use-time-grid") ?? null) ? " Grid" : "";
   const habit = truthy(e8.variable("org-habit-show-habits") ?? null) ? " Habit" : "";
   const archives = archivesMode === true ? " Archives" : archivesMode === "trees" ? ` :${tag}:` : "";
@@ -1180,7 +1265,7 @@ function fitAgendaWindow(lines: number): void {
  * or for a week or a fortnight on org-agenda-start-on-weekday before it;
  * point goes to today, else to START-DAY.
  */
-function agendaList(arg: e8.PrefixArg | null, startDay?: number, spanArg?: Span, weekdayStart = startOnWeekday()): void {
+function agendaList(arg: e8.PrefixArg | null, startDay?: number, spanArg?: Span, weekdayStart = startOnWeekday(), withHour = false): void {
   lineTagType = "agenda";
   if (typeof arg === "number" && arg > 0) {
     spanArg = arg;
@@ -1204,24 +1289,26 @@ function agendaList(arg: e8.PrefixArg | null, startDay?: number, spanArg?: Span,
   const [w1, w2] = [isoWeekOf(start), isoWeekOf(last)];
   const two = (n: number) => String(n).padStart(2, "0");
   const weeks = last - start >= 350 ? "" : w1 === w2 ? ` (W${two(w1)})` : ` (W${two(w1)}-W${two(w2)})`;
-  const lines: AgendaLines = [{ text: `${spanName(span)}-agenda${weeks}:` }];
+  // No header in a compact block agenda, as org-agenda-compact-blocks says.
+  const lines: AgendaLines = truthy(e8.variable("org-agenda-compact-blocks") ?? null) ? [] : overridingHeader([{ text: `${spanName(span)}-agenda${weeks}:` }]);
+  const view: AgendaView = { kind: "agenda", arg, startDay, span, start, ...(withHour ? { withHour } : {}) };
   // Log mode with nothing to log fails once the header is written, as org-agenda-get-progress does.
   if (showLog !== null && logItems().length === 0) {
-    agendaView = { kind: "agenda", arg, startDay, span };
-    showAgenda(lines, 1, [undefined]);
+    agendaView = view;
+    showAgenda(lines, lines.length, lines.map(() => undefined));
     e8.signal("error", "\u2018org-agenda-log-mode-items\u2019 is empty");
   }
-  const days: typeof agendaLineDays = [undefined];
+  const days: typeof agendaLineDays = lines.map(() => undefined);
   const showAll = truthy(e8.variable("org-agenda-show-all-dates") ?? null);
   let pointLine: number | undefined;
   let cnt = 0;
   const buffers = agendaBuffers();
   // Each file read once for the span, not once a day.
-  const scans = new Map(buffers.map((buffer) => [buffer, e8.withCurrentBuffer(buffer, () => widened(scanBuffer))]));
+  const scans = new Map(buffers.map((buffer) => [buffer, e8.withCurrentBuffer(buffer, () => restricted(buffer, scanBuffer))]));
   for (let day = start; day <= last; day++) {
     if (day === today || (pointLine === undefined && day === sd)) pointLine = lines.length;
     const items: AgendaItem[] = [];
-    for (const buffer of buffers) items.push(...e8.withCurrentBuffer(buffer, () => dayItems(scans.get(buffer)!, day, today, buffer)));
+    for (const buffer of buffers) items.push(...e8.withCurrentBuffer(buffer, () => dayItems(scans.get(buffer)!, day, today, buffer, withHour)));
     if (items.length === 0 && !showAll) continue;
     cnt++;
     const first = lines.length;
@@ -1247,11 +1334,11 @@ function agendaList(arg: e8.PrefixArg | null, startDay?: number, spanArg?: Span,
     const table = clockReport(start, last + 1);
     for (const l of table.replace(/\n$/, "").split("\n")) if (table !== "") lines.push({ text: l });
   }
-  agendaView = { kind: "agenda", arg, startDay, span };
+  agendaView = view;
   startingDay = start;
   showAgenda(lines, pointLine ?? 0, days);
   // The clock check goes over the clocked lines, as org-agenda-show-clocking-issues does, leaving point after the last.
-  if (showLog === "clockcheck") {
+  if (showLog === "clockcheck" && !multi()) {
     e8.withCurrentBuffer(agendaBuffer, () => {
       let end: number | undefined;
       for (let l = 0; l < e8.lineCount(); l++) {
@@ -1439,27 +1526,54 @@ function notOrg(): void {
   throw new Error(`Agenda file ${file} is not in Org mode`);
 }
 
-/** The TODO items that are not done, as org-todo-list shows them. */
-function todoList(): void {
+/**
+ * The TODO items that are not done, as org-todo-list shows them, or those
+ * with a keyword ARG picks: a keyword or several joined by |, the Nth of
+ * the keywords the header lists, 0 for all of them, or with C-u, asked.
+ */
+function todoList(arg: TodoArg = null): void {
   lineTagType = "todo";
+  if (typeof arg === "string" && !/\S/.test(arg)) arg = null;
   const buffers = agendaBuffers();
-  const items: AgendaItem[] = [];
+  // Every file's keywords first, as org-agenda-prepare collects org-todo-keywords-for-agenda.
   const keywords = new Set<string>();
+  for (const buffer of buffers) e8.withCurrentBuffer(buffer, () => {
+    notOrg();
+    for (const k of allKeywords()) keywords.add(k);
+  });
+  // Newest first, as org-prepare-agenda-buffers pushes each keyword it has not seen.
+  const sorted = [...keywords].reverse();
+  let keyword = typeof arg === "string" ? arg : typeof arg === "number" && arg > 0 ? sorted[arg - 1] : undefined;
+  if (Array.isArray(arg) && arg[0] === 4) {
+    const picked = e8.letBind({ "completion-ignore-case": true, "crm-separator": "|" }, () => completingReadMultiple("Keyword (or KWD1|KWD2|...): ", sorted));
+    keyword = picked.join("|");
+  }
+  // The entries with one of the keywords, or any, as org-agenda-get-todos makes its regexp; else those not done.
+  // None for "", as Org's regexp with an empty keyword matches no heading with a title.
+  const picked = keyword === undefined || keyword === "*" ? undefined : keyword.split("|").filter((k) => k !== "");
+  const wanted = (todo: string | undefined): boolean =>
+    todo !== undefined && (keyword === undefined ? !isDone(todo) : picked === undefined ? true : picked.includes(todo));
+  const items: AgendaItem[] = [];
   const sublevels = truthy(e8.variable("org-agenda-todo-list-sublevels") ?? null);
   for (const buffer of buffers) {
-    e8.withCurrentBuffer(buffer, () => widened(() => {
-      notOrg();
-      for (const k of allKeywords()) keywords.add(k);
+    e8.withCurrentBuffer(buffer, () => restricted(buffer, () => {
       const all = headings();
       const cats = categories(all);
       const skipped = skippedHeadings(all);
       // Below a TODO entry, without org-agenda-todo-list-sublevels: the level its subtree is at.
       let below: number | undefined;
+      // Where org-agenda-skip-function said to go on from.
+      let skipUntil = -1;
       for (const [i, h] of all.entries()) {
         if (below !== undefined && h.level > below) continue;
         below = undefined;
-        if (skipped[i]) continue;
-        if (h.todo === undefined || isDone(h.todo)) continue;
+        if (h.start < skipUntil || skipped[i]) continue;
+        if (!wanted(h.todo)) continue;
+        const to = skipTo(h.start);
+        if (to !== undefined) {
+          skipUntil = to;
+          continue;
+        }
         const end = all[i + 1]?.start ?? e8.pointMax();
         if (ignoreTodoForTimestamp(h.start, end, false)) {
           if (!sublevels) below = h.level;
@@ -1472,22 +1586,24 @@ function todoList(): void {
       }
     }));
   }
-  // Newest first, as org-prepare-agenda-buffers pushes each keyword it has not seen.
-  const sorted = [...keywords].reverse();
-  agendaView = { kind: "todo" };
+  agendaView = { kind: "todo", arg, ...(keyword !== undefined ? { keyword } : {}) };
   // The keywords wrapped before the agenda window's last column, as org-todo-list inserts them there.
   showAgenda((max) => {
-    const lines: AgendaLines = [{ text: "Global list of TODO items of type: ALL" }];
-    let header = "Press \u2018N r\u2019 (e.g. \u20180 r\u2019) to search again: (0)[ALL]";
-    sorted.forEach((k, i) => {
-      const word = `(${i + 1})${k}`;
-      if (e8.stringWidth(header) + e8.stringWidth(word) + 1 > max) {
-        lines.push({ text: header });
-        header = " ".repeat(21);
-      }
-      header += ` ${word}`;
-    });
-    lines.push({ text: header });
+    const header: AgendaLines = [{ text: `Global list of TODO items of type: ${keyword ?? "ALL"}` }];
+    // The hint left out in a block agenda, as with org-agenda-multi.
+    if (!multi()) {
+      let hint = "Press \u2018N r\u2019 (e.g. \u20180 r\u2019) to search again: (0)[ALL]";
+      sorted.forEach((k, i) => {
+        const word = `(${i + 1})${k}`;
+        if (e8.stringWidth(hint) + e8.stringWidth(word) + 1 > max) {
+          header.push({ text: hint });
+          hint = " ".repeat(21);
+        }
+        hint += ` ${word}`;
+      });
+      header.push({ text: hint });
+    }
+    const lines = overridingHeader(header);
     for (const item of byUrgency(items)) lines.push({ text: item.text, item });
     return lines;
   }, 0);
@@ -1526,7 +1642,7 @@ function skippedHeadings(all: Heading[]): boolean[] {
  * as org-tags-view shows them, in the files' order. With `todoOnly`, only
  * those whose TODO state is not done.
  */
-function tagsView(todoOnly: boolean, match?: string): void {
+function tagsView(todoOnly: boolean, match?: string, stuck?: string): void {
   lineTagType = "tags";
   if (match !== undefined && !/\S/.test(match)) match = undefined;
   // Read where org-agenda was called from, as org-make-tags-matcher reads it before the agenda is prepared.
@@ -1534,11 +1650,20 @@ function tagsView(todoOnly: boolean, match?: string): void {
   const items: AgendaItem[] = [];
   for (const buffer of agendaBuffers()) {
     e8.withCurrentBuffer(buffer, () =>
-      widened(() => {
+      restricted(buffer, () => {
         notOrg();
         const all = headings();
         const cats = categories(all);
         const skipped = skippedHeadings(all);
+        // A project is not stuck if what its subtree holds says so, as org-agenda-list-stuck-projects binds org-agenda-skip-function.
+        const skip = (h: Heading): number | undefined => {
+          const global = skipTo(h.start, ["org-agenda-skip-function-global"]);
+          if (global !== undefined) return global;
+          if (stuck === undefined) return skipTo(h.start, ["org-agenda-skip-function"]);
+          const i = headingIndex(all, h.line)!;
+          const found = e8.saveExcursion(() => (e8.gotoChar(h.start), e8.reSearchForward(stuck, { bound: subtreeEnd(all, i), noerror: true, caseFold: false })));
+          return found === undefined ? undefined : (all[i + 1]?.start ?? e8.pointMax());
+        };
         const indented = e8.variable("org-tags-match-list-sublevels") === "indented";
         scanTags(
           (h) => {
@@ -1553,16 +1678,16 @@ function tagsView(todoOnly: boolean, match?: string): void {
           },
           matcher,
           matcher.todoOnly,
+          skip,
         );
       }),
     );
   }
-  const lines: { text: string; item?: AgendaItem }[] = [
-    { text: `Headlines with TAGS match: ${matcher.match}` },
-    { text: "Press \u2018C-u r\u2019 to search again" },
-  ];
+  const header: AgendaLines = [{ text: `Headlines with TAGS match: ${matcher.match}` }];
+  if (!multi()) header.push({ text: "Press \u2018C-u r\u2019 to search again" });
+  const lines = overridingHeader(header);
   for (const item of items) lines.push({ text: item.text, item });
-  agendaView = { kind: "tags", todoOnly: matcher.todoOnly, match: matcher.match };
+  agendaView = { kind: "tags", todoOnly: matcher.todoOnly, match: matcher.match, ...(stuck !== undefined ? { stuck: true } : {}) };
   showAgenda(lines, 0);
 }
 
@@ -1676,7 +1801,8 @@ function searchView(todoOnlyArg: boolean, string?: string, editAt?: number): voi
   // Led by agenda-archives, the agenda files' archive files too, as org-search-view adds them.
   const withArchives = extras[0] === "agenda-archives" || extras[0] === Symbol.for("agenda-archives");
   const files = (withArchives ? extras.slice(1) : extras).filter((f): f is string => typeof f === "string");
-  const buffers = agendaBuffers(withArchives ? addArchiveFiles(agendaFilesIfMode()) : agendaFilesIfMode());
+  // The archives only without a restriction, as org-search-view adds them.
+  const buffers = agendaBuffers(withArchives && restriction === undefined ? addArchiveFiles(agendaFilesIfMode()) : agendaFilesIfMode());
   for (const file of files) {
     const buffer = e8.findFileNoselect(e8.expandFileName(file));
     if (!buffers.includes(buffer)) buffers.push(buffer);
@@ -1684,7 +1810,7 @@ function searchView(todoOnlyArg: boolean, string?: string, editAt?: number): voi
   const items: AgendaItem[] = [];
   for (const buffer of buffers) {
     e8.withCurrentBuffer(buffer, () =>
-      widened(() =>
+      restricted(buffer, () =>
         e8.saveExcursion(() => {
           notOrg();
           const all = headings();
@@ -1703,14 +1829,25 @@ function searchView(todoOnlyArg: boolean, string?: string, editAt?: number): voi
             while (i > 0 && tooDeep(i)) i--;
             const h = all[i];
             const beg = e8.lineStart(h.line);
+            // Past headings too deep, each found from the line after the last, as Org's forward-line and
+            // outline-next-heading do, which pass over a heading on that line too.
             let next = i + 1;
-            while (next < all.length && tooDeep(next)) next++;
+            while (next < all.length && tooDeep(next)) {
+              const line = all[next].line + 1;
+              while (next < all.length && all[next].line <= line) next++;
+            }
             const end = all[next]?.start ?? e8.pointMax();
             if (skipped[i]) {
               // On from the end of the subtree, as org-agenda-skip goes there.
               let after = i + 1;
               while (after < all.length && all[after].level > h.level) after++;
               e8.gotoChar(Math.max(e8.point(), (all[after]?.start ?? e8.pointMax() + 1) - 1));
+              continue;
+            }
+            // On from where org-agenda-skip-function says.
+            const to = skipTo(beg);
+            if (to !== undefined) {
+              e8.gotoChar(Math.min(Math.max(e8.point(), to), e8.pointMax()));
               continue;
             }
             const text = e8.bufferSubstringNoProperties(beg, headlinesOnly ? e8.lineEnd(h.line) : end);
@@ -1727,10 +1864,9 @@ function searchView(todoOnlyArg: boolean, string?: string, editAt?: number): voi
       ),
     );
   }
-  const lines: { text: string; item?: AgendaItem }[] = [
-    { text: `Search words: ${query}` },
-    { text: "Press \u2018[\u2019, \u2018]\u2019 to add/sub word, \u2018{\u2019, \u2018}\u2019 to add/sub regexp, \u2018C-u r\u2019 for a fresh search" },
-  ];
+  const header: AgendaLines = [{ text: `Search words: ${query}` }];
+  if (!multi()) header.push({ text: "Press \u2018[\u2019, \u2018]\u2019 to add/sub word, \u2018{\u2019, \u2018}\u2019 to add/sub regexp, \u2018C-u r\u2019 for a fresh search" });
+  const lines = overridingHeader(header);
   for (const item of items) lines.push({ text: item.text, item });
   // The argument, not what ! made it, for C-u r, as the redo command is made before ! is read; the query's own for [ and ].
   agendaView = { kind: "search", todoOnly, todoOnlyArg, string: query, boolean };
@@ -1744,19 +1880,54 @@ function redoAgenda(): void {
   e8.message("Rebuilding agenda buffer...done");
 }
 
-function redoView(): void {
+function redoView(cpa: e8.PrefixArg | null = e8.prefixArg() ?? null): void {
   const line = e8.lineOf(e8.point());
-  if (agendaView.kind === "agenda") agendaList(agendaView.arg, agendaView.startDay, agendaView.span);
+  const view = viewHere();
+  if (shownSeries !== undefined) redoBlock(view, cpa);
+  else if (view === undefined) return;
+  else if (view.kind === "agenda") rebuild(() => agendaList(view.arg, view.startDay, view.span, startOnWeekday(), view.withHour));
+  // Stuck projects found again, as their redo command does.
+  else if (view.kind === "tags" && view.stuck) rebuild(stuckProjects);
   // C-u r asks for the match again, as the tags view's redo command does.
-  else if (agendaView.kind === "tags") tagsView(agendaView.todoOnly, e8.prefixArg() !== null && e8.prefixArg() !== undefined ? undefined : agendaView.match);
+  else if (view.kind === "tags") rebuild(() => tagsView(view.todoOnly, cpa !== null ? undefined : view.match));
   // And the search view's, for the string.
-  else if (agendaView.kind === "search") searchView(agendaView.todoOnlyArg, e8.prefixArg() !== null && e8.prefixArg() !== undefined ? undefined : agendaView.string);
-  else todoList();
+  else if (view.kind === "search") rebuild(() => searchView(view.todoOnlyArg, cpa !== null ? undefined : view.string));
+  // N r picks the Nth keyword, else the keyword picked stays, as org-todo-list's redo command has it.
+  else rebuild(() => todoList(typeof cpa === "number" ? cpa : (view.keyword ?? (cpa as TodoArg) ?? view.arg ?? null)));
   e8.gotoChar(e8.lineStart(Math.min(line, e8.lineCount() - 1)));
+}
+
+/**
+ * Makes a block agenda again, the block at point with the arguments it was
+ * made with, the prefix argument for the first, as org-agenda-redo gives
+ * it org-agenda-overriding-cmd-arguments; the others as their commands
+ * make them. Between blocks, every block as its command makes it.
+ */
+function redoBlock(view: AgendaView | undefined, cpa: e8.PrefixArg | null): void {
+  if (view === undefined) {
+    runSeries(shownSeries!);
+    return;
+  }
+  const given = (arg: e8.PrefixArg | null | undefined) => cpa ?? arg ?? null;
+  if (view.kind === "agenda") rebuild(() => agendaList(given(view.arg), view.startDay, view.span, startOnWeekday(), view.withHour));
+  else if (view.kind === "tags" && view.stuck) rebuild(stuckProjects);
+  // A list's first element as the TODO-only flag, the match kept: no question.
+  else if (view.kind === "tags") rebuild(() => tagsView(cpa !== null || view.todoOnly, view.match));
+  else if (view.kind === "search") rebuild(() => searchView(cpa !== null || view.todoOnlyArg, view.string));
+  // A keyword given stays; any other argument becomes a list, which picks no keyword.
+  else rebuild(() => todoList(typeof view.arg === "string" ? view.arg : typeof view.arg === "number" ? cpa : null));
 }
 
 /** A new agenda's archives mode, org-agenda-start-with-archives-mode, as org-agenda-mode sets it for each new agenda but not when it is made again. */
 function freshAgenda(): void {
+  // Nothing for a block of a block agenda, as org-agenda-prepare goes on with what is there.
+  if (collecting) return;
+  // Not a block agenda, nor a custom command's settings, until one is made.
+  shownSeries = undefined;
+  shownSettings = [];
+  for (const b of new Set([AGENDA, agendaBuffer])) {
+    if (e8.getBuffer(b)) e8.withCurrentBuffer(b, () => e8.removeHook("post-command-hook", flaggingNote, { local: true }));
+  }
   // No filters unless org-agenda-persistent-filter keeps them, as org-agenda-prepare-window sets them; the top headline's stays, as there.
   if (!truthy(e8.variable("org-agenda-persistent-filter") ?? null)) for (const t of ["tag", "category", "regexp", "effort"] as const) agendaFilters[t] = [];
   followMode = truthy(e8.variable("org-agenda-start-with-follow-mode") ?? null);
@@ -1803,10 +1974,13 @@ e8.defun("org-follow-timestamp-link", () => {
 
 const todoListCommand = e8.defineCommand({
   name: "org-todo-list",
-  doc: "Show the TODO items that are not done in org-agenda-files, most urgent first.",
-  run: () => {
+  doc:
+    "Show the TODO items that are not done in org-agenda-files, most urgent first. With C-u, those with the keywords asked for, " +
+    "several joined by |; with a number N, those with the Nth keyword the list's header shows.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg) => {
     freshAgenda();
-    todoList();
+    todoList((arg ?? null) as TodoArg);
   },
 });
 
@@ -1841,20 +2015,24 @@ const searchViewCommand = e8.defineCommand({
  * word, " +{}" or " -{}" for a regexp, with point inside the braces.
  */
 function manipulateQuery(char: string): void {
-  if (agendaView.kind === "agenda") {
+  const view = viewHere();
+  if (view === undefined) return e8.signal("error", "No Org agenda currently displayed");
+  if (view.kind === "agenda") {
     includeInactiveOnce();
     return;
   }
-  if (agendaView.kind !== "search") {
-    const type = agendaView.kind;
+  if (view.kind !== "search") {
+    const type = view.kind;
     throw new Error(`Cannot manipulate query for ${type}-type agenda buffers`);
   }
-  const view = agendaView;
   // What earlier calls added and was not used.
   let string = view.string.replace(/(?: +| +[-+](?:\{\})?)$/, "");
   const added: Record<string, string> = { "[": " +", "]": " -", "{": " +{}", "}": " -{}" };
   string += view.boolean ? added[char] : " ";
-  searchView(view.todoOnly, string, charCount(string) + (char === "{" || char === "}" ? 0 : 1));
+  const line = e8.lineOf(e8.point());
+  rebuild(() => searchView(view.todoOnly, string, charCount(string) + (char === "{" || char === "}" ? 0 : 1)));
+  // Back on its line, as org-agenda-redo goes there.
+  e8.gotoChar(e8.lineStart(Math.min(line, e8.lineCount() - 1)));
 }
 
 const queryCommands = ([["add", "[", "a word"], ["subtract", "]", "a word not wanted"], ["add-re", "{", "a regexp"], ["subtract-re", "}", "a regexp not wanted"]] as const).map(
@@ -1876,7 +2054,7 @@ const occurInAgendaFiles = e8.defineCommand({
     "when that list starts with agenda-archives, in *Occur*, as multi-occur does, each file widened.",
   params: [{ name: "regexp", prompt: "Org-files matching: " }],
   run: (regexp: string) => {
-    let files = agendaFiles();
+    let files = restriction ? [restriction.file] : agendaFiles();
     const truenames = files.map((f) => e8.fileTruename(f));
     const value = e8.variable("org-agenda-text-search-extra-files");
     let extra = Array.isArray(value) ? value : [];
@@ -1911,23 +2089,542 @@ e8.defineCommand({
   },
 });
 
+// Custom agenda commands, block agendas and the agenda's restriction, as
+// org-agenda.el's org-agenda, org-agenda-run-series and
+// org-agenda-get-restriction-and-command.
+
+for (const [name, value, doc] of [
+  [
+    "org-agenda-custom-commands",
+    [["n", "Agenda and all TODOs", [["agenda", ""], ["alltodo", ""]]]],
+    "Agenda views of your own, each a list: its key, a description, its type (agenda, agenda*, alltodo, todo, tags, tags-todo, search, stuck, " +
+      "tags-tree, todo-tree, occur-tree, or a function's name), the match it is given, and a list of settings, [variable, value] pairs, bound while it is made. " +
+      "Instead of the type and the match, a list of commands, each [type, match, settings], makes a block agenda of them, followed by settings for them all. " +
+      "A [key, description] pair describes a prefix key, which keys of two letters start with.",
+  ],
+  ["org-agenda-menu-show-matcher", true, "Whether the agenda's menu shows each custom command's match after its description."],
+  ["org-agenda-menu-two-columns", false, "Whether the agenda's menu shows the custom commands in two columns."],
+  [
+    "org-agenda-overriding-header",
+    null,
+    "The header an agenda view has instead of its own, for a custom command's settings: a string, \"\" for none, or a function giving one.",
+  ],
+  ["org-agenda-compact-blocks", false, "Whether a block agenda leaves out the separators between its blocks and the day agenda's header."],
+  [
+    "org-agenda-block-separator",
+    e8.displayGraphicP() ? 0x2500 : 0x3d,
+    "What separates the blocks of a block agenda: a character repeated across the window, a string, or nil for nothing.",
+  ],
+  [
+    "org-stuck-projects",
+    ["+LEVEL=2/-DONE", ["TODO", "NEXT", "NEXTACTION"], [], ""],
+    "How the agenda's # finds stuck projects: a match for the projects' headings, TODO keywords, tags and a regexp, any of which anywhere in a " +
+      "project's subtree makes it not stuck. \"*\" among the keywords or the tags stands for any.",
+  ],
+  ["org-agenda-skip-function", null, "A function, or a function's name and its arguments, called at each entry the agenda would show, returning where to go on from to leave it out, or nil to keep it."],
+  ["org-agenda-skip-function-global", null, "As org-agenda-skip-function, for every agenda view, asked first."],
+  ["org-agenda-restriction-lock-highlight-subtree", true, "Whether the restriction lock highlights the whole subtree it is to, or only its heading."],
+] as const) {
+  e8.defineVariable({ name, value: value as unknown as e8.Value, doc });
+}
+
+/**
+ * The agenda's restriction, as org-agenda-restrict and the org-restrict of
+ * org-agenda-files: the file it is to, and in its buffer the part between
+ * two markers, or none for the whole file; with `lock`, set by
+ * org-agenda-set-restriction-lock, as org-agenda-overriding-restriction.
+ */
+let restriction: { file: string; buffer?: number; begin?: e8.Marker; end?: e8.Marker; lock?: "subtree" | "file"; overlay?: number; overlayBuffer?: number } | undefined;
+
+/** Takes the restriction away, as org-agenda-remove-restriction-lock with noupdate. */
+function clearRestriction(): void {
+  if (restriction?.begin) e8.deleteMarker(restriction.begin);
+  if (restriction?.end) e8.deleteMarker(restriction.end);
+  if (restriction?.overlay !== undefined && restriction.overlayBuffer !== undefined) {
+    const buffer = e8.bufferList().find((b) => e8.getBuffer(b)?.id === restriction!.overlayBuffer);
+    if (buffer !== undefined) e8.withCurrentBuffer(buffer, () => e8.deleteOverlay(restriction!.overlay!));
+  }
+  restriction = undefined;
+}
+
+/** Runs F in BUFFER as the agenda reads it: widened, or narrowed to the part a restriction is to, as the agenda's views narrow to org-agenda-restrict-begin and -end. */
+function restricted<T>(buffer: string, f: () => T): T {
+  const r = restriction;
+  if (r?.begin !== undefined && r.end !== undefined && e8.getBuffer(buffer)?.id === r.buffer) {
+    const [begin, end] = [e8.markerPosition(r.begin), e8.markerPosition(r.end)];
+    if (begin !== undefined && end !== undefined) {
+      return e8.saveRestriction(() => {
+        e8.widen();
+        e8.narrowToRegion(begin, end);
+        return f();
+      });
+    }
+  }
+  return widened(f);
+}
+
+/** A view's header lines, or those org-agenda-overriding-header gives instead, as org-agenda--insert-overriding-header. */
+function overridingHeader(header: AgendaLines): AgendaLines {
+  const value = e8.variable("org-agenda-overriding-header") ?? null;
+  if (value === null || value === false) return header;
+  const lines = (text: string): AgendaLines => text.split("\n").map((t) => ({ text: t }));
+  if (value === "") return [];
+  // A string on its own line, as it is inserted with a newline.
+  if (typeof value === "string") return lines(value);
+  // A function's string as it gives it, its last newline ending its last line.
+  if (typeof value === "function") return lines(String(e8.funcall(value) ?? "").replace(/\n$/, ""));
+  return e8.userError(`Invalid value for ‘org-agenda-overriding-header’: ${prin1(value)}`);
+}
+
+/** A value from a custom command's settings, which E8 takes as it is, a quoted one ["quote", x] as x, as Lisp evaluates 'x. */
+function settingValue(v: e8.Value): e8.Value {
+  return Array.isArray(v) && v.length === 2 && (v[0] === "quote" || (typeof v[0] === "symbol" && e8.symbolName(v[0]) === "quote")) ? v[1] : v;
+}
+
+/** A symbol's name, or a string as it is, as E8's values give a Lisp symbol either way. */
+const symbolText = (v: e8.Value | undefined): string | undefined => (typeof v === "symbol" ? e8.symbolName(v) : typeof v === "string" ? v : undefined);
+
+/** Settings as variables and values: [variable, value] pairs, as cl-progv binds a custom command's. */
+type Settings = [string, e8.Value][];
+
+function settingsOf(v: e8.Value | undefined): Settings {
+  if (!Array.isArray(v)) return [];
+  return v.flatMap((b): Settings => {
+    const name = Array.isArray(b) ? symbolText(b[0]) : undefined;
+    return name === undefined ? [] : [[name, settingValue((b as e8.Value[])[1] ?? null)]];
+  });
+}
+
+/** Runs F with SETTINGS bound, as cl-progv binds a custom command's settings. */
+function withSettings<T>(settings: Settings, f: () => T): T {
+  return settings.length === 0 ? f() : e8.letBind(Object.fromEntries(settings), f);
+}
+
+/**
+ * Where org-agenda-skip-function-global or org-agenda-skip-function says
+ * the agenda goes on from, asked with point at POS, or undefined to show
+ * the entry, as org-agenda-skip evaluates them: a function or a
+ * function's name is called, and a list calls its first element with the
+ * rest, each quoted one as its value.
+ */
+function skipTo(pos: number, names = ["org-agenda-skip-function-global", "org-agenda-skip-function"]): number | undefined {
+  for (const name of names) {
+    const form = e8.variable(name) ?? null;
+    if (form === null || form === false || (Array.isArray(form) && form.length === 0)) continue;
+    const to = e8.saveExcursion(() => {
+      e8.gotoChar(pos);
+      if (typeof form === "function" || typeof form === "string") return e8.funcall(form);
+      if (typeof form === "symbol") return e8.funcall(e8.symbolName(form));
+      if (Array.isArray(form)) {
+        const [f, ...args] = form;
+        const fn = typeof f === "symbol" ? e8.symbolName(f) : f;
+        if (typeof fn === "string" || typeof fn === "function") return e8.funcall(fn as string, ...args.map(settingValue));
+      }
+      return null;
+    });
+    if (typeof to === "number") return to;
+  }
+  return undefined;
+}
+
+/**
+ * The view of the agenda's block point is in, as the text properties
+ * there say what made it; none on the lines between blocks, which have
+ * none, as Org's separators have no org-agenda-type.
+ */
+function viewHere(): AgendaView | undefined {
+  if (shownBlocks.length === 0) return agendaView;
+  const line = e8.getBuffer(agendaBuffer) ? e8.withCurrentBuffer(agendaBuffer, () => e8.lineOf(e8.point())) : 0;
+  const k = blockIndexAt(line);
+  return k === undefined ? undefined : shownBlocks[k].view;
+}
+
+/** The index of the block LINE is in, the last block for the empty line after the text, none between blocks. */
+function blockIndexAt(line: number): number | undefined {
+  const k = shownBlocks.findIndex((b) => line >= b.from && line < b.to);
+  if (k >= 0) return k;
+  return shownBlocks.length > 0 && line >= shownBlocks[shownBlocks.length - 1].to ? shownBlocks.length - 1 : undefined;
+}
+
+/** A block agenda's commands: each its type, match and settings; and the settings for them all; as org-agenda-run-series is given them. */
+type Series = { name: string; cmds: { type: e8.Value; match: e8.Value; settings: Settings }[]; settings: Settings };
+
+/** The block agenda the buffer shows, as its org-series-redo-cmd, to make it again. */
+let shownSeries: Series | undefined;
+/** The settings of the custom command the buffer shows, as its org-lprops, bound again when it is made again. */
+let shownSettings: Settings = [];
+/** Which of the block agenda's commands made each block. */
+let shownBlockCmds: number[] = [];
+
+/**
+ * Makes the view at point again with BUILD: in a block agenda, the whole
+ * of it, BUILD standing for the command that made the block at point, as
+ * org-agenda-redo runs the series with org-agenda-overriding-cmd; else
+ * with the custom command's settings bound again.
+ */
+function rebuild(build: () => void): void {
+  if (shownSeries === undefined) {
+    withSettings(shownSettings, build);
+    return;
+  }
+  const line = e8.withCurrentBuffer(agendaBuffer, () => e8.lineOf(e8.point()));
+  const k = blockIndexAt(line);
+  runSeries(shownSeries, k === undefined ? undefined : { index: shownBlockCmds[k] ?? 0, build });
+}
+
+/** Runs one command of a block agenda, as org-agenda-run-series does by its type. */
+function runSeriesCommand(type: e8.Value, match: e8.Value): void {
+  const name = symbolText(type);
+  const matchString = typeof match === "string" ? match : undefined;
+  const cpa = e8.prefixArg() ?? null;
+  if (name === "agenda") agendaList(cpa);
+  else if (name === "agenda*") agendaList(null, undefined, undefined, startOnWeekday(), true);
+  else if (name === "alltodo") todoList(cpa as TodoArg);
+  else if (name === "search") searchView(cpa !== null, matchString);
+  else if (name === "stuck") stuckProjects();
+  else if (name === "tags") tagsView(cpa !== null, matchString);
+  else if (name === "tags-todo") tagsView(true, matchString);
+  else if (name === "todo") todoList(matchString ?? null);
+  else if (name === "org-todo-list") todoList(match as TodoArg);
+  else if (typeof type === "function" || (name !== undefined && e8.fboundp(name))) e8.funcall((typeof type === "function" ? type : name) as string, match);
+  else e8.signal("error", "Invalid type in command series");
+}
+
+/**
+ * Makes a block agenda, each command's view a block after the one before,
+ * as org-agenda-run-series does; with OVERRIDE, the command it names made
+ * by its own BUILD, as a key in that block asks.
+ */
+function runSeries(series: Series, override?: { index: number; build: () => void }): void {
+  const blocks: Block[] = [];
+  const cmdOf: number[] = [];
+  withSettings(series.settings, () => {
+    agendaBuffer = bufferTmpName ?? AGENDA;
+    e8.getBufferCreate(agendaBuffer);
+    placeAgendaWindow();
+    const outer = collecting;
+    collecting = blocks;
+    try {
+      series.cmds.forEach((cmd, i) => {
+        const before = blocks.length;
+        try {
+          withSettings(cmd.settings, () => (override?.index === i ? override.build() : runSeriesCommand(cmd.type, cmd.match)));
+        } finally {
+          for (let k = before; k < blocks.length; k++) cmdOf[k] = i;
+        }
+      });
+    } finally {
+      collecting = outer;
+      // What was made before an error stays, as Org's blocks are in the buffer as each is made.
+      renderBlocks(blocks, 0);
+      shownSeries = series;
+      shownBlockCmds = cmdOf;
+    }
+  });
+}
+
+/** A custom agenda command, as org-agenda normalizes org-agenda-custom-commands: its keys, description, type or commands, match and settings. */
+type CustomCommand = { key: string; desc: string; type: e8.Value; match: e8.Value; settings: e8.Value; series?: e8.Value[] };
+
+/** The types a custom command can have, which a command's second element is when it has no description. */
+const CUSTOM_TYPES = ["agenda", "agenda*", "alltodo", "search", "stuck", "tags", "tags-todo", "todo", "tags-tree", "todo-tree", "occur-tree"];
+
+/**
+ * The custom commands and the prefix keys' descriptions in
+ * org-agenda-custom-commands, as org-agenda normalizes them: a command
+ * without a description, its type second, gets "", and a [key,
+ * description] pair describes a prefix key.
+ */
+function customCommands(): { commands: CustomCommand[]; prefixes: Map<string, string> } {
+  const value = e8.variable("org-agenda-custom-commands");
+  const commands: CustomCommand[] = [];
+  const prefixes = new Map<string, string>();
+  for (const x of Array.isArray(value) ? value : []) {
+    if (!Array.isArray(x) || typeof x[0] !== "string") continue;
+    const key = x[0];
+    // A key and its description alone, as (KEY . DESC).
+    if (x.length === 2 && typeof x[1] === "string") {
+      if (!prefixes.has(key)) prefixes.set(key, x[1]);
+      continue;
+    }
+    // The second element a description unless it is a type and the third is not.
+    const second = symbolText(x[1]);
+    const third = symbolText(x[2]);
+    const typeSecond = typeof x[1] === "function" || Array.isArray(x[1]) || typeof x[1] === "symbol" ||
+      (second !== undefined && (CUSTOM_TYPES.includes(second) || e8.fboundp(second)) &&
+        !(third !== undefined && (CUSTOM_TYPES.includes(third) || e8.fboundp(third))) && !Array.isArray(x[2]));
+    const desc = typeSecond ? "" : typeof x[1] === "string" ? x[1] : "";
+    const rest = typeSecond ? x.slice(1) : x.slice(2);
+    if (Array.isArray(rest[0])) commands.push({ key, desc, type: null, match: rest[1] ?? null, settings: rest[1] ?? null, series: rest[0] });
+    else commands.push({ key, desc, type: rest[0] ?? null, match: rest[1] ?? null, settings: rest[2] ?? null });
+  }
+  return { commands, prefixes };
+}
+
+/** What the menu says a command is, as org-agenda-get-restriction-and-command describes it without a description. */
+function describeCommand(c: CustomCommand): string {
+  if (/\S/.test(c.desc)) return c.desc;
+  const type = symbolText(c.type);
+  const known: Record<string, string> = {
+    agenda: "Agenda for current week or day",
+    "agenda*": "Appointments for current week or day",
+    alltodo: "List of all TODO entries",
+    search: "Word search",
+    stuck: "List of stuck projects",
+    todo: "TODO keyword",
+    tags: "Tags query",
+    "tags-todo": "Tags (TODO)",
+    "tags-tree": "Tags tree",
+    "todo-tree": "TODO kwd tree",
+    "occur-tree": "Occur tree",
+  };
+  if (c.series === undefined && type !== undefined && known[type] !== undefined) return known[type];
+  if (typeof c.type === "function") return "Lambda expression";
+  if (type !== undefined && e8.fboundp(type)) return type;
+  return "???";
+}
+
+/** A restriction org-agenda's menu asks for, as its restriction: the buffer, the subtree at point or the region. */
+type Restriction = "buffer" | "subtree" | "region" | undefined;
+
+/**
+ * Asks for an agenda command by its keys, showing the menu in *Agenda
+ * Commands*, with the custom commands under the built-in ones and their
+ * prefix keys, and < > 0 1 asking for a restriction, as
+ * org-agenda-get-restriction-and-command does: q or C-g aborts.
+ */
+function agendaDispatch(): { keys: string; restriction: Restriction } {
+  const name = "*Agenda Commands*";
+  const fileName = e8.withCurrentBuffer(e8.bufferBaseBuffer() ?? e8.currentBuffer(), () => e8.bufferFileName());
+  const restrictOk = fileName !== undefined && e8.derivedModeP("org-mode");
+  const regionP = e8.regionActive();
+  const { commands, prefixes: descriptions } = customCommands();
+  let custom = commands;
+  let selstring = "";
+  let restriction: Restriction;
+  let rmheader = false;
+  return e8.saveWindowExcursion(() => {
+    e8.call("delete-other-windows");
+    e8.call("switch-to-buffer-other-window", name);
+    try {
+      for (;;) {
+        const lines: string[] = [];
+        const prefixes: string[] = [];
+        for (const c of custom) {
+          if ([...c.key].length > 1) {
+            const first = [...c.key][0];
+            if (!prefixes.includes(first)) prefixes.push(first);
+            continue;
+          }
+          let line = `${c.key.padEnd(4)}${describeCommand(c).padEnd(14)}`;
+          const match = typeof c.match === "string" && /\S/.test(c.match) && c.series === undefined ? c.match : undefined;
+          if (match !== undefined && truthy(e8.variable("org-agenda-menu-show-matcher") ?? null)) line += `: ${match}`;
+          lines.push(line);
+        }
+        lines.unshift(...prefixes.map((p) => `${p}   ${descriptions.get(selstring + p) ?? "Prefix key"}`));
+        const twoColumns = truthy(e8.variable("org-agenda-menu-two-columns") ?? null);
+        const half = Math.ceil(lines.length / 2);
+        const [left, right] = twoColumns ? [lines.slice(0, half), lines.slice(half)] : [lines, []];
+        const menu = left.map((l, k) => (right[k] === undefined ? l : `${l.length < 40 ? l.padEnd(40) : `${l}   `}${right[k]}`));
+        e8.letBind({ "inhibit-read-only": true }, () => {
+          eraseBuffer();
+          // After a prefix key, the header's first two lines alone, as Org cuts it.
+          const header = rmheader ? "Press key for an agenda command:\n--------------------------------\n" : DISPATCH_HEADER;
+          e8.insert(header);
+          for (const m of allMatches(/(^|   |\()(\S)( |=)/gm, header)) {
+            const at = charCount(header.slice(0, m.index + m[1].length));
+            e8.putTextProperty(at, at + 1, "face", "bold");
+          }
+          for (const l of menu) {
+            e8.insert(`\n${l}`);
+            const ls = e8.lineStart(e8.lineOf(e8.point()));
+            e8.putTextProperty(ls, ls + 1, "face", "bold");
+          }
+        });
+        e8.gotoChar(0);
+        e8.call("shrink-window-if-larger-than-buffer");
+        const state = restrictOk || restrictionLock() !== undefined
+          ? restrictionLock() !== undefined ? " (restriction lock active)" : restriction !== undefined ? ` (restricted to ${restriction})` : " (unrestricted)"
+          : "";
+        let key: string;
+        for (;;) {
+          key = e8.readKey(`Press key for agenda command${state}:`);
+          // C-v, M-v, C-n and C-p scroll the menu, as org-scroll.
+          const scroll: Record<string, string> = { "C-v": "scroll-up-command", "M-v": "scroll-down-command", "C-n": "next-line", "C-p": "previous-line" };
+          if (scroll[key] === undefined) break;
+          e8.conditionCase(() => e8.call(scroll[key] as e8.CommandName), { error: () => undefined });
+        }
+        e8.message("");
+        if (custom.some((c) => c.key === key)) return { keys: selstring + key, restriction };
+        if (prefixes.includes(key)) {
+          selstring += key;
+          rmheader = true;
+          custom = custom.filter((c) => [...c.key].length > 1 && [...c.key][0] === key).map((c) => ({ ...c, key: [...c.key].slice(1).join("") }));
+          continue;
+        }
+        if (key === "*") e8.userError("E8 does not have sticky agenda views yet");
+        if (!restrictOk && ["1", "0", "<"].includes(key)) {
+          e8.message("Restriction is only possible in Org buffers");
+          e8.ding();
+          continue;
+        }
+        if (key === "1") {
+          clearRestriction();
+          restriction = "buffer";
+        } else if (key === "0") {
+          clearRestriction();
+          restriction = regionP ? "region" : "subtree";
+        } else if (key === "<") {
+          clearRestriction();
+          restriction = restriction === "buffer" ? (regionP ? "region" : "subtree") : restriction === undefined ? "buffer" : undefined;
+        } else if (key === ">") {
+          clearRestriction();
+          restriction = undefined;
+        } else if (selstring === "" && "sSatmLCeTM#!/?".includes(key) && [...key].length === 1) return { keys: key, restriction };
+        else if (selstring !== "" && (key === "DEL" || key === "<backspace>")) {
+          // Back to the whole menu, as Org starts it again.
+          selstring = "";
+          rmheader = false;
+          custom = commands;
+        } else if (key === "q" || key === "C-g") e8.userError("Abort");
+        else e8.userError(`Invalid key ${key}`);
+      }
+    } finally {
+      if (e8.bufferList().includes(name)) e8.call("kill-buffer", name);
+    }
+  });
+}
+
+/** The restriction lock in force, as org-agenda-overriding-restriction. */
+const restrictionLock = (): "subtree" | "file" | undefined => restriction?.lock;
+
+/** Restricts the agenda to the current buffer, its subtree at point or its region, as org-agenda establishes the restriction asked for. */
+function setRestriction(kind: "buffer" | "subtree" | "region"): void {
+  const file = e8.withCurrentBuffer(e8.bufferBaseBuffer() ?? e8.currentBuffer(), () => e8.bufferFileName())!;
+  // The file's buffer, which the agenda reads, an indirect buffer's base.
+  const base = e8.bufferBaseBuffer() ?? e8.currentBuffer();
+  const buffer = base.id;
+  const marks = (begin: number, end: number) => ({ begin: e8.makeMarker(begin, { buffer: base }), end: e8.makeMarker(end, { buffer: base }) });
+  if (kind === "region") restriction = { file, buffer, ...marks(Math.min(e8.mark() ?? e8.point(), e8.point()), Math.max(e8.mark() ?? e8.point(), e8.point())) };
+  else if (kind === "subtree") {
+    const all = headings();
+    const i = headingIndex(all, e8.lineOf(e8.point()));
+    if (i === undefined) e8.userError(`Before first headline at position ${e8.lineStart(e8.lineOf(e8.point())) + 1} in buffer ${e8.bufferName()}`);
+    restriction = { file, buffer, ...marks(all[i].start, subtreeEnd(all, i)) };
+  } else if (e8.bufferNarrowedP()) restriction = { file, buffer, ...marks(e8.pointMin(), e8.pointMax()) };
+  else restriction = { file };
+}
+
+/** The message under the flagged entry's line, as org-agenda's ? shows its THEFLAGGINGNOTE after each command. */
+function flaggingNote(): void {
+  const current = e8.currentMessage();
+  if (current !== undefined && current !== "") return;
+  const item = agendaLines[e8.lineOf(e8.point())];
+  if (!item) return;
+  const note = e8.withCurrentBuffer(item.buffer, () => widened(() => entryGet(e8.lineOf(headingOf(item)), "THEFLAGGINGNOTE")));
+  if (typeof note === "string") e8.message(`FLAGGING-NOTE ([?] for more info): ${note.replace(/\\n/g, "//")}`);
+}
+
+/**
+ * The projects that are stuck, as org-agenda-list-stuck-projects lists
+ * them: the headings org-stuck-projects's match picks whose subtrees have
+ * none of its keywords, tags or regexp, under its header.
+ */
+function stuckProjects(): void {
+  const spec = e8.variable("org-stuck-projects");
+  const [matcher, todo, tags, gen] = Array.isArray(spec) ? spec : [];
+  const strings = (v: e8.Value | undefined): string[] => (Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : []);
+  let words = strings(todo);
+  // Any keyword not done, from every agenda file, for "*".
+  if (words.includes("*")) {
+    const all = new Set<string>();
+    for (const buffer of agendaBuffers()) e8.withCurrentBuffer(buffer, () => allKeywords().filter((k) => !isDone(k)).forEach((k) => all.add(k)));
+    words = [...all];
+  }
+  const todoRe = strings(todo).length > 0 ? `^\\*+[ \t]+\\(${words.map(regexpQuote).join("\\|")}\\)\\(?:[ \t]\\|$\\)` : undefined;
+  const tagList = strings(tags);
+  const tag = "[[:alnum:]_@#%]+";
+  const tagsRe = tagList.length === 0 ? undefined : tagList.includes("*")
+    ? "^\\*+ \\(?:.*[ \t]\\)?\\(:\\([[:alnum:]_@#%:]+\\):\\)[ \t]*$"
+    : `^\\*+ .*?[ \t]:\\(?:${tag}:\\)*\\(${tagList.map(regexpQuote).join("\\|")}\\):\\(?:${tag}:\\)*[ \t]*$`;
+  const genRe = typeof gen === "string" && /\S/.test(gen) ? gen : undefined;
+  const res = [todoRe, tagsRe, genRe].filter((r): r is string => r !== undefined);
+  if (res.length === 0) e8.signal("error", "Missing information to identify unstuck projects");
+  const header = e8.variable("org-agenda-overriding-header") ?? null;
+  e8.letBind({ "org-agenda-overriding-header": truthy(header) ? header : "List of stuck projects: " }, () =>
+    tagsView(false, typeof matcher === "string" ? matcher : undefined, res.join("\\|")));
+}
+
+/** Runs a custom command, with ARG the prefix argument org-agenda had, as org-agenda does by the command's type. */
+function runCustomCommand(c: CustomCommand, arg: e8.PrefixArg | null): void {
+  if (c.series !== undefined) {
+    const cmds = c.series.flatMap((x) => (Array.isArray(x) ? [{ type: x[0] ?? null, match: x[1] ?? null, settings: settingsOf(x[2]) }] : []));
+    runSeries({ name: c.desc, cmds, settings: settingsOf(c.settings) });
+    return;
+  }
+  const settings = settingsOf(c.settings);
+  const type = symbolText(c.type);
+  const match = typeof c.match === "string" ? c.match : undefined;
+  const sparse = (f: () => void) => {
+    if (!e8.derivedModeP("org-mode")) e8.userError("Not an Org buffer");
+    f();
+  };
+  withSettings(settings, () => {
+    if (type === "agenda") agendaList(arg);
+    else if (type === "agenda*") agendaList(arg, undefined, undefined, startOnWeekday(), true);
+    else if (type === "alltodo") todoList(arg as TodoArg);
+    else if (type === "search") searchView(arg !== null, match);
+    else if (type === "stuck") stuckProjects();
+    else if (type === "tags") tagsView(arg !== null, match);
+    else if (type === "tags-todo") tagsView(true, match);
+    else if (type === "todo") todoList(match ?? null);
+    else if (type === "tags-tree") sparse(() => matchSparseTree(arg !== null, match));
+    else if (type === "todo-tree") sparse(() => void orgOccur(`^\\*+ [ \t]*${regexpQuote(match ?? "")}\\(?:[\t ]\\|$\\)`));
+    else if (type === "occur-tree") sparse(() => void orgOccur(match ?? ""));
+    // org-todo-list given its keyword, which its command reads as a prefix argument.
+    else if (type === "org-todo-list") todoList(c.match as TodoArg);
+    else if (typeof c.type === "function" || (type !== undefined && e8.fboundp(type))) e8.funcall((typeof c.type === "function" ? c.type : type) as string, c.match);
+    else e8.userError(`Invalid custom agenda command type ${type ?? "nil"}`);
+  });
+  shownSettings = settings;
+}
+
 e8.defineCommand({
   name: "org-agenda",
   doc:
-    "Show an agenda view, asking which by its key in *Agenda Commands*: a for the week's agenda, t for the TODO list, m for the headings a tags match picks, " +
-    "M for those with a TODO state not done, s for the entries a search picks, S for those with a TODO state not done.",
+    "Show an agenda view, asking which by its key in *Agenda Commands*: a for the week's agenda, t for the TODO list, T for the entries with a TODO keyword asked for, " +
+    "m for the headings a tags match picks, M for those with a TODO state not done, s for the entries a search picks, S for those with a TODO state not done, " +
+    "? for those tagged FLAGGED, # for stuck projects, and the keys of org-agenda-custom-commands. Before the key, < restricts the view to the buffer, " +
+    "twice to the subtree at point or the region, and > takes the restriction away.",
   run: () => {
-    const key = agendaDispatch();
-    freshAgenda();
-    if (key === "a") e8.callWithPrefix(e8.prefixArg(), agendaListCommand);
-    else if (key === "t") todoList();
+    const arg = e8.prefixArg() ?? null;
+    // A restriction from before goes, unless locked, as org-agenda turns it off.
+    if (restrictionLock() === undefined) clearRestriction();
+    const { keys, restriction: asked } = agendaDispatch();
+    if (restrictionLock() === undefined && asked !== undefined) setRestriction(asked);
+    const { commands } = customCommands();
+    const custom = commands.find((c) => c.key === keys);
+    // A new agenda's modes for the views that make one, not for sparse trees, occur or Customize.
+    const sparse = custom !== undefined && custom.series === undefined && ["tags-tree", "todo-tree", "occur-tree"].includes(symbolText(custom.type) ?? "");
+    if ((custom !== undefined && !sparse) || "asStTmM?#".includes(keys)) freshAgenda();
+    if (custom) runCustomCommand(custom, arg);
+    else if (keys === "C") e8.userError("E8 has no Customize: set org-agenda-custom-commands in your init.ts");
+    else if (keys === "!") e8.userError("E8 has no Customize: set org-stuck-projects in your init.ts");
+    else if (keys === "a") e8.callWithPrefix(arg, agendaListCommand);
+    else if (keys === "s") e8.callWithPrefix(arg, searchViewCommand);
+    else if (keys === "S") e8.callWithPrefix(arg ?? [4], searchViewCommand);
+    else if (keys === "t") e8.callWithPrefix(arg, todoListCommand);
+    else if (keys === "T") e8.callWithPrefix(arg ?? [4], todoListCommand);
     // With the prefix argument org-agenda had, as call-interactively hands on current-prefix-arg.
-    else if (key === "m") e8.callWithPrefix(e8.prefixArg(), tagsViewCommand);
-    else if (key === "M") e8.callWithPrefix(e8.prefixArg() ?? [4], tagsViewCommand);
-    else if (key === "s") e8.callWithPrefix(e8.prefixArg(), searchViewCommand);
-    else if (key === "S") e8.callWithPrefix(e8.prefixArg() ?? [4], searchViewCommand);
-    else if (key === "/") e8.callInteractively(occurInAgendaFiles);
-    else e8.userError(`E8 does not have that agenda view yet: ${key}`);
+    else if (keys === "m") e8.callWithPrefix(arg, tagsViewCommand);
+    else if (keys === "M") e8.callWithPrefix(arg ?? [4], tagsViewCommand);
+    else if (keys === "?") {
+      tagsView(false, "+FLAGGED");
+      e8.withCurrentBuffer(agendaBuffer, () => e8.addHook("post-command-hook", flaggingNote, { local: true, append: true }));
+    } else if (keys === "#") stuckProjects();
+    else if (keys === "/") e8.callInteractively(occurInAgendaFiles);
+    else if (keys === "e") e8.userError(`E8 does not have that agenda view yet: ${keys}`);
+    else e8.userError("Invalid agenda key");
   },
 });
 
@@ -1943,33 +2640,169 @@ s   Search for keywords                 S   Like s, but only TODO entries
 *   Toggle sticky agenda views          #   List stuck projects (!=configure)
 `;
 
-/** Asks for an agenda view by its key, showing the menu in *Agenda Commands*: q or C-g aborts. */
-function agendaDispatch(): string {
-  const name = "*Agenda Commands*";
-  return e8.saveWindowExcursion(() => {
-    e8.call("delete-other-windows");
-    e8.call("switch-to-buffer-other-window", name);
-    try {
-      e8.letBind({ "inhibit-read-only": true }, () => {
-        eraseBuffer();
-        e8.insert(DISPATCH_HEADER);
-        // The keys in bold, as Org shows them.
-        const text = DISPATCH_HEADER;
-        for (const m of allMatches(/(^|   |\()(\S)( |=)/gm, text)) {
-          const at = charCount(text.slice(0, m.index + m[1].length));
-          e8.putTextProperty(at, at + 1, "face", "bold");
-        }
-      });
-      e8.gotoChar(0);
-      e8.call("shrink-window-if-larger-than-buffer");
-      const key = e8.readKey("Press key for agenda command:");
-      if (key === "q" || key === "C-g") e8.userError("Abort");
-      return key;
-    } finally {
-      if (e8.bufferList().includes(name)) e8.call("kill-buffer", name);
-    }
-  });
+e8.defineCommand({
+  name: "org-agenda-list-stuck-projects",
+  doc: "List the projects that are stuck: the headings the match in org-stuck-projects picks with none of its keywords, tags or regexp in their subtrees.",
+  run: () => {
+    freshAgenda();
+    stuckProjects();
+  },
+});
+
+/** Skips the entry or subtree at point if a condition holds, as org-agenda-skip-if: where it ends, or nil. */
+function skipIf(subtree: boolean, conditions: e8.Value[]): number | null {
+  // The conditions by name, those that take one with their argument, as memq finds them by position.
+  const named = new Map<string, e8.Value>();
+  const takesArg = ["regexp", "notregexp", "todo", "nottodo", "todo-unblocked", "nottodo-unblocked"];
+  for (let k = 0; k < conditions.length; k++) {
+    const name = symbolText(conditions[k]);
+    if (name === undefined) continue;
+    if (!named.has(name)) named.set(name, takesArg.includes(name) ? (conditions[k + 1] ?? null) : true);
+    if (takesArg.includes(name)) k++;
+  }
+  const all = headings();
+  const i = headingIndex(all, e8.lineOf(e8.point()));
+  if (i === undefined) e8.userError(`Before first headline at position ${e8.lineStart(e8.lineOf(e8.point())) + 1} in buffer ${e8.bufferName()}`);
+  const h = all[i];
+  e8.gotoChar(h.start);
+  const end = subtree ? subtreeEnd(all, i) : (all[i + 1]?.start ?? e8.pointMax());
+  const planningEnd = subtree ? end : e8.lineEnd(Math.min(h.line + 1, e8.lineCount() - 1));
+  const has = (c: string) => named.has(c);
+  const arg = (c: string): e8.Value | undefined => {
+    const v = named.get(c);
+    return typeof v === "symbol" ? e8.symbolName(v) : v;
+  };
+  const found = (re: string, bound: number, caseFold?: boolean) =>
+    e8.saveExcursion(() => e8.reSearchForward(re, { bound, noerror: true, ...(caseFold === false ? { caseFold } : {}) }) !== undefined);
+  const scheduled = "\\<SCHEDULED: *<\\([^>]+\\)>";
+  const deadline = "\\<DEADLINE: *<\\([^>]+\\)>";
+  const ts = "<\\([[:digit:]]\\{4\\}-[[:digit:]]\\{2\\}-[[:digit:]]\\{2\\}\\(?: .*?\\)?\\)>";
+  const todoTest = (): boolean | undefined => {
+    // In Org's order, todo last.
+    const kind = ["nottodo", "todo-unblocked", "nottodo-unblocked", "todo"].find(has);
+    if (kind === undefined) return undefined;
+    const what = arg(kind);
+    const keywords = allKeywords();
+    const words = what === "todo" ? keywords.filter((k) => !isDone(k)) : what === "done" ? keywords.filter(isDone) : what === "any" ? keywords
+      : Array.isArray(what) ? (what.includes("*") ? keywords : what.map(String))
+      : e8.signal("error", `Invalid TODO class or type: (${kind} ${prin1(what ?? null)})`);
+    const re = `^\\*+[ \t]+\\<\\(${(words as string[]).map(regexpQuote).join("\\|")}\\)\\>`;
+    if (kind === "todo") return found(re, end, false);
+    if (kind === "nottodo") return !found(re, end, false);
+    // Whether a matching entry is blocked, or none is.
+    const blocked = e8.saveExcursion(() => {
+      while (e8.reSearchForward(re, { bound: end, noerror: true, caseFold: false }) !== undefined) if (truthy(e8.funcall("org-entry-blocked-p"))) return true;
+      return false;
+    });
+    return kind === "todo-unblocked" ? blocked : !blocked;
+  };
+  const hit =
+    (has("scheduled") && found(scheduled, planningEnd)) ||
+    (has("notscheduled") && !found(scheduled, planningEnd)) ||
+    (has("deadline") && found(deadline, planningEnd)) ||
+    (has("notdeadline") && !found(deadline, planningEnd)) ||
+    (has("timestamp") && found(ts, end)) ||
+    (has("nottimestamp") && !found(ts, end)) ||
+    (has("regexp") && typeof arg("regexp") === "string" && found(arg("regexp") as string, end)) ||
+    (has("notregexp") && typeof arg("notregexp") === "string" && !found(arg("notregexp") as string, end)) ||
+    todoTest() === true;
+  return hit ? end : null;
 }
+
+e8.defun("org-agenda-skip-entry-if", (...conditions: e8.Value[]) => skipIf(false, conditions));
+e8.defun("org-agenda-skip-subtree-if", (...conditions: e8.Value[]) => skipIf(true, conditions));
+e8.defun("org-agenda-skip-if", (subtree: e8.Value, conditions: e8.Value) => skipIf(truthy(subtree), Array.isArray(conditions) ? conditions : []));
+
+/** Redoes the agenda if a window shows it, as org-agenda-maybe-redo, saying what the restriction is now. */
+function maybeRedo(): void {
+  const w = e8.windowList().find((x) => e8.windowBuffer(x) === agendaBuffer);
+  if (w === undefined || !e8.getBuffer(agendaBuffer)) return;
+  const w0 = e8.selectedWindow();
+  e8.selectWindow(w);
+  // Without the prefix argument, which the lock's commands set to nil first.
+  redoView(null);
+  e8.selectWindow(w0);
+  const lock = restrictionLock();
+  e8.message(lock !== undefined ? `Agenda view shifted to new ${lock} restriction` : "Agenda restriction lock removed");
+}
+
+/**
+ * Locks the agenda's restriction to the subtree at point or, before the
+ * first heading or with C-u, the file, until it is removed, as
+ * org-agenda-set-restriction-lock; on the locked subtree, takes it away.
+ */
+function setRestrictionLock(type: "file" | "subtree" | undefined): void {
+  const r = restriction;
+  const here = (e8.bufferBaseBuffer() ?? e8.currentBuffer()).id;
+  if (r?.lock === "subtree" && r.buffer === here && r.begin !== undefined && e8.markerPosition(r.begin) === e8.point()) {
+    clearRestriction();
+    e8.message("Agenda restriction lock removed");
+  } else {
+    clearRestriction();
+    const all = headings();
+    const i = headingIndex(all, e8.lineOf(e8.point()));
+    // To the line's start, as org-back-to-heading goes there before it fails.
+    if (i === undefined) e8.gotoChar(e8.lineStart(e8.lineOf(e8.point())));
+    const kind = type ?? (i !== undefined ? "subtree" : "file");
+    const file = e8.withCurrentBuffer(e8.bufferBaseBuffer() ?? e8.currentBuffer(), () => e8.bufferFileName());
+    if (file === undefined) e8.userError("Buffer is not visiting a file");
+    if (kind === "subtree") {
+      if (i === undefined) e8.userError(`Before first headline at position ${e8.lineStart(e8.lineOf(e8.point())) + 1} in buffer ${e8.bufferName()}`);
+      const begin = all[i].start;
+      const end = subtreeEnd(all, i);
+      e8.gotoChar(begin);
+      // The subtree, or its heading, highlighted, as org-agenda-restriction-lock-overlay shows it.
+      const shown = truthy(e8.variable("org-agenda-restriction-lock-highlight-subtree") ?? null) ? Math.min(end + 1, e8.pointMax()) : e8.lineEnd(all[i].line);
+      const overlay = e8.makeOverlay(begin, shown, { face: "org-agenda-restriction-lock", priority: 100 });
+      const base = e8.bufferBaseBuffer() ?? e8.currentBuffer();
+      restriction = { file, buffer: here, begin: e8.makeMarker(begin, { buffer: base }), end: e8.makeMarker(end, { buffer: base }), lock: "subtree", overlay, overlayBuffer: e8.currentBuffer().id };
+      e8.message("Locking agenda restriction to subtree");
+    } else {
+      restriction = { file, lock: "file" };
+      e8.message("Locking agenda restriction to file");
+    }
+  }
+  maybeRedo();
+}
+
+e8.defineCommand({
+  name: "org-agenda-set-restriction-lock",
+  doc:
+    "Restrict the agenda to the subtree at point, or with C-u or before the first heading to the file, until the restriction is removed. " +
+    "On the subtree the lock is on, take it away.",
+  params: [{ name: "type", kind: "prefix" }],
+  run: (type) => setRestrictionLock(Array.isArray(type) ? "file" : typeof type === "string" ? (type as "file" | "subtree") : undefined),
+});
+
+e8.defineCommand({
+  name: "org-agenda-remove-restriction-lock",
+  doc: "Take away the agenda's restriction lock, and make the agenda again if a window shows it.",
+  params: [{ name: "noupdate", kind: "prefix" }],
+  run: (noupdate) => {
+    if (restriction === undefined) {
+      e8.message("No agenda restriction to remove.");
+      return;
+    }
+    clearRestriction();
+    e8.message("Agenda restriction lock removed");
+    if (noupdate === null || noupdate === undefined) maybeRedo();
+  },
+});
+
+e8.defineCommand({
+  name: "org-agenda-set-restriction-lock-from-agenda",
+  doc: "Lock the agenda's restriction to the entry of the line at point, or with C-u to its file.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg) => {
+    if (e8.variable("major-mode") !== "org-agenda-mode") e8.userError("Not in an Org agenda buffer");
+    const item = agendaLines[e8.lineOf(e8.point())];
+    if (!item) e8.userError("Command not allowed in this line");
+    e8.withCurrentBuffer(item.buffer, () => {
+      e8.gotoChar(posOf(item));
+      setRestrictionLock(Array.isArray(arg) ? "file" : undefined);
+    });
+  },
+});
 
 /**
  * Writes the lines showing an entry again where they are, as
@@ -2714,7 +3547,7 @@ function itemHeading(item: AgendaItem): { all: Heading[]; i: number } | undefine
  * which for the tags view is all of them too.
  */
 function lineTags(item: AgendaItem): string[] {
-  const view = agendaView.kind;
+  const view = item.viewKind ?? "agenda";
   const show = e8.variable("org-agenda-show-inherited-tags");
   const use = e8.variable("org-agenda-use-tag-inheritance");
   const showName = typeof show === "symbol" ? e8.symbolName(show) : show;
@@ -2742,7 +3575,7 @@ const lineEffort = (item: AgendaItem): number | undefined => item.effort ?? unde
 
 /** The effort of an agenda line's entry in minutes, or undefined; the search view's lines have none, as org-search-view gives them none. */
 function readEffort(item: AgendaItem): number | undefined {
-  if (agendaView.kind === "search") return undefined;
+  if (item.viewKind === "search") return undefined;
   return e8.withCurrentBuffer(item.buffer, () =>
     widened(() => {
       const found = itemHeading(item);
@@ -3694,10 +4527,12 @@ const agendaRedo = e8.defineCommand({
 });
 
 /** The day agenda the agenda buffer shows, or an error for another view, as org-agenda-check-type with agenda. */
-function checkAgendaType(): Extract<typeof agendaView, { kind: "agenda" }> {
+function checkAgendaType(): Extract<AgendaView, { kind: "agenda" }> {
+  const view = viewHere();
+  if (view === undefined) e8.signal("error", "No Org agenda currently displayed");
   // With the quotes format-message curves.
-  if (agendaView.kind !== "agenda") e8.signal("error", `Not allowed in \u2019${agendaView.kind}\u2019-type agenda buffer or component`);
-  return agendaView as Extract<typeof agendaView, { kind: "agenda" }>;
+  if (view.kind !== "agenda") e8.signal("error", `Not allowed in \u2019${view.kind}\u2019-type agenda buffer or component`);
+  return view as Extract<AgendaView, { kind: "agenda" }>;
 }
 
 /** The day and day count of point's line, as org-get-at-bol reads day and org-day-cnt. */
@@ -3708,7 +4543,8 @@ function dayHere(): { day: number; cnt: number } | undefined {
 /** Makes the day agenda again from another day or for another span, as org-agenda-redo with org-agenda-overriding-arguments. */
 function redoFrom(arg: e8.PrefixArg | null, startDay: number, span: Span): void {
   e8.message("Rebuilding agenda buffer...");
-  agendaList(arg, startDay, span);
+  const withHour = checkAgendaType().withHour;
+  rebuild(() => agendaList(arg, startDay, span, startOnWeekday(), withHour));
   e8.message("Rebuilding agenda buffer...done");
 }
 
@@ -3733,7 +4569,7 @@ function agendaLater(arg: number): void {
   const view = checkAgendaType();
   const here = dayHere();
   const span = view.span;
-  let sd = view.startDay ?? here?.day ?? startingDay;
+  let sd = view.startDay ?? here?.day ?? view.start ?? startingDay;
   const g = dayFromNumber(sd);
   if (typeof span === "number") sd += span * arg;
   else if (span === "day") sd += arg;
@@ -3776,7 +4612,7 @@ function computeStartingSpan(sd: number, span: Span, n?: number): number {
 function changeTimeSpan(span: Span, n?: number): void {
   const view = checkAgendaType();
   if (n === undefined && view.span === span) e8.signal("error", `Viewing span is already "${span}"`);
-  const sd = computeStartingSpan(dayHere()?.day ?? view.startDay ?? startingDay, span, n);
+  const sd = computeStartingSpan(dayHere()?.day ?? view.startDay ?? view.start ?? startingDay, span, n);
   redoFrom(view.arg, sd, span);
   findSameOrToday();
   e8.message(`Switched to ${span} view`);
@@ -4526,7 +5362,8 @@ function bulkAction(arg: e8.PrefixArg | null): void {
       break;
     }
     case "S": {
-      if (agendaView.kind !== "agenda" && agendaView.kind !== "todo") e8.userError(`Can\u2019t scatter tasks in "${agendaView.kind}" agenda view`);
+      const kind = viewHere()?.kind;
+      if (kind !== "agenda" && kind !== "todo") e8.userError(`Can\u2019t scatter tasks in "${kind}" agenda view`);
       const days = readScatterDays(arg);
       cmd = () => {
         const distance = scatterDistance(days, arg);
@@ -4653,6 +5490,8 @@ for (const [key, command] of [
   ["S-<right>", "org-agenda-do-date-later"],
   ["S-<left>", "org-agenda-do-date-earlier"],
   ["C-c C-x <right>", "org-agenda-do-date-later"],
+  ["C-c C-x <", "org-agenda-set-restriction-lock-from-agenda"],
+  ["C-c C-x >", "org-agenda-remove-restriction-lock"],
   ["C-c C-x <left>", "org-agenda-do-date-earlier"],
   [">", "org-agenda-date-prompt"],
   ["C-c C-s", "org-agenda-schedule"],

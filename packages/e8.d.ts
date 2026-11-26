@@ -5184,7 +5184,7 @@ declare global {
        */
       "org-add-note": [];
       /**
-       * Show an agenda view, asking which by its key in *Agenda Commands*: a for the week's agenda, t for the TODO list, m for the headings a tags match picks, M for those with a TODO state not done, s for the entries a search picks, S for those with a TODO state not done.
+       * Show an agenda view, asking which by its key in *Agenda Commands*: a for the week's agenda, t for the TODO list, T for the entries with a TODO keyword asked for, m for the headings a tags match picks, M for those with a TODO state not done, s for the entries a search picks, S for those with a TODO state not done, ? for those tagged FLAGGED, # for stuck projects, and the keys of org-agenda-custom-commands. Before the key, < restricts the view to the buffer, twice to the subtree at point or the region, and > takes the restriction away.
        *
        * Defined in packages/org-agenda.ts.
        */
@@ -5557,6 +5557,12 @@ declare global {
        */
       "org-agenda-list": [arg?: PrefixArg | boolean];
       /**
+       * List the projects that are stuck: the headings the match in org-stuck-projects picks with none of its keywords, tags or regexp in their subtrees.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-list-stuck-projects": [];
+      /**
        * Toggle log mode: the agenda shows what was closed and clocked each day, as org-agenda-log-mode-items says. With C-u, every kind, state changes too; with C-u C-u, only what was logged.
        *
        * @param special raw prefix argument
@@ -5703,6 +5709,14 @@ declare global {
        */
       "org-agenda-refile": [goto?: PrefixArg | boolean];
       /**
+       * Take away the agenda's restriction lock, and make the agenda again if a window shows it.
+       *
+       * @param noupdate raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-remove-restriction-lock": [noupdate?: PrefixArg | boolean];
+      /**
        * Show the agenda for org-agenda-span's days.
        *
        * Defined in packages/org-agenda.ts.
@@ -5726,6 +5740,22 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-set-property": [];
+      /**
+       * Restrict the agenda to the subtree at point, or with C-u or before the first heading to the file, until the restriction is removed. On the subtree the lock is on, take it away.
+       *
+       * @param type raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-set-restriction-lock": [type?: PrefixArg | boolean];
+      /**
+       * Lock the agenda's restriction to the entry of the line at point, or with C-u to its file.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-set-restriction-lock-from-agenda": [arg?: PrefixArg | boolean];
       /**
        * Set the tags of the entry the agenda line at point shows.
        *
@@ -7773,11 +7803,13 @@ declare global {
        */
       "org-todo": [];
       /**
-       * Show the TODO items that are not done in org-agenda-files, most urgent first.
+       * Show the TODO items that are not done in org-agenda-files, most urgent first. With C-u, those with the keywords asked for, several joined by |; with a number N, those with the Nth keyword the list's header shows.
+       *
+       * @param arg raw prefix argument
        *
        * Defined in packages/org-agenda.ts.
        */
-      "org-todo-list": [];
+      "org-todo-list": [arg?: PrefixArg | boolean];
       /**
        * Set the TODO state of the heading point is under, or remove it with an empty state.
        *
@@ -14387,6 +14419,12 @@ declare global {
        */
       "org-agenda-auto-exclude-function": Value;
       /**
+       * What separates the blocks of a block agenda: a character repeated across the window, a string, or nil for nothing.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-block-separator": Value;
+      /**
        * More bulk actions, a list of (CHAR FUNCTION) or (CHAR FUNCTION ARG-FUNCTION): B and CHAR call FUNCTION at each marked line, with the list of arguments ARG-FUNCTION returns, called once first, and the agenda is made again after.
        *
        * Defined in packages/org-agenda.ts.
@@ -14417,6 +14455,12 @@ declare global {
        */
       "org-agenda-clockreport-parameter-plist": Value;
       /**
+       * Whether a block agenda leaves out the separators between its blocks and the day agenda's header.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-compact-blocks": Value;
+      /**
        * Whether C-k in the agenda asks first: t always, a number when the entry has more lines than that, nil never.
        *
        * Defined in packages/org-agenda.ts.
@@ -14428,6 +14472,12 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-current-time-string": Value;
+      /**
+       * Agenda views of your own, each a list: its key, a description, its type (agenda, agenda*, alltodo, todo, tags, tags-todo, search, stuck, tags-tree, todo-tree, occur-tree, or a function's name), the match it is given, and a list of settings, [variable, value] pairs, bound while it is made. Instead of the type and the match, a list of commands, each [type, match, settings], makes a block agenda of them, followed by settings for them all. A [key, description] pair describes a prefix key, which keys of two letters start with.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-custom-commands": Value;
       /**
        * Whether the agenda dims the TODO entries that org-blocker-hook blocks from being done, as the TODO dependencies do. invisible hides them instead, but for those blocked only by checkboxes, which are dimmed.
        *
@@ -14501,6 +14551,18 @@ declare global {
        */
       "org-agenda-loop-over-headlines-in-active-region": Value;
       /**
+       * Whether the agenda's menu shows each custom command's match after its description.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-menu-show-matcher": Value;
+      /**
+       * Whether the agenda's menu shows the custom commands in two columns.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-menu-two-columns": Value;
+      /**
        * Keymap org-agenda-mode-map.
        */
       "org-agenda-mode-map": Value;
@@ -14510,6 +14572,12 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-move-date-from-past-immediately-to-today": Value;
+      /**
+       * The header an agenda view has instead of its own, for a custom command's settings: a string, "" for none, or a function giving one.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-overriding-header": Value;
       /**
        * Whether filters stay from one agenda view to the next.
        *
@@ -14534,6 +14602,12 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-restore-windows-after-quit": Value;
+      /**
+       * Whether the restriction lock highlights the whole subtree it is to, or only its heading.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-restriction-lock-highlight-subtree": Value;
       /**
        * The strings searched for in the search view, most recent first.
        *
@@ -14588,6 +14662,18 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-skip-comment-trees": Value;
+      /**
+       * A function, or a function's name and its arguments, called at each entry the agenda would show, returning where to go on from to leave it out, or nil to keep it.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-skip-function": Value;
+      /**
+       * As org-agenda-skip-function, for every agenda view, asked first.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-skip-function-global": Value;
       /**
        * Whether an entry with no effort counts as taking very long, rather than no time, when sorting and filtering by effort.
        *
@@ -16064,6 +16150,12 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-structure-template-alist": Value;
+      /**
+       * How the agenda's # finds stuck projects: a match for the projects' headings, TODO keywords, tags and a regexp, any of which anywhere in a project's subtree makes it not stuck. "*" among the keywords or the tags stands for any.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-stuck-projects": Value;
       /**
        * The last subtree org-cut-subtree or org-copy-subtree put on the kill ring.
        *

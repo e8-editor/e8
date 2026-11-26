@@ -719,20 +719,21 @@ fn case_value(case: &Case, name: &str, value: &serde_json::Value) -> e8_core::Va
     match value {
         serde_json::Value::Bool(b) => e8_core::Value::Bool(*b),
         serde_json::Value::Number(n) => e8_core::Value::Number(n.as_f64().expect("a number")),
-        // A string starting with ' is a symbol in Emacs, a string in E8, as 'headline-data.
-        serde_json::Value::String(s) => e8_core::Value::Str(s.strip_prefix('\'').unwrap_or(s).to_string()),
-        // A list of strings, a ' marking a symbol in Emacs, as ["'time", "'todo"],
-        // numbers, and booleans, as a plist ["':link", false].
+        // A string starting with ' is a symbol in Emacs, a string in E8, as 'headline-data;
+        // with '' a quoted symbol, its value in E8, which reads custom commands' settings as values.
+        serde_json::Value::String(s) => e8_core::Value::Str(s.strip_prefix("''").or_else(|| s.strip_prefix('\'')).unwrap_or(s).to_string()),
+        // A list of values, a ' marking a symbol in Emacs, as ["'time", "'todo"],
+        // numbers, booleans, as a plist ["':link", false], and lists, as custom agenda commands.
+        // An object of one string in a list is a cons in Emacs, as a prefix key's ("p" . "Projects"), a pair in E8.
         serde_json::Value::Array(items) => e8_core::Value::List(
             items
                 .iter()
-                .map(|v| match v {
-                    serde_json::Value::Bool(b) => e8_core::Value::Bool(*b),
-                    serde_json::Value::Number(n) => e8_core::Value::Number(n.as_f64().expect("a number")),
-                    _ => {
-                        let v = v.as_str().unwrap_or_else(|| panic!("{}: {name}'s items must be strings, numbers or booleans", case.name));
-                        e8_core::Value::Str(v.strip_prefix('\'').unwrap_or(v).to_string())
+                .map(|v| match v.as_object().filter(|o| o.len() == 1 && o.values().all(|d| d.is_string())) {
+                    Some(o) => {
+                        let (k, d) = o.iter().next().unwrap();
+                        e8_core::Value::List(vec![e8_core::Value::Str(k.clone()), e8_core::Value::Str(d.as_str().unwrap().to_string())])
                     }
+                    None => case_value(case, name, v),
                 })
                 .collect(),
         ),

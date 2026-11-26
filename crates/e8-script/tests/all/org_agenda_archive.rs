@@ -74,7 +74,7 @@ fn nothing_is_dimmed_without_blocking() {
 
 /// The mode name says which archives are shown, after the span (none for
 /// the TODO list) and the modes on, as org-agenda-set-mode-name has it, and
-/// C-u v a shows the archive files too.
+/// C-u v a shows the archive files too, asking for a keyword for the TODO list.
 #[test]
 fn archives_mode_names_itself_and_c_u_takes_the_files() {
     let (mut ed, s, dir) = agenda_file("* TODO B\n", &[]);
@@ -85,7 +85,8 @@ fn archives_mode_names_itself_and_c_u_takes_the_files() {
     ed.press("v a").unwrap();
     assert_eq!(mode_name(&mut ed), "Org-Agenda  Ddl Grid Habit :ARCHIVE:");
     assert!(!agenda(&ed).contains("TODO Old"));
-    ed.press("C-u v a").unwrap();
+    // C-u asks for a keyword too, as the TODO list is made again with it.
+    ed.press("C-u v a T O D O RET").unwrap();
     assert_eq!(ed.take_error().map(|e| e.to_string()), None);
     assert_eq!(mode_name(&mut ed), "Org-Agenda  Ddl Grid Habit Archives");
     assert!(agenda(&ed).contains("TODO Old"), "{}", agenda(&ed));
