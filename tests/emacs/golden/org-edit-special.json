@@ -562,6 +562,671 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "src-escaped-shown",
+      "input": {
+        "text": "#+begin_src emacs-lisp\n,* x\n(a)\n#+end_src\n",
+        "point": 23,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* x\n(a)\n",
+      "visible": "* x\n(a)\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "src-star-written",
+      "input": {
+        "text": "#+begin_src emacs-lisp\n(a)\n#+end_src\n",
+        "point": 23,
+        "keys": "C-c ' * SPC h RET C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+begin_src emacs-lisp\n  ,* h\n  (a)\n#+end_src\n",
+      "visible": "#+begin_src emacs-lisp\n  ,* h\n  (a)\n#+end_src\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "example-escaped-shown",
+      "input": {
+        "text": "#+begin_example\n,#+begin\n#+end_example\n",
+        "point": 16,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+begin\n",
+      "visible": "#+begin\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "src-tab-in-content",
+      "input": {
+        "text": "#+begin_src emacs-lisp\n  (a)\n\t(b)\n#+end_src\n",
+        "point": 25,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "(a)\n\t(b)\n",
+      "visible": "(a)\n\t(b)\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "src-deep-list-writeback",
+      "input": {
+        "text": "- a\n  - b\n    - c\n      #+begin_src emacs-lisp\n        (x)\n      #+end_src\n",
+        "point": 55,
+        "keys": "C-c ' C-e ! C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- a\n  - b\n    - c\n      #+begin_src emacs-lisp\n\t(x)!\n      #+end_src\n",
+      "visible": "- a\n  - b\n    - c\n      #+begin_src emacs-lisp\n\t(x)!\n      #+end_src\n",
+      "point": 52,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "src-name-above",
+      "input": {
+        "text": "#+NAME: x\n#+begin_src emacs-lisp\n(a)\n#+end_src\n",
+        "point": 8,
+        "keys": "C-c ' C-e ! C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+NAME: x\n#+begin_src emacs-lisp\n  (a)!\n#+end_src\n",
+      "visible": "#+NAME: x\n#+begin_src emacs-lisp\n  (a)!\n#+end_src\n",
+      "point": 39,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "example-name-above",
+      "input": {
+        "text": "#+NAME: x\n#+begin_example\nab\n#+end_example\n",
+        "point": 8,
+        "keys": "C-c ' C-e ! C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+NAME: x\n#+begin_example\n  ab!\n#+end_example\n",
+      "visible": "#+NAME: x\n#+begin_example\n  ab!\n#+end_example\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "src-existing-no",
+      "input": {
+        "text": "#+begin_src emacs-lisp\n(a)\n#+end_src\n",
+        "point": 23,
+        "keys": "C-c ' C-e ! C-x o C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "answers": [
+          "n"
+        ]
+      },
+      "text": "(a)\n",
+      "visible": "(a)\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 23,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Src *e8-oracle*[ emacs-lisp ]*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "export-existing-no",
+      "input": {
+        "text": "#+begin_export js\nf();\n#+end_export\n",
+        "point": 18,
+        "keys": "C-c ' C-e ! C-x o C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "answers": [
+          "n"
+        ]
+      },
+      "text": "f();\n",
+      "visible": "f();\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Src *e8-oracle*[ js ]*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "src-two-same-lang",
+      "input": {
+        "text": "#+begin_src emacs-lisp\n(a)\n#+end_src\n#+begin_src emacs-lisp\n(b)\n#+end_src\n",
+        "point": 23,
+        "keys": "C-c ' C-e ! C-x o C-n C-n C-n C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true
+      },
+      "text": "(b)\n",
+      "visible": "(b)\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 60,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Src *e8-oracle*[ emacs-lisp ]*<2>",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "src-two-same-lang-exit-first",
+      "input": {
+        "text": "#+begin_src emacs-lisp\n(a)\n#+end_src\n#+begin_src emacs-lisp\n(b)\n#+end_src\n",
+        "point": 23,
+        "keys": "C-c ' C-e ! C-x o C-n C-n C-n C-c ' C-c ' C-x o C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true
+      },
+      "text": "#+begin_src emacs-lisp\n  (a)!\n#+end_src\n#+begin_src emacs-lisp\n  (b)\n#+end_src\n",
+      "visible": "#+begin_src emacs-lisp\n  (a)!\n#+end_src\n#+begin_src emacs-lisp\n  (b)\n#+end_src\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 29,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "win-exit-other-window",
+      "input": {
+        "text": "#+begin_src emacs-lisp\n(a)\n#+end_src\n",
+        "point": 23,
+        "keys": "C-c ' C-e ! C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "globals": {
+          "org-src-window-setup": "'other-window"
+        }
+      },
+      "text": "#+begin_src emacs-lisp\n  (a)!\n#+end_src\n",
+      "visible": "#+begin_src emacs-lisp\n  (a)!\n#+end_src\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 29,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "fw-unchanged",
+      "input": {
+        "text": ": a\n: b\n",
+        "point": 6,
+        "keys": "C-c ' C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": ": a\n: b\n",
+      "visible": ": a\n: b\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "fw-no-final-newline",
+      "input": {
+        "text": ": a\n: b",
+        "point": 6,
+        "keys": "C-c ' C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": ": a\n: b",
+      "visible": ": a\n: b",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "fw-point-start",
+      "input": {
+        "text": ": a\n: bc\n",
+        "point": 6,
+        "keys": "C-c ' C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": ": a\n: bc\n",
+      "visible": ": a\n: bc\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "latex-no-final-newline",
+      "input": {
+        "text": "\\begin{equation}\nx\n\\end{equation}",
+        "point": 17,
+        "keys": "C-c ' C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "\\begin{equation}\nx\n\\end{equation}",
+      "visible": "\\begin{equation}\nx\n\\end{equation}",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "ts-range-inactive",
+      "input": {
+        "text": "* T\nSee [2026-11-20 Fri]--[2026-11-22 Sun] x.\n",
+        "point": 36,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2026-12-24"
+        ]
+      },
+      "text": "* T\nSee [2026-11-20 Fri]--<2026-12-24 Thu> x.\n",
+      "visible": "* T\nSee [2026-11-20 Fri]--<2026-12-24 Thu> x.\n",
+      "point": 42,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "ts-after-space",
+      "input": {
+        "text": "* T\nSee <2026-11-20 Fri> x.\n",
+        "point": 24,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2026-12-24"
+        ]
+      },
+      "text": "* T\nSee <2026-12-24 Thu> x.\n",
+      "visible": "* T\nSee <2026-12-24 Thu> x.\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "ts-in-space-after",
+      "input": {
+        "text": "* T\nSee <2026-11-20 Fri>  x.\n",
+        "point": 25,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2026-12-24"
+        ]
+      },
+      "text": "* T\nSee <2026-11-20 Fri> <2026-12-24 Thu> x.\n",
+      "visible": "* T\nSee <2026-11-20 Fri> <2026-12-24 Thu> x.\n",
+      "point": 41,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "ts-in-property",
+      "input": {
+        "text": "* T\n:PROPERTIES:\n:CREATED: [2026-11-20 Fri]\n:END:\n",
+        "point": 36,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2026-12-24"
+        ]
+      },
+      "text": "* T\n:PROPERTIES:\n:CREATED: [2026-11-20 Fri]\n:END:\n",
+      "visible": "* T\n:PROPERTIES:\n:CREATED: [2026-11-20 Fri]\n:END:\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No special environment to edit here"
+    },
+    {
+      "name": "ts-in-comment",
+      "input": {
+        "text": "* T\n# <2026-11-20 Fri>\n",
+        "point": 15,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2026-12-24"
+        ]
+      },
+      "text": "* T\n# <2026-11-20 Fri>\n",
+      "visible": "* T\n# <2026-11-20 Fri>\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No special environment to edit here"
+    },
+    {
+      "name": "ts-in-clock",
+      "input": {
+        "text": "* T\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n",
+        "point": 20,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2026-12-24"
+        ]
+      },
+      "text": "* T\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n",
+      "visible": "* T\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No special environment to edit here"
+    },
+    {
+      "name": "undo-in-edit",
+      "input": {
+        "text": "#+begin_src emacs-lisp\n  (a)\n#+end_src\n",
+        "point": 27,
+        "keys": "C-c ' C-/",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "(a)\n",
+      "visible": "(a)\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No further undo information"
+    },
+    {
+      "name": "region-carried",
+      "input": {
+        "text": "#+begin_src emacs-lisp\n  (a)\n  (b)\n#+end_src\n",
+        "point": 25,
+        "keys": "C-SPC C-n C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "(a)\n(b)\n",
+      "visible": "(a)\n(b)\n",
+      "point": 4,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "src-tab-indented-block",
+      "input": {
+        "text": "#+begin_src emacs-lisp\n\t(a)\n#+end_src\n",
+        "point": 26,
+        "keys": "C-c ' C-e ! C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+begin_src emacs-lisp\n  \t(a)!\n#+end_src\n",
+      "visible": "#+begin_src emacs-lisp\n  \t(a)!\n#+end_src\n",
+      "point": 30,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "export-tab-indented",
+      "input": {
+        "text": "\t#+begin_export sh\n\ta\n\t#+end_export\n",
+        "point": 21,
+        "keys": "C-c ' C-e ! C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "\t#+begin_export sh\n\t\ta!\n\t#+end_export\n",
+      "visible": "\t#+begin_export sh\n\t\ta!\n\t#+end_export\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "fw-tab-indented",
+      "input": {
+        "text": "\t: a\n",
+        "point": 4,
+        "keys": "C-c ' C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "\t: a\n",
+      "visible": "\t: a\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }

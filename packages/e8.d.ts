@@ -15959,6 +15959,12 @@ declare global {
        */
       "org-speed-commands": Value;
       /**
+       * Whether C-c ' asks before going back to an edit of the same text already under way; no discards that edit.
+       *
+       * Defined in packages/org-src.ts.
+       */
+      "org-src-ask-before-returning-to-edit-buffer": Value;
+      /**
        * Faces for source blocks' text by language, as ["language", face] lists: a face's name, or an anonymous face, a list of attributes such as [":background", "#EEE2FF"]. "" is for blocks with no language.
        *
        * Defined in packages/org-src.ts.
