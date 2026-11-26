@@ -7343,6 +7343,12 @@ declare global {
        */
       "org-table-edit-field": [arg?: PrefixArg | boolean];
       /**
+       * Edit the table's formulas in *Edit Formulas*, one a line; C-c C-c installs them, C-u C-c C-c applies them too, C-c C-q leaves them.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-edit-formulas": [];
+      /**
        * Move to the end of the table field point is in, or of the one after if already there; with a prefix argument, on that many fields.
        *
        * @param n prefix count
@@ -7358,6 +7364,90 @@ declare global {
        * Defined in packages/org-table.ts.
        */
       "org-table-eval-formula": [arg?: PrefixArg | boolean];
+      /**
+       * Leave the formula editor without installing the formulas.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-fedit-abort": [];
+      /**
+       * Install the edited formulas below the table; with a prefix argument, apply them too.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-fedit-finish": [arg?: PrefixArg | boolean];
+      /**
+       * Move point down a row in the table's window, to show the references for that row.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-fedit-line-down": [];
+      /**
+       * Move point up a row in the table's window, to show the references for that row.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-fedit-line-up": [];
+      /**
+       * Indent a continued line of a formula. E8 has no Lisp, so a Lisp formula is not pretty-printed, as Org's is.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-fedit-lisp-indent": [];
+      /**
+       * Shift the reference at point one row or rule down.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-fedit-ref-down": [];
+      /**
+       * Shift the reference at point one field left.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-fedit-ref-left": [];
+      /**
+       * Shift the reference at point one field right.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-fedit-ref-right": [];
+      /**
+       * Shift the reference at point one row or rule up.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-fedit-ref-up": [];
+      /**
+       * Scroll the table's window up.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-fedit-scroll": [n?: number];
+      /**
+       * Scroll the table's window down.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-fedit-scroll-down": [n?: number];
+      /**
+       * Number the rows and columns of the table being edited, or stop.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-fedit-toggle-coordinates": [];
+      /**
+       * Write the editor's references as B3 rather than @3$2, or back.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-fedit-toggle-ref-type": [];
       /**
        * Show where point is in the table, as @ROW$COLUMN and its names, and the formula for its field.
        *
@@ -7531,6 +7621,12 @@ declare global {
        */
       "org-table-rotate-recalc-marks": [];
       /**
+       * Show what the reference at point names, highlighting its fields in the table.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-show-reference": [];
+      /**
        * Sort the table's lines between the rules around point, or the region's, by the column point is in: a alphabetically, n numerically, t by time or duration, f by a function; a capital reverses it. With a prefix argument, case counts.
        *
        * @param with-case raw prefix argument
@@ -7544,6 +7640,18 @@ declare global {
        * Defined in packages/org-table.ts.
        */
       "org-table-sum": [];
+      /**
+       * Number tables' rows beside them and columns over their rules, or stop.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-toggle-coordinate-overlays": [];
+      /**
+       * Turn the formula debugger on or off: working out a formula then shows how its references were replaced.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-toggle-formula-debugger": [];
       /**
        * Transpose the table at point, its rows becoming its columns, as Org's does; its rules are dropped.
        *
@@ -15981,6 +16089,10 @@ declare global {
        */
       "org-table-exit-follow-field-mode-when-leaving-table": Value;
       /**
+       * Keymap org-table-fedit-map.
+       */
+      "org-table-fedit-map": Value;
+      /**
        * A function asked, as y-or-n-p, whether to change the formulas when a column or row moves, or nil to change them without asking.
        *
        * Defined in packages/org-table.ts.
@@ -16009,6 +16121,12 @@ declare global {
        */
       "org-table-formula-create-columns": Value;
       /**
+       * Whether working out a formula shows how its references were replaced, and asks before going on to the next.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-formula-debug": Value;
+      /**
        * Whether TAB, RET and C-c C-c evaluate a field starting with = or := as a formula.
        *
        * Defined in packages/org-table.ts.
@@ -16032,6 +16150,12 @@ declare global {
        * Defined in packages/org-table.ts.
        */
       "org-table-number-fraction": Value;
+      /**
+       * Whether the table's rows and columns are numbered beside and above it, as C-c } turns on.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-overlay-coordinates": Value;
       /**
        * Whether a relative row reference may cross a rule: t yes, nil to stop at the row next to it, error to signal an error.
        *

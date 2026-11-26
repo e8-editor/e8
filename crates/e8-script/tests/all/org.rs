@@ -2055,3 +2055,95 @@ fn level_changes_with_hooks_that_add_lines() {
     }
     assert!(failures.is_empty(), "{}", failures.join("\n"));
 }
+
+/// The faces of the overlays at a position in a buffer, as the table's
+/// highlighting puts them, through the script API.
+fn overlay_faces(ed: &mut Editor, s: &Scripting, buffer: &str, pos: usize) -> String {
+    s.eval_typescript(
+        ed,
+        "test.ts",
+        format!(
+            "e8.message(JSON.stringify(e8.withCurrentBuffer({buffer:?}, () => e8.overlaysAt({pos}).map((o) => e8.overlayGet(o, \"face\")).filter((f) => f !== undefined))));"
+        ),
+    )
+    .unwrap();
+    ed.echo().unwrap_or_default().to_string()
+}
+
+#[test]
+fn the_formula_editor_highlights_what_a_reference_names() {
+    let (mut ed, s) = org("| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 4 | 5 |   |\n#+TBLFM: $3=$1+$2\n");
+    let name = ed.window_buffer().name.to_string();
+    let at = find(&ed, "1 |");
+    ed.window_buffer_mut().set_point(at);
+    // On the formula's $2, as Org shows it after each command: the column
+    // it sets in the table, and the one $2 names.
+    ed.press("C-c ' C-n C-e").unwrap();
+    assert_eq!(ed.window_buffer().name, "*Edit Formulas*");
+    let in_b = find_in(&mut ed, &s, &name, "2 |");
+    let in_c = find_in(&mut ed, &s, &name, "|   |\n| 4") + 2;
+    assert_eq!(overlay_faces(&mut ed, &s, &name, in_b), r#"["secondary-selection"]"#);
+    assert_eq!(overlay_faces(&mut ed, &s, &name, in_c), r#"["highlight"]"#);
+    // Leaving takes the highlighting away.
+    ed.press("C-c C-q").unwrap();
+    ed.press("x DEL").unwrap();
+    assert_eq!(overlay_faces(&mut ed, &s, &name, in_b), "[]");
+}
+
+/// Where text first is in a buffer, through the script API.
+fn find_in(ed: &mut Editor, s: &Scripting, buffer: &str, needle: &str) -> usize {
+    s.eval_typescript(
+        ed,
+        "test.ts",
+        format!("e8.message(String(e8.withCurrentBuffer({buffer:?}, () => e8.bufferText(e8.pointMin(), e8.pointMax()).indexOf({needle:?}))));"),
+    )
+    .unwrap();
+    ed.echo().unwrap().parse().unwrap()
+}
+
+#[test]
+fn coordinates_number_a_tables_rows_and_columns() {
+    let (mut ed, _s) = org("| a | b |\n|---+---|\n| 1 | 2 |\n");
+    ed.window_buffer_mut().set_point(2);
+    ed.press("C-c }").unwrap();
+    ed.redisplay();
+    let shown = rows(&ed);
+    // Data rows numbered, rules as I*1, and columns over the rule as $1 and $2.
+    assert_eq!(&shown[..3], ["   1| a | b |", "I*1 |$1-+$2-|", "   2| 1 | 2 |"]);
+    ed.press("C-c }").unwrap();
+    ed.redisplay();
+    assert_eq!(&rows(&ed)[..3], ["| a | b |", "|---+---|", "| 1 | 2 |"]);
+}
+
+#[test]
+fn the_formula_debugger_shows_how_references_were_replaced() {
+    let (mut ed, s) = org("| 1 | 2 |   |\n#+TBLFM: $3=$1+$2;%.1f\n");
+    ed.window_buffer_mut().set_point(2);
+    ed.press("C-c { C-c * y").unwrap();
+    assert_eq!(text(&ed), "| 1 | 2 | 3.0 |\n#+TBLFM: $3=$1+$2;%.1f\n");
+    s.eval_typescript(
+        &mut ed,
+        "test.ts",
+        "e8.message(e8.withCurrentBuffer(\"*Substitution History*\", () => e8.bufferText(e8.pointMin(), e8.pointMax())));".into(),
+    )
+    .unwrap();
+    assert_eq!(
+        ed.echo(),
+        // The original is ? with a format, as Org loses it taking the format off, as Emacs 30.2 shows.
+        Some("Substitution history of formula\nOrig:   ?\n$xyz->  $1+$2\n@r$c->  $1+$2\n$1->    (1)+(2)\nResult: 3\nFormat: %.1f\nFinal:  3.0")
+    );
+    // Without one, the formula as written, as Emacs 30.2 shows.
+    let (mut ed, s) = org("| 1 | 2 |   |\n#+TBLFM: $3=$1+$2\n");
+    ed.window_buffer_mut().set_point(2);
+    ed.press("C-c { C-c * y").unwrap();
+    s.eval_typescript(
+        &mut ed,
+        "test.ts",
+        "e8.message(e8.withCurrentBuffer(\"*Substitution History*\", () => e8.bufferText(e8.pointMin(), e8.pointMax())));".into(),
+    )
+    .unwrap();
+    assert_eq!(
+        ed.echo(),
+        Some("Substitution history of formula\nOrig:   $1+$2\n$xyz->  $1+$2\n@r$c->  $1+$2\n$1->    (1)+(2)\nResult: 3\nFormat: NONE\nFinal:  3")
+    );
+}
