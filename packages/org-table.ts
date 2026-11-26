@@ -20,7 +20,8 @@ import {
   placeMarkers,
 } from "org-macs";
 import { elementAt } from "org-element";
-import { allMatches, charCount, forwardLine, getBufferWindow, truthy } from "subr";
+import { allMatches, charCount, escapeRegExp, forwardLine, getBufferWindow, truthy } from "subr";
+import { calcEval, type CalcModes, modesFromPlist } from "calc";
 import { fitWindowToBuffer, windowFullWidthP } from "window";
 
 e8.defineVariable({
@@ -197,9 +198,23 @@ export function needsAlign(): boolean {
   return !Array.isArray(state) || state[0] !== e8.bufferCharsModifiedTick();
 }
 
-/** Records that the table at point is aligned, as setting org-table-may-need-update to nil does. */
-export function markAligned(line = lineAt()): void {
-  e8.setVariable("org-table--aligned", [e8.bufferCharsModifiedTick(), e8.lineStart(firstLine(line)), lineStartOrEnd(lastLine(line) + 1)]);
+/**
+ * Records that the table at point is aligned, as setting
+ * org-table-may-need-update to nil does, with its columns' widths and
+ * alignments, as org-table-last-column-widths and org-table-last-alignment
+ * keep them for aligning a single field; without them, those of the last
+ * alignment.
+ */
+export function markAligned(line = lineAt(), widths?: number[], aligns?: string[]): void {
+  const state = e8.variable("org-table--aligned");
+  const old = Array.isArray(state) ? state : [];
+  e8.setVariable("org-table--aligned", [
+    e8.bufferCharsModifiedTick(),
+    e8.lineStart(firstLine(line)),
+    lineStartOrEnd(lastLine(line) + 1),
+    widths ?? (old[3] as e8.Value) ?? null,
+    aligns ?? (old[4] as e8.Value) ?? null,
+  ]);
 }
 
 /** Pads a field to a width, as org-table--align-field does. */
@@ -232,6 +247,7 @@ function align(): void {
   const column = currentColumn();
   // On the line just after a table, as org-table-begin and org-table-end find it, the table is the one above.
   const at = !isTableLine(lineAt()) && isTableLine(lineAt() - 1) ? lineAt() - 1 : lineAt();
+  let layout: [number[], string[]] | undefined;
   try {
     const first = firstLine(at);
     const table = tableToLisp(at);
@@ -267,6 +283,7 @@ function align(): void {
         aligns.push(fixed ?? (numbers >= fraction * nonEmpty ? "r" : "l"));
       }
     }
+    layout = [widths, aligns];
     const rule = table.includes("hline") ? widths.map((w) => "-".repeat(w + 2)).join("+") : "";
     const indent = /^[ \t]*\|/.exec(e8.lineText(first))?.[0] ?? "|";
     let line = first;
@@ -288,15 +305,68 @@ function align(): void {
     dropMarker(lineMark);
     gotoColumn(column);
   }
-  markAligned(isTableLine(lineAt()) ? lineAt() : Math.max(0, lineAt() - 1));
+  markAligned(isTableLine(lineAt()) ? lineAt() : Math.max(0, lineAt() - 1), layout?.[0], layout?.[1]);
 }
 
-/** What org-table-justify-field-maybe does without a new value: notices when point left the table last aligned. */
-function justifyFieldMaybe(): void {
-  if (needsAlign() || atHline()) return;
+/** Marks the table as needing alignment, keeping its last widths, as setting org-table-may-need-update does. */
+function markNeedsAlign(): void {
   const state = e8.variable("org-table--aligned");
-  if (Array.isArray(state) && (e8.point() < Number(state[1]) || e8.point() >= Number(state[2]))) {
+  if (Array.isArray(state)) e8.setVariable("org-table--aligned", [-1, ...state.slice(1)]);
+}
+
+/**
+ * What org-table-justify-field-maybe does: notices when point left the
+ * table last aligned, and with a new value for the field at point, puts it
+ * there, aligned as the column was if it fits, else marking the table as
+ * needing alignment.
+ */
+function justifyFieldMaybe(value?: string): void {
+  if (value !== undefined && value.includes("\n")) {
+    e8.message(`Removing newlines from formula result: ${JSON.stringify(value)}`);
+    value = value.replace(/^\n+|\n+$/g, "").replace(/\n/g, " ");
+  }
+  if (value === undefined && needsAlign()) return;
+  if (atHline()) return;
+  let state = e8.variable("org-table--aligned");
+  if (!Array.isArray(state) || e8.point() < Number(state[1]) || e8.point() >= Number(state[2])) {
+    // Another table: it needs aligning, and its columns' widths are not known.
     e8.setVariable("org-table--aligned", null);
+    state = null;
+  }
+  if (value === undefined) return;
+  const pos = e8.point();
+  try {
+    const col = currentColumn();
+    if (col <= 0) return;
+    const before = beforeOnLine();
+    const start = e8.lineStart(lineAt()) + charCount(before.slice(0, before.lastIndexOf("|") + 1));
+    const m = /^ *(?:([^|\n]*?) *(\|)|([^|\n]+?) *($))/.exec(restOfLine(start));
+    if (!m) {
+      markNeedsAlign();
+      return;
+    }
+    let mayNeedUpdate = !Array.isArray(state) || needsAlign();
+    const width = Array.isArray(state) && Array.isArray(state[3]) ? (state[3][col - 1] as number | undefined) : undefined;
+    const how = Array.isArray(state) && Array.isArray(state[4]) ? String(state[4][col - 1] ?? "l") : "l";
+    const closed = m[2] !== undefined;
+    let cell: string;
+    if (mayNeedUpdate) cell = ` ${value} |`;
+    else if (!closed) {
+      mayNeedUpdate = true;
+      cell = ` ${value} |`;
+    } else if (width !== undefined && shownWidth(value) <= width) cell = `${alignField(value, width, how)}|`;
+    else {
+      mayNeedUpdate = true;
+      cell = ` ${value} |`;
+    }
+    if (cell !== m[0]) {
+      edDelete(start, start + charCount(m[0]));
+      edInsert(start, cell);
+    }
+    if (mayNeedUpdate) markNeedsAlign();
+    else markAligned();
+  } finally {
+    e8.gotoChar(Math.min(pos, e8.pointMax()));
   }
 }
 
@@ -381,6 +451,7 @@ e8.defineCommand({
   doc: "Move to the next field, going on to the next row, and adding one at the end. The table is aligned first if it changed.",
   run: () => {
     maybeEvalFormula();
+    maybeRecalculateLine();
     alignIfNeeded();
     const end = tableEnd();
     if (atHline()) e8.gotoChar(e8.lineEnd(lineAt()));
@@ -417,6 +488,7 @@ e8.defineCommand({
   doc: "Move to the previous field, going back to the row before. The table is aligned first if it changed.",
   run: () => {
     justifyFieldMaybe();
+    maybeRecalculateLine();
     alignIfNeeded();
     if (atHline()) e8.gotoChar(e8.lineEnd(lineAt()));
     const start = tableBegin();
@@ -492,6 +564,7 @@ e8.defineCommand({
 /** Moves to the same field of the next row, adding one before a rule or at the end, as org-table-next-row does; aligning first if ALIGN and the table changed. */
 function nextRow(alignFirst: boolean): void {
   maybeEvalFormula();
+  maybeRecalculateLine();
   if (alignFirst) alignIfNeeded();
   const col = currentColumn();
   forwardLine(1);
@@ -713,6 +786,7 @@ function copyDown(n: number): void {
     blankField();
   }
   e8.insert(next ?? field!);
+  maybeRecalculateLine();
   align();
 }
 
@@ -731,21 +805,6 @@ e8.defineCommand({
     "the Nth with a prefix argument; numbers and timestamps go up as org-table-copy-increment says, unless the argument is 0.",
   params: [{ name: "n", kind: "count" }],
   run: (n: number) => copyDown(n),
-});
-
-/**
- * What org-table-maybe-eval-formula does before moving on from a field,
- * as E8 has no formulas: it reads the field, which leaves point near
- * the field's start.
- */
-function maybeEvalFormula(): void {
-  getField();
-}
-
-e8.defineCommand({
-  name: "org-table-maybe-eval-formula",
-  doc: "Evaluate the field at point if it is a formula. E8 does not support formulas yet, so this only reads the field.",
-  run: () => maybeEvalFormula(),
 });
 
 /** The data lines of the table at point, in order. */
@@ -1358,12 +1417,6 @@ e8.defineCommand({
 });
 
 e8.defineCommand({
-  name: "org-table-recalculate",
-  doc: "Recalculate the table's formulas. E8 does not support table formulas yet, so with none this does nothing, as in Org.",
-  run: () => tableHere(),
-});
-
-e8.defineCommand({
   name: "org-table-justify-field-maybe",
   doc: "Note whether the table at point needs aligning before moving on from a field, as TAB and RET do first.",
   run: () => justifyFieldMaybe(),
@@ -1564,6 +1617,7 @@ e8.defineCommand({
   run: (sameColumn: e8.PrefixArg) => {
     const col = tableCurrentColumn();
     e8.call("org-table-maybe-eval-formula");
+    maybeRecalculateLine();
     e8.call("org-table-insert-hline");
     // To the end of the rule's line, then into the row after it, or a new row if a rule follows.
     const line = lineAt() + 1;
@@ -1744,3 +1798,1348 @@ e8.defineMinorMode({
     e8.call("kill-buffer", EDIT_FIELD_BUFFER);
   },
 });
+
+// Formulas, after org-table.el's: column formulas ($3=...) and field
+// formulas (@2$3=..., ranges of fields, named fields), kept on a #+TBLFM:
+// line below the table, set with C-c =, typed into a field as =... or
+// :=..., and applied again by C-c *, C-c C-c and TAB or RET in a row
+// marked #. Formulas are Calc's, worked out by calc.ts as calc-eval would
+// ([ADR 0115](../docs/adr/0115-table-formulas-on-a-part-of-calc.md)), and
+// Org's references in them, as @2$3, $name and remote(NAME, @2$3), become
+// the fields' text first, as Org substitutes them.
+
+e8.defineVariable({
+  name: "org-table-formula-evaluate-inline",
+  doc: "Whether TAB, RET and C-c C-c evaluate a field starting with = or := as a formula.",
+  value: true,
+});
+
+e8.defineVariable({
+  name: "org-table-formula-use-constants",
+  doc: "Whether $name in a formula is replaced by a constant's value, from org-table-formula-constants or a #+CONSTANTS: line.",
+  value: true,
+});
+
+e8.defineVariable({
+  name: "org-table-formula-constants",
+  doc: "Constants for table formulas, as an alist of names and values, both strings; #+CONSTANTS: lines add a file's own.",
+  value: null,
+});
+
+e8.defineVariable({
+  name: "org-table-allow-automatic-line-recalculation",
+  doc: "Whether TAB, RET and C-c C-c recalculate a row marked # in its first field.",
+  value: true,
+});
+
+e8.defineVariable({
+  name: "org-table-relative-ref-may-cross-hline",
+  doc: "Whether a relative row reference may cross a rule: t yes, nil to stop at the row next to it, error to signal an error.",
+  value: true,
+});
+
+e8.defineVariable({
+  name: "org-table-formula-create-columns",
+  doc: "Whether a field formula for a column beyond the table adds columns: t, warn to add and warn, prompt to ask, nil for an error.",
+  value: null,
+});
+
+e8.defineVariable({
+  name: "org-table-formula-field-format",
+  doc: "The format a formula's result is put in its field with, %s for the result as it is.",
+  value: "%s",
+});
+
+e8.defineVariable({
+  name: "org-calc-default-modes",
+  doc: "Calc's modes for table formulas, as a plist of mode variables and values; a formula's flags change them for itself.",
+  value: [
+    "calc-internal-prec", 12,
+    "calc-float-format", ["float", 8],
+    "calc-angle-mode", "deg",
+    "calc-prefer-frac", null,
+    "calc-symbolic-mode", null,
+    "calc-date-format", ["YYYY", "-", "MM", "-", "DD", " ", "Www", [" ", "hh", ":", "mm"]],
+    "calc-display-working-message", true,
+  ],
+});
+
+e8.defineVariable({
+  name: "org-table-duration-custom-format",
+  doc: "How a duration formula's result with the t flag is written: hours, minutes, seconds or days, as a fraction, or hh:mm.",
+  value: "hours",
+});
+
+e8.defineVariable({
+  name: "org-table-duration-hour-zero-padding",
+  doc: "Whether hours in durations are written with two digits, as 08:32:34 rather than 8:32:34.",
+  value: true,
+});
+
+/** What each mark in a table's first column means, as org-recalc-marks. */
+const RECALC_MARKS: [string, string][] = [
+  [" ", "Unmarked: no special line, no automatic recalculation"],
+  ["#", "Automatically recalculate this line upon TAB, RET, and C-c C-c in the line"],
+  ["*", "Recalculate only when entire table is recalculated with `C-u C-c *'"],
+  ["!", "Column name definition line.  Reference in formula as $name."],
+  ["$", "Parameter definition line name=value.  Reference in formula as $name."],
+  ["_", "Names for values in row below this one."],
+  ["^", "Names for values in row above this one."],
+];
+
+/** The table's shape and names, as org-table-analyze leaves them in its variables. */
+interface Analysis {
+  /** The buffer line the table starts at. */
+  first: number;
+  /** Each line's kind, with an imaginary rule after the last. */
+  types: ("hline" | "dline")[];
+  /** The lines of the data rows, from index 1, relative to the table's first line. */
+  dlines: number[];
+  hlines: number[];
+  ncol: number;
+  /** Names from a ! row, each with its column. */
+  columnNames: [string, number][];
+  /** Names and values from $ rows and the fields that _ and ^ rows name, the last first. */
+  parameters: [string, string][];
+  /** Named fields: their name, line relative to the table's first, and column. */
+  namedFields: [string, number, number][];
+}
+
+let an: Analysis = { first: 0, types: [], dlines: [-1], hlines: [-1], ncol: 0, columnNames: [], parameters: [], namedFields: [] };
+
+
+const NAME = /^[a-zA-Z][_a-zA-Z0-9]*$/;
+
+/** Analyzes the table at point, as org-table-analyze does. */
+function analyze(): Analysis {
+  const beg = orgTableBegin();
+  const end = orgTableEnd();
+  const first = lineAt(beg);
+  const lines: string[] = [];
+  for (let l = first; l < e8.lineCount() && e8.lineStart(l) < end; l++) lines.push(e8.lineText(l));
+  const result: Analysis = { first, types: [], dlines: [-1], hlines: [-1], ncol: 0, columnNames: [], parameters: [], namedFields: [] };
+  const names = lines.map((t) => /^[ \t]*\| *! *(\|.*)/.exec(t)).find((m) => m);
+  if (names) {
+    let c = 1;
+    for (const name of orgSplitString(names[1], / *\| */g)) {
+      c++;
+      if (NAME.test(name)) result.columnNames.push([name, c]);
+    }
+  }
+  for (const t of lines) {
+    const m = /^[ \t]*\| *\$ *(\|.*)/.exec(t);
+    if (!m) continue;
+    for (const field of orgSplitString(m[1], / *\| */g)) {
+      const p = /^([a-zA-Z][_a-zA-Z0-9]*|%) *= *(.*)/.exec(field);
+      if (p) result.parameters.unshift([p[1], p[2]]);
+    }
+  }
+  lines.forEach((t, i) => {
+    const m = /^[ \t]*\| *([_^]) *(\|.*)/.exec(t);
+    if (!m) return;
+    const other = i + (m[1] === "_" ? 1 : -1);
+    const text = first + other >= 0 && first + other < e8.lineCount() ? e8.lineText(first + other) : "";
+    const o = /^[ \t]*\|[^|]*(\|.*)/.exec(text);
+    if (!o) return;
+    const fields = orgSplitString(m[2], / *\| */g);
+    const values = orgSplitString(o[1], / *\| */g);
+    for (let k = 0, col = 1; k < fields.length && k < values.length; k++) {
+      col++;
+      if (NAME.test(fields[k])) {
+        result.parameters.unshift([fields[k], values[k]]);
+        result.namedFields.unshift([fields[k], other, col]);
+      }
+    }
+  });
+  lines.forEach((t, i) => {
+    if (!/^[ \t]*\|/.test(t)) return;
+    const h = /^[ \t]*\|-/.test(t);
+    result.types.push(h ? "hline" : "dline");
+    (h ? result.hlines : result.dlines).push(i);
+  });
+  result.types.push("hline");
+  if (result.dlines.length < 2) e8.signal("args-out-of-range", "Args out of range", [[-1], 1]);
+  result.ncol = orgSplitString(lines[result.dlines[1]], /[ \t]*\|[ \t]*/g).length;
+  an = result;
+  return result;
+}
+
+/** The data row a line relative to the table is, or the one below or above it, as org-table-line-to-dline. */
+function lineToDline(line: number, above = false): number | undefined {
+  let min = 1;
+  let max = an.dlines.length - 1;
+  if (an.dlines[min] > line || an.dlines[max] < line) return undefined;
+  if (line === an.dlines[max]) return max;
+  while (max - min > 1) {
+    const mean = Math.floor((max + min) / 2);
+    const v = an.dlines[mean];
+    if (v === line) return mean;
+    if (v > line) max = mean;
+    else min = mean;
+  }
+  if (line === an.dlines[max]) return max;
+  if (line === an.dlines[min]) return min;
+  return above ? min : max;
+}
+
+/** Point's line, relative to the table's first. */
+const relLine = (pos = e8.point()): number => lineAt(pos) - an.first;
+
+/** Moves to the start of a line relative to the table's first. */
+function gotoRelLine(line: number): void {
+  e8.gotoChar(lineStartOrEnd(an.first + line));
+}
+
+/** Replaces @<, @>, $< and $> with the first or last row or column, outside remote(), as org-table-formula-handle-first/last-rc. */
+function handleFirstLastRc(s: string): string {
+  let start = 0;
+  for (;;) {
+    const re = /([@$])(<+|>+)|(remote\([^)]+\))/g;
+    re.lastIndex = start;
+    const m = re.exec(s);
+    if (!m) return s;
+    if (m[3] !== undefined) {
+      start = m.index + m[0].length;
+      continue;
+    }
+    const nmax = m[1] === "@" ? an.dlines.length - 1 : an.ncol;
+    const len = m[2].length;
+    const n = m[2][0] === "<" ? len : nmax - len + 1;
+    if (n < 1 || n > nmax) e8.userError(`Reference "${m[0]}" in expression "${s}" points outside table`);
+    start = m.index;
+    s = s.slice(0, m.index) + `${m[1]}${n}` + s.slice(m.index + m[0].length);
+  }
+}
+
+/**
+ * Looks up a property of the entry at point, inherited, as org-entry-get
+ * does with inheritance; org.ts provides it. A var, as org.ts sets it while
+ * this module, which org.ts imports in a cycle, has not run yet.
+ */
+// eslint-disable-next-line no-var
+var entryProperty: ((name: string) => string | undefined) | undefined;
+
+export function setEntryPropertyLookup(f: (name: string) => string | undefined): void {
+  entryProperty = f;
+}
+
+/** The constants a buffer's #+CONSTANTS: lines define, as org-table-formula-constants-local. */
+function localConstants(): [string, string][] {
+  const store: [string, string][] = [];
+  e8.saveRestriction(() => {
+    e8.widen();
+    for (let l = 0; l < e8.lineCount(); l++) {
+      const m = /^[ \t]*#\+CONSTANTS:[ \t]*(.*)$/i.exec(e8.lineText(l));
+      if (!m) continue;
+      for (const pair of m[1].split(/[ \f\t\n\r\v]+/)) {
+        const p = /^([a-zA-Z0][_a-zA-Z0-9]*)=(.*)/.exec(pair);
+        if (!p) continue;
+        const old = store.find((x) => x[0] === p[1]);
+        if (old) old[1] = p[2];
+        else store.unshift([p[1], p[2]]);
+      }
+    }
+  });
+  return store;
+}
+
+/** A parameter's or constant's value, as org-table-get-constant finds it, parameters first. */
+function getConstant(name: string): string {
+  const assoc = (alist: e8.Value | undefined): string | undefined => {
+    if (!Array.isArray(alist)) return undefined;
+    for (const e of alist) if (Array.isArray(e) && e[0] === name) return String(e.length === 2 && !Array.isArray(e[1]) ? e[1] : e.slice(1).join(""));
+    return undefined;
+  };
+  return (
+    an.parameters.find((p) => p[0] === name)?.[1] ??
+    localConstants().find((p) => p[0] === name)?.[1] ??
+    assoc(e8.variable("org-table-formula-constants")) ??
+    (name.startsWith("PROP_") ? entryProperty?.(name.slice(5)) : undefined) ??
+    "#UNDEFINED_NAME"
+  );
+}
+
+/** Replaces column names and constants in a formula, as org-table-formula-substitute-names. */
+function substituteNames(f: string): string {
+  const pp = !f.startsWith("'");
+  const duration = /;.*[Tt].*$/.test(f);
+  let s = f;
+  if (an.columnNames.length) {
+    const alts = an.columnNames.map((n) => n[0]).sort((a, b) => b.length - a.length);
+    s = s.replace(new RegExp(`\\$(${alts.join("|")})(?![\\p{L}\\p{N}])`, "gu"), (_m, name: string) => `$${an.columnNames.find((n) => n[0] === name)![1]}`);
+  }
+  let start = 0;
+  for (;;) {
+    const re = /\$([a-zA-Z][_a-zA-Z0-9]*)|(\bremote\([^)]*\))/g;
+    re.lastIndex = start;
+    const m = re.exec(s);
+    if (!m) return s;
+    if (m[2] !== undefined) {
+      start = m.index + m[0].length;
+      continue;
+    }
+    start = m.index + 1;
+    let value: string | undefined = getConstant(m[1]);
+    if (nonWhite(value) && duration) value = timeStringToSeconds(value);
+    s = s.slice(0, m.index) + (pp ? `(${value})` : value) + s.slice(m.index + m[0].length);
+  }
+}
+
+/** Letters as a column number, AB as 28, as org-letters-to-number. */
+function lettersToNumber(s: string): number {
+  let n = 0;
+  for (const c of s.toUpperCase()) n = n * 26 + c.charCodeAt(0) - 65 + 1;
+  return n;
+}
+
+/** Spreadsheet references, as A7 or B&, written as @7$1 and $2, as org-table-convert-refs-to-rc. */
+function convertRefsToRc(s: string): string {
+  let start = 0;
+  for (;;) {
+    const re = /\b([a-zA-Z]+)([0-9]+\b|&)|(;[^\r\n:]+|\bremote\([^,)]*\))/g;
+    re.lastIndex = start;
+    const m = re.exec(s);
+    if (!m) return s;
+    if (m[3] !== undefined) start = m.index + m[0].length;
+    else if (m.index > 0 && s[m.index - 1] === "." && s[Math.max(m.index - 2, 0)] !== ".") start = m.index + m[0].length;
+    else if (m[1].length > 2) start = m.index + m[0].length;
+    else {
+      start = m.index;
+      const rc = m[2] === "&" ? `$${lettersToNumber(m[1])}` : `@${Number(m[2])}$${lettersToNumber(m[1])}`;
+      s = s.slice(0, m.index) + rc + s.slice(m.index + m[0].length);
+    }
+  }
+}
+
+/** @7$28 written as AB7, and $28 as AB&, as org-table-convert-refs-to-an. */
+function convertRefsToAn(s: string): string {
+  s = s.replace(/@([0-9]+)\$([0-9]+)/g, (_m, r: string, c: string) => `${numberToLetters(Number(c))}${Number(r)}`);
+  for (;;) {
+    const m = /(^|[^0-9a-zA-Z])\$([1-9][0-9]*)/.exec(s);
+    if (!m) return s;
+    s = s.slice(0, m.index) + m[1] + numberToLetters(Number(m[2])) + "&" + s.slice(m.index + m[0].length);
+  }
+}
+
+function formulaToUser(s: string): string {
+  return e8.variable("org-table-use-standard-references") === true ? convertRefsToAn(s) : s;
+}
+
+function formulaFromUser(s: string): string {
+  return truthy(e8.variable("org-table-use-standard-references")) ? convertRefsToRc(s) : s;
+}
+
+const TS_BOTH = /[[<](\d{4}-\d{2}-\d{2}(?: [^\n]*?)?)[\]>]/;
+
+/** A duration as seconds, from -HH:MM:SS, -HH:MM or a number, as org-table-time-string-to-seconds. */
+function timeStringToSeconds(s: string): string {
+  if (s === "") return s;
+  let m = /(-?)([0-9]+):([0-9]+):([0-9]+)/.exec(s);
+  if (m) {
+    const res = Number(m[2]) * 3600 + Number(m[3]) * 60 + Number(m[4]);
+    return String(m[1] ? -res : res);
+  }
+  if (!TS_BOTH.test(s) && (m = /(-?)([0-9]+):([0-9]+)/.exec(s))) {
+    const res = Number(m[2]) * 3600 + Number(m[3]) * 60;
+    return String(m[1] ? -res : res);
+  }
+  return numberString(stringToLispNumber(s));
+}
+
+/** Seconds as a duration, HH:MM:SS, or as hours, minutes, seconds or days, as org-table-time-seconds-to-string. */
+function timeSecondsToString(secs: number, format: string | null): string {
+  const secs0 = Math.abs(secs);
+  const fixed = (x: number, n: number) => e8.format(`%.${n}f`, x);
+  const pad = truthy(e8.variable("org-table-duration-hour-zero-padding"));
+  const clock = (): string => {
+    // As format-seconds, from the seconds rounded, halves to even.
+    const r = secs0 - Math.floor(secs0) === 0.5 && Math.floor(secs0) % 2 === 0 ? Math.floor(secs0) : Math.round(secs0);
+    const h = Math.floor(r / 3600);
+    const two = (n: number) => String(n).padStart(2, "0");
+    return `${pad ? two(h) : String(h)}:${two(Math.floor((r % 3600) / 60))}:${two(r % 60)}`;
+  };
+  let res: string;
+  if (format === "days") res = fixed(secs0 / 86400, 3);
+  else if (format === "hours") res = fixed(secs0 / 3600, 2);
+  else if (format === "minutes") res = fixed(secs0 / 60, 1);
+  else if (format === "seconds") res = e8.format("%d", Math.trunc(secs0));
+  else if (format === "hh:mm") res = clock().slice(0, -3);
+  else res = clock();
+  return secs < 0 ? `-${res}` : res;
+}
+
+/** The error aref gives for a row beyond the table's, as Org reads org-table-dlines. */
+function dlinesOutOfRange(n: number): never {
+  e8.signal("args-out-of-range", `Args out of range: [nil ${an.dlines.slice(1).join(" ")}], ${n}`, [n]);
+}
+
+/** The relative line of a row descriptor, as org-table--descriptor-line reads @3, @-1, @I or @II+2. */
+function descriptorLine(desc: string, cline: number): number | undefined {
+  if (/^[0-9]+$/.test(desc)) {
+    const n = Number(desc);
+    if (n >= an.dlines.length) dlinesOutOfRange(n);
+    return n === 0 ? undefined : an.dlines[n];
+  }
+  const m = /^(([-+])?(I+))?(([-+])?([0-9]+))?/.exec(desc)!;
+  if ((m[3] === undefined && m[6] === undefined) || (m[3] !== undefined && m[6] !== undefined && m[5] === undefined)) {
+    e8.userError(`Invalid row descriptor ‘${desc}’`);
+  }
+  let hn = m[3]?.length;
+  let hdir = m[2];
+  const odir = m[5];
+  const on = m[6] !== undefined ? Number(m[6]) : undefined;
+  const rel = m[6] !== undefined && ((m[1] !== undefined && m[3] === undefined) || m[5] !== undefined);
+  if (hn !== undefined && hdir === undefined) {
+    cline = 0;
+    hdir = "+";
+    if (an.types[0] === "hline") hn--;
+  }
+  if (hn === undefined && on !== undefined && odir === undefined) e8.userError("Should never happen");
+  if (hn !== undefined) cline = rowType("hline", hn, cline, hdir === "-", false, desc);
+  if (on !== undefined) cline = rowType("dline", on, cline, odir === "-", rel, desc);
+  return cline;
+}
+
+/** The relative line of the Nth row of a kind from line I, as org-table--row-type. */
+function rowType(type: "hline" | "dline", n: number, i: number, backwards: boolean, relative: boolean, desc: string): number {
+  const l = an.types.length;
+  const cross = e8.variable("org-table-relative-ref-may-cross-hline");
+  outer: for (let k = 0; k < n; k++) {
+    for (;;) {
+      i += backwards ? -1 : 1;
+      if (!(i >= 0 && i < l && an.types[i] !== type)) break;
+      if (!relative || an.types[i] !== "hline" || cross === true) continue;
+      if (cross === "error") e8.userError(`Row descriptor ${desc} crosses hline`);
+      if (truthy(cross)) continue;
+      i -= backwards ? -1 : 1;
+      break outer;
+    }
+  }
+  if (i < 0 || i >= l) e8.userError(`Row descriptor ${desc} leads outside table`);
+  // The last rule is imaginary: it stands for the last row.
+  return i === l - 1 ? i - 1 : i;
+}
+
+const RANGE = /@([-+]?I*[-+]?[0-9]*)(\$[-+]?[0-9]+)?(\.\.@?([-+]?I*[-+]?[0-9]*)(\$[-+]?[0-9]+)?)?/;
+
+/**
+ * The field or fields a range descriptor names, as org-table-get-range
+ * reads them: one field's text, or a rectangle's fields row by row, or
+ * with cornersOnly, its corners as [row1, col1, row2, col2] relative to
+ * the table.
+ */
+function getRange(desc: string, col = currentColumn(), cornersOnly = false): string | string[] | [number, number, number, number] {
+  if (/^\$[0-9]+\.\.\$[0-9]+$/.test(desc)) desc = desc.replace(/\$/g, "@0$");
+  const thisline = relLine(e8.lineStart(lineAt()));
+  const m = RANGE.exec(desc);
+  if (!m) e8.userError(`Invalid table range specifier ‘${desc}’`);
+  const rangep = m[3] !== undefined;
+  const row = (r: string | undefined): number => (nonWhite(r) ? descriptorLine(r, thisline) : undefined) ?? thisline;
+  const column = (c: string | undefined): number => {
+    if (c === undefined) return col;
+    const t = c.slice(1);
+    const n = Number(t);
+    if (n === 0) return col;
+    return n + (/^[-+]/.test(t) ? col : 0);
+  };
+  const r1 = row(m[1]);
+  const r2 = row(m[4]);
+  const c1 = column(m[2]);
+  const c2 = column(m[5]);
+  return saveExcursion(() => {
+    if (!cornersOnly && (!rangep || (r1 === r2 && c1 === c2))) {
+      gotoRelLine(r1);
+      while (!DATALINE.test(e8.lineText(lineAt())) && lineAt() < e8.lineCount() - 1) forwardLine(1);
+      return orgTrim(getField(c1));
+    }
+    let firstRow = Math.min(r1, r2);
+    const lastRow = Math.max(r1, r2);
+    const firstColumn = Math.min(c1, c2);
+    const lastColumn = Math.max(c1, c2);
+    if (cornersOnly) return [firstRow, firstColumn, lastRow, lastColumn] as [number, number, number, number];
+    gotoRelLine(firstRow);
+    while (!DATALINE.test(e8.lineText(lineAt())) && lineAt() < e8.lineCount() - 1) {
+      forwardLine(1);
+      firstRow++;
+    }
+    gotoColumn(firstColumn);
+    const beg = e8.point();
+    forwardLine(lastRow - firstRow);
+    while (!DATALINE.test(e8.lineText(lineAt())) && lineAt() > 0) forwardLine(-1);
+    gotoColumn(lastColumn);
+    return copyRegionBetween(beg, e8.point(), false).flat().map(orgTrim);
+  });
+}
+
+/**
+ * What a reference's fields become in a formula, as
+ * org-table-make-reference: a field in parentheses, (0) when empty, and a
+ * range as a vector of its fields, empty ones left out; with keepEmpty,
+ * nan for an empty field; with numbers, each field as the number it starts
+ * with; for Lisp, each as Lisp would read it.
+ */
+function makeReference(elements: string | string[], keepEmpty: boolean, numbers: boolean, lispp: boolean | "literal"): string {
+  const toNumber = (x: string) => numberString(stringToLispNumber(x));
+  const lispString = (x: string) => `"${x.replace(/["\\]/g, "\\$&")}"`;
+  if (typeof elements === "string") {
+    if (lispp) {
+      if (lispp === "literal") return elements;
+      return numbers ? toNumber(elements) : lispString(elements);
+    }
+    if (/\S/.test(elements)) return `(${numbers ? toNumber(elements) : elements})`;
+    return !keepEmpty || numbers ? "(0)" : "nan";
+  }
+  if (!keepEmpty) elements = elements.filter((x) => /\S/.test(x));
+  if (lispp) return elements.map((x) => (lispp === "literal" ? x : numbers ? toNumber(x) : lispString(x))).join(" ");
+  return `[${elements.map((x) => (/\S/.test(x) ? (numbers ? toNumber(x) : x) : !keepEmpty || numbers ? "0" : "nan")).join(",")}]`;
+}
+
+/**
+ * The field or fields a reference to another table names, as
+ * org-table-get-remote-range: the table after a #+NAME: line in this
+ * buffer, or the first in the entry with that ID.
+ */
+function getRemoteRange(nameOrId: string, form: string): string | string[] {
+  const saved = an;
+  try {
+    form = convertRefsToRc(form);
+    let buffer: e8.BufferLike = e8.currentBuffer();
+    let loc: number | undefined;
+    e8.saveRestriction(() => {
+      e8.widen();
+      const re = new RegExp(`^[ \\t]*#\\+(tbl)?name:[ \\t]*${escapeRegExp(nameOrId)}[ \\t]*$`, "i");
+      for (let l = 0; l < e8.lineCount(); l++) {
+        if (re.test(e8.lineText(l))) {
+          loc = e8.lineStart(l);
+          break;
+        }
+      }
+    });
+    if (loc === undefined) {
+      const found = e8.fboundp("org-id-find") ? (e8.funcall("org-id-find", nameOrId) as [string, number] | undefined) : undefined;
+      if (!Array.isArray(found)) e8.userError(`Can’t find remote table "${nameOrId}"`);
+      buffer = e8.getFileBuffer(found[0])?.name ?? e8.findFileNoselect(found[0]);
+      loc = found[1];
+    }
+    const at = loc;
+    return e8.withCurrentBuffer(buffer, () =>
+      e8.saveRestriction(() =>
+        saveExcursion(() => {
+          e8.widen();
+          e8.gotoChar(Math.min(at + 1, e8.pointMax()));
+          let l = lineAt() + (e8.point() === e8.lineStart(lineAt()) ? 0 : 1);
+          while (l < e8.lineCount() && !/^(\*+ )|^[ \t]*\|/.test(e8.lineText(l))) l++;
+          if (l >= e8.lineCount() || /^\*+ /.test(e8.lineText(l))) e8.userError(`Cannot find a table at NAME or ID ${nameOrId}`);
+          e8.gotoChar(e8.lineStart(l) + 1);
+          analyze();
+          const f = substituteNames(handleFirstLastRc(form));
+          const m = RANGE.exec(f);
+          if (m && m[0].length > 1) return getRange(m[0], 1) as string | string[];
+          return f;
+        }),
+      ),
+    );
+  } finally {
+    an = saved;
+  }
+}
+
+/** remote() with a reference as its table, as remote($1, @>$2), turned into the table that field names, as org-table-remote-reference-indirection. */
+function remoteReferenceIndirection(form: string): string {
+  return form.replace(/\bremote\([ \t]*([@$][^ \t,]+)[ \t]*,[ \t]*([^\n)]+)\)/g, (whole, ref: string) => {
+    const eq = handleFirstLastRc(ref);
+    const target = getRange(/^\$[0-9]+$/.test(eq) ? `@0${eq}` : eq);
+    const at = whole.indexOf(ref);
+    return whole.slice(0, at) + String(target) + whole.slice(at + ref.length);
+  });
+}
+
+/** A formula's flags after its ;, as org-table-eval-formula parses them, and the printf format left. */
+interface FormulaModes {
+  calc: Partial<CalcModes>;
+  fmt?: string;
+  numbers: boolean;
+  keepEmpty: boolean;
+  literal: boolean;
+  duration: boolean;
+  durationFormat: string | null;
+}
+
+function parseFormulaModes(formula: string): [string, FormulaModes] {
+  const plist = e8.variable("org-calc-default-modes");
+  const fm: FormulaModes = { calc: modesFromPlist(Array.isArray(plist) ? plist : []), numbers: false, keepEmpty: false, literal: false, duration: false, durationFormat: null };
+  const m = /^(.*);(.*)$/s.exec(formula);
+  if (!m) return [formula, fm];
+  formula = m[1];
+  const percent = an.parameters.find((p) => p[0] === "%")?.[1] ?? "";
+  let fmt = percent + m[2];
+  for (;;) {
+    const f = /([pnfse])(-?[0-9]+)/.exec(fmt);
+    if (!f) break;
+    const n = Number(f[2]);
+    if (f[1] === "p") fm.calc.prec = Math.max(3, n);
+    else fm.calc.floatFormat = [({ n: "float", f: "fix", s: "sci", e: "eng" } as const)[f[1] as "n" | "f" | "s" | "e"], n];
+    fmt = fmt.slice(0, f.index) + fmt.slice(f.index + f[0].length);
+  }
+  for (;;) {
+    const f = /[tTUNLEDRFSu]/.exec(fmt);
+    if (!f) break;
+    switch (f[0]) {
+      case "t":
+        Object.assign(fm, { duration: true, numbers: true, durationFormat: String(e8.variable("org-table-duration-custom-format") ?? "hours") });
+        break;
+      case "T":
+        Object.assign(fm, { duration: true, numbers: true, durationFormat: null });
+        break;
+      case "U":
+        Object.assign(fm, { duration: true, numbers: true, durationFormat: "hh:mm" });
+        break;
+      case "N":
+        fm.numbers = true;
+        break;
+      case "L":
+        fm.literal = true;
+        break;
+      case "E":
+        fm.keepEmpty = true;
+        break;
+      case "D":
+        fm.calc.angle = "deg";
+        break;
+      case "R":
+        fm.calc.angle = "rad";
+        break;
+      case "F":
+        fm.calc.preferFrac = true;
+        break;
+      case "S":
+        fm.calc.symbolic = true;
+        break;
+    }
+    fmt = fmt.slice(0, f.index) + fmt.slice(f.index + 1);
+  }
+  if (/\S/.test(fmt)) fm.fmt = fmt;
+  return [formula, fm];
+}
+
+/** A timestamp in a formula as Calc reads one, <2024-01-05 Fri> or with its time, as Org writes it for Calc. */
+function timestampForCalc(ts: string): string {
+  const d = /(\d{4})-(\d{2})-(\d{2})/.exec(ts)!;
+  const date = new Date(Date.UTC(Number(d[1]), Number(d[2]) - 1, Number(d[3])));
+  const day = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][date.getUTCDay()];
+  const ymd = `${String(date.getUTCFullYear()).padStart(4, "0")}-${String(date.getUTCMonth() + 1).padStart(2, "0")}-${String(date.getUTCDate()).padStart(2, "0")}`;
+  const time = /([0-9]{1,2}):([0-9]{2})/.exec(ts.slice(d.index + d[0].length));
+  if (!/[0-9]{1,2}:[0-9]{2}/.test(ts) || !time) return `<${ymd} ${day}>`;
+  return `<${ymd} ${day} ${time[1].padStart(2, "0")}:${time[2]}>`;
+}
+
+/** Whether a prefix argument is C-u C-u, as (16). */
+const doubleUniversal = (arg: e8.PrefixArg | undefined): boolean => Array.isArray(arg) && arg[0] === 16;
+const singleUniversal = (arg: e8.PrefixArg | undefined): boolean => Array.isArray(arg) && arg[0] === 4;
+
+/**
+ * Replaces the field at point by its formula's result, as
+ * org-table-eval-formula: with no equation, it is read, offering the
+ * column's or, with C-u, the field's stored one, and stored; with C-u
+ * C-u, the field's formula is put in the field to edit; with a number,
+ * the formula is applied that many rows down.
+ */
+export function evalFormula(
+  arg?: e8.PrefixArg,
+  equation?: string,
+  suppressAlign = false,
+  suppressConst = false,
+  suppressStore = false,
+  suppressAnalysis = false,
+): void {
+  if (!suppressAnalysis) {
+    checkInsideDataField(true);
+    analyze();
+  }
+  if (doubleUniversal(arg)) {
+    const eq = currentFieldFormula();
+    getField(undefined, eq);
+    align();
+    return;
+  }
+  let ndown = typeof arg === "number" ? arg : 1;
+  const down = ndown > 1;
+  let formula = equation !== undefined && suppressStore ? equation : getFormula(equation, singleUniversal(arg));
+  const n0 = currentColumn();
+  let fm: FormulaModes;
+  [formula, fm] = parseFormulaModes(formula);
+  if (!suppressConst && truthy(e8.variable("org-table-formula-use-constants"))) formula = substituteNames(formula);
+  // Org reads a text property at position 1 of the formula here, which an empty one has not.
+  if (formula === "") e8.signal("args-out-of-range", "Args out of range: 1, 1", [formula, 1, 1]);
+  formula = handleFirstLastRc(formula);
+  while (ndown > 0) {
+    let fields = orgSplitString(orgTrim(e8.lineText(lineAt())), / *\| */g);
+    if (fm.duration) fields = fields.map(timeStringToSeconds);
+    if (fm.numbers) fields = fields.map((x) => (/\S/.test(x) ? numberString(stringToLispNumber(x)) : x));
+    ndown--;
+    let form = formula;
+    let lispp: boolean | "literal" = form.length > 2 && form.startsWith("'(");
+    if (lispp && fm.literal) lispp = "literal";
+    form = form.replace(/[@$]#/g, (m) => String(m[0] === "@" ? currentDline() : currentColumn()));
+    if (/&[-+0-9I]/.test(form)) e8.userError("Formula contains old &row reference, please rewrite using @-syntax");
+    form = remoteReferenceIndirection(form);
+    const durations = (x: string | string[]): string | string[] => (fm.duration ? (typeof x === "string" ? timeStringToSeconds(x) : x.map(timeStringToSeconds)) : x);
+    for (;;) {
+      const m = /\bremote\([ \t]*([^,)]+)[ \t]*,[ \t]*([^\n)]+)\)/.exec(form);
+      if (!m) break;
+      const rpl = makeReference(durations(getRemoteRange(m[1], m[2])), fm.keepEmpty, fm.numbers, lispp);
+      form = form.slice(0, m.index) + rpl + form.slice(m.index + m[0].length);
+    }
+    for (;;) {
+      const m = RANGE.exec(form);
+      if (!m || m[0].length <= 1) break;
+      const rg = getRange(m[0], n0) as string | string[];
+      const rpl = makeReference(durations(rg), fm.keepEmpty, fm.numbers, lispp);
+      if (rpl.includes(form)) e8.userError(`Spreadsheet error: invalid reference "${form}"`);
+      form = form.slice(0, m.index) + rpl + form.slice(m.index + m[0].length);
+    }
+    for (;;) {
+      const m = /\$(([-+])?[0-9]+)\.\.\$(([-+])?[0-9]+)/.exec(form);
+      if (!m) break;
+      const from = (m[2] ? n0 : 0) + Number(m[1]) - 1;
+      const to = (m[4] ? n0 : 0) + Number(m[3]);
+      form = form.slice(0, m.index) + makeReference(subseq(fields, from, to), fm.keepEmpty, fm.numbers, lispp) + form.slice(m.index + m[0].length);
+    }
+    for (;;) {
+      const m = /\$(([-+])?[0-9]+)/.exec(form);
+      if (!m) break;
+      const n = Number(m[1]) + (m[2] ? n0 : 0);
+      const x = fields[(n === 0 ? n0 : Math.max(n, 1)) - 1];
+      const rpl = x === undefined ? "" : makeReference(x, fm.keepEmpty, fm.numbers, lispp);
+      if (x === undefined || rpl.includes(formula)) e8.userError(`Invalid field specifier "${m[0]}"`);
+      form = form.slice(0, m.index) + rpl + form.slice(m.index + m[0].length);
+    }
+    let ev: string | [number, string];
+    let fmt = fm.fmt;
+    if (lispp) {
+      // E8 has no Lisp to evaluate a Lisp formula with, so it is an error, as Org writes one.
+      ev = [0, "Lisp formulas are not supported"];
+    } else {
+      form = form.replace(/\[(\d{4}-\d{2}-\d{2}(?: [^\]\r\n>]*?)?)\]/g, "<$1>");
+      form = form.replace(/<\d{4}-\d{2}-\d{2}(?: [^>\r\n]*?)?>/g, (ts) => timestampForCalc(ts));
+      ev = fm.duration && /^[0-9]+:[0-9]+(?::[0-9]+)?$/.test(form) ? form : calcEval(form, fm.calc, !fm.keepEmpty && fm.numbers);
+      if (fm.duration) {
+        if (typeof ev !== "string") e8.signal("wrong-type-argument", `Wrong type argument: stringp, (${ev[0]} "${ev[1]}")`);
+        if (ev !== "") {
+          const secs = /^[0-9]+:[0-9]+(?::[0-9]+)?$/.test(ev) ? Number(timeStringToSeconds(ev)) : lispNumberValue(stringToLispNumber(ev));
+          ev = timeSecondsToString(secs, fm.durationFormat);
+        }
+      }
+    }
+    let result: string;
+    if (typeof ev !== "string") {
+      fmt = undefined;
+      result = "#ERROR";
+    } else if (fmt !== undefined) result = formatNumber(fmt, stringToLispNumber(ev));
+    // An active timestamp in a result is made inactive: dates in tables are data, not for the agenda.
+    else result = ev.replace(/<(\d{4}-\d{2}-\d{2}(?: [^>\r\n]*?)?)>/g, "[$1]");
+    justifyFieldMaybe(e8.format(String(e8.variable("org-table-formula-field-format") ?? "%s"), result));
+    if (down && ndown > 0 && /^.*\n[ \t]*\|[^-]/.test(e8.bufferText(e8.point(), lineStartOrEnd(lineAt() + 2)))) {
+      nextRow(false);
+    } else ndown = 0;
+  }
+  if (down) maybeRecalculateLine();
+  if (!suppressAlign && needsAlign()) align();
+}
+
+/** A list's elements from start to end, negative ones counting from its end, as cl-subseq takes them. */
+function subseq<T>(list: T[], start: number, end: number): T[] {
+  const [s0, e0] = [start, end];
+  if (end < 0) end += list.length;
+  if (start < 0) start += list.length;
+  if (start < 0 || start > list.length) e8.signal("error", `Start index out of bounds: ${s0}`);
+  if (end - start < 0 || end > list.length) e8.signal("error", `End index out of bounds: ${e0}`);
+  return list.slice(start, end);
+}
+
+/** A number as Lisp holds it, for arithmetic. */
+function lispNumberValue(n: LispNumber): number {
+  return n.int !== undefined ? Number(n.int) : n.float!;
+}
+
+/** A number formatted with a formula's printf format, as format does, an integer as an integer. */
+function formatNumber(fmt: string, n: LispNumber): string {
+  // %s writes a float as Lisp prints one, 3.0 for three.
+  if (n.int === undefined && /%[-+ #0-9.]*s/.test(fmt)) return e8.format(fmt, numberString(n));
+  return e8.format(fmt, lispNumberValue(n));
+}
+
+/** The formula for the field at point, as =FORMULA for its column's or :=FORMULA for its own, as org-table-current-field-formula. */
+function currentFieldFormula(key = false, noerror = false): string | undefined {
+  const line = relLine();
+  const row = lineToDline(line);
+  if (row === undefined) {
+    if (noerror) return undefined;
+    e8.userError("No formula active for the current field");
+  }
+  const col = currentColumn();
+  const name = an.namedFields.find((f) => f[1] === line && f[2] === col)?.[0];
+  const scol = `$${col}`;
+  const ref = `@${currentDline()}$${col}`;
+  const stored = getStoredFormulas(noerror);
+  const ass = (name !== undefined ? stored.find((e) => e[0] === name) : undefined) ?? stored.find((e) => e[0] === ref) ?? stored.find((e) => e[0] === scol);
+  if (key) return ass?.[0];
+  if (ass) return `${/^[0-9]+$/.test(ass[0]) ? "=" : ":="}${ass[1]}`;
+  return undefined;
+}
+
+/** Reads a formula for the field's column, or with named, the field, offering the stored one, and stores it, as org-table-get-formula. */
+function getFormula(equation: string | undefined, named: boolean): string {
+  let stored = getStoredFormulas();
+  const line = relLine();
+  const col = currentColumn();
+  const fieldName = an.namedFields.find((f) => f[1] === line && f[2] === col)?.[0];
+  const ref = `@${currentDline()}$${col}`;
+  const scol = !named ? `$${col}` : fieldName ?? ref;
+  const name = fieldName ?? ref;
+  const old = stored.find((e) => e[0] === scol)?.[1];
+  let eq: string;
+  if (old !== undefined && equation !== undefined && /^ *=? *$/.test(equation)) eq = old;
+  else if (equation !== undefined) eq = equation;
+  else {
+    eq = formulaFromUser(
+      e8.readString(formulaToUser(`${named ? "Field" : "Column"} formula ${scol}=`), {
+        initial: old !== undefined ? formulaToUser(old) : "",
+        history: "org-table-formula-history",
+      }),
+    );
+  }
+  if (!nonWhite(eq)) {
+    storeFormulas(stored.filter((e) => e[0] !== scol));
+    e8.userError("Formula removed");
+  }
+  eq = eq.replace(/^ *=?/, "").replace(/ *$/, "");
+  let mustSave = false;
+  if (!named) {
+    // A column formula replaces the field's own.
+    stored = stored.filter((e) => e[0] !== name);
+    mustSave = true;
+  }
+  const at = stored.find((e) => e[0] === scol);
+  if (at) at[1] = eq;
+  else stored.unshift([scol, eq]);
+  if (mustSave || old !== eq) storeFormulas(stored);
+  return eq;
+}
+
+/** A key that sorts formulas: rows, then columns, then names, with $< and $> columns last, as org-table-formula-make-cmp-string. */
+function formulaCmpString(a: string): string | undefined {
+  if (/^\$[<>]/.test(a)) {
+    const arrow = a[1];
+    a = handleFirstLastRc(a);
+    a = `$${10000 + (arrow === "<" ? -1000 : 0) + Number(a.slice(1))}`;
+  }
+  const m = /^(@([0-9]+))?(\$?([0-9]+))?(\$?[a-zA-Z0-9]+)?/.exec(a)!;
+  return (
+    (m[2] !== undefined ? `@${m[2].padStart(5, "0")}` : "") +
+    (m[4] !== undefined ? `$${m[4].padStart(5, "0")}` : "") +
+    (m[5] !== undefined ? `@@${m[5]}` : "")
+  );
+}
+
+/** Writes formulas on the #+TBLFM: line below the table, sorted, as org-table-store-formulas. */
+function storeFormulas(alist: [string, string][], location?: number): void {
+  saveExcursion(() => {
+    if (location !== undefined) e8.gotoChar(e8.lineStart(lineAt(location)));
+    else e8.gotoChar(orgTableEnd());
+    const sorted = sortFormulas(alist);
+    const text = ` ${sorted.map(([l, r]) => `${l}=${r}`).join("::")}\n`;
+    const m = /^(?:[ \t]*\n)*[ \t]*(#\+TBLFM:)(.*\n?)/i.exec(e8.bufferText(e8.point(), e8.pointMax()));
+    if (m) {
+      const start = e8.point() + charCount(m[0].slice(0, m[0].length - m[2].length));
+      edDelete(start, e8.point() + charCount(m[0]));
+      edInsert(start, text);
+    } else {
+      e8.call("org-indent-line");
+      e8.insert("#+TBLFM:");
+      e8.insert(text);
+    }
+  });
+}
+
+/** Sorts formulas as Org's sort with org-table-formula-less-p leaves them: a stable merge sort by that predicate. */
+function sortFormulas(alist: [string, string][]): [string, string][] {
+  const less = (a: [string, string], b: [string, string]): boolean => {
+    const as = formulaCmpString(a[0]);
+    const bs = formulaCmpString(b[0]);
+    return as !== undefined && bs !== undefined && as < bs;
+  };
+  // Emacs's sort is a stable merge sort calling the predicate; this keeps equal keys in their order.
+  return alist
+    .map((e, i) => [e, i] as const)
+    .sort((x, y) => (less(x[0], y[0]) ? -1 : less(y[0], x[0]) ? 1 : x[1] - y[1]))
+    .map((x) => x[0]);
+}
+
+/**
+ * The formulas on the #+TBLFM: line directly after the table, or at
+ * location, as org-table-get-stored-formulas: each the field, range,
+ * column or name it sets and its formula.
+ */
+export function getStoredFormulas(noerror = false, location?: number): [string, string][] {
+  return saveExcursion(() => {
+    if (location !== undefined) e8.gotoChar(e8.lineStart(lineAt(location)));
+    else e8.gotoChar(orgTableEnd());
+    const m = /^(?:[ \t]*\n)*[ \t]*#\+TBLFM: *(.*)/i.exec(e8.bufferText(e8.point(), e8.pointMax()));
+    if (!m) return [];
+    const out: [string, string][] = [];
+    const seen: string[] = [];
+    for (const string of orgSplitString(m[1], / *:: */g)) {
+      const f = /^(@[-+I<>0-9.$@]+|\$([_a-zA-Z0-9]+|[<>]+)) *= *(.*[^ \t])/.exec(string);
+      if (!f) continue;
+      const lhs = f[2] === undefined ? f[1] : /^\$([0-9]+|[<>]+)$/.test(f[1]) ? f[1] : f[2];
+      out.push([lhs, f[3]]);
+      if (!seen.includes(lhs)) seen.push(lhs);
+      else if (noerror) {
+        e8.message(`Double definition ‘${lhs}=’ in TBLFM line, please fix by hand`);
+        e8.ding();
+        e8.sitFor(2);
+      } else e8.userError(`Double definition ‘${lhs}=’ in TBLFM line, please fix by hand`);
+    }
+    return out;
+  });
+}
+
+/** Field formulas for ranges or rows, as @2$1..@3$2=, spread into one for each field, as org-table-expand-lhs-ranges. */
+function expandLhsRanges(equations: [string, string][]): [string, string, [string, string]?][] {
+  const res: [string, string, [string, string]?][] = [];
+  for (const e of equations) {
+    const [lhs, rhs] = e;
+    if (/^@[-+0-9]+\$-?[0-9]+$/.test(lhs) || /^[a-zA-Z][_a-zA-Z0-9]*$/.test(lhs) || /^\$[0-9]+$/.test(lhs)) res.push([lhs, rhs]);
+    else if (/^@[0-9]+$/.test(lhs)) {
+      for (let ic = 1; ic <= an.ncol; ic++) res.push([`${lhs}$${ic}`, rhs, e]);
+    } else {
+      const [l1, c1, l2, c2] = getRange(lhs, 1, true) as [number, number, number, number];
+      const r1 = lineToDline(l1);
+      const r2 = lineToDline(l2, true);
+      if (r1 === undefined || r2 === undefined) continue;
+      for (let ir = r1; ir <= r2; ir++) for (let ic = c1; ic <= c2; ic++) res.push([`@${ir}$${ic}`, rhs, e]);
+    }
+  }
+  return res;
+}
+
+/** Moves to a field by its name or as @ROW$COL, adding columns as createColumn allows, as org-table-goto-field. */
+function gotoField(ref: string, createColumn?: (column: number) => boolean): void {
+  let coordinates: [number, number] | undefined;
+  const named = an.namedFields.find((f) => f[0] === ref);
+  const m = /^@([1-9][0-9]*)\$([1-9][0-9]*)$/.exec(ref);
+  if (named) coordinates = [named[1], named[2]];
+  else if (m) {
+    const n = Number(m[1]);
+    if (n >= an.dlines.length) e8.userError(`Invalid row number in ${ref}`);
+    coordinates = [an.dlines[n], Number(m[2])];
+  } else e8.userError(`Unknown field: ${ref}`);
+  const [line, column] = coordinates;
+  const create = createColumn ? createColumn(column) : false;
+  gotoRelLine(line);
+  gotoColumn(column, false, create);
+}
+
+/**
+ * Recalculates the row at point by the stored formulas, as
+ * org-table-recalculate; with all, every row from after the first rule,
+ * or the rows marked # and * when any row is marked; with iterate or C-u
+ * C-u, until the table stops changing.
+ */
+export function recalculate(all: e8.PrefixArg | boolean | "iterate" = null, noalign = false): void {
+  if (!atTable()) e8.userError("Not at a table");
+  if (all === "iterate" || doubleUniversal(all as e8.PrefixArg)) {
+    iterate();
+    return;
+  }
+  const doAll = all !== null && all !== false && all !== undefined;
+  analyze();
+  const eqlist = getStoredFormulas().sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
+  if (eqlist.length === 0) return;
+  const started = Date.now();
+  const lineMark = marker(e8.lineStart(lineAt()));
+  const column = currentColumn();
+  try {
+    const eqlcol: [string, string][] = [];
+    const eqlfield0: [string, string][] = [];
+    for (const [oldLhs, rhs0] of eqlist) {
+      const rhs = substituteNames(handleFirstLastRc(rhs0));
+      let lhs: string;
+      if (/^@-?I+/.test(oldLhs)) e8.userError("Can’t assign to hline relative reference");
+      else if (/^\$[<>]/.test(oldLhs)) {
+        const fresh = handleFirstLastRc(oldLhs);
+        if (eqlist.some((e) => e[0] === fresh)) e8.userError(`"${oldLhs}=" formula tries to overwrite existing formula for column ${fresh}`);
+        lhs = handleFirstLastRc(fresh);
+      } else lhs = handleFirstLastRc(oldLhs);
+      if (/^\$[0-9]+$/.test(lhs)) eqlcol.push([lhs, rhs]);
+      else eqlfield0.push([lhs, rhs]);
+    }
+    const eqlfield = expandLhsRanges(eqlfield0);
+    let begLine: number;
+    let endLine: number;
+    let lineRe = DATALINE;
+    if (doAll) {
+      begLine = an.first;
+      endLine = an.first + an.types.length - 1;
+      const table = Array.from({ length: endLine - begLine }, (_, i) => e8.lineText(begLine + i));
+      if (table.some((t) => /^[ \t]*\| *[!$^_#*] *(\||$)/.test(t))) lineRe = /^[ \t]*\| *[#*] *(\||$)/;
+      else {
+        const d1 = table.findIndex((t) => DATALINE.test(t));
+        const h = d1 < 0 ? -1 : table.findIndex((t, i) => i > d1 && HLINE.test(t));
+        const d2 = h < 0 ? -1 : table.findIndex((t, i) => i > h && DATALINE.test(t));
+        if (d2 >= 0) begLine += d2;
+      }
+    } else {
+      begLine = lineAt();
+      endLine = begLine + 1;
+    }
+    // Fields with formulas of their own are left alone by the column formulas.
+    const untouchable = new Set<string>();
+    const currentLine = relLine();
+    const seenFields: string[] = [];
+    for (const [name] of eqlfield) {
+      const location = an.namedFields.find((f) => f[0] === name);
+      const at = /^@([0-9]+)/.exec(name);
+      if (at && Number(at[1]) >= an.dlines.length) dlinesOutOfRange(Number(at[1]));
+      const eqLine = location ? location[1] : at ? an.dlines[Number(at[1])] : undefined;
+      const reference = location ? `@${lineToDline(location[1])}$${location[2]}` : name;
+      if (seenFields.includes(reference)) e8.userError(`Several field/range formulas try to set ${reference}`);
+      seenFields.push(reference);
+      if (doAll || eqLine === currentLine) {
+        saveExcursion(() => {
+          gotoField(name);
+          untouchable.add(`${relLine()}:${currentColumn()}`);
+        });
+      }
+    }
+    let cnt = 0;
+    for (let l = begLine; l < endLine; l++) {
+      if (!lineRe.test(e8.lineText(l))) continue;
+      e8.gotoChar(e8.lineStart(l));
+      if (/^ *[_^!$/] *$/.test(getField(1))) continue;
+      cnt++;
+      for (const [lhs, rhs] of eqlcol) {
+        e8.gotoChar(e8.lineStart(l));
+        gotoColumn(Number(lhs.slice(1)), false, true);
+        if (untouchable.has(`${relLine()}:${Number(lhs.slice(1))}`)) continue;
+        evalFormula(null, rhs, true, true, true, true);
+      }
+    }
+    for (const [reference, formula] of eqlfield) {
+      e8.gotoChar(e8.lineStart(an.first));
+      gotoField(reference, (col) => {
+        const columns = Math.max(0, currentColumnAtEnd() - 1);
+        if (col > 1000) e8.userError("Formula column target too large");
+        if (col <= columns) return false;
+        const create = e8.variable("org-table-formula-create-columns");
+        if (create === true) return true;
+        if (create === "warn") {
+          e8.message("Warning (org): Out-of-bounds formula added columns");
+          return true;
+        }
+        if (create === "prompt" && e8.yesOrNoP("Out-of-bounds formula.  Add columns? ")) return true;
+        e8.userError("Missing columns in the table.  Aborting");
+      });
+      evalFormula(null, formula, true, true, true, true);
+    }
+    if (!noalign) {
+      e8.gotoChar(lineMark.pos);
+      if (needsAlign()) align();
+      if (doAll && Date.now() - started > 1000) e8.message(`Re-applying formulas to ${cnt} lines... done`);
+    }
+    if (!doAll || Date.now() - started > 1000) e8.message("Re-applying formulas... done");
+  } finally {
+    e8.gotoChar(lineMark.pos);
+    dropMarker(lineMark);
+    gotoColumn(column);
+  }
+}
+
+/** The column at the end of point's line, as org-table-current-column there counts it. */
+function currentColumnAtEnd(): number {
+  return currentColumn(e8.lineEnd(lineAt()));
+}
+
+/** Recalculates the whole table until it stops changing, at most ten times or the prefix argument's, as org-table-iterate. */
+export function iterate(arg?: e8.PrefixArg): void {
+  const imax = arg !== null && arg !== undefined ? e8.prefixNumericValue(arg) : 10;
+  const text = () => e8.bufferText(orgTableBegin(), orgTableEnd());
+  let last = text();
+  for (let i = 1; i <= imax; i++) {
+    recalculate(true);
+    const now = text();
+    if (now !== last) last = now;
+    else {
+      e8.message(i > 1 ? `Convergence after ${i} iterations` : "Table was already stable");
+      return;
+    }
+  }
+  e8.userError(`No convergence after ${imax} iterations`);
+}
+
+/** Calls f at the start of each table in the buffer, as org-table-map-tables. */
+function mapTables(f: () => void, quietly = false): void {
+  saveExcursion(() => {
+    e8.gotoChar(e8.pointMin());
+    for (let l = lineAt(); l < e8.lineCount(); l++) {
+      if (!TABLE_LINE.test(e8.lineText(l))) continue;
+      let table = elementAt(e8.lineStart(l));
+      while (table && table.type !== "table") table = table.parent;
+      if (!table) continue;
+      if (!quietly) e8.message(`Mapping tables: ${Math.floor((100 * (e8.lineStart(l) + 1)) / Math.max(1, e8.bufferSize()))}%`);
+      e8.gotoChar(table.postAffiliated ?? table.begin);
+      const end = marker(table.end);
+      try {
+        f();
+      } finally {
+        l = Math.max(l, lineAt(end.pos) - 1);
+        dropMarker(end);
+      }
+    }
+  });
+  if (!quietly) e8.message("Mapping tables: done");
+}
+
+/** Whether point is on a #+TBLFM: line of a table, as org-at-TBLFM-p. */
+export function atTBLFM(pos = e8.point()): boolean {
+  if (!/^[ \t]*#\+TBLFM: /i.test(e8.lineText(lineAt(pos)))) return false;
+  let e = elementAt(e8.lineStart(lineAt(pos)));
+  while (e && e.type !== "table") e = e.parent;
+  return e !== undefined;
+}
+
+/** Applies the #+TBLFM: line at point to the table, as org-table-calc-current-TBLFM: as if it were the first. */
+export function calcCurrentTBLFM(arg?: e8.PrefixArg): void {
+  if (!atTBLFM()) e8.userError("Not at a #+TBLFM line");
+  const formula = e8.lineText(lineAt());
+  saveExcursion(() => {
+    // After the table's last row, before its first #+TBLFM: line.
+    let l = lineAt();
+    while (l > 0 && !(TABLE_LINE.test(e8.lineText(l - 1)) && /^[ \t]*#\+TBLFM: /i.test(e8.lineText(l)))) l--;
+    if (l === 0) e8.signal("wrong-type-argument", "Wrong type argument: integer-or-marker-p, nil", ["integer-or-marker-p", null]);
+    const s = marker(e8.lineStart(l));
+    e8.gotoChar(s.pos);
+    e8.insert(`${formula}\n`);
+    const e = marker(e8.point());
+    try {
+      forwardLine(-1);
+      e8.skipCharsBackward(" \r\n\t");
+      recalculate(arg ?? true);
+    } finally {
+      edDelete(s.pos, e.pos);
+      dropMarker(s);
+      dropMarker(e);
+    }
+  });
+}
+
+/** Evaluates the field at point when it is a formula, =... or :=..., storing it, as org-table-maybe-eval-formula. */
+function maybeEvalFormula(): void {
+  if (!truthy(e8.variable("org-table-formula-evaluate-inline"))) return;
+  const field = orgTrim(getField() ?? "");
+  const m = /^:?=(.*[^=])$/s.exec(field);
+  if (!m) return;
+  evalFormula(field.startsWith(":") ? [4] : null, formulaFromUser(m[1]));
+}
+
+/**
+ * Recalculates point's row when it is marked #, as
+ * org-table-maybe-recalculate-line. Org means to skip a row the last
+ * command just recalculated, but compares a marker with a number by eq,
+ * which is never true, so it never skips, and neither does this.
+ */
+export function maybeRecalculateLine(): boolean {
+  if (!truthy(e8.variable("org-table-allow-automatic-line-recalculation"))) return false;
+  if (!/^[ \t]*\| *# *(\||$)/.test(e8.lineText(lineAt()))) return false;
+  recalculate(null);
+  return true;
+}
+
+/** Shows where point is in the table and the formula for its field, as org-table-field-info. */
+function fieldInfo(): void {
+  if (!atTable()) e8.userError("Not at a table");
+  analyze();
+  saveExcursion(() => {
+    const col = currentColumn();
+    const cname = an.columnNames.find((c) => c[1] === col)?.[0];
+    const line = relLine();
+    const name = an.namedFields.find((f) => f[1] === line && f[2] === col)?.[0];
+    const eql = expandLhsRanges(getStoredFormulas().map(([l, r]) => [handleFirstLastRc(l), r]));
+    const dline = currentDline();
+    const ref = `@${dline}$${col}`;
+    const ref1 = convertRefsToAn(ref);
+    const fequation = (name !== undefined ? eql.find((e) => e[0] === name) : undefined) ?? eql.find((e) => e[0] === ref);
+    const cequation = eql.find((e) => e[0] === `$${col}`);
+    const found = fequation ?? cequation;
+    const eqn: [string, string] | undefined = found ? found[2] ?? [found[0], found[1]] : undefined;
+    const formula = eqn ? `, formula: ${formulaToUser(`${/^[$@]/.test(eqn[0]) ? "" : "$"}${eqn[0]}=${eqn[1]}`)}` : "";
+    e8.message(`line @${dline}, col $${col}${cname ? ` or $${cname}` : ""}, ref @${dline}$${col} or ${ref1}${name ? ` or $${name}` : ""}${formula}`);
+  });
+}
+
+/**
+ * Rotates the mark in the first column of point's row, or sets the rows'
+ * marks in the region, adding a column for marks if the table has none,
+ * as org-table-rotate-recalc-marks.
+ */
+function rotateRecalcMarks(newchar?: string): void {
+  if (!atTable()) e8.userError("Not at a table");
+  const region = orgRegionActive() && e8.mark() !== undefined;
+  const [rb, re] = region ? [Math.min(e8.mark()!, e8.point()), Math.max(e8.mark()!, e8.point())] : [0, 0];
+  const l1 = region ? marker(e8.lineStart(lineAt(rb))) : undefined;
+  const l2 = region ? marker(e8.lineStart(lineAt(re))) : undefined;
+  const l = marker(e8.lineStart(lineAt()));
+  const col = currentColumn();
+  try {
+    if (region) newchar = e8.readCharExclusive("Change region to what mark?  Type # * ! $ or SPC: ");
+    const noSpecialColumn = saveExcursion(() => {
+      const beg = orgTableBegin();
+      const end = orgTableEnd();
+      for (let line = lineAt(beg); line < e8.lineCount() && e8.lineStart(line) < end; line++) {
+        if (/^[ \t]*\|[^-|][^|]*[^#!$*_^| \t][^|]*\|/.test(e8.lineText(line))) return true;
+      }
+      return false;
+    });
+    if (newchar !== undefined && !RECALC_MARKS.some((m) => m[0] === newchar)) {
+      e8.userError(`Invalid character ‘${newchar}’ in ‘org-table-rotate-recalc-marks’`);
+    }
+    if (l1) e8.gotoChar(l1.pos);
+    if (!DATALINE.test(e8.lineText(lineAt()))) e8.userError("Not at a table data line");
+    if (noSpecialColumn) {
+      gotoColumn(1);
+      e8.call("org-table-insert-column");
+    }
+    const previousLineEnd = e8.lineEnd(lineAt());
+    const current = /^[ \t]*\| *([#!$*^_ ]) *\|/.exec(e8.lineText(lineAt()));
+    const marks = [...RECALC_MARKS.map((m) => m[0]), " "];
+    const mark = !current ? "#" : newchar ?? marks[marks.indexOf(current[1]) + 1];
+    getField(1, ` ${mark} `);
+    if (region && l2) {
+      saveExcursion(() => {
+        forwardLine(1);
+        while (e8.point() <= l2.pos && e8.point() < e8.pointMax()) {
+          if (DATALINE.test(e8.lineText(lineAt()))) getField(1, ` ${mark} `);
+          const before = e8.point();
+          forwardLine(1);
+          if (e8.point() === before) break;
+        }
+      });
+    }
+    if (previousLineEnd !== e8.lineEnd(lineAt())) align();
+    e8.gotoChar(l.pos);
+    gotoColumn(noSpecialColumn ? col + 1 : col);
+    // Of the mark read for a region; without one, Org's message names none, so says nil.
+    if (e8.calledInteractively()) e8.message(RECALC_MARKS.find((m) => m[0] === newchar)?.[1] ?? "nil");
+  } finally {
+    for (const m of [l, l1, l2]) if (m) dropMarker(m);
+  }
+}
+
+e8.defineCommand({
+  name: "org-table-eval-formula",
+  doc:
+    "Replace the field at point by the result of a formula, read in the minibuffer with the column's stored one offered, and store it as the column's formula; " +
+    "with C-u, as the field's own; with C-u C-u, put the field's formula in it to edit; with a number, apply it that many rows down.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg: e8.PrefixArg) => evalFormula(arg),
+});
+
+e8.defineCommand({
+  name: "org-table-recalculate",
+  doc: "Recalculate the row at point by the table's formulas; with C-u, every row; with C-u C-u, until the table stops changing.",
+  params: [{ name: "all", kind: "prefix" }],
+  run: (all: e8.PrefixArg) => recalculate(all),
+});
+
+e8.defineCommand({
+  name: "org-table-iterate",
+  doc: "Recalculate the table until it stops changing, at most ten times, or as many as the prefix argument.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg: e8.PrefixArg) => iterate(arg),
+});
+
+e8.defineCommand({
+  name: "org-table-recalculate-buffer-tables",
+  doc: "Recalculate every table in the buffer.",
+  run: () =>
+    e8.saveRestriction(() => {
+      e8.widen();
+      mapTables(() => {
+        recalculate(true, true);
+        align();
+      }, true);
+    }),
+});
+
+e8.defineCommand({
+  name: "org-table-iterate-buffer-tables",
+  doc: "Recalculate every table in the buffer until none changes, at most ten times, for tables that refer to each other.",
+  run: () => {
+    const imax = 10;
+    let checksum = e8.md5(e8.bufferText(e8.pointMin(), e8.pointMax()));
+    e8.saveRestriction(() => {
+      e8.widen();
+      for (let i = imax; i > 0; ) {
+        i--;
+        mapTables(() => recalculate(true, true), true);
+        const c1 = e8.md5(e8.bufferText(e8.pointMin(), e8.pointMax()));
+        if (c1 === checksum) {
+          mapTables(align, true);
+          e8.message(`Convergence after ${imax - i} iterations`);
+          return;
+        }
+        checksum = c1;
+      }
+      mapTables(align, true);
+      e8.userError(`No convergence after ${imax} iterations`);
+    });
+  },
+});
+
+e8.defineCommand({
+  name: "org-table-calc-current-TBLFM",
+  doc: "Apply the formulas of the #+TBLFM: line at point to the table.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg: e8.PrefixArg) => calcCurrentTBLFM(arg),
+});
+
+e8.defineCommand({
+  name: "org-table-maybe-eval-formula",
+  doc: "Evaluate the field at point if it holds a formula, =... for its column or :=... for itself, and store the formula.",
+  run: () => maybeEvalFormula(),
+});
+
+e8.defineCommand({
+  name: "org-table-maybe-recalculate-line",
+  doc: "Recalculate the row at point if its first field is marked #, unless it was just recalculated.",
+  run: () => {
+    maybeRecalculateLine();
+  },
+});
+
+e8.defineCommand({
+  name: "org-table-field-info",
+  doc: "Show where point is in the table, as @ROW$COLUMN and its names, and the formula for its field.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: () => fieldInfo(),
+});
+
+e8.defineCommand({
+  name: "org-table-rotate-recalc-marks",
+  doc:
+    "Rotate the mark in the first field of the row at point, # * ! $ _ ^ and none, adding a column for marks if the table has none; " +
+    "with the region active, read the mark to give its rows.",
+  run: () => rotateRecalcMarks(),
+});
+
+e8.defun("org-table-get-stored-formulas", (noerror?: e8.Value, location?: e8.Value) =>
+  getStoredFormulas(truthy(noerror ?? null), typeof location === "number" ? location : undefined),
+);
+
+e8.defun("org-table-store-formulas", (alist: e8.Value, location?: e8.Value) =>
+  storeFormulas(
+    (Array.isArray(alist) ? alist : []).map((e) => (Array.isArray(e) ? [String(e[0]), String(e[1])] : [String(e), ""]) as [string, string]),
+    typeof location === "number" ? location : undefined,
+  ),
+);

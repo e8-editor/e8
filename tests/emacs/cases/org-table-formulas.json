@@ -1,0 +1,884 @@
+[
+ {
+  "name": "tblfm-cc",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1+$2\n",
+  "point": 65,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "tblfm-cc-start",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1+$2\n",
+  "point": 56,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "cu-cstar",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1*$2\n",
+  "point": 30,
+  "keys": "C-u C-c *",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "cstar-row",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1*$2\n",
+  "point": 44,
+  "keys": "C-c *",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "cc-at-table-start",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1-$2\n",
+  "point": 0,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "cc-in-row",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1-$2\n",
+  "point": 44,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "cu-cc-in-row",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1-$2\n",
+  "point": 44,
+  "keys": "C-u C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "cc-name-line",
+  "text": "#+NAME: tab\n| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1/$2\n",
+  "point": 9,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "vsum-hlines",
+  "text": "| x |\n|---|\n| 1 |\n| 2 |\n| 4 |\n|---|\n|   |\n#+TBLFM: @>$1=vsum(@I..@II)\n",
+  "point": 51,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "vsum-range",
+  "text": "| x | y |\n|---+---|\n| 1 | 5 |\n| 2 | 6 |\n|---+---|\n|   |   |\n#+TBLFM: @>$1=vsum(@2$1..@-1$1)::@>$2=vmean(@2..@-1)\n",
+  "point": 69,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "inline-field-formula-tab",
+  "text": "| 1 | 2 | :=$1*$2 |\n",
+  "point": 17,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "inline-column-formula-ret",
+  "text": "| 1 | 2 | =$1+$2 |\n| 5 | 6 |  |\n",
+  "point": 16,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "inline-column-formula-cc",
+  "text": "| 1 | 2 | =$1+$2 |\n| 5 | 6 |  |\n",
+  "point": 16,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "c-c-equals",
+  "text": "| 1 | 2 |  |\n| 5 | 6 |  |\n",
+  "point": 10,
+  "keys": "C-c =",
+  "modes": [
+   "org-mode"
+  ],
+  "answers": [
+   "$1*10"
+  ]
+ },
+ {
+  "name": "c-c-equals-stored",
+  "text": "| 1 | 2 |  |\n| 5 | 6 |  |\n#+TBLFM: $3=$1+1\n",
+  "point": 10,
+  "keys": "C-c =",
+  "modes": [
+   "org-mode"
+  ],
+  "answers": [
+   ""
+  ]
+ },
+ {
+  "name": "cu-c-c-equals-field",
+  "text": "| 1 | 2 |  |\n| 5 | 6 |  |\n",
+  "point": 10,
+  "keys": "C-u C-c =",
+  "modes": [
+   "org-mode"
+  ],
+  "answers": [
+   "$1+$2+100"
+  ]
+ },
+ {
+  "name": "cu-cu-c-c-equals",
+  "text": "| 1 | 2 |  |\n| 5 | 6 |  |\n#+TBLFM: $3=$1+$2\n",
+  "point": 10,
+  "keys": "C-u C-u C-c =",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "c-c-equals-remove",
+  "text": "| 1 | 2 |  |\n#+TBLFM: $3=$1+$2::$1=4\n",
+  "point": 10,
+  "keys": "C-c =",
+  "modes": [
+   "org-mode"
+  ],
+  "answers": [
+   " "
+  ]
+ },
+ {
+  "name": "c-c-equals-down",
+  "text": "| 1 | 2 |  |\n| 5 | 6 |  |\n| 7 | 8 |  |\n",
+  "point": 10,
+  "keys": "C-u 2 C-c =",
+  "modes": [
+   "org-mode"
+  ],
+  "answers": [
+   "$1*$2"
+  ]
+ },
+ {
+  "name": "format-2f",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1/$2;%.2f\n",
+  "point": 65,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "format-f3",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1/$2;f3\n",
+  "point": 65,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "format-int-f2",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1*$2;f2\n",
+  "point": 65,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "format-percent-d",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1/$2*100;%d%%\n",
+  "point": 65,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "format-s3",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1/$2;s3\n",
+  "point": 65,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "format-p20",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1/$2;p20\n",
+  "point": 65,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "format-n3",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1/$2;n3\n",
+  "point": 65,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "format-frac",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1/$2;F\n",
+  "point": 65,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "format-s-of-float",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1/$2;%s\n",
+  "point": 65,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "text-symbolic",
+  "text": "| abc | 2 |   |\n| 1.5 | x y |  |\n#+TBLFM: $3=$1*$2\n",
+  "point": 42,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "text-N",
+  "text": "| abc | 2 |   |\n| 1.5 | 3x |  |\n#+TBLFM: $3=$1*$2;N\n",
+  "point": 41,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "empty-fields",
+  "text": "| 1 |   |   |\n|   | 2 |   |\n#+TBLFM: $3=$1+$2\n",
+  "point": 37,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "empty-fields-E",
+  "text": "| 1 |   |   |\n|   | 2 |   |\n#+TBLFM: $3=$1+$2;E\n",
+  "point": 37,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "empty-fields-EN",
+  "text": "| 1 |   |   |\n|   | 2 |   |\n#+TBLFM: $3=$1+$2;EN\n",
+  "point": 37,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "range-empty-vmean",
+  "text": "| 1 |\n|   |\n| 3 |\n|   |\n#+TBLFM: @4$1=vmean(@1..@3)\n",
+  "point": 33,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "range-empty-vmean-E",
+  "text": "| 1 |\n|   |\n| 3 |\n|   |\n#+TBLFM: @4$1=vmean(@1..@3);EN\n",
+  "point": 33,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "durations-T",
+  "text": "| 1:30 | 2:45 |  |\n| 0:20 | 1:50:30 |  |\n#+TBLFM: $3=$1+$2;T\n",
+  "point": 50,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "durations-t",
+  "text": "| 1:30 | 2:45 |  |\n| 0:20 | 1:50:30 |  |\n#+TBLFM: $3=$1+$2;t\n",
+  "point": 50,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "durations-U",
+  "text": "| 1:30 | 2:45 |  |\n| 0:20 | 1:50:30 |  |\n#+TBLFM: $3=$1+$2;U\n",
+  "point": 50,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "durations-minus",
+  "text": "| 1:30 | 2:45 |  |\n#+TBLFM: $3=$1-$2;T\n",
+  "point": 28,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "column-names",
+  "text": "|   | x | y | z |\n| ! | a | b | c |\n|   | 1 | 2 |   |\n|   | 3 | 4 |   |\n#+TBLFM: $c=$a*$b\n",
+  "point": 81,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "parameters",
+  "text": "|   | x | y |\n| $ | k=10 |  |\n|   | 1 |   |\n|   | 3 |   |\n#+TBLFM: $3=$2*$k\n",
+  "point": 67,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "named-fields",
+  "text": "|   | x  | y |\n| _ | lo | hi |\n|   | 1  | 9 |\n| # | 3  |   |\n#+TBLFM: $3=$2+$lo+$hi\n",
+  "point": 70,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "named-field-formula",
+  "text": "|   | x  | y |\n| ^ | 5  | 6 |\n| _ | lo | hi |\n|   | 1  |  |\n#+TBLFM: $hi=$lo*100\n",
+  "point": 69,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "constants",
+  "text": "#+CONSTANTS: c=3 k=2.5\n| 1 |   |\n| 2 |   |\n#+TBLFM: $2=$1*$c+$k\n",
+  "point": 52,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "constants-variable",
+  "text": "| 1 |   |\n| 2 |   |\n#+TBLFM: $2=$1*$g\n",
+  "point": 29,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-table-formula-constants": {
+    "g": "9.81"
+   }
+  }
+ },
+ {
+  "name": "undefined-constant",
+  "text": "| 1 |   |\n#+TBLFM: $2=$1*$nope\n",
+  "point": 19,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "prop-constant",
+  "text": "* H\n:PROPERTIES:\n:RATE: 7\n:END:\n| 1 |   |\n| 2 |   |\n#+TBLFM: $2=$1*$PROP_RATE\n",
+  "point": 61,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "prop-constant-inherited",
+  "text": "* H\n:PROPERTIES:\n:RATE: 7\n:END:\n** Sub\n| 1 |   |\n#+TBLFM: $2=$1*$PROP_RATE\n",
+  "point": 58,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "remote",
+  "text": "#+NAME: src\n| 10 | 20 |\n| 30 | 40 |\n\n| a |   |\n| b |   |\n#+TBLFM: $2=remote(src,@2$1)+remote(src,@1$2)\n",
+  "point": 66,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "remote-range",
+  "text": "#+NAME: src\n| 10 | 20 |\n| 30 | 40 |\n\n| a |   |\n#+TBLFM: $2=vsum(remote(src,@1$1..@2$2))\n",
+  "point": 56,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "remote-missing",
+  "text": "| a |   |\n#+TBLFM: $2=remote(nope,@1$1)\n",
+  "point": 19,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "row-col-numbers",
+  "text": "| a |   |   |\n| b |   |   |\n|---+---+---|\n| c |   |   |\n#+TBLFM: $2=@#::$3=$#\n",
+  "point": 65,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "relative-running-total",
+  "text": "| n | t |\n|---+---|\n| 1 |   |\n| 2 |   |\n| 3 |   |\n#+TBLFM: $2=vsum(@I$1..@0$1)\n",
+  "point": 59,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "relative-above",
+  "text": "| 1 |   |\n| 2 |   |\n| 3 |   |\n#+TBLFM: @2$2..@3$2=@-1$1*10\n",
+  "point": 39,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "first-last",
+  "text": "| 1 | 2 | 3 |\n| 4 | 5 | 6 |\n|   |   |   |\n#+TBLFM: @>$<=@<$>+@<$<::@>$>=vsum(@<..@-1)\n",
+  "point": 51,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "hline-relative",
+  "text": "| a |\n|---|\n| 1 |\n| 2 |\n|---|\n| 3 |\n|---|\n|   |\n#+TBLFM: @>$1=vsum(@I..@III)\n",
+  "point": 57,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "hline-relative-II",
+  "text": "| a |\n|---|\n| 1 |\n| 2 |\n|---|\n| 3 |\n|---|\n|   |\n#+TBLFM: @>$1=vsum(@II..@III)\n",
+  "point": 57,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "dates-diff",
+  "text": "| <2024-01-01 Mon> | <2024-01-05 Fri> |   |\n| [2024-02-01 Thu] | [2024-03-01 Fri] |   |\n#+TBLFM: $3=$2-$1\n",
+  "point": 97,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "dates-add",
+  "text": "| <2024-01-01 Mon> |   |\n| [2024-02-28 Wed 10:30] |   |\n#+TBLFM: $2=$1+7\n",
+  "point": 65,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "dates-no-weekday",
+  "text": "| <2024-01-01> |   |\n#+TBLFM: $2=$1+1\n",
+  "point": 30,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "lisp-formula",
+  "text": "| 1 | 2 |   |\n#+TBLFM: $3='(+ $1 $2);N\n",
+  "point": 23,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "parse-error",
+  "text": "| 1 | 2 |   |\n#+TBLFM: $3=$1+*$2\n",
+  "point": 23,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "invalid-field",
+  "text": "| 1 | 2 |   |\n#+TBLFM: $3=$1+$9\n",
+  "point": 23,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "iterate-stable",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1*$2\n",
+  "point": 30,
+  "keys": "C-u C-u C-c *",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "iterate-converge",
+  "text": "| 1 | 0 |\n| 2 | 0 |\n#+TBLFM: $2=@-1$2+$1::@1$2=$1\n",
+  "point": 29,
+  "keys": "C-u C-u C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "marks-hash-tab",
+  "text": "| # | 1 | 2 |   |\n| # | 3 | 4 |   |\n| * | 5 | 6 |   |\n|   | 7 | 8 |   |\n#+TBLFM: $4=$2+$3\n",
+  "point": 6,
+  "keys": "TAB",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "marks-cu-cstar",
+  "text": "| # | 1 | 2 |   |\n| * | 5 | 6 |   |\n|   | 7 | 8 |   |\n#+TBLFM: $4=$2+$3\n",
+  "point": 6,
+  "keys": "C-u C-c *",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "marks-protected",
+  "text": "| ! | a | b | c |\n|   | 1 | 2 |   |\n| / | 5 | 6 |   |\n#+TBLFM: $4=$a+$b\n",
+  "point": 63,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "field-info",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n#+TBLFM: $3=$1+$2::@2$2=7\n",
+  "point": 34,
+  "keys": "C-c ?",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "field-info-column",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n#+TBLFM: $3=$1+$2\n",
+  "point": 38,
+  "keys": "C-c ?",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "rotate-marks",
+  "text": "| a | b |\n| c | d |\n",
+  "point": 6,
+  "keys": "C-#",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "rotate-marks-again",
+  "text": "| # | a | b |\n| # | c | d |\n",
+  "point": 10,
+  "keys": "C-# C-#",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "standard-refs-entry",
+  "text": "| 1 | 2 |  |\n| 5 | 6 |  |\n",
+  "point": 10,
+  "keys": "C-c =",
+  "modes": [
+   "org-mode"
+  ],
+  "answers": [
+   "A1+B&"
+  ]
+ },
+ {
+  "name": "standard-refs-t",
+  "text": "| 1 | 2 |  |\n| 5 | 6 |  |\n#+TBLFM: $3=$1+@1$2\n",
+  "point": 10,
+  "keys": "C-u C-c =",
+  "modes": [
+   "org-mode"
+  ],
+  "answers": [
+   "A1*2"
+  ],
+  "globals": {
+   "org-table-use-standard-references": true
+  }
+ },
+ {
+  "name": "double-definition",
+  "text": "| 1 |   |\n#+TBLFM: $2=1::$2=2\n",
+  "point": 19,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "lhs-row",
+  "text": "| 1 | 2 |\n| 3 | 4 |\n|   |   |\n#+TBLFM: @3=@1+@2\n",
+  "point": 39,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "vector-arith",
+  "text": "| 1 | 2 | 3 |   |\n#+TBLFM: $4=vmax($1..$3)-vmin($1..$3)\n",
+  "point": 27,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "if-formula",
+  "text": "| 1 |   |\n| 5 |   |\n#+TBLFM: $2=if($1>3, big, small)\n",
+  "point": 29,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "realign-wider",
+  "text": "| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1*1000000\n",
+  "point": 37,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "no-formulas-cstar",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n",
+  "point": 30,
+  "keys": "C-c *",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true
+ },
+ {
+  "name": "create-columns-error",
+  "text": "| 1 |\n#+TBLFM: @1$3=5\n",
+  "point": 15,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "create-columns-t",
+  "text": "| 1 |\n#+TBLFM: @1$3=5\n",
+  "point": 15,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-table-formula-create-columns": true
+  }
+ },
+ {
+  "name": "blank-lines-before-tblfm",
+  "text": "| 1 |   |\n\n#+TBLFM: $2=$1+1\n",
+  "point": 2,
+  "keys": "C-u C-c *",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "hash-row-repeat-cc",
+  "text": "| # | 1 | 0 |\n#+TBLFM: $3=$3+1\n",
+  "point": 6,
+  "keys": "C-c C-c C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "hash-row-tab-back",
+  "text": "| # | 1 | 0 |\n#+TBLFM: $3=$3+1\n",
+  "point": 6,
+  "keys": "TAB S-TAB TAB",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "create-columns-warn",
+  "text": "| 1 |\n#+TBLFM: @1$3=5\n",
+  "point": 15,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ],
+  "message": true,
+  "globals": {
+   "org-table-formula-create-columns": "'warn"
+  }
+ },
+ {
+  "name": "blank-formula-answer",
+  "text": "| 1 |  |\n#+TBLFM: $2=$1*3\n",
+  "point": 6,
+  "keys": "C-c =",
+  "modes": [
+   "org-mode"
+  ],
+  "answers": [
+   " = "
+  ]
+ },
+ {
+  "name": "lhs-row-beyond",
+  "text": "| 1 |   |\n| 2 |   |\n#+TBLFM: @5$2=1\n",
+  "point": 29,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "rhs-row-beyond",
+  "text": "| 1 |   |\n| 2 |   |\n#+TBLFM: $2=@5$1\n",
+  "point": 29,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "simple-range-beyond",
+  "text": "| 1 | 2 |   |\n#+TBLFM: $3=vsum($1..$5)\n",
+  "point": 23,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "tblfm-after-blank",
+  "text": "| 1 |   |\n\n#+TBLFM: $2=$1+1\n",
+  "point": 20,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "running-total-symbolic",
+  "text": "| x | t |\n|---+---|\n| b | 0 |\n| 1 |   |\n| 2 |   |\n#+TBLFM: @3$2..@>$2=@-1+$1\n",
+  "point": 59,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "comma-decimal",
+  "text": "| 1,5 |   |\n#+TBLFM: $2=$1*2\n",
+  "point": 21,
+  "keys": "C-c C-c",
+  "modes": [
+   "org-mode"
+  ]
+ }
+]

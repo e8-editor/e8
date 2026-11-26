@@ -1,0 +1,2970 @@
+[
+  {
+    "modes": [],
+    "formula": "1+2",
+    "num": false,
+    "result": "3"
+  },
+  {
+    "modes": [],
+    "formula": "1/3",
+    "num": false,
+    "result": "0.33333333"
+  },
+  {
+    "modes": [],
+    "formula": "2/3",
+    "num": false,
+    "result": "0.66666667"
+  },
+  {
+    "modes": [],
+    "formula": "10/2",
+    "num": false,
+    "result": "5"
+  },
+  {
+    "modes": [],
+    "formula": "7/2",
+    "num": false,
+    "result": "3.5"
+  },
+  {
+    "modes": [],
+    "formula": "1.0*3",
+    "num": false,
+    "result": "3."
+  },
+  {
+    "modes": [],
+    "formula": "3.0",
+    "num": false,
+    "result": "3."
+  },
+  {
+    "modes": [],
+    "formula": "0.1+0.2",
+    "num": false,
+    "result": "0.3"
+  },
+  {
+    "modes": [],
+    "formula": "1e10",
+    "num": false,
+    "result": "10000000000."
+  },
+  {
+    "modes": [],
+    "formula": "123456789*1000",
+    "num": false,
+    "result": "123456789000"
+  },
+  {
+    "modes": [],
+    "formula": "1.5e10",
+    "num": false,
+    "result": "15000000000."
+  },
+  {
+    "modes": [],
+    "formula": "12345678.9",
+    "num": false,
+    "result": "12345679."
+  },
+  {
+    "modes": [],
+    "formula": "123456789.1",
+    "num": false,
+    "result": "123456790."
+  },
+  {
+    "modes": [],
+    "formula": "0.0001",
+    "num": false,
+    "result": "1e-4"
+  },
+  {
+    "modes": [],
+    "formula": "0.001",
+    "num": false,
+    "result": "1e-3"
+  },
+  {
+    "modes": [],
+    "formula": "0.01",
+    "num": false,
+    "result": "0.01"
+  },
+  {
+    "modes": [],
+    "formula": "1e-5",
+    "num": false,
+    "result": "1e-5"
+  },
+  {
+    "modes": [],
+    "formula": "2^100",
+    "num": false,
+    "result": "1267650600228229401496703205376"
+  },
+  {
+    "modes": [],
+    "formula": "2^0.5",
+    "num": false,
+    "result": "1.4142136"
+  },
+  {
+    "modes": [],
+    "formula": "2.0^100",
+    "num": false,
+    "result": "1.2676506e30"
+  },
+  {
+    "modes": [],
+    "formula": "-5/2",
+    "num": false,
+    "result": "-2.5"
+  },
+  {
+    "modes": [],
+    "formula": "1/0",
+    "num": false,
+    "result": "1/0"
+  },
+  {
+    "modes": [],
+    "formula": "0/0",
+    "num": false,
+    "result": "0/0"
+  },
+  {
+    "modes": [],
+    "formula": "1.0/0",
+    "num": false,
+    "result": "1./0"
+  },
+  {
+    "modes": [],
+    "formula": "(1)+(2)",
+    "num": false,
+    "result": "3"
+  },
+  {
+    "modes": [],
+    "formula": "(2) (3)",
+    "num": false,
+    "result": "6"
+  },
+  {
+    "modes": [],
+    "formula": "2 3",
+    "num": false,
+    "result": "6"
+  },
+  {
+    "modes": [],
+    "formula": "[1,2,3]",
+    "num": false,
+    "result": "[1, 2, 3]"
+  },
+  {
+    "modes": [],
+    "formula": "vsum([1,2,3])",
+    "num": false,
+    "result": "6"
+  },
+  {
+    "modes": [],
+    "formula": "vsum([])",
+    "num": false,
+    "result": "0"
+  },
+  {
+    "modes": [],
+    "formula": "vmean([1,2,3,4])",
+    "num": false,
+    "result": "2.5"
+  },
+  {
+    "modes": [],
+    "formula": "vmean([1,2,3])",
+    "num": false,
+    "result": "2"
+  },
+  {
+    "modes": [],
+    "formula": "vmean([])",
+    "num": false,
+    "result": "vmean([])"
+  },
+  {
+    "modes": [],
+    "formula": "vmax([1,5,3])",
+    "num": false,
+    "result": "5"
+  },
+  {
+    "modes": [],
+    "formula": "vmin([])",
+    "num": false,
+    "result": "inf"
+  },
+  {
+    "modes": [],
+    "formula": "vmax([])",
+    "num": false,
+    "result": "-inf"
+  },
+  {
+    "modes": [],
+    "formula": "vcount([1,2])",
+    "num": false,
+    "result": "2"
+  },
+  {
+    "modes": [],
+    "formula": "vmedian([3,1,2,4])",
+    "num": false,
+    "result": "2.5"
+  },
+  {
+    "modes": [],
+    "formula": "vmedian([3,1,2])",
+    "num": false,
+    "result": "2"
+  },
+  {
+    "modes": [],
+    "formula": "vsdev([1,2,3,4])",
+    "num": false,
+    "result": "1.2909944"
+  },
+  {
+    "modes": [],
+    "formula": "vprod([2,3])",
+    "num": false,
+    "result": "6"
+  },
+  {
+    "modes": [],
+    "formula": "vvar([1,2,3,4])",
+    "num": false,
+    "result": "1.6666667"
+  },
+  {
+    "modes": [],
+    "formula": "vpsdev([1,2,3,4])",
+    "num": false,
+    "result": "1.1180340"
+  },
+  {
+    "modes": [],
+    "formula": "vpvar([2,4])",
+    "num": false,
+    "result": "1"
+  },
+  {
+    "modes": [],
+    "formula": "abc",
+    "num": false,
+    "result": "abc"
+  },
+  {
+    "modes": [],
+    "formula": "abc+1",
+    "num": false,
+    "result": "abc + 1"
+  },
+  {
+    "modes": [],
+    "formula": "1+abc",
+    "num": false,
+    "result": "1 + abc"
+  },
+  {
+    "modes": [],
+    "formula": "vsum([1,abc,2])",
+    "num": false,
+    "result": "1 + abc + 2"
+  },
+  {
+    "modes": [],
+    "formula": "(abc)*2",
+    "num": false,
+    "result": "2 abc"
+  },
+  {
+    "modes": [],
+    "formula": "2*(abc)",
+    "num": false,
+    "result": "2 abc"
+  },
+  {
+    "modes": [],
+    "formula": "(abc)/2",
+    "num": false,
+    "result": "abc / 2"
+  },
+  {
+    "modes": [],
+    "formula": "(a)-(b)",
+    "num": false,
+    "result": "a - b"
+  },
+  {
+    "modes": [],
+    "formula": "-(a)",
+    "num": false,
+    "result": "-a"
+  },
+  {
+    "modes": [],
+    "formula": "a^2",
+    "num": false,
+    "result": "a^2"
+  },
+  {
+    "modes": [],
+    "formula": "f(1,2)",
+    "num": false,
+    "result": "f(1, 2)"
+  },
+  {
+    "modes": [],
+    "formula": "abc def",
+    "num": false,
+    "result": "abc def"
+  },
+  {
+    "modes": [],
+    "formula": "(abc def)",
+    "num": false,
+    "result": "abc def"
+  },
+  {
+    "modes": [],
+    "formula": "if(1>2,3,4)",
+    "num": false,
+    "result": "4"
+  },
+  {
+    "modes": [],
+    "formula": "if(1<2,3,4)",
+    "num": false,
+    "result": "3"
+  },
+  {
+    "modes": [],
+    "formula": "1<2",
+    "num": false,
+    "result": "1"
+  },
+  {
+    "modes": [],
+    "formula": "1==1",
+    "num": false,
+    "result": "1"
+  },
+  {
+    "modes": [],
+    "formula": "1=1",
+    "num": false,
+    "result": "1"
+  },
+  {
+    "modes": [],
+    "formula": "1 = 2",
+    "num": false,
+    "result": "0"
+  },
+  {
+    "modes": [],
+    "formula": "2>=2",
+    "num": false,
+    "result": "1"
+  },
+  {
+    "modes": [],
+    "formula": "3!=4",
+    "num": false,
+    "result": "1"
+  },
+  {
+    "modes": [],
+    "formula": "1<a",
+    "num": false,
+    "result": "1 < a"
+  },
+  {
+    "modes": [],
+    "formula": "nan",
+    "num": false,
+    "result": "nan"
+  },
+  {
+    "modes": [],
+    "formula": "(nan)+1",
+    "num": false,
+    "result": "nan"
+  },
+  {
+    "modes": [],
+    "formula": "vsum([1,nan])",
+    "num": false,
+    "result": "nan"
+  },
+  {
+    "modes": [],
+    "formula": "[1,2]+1",
+    "num": false,
+    "result": "[2, 3]"
+  },
+  {
+    "modes": [],
+    "formula": "[1,2]*[3,4]",
+    "num": false,
+    "result": "11"
+  },
+  {
+    "modes": [],
+    "formula": "[1,2]*2",
+    "num": false,
+    "result": "[2, 4]"
+  },
+  {
+    "modes": [],
+    "formula": "round(2.5)",
+    "num": false,
+    "result": "3"
+  },
+  {
+    "modes": [],
+    "formula": "round(-2.5)",
+    "num": false,
+    "result": "-3"
+  },
+  {
+    "modes": [],
+    "formula": "round(3.14159,2)",
+    "num": false,
+    "result": "3.14"
+  },
+  {
+    "modes": [],
+    "formula": "round(3.14159,0)",
+    "num": false,
+    "result": "3"
+  },
+  {
+    "modes": [],
+    "formula": "round(1234.5,-2)",
+    "num": false,
+    "result": "1200"
+  },
+  {
+    "modes": [],
+    "formula": "floor(2.7)",
+    "num": false,
+    "result": "2"
+  },
+  {
+    "modes": [],
+    "formula": "floor(-2.7)",
+    "num": false,
+    "result": "-3"
+  },
+  {
+    "modes": [],
+    "formula": "ceil(2.1)",
+    "num": false,
+    "result": "3"
+  },
+  {
+    "modes": [],
+    "formula": "trunc(-2.7)",
+    "num": false,
+    "result": "-2"
+  },
+  {
+    "modes": [],
+    "formula": "abs(-3)",
+    "num": false,
+    "result": "3"
+  },
+  {
+    "modes": [],
+    "formula": "abs(-2.5)",
+    "num": false,
+    "result": "2.5"
+  },
+  {
+    "modes": [],
+    "formula": "sqrt(2)",
+    "num": false,
+    "result": "1.4142136"
+  },
+  {
+    "modes": [],
+    "formula": "sqrt(4)",
+    "num": false,
+    "result": "2"
+  },
+  {
+    "modes": [],
+    "formula": "sqrt(2.25)",
+    "num": false,
+    "result": "1.5"
+  },
+  {
+    "modes": [],
+    "formula": "sqrt(1:4)",
+    "num": false,
+    "result": "1:2"
+  },
+  {
+    "modes": [],
+    "formula": "exp(1)",
+    "num": false,
+    "result": "2.7182818"
+  },
+  {
+    "modes": [],
+    "formula": "exp(0)",
+    "num": false,
+    "result": "1"
+  },
+  {
+    "modes": [],
+    "formula": "ln(10)",
+    "num": false,
+    "result": "2.3025851"
+  },
+  {
+    "modes": [],
+    "formula": "ln(1)",
+    "num": false,
+    "result": "0"
+  },
+  {
+    "modes": [],
+    "formula": "log10(1000)",
+    "num": false,
+    "result": "3"
+  },
+  {
+    "modes": [],
+    "formula": "log10(2)",
+    "num": false,
+    "result": "0.30103000"
+  },
+  {
+    "modes": [],
+    "formula": "log(8,2)",
+    "num": false,
+    "result": "3"
+  },
+  {
+    "modes": [],
+    "formula": "sin(30)",
+    "num": false,
+    "result": "0.5"
+  },
+  {
+    "modes": [],
+    "formula": "cos(60)",
+    "num": false,
+    "result": "0.5"
+  },
+  {
+    "modes": [],
+    "formula": "sin(0)",
+    "num": false,
+    "result": "0"
+  },
+  {
+    "modes": [],
+    "formula": "pi",
+    "num": false,
+    "result": "pi"
+  },
+  {
+    "modes": [],
+    "formula": "e",
+    "num": false,
+    "result": "e"
+  },
+  {
+    "modes": [],
+    "formula": "2:3",
+    "num": false,
+    "result": "2:3"
+  },
+  {
+    "modes": [],
+    "formula": "1:3+1:6",
+    "num": false,
+    "result": "1:2"
+  },
+  {
+    "modes": [],
+    "formula": "2:4",
+    "num": false,
+    "result": "1:2"
+  },
+  {
+    "modes": [],
+    "formula": "5%3",
+    "num": false,
+    "result": "2"
+  },
+  {
+    "modes": [],
+    "formula": "-5%3",
+    "num": false,
+    "result": "1"
+  },
+  {
+    "modes": [],
+    "formula": "5.5%2",
+    "num": false,
+    "result": "1.5"
+  },
+  {
+    "modes": [],
+    "formula": "7\\2",
+    "num": false,
+    "result": "3"
+  },
+  {
+    "modes": [],
+    "formula": "-7\\2",
+    "num": false,
+    "result": "-4"
+  },
+  {
+    "modes": [],
+    "formula": "max(1,2,3)",
+    "num": false,
+    "result": "3"
+  },
+  {
+    "modes": [],
+    "formula": "min(4,2)",
+    "num": false,
+    "result": "2"
+  },
+  {
+    "modes": [],
+    "formula": "max(1,2.0)",
+    "num": false,
+    "result": "2."
+  },
+  {
+    "modes": [],
+    "formula": "fact(5)",
+    "num": false,
+    "result": "120"
+  },
+  {
+    "modes": [],
+    "formula": "5!",
+    "num": false,
+    "result": "120"
+  },
+  {
+    "modes": [],
+    "formula": "10%",
+    "num": false,
+    "result": "0.1"
+  },
+  {
+    "modes": [],
+    "formula": "50% + 1",
+    "num": false,
+    "result": "0"
+  },
+  {
+    "modes": [],
+    "formula": "2^-1",
+    "num": false,
+    "result": "0.5"
+  },
+  {
+    "modes": [],
+    "formula": "2^-2",
+    "num": false,
+    "result": "0.25"
+  },
+  {
+    "modes": [],
+    "formula": "0.5^2",
+    "num": false,
+    "result": "0.25"
+  },
+  {
+    "modes": [],
+    "formula": "1.5^2",
+    "num": false,
+    "result": "2.25"
+  },
+  {
+    "modes": [],
+    "formula": "<2024-01-05 Fri>-<2024-01-01 Mon>",
+    "num": false,
+    "result": "4"
+  },
+  {
+    "modes": [],
+    "formula": "<2024-01-01 Mon>+4",
+    "num": false,
+    "result": "<2024-01-05 Fri>"
+  },
+  {
+    "modes": [],
+    "formula": "<2024-01-01 Mon 10:30>+1",
+    "num": false,
+    "result": "<2024-01-02 Tue 10:30>"
+  },
+  {
+    "modes": [],
+    "formula": "<2024-01-01 Mon 10:30>-<2024-01-01 Mon 08:00>",
+    "num": false,
+    "result": "0.104167"
+  },
+  {
+    "modes": [],
+    "formula": "<2024-02-28 Wed>+1",
+    "num": false,
+    "result": "<2024-02-29 Thu>"
+  },
+  {
+    "modes": [],
+    "formula": "<2023-12-31 Sun>+1",
+    "num": false,
+    "result": "<2024-01-01 Mon>"
+  },
+  {
+    "modes": [],
+    "formula": "<2024-01-01>",
+    "num": false,
+    "result": "<2024-01-01 Mon>"
+  },
+  {
+    "modes": [],
+    "formula": "<2024-03-01 Fri>-<2023-03-01 Wed>",
+    "num": false,
+    "result": "366"
+  },
+  {
+    "modes": [],
+    "formula": "<2024-01-01 Mon 23:59>+0.5",
+    "num": false,
+    "result": "<2024-01-02 Tue 11:59>"
+  },
+  {
+    "modes": [],
+    "formula": "1+",
+    "num": false,
+    "result": {
+      "error": "Expected a number"
+    }
+  },
+  {
+    "modes": [],
+    "formula": "(1",
+    "num": false,
+    "result": "1"
+  },
+  {
+    "modes": [],
+    "formula": "1 2 +",
+    "num": false,
+    "result": {
+      "error": "Expected a number"
+    }
+  },
+  {
+    "modes": [],
+    "formula": "3.14159265358979",
+    "num": false,
+    "result": "3.1415927"
+  },
+  {
+    "modes": [],
+    "formula": "100000000",
+    "num": false,
+    "result": "100000000"
+  },
+  {
+    "modes": [],
+    "formula": "1e8",
+    "num": false,
+    "result": "100000000."
+  },
+  {
+    "modes": [],
+    "formula": "1.0e8",
+    "num": false,
+    "result": "100000000."
+  },
+  {
+    "modes": [],
+    "formula": "99999999.5",
+    "num": false,
+    "result": "100000000."
+  },
+  {
+    "modes": [],
+    "formula": "0.5",
+    "num": false,
+    "result": "0.5"
+  },
+  {
+    "modes": [],
+    "formula": ".5",
+    "num": false,
+    "result": "0.5"
+  },
+  {
+    "modes": [],
+    "formula": "1.",
+    "num": false,
+    "result": "1."
+  },
+  {
+    "modes": [],
+    "formula": "-0.0",
+    "num": false,
+    "result": "0."
+  },
+  {
+    "modes": [],
+    "formula": "1e100",
+    "num": false,
+    "result": "1e100"
+  },
+  {
+    "modes": [],
+    "formula": "2**3",
+    "num": false,
+    "result": "8"
+  },
+  {
+    "modes": [],
+    "formula": "1.23456789012345",
+    "num": false,
+    "result": "1.2345679"
+  },
+  {
+    "modes": [],
+    "formula": "1/7",
+    "num": false,
+    "result": "0.14285714"
+  },
+  {
+    "modes": [],
+    "formula": "22/7",
+    "num": false,
+    "result": "3.1428571"
+  },
+  {
+    "modes": [],
+    "formula": "2.5-0.5",
+    "num": false,
+    "result": "2."
+  },
+  {
+    "modes": [],
+    "formula": "4.0/2",
+    "num": false,
+    "result": "2."
+  },
+  {
+    "modes": [],
+    "formula": "1.1*1.1",
+    "num": false,
+    "result": "1.21"
+  },
+  {
+    "modes": [],
+    "formula": "3 - 1",
+    "num": false,
+    "result": "2"
+  },
+  {
+    "modes": [],
+    "formula": "a + b + 1",
+    "num": false,
+    "result": "a + b + 1"
+  },
+  {
+    "modes": [],
+    "formula": "1 + a + 2",
+    "num": false,
+    "result": "1 + a + 2"
+  },
+  {
+    "modes": [],
+    "formula": "vsum([a,b,c])",
+    "num": false,
+    "result": "a + b + c"
+  },
+  {
+    "modes": [],
+    "formula": "x*0",
+    "num": false,
+    "result": "0"
+  },
+  {
+    "modes": [],
+    "formula": "0*x",
+    "num": false,
+    "result": "0"
+  },
+  {
+    "modes": [],
+    "formula": "6/2*3",
+    "num": false,
+    "result": "1"
+  },
+  {
+    "modes": [],
+    "formula": "6/2/3",
+    "num": false,
+    "result": "1"
+  },
+  {
+    "modes": [],
+    "formula": "2^3^2",
+    "num": false,
+    "result": "512"
+  },
+  {
+    "modes": [],
+    "formula": "-2^2",
+    "num": false,
+    "result": "-4"
+  },
+  {
+    "modes": [],
+    "formula": "(-2)^2",
+    "num": false,
+    "result": "4"
+  },
+  {
+    "modes": [],
+    "formula": "1-2-3",
+    "num": false,
+    "result": "-4"
+  },
+  {
+    "modes": [],
+    "formula": "2*3+4",
+    "num": false,
+    "result": "10"
+  },
+  {
+    "modes": [],
+    "formula": "2+3*4",
+    "num": false,
+    "result": "14"
+  },
+  {
+    "modes": [],
+    "formula": "(2+3)*4",
+    "num": false,
+    "result": "20"
+  },
+  {
+    "modes": [],
+    "formula": "a/b*c",
+    "num": false,
+    "result": "a / (b c)"
+  },
+  {
+    "modes": [],
+    "formula": "a b/c",
+    "num": false,
+    "result": "a b / c"
+  },
+  {
+    "modes": [],
+    "formula": "a*b*c",
+    "num": false,
+    "result": "a b c"
+  },
+  {
+    "modes": [],
+    "formula": "2 a b",
+    "num": false,
+    "result": "2 a b"
+  },
+  {
+    "modes": [],
+    "formula": "a-(b-c)",
+    "num": false,
+    "result": "a + c - b"
+  },
+  {
+    "modes": [],
+    "formula": "a-(b+c)",
+    "num": false,
+    "result": "a - b - c"
+  },
+  {
+    "modes": [],
+    "formula": "1/(a b)",
+    "num": false,
+    "result": "1 / (a b)"
+  },
+  {
+    "modes": [],
+    "formula": "(a+b)^2",
+    "num": false,
+    "result": "(a + b)^2"
+  },
+  {
+    "modes": [],
+    "formula": "-a+b",
+    "num": false,
+    "result": "b - a"
+  },
+  {
+    "modes": [],
+    "formula": "a+(-b)",
+    "num": false,
+    "result": "a - b"
+  },
+  {
+    "modes": [],
+    "formula": "a-(-2)",
+    "num": false,
+    "result": "a + 2"
+  },
+  {
+    "modes": [],
+    "formula": "a+(-2)",
+    "num": false,
+    "result": "a - 2"
+  },
+  {
+    "modes": [],
+    "formula": "2 (a+b)",
+    "num": false,
+    "result": "2 (a + b)"
+  },
+  {
+    "modes": [],
+    "formula": "a (b)",
+    "num": false,
+    "result": "a(b)"
+  },
+  {
+    "modes": [],
+    "formula": "f(x) (y)",
+    "num": false,
+    "result": "f(x) y"
+  },
+  {
+    "modes": [],
+    "formula": "1.5+abc",
+    "num": false,
+    "result": "1.5 + abc"
+  },
+  {
+    "modes": [],
+    "formula": "abc-1",
+    "num": false,
+    "result": "abc - 1"
+  },
+  {
+    "modes": [],
+    "formula": "2*abc+3",
+    "num": false,
+    "result": "2 abc + 3"
+  },
+  {
+    "modes": [],
+    "formula": "3.5*2",
+    "num": false,
+    "result": "7."
+  },
+  {
+    "modes": [],
+    "formula": "1e3+1",
+    "num": false,
+    "result": "1001."
+  },
+  {
+    "modes": [],
+    "formula": "123456789012*10",
+    "num": false,
+    "result": "1234567890120"
+  },
+  {
+    "modes": [],
+    "formula": "0.1*3",
+    "num": false,
+    "result": "0.3"
+  },
+  {
+    "modes": [],
+    "formula": "1/3*3",
+    "num": false,
+    "result": "0.11111111"
+  },
+  {
+    "modes": [],
+    "formula": "2/3+1/3",
+    "num": false,
+    "result": "1."
+  },
+  {
+    "modes": [],
+    "formula": "1.0/3+1.0/3",
+    "num": false,
+    "result": "0.66666667"
+  },
+  {
+    "modes": [],
+    "formula": "vsum([1.5,2.25])",
+    "num": false,
+    "result": "3.75"
+  },
+  {
+    "modes": [],
+    "formula": "vmean([1.5,2.5])",
+    "num": false,
+    "result": "2."
+  },
+  {
+    "modes": [],
+    "formula": "vsum([1:2,1:3])",
+    "num": false,
+    "result": "5:6"
+  },
+  {
+    "modes": [],
+    "formula": "16#ff",
+    "num": false,
+    "result": "255"
+  },
+  {
+    "modes": [],
+    "formula": "2#101",
+    "num": false,
+    "result": "5"
+  },
+  {
+    "modes": [],
+    "formula": "1e-3*1000",
+    "num": false,
+    "result": "1."
+  },
+  {
+    "modes": [],
+    "formula": "12.5%",
+    "num": false,
+    "result": "0.125"
+  },
+  {
+    "modes": [],
+    "formula": "(5)%(3)",
+    "num": false,
+    "result": "2"
+  },
+  {
+    "modes": [],
+    "formula": "\"abc\"",
+    "num": false,
+    "result": "[97, 98, 99]"
+  },
+  {
+    "modes": [],
+    "formula": "1,2",
+    "num": false,
+    "result": "1, 2"
+  },
+  {
+    "modes": [],
+    "formula": "[1,2;3,4]",
+    "num": false,
+    "result": "[[1, 2], [3, 4]]"
+  },
+  {
+    "modes": [],
+    "formula": "[]",
+    "num": false,
+    "result": "[]"
+  },
+  {
+    "modes": [],
+    "formula": "inf",
+    "num": false,
+    "result": "inf"
+  },
+  {
+    "modes": [],
+    "formula": "-inf",
+    "num": false,
+    "result": "-inf"
+  },
+  {
+    "modes": [],
+    "formula": "inf+1",
+    "num": false,
+    "result": "inf"
+  },
+  {
+    "modes": [],
+    "formula": "uinf",
+    "num": false,
+    "result": "uinf"
+  },
+  {
+    "modes": [],
+    "formula": "1/inf",
+    "num": false,
+    "result": "0"
+  },
+  {
+    "modes": [],
+    "formula": "if(a,1,2)",
+    "num": false,
+    "result": "a ? 1 : 2"
+  },
+  {
+    "modes": [],
+    "formula": "a && b",
+    "num": false,
+    "result": "a && b"
+  },
+  {
+    "modes": [],
+    "formula": "1 && 2",
+    "num": false,
+    "result": "2"
+  },
+  {
+    "modes": [],
+    "formula": "0 && a",
+    "num": false,
+    "result": "0"
+  },
+  {
+    "modes": [],
+    "formula": "1 || 0",
+    "num": false,
+    "result": "1"
+  },
+  {
+    "modes": [],
+    "formula": "!0",
+    "num": false,
+    "result": "1"
+  },
+  {
+    "modes": [],
+    "formula": "!1",
+    "num": false,
+    "result": "0"
+  },
+  {
+    "modes": [],
+    "formula": "!a",
+    "num": false,
+    "result": "!a"
+  },
+  {
+    "modes": [],
+    "formula": "date(2024,1,5)",
+    "num": false,
+    "result": "<2024-01-05 Fri>"
+  },
+  {
+    "modes": [],
+    "formula": "date(<2024-01-05 Fri>)",
+    "num": false,
+    "result": "738890"
+  },
+  {
+    "modes": [],
+    "formula": "year(<2024-01-05 Fri>)",
+    "num": false,
+    "result": "2024"
+  },
+  {
+    "modes": [],
+    "formula": "month(<2024-01-05 Fri>)",
+    "num": false,
+    "result": "1"
+  },
+  {
+    "modes": [],
+    "formula": "day(<2024-01-05 Fri>)",
+    "num": false,
+    "result": "5"
+  },
+  {
+    "modes": [],
+    "formula": "weekday(<2024-01-05 Fri>)",
+    "num": false,
+    "result": "5"
+  },
+  {
+    "modes": [],
+    "formula": "floor(<2024-01-05 Fri 10:30>-<2024-01-01 Mon>)",
+    "num": false,
+    "result": "4"
+  },
+  {
+    "modes": [],
+    "formula": "round((<2024-01-01 Mon 10:30>-<2024-01-01 Mon 08:00>)*24,2)",
+    "num": false,
+    "result": "2.5"
+  },
+  {
+    "modes": [],
+    "formula": "1+2+3+4.5",
+    "num": false,
+    "result": "10.5"
+  },
+  {
+    "modes": [],
+    "formula": "0.1+0.7",
+    "num": false,
+    "result": "0.8"
+  },
+  {
+    "modes": [],
+    "formula": "100000000000",
+    "num": false,
+    "result": "100000000000"
+  },
+  {
+    "modes": [],
+    "formula": "1000000000000.",
+    "num": false,
+    "result": "1e12"
+  },
+  {
+    "modes": [],
+    "formula": "1e12",
+    "num": false,
+    "result": "1e12"
+  },
+  {
+    "modes": [],
+    "formula": "123456789012.",
+    "num": false,
+    "result": "123456790000."
+  },
+  {
+    "modes": [],
+    "formula": "0.000123",
+    "num": false,
+    "result": "1.23e-4"
+  },
+  {
+    "modes": [],
+    "formula": "1.5e-7",
+    "num": false,
+    "result": "1.5e-7"
+  },
+  {
+    "modes": [],
+    "formula": "12/5",
+    "num": false,
+    "result": "2.4"
+  },
+  {
+    "modes": [],
+    "formula": "-12/5",
+    "num": false,
+    "result": "-2.4"
+  },
+  {
+    "modes": [],
+    "formula": "-7%3",
+    "num": false,
+    "result": "2"
+  },
+  {
+    "modes": [],
+    "formula": "7%-3",
+    "num": false,
+    "result": "-2"
+  },
+  {
+    "modes": [],
+    "formula": "sqrt(-1)",
+    "num": false,
+    "result": "(0, 1)"
+  },
+  {
+    "modes": [],
+    "formula": "ln(0)",
+    "num": false,
+    "result": "ln(0)"
+  },
+  {
+    "modes": [],
+    "formula": "ln(-1)",
+    "num": false,
+    "result": "(0., 3.1415927)"
+  },
+  {
+    "modes": [],
+    "formula": "fact(-1)",
+    "num": false,
+    "result": "-1!"
+  },
+  {
+    "modes": [],
+    "formula": "fact(2.5)",
+    "num": false,
+    "result": "3.3233510"
+  },
+  {
+    "modes": [],
+    "formula": "vsum(1,2,3)",
+    "num": false,
+    "result": "6"
+  },
+  {
+    "modes": [],
+    "formula": "vmax(1,[2,3])",
+    "num": false,
+    "result": "3"
+  },
+  {
+    "modes": [],
+    "formula": "vcount(1,[2,3])",
+    "num": false,
+    "result": "3"
+  },
+  {
+    "modes": [],
+    "formula": "vmean(1,[2,3])",
+    "num": false,
+    "result": "2"
+  },
+  {
+    "modes": [],
+    "formula": "rev([1,2,3])",
+    "num": false,
+    "result": "[3, 2, 1]"
+  },
+  {
+    "modes": [],
+    "formula": "sort([3,1,2])",
+    "num": false,
+    "result": "[1, 2, 3]"
+  },
+  {
+    "modes": [],
+    "formula": "rsort([3,1,2])",
+    "num": false,
+    "result": "[3, 2, 1]"
+  },
+  {
+    "modes": [],
+    "formula": "vlen([1,2,3])",
+    "num": false,
+    "result": "3"
+  },
+  {
+    "modes": [],
+    "formula": "sqr(3)",
+    "num": false,
+    "result": "9"
+  },
+  {
+    "modes": [],
+    "formula": "inv(4)",
+    "num": false,
+    "result": "0.25"
+  },
+  {
+    "modes": [],
+    "formula": "inv(3)",
+    "num": false,
+    "result": "0.33333333"
+  },
+  {
+    "modes": [],
+    "formula": "sign(-3)",
+    "num": false,
+    "result": "-1"
+  },
+  {
+    "modes": [],
+    "formula": "fround(2.5)",
+    "num": false,
+    "result": "3."
+  },
+  {
+    "modes": [],
+    "formula": "ffloor(2.7)",
+    "num": false,
+    "result": "2."
+  },
+  {
+    "modes": [],
+    "formula": "$1",
+    "num": false,
+    "result": {
+      "error": "$'s not allowed in this context"
+    }
+  },
+  {
+    "modes": [],
+    "formula": "(3)*(4)",
+    "num": false,
+    "result": "12"
+  },
+  {
+    "modes": [],
+    "formula": "(3) (4)",
+    "num": false,
+    "result": "12"
+  },
+  {
+    "modes": [],
+    "formula": "(1.5)*(2)",
+    "num": false,
+    "result": "3."
+  },
+  {
+    "modes": [],
+    "formula": "(abc)+(def)",
+    "num": false,
+    "result": "abc + def"
+  },
+  {
+    "modes": [],
+    "formula": "(-3)",
+    "num": false,
+    "result": "-3"
+  },
+  {
+    "modes": [],
+    "formula": "(-3)+(4)",
+    "num": false,
+    "result": "1"
+  },
+  {
+    "modes": [],
+    "formula": "-(3)",
+    "num": false,
+    "result": "-3"
+  },
+  {
+    "modes": [],
+    "formula": "(3)-(-4)",
+    "num": false,
+    "result": "7"
+  },
+  {
+    "modes": [],
+    "formula": "()",
+    "num": false,
+    "result": {
+      "error": "Expected a number"
+    }
+  },
+  {
+    "modes": [],
+    "formula": "(1)+()",
+    "num": false,
+    "result": {
+      "error": "Expected a number"
+    }
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "fix",
+        2
+      ]
+    ],
+    "formula": "1/3",
+    "num": false,
+    "result": "0.33"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "sci",
+        3
+      ]
+    ],
+    "formula": "1/3",
+    "num": false,
+    "result": "3.33e-1"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "eng",
+        3
+      ]
+    ],
+    "formula": "1/3",
+    "num": false,
+    "result": "333e-3"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "float",
+        3
+      ]
+    ],
+    "formula": "1/3",
+    "num": false,
+    "result": "0.333"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "fix",
+        2
+      ]
+    ],
+    "formula": "2/3",
+    "num": false,
+    "result": "0.67"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "sci",
+        3
+      ]
+    ],
+    "formula": "2/3",
+    "num": false,
+    "result": "6.67e-1"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "eng",
+        3
+      ]
+    ],
+    "formula": "2/3",
+    "num": false,
+    "result": "667e-3"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "float",
+        3
+      ]
+    ],
+    "formula": "2/3",
+    "num": false,
+    "result": "0.667"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "fix",
+        2
+      ]
+    ],
+    "formula": "10/4",
+    "num": false,
+    "result": "2.50"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "sci",
+        3
+      ]
+    ],
+    "formula": "10/4",
+    "num": false,
+    "result": "2.5e0"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "eng",
+        3
+      ]
+    ],
+    "formula": "10/4",
+    "num": false,
+    "result": "2.5e0"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "float",
+        3
+      ]
+    ],
+    "formula": "10/4",
+    "num": false,
+    "result": "2.5"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "fix",
+        2
+      ]
+    ],
+    "formula": "3",
+    "num": false,
+    "result": "3"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "sci",
+        3
+      ]
+    ],
+    "formula": "3",
+    "num": false,
+    "result": "3"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "eng",
+        3
+      ]
+    ],
+    "formula": "3",
+    "num": false,
+    "result": "3"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "float",
+        3
+      ]
+    ],
+    "formula": "3",
+    "num": false,
+    "result": "3"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "fix",
+        2
+      ]
+    ],
+    "formula": "2.5",
+    "num": false,
+    "result": "2.50"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "sci",
+        3
+      ]
+    ],
+    "formula": "2.5",
+    "num": false,
+    "result": "2.5e0"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "eng",
+        3
+      ]
+    ],
+    "formula": "2.5",
+    "num": false,
+    "result": "2.5e0"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "float",
+        3
+      ]
+    ],
+    "formula": "2.5",
+    "num": false,
+    "result": "2.5"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "fix",
+        2
+      ]
+    ],
+    "formula": "1234.5678",
+    "num": false,
+    "result": "1234.57"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "sci",
+        3
+      ]
+    ],
+    "formula": "1234.5678",
+    "num": false,
+    "result": "1.23e3"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "eng",
+        3
+      ]
+    ],
+    "formula": "1234.5678",
+    "num": false,
+    "result": "1.23e3"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "float",
+        3
+      ]
+    ],
+    "formula": "1234.5678",
+    "num": false,
+    "result": "1230."
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "fix",
+        2
+      ]
+    ],
+    "formula": "-1/3",
+    "num": false,
+    "result": "-0.33"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "sci",
+        3
+      ]
+    ],
+    "formula": "-1/3",
+    "num": false,
+    "result": "-3.33e-1"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "eng",
+        3
+      ]
+    ],
+    "formula": "-1/3",
+    "num": false,
+    "result": "-333e-3"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "float",
+        3
+      ]
+    ],
+    "formula": "-1/3",
+    "num": false,
+    "result": "-0.333"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "fix",
+        2
+      ]
+    ],
+    "formula": "1e-5",
+    "num": false,
+    "result": "1e-5"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "sci",
+        3
+      ]
+    ],
+    "formula": "1e-5",
+    "num": false,
+    "result": "1e-5"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "eng",
+        3
+      ]
+    ],
+    "formula": "1e-5",
+    "num": false,
+    "result": "10e-6"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "float",
+        3
+      ]
+    ],
+    "formula": "1e-5",
+    "num": false,
+    "result": "1e-5"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "fix",
+        2
+      ]
+    ],
+    "formula": "123456789.123",
+    "num": false,
+    "result": "123456789.12"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "sci",
+        3
+      ]
+    ],
+    "formula": "123456789.123",
+    "num": false,
+    "result": "1.23e8"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "eng",
+        3
+      ]
+    ],
+    "formula": "123456789.123",
+    "num": false,
+    "result": "123e6"
+  },
+  {
+    "modes": [
+      "calc-float-format",
+      [
+        "float",
+        3
+      ]
+    ],
+    "formula": "123456789.123",
+    "num": false,
+    "result": "123000000."
+  },
+  {
+    "modes": [
+      "calc-internal-prec",
+      20,
+      "calc-float-format",
+      [
+        "float",
+        20
+      ]
+    ],
+    "formula": "1/3",
+    "num": false,
+    "result": "0.33333333333333333333"
+  },
+  {
+    "modes": [
+      "calc-internal-prec",
+      20
+    ],
+    "formula": "1/3",
+    "num": false,
+    "result": "0.33333333"
+  },
+  {
+    "modes": [
+      "calc-internal-prec",
+      6
+    ],
+    "formula": "1/3",
+    "num": false,
+    "result": "0.333333"
+  },
+  {
+    "modes": [
+      "calc-internal-prec",
+      20,
+      "calc-float-format",
+      [
+        "float",
+        20
+      ]
+    ],
+    "formula": "2^0.5",
+    "num": false,
+    "result": "1.4142135623730950488"
+  },
+  {
+    "modes": [
+      "calc-internal-prec",
+      20
+    ],
+    "formula": "2^0.5",
+    "num": false,
+    "result": "1.4142136"
+  },
+  {
+    "modes": [
+      "calc-internal-prec",
+      6
+    ],
+    "formula": "2^0.5",
+    "num": false,
+    "result": "1.41421"
+  },
+  {
+    "modes": [
+      "calc-internal-prec",
+      20,
+      "calc-float-format",
+      [
+        "float",
+        20
+      ]
+    ],
+    "formula": "1/7",
+    "num": false,
+    "result": "0.14285714285714285714"
+  },
+  {
+    "modes": [
+      "calc-internal-prec",
+      20
+    ],
+    "formula": "1/7",
+    "num": false,
+    "result": "0.14285714"
+  },
+  {
+    "modes": [
+      "calc-internal-prec",
+      6
+    ],
+    "formula": "1/7",
+    "num": false,
+    "result": "0.142857"
+  },
+  {
+    "modes": [
+      "calc-internal-prec",
+      20,
+      "calc-float-format",
+      [
+        "float",
+        20
+      ]
+    ],
+    "formula": "sqrt(2)",
+    "num": false,
+    "result": "1.4142135623730950488"
+  },
+  {
+    "modes": [
+      "calc-internal-prec",
+      20
+    ],
+    "formula": "sqrt(2)",
+    "num": false,
+    "result": "1.4142136"
+  },
+  {
+    "modes": [
+      "calc-internal-prec",
+      6
+    ],
+    "formula": "sqrt(2)",
+    "num": false,
+    "result": "1.41421"
+  },
+  {
+    "modes": [
+      "calc-internal-prec",
+      20,
+      "calc-float-format",
+      [
+        "float",
+        20
+      ]
+    ],
+    "formula": "22/7",
+    "num": false,
+    "result": "3.1428571428571428571"
+  },
+  {
+    "modes": [
+      "calc-internal-prec",
+      20
+    ],
+    "formula": "22/7",
+    "num": false,
+    "result": "3.1428571"
+  },
+  {
+    "modes": [
+      "calc-internal-prec",
+      6
+    ],
+    "formula": "22/7",
+    "num": false,
+    "result": "3.14286"
+  },
+  {
+    "modes": [
+      "calc-prefer-frac",
+      "t"
+    ],
+    "formula": "1/3",
+    "num": false,
+    "result": "1:3"
+  },
+  {
+    "modes": [
+      "calc-prefer-frac",
+      "t"
+    ],
+    "formula": "1/3+1/6",
+    "num": false,
+    "result": "1:2"
+  },
+  {
+    "modes": [
+      "calc-prefer-frac",
+      "t"
+    ],
+    "formula": "2/4",
+    "num": false,
+    "result": "1:2"
+  },
+  {
+    "modes": [
+      "calc-prefer-frac",
+      "t"
+    ],
+    "formula": "0.5+1/3",
+    "num": false,
+    "result": "0.83333333"
+  },
+  {
+    "modes": [
+      "calc-prefer-frac",
+      "t"
+    ],
+    "formula": "10/2",
+    "num": false,
+    "result": "5"
+  },
+  {
+    "modes": [
+      "calc-symbolic-mode",
+      "t"
+    ],
+    "formula": "sqrt(2)",
+    "num": false,
+    "result": "sqrt(2)"
+  },
+  {
+    "modes": [
+      "calc-symbolic-mode",
+      "t"
+    ],
+    "formula": "1/3",
+    "num": false,
+    "result": "0.33333333"
+  },
+  {
+    "modes": [
+      "calc-symbolic-mode",
+      "t"
+    ],
+    "formula": "sqrt(4)",
+    "num": false,
+    "result": "2"
+  },
+  {
+    "modes": [
+      "calc-symbolic-mode",
+      "t"
+    ],
+    "formula": "2^0.5",
+    "num": false,
+    "result": "2^0.5"
+  },
+  {
+    "modes": [
+      "calc-symbolic-mode",
+      "t"
+    ],
+    "formula": "exp(1)",
+    "num": false,
+    "result": "e"
+  },
+  {
+    "modes": [
+      "calc-symbolic-mode",
+      "t"
+    ],
+    "formula": "ln(2)",
+    "num": false,
+    "result": "ln(2)"
+  },
+  {
+    "modes": [
+      "calc-angle-mode",
+      "rad"
+    ],
+    "formula": "sin(pi/6)",
+    "num": false,
+    "result": "sin(pi / 6)"
+  },
+  {
+    "modes": [
+      "calc-angle-mode",
+      "rad"
+    ],
+    "formula": "sin(0.5)",
+    "num": false,
+    "result": "0.47942554"
+  },
+  {
+    "modes": [
+      "calc-angle-mode",
+      "rad"
+    ],
+    "formula": "cos(1)",
+    "num": false,
+    "result": "0.54030231"
+  },
+  {
+    "modes": [
+      "calc-angle-mode",
+      "rad"
+    ],
+    "formula": "arctan(1)",
+    "num": false,
+    "result": "0.78539816"
+  },
+  {
+    "modes": [
+      "calc-angle-mode",
+      "rad"
+    ],
+    "formula": "sin(30)",
+    "num": false,
+    "result": "-0.98803162"
+  },
+  {
+    "modes": [],
+    "formula": "abc",
+    "num": true,
+    "result": {
+      "error": "Number expected"
+    }
+  },
+  {
+    "modes": [],
+    "formula": "1+2",
+    "num": true,
+    "result": "3"
+  },
+  {
+    "modes": [],
+    "formula": "1/0",
+    "num": true,
+    "result": {
+      "error": "Division by zero: 1"
+    }
+  },
+  {
+    "modes": [],
+    "formula": "2.5",
+    "num": true,
+    "result": "2.5"
+  },
+  {
+    "modes": [],
+    "formula": "[1,2]",
+    "num": true,
+    "result": "[1, 2]"
+  },
+  {
+    "modes": [],
+    "formula": "<2024-01-01 Mon>",
+    "num": true,
+    "result": {
+      "error": "Number expected"
+    }
+  },
+  {
+    "modes": [],
+    "formula": "nan",
+    "num": true,
+    "result": {
+      "error": "Number expected"
+    }
+  },
+  {
+    "modes": [],
+    "formula": "(abc)+1",
+    "num": true,
+    "result": {
+      "error": "Number expected"
+    }
+  },
+  {
+    "modes": [],
+    "formula": "vmean([])",
+    "num": true,
+    "result": {
+      "error": "Must be at least 1 argument"
+    }
+  },
+  {
+    "modes": [],
+    "formula": "2*a*3",
+    "num": false,
+    "result": "6 a"
+  },
+  {
+    "modes": [],
+    "formula": "(3 apples)*(2)",
+    "num": false,
+    "result": "6 apples"
+  },
+  {
+    "modes": [],
+    "formula": "(2 a)*(3 b)",
+    "num": false,
+    "result": "6 a b"
+  },
+  {
+    "modes": [],
+    "formula": "(a)*(1.0)",
+    "num": false,
+    "result": "a"
+  },
+  {
+    "modes": [],
+    "formula": "(b+1)+2",
+    "num": false,
+    "result": "b + 3"
+  },
+  {
+    "modes": [],
+    "formula": "(a)-(2)+(3)",
+    "num": false,
+    "result": "a + 1"
+  },
+  {
+    "modes": [],
+    "formula": "x+x+x",
+    "num": false,
+    "result": "3 x"
+  },
+  {
+    "modes": [],
+    "formula": "x-x",
+    "num": false,
+    "result": "0"
+  },
+  {
+    "modes": [],
+    "formula": "x*x",
+    "num": false,
+    "result": "x^2"
+  },
+  {
+    "modes": [],
+    "formula": "(3 x)/(3)",
+    "num": false,
+    "result": "x"
+  },
+  {
+    "modes": [],
+    "formula": "vmean([a,b,1])",
+    "num": false,
+    "result": "(a + b) / 3 + 0.33333333"
+  },
+  {
+    "modes": [],
+    "formula": "max(a,b,3,4)",
+    "num": false,
+    "result": "max(a, b, 3, 4)"
+  },
+  {
+    "modes": [],
+    "formula": "min(1,2,a)",
+    "num": false,
+    "result": "min(1, 2, a)"
+  },
+  {
+    "modes": [],
+    "formula": "max(3,a)",
+    "num": false,
+    "result": "max(3, a)"
+  },
+  {
+    "modes": [],
+    "formula": "ln(e)",
+    "num": false,
+    "result": "1"
+  },
+  {
+    "modes": [],
+    "formula": "arcsin(1)",
+    "num": false,
+    "result": "90"
+  },
+  {
+    "modes": [],
+    "formula": "arcsin(-1)",
+    "num": false,
+    "result": "-90"
+  },
+  {
+    "modes": [],
+    "formula": "arccos(0)",
+    "num": false,
+    "result": "90"
+  },
+  {
+    "modes": [],
+    "formula": "arccos(1)",
+    "num": false,
+    "result": "0"
+  },
+  {
+    "modes": [],
+    "formula": "arctan(1)",
+    "num": false,
+    "result": "45"
+  },
+  {
+    "modes": [],
+    "formula": "8^(1:3)",
+    "num": false,
+    "result": "2"
+  },
+  {
+    "modes": [],
+    "formula": "27^(1:3)",
+    "num": false,
+    "result": "3"
+  },
+  {
+    "modes": [],
+    "formula": "4^0.5",
+    "num": false,
+    "result": "2."
+  },
+  {
+    "modes": [],
+    "formula": "9^1.5",
+    "num": false,
+    "result": "27."
+  },
+  {
+    "modes": [],
+    "formula": "0.0^0",
+    "num": false,
+    "result": "1"
+  },
+  {
+    "modes": [],
+    "formula": "2.5^0",
+    "num": false,
+    "result": "1."
+  },
+  {
+    "modes": [],
+    "formula": "a^0",
+    "num": false,
+    "result": "1"
+  },
+  {
+    "modes": [],
+    "formula": "float(1/3)",
+    "num": false,
+    "result": "0.33333333"
+  },
+  {
+    "modes": [],
+    "formula": "float(2)",
+    "num": false,
+    "result": "2."
+  },
+  {
+    "modes": [],
+    "formula": "nan==nan",
+    "num": false,
+    "result": "nan = nan"
+  },
+  {
+    "modes": [],
+    "formula": "inf*0",
+    "num": false,
+    "result": "nan"
+  },
+  {
+    "modes": [],
+    "formula": "inf-inf",
+    "num": false,
+    "result": "nan"
+  },
+  {
+    "modes": [],
+    "formula": "gcd(12,18)",
+    "num": false,
+    "result": "6"
+  },
+  {
+    "modes": [],
+    "formula": "lcm(4,6)",
+    "num": false,
+    "result": "12"
+  },
+  {
+    "modes": [],
+    "formula": "choose(5,2)",
+    "num": false,
+    "result": "10"
+  },
+  {
+    "modes": [],
+    "formula": "perm(5,2)",
+    "num": false,
+    "result": "20"
+  },
+  {
+    "modes": [],
+    "formula": "hypot(3,4)",
+    "num": false,
+    "result": "5"
+  },
+  {
+    "modes": [],
+    "formula": "rad(180)",
+    "num": false,
+    "result": "3.1415927"
+  },
+  {
+    "modes": [],
+    "formula": "deg(pi)",
+    "num": false,
+    "result": "deg(pi)"
+  },
+  {
+    "modes": [],
+    "formula": "sqrt(10^61+1)",
+    "num": false,
+    "result": "3.1622777e30"
+  },
+  {
+    "modes": [],
+    "formula": "sqrt(10^400)",
+    "num": false,
+    "result": "100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+  },
+  {
+    "modes": [],
+    "formula": "sqrt(12345678901234567890)",
+    "num": false,
+    "result": "3513641800."
+  },
+  {
+    "modes": [],
+    "formula": "a+1+2",
+    "num": false,
+    "result": "a + 3"
+  },
+  {
+    "modes": [],
+    "formula": "2 a + 3 a",
+    "num": false,
+    "result": "5 a"
+  },
+  {
+    "modes": [],
+    "formula": "a - 2 a",
+    "num": false,
+    "result": "-a"
+  },
+  {
+    "modes": [],
+    "formula": "(a b) c",
+    "num": false,
+    "result": "a b c"
+  },
+  {
+    "modes": [],
+    "formula": "3 (2 a)",
+    "num": false,
+    "result": "6 a"
+  },
+  {
+    "modes": [],
+    "formula": "a/2 + a/2",
+    "num": false,
+    "result": "a"
+  },
+  {
+    "modes": [],
+    "formula": "(2 a)/4",
+    "num": false,
+    "result": "0.5 a"
+  },
+  {
+    "modes": [],
+    "formula": "(6 a)/4",
+    "num": false,
+    "result": "1.5 a"
+  },
+  {
+    "modes": [],
+    "formula": "(6 a)/3",
+    "num": false,
+    "result": "2 a"
+  },
+  {
+    "modes": [],
+    "formula": "a*2/2",
+    "num": false,
+    "result": "a"
+  },
+  {
+    "modes": [],
+    "formula": "-a-a",
+    "num": false,
+    "result": "-2 a"
+  },
+  {
+    "modes": [],
+    "formula": "a*(-2)",
+    "num": false,
+    "result": "-2 a"
+  },
+  {
+    "modes": [],
+    "formula": "2*(-a)",
+    "num": false,
+    "result": "-2 a"
+  },
+  {
+    "modes": [],
+    "formula": "(a+b)-(a)",
+    "num": false,
+    "result": "a + b - a"
+  },
+  {
+    "modes": [],
+    "formula": "x^2*x",
+    "num": false,
+    "result": "x^3"
+  },
+  {
+    "modes": [],
+    "formula": "abc*2*abc",
+    "num": false,
+    "result": "2 abc^2"
+  },
+  {
+    "modes": [],
+    "formula": "(x)+(x)",
+    "num": false,
+    "result": "2 x"
+  },
+  {
+    "modes": [],
+    "formula": "0.5 x + 0.5 x",
+    "num": false,
+    "result": "x"
+  },
+  {
+    "modes": [],
+    "formula": "(a)+(1.5)+(2.5)",
+    "num": false,
+    "result": "a + 4."
+  },
+  {
+    "modes": [],
+    "formula": "(1)+(a)+(2)",
+    "num": false,
+    "result": "1 + a + 2"
+  },
+  {
+    "modes": [],
+    "formula": "(a)-(1)",
+    "num": false,
+    "result": "a - 1"
+  },
+  {
+    "modes": [],
+    "formula": "(a)+(-1)",
+    "num": false,
+    "result": "a - 1"
+  },
+  {
+    "modes": [],
+    "formula": "a + b - a",
+    "num": false,
+    "result": "a + b - a"
+  },
+  {
+    "modes": [],
+    "formula": "2 a - a",
+    "num": false,
+    "result": "a"
+  },
+  {
+    "modes": [],
+    "formula": "3*(a+1)",
+    "num": false,
+    "result": "3 a + 3"
+  },
+  {
+    "modes": [],
+    "formula": "(a+1)*3",
+    "num": false,
+    "result": "3 a + 3"
+  },
+  {
+    "modes": [],
+    "formula": "a*b*2",
+    "num": false,
+    "result": "2 a b"
+  },
+  {
+    "modes": [],
+    "formula": "b*a",
+    "num": false,
+    "result": "b a"
+  },
+  {
+    "modes": [],
+    "formula": "(a)*(b)",
+    "num": false,
+    "result": "a b"
+  },
+  {
+    "modes": [],
+    "formula": "(b)*(a)",
+    "num": false,
+    "result": "b a"
+  },
+  {
+    "modes": [],
+    "formula": "a/b/c",
+    "num": false,
+    "result": "a / (b c)"
+  },
+  {
+    "modes": [],
+    "formula": "(a/b)*2",
+    "num": false,
+    "result": "2 a / b"
+  },
+  {
+    "modes": [],
+    "formula": "2*(a/b)",
+    "num": false,
+    "result": "2 a / b"
+  },
+  {
+    "modes": [],
+    "formula": "(a)+(b)+(1)+(2)",
+    "num": false,
+    "result": "a + b + 3"
+  },
+  {
+    "modes": [],
+    "formula": "1 - a",
+    "num": false,
+    "result": "1 - a"
+  },
+  {
+    "modes": [],
+    "formula": "(5)-(a)",
+    "num": false,
+    "result": "5 - a"
+  },
+  {
+    "modes": [],
+    "formula": "-(a)+1",
+    "num": false,
+    "result": "1 - a"
+  },
+  {
+    "modes": [],
+    "formula": "(a)/(b)",
+    "num": false,
+    "result": "a / b"
+  },
+  {
+    "modes": [],
+    "formula": "x/x",
+    "num": false,
+    "result": "1"
+  },
+  {
+    "modes": [],
+    "formula": "2 x/x",
+    "num": false,
+    "result": "2 x / x"
+  },
+  {
+    "modes": [],
+    "formula": "(a)*(0.5)",
+    "num": false,
+    "result": "0.5 a"
+  },
+  {
+    "modes": [],
+    "formula": "(a)*(2.0)",
+    "num": false,
+    "result": "2. a"
+  },
+  {
+    "modes": [],
+    "formula": "(a)+(0.)",
+    "num": false,
+    "result": "a"
+  },
+  {
+    "modes": [],
+    "formula": "vsum([a,1,b,2])",
+    "num": false,
+    "result": "a + 1 + b + 2"
+  },
+  {
+    "modes": [],
+    "formula": "vsum([1,2,a,b])",
+    "num": false,
+    "result": "3 + a + b"
+  },
+  {
+    "modes": [],
+    "formula": "vprod([a,2,b,3])",
+    "num": false,
+    "result": "6 a b"
+  },
+  {
+    "modes": [
+      "calc-internal-prec",
+      30,
+      "calc-float-format",
+      [
+        "float",
+        30
+      ]
+    ],
+    "formula": "sqrt(2)",
+    "num": false,
+    "result": "1.41421356237309504880168872421"
+  },
+  {
+    "modes": [
+      "calc-internal-prec",
+      30,
+      "calc-float-format",
+      [
+        "float",
+        30
+      ]
+    ],
+    "formula": "2^0.5",
+    "num": false,
+    "result": "1.41421356237309504880168872421"
+  },
+  {
+    "modes": [
+      "calc-internal-prec",
+      30,
+      "calc-float-format",
+      [
+        "float",
+        30
+      ]
+    ],
+    "formula": "vsdev([1,2,3,4])",
+    "num": false,
+    "result": "1.2909944487358056283930884666"
+  },
+  {
+    "modes": [
+      "calc-internal-prec",
+      30,
+      "calc-float-format",
+      [
+        "float",
+        30
+      ]
+    ],
+    "formula": "1/3",
+    "num": false,
+    "result": "0.333333333333333333333333333333"
+  }
+]

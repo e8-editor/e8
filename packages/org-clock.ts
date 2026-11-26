@@ -1888,7 +1888,7 @@ function writeClocktableDefault(ipos: number, tables: TableData[], params: e8.Va
       }
     });
   }
-  if (recalc) e8.call("org-table-recalculate");
+  if (recalc) e8.callWithPrefix([4], "org-table-recalculate");
   return totalTime;
 }
 

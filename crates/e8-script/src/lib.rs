@@ -204,6 +204,7 @@ const PACKAGES: &[(&str, &str)] = &[
     ("packages/ediff-hook.ts", include_str!("../../../packages/ediff-hook.ts")),
     ("packages/abbrev.ts", include_str!("../../../packages/abbrev.ts")),
     ("packages/org-macs.ts", include_str!("../../../packages/org-macs.ts")),
+    ("packages/calc.ts", include_str!("../../../packages/calc.ts")),
     ("packages/org-table.ts", include_str!("../../../packages/org-table.ts")),
     ("packages/iso8601.ts", include_str!("../../../packages/iso8601.ts")),
     ("packages/parse-time.ts", include_str!("../../../packages/parse-time.ts")),

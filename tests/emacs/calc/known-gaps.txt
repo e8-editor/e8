@@ -1,0 +1,5 @@
+# Formulas where packages/calc.ts gives what Emacs's Calc does not, each
+# with why after " # ". The name is the formula, after its modes as JSON
+# when it has any, and " num" when it was evaluated with the num separator.
+sqrt(-1) # E8's Calc has no complex numbers, so the square root of a negative number stays as it is
+ln(-1) # no complex numbers, as for sqrt(-1)

@@ -93,6 +93,10 @@ record.el also makes opening a link in a browser or another program an error, so
 E8_FUZZ_SEED=1 E8_FUZZ_CASES=20000 cargo test --release -p e8-script --test regexp -- --ignored --nocapture
 ```
 
+## Calc
+
+Org's table formulas are worked out by a part of Calc written in TypeScript (`packages/calc.ts`, [ADR 0115](../../docs/adr/0115-table-formulas-on-a-part-of-calc.md)). `calc/cases.json` lists formulas, each with the Calc modes that change Org's `org-calc-default-modes` for it, as a plist, and `"num"` for the separator Org's `N` flag passes; `emacs -Q --batch -l tests/emacs/calc/record.el` records what Emacs's `calc-eval` gives for each in `calc/golden.json`, and `cargo nextest run -p e8-script --test all calc::` compares. Only that a formula is an error is compared, not Calc's message, as Org writes `#ERROR` for any. `calc/known-gaps.txt` names the formulas E8 does not work out as Calc does, with why.
+
 ## Images
 
 Batch Emacs and Emacs on a terminal cannot load images, so `images.el` runs a graphical Emacs for a moment and records what it answers about the test images in `crates/e8-core/tests/images/`: `image-size` with each property, masks, metadata, `imagep`, and the line heights and positions of a buffer of images, into `target/image-answers.el`. The tests in `crates/e8-core/tests/images.rs` and `crates/e8-script/tests/images.rs` hold those answers, with metrics matching the frame's font (Menlo at 12 pixels on macOS):
