@@ -1788,6 +1788,224 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "hash-row-repeat-cc",
+      "input": {
+        "text": "| # | 1 | 0 |\n#+TBLFM: $3=$3+1\n",
+        "point": 6,
+        "keys": "C-c C-c C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| # | 1 | 2 |\n#+TBLFM: $3=$3+1\n",
+      "visible": "| # | 1 | 2 |\n#+TBLFM: $3=$3+1\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "hash-row-tab-back",
+      "input": {
+        "text": "| # | 1 | 0 |\n#+TBLFM: $3=$3+1\n",
+        "point": 6,
+        "keys": "TAB S-TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| # | 1 | 3 |\n#+TBLFM: $3=$3+1\n",
+      "visible": "| # | 1 | 3 |\n#+TBLFM: $3=$3+1\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "create-columns-warn",
+      "input": {
+        "text": "| 1 |\n#+TBLFM: @1$3=5\n",
+        "point": 15,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-table-formula-create-columns": "'warn"
+        }
+      },
+      "text": "| 1 |   | 5 |\n#+TBLFM: @1$3=5\n",
+      "visible": "| 1 |   | 5 |\n#+TBLFM: @1$3=5\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Warning (org): Out-of-bounds formula added columns"
+    },
+    {
+      "name": "blank-formula-answer",
+      "input": {
+        "text": "| 1 |  |\n#+TBLFM: $2=$1*3\n",
+        "point": 6,
+        "keys": "C-c =",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          " = "
+        ]
+      },
+      "text": "| 1 |  |\n#+TBLFM: $2=\n",
+      "visible": "| 1 |  |\n#+TBLFM: $2=\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Args out of range: 1, 1"
+    },
+    {
+      "name": "lhs-row-beyond",
+      "input": {
+        "text": "| 1 |   |\n| 2 |   |\n#+TBLFM: @5$2=1\n",
+        "point": 29,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1 |   |\n| 2 |   |\n#+TBLFM: @5$2=1\n",
+      "visible": "| 1 |   |\n| 2 |   |\n#+TBLFM: @5$2=1\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Args out of range: [nil 0 1], 5"
+    },
+    {
+      "name": "rhs-row-beyond",
+      "input": {
+        "text": "| 1 |   |\n| 2 |   |\n#+TBLFM: $2=@5$1\n",
+        "point": 29,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1 |   |\n| 2 |   |\n#+TBLFM: $2=@5$1\n",
+      "visible": "| 1 |   |\n| 2 |   |\n#+TBLFM: $2=@5$1\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Args out of range: [nil 0 1], 5"
+    },
+    {
+      "name": "simple-range-beyond",
+      "input": {
+        "text": "| 1 | 2 |   |\n#+TBLFM: $3=vsum($1..$5)\n",
+        "point": 23,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1 | 2 |   |\n#+TBLFM: $3=vsum($1..$5)\n",
+      "visible": "| 1 | 2 |   |\n#+TBLFM: $3=vsum($1..$5)\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "End index out of bounds: 5"
+    },
+    {
+      "name": "tblfm-after-blank",
+      "input": {
+        "text": "| 1 |   |\n\n#+TBLFM: $2=$1+1\n",
+        "point": 20,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1 |   |\n\n#+TBLFM: $2=$1+1\n",
+      "visible": "| 1 |   |\n\n#+TBLFM: $2=$1+1\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "running-total-symbolic",
+      "input": {
+        "text": "| x | t |\n|---+---|\n| b | 0 |\n| 1 |   |\n| 2 |   |\n#+TBLFM: @3$2..@>$2=@-1+$1\n",
+        "point": 59,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| x | t |\n|---+---|\n| b | 0 |\n| 1 | 1 |\n| 2 | 3 |\n#+TBLFM: @3$2..@>$2=@-1+$1\n",
+      "visible": "| x | t |\n|---+---|\n| b | 0 |\n| 1 | 1 |\n| 2 | 3 |\n#+TBLFM: @3$2..@>$2=@-1+$1\n",
+      "point": 59,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "comma-decimal",
+      "input": {
+        "text": "| 1,5 |   |\n#+TBLFM: $2=$1*2\n",
+        "point": 21,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1,5 | (2, 10) |\n#+TBLFM: $2=$1*2\n",
+      "visible": "| 1,5 | (2, 10) |\n#+TBLFM: $2=$1*2\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }

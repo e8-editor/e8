@@ -2382,5 +2382,589 @@
     "result": {
       "error": "Must be at least 1 argument"
     }
+  },
+  {
+    "modes": [],
+    "formula": "2*a*3",
+    "num": false,
+    "result": "6 a"
+  },
+  {
+    "modes": [],
+    "formula": "(3 apples)*(2)",
+    "num": false,
+    "result": "6 apples"
+  },
+  {
+    "modes": [],
+    "formula": "(2 a)*(3 b)",
+    "num": false,
+    "result": "6 a b"
+  },
+  {
+    "modes": [],
+    "formula": "(a)*(1.0)",
+    "num": false,
+    "result": "a"
+  },
+  {
+    "modes": [],
+    "formula": "(b+1)+2",
+    "num": false,
+    "result": "b + 3"
+  },
+  {
+    "modes": [],
+    "formula": "(a)-(2)+(3)",
+    "num": false,
+    "result": "a + 1"
+  },
+  {
+    "modes": [],
+    "formula": "x+x+x",
+    "num": false,
+    "result": "3 x"
+  },
+  {
+    "modes": [],
+    "formula": "x-x",
+    "num": false,
+    "result": "0"
+  },
+  {
+    "modes": [],
+    "formula": "x*x",
+    "num": false,
+    "result": "x^2"
+  },
+  {
+    "modes": [],
+    "formula": "(3 x)/(3)",
+    "num": false,
+    "result": "x"
+  },
+  {
+    "modes": [],
+    "formula": "vmean([a,b,1])",
+    "num": false,
+    "result": "(a + b) / 3 + 0.33333333"
+  },
+  {
+    "modes": [],
+    "formula": "max(a,b,3,4)",
+    "num": false,
+    "result": "max(a, b, 3, 4)"
+  },
+  {
+    "modes": [],
+    "formula": "min(1,2,a)",
+    "num": false,
+    "result": "min(1, 2, a)"
+  },
+  {
+    "modes": [],
+    "formula": "max(3,a)",
+    "num": false,
+    "result": "max(3, a)"
+  },
+  {
+    "modes": [],
+    "formula": "ln(e)",
+    "num": false,
+    "result": "1"
+  },
+  {
+    "modes": [],
+    "formula": "arcsin(1)",
+    "num": false,
+    "result": "90"
+  },
+  {
+    "modes": [],
+    "formula": "arcsin(-1)",
+    "num": false,
+    "result": "-90"
+  },
+  {
+    "modes": [],
+    "formula": "arccos(0)",
+    "num": false,
+    "result": "90"
+  },
+  {
+    "modes": [],
+    "formula": "arccos(1)",
+    "num": false,
+    "result": "0"
+  },
+  {
+    "modes": [],
+    "formula": "arctan(1)",
+    "num": false,
+    "result": "45"
+  },
+  {
+    "modes": [],
+    "formula": "8^(1:3)",
+    "num": false,
+    "result": "2"
+  },
+  {
+    "modes": [],
+    "formula": "27^(1:3)",
+    "num": false,
+    "result": "3"
+  },
+  {
+    "modes": [],
+    "formula": "4^0.5",
+    "num": false,
+    "result": "2."
+  },
+  {
+    "modes": [],
+    "formula": "9^1.5",
+    "num": false,
+    "result": "27."
+  },
+  {
+    "modes": [],
+    "formula": "0.0^0",
+    "num": false,
+    "result": "1"
+  },
+  {
+    "modes": [],
+    "formula": "2.5^0",
+    "num": false,
+    "result": "1."
+  },
+  {
+    "modes": [],
+    "formula": "a^0",
+    "num": false,
+    "result": "1"
+  },
+  {
+    "modes": [],
+    "formula": "float(1/3)",
+    "num": false,
+    "result": "0.33333333"
+  },
+  {
+    "modes": [],
+    "formula": "float(2)",
+    "num": false,
+    "result": "2."
+  },
+  {
+    "modes": [],
+    "formula": "nan==nan",
+    "num": false,
+    "result": "nan = nan"
+  },
+  {
+    "modes": [],
+    "formula": "inf*0",
+    "num": false,
+    "result": "nan"
+  },
+  {
+    "modes": [],
+    "formula": "inf-inf",
+    "num": false,
+    "result": "nan"
+  },
+  {
+    "modes": [],
+    "formula": "gcd(12,18)",
+    "num": false,
+    "result": "6"
+  },
+  {
+    "modes": [],
+    "formula": "lcm(4,6)",
+    "num": false,
+    "result": "12"
+  },
+  {
+    "modes": [],
+    "formula": "choose(5,2)",
+    "num": false,
+    "result": "10"
+  },
+  {
+    "modes": [],
+    "formula": "perm(5,2)",
+    "num": false,
+    "result": "20"
+  },
+  {
+    "modes": [],
+    "formula": "hypot(3,4)",
+    "num": false,
+    "result": "5"
+  },
+  {
+    "modes": [],
+    "formula": "rad(180)",
+    "num": false,
+    "result": "3.1415927"
+  },
+  {
+    "modes": [],
+    "formula": "deg(pi)",
+    "num": false,
+    "result": "deg(pi)"
+  },
+  {
+    "modes": [],
+    "formula": "sqrt(10^61+1)",
+    "num": false,
+    "result": "3.1622777e30"
+  },
+  {
+    "modes": [],
+    "formula": "sqrt(10^400)",
+    "num": false,
+    "result": "100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+  },
+  {
+    "modes": [],
+    "formula": "sqrt(12345678901234567890)",
+    "num": false,
+    "result": "3513641800."
+  },
+  {
+    "modes": [],
+    "formula": "a+1+2",
+    "num": false,
+    "result": "a + 3"
+  },
+  {
+    "modes": [],
+    "formula": "2 a + 3 a",
+    "num": false,
+    "result": "5 a"
+  },
+  {
+    "modes": [],
+    "formula": "a - 2 a",
+    "num": false,
+    "result": "-a"
+  },
+  {
+    "modes": [],
+    "formula": "(a b) c",
+    "num": false,
+    "result": "a b c"
+  },
+  {
+    "modes": [],
+    "formula": "3 (2 a)",
+    "num": false,
+    "result": "6 a"
+  },
+  {
+    "modes": [],
+    "formula": "a/2 + a/2",
+    "num": false,
+    "result": "a"
+  },
+  {
+    "modes": [],
+    "formula": "(2 a)/4",
+    "num": false,
+    "result": "0.5 a"
+  },
+  {
+    "modes": [],
+    "formula": "(6 a)/4",
+    "num": false,
+    "result": "1.5 a"
+  },
+  {
+    "modes": [],
+    "formula": "(6 a)/3",
+    "num": false,
+    "result": "2 a"
+  },
+  {
+    "modes": [],
+    "formula": "a*2/2",
+    "num": false,
+    "result": "a"
+  },
+  {
+    "modes": [],
+    "formula": "-a-a",
+    "num": false,
+    "result": "-2 a"
+  },
+  {
+    "modes": [],
+    "formula": "a*(-2)",
+    "num": false,
+    "result": "-2 a"
+  },
+  {
+    "modes": [],
+    "formula": "2*(-a)",
+    "num": false,
+    "result": "-2 a"
+  },
+  {
+    "modes": [],
+    "formula": "(a+b)-(a)",
+    "num": false,
+    "result": "a + b - a"
+  },
+  {
+    "modes": [],
+    "formula": "x^2*x",
+    "num": false,
+    "result": "x^3"
+  },
+  {
+    "modes": [],
+    "formula": "abc*2*abc",
+    "num": false,
+    "result": "2 abc^2"
+  },
+  {
+    "modes": [],
+    "formula": "(x)+(x)",
+    "num": false,
+    "result": "2 x"
+  },
+  {
+    "modes": [],
+    "formula": "0.5 x + 0.5 x",
+    "num": false,
+    "result": "x"
+  },
+  {
+    "modes": [],
+    "formula": "(a)+(1.5)+(2.5)",
+    "num": false,
+    "result": "a + 4."
+  },
+  {
+    "modes": [],
+    "formula": "(1)+(a)+(2)",
+    "num": false,
+    "result": "1 + a + 2"
+  },
+  {
+    "modes": [],
+    "formula": "(a)-(1)",
+    "num": false,
+    "result": "a - 1"
+  },
+  {
+    "modes": [],
+    "formula": "(a)+(-1)",
+    "num": false,
+    "result": "a - 1"
+  },
+  {
+    "modes": [],
+    "formula": "a + b - a",
+    "num": false,
+    "result": "a + b - a"
+  },
+  {
+    "modes": [],
+    "formula": "2 a - a",
+    "num": false,
+    "result": "a"
+  },
+  {
+    "modes": [],
+    "formula": "3*(a+1)",
+    "num": false,
+    "result": "3 a + 3"
+  },
+  {
+    "modes": [],
+    "formula": "(a+1)*3",
+    "num": false,
+    "result": "3 a + 3"
+  },
+  {
+    "modes": [],
+    "formula": "a*b*2",
+    "num": false,
+    "result": "2 a b"
+  },
+  {
+    "modes": [],
+    "formula": "b*a",
+    "num": false,
+    "result": "b a"
+  },
+  {
+    "modes": [],
+    "formula": "(a)*(b)",
+    "num": false,
+    "result": "a b"
+  },
+  {
+    "modes": [],
+    "formula": "(b)*(a)",
+    "num": false,
+    "result": "b a"
+  },
+  {
+    "modes": [],
+    "formula": "a/b/c",
+    "num": false,
+    "result": "a / (b c)"
+  },
+  {
+    "modes": [],
+    "formula": "(a/b)*2",
+    "num": false,
+    "result": "2 a / b"
+  },
+  {
+    "modes": [],
+    "formula": "2*(a/b)",
+    "num": false,
+    "result": "2 a / b"
+  },
+  {
+    "modes": [],
+    "formula": "(a)+(b)+(1)+(2)",
+    "num": false,
+    "result": "a + b + 3"
+  },
+  {
+    "modes": [],
+    "formula": "1 - a",
+    "num": false,
+    "result": "1 - a"
+  },
+  {
+    "modes": [],
+    "formula": "(5)-(a)",
+    "num": false,
+    "result": "5 - a"
+  },
+  {
+    "modes": [],
+    "formula": "-(a)+1",
+    "num": false,
+    "result": "1 - a"
+  },
+  {
+    "modes": [],
+    "formula": "(a)/(b)",
+    "num": false,
+    "result": "a / b"
+  },
+  {
+    "modes": [],
+    "formula": "x/x",
+    "num": false,
+    "result": "1"
+  },
+  {
+    "modes": [],
+    "formula": "2 x/x",
+    "num": false,
+    "result": "2 x / x"
+  },
+  {
+    "modes": [],
+    "formula": "(a)*(0.5)",
+    "num": false,
+    "result": "0.5 a"
+  },
+  {
+    "modes": [],
+    "formula": "(a)*(2.0)",
+    "num": false,
+    "result": "2. a"
+  },
+  {
+    "modes": [],
+    "formula": "(a)+(0.)",
+    "num": false,
+    "result": "a"
+  },
+  {
+    "modes": [],
+    "formula": "vsum([a,1,b,2])",
+    "num": false,
+    "result": "a + 1 + b + 2"
+  },
+  {
+    "modes": [],
+    "formula": "vsum([1,2,a,b])",
+    "num": false,
+    "result": "3 + a + b"
+  },
+  {
+    "modes": [],
+    "formula": "vprod([a,2,b,3])",
+    "num": false,
+    "result": "6 a b"
+  },
+  {
+    "modes": [
+      "calc-internal-prec",
+      30,
+      "calc-float-format",
+      [
+        "float",
+        30
+      ]
+    ],
+    "formula": "sqrt(2)",
+    "num": false,
+    "result": "1.41421356237309504880168872421"
+  },
+  {
+    "modes": [
+      "calc-internal-prec",
+      30,
+      "calc-float-format",
+      [
+        "float",
+        30
+      ]
+    ],
+    "formula": "2^0.5",
+    "num": false,
+    "result": "1.41421356237309504880168872421"
+  },
+  {
+    "modes": [
+      "calc-internal-prec",
+      30,
+      "calc-float-format",
+      [
+        "float",
+        30
+      ]
+    ],
+    "formula": "vsdev([1,2,3,4])",
+    "num": false,
+    "result": "1.2909944487358056283930884666"
+  },
+  {
+    "modes": [
+      "calc-internal-prec",
+      30,
+      "calc-float-format",
+      [
+        "float",
+        30
+      ]
+    ],
+    "formula": "1/3",
+    "num": false,
+    "result": "0.333333333333333333333333333333"
   }
 ]

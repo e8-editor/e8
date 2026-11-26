@@ -1907,10 +1907,6 @@ interface Analysis {
 
 let an: Analysis = { first: 0, types: [], dlines: [-1], hlines: [-1], ncol: 0, columnNames: [], parameters: [], namedFields: [] };
 
-/** Commands that recalculate rows, so a row is not recalculated twice running, as org-recalc-commands. */
-const recalcCommands = new Set<string>();
-/** The start of the row last recalculated, as org-last-recalc-line. */
-let lastRecalcLine: number | undefined;
 
 const NAME = /^[a-zA-Z][_a-zA-Z0-9]*$/;
 
@@ -2172,11 +2168,16 @@ function timeSecondsToString(secs: number, format: string | null): string {
   return secs < 0 ? `-${res}` : res;
 }
 
+/** The error aref gives for a row beyond the table's, as Org reads org-table-dlines. */
+function dlinesOutOfRange(n: number): never {
+  e8.signal("args-out-of-range", `Args out of range: [nil ${an.dlines.slice(1).join(" ")}], ${n}`, [n]);
+}
+
 /** The relative line of a row descriptor, as org-table--descriptor-line reads @3, @-1, @I or @II+2. */
 function descriptorLine(desc: string, cline: number): number | undefined {
   if (/^[0-9]+$/.test(desc)) {
     const n = Number(desc);
-    if (n >= an.dlines.length) e8.signal("args-out-of-range", "Args out of range", [n]);
+    if (n >= an.dlines.length) dlinesOutOfRange(n);
     return n === 0 ? undefined : an.dlines[n];
   }
   const m = /^(([-+])?(I+))?(([-+])?([0-9]+))?/.exec(desc)!;
@@ -2468,6 +2469,8 @@ export function evalFormula(
   let fm: FormulaModes;
   [formula, fm] = parseFormulaModes(formula);
   if (!suppressConst && truthy(e8.variable("org-table-formula-use-constants"))) formula = substituteNames(formula);
+  // Org reads a text property at position 1 of the formula here, which an empty one has not.
+  if (formula === "") e8.signal("args-out-of-range", "Args out of range: 1, 1", [formula, 1, 1]);
   formula = handleFirstLastRc(formula);
   while (ndown > 0) {
     let fields = orgSplitString(orgTrim(e8.lineText(lineAt())), / *\| */g);
@@ -2500,8 +2503,7 @@ export function evalFormula(
       if (!m) break;
       const from = (m[2] ? n0 : 0) + Number(m[1]) - 1;
       const to = (m[4] ? n0 : 0) + Number(m[3]);
-      if (from < 0 || to > fields.length || from > to) e8.signal("args-out-of-range", "Args out of range", [from, to]);
-      form = form.slice(0, m.index) + makeReference(fields.slice(from, to), fm.keepEmpty, fm.numbers, lispp) + form.slice(m.index + m[0].length);
+      form = form.slice(0, m.index) + makeReference(subseq(fields, from, to), fm.keepEmpty, fm.numbers, lispp) + form.slice(m.index + m[0].length);
     }
     for (;;) {
       const m = /\$(([-+])?[0-9]+)/.exec(form);
@@ -2543,6 +2545,16 @@ export function evalFormula(
   }
   if (down) maybeRecalculateLine();
   if (!suppressAlign && needsAlign()) align();
+}
+
+/** A list's elements from start to end, negative ones counting from its end, as cl-subseq takes them. */
+function subseq<T>(list: T[], start: number, end: number): T[] {
+  const [s0, e0] = [start, end];
+  if (end < 0) end += list.length;
+  if (start < 0) start += list.length;
+  if (start < 0 || start > list.length) e8.signal("error", `Start index out of bounds: ${s0}`);
+  if (end - start < 0 || end > list.length) e8.signal("error", `End index out of bounds: ${e0}`);
+  return list.slice(start, end);
 }
 
 /** A number as Lisp holds it, for arithmetic. */
@@ -2736,8 +2748,6 @@ function gotoField(ref: string, createColumn?: (column: number) => boolean): voi
  * C-u, until the table stops changing.
  */
 export function recalculate(all: e8.PrefixArg | boolean | "iterate" = null, noalign = false): void {
-  const cmd = e8.thisCommand();
-  if (cmd) recalcCommands.add(cmd);
   if (!atTable()) e8.userError("Not at a table");
   if (all === "iterate" || doubleUniversal(all as e8.PrefixArg)) {
     iterate();
@@ -2791,6 +2801,7 @@ export function recalculate(all: e8.PrefixArg | boolean | "iterate" = null, noal
     for (const [name] of eqlfield) {
       const location = an.namedFields.find((f) => f[0] === name);
       const at = /^@([0-9]+)/.exec(name);
+      if (at && Number(at[1]) >= an.dlines.length) dlinesOutOfRange(Number(at[1]));
       const eqLine = location ? location[1] : at ? an.dlines[Number(at[1])] : undefined;
       const reference = location ? `@${lineToDline(location[1])}$${location[2]}` : name;
       if (seenFields.includes(reference)) e8.userError(`Several field/range formulas try to set ${reference}`);
@@ -2808,7 +2819,6 @@ export function recalculate(all: e8.PrefixArg | boolean | "iterate" = null, noal
       e8.gotoChar(e8.lineStart(l));
       if (/^ *[_^!$/] *$/.test(getField(1))) continue;
       cnt++;
-      lastRecalcLine = e8.lineStart(l);
       for (const [lhs, rhs] of eqlcol) {
         e8.gotoChar(e8.lineStart(l));
         gotoColumn(Number(lhs.slice(1)), false, true);
@@ -2825,7 +2835,7 @@ export function recalculate(all: e8.PrefixArg | boolean | "iterate" = null, noal
         const create = e8.variable("org-table-formula-create-columns");
         if (create === true) return true;
         if (create === "warn") {
-          e8.message("Warning (emacs): Out-of-bounds formula added columns");
+          e8.message("Warning (org): Out-of-bounds formula added columns");
           return true;
         }
         if (create === "prompt" && e8.yesOrNoP("Out-of-bounds formula.  Add columns? ")) return true;
@@ -2907,6 +2917,7 @@ export function calcCurrentTBLFM(arg?: e8.PrefixArg): void {
     // After the table's last row, before its first #+TBLFM: line.
     let l = lineAt();
     while (l > 0 && !(TABLE_LINE.test(e8.lineText(l - 1)) && /^[ \t]*#\+TBLFM: /i.test(e8.lineText(l)))) l--;
+    if (l === 0) e8.signal("wrong-type-argument", "Wrong type argument: integer-or-marker-p, nil", ["integer-or-marker-p", null]);
     const s = marker(e8.lineStart(l));
     e8.gotoChar(s.pos);
     e8.insert(`${formula}\n`);
@@ -2932,11 +2943,14 @@ function maybeEvalFormula(): void {
   evalFormula(field.startsWith(":") ? [4] : null, formulaFromUser(m[1]));
 }
 
-/** Recalculates point's row when it is marked #, unless it was just recalculated, as org-table-maybe-recalculate-line. */
+/**
+ * Recalculates point's row when it is marked #, as
+ * org-table-maybe-recalculate-line. Org means to skip a row the last
+ * command just recalculated, but compares a marker with a number by eq,
+ * which is never true, so it never skips, and neither does this.
+ */
 export function maybeRecalculateLine(): boolean {
   if (!truthy(e8.variable("org-table-allow-automatic-line-recalculation"))) return false;
-  const last = e8.lastCommand();
-  if (last !== undefined && recalcCommands.has(last) && lastRecalcLine === e8.lineStart(lineAt())) return false;
   if (!/^[ \t]*\| *# *(\||$)/.test(e8.lineText(lineAt()))) return false;
   recalculate(null);
   return true;
@@ -3015,7 +3029,8 @@ function rotateRecalcMarks(newchar?: string): void {
     if (previousLineEnd !== e8.lineEnd(lineAt())) align();
     e8.gotoChar(l.pos);
     gotoColumn(noSpecialColumn ? col + 1 : col);
-    if (e8.calledInteractively()) e8.message(RECALC_MARKS.find((m) => m[0] === mark)?.[1] ?? "");
+    // Of the mark read for a region; without one, Org's message names none, so says nil.
+    if (e8.calledInteractively()) e8.message(RECALC_MARKS.find((m) => m[0] === newchar)?.[1] ?? "nil");
   } finally {
     for (const m of [l, l1, l2]) if (m) dropMarker(m);
   }

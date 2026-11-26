@@ -294,6 +294,7 @@ function normalize(a: Expr): Expr {
   if (isFloat(a)) return makeFloat(a.m, a.e);
   if (isVec(a)) return { k: "vec", xs: a.xs.map(normalize) };
   if (isDate(a)) return { k: "date", v: normalize(a.v) as Real };
+  if (isCall(a)) return call(a.f, ...a.args.map(normalize));
   return a;
 }
 
@@ -334,46 +335,129 @@ function constp(a: Expr): boolean {
 
 // --------------------------------------------------------------- Arithmetic
 
-function add(a: Expr, b: Expr): Expr {
-  if (isReal(a) && isReal(b)) return realAdd(a, b);
-  if (isZero(a) && !isVec(b)) return isFloat(a) && isRat(b) ? toFloat(b) : b;
-  if (isZero(b) && !isVec(a)) return isFloat(b) && isRat(a) ? toFloat(a) : a;
-  if (isVec(a) && isVec(b)) {
-    if (a.xs.length !== b.xs.length) reject("*Dimension error");
-    return { k: "vec", xs: a.xs.map((x, i) => add(x, b.xs[i])) };
-  }
-  if (isVec(a) && constp(b) && !isVec(b)) return { k: "vec", xs: a.xs.map((x) => add(x, b)) };
-  if (isVec(b) && constp(a) && !isVec(a)) return { k: "vec", xs: b.xs.map((x) => add(a, x)) };
-  if (isDate(a) && isReal(b)) return { k: "date", v: realAdd(a.v, b) };
-  if (isDate(b) && isReal(a)) return { k: "date", v: realAdd(a, b.v) };
-  if (isDate(a) || isDate(b)) reject("*Wrong type of argument");
-  return addSymbolic(a, b);
+/** Whether two values are the same form, as Lisp's equal compares them: 2 and 2. differ. */
+function same(a: Expr, b: Expr): boolean {
+  if (typeof a === "bigint" || typeof b === "bigint") return a === b;
+  if (a.k !== b.k) return false;
+  if (isFrac(a) && isFrac(b)) return a.n === b.n && a.d === b.d;
+  if (isFloat(a) && isFloat(b)) return a.m === b.m && a.e === b.e;
+  if (isVar(a) && isVar(b)) return a.name === b.name;
+  if (isDate(a) && isDate(b)) return same(a.v, b.v);
+  if (isVec(a) && isVec(b)) return a.xs.length === b.xs.length && a.xs.every((x, i) => same(x, b.xs[i]));
+  if (isCall(a) && isCall(b)) return a.f === b.f && a.args.length === b.args.length && a.args.every((x, i) => same(x, b.args[i]));
+  return false;
 }
 
-function addSymbolic(a: Expr, b: Expr): Expr {
-  if (isVar(a, "nan") || isVar(b, "nan")) return NAN;
-  if (infinitep(a) || infinitep(b)) {
-    const ia = infinitep(a);
-    const ib = infinitep(b);
-    if (ia && ib) return equal(a, b) ? a : NAN;
-    return ia ? a : b;
+/** A number, or a date: what Calc's Math-objectp counts as a single object here. */
+const objectp = (a: Expr): boolean => isReal(a) || isDate(a);
+const objvecp = (a: Expr): boolean => objectp(a) || isVec(a);
+/** A number equal to the integer n, as Math-equal-int: n itself, or the float n. */
+const equalInt = (a: Expr, n: bigint): boolean => a === n || (isFloat(a) && a.m === n && a.e === 0);
+
+/** Whether a formula looks negative, as math-looks-negp: a negative number, a negation, or a product or quotient with one. */
+function looksNeg(a: Expr): boolean {
+  if (isReal(a)) return sign(a) < 0;
+  if (isCall(a, "neg")) return true;
+  if (isCall(a, "*") || isCall(a, "/")) return looksNeg(a.args[0]) || looksNeg(a.args[1]);
+  return false;
+}
+
+function add(a: Expr, b: Expr): Expr {
+  if (isReal(a) && isReal(b)) return realAdd(a, b);
+  if (isZero(a)) return isFloat(a) && isRat(b) ? toFloat(b) : b;
+  if (isZero(b)) return isFloat(b) && isRat(a) ? toFloat(a) : a;
+  if (objvecp(a) && objvecp(b)) {
+    if (isVec(a) && isVec(b)) {
+      if (a.xs.length !== b.xs.length) reject("*Dimension error");
+      return { k: "vec", xs: a.xs.map((x, i) => add(x, b.xs[i])) };
+    }
+    if (isVec(a)) return { k: "vec", xs: a.xs.map((x) => add(x, b)) };
+    if (isVec(b)) return { k: "vec", xs: b.xs.map((x) => add(a, x)) };
+    if (isDate(a) && isReal(b)) return { k: "date", v: realAdd(a.v, b) };
+    if (isDate(b) && isReal(a)) return { k: "date", v: realAdd(a, b.v) };
+    reject("*Wrong type of argument");
   }
-  // Sums lean left and subtract what they can, as math-add-symb-fancy arranges them.
-  if (isCall(b, "neg")) return sub(a, b.args[0]);
-  if (isReal(b) && sign(b) < 0) return call("-", a, realNeg(b));
-  if (isCall(a, "neg") && !isCall(b, "neg")) return sub(b, a.args[0]);
+  return addSymbFancy(a, b);
+}
+
+/** A sum with a formula in it, arranged as math-add-symb-fancy does. */
+function addSymbFancy(a: Expr, b: Expr): Expr {
   if (isCall(b, "+")) return add(add(a, b.args[0]), b.args[1]);
   if (isCall(b, "-")) return sub(add(a, b.args[0]), b.args[1]);
+  if (isCall(b, "neg") && isCall(b.args[0], "+")) return sub(sub(a, b.args[0].args[0]), b.args[0].args[1]);
+  if (isVec(a) && !isVec(b)) return { k: "vec", xs: a.xs.map((x) => add(x, b)) };
+  if (isVec(b) && !isVec(a)) return { k: "vec", xs: b.xs.map((x) => add(a, x)) };
+  if (infinitep(a)) {
+    if (!infinitep(b)) return a;
+    const ia = infBase(a);
+    const ib = infBase(b);
+    if (ia !== "inf" || ib !== "inf") return NAN;
+    return same(a, b) ? a : NAN;
+  }
+  if (infinitep(b)) return b;
+  let temp: Expr | undefined;
+  if (isCall(a, "+")) {
+    temp = combineSum(a.args[1], b, false, false, true);
+    if (temp !== undefined) return add(a.args[0], temp);
+  } else if (isCall(a, "-")) {
+    temp = combineSum(a.args[1], b, true, false, true);
+    if (temp !== undefined) return add(a.args[0], temp);
+  } else if (!(objectp(a) && objectp(b))) {
+    temp = combineSum(a, b, false, false, false);
+    if (temp !== undefined) return temp;
+  }
+  if (looksNeg(b)) return call("-", a, neg(b));
+  if (looksNeg(a)) return call("-", b, neg(a));
   return call("+", a, b);
+}
+
+/** The infinity at the bottom of an infinite formula: inf, uinf or nan. */
+function infBase(a: Expr): string {
+  while (isCall(a, "neg") || isCall(a, "*") || isCall(a, "/")) a = a.args[0];
+  return isVar(a) ? a.name : "";
+}
+
+/** Two terms with the same factor added as one, 2 a + 3 a as 5 a, or undefined, as math-combine-sum. */
+function combineSum(a: Expr, b: Expr, nega: boolean, negb: boolean, scalarOkay: boolean): Expr | undefined {
+  if (scalarOkay && objvecp(a) && objvecp(b)) return add(nega ? neg(a) : a, negb ? neg(b) : b);
+  const split = (x: Expr): [Expr, Expr] => {
+    if (isCall(x, "*") && objectp(x.args[0])) return [x.args[0], x.args[1]];
+    if (isCall(x, "/") && objectp(x.args[1])) {
+      const d = x.args[1];
+      return [isInt(d) ? { k: "frac", n: 1n, d } : div(1n, d), x.args[0]];
+    }
+    if (isCall(x, "neg")) return [-1n, x.args[0]];
+    return [1n, x];
+  };
+  let [amult, ax] = split(a);
+  let [bmult, bx] = split(b);
+  if (!same(ax, bx)) return undefined;
+  if (nega) amult = neg(amult);
+  if (negb) bmult = neg(bmult);
+  return mul(add(amult, bmult), ax);
 }
 
 function neg(a: Expr): Expr {
   if (isReal(a)) return realNeg(a);
   if (isVec(a)) return { k: "vec", xs: a.xs.map(neg) };
+  if (isDate(a)) return { k: "date", v: realNeg(a.v) };
+  return negFancy(a);
+}
+
+/** A formula negated, as math-neg-fancy writes it. */
+function negFancy(a: Expr): Expr {
+  if (isCall(a, "+")) return sub(neg(a.args[0]), a.args[1]);
+  if (isCall(a, "-")) return sub(a.args[1], a.args[0]);
+  if (isCall(a, "*") || isCall(a, "/")) {
+    const [x, y] = a.args;
+    const okayNeg = (z: Expr) => looksNeg(z) || isCall(z, "-");
+    if (okayNeg(x)) return call(a.f, neg(x), y);
+    if (okayNeg(y)) return call(a.f, x, neg(y));
+    if (objectp(x) || (isCall(x, "*") && objectp(x.args[0]))) return call(a.f, neg(x), y);
+    if (a.f === "/" && (objectp(y) || (isCall(y, "*") && objectp(y.args[0])))) return call(a.f, x, neg(y));
+  }
+  if (isVar(a, "uinf") || isVar(a, "nan")) return a;
   if (isCall(a, "neg")) return a.args[0];
-  if (isCall(a, "-")) return call("-", a.args[1], a.args[0]);
-  if (isCall(a, "+")) return call("-", neg(a.args[0]), a.args[1]);
-  if (isVar(a, "nan") || isVar(a, "uinf")) return a;
   return call("neg", a);
 }
 
@@ -381,50 +465,182 @@ function sub(a: Expr, b: Expr): Expr {
   if (isReal(a) && isReal(b)) return realSub(a, b);
   if (isDate(a) && isDate(b)) return realSub(a.v, b.v);
   if (isDate(a) && isReal(b)) return { k: "date", v: realSub(a.v, b) };
-  if (!isReal(b) && !isVec(a) && !isVec(b) && !isDate(a) && !isDate(b) && !infinitep(a) && !infinitep(b) && !isCall(b, "neg") && !isCall(b, "+") && !isCall(b, "-")) {
-    if (isZero(a)) return neg(b);
-    return call("-", a, b);
-  }
   return add(a, neg(b));
 }
 
 function mul(a: Expr, b: Expr): Expr {
   if (isReal(a) && isReal(b)) return realMul(a, b);
-  if (isZero(a) && !isVec(b) && !infinitep(b)) return isFloat(b) && isRat(a) ? toFloat(a) : a;
-  if (isZero(b) && !isVec(a) && !infinitep(a)) return isFloat(a) && isRat(b) ? toFloat(b) : b;
-  if (isVec(a) && isVec(b)) {
-    // Two vectors' dot product, as Calc multiplies them.
-    if (a.xs.length !== b.xs.length) reject("*Dimension error");
-    if (a.xs.length === 0) return 0n;
-    return a.xs.map((x, i) => mul(x, b.xs[i])).reduce((s, x) => add(s, x));
+  if (isZero(a)) {
+    if (isReal(b) || isDate(b)) return isFloat(b) && isRat(a) ? toFloat(a) : a;
+    return mulZero(a, b);
   }
+  if (isZero(b)) {
+    if (isReal(a) || isDate(a)) return isFloat(a) && isRat(b) ? toFloat(b) : b;
+    return mulZero(b, a);
+  }
+  if (objvecp(a) && objvecp(b)) {
+    if (isVec(a) && isVec(b)) {
+      // Two vectors' dot product, as Calc multiplies them.
+      if (a.xs.length !== b.xs.length) reject("*Dimension error");
+      if (a.xs.length === 0) return 0n;
+      return a.xs.map((x, i) => mul(x, b.xs[i])).reduce((s, x) => add(s, x));
+    }
+    if (isVec(a)) return { k: "vec", xs: a.xs.map((x) => mul(x, b)) };
+    if (isVec(b)) return { k: "vec", xs: b.xs.map((x) => mul(a, x)) };
+    reject("*Wrong type of argument");
+  }
+  return mulSymbFancy(a, b);
+}
+
+/** Zero times a formula, as math-mul-zero: zero, or nan for an infinity. */
+function mulZero(zero: Expr, b: Expr): Expr {
+  if (isVec(b)) return { k: "vec", xs: b.xs.map((x) => mul(zero, x)) };
+  if (infinitep(b)) return NAN;
+  return zero;
+}
+
+/** A product with a formula in it, arranged as math-mul-symb-fancy does. */
+function mulSymbFancy(a: Expr, b: Expr): Expr {
+  if (equalInt(a, 1n)) return b;
+  if (equalInt(a, -1n)) return neg(b);
   if (isVec(a) && !isVec(b)) return { k: "vec", xs: a.xs.map((x) => mul(x, b)) };
   if (isVec(b) && !isVec(a)) return { k: "vec", xs: b.xs.map((x) => mul(a, x)) };
-  if (isDate(a) || isDate(b)) reject("*Wrong type of argument");
-  if (isVar(a, "nan") || isVar(b, "nan")) return NAN;
-  if (a === 1n) return b;
-  if (b === 1n) return a;
-  if (a === -1n) return neg(b);
-  if (b === -1n) return neg(a);
-  // A number goes first, as Calc writes 2 abc.
-  if (isReal(b) && !isReal(a)) return call("*", b, a);
+  if (objectp(b) && !objectp(a)) return mul(b, a);
+  if (isCall(a, "neg")) return neg(mul(a.args[0], b));
+  if (isCall(b, "neg")) return neg(mul(a, b.args[0]));
+  if (isCall(a, "*")) return mul(a.args[0], mul(a.args[1], b));
+  if (isCall(a, "^") && looksNeg(a.args[1]) && !(isCall(b, "^") && looksNeg(b.args[1]))) return div(b, pow(a.args[0], neg(a.args[1])));
+  if (isCall(b, "^") && looksNeg(b.args[1]) && !(isCall(a, "^") && looksNeg(a.args[1]))) return div(a, pow(b.args[0], neg(b.args[1])));
+  if (isCall(a, "/")) {
+    const temp = combineProd(a.args[1], b, true, false, true);
+    return temp !== undefined ? mul(a.args[0], temp) : div(mul(a.args[0], b), a.args[1]);
+  }
+  if (isCall(b, "/")) return div(mul(a, b.args[0]), b.args[1]);
+  if ((isCall(b, "+") || isCall(b, "-")) && isReal(a) && (isReal(b.args[0]) || isReal(b.args[1]))) {
+    return (b.f === "+" ? add : sub)(mul(a, b.args[0]), mul(a, b.args[1]));
+  }
+  if (isCall(b, "*") && isReal(b.args[0]) && !isReal(a)) return mul(b.args[0], mul(a, b.args[1]));
+  if (looksNeg(b)) return mul(neg(a), neg(b));
+  if (isCall(b, "-") && looksNeg(a)) return mul(neg(a), neg(b));
+  let temp: Expr | undefined;
+  if (isCall(b, "*")) {
+    temp = combineProd(a, b.args[0], false, false, true);
+    if (temp !== undefined) return mul(temp, b.args[1]);
+  } else {
+    temp = combineProd(a, b, false, false, false);
+    if (temp !== undefined) return temp;
+  }
+  if (isVar(a, "nan") || isVar(a, "uinf")) return a;
+  if (isVar(b, "nan") || isVar(b, "uinf")) return b;
+  if (isVar(b, "inf") && isReal(a)) return sign(a) > 0 ? b : neg(b);
+  if (isVar(a, "inf")) return mul(b, a);
   return call("*", a, b);
 }
 
-function div(a: Expr, b: Expr): Expr {
-  if (isReal(a) && isReal(b)) {
-    if (isZero(b)) {
-      why ??= "Division by zero";
-      return call("/", a, b);
-    }
-    return realDiv(a, b);
+/** Two factors with the same base multiplied as one power, x x as x^2, or undefined, as math-combine-prod. */
+function combineProd(a: Expr, b: Expr, inva: boolean, invb: boolean, scalarOkay: boolean): Expr | undefined {
+  if ((inva && isZero(a)) || (invb && isZero(b))) return undefined;
+  if (scalarOkay && objvecp(a) && objvecp(b)) {
+    const r = inva ? (invb ? div(div(1n, a), b) : div(b, a)) : invb ? div(a, b) : mul(a, b);
+    return objvecp(r) ? r : undefined;
   }
+  if (isCall(a, "^") && inva && looksNeg(a.args[1])) return mul(pow(a.args[0], neg(a.args[1])), b);
+  if (isCall(b, "^") && invb && looksNeg(b.args[1])) return mul(a, pow(b.args[0], neg(b.args[1])));
+  const E: Var = { k: "var", name: "e" };
+  const split = (x: Expr): [Expr, Expr] => {
+    let p: Expr = 1n;
+    if (isCall(x, "^") && isReal(x.args[1])) [p, x] = [x.args[1], x.args[0]];
+    else if (isCall(x, "sqrt")) [p, x] = [{ k: "frac", n: 1n, d: 2n }, x.args[0]];
+    else if (isCall(x, "exp") && isReal(x.args[0])) [p, x] = [x.args[0], E];
+    if (isFrac(x) && x.n < x.d) [x, p] = [div(1n, x), neg(p)];
+    return [x, p];
+  };
+  let [ax, apow] = split(a);
+  const [bx, bpow0] = split(b);
+  let bpow = bpow0;
+  if (inva) apow = neg(apow);
+  if (invb) bpow = neg(bpow);
+  if (same(ax, bx)) {
+    let sumpow = add(apow, bpow);
+    if (!isInt(ax) || isZero(sumpow) || isFrac(apow) === isFrac(bpow)) {
+      if (looksNeg(sumpow) && isRat(ax) && sign(ax) > 0) [ax, sumpow] = [div(1n, ax), neg(sumpow)];
+      if (isFrac(sumpow) && sumpow.n === 1n && sumpow.d === 2n) return call("sqrt", ax);
+      if (isFrac(sumpow) && sumpow.n === -1n && sumpow.d === 2n) return div(1n, call("sqrt", ax));
+      if (isVar(ax, "e") && isVar(bx, "e")) return call("exp", sumpow);
+      try {
+        return pow(ax, sumpow);
+      } catch (e) {
+        if (e instanceof Reject) return call("^", ax, sumpow);
+        throw e;
+      }
+    }
+  }
+  if (same(apow, bpow) && isInt(ax) && ax >= 0n && isInt(bx) && bx >= 0n) {
+    if (isFrac(apow) && apow.n === 1n && apow.d === 2n) return call("sqrt", mul(ax, bx));
+    if (isFrac(apow) && apow.n === -1n && apow.d === 2n) return div(1n, call("sqrt", mul(ax, bx)));
+    try {
+      return pow(mul(ax, bx), apow);
+    } catch (e) {
+      if (e instanceof Reject) return call("^", mul(ax, bx), apow);
+      throw e;
+    }
+  }
+  return undefined;
+}
+
+function div(a: Expr, b: Expr): Expr {
+  if (isZero(b) && (isReal(a) || isReal(b))) {
+    why ??= "Division by zero";
+    return call("/", a, b);
+  }
+  if (isZero(a) && (isReal(b) || isDate(b))) return isFloat(b) && isRat(a) ? toFloat(a) : a;
+  if (isReal(a) && isReal(b)) return realDiv(a, b);
+  if (objvecp(a) && objvecp(b)) {
+    if (isVec(a) && !isVec(b)) return { k: "vec", xs: a.xs.map((x) => div(x, b)) };
+    reject("*Wrong type of argument");
+  }
+  return divSymbFancy(a, b);
+}
+
+/** A quotient with a formula in it, arranged as math-div-symb-fancy does. */
+function divSymbFancy(a: Expr, b: Expr): Expr {
+  if (equalInt(b, 1n)) return a;
+  if (equalInt(b, -1n)) return neg(a);
   if (isVec(a) && !isVec(b)) return { k: "vec", xs: a.xs.map((x) => div(x, b)) };
-  if (isDate(a) || isDate(b) || isVec(b)) reject("*Wrong type of argument");
-  if (isVar(a, "nan") || isVar(b, "nan")) return NAN;
-  if (b === 1n) return a;
-  if (isZero(a) && !infinitep(b)) return a;
-  if (isReal(a) && infinitep(b) && !isVar(b, "nan")) return 0n;
+  if (isCall(b, "^") && (looksNeg(b.args[1]) || equalInt(a, 1n))) return mul(a, pow(b.args[0], neg(b.args[1])));
+  if (isCall(a, "neg")) return neg(div(a.args[0], b));
+  if (isCall(b, "neg")) return neg(div(a, b.args[0]));
+  if (isCall(a, "/")) return div(a.args[0], mul(a.args[1], b));
+  if (isCall(b, "/")) return div(mul(a, b.args[1]), b.args[0]);
+  if (isFrac(b)) return mul(makeFrac(b.d, b.n), a);
+  if ((isCall(a, "+") || isCall(a, "-")) && (isReal(a.args[0]) || isReal(a.args[1])) && isReal(b)) {
+    return (a.f === "+" ? add : sub)(div(a.args[0], b), div(a.args[1], b));
+  }
+  if ((isCall(a, "-") || looksNeg(a)) && looksNeg(b)) return div(neg(a), neg(b));
+  if (isCall(b, "-") && looksNeg(a)) return div(neg(a), neg(b));
+  let c: Expr | undefined;
+  if (isCall(a, "*")) {
+    if (isCall(b, "*")) {
+      c = combineProd(a.args[0], b.args[0], false, true, true);
+      if (c !== undefined) return div(mul(c, a.args[1]), b.args[1]);
+    } else {
+      c = combineProd(a.args[0], b, false, true, true);
+      if (c !== undefined) return mul(c, a.args[1]);
+    }
+  } else if (isCall(b, "*")) {
+    c = combineProd(a, b.args[0], false, true, true);
+    if (c !== undefined) return div(c, b.args[1]);
+  } else {
+    c = combineProd(a, b, false, true, false);
+    if (c !== undefined) return c;
+  }
+  if (infinitep(a)) {
+    if (infinitep(b)) return NAN;
+    if (isVar(a, "nan") || isVar(a, "uinf")) return a;
+    if (isVar(a, "inf") && isReal(b)) return sign(b) > 0 ? a : neg(a);
+  }
+  if (infinitep(b) && !isVar(b, "nan") && isReal(a)) return 0n;
+  if (isVar(b, "nan")) return b;
   return call("/", a, b);
 }
 
@@ -450,40 +666,63 @@ function idiv(a: Expr, b: Expr): Expr {
   return call("idiv", a, b);
 }
 
+/** The integer kth root of a non-negative integer, if it is exact. */
+function exactRoot(n: bigint, k: bigint): bigint | undefined {
+  if (n < 2n) return n;
+  let lo = 0n;
+  let hi = 1n << BigInt(Math.ceil(n.toString(2).length / Number(k)) + 1);
+  while (lo < hi) {
+    const mid = (lo + hi + 1n) >> 1n;
+    if (mid ** k <= n) lo = mid;
+    else hi = mid - 1n;
+  }
+  return lo ** k === n ? lo : undefined;
+}
+
 function pow(a: Expr, b: Expr): Expr {
   if (isVec(a) || isVec(b) || isDate(a) || isDate(b)) reject("*Wrong type of argument");
+  if (b === 0n) return isFloat(a) && !isZero(a) ? makeFloat(1n, 0) : 1n;
   if (!isReal(a) || !isReal(b)) {
     if (b === 1n) return a;
-    if (b === 0n) return 1n;
     return call("^", a, b);
   }
   if (isInt(b)) {
-    if (b === 0n) return isFloat(a) ? makeFloat(1n, 0) : 1n;
     if (b < 0n) {
       if (isZero(a)) reject("*Division by zero");
       return realDiv(isFloat(a) ? makeFloat(1n, 0) : 1n, pow(a, -b) as Real);
     }
     if (isInt(a)) return a ** b;
     if (isFrac(a)) return makeFrac(a.n ** b, a.d ** b);
-    const n = Number(b);
-    return makeFloat(a.m ** b, a.e * n);
+    return makeFloat(a.m ** b, a.e * Number(b));
   }
-  // A square root, exactly when it can be.
+  // A square root, exactly when it can be; a float exponent gives a float.
   if (isFrac(b) && b.n === 1n && b.d === 2n) return sqrt(a);
-  if (isFloat(b) && b.m === 5n && b.e === -1) return sqrt(a);
+  if (isFloat(b) && b.m === 5n && b.e === -1) {
+    const r = sqrt(a);
+    return isReal(r) ? toFloat(r) : call("^", a, b);
+  }
+  if (isFrac(b) && isRat(a) && sign(a) >= 0) {
+    // An exact root, as 8^(1:3) is 2.
+    const [n, d] = isInt(a) ? [a, 1n] : [a.n, a.d];
+    const rn = exactRoot(n, b.d);
+    const rd = exactRoot(d, b.d);
+    if (rn !== undefined && rd !== undefined) return pow(makeFrac(rn, rd), b.n);
+  }
   if (modes.symbolic) reject("*Inexact result");
   const x = realToNumber(a);
   if (x < 0) return call("^", a, b);
   return numberToFloat(x ** realToNumber(b));
 }
 
-/** The integer square root of a non-negative integer, rounding down. */
+/** The integer square root of a non-negative integer, rounding down, by Newton's method. */
 function isqrt(n: bigint): bigint {
   if (n < 2n) return n;
-  let x = BigInt(Math.floor(Math.sqrt(Number(n))));
-  while (x * x > n) x--;
-  while ((x + 1n) * (x + 1n) <= n) x++;
-  return x;
+  let x = 1n << BigInt((n.toString(2).length + 1) >> 1);
+  for (;;) {
+    const y = (x + n / x) >> 1n;
+    if (y >= x) return x;
+    x = y;
+  }
 }
 
 function sqrt(a: Expr): Expr {
@@ -528,6 +767,7 @@ function equal(a: Expr, b: Expr): boolean {
 function compare(a: Expr, b: Expr): number {
   if (isReal(a) && isReal(b)) return compareReal(a, b);
   if (isDate(a) && isDate(b)) return compareReal(a.v, b.v);
+  if (isVar(a, "nan") || isVar(b, "nan")) return 2;
   if (equal(a, b)) return 0;
   const inf = (x: Expr): number => (isVar(x, "inf") ? 1 : equal(x, NEG_INF) ? -1 : 0);
   if (inf(a) && (isReal(b) || isDate(b))) return inf(a);
@@ -545,12 +785,11 @@ function isTrue(a: Expr): boolean {
 /** The elements of the arguments, vectors flattened, as math-flatten-many-vecs. */
 function flatten(args: Expr[]): Expr[] {
   const out: Expr[] = [];
-  const walk = (x: Expr): void => {
-    if (isVec(x)) x.xs.forEach(walk);
-    else if (isReal(x) || isDate(x) || infinitep(x)) out.push(x);
+  for (const x of args) {
+    if (isVec(x)) out.push(...flatVector(x));
+    else if (objectp(x)) out.push(x);
     else reject("*Expected a number or vector");
-  };
-  args.forEach(walk);
+  }
   return out;
 }
 
@@ -642,6 +881,11 @@ function inexact(f: (x: number) => number, exact?: (a: Real) => Expr | undefined
   };
 }
 
+/** An inverse trigonometric function's exact value in degrees for an integer, as Calc gives 90 for arcsin(1). */
+function exactDegrees(a: Real, table: Record<string, bigint>): Expr | undefined {
+  return modes.angle === "deg" && isInt(a) ? table[a.toString()] : undefined;
+}
+
 const toRadians = (x: number): number => (modes.angle === "deg" ? (x * Math.PI) / 180 : x);
 const fromRadians = (x: number): number => (modes.angle === "deg" ? (x * 180) / Math.PI : x);
 
@@ -713,8 +957,26 @@ const functions: Record<string, (args: Expr[]) => Expr> = {
   vprod: (args) => reduceMany(mul, "vprod", args, 1n),
   vmax: (args) => reduceMany(max2, "vmax", args, NEG_INF),
   vmin: (args) => reduceMany(min2, "vmin", args, INF),
-  max: (args) => (args.length ? args.reduce(max2) : NEG_INF),
-  min: (args) => (args.length ? args.reduce(min2) : INF),
+  max: (args) => (args.length ? (args.every(objectp) ? args.reduce(max2) : reject()) : NEG_INF),
+  min: (args) => (args.length ? (args.every(objectp) ? args.reduce(min2) : reject()) : INF),
+  float: mapReal("float", (a) => toFloat(a)),
+  gcd: ([a, b]) => (isInt(a) && isInt(b) ? bgcd(a, b) : reject()),
+  lcm: ([a, b]) => (isInt(a) && isInt(b) ? (a === 0n || b === 0n ? 0n : babs(a * b) / bgcd(a, b)) : reject()),
+  choose: ([n, k]) => {
+    if (!isInt(n) || !isInt(k)) reject();
+    if (k < 0n || k > n) return 0n;
+    let r = 1n;
+    for (let i = 1n; i <= k; i++) r = (r * (n - k + i)) / i;
+    return r;
+  },
+  perm: ([n, k]) => {
+    if (!isInt(n) || !isInt(k) || k < 0n || k > n) reject();
+    let r = 1n;
+    for (let i = n - k + 1n; i <= n; i++) r *= i;
+    return r;
+  },
+  hypot: ([a, b]) => (isReal(a) && isReal(b) ? sqrt(add(mul(a, a), mul(b, b))) : reject()),
+  rad: mapReal("rad", (a) => (modes.symbolic ? reject() : realMul(a, divFloat(numberToFloat(Math.PI), makeFloat(180n, 0))))),
   vcount: (args) => {
     let n = 0;
     for (const a of args) {
@@ -774,7 +1036,7 @@ const functions: Record<string, (args: Expr[]) => Expr> = {
   sqr: ([a]) => mul(a, a),
   inv: ([a]) => div(1n, a),
   exp: mapReal("exp", inexact(Math.exp, (a) => (isZero(a) && isInt(a) ? 1n : a === 1n && modes.symbolic ? { k: "var", name: "e" } : undefined))),
-  ln: mapReal("ln", inexact(Math.log, (a) => (a === 1n ? 0n : undefined))),
+  ln: (args) => (args.length === 1 && isVar(args[0], "e") ? 1n : mapReal("ln", inexact(Math.log, (a) => (a === 1n ? 0n : undefined)))(args)),
   log10: mapReal("log10", inexact(Math.log10, exactLog10)),
   log: (args) => {
     if (args.length === 1) return functions.ln(args);
@@ -795,9 +1057,9 @@ const functions: Record<string, (args: Expr[]) => Expr> = {
   sin: mapReal("sin", inexact((x) => Math.sin(toRadians(x)), (a) => (isZero(a) ? a : undefined))),
   cos: mapReal("cos", inexact((x) => Math.cos(toRadians(x)), (a) => (a === 0n ? 1n : undefined))),
   tan: mapReal("tan", inexact((x) => Math.tan(toRadians(x)), (a) => (isZero(a) ? a : undefined))),
-  arcsin: mapReal("arcsin", inexact((x) => fromRadians(Math.asin(x)), (a) => (isZero(a) ? a : undefined))),
-  arccos: mapReal("arccos", inexact((x) => fromRadians(Math.acos(x)))),
-  arctan: mapReal("arctan", inexact((x) => fromRadians(Math.atan(x)), (a) => (isZero(a) ? a : undefined))),
+  arcsin: mapReal("arcsin", inexact((x) => fromRadians(Math.asin(x)), (a) => (isZero(a) ? a : exactDegrees(a, { 1: 90n, "-1": -90n })))),
+  arccos: mapReal("arccos", inexact((x) => fromRadians(Math.acos(x)), (a) => exactDegrees(a, { 0: 90n, 1: 0n, "-1": 180n }))),
+  arctan: mapReal("arctan", inexact((x) => fromRadians(Math.atan(x)), (a) => (isZero(a) ? a : exactDegrees(a, { 1: 45n, "-1": -45n })))),
   sinh: mapReal("sinh", inexact(Math.sinh)),
   cosh: mapReal("cosh", inexact(Math.cosh)),
   tanh: mapReal("tanh", inexact(Math.tanh)),
@@ -862,7 +1124,8 @@ function evaluate(a: Expr): Expr {
   try {
     return f(args);
   } catch (e) {
-    if (e instanceof Reject) return call(a.f, ...args);
+    // A number too big for BigInt or a double is a function that cannot apply, as Calc's overflow.
+    if (e instanceof Reject || e instanceof RangeError) return call(a.f, ...args);
     throw e;
   }
 }
