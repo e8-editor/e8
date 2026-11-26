@@ -62,3 +62,7 @@ org-folding/blank-entry-tab-twice-with-separator-lines-1  # TAB folds a shown bl
 # returns, so after Org's End of buffer the region has gone.
 org-region-loops/region-sibling-start-level  # region deactivated mid-command
 org-region-loops/region-sibling-narrowed  # region deactivated mid-command
+
+# A table formula in Lisp, '(...), is evaluated by Emacs; E8 has no Lisp to
+# evaluate it with, so the field gets #ERROR (ADR 0115).
+org-table-formulas/lisp-formula  # no Lisp for '(...) formulas

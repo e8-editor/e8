@@ -7293,6 +7293,14 @@ declare global {
        */
       "org-table-blank-field": [];
       /**
+       * Apply the formulas of the #+TBLFM: line at point to the table.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-calc-current-TBLFM": [arg?: PrefixArg | boolean];
+      /**
        * Copy the field at point to the row below and move there, or fill an empty field from the nearest field above with something in it, the Nth with a prefix argument; numbers and timestamps go up as org-table-copy-increment says, unless the argument is 0.
        *
        * @param n prefix count
@@ -7343,6 +7351,22 @@ declare global {
        */
       "org-table-end-of-field": [n?: number];
       /**
+       * Replace the field at point by the result of a formula, read in the minibuffer with the column's stored one offered, and store it as the column's formula; with C-u, as the field's own; with C-u C-u, put the field's formula in it to edit; with a number, apply it that many rows down.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-eval-formula": [arg?: PrefixArg | boolean];
+      /**
+       * Show where point is in the table, as @ROW$COLUMN and its names, and the formula for its field.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-field-info": [arg?: PrefixArg | boolean];
+      /**
        * Make the field editor window follow point through the table; leaving the table turns it off, as org-table-exit-follow-field-mode-when-leaving-table says.
        *
        * Run from a key or M-x, it turns the mode on if it is off and off if it is on. A positive prefix argument turns it on and zero or a negative one turns it off. Called from code without an argument, it turns the mode on.
@@ -7377,6 +7401,20 @@ declare global {
        */
       "org-table-insert-row": [];
       /**
+       * Recalculate the table until it stops changing, at most ten times, or as many as the prefix argument.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-iterate": [arg?: PrefixArg | boolean];
+      /**
+       * Recalculate every table in the buffer until none changes, at most ten times, for tables that refer to each other.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-iterate-buffer-tables": [];
+      /**
        * Note whether the table at point needs aligning before moving on from a field, as TAB and RET do first.
        *
        * Defined in packages/org-table.ts.
@@ -7389,11 +7427,17 @@ declare global {
        */
       "org-table-kill-row": [];
       /**
-       * Evaluate the field at point if it is a formula. E8 does not support formulas yet, so this only reads the field.
+       * Evaluate the field at point if it holds a formula, =... for its column or :=... for itself, and store the formula.
        *
        * Defined in packages/org-table.ts.
        */
       "org-table-maybe-eval-formula": [];
+      /**
+       * Recalculate the row at point if its first field is marked #, unless it was just recalculated.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-maybe-recalculate-line": [];
       /**
        * Swap the field at point with the one below it.
        *
@@ -7467,11 +7511,25 @@ declare global {
        */
       "org-table-previous-field": [];
       /**
-       * Recalculate the table's formulas. E8 does not support table formulas yet, so with none this does nothing, as in Org.
+       * Recalculate the row at point by the table's formulas; with C-u, every row; with C-u C-u, until the table stops changing.
+       *
+       * @param all raw prefix argument
        *
        * Defined in packages/org-table.ts.
        */
-      "org-table-recalculate": [];
+      "org-table-recalculate": [all?: PrefixArg | boolean];
+      /**
+       * Recalculate every table in the buffer.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-recalculate-buffer-tables": [];
+      /**
+       * Rotate the mark in the first field of the row at point, # * ! $ _ ^ and none, adding a column for marks if the table has none; with the region active, read the mark to give its rows.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-rotate-recalc-marks": [];
       /**
        * Sort the table's lines between the rules around point, or the region's, by the column point is in: a alphabetically, n numerically, t by time or duration, f by a function; a capital reverses it. With a prefix argument, case counts.
        *
@@ -14663,6 +14721,12 @@ declare global {
        */
       "org-bookmark-names-plist": Value;
       /**
+       * Calc's modes for table formulas, as a plist of mode variables and values; a formula's flags change them for itself.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-calc-default-modes": Value;
+      /**
        * The values %^C and %^L choose from.
        *
        * Defined in packages/org-capture.ts.
@@ -15863,6 +15927,12 @@ declare global {
        */
       "org-table--aligned": Value;
       /**
+       * Whether TAB, RET and C-c C-c recalculate a row marked # in its first field.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-allow-automatic-line-recalculation": Value;
+      /**
        * Whether typing right after TAB, S-TAB, RET or C-c C-c moved into a field replaces what the field holds.
        *
        * Defined in packages/org-table.ts.
@@ -15893,6 +15963,18 @@ declare global {
        */
       "org-table-default-size": Value;
       /**
+       * How a duration formula's result with the t flag is written: hours, minutes, seconds or days, as a fraction, or hh:mm.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-duration-custom-format": Value;
+      /**
+       * Whether hours in durations are written with two digits, as 08:32:34 rather than 8:32:34.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-duration-hour-zero-padding": Value;
+      /**
        * Whether org-table-follow-field-mode turns itself off when point leaves the table.
        *
        * Defined in packages/org-table.ts.
@@ -15909,11 +15991,47 @@ declare global {
        */
       "org-table-follow-field-mode-map": Value;
       /**
+       * Constants for table formulas, as an alist of names and values, both strings; #+CONSTANTS: lines add a file's own.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-formula-constants": Value;
+      /**
+       * Whether a field formula for a column beyond the table adds columns: t, warn to add and warn, prompt to ask, nil for an error.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-formula-create-columns": Value;
+      /**
+       * Whether TAB, RET and C-c C-c evaluate a field starting with = or := as a formula.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-formula-evaluate-inline": Value;
+      /**
+       * The format a formula's result is put in its field with, %s for the result as it is.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-formula-field-format": Value;
+      /**
+       * Whether $name in a formula is replaced by a constant's value, from org-table-formula-constants or a #+CONSTANTS: line.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-formula-use-constants": Value;
+      /**
        * A column whose fields are at least this fraction numbers is aligned to the right.
        *
        * Defined in packages/org-table.ts.
        */
       "org-table-number-fraction": Value;
+      /**
+       * Whether a relative row reference may cross a rule: t yes, nil to stop at the row next to it, error to signal an error.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-relative-ref-may-cross-hline": Value;
       /**
        * Whether TAB at the end of a row goes past a rule below it to the next row, rather than adding a row.
        *

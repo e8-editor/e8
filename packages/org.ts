@@ -127,7 +127,19 @@ import { sentenceEnd } from "paragraphs";
 import { defineGuide } from "help-guide";
 import { withHelpWindow } from "help";
 import { refileCommand, refileCopyCommand, refileReverseCommand } from "org-refile";
-import { atTable, beforeOnLine, blankField, markAligned, needsAlign, restOfLine } from "org-table";
+import {
+  atTable,
+  atTBLFM,
+  beforeOnLine,
+  blankField,
+  calcCurrentTBLFM,
+  markAligned,
+  maybeRecalculateLine,
+  needsAlign,
+  recalculate,
+  restOfLine,
+  setEntryPropertyLookup,
+} from "org-table";
 import { completingReadMultiple } from "crm";
 import { allMatches, autoFillAllowed, barfIfBufferReadOnly, charCount, eraseBuffer, escapeRegExp, forwardLine, getBufferWindow, truthy } from "subr";
 import { isearchNoUpperCaseP } from "isearch";
@@ -780,6 +792,20 @@ function entryGetInheritedWide(h: Heading, property: string, literalNil: boolean
   const value = values.join(propertySeparator(property));
   return literalNil || value !== "nil" ? value : undefined;
 }
+
+// $PROP_NAME in a table formula is the property NAME of the entry the
+// table is in, inherited, as org-table-get-constant asks org-entry-get.
+setEntryPropertyLookup((name) => {
+  const all = headings();
+  const i = headingIndex(all, lineAt());
+  if (i !== undefined) return entryGetInherited(all[i]!, name);
+  return e8.saveRestriction(() => {
+    e8.widen();
+    const top = topLocalValues(name);
+    if (top?.[0] !== undefined) return [top[0], ...top[1]].join(propertySeparator(name));
+    return globalProperty(name);
+  });
+});
 
 /** Values every entry inherits that have no drawer of their own, as org-global-properties-fixed holds them. */
 const GLOBAL_PROPERTIES_FIXED: [string, string][] = [
@@ -10199,13 +10225,22 @@ const ctrlCCtrlC = e8.defineCommand({
       }
     }
     if (here?.type === "table") {
-      // At the table's start, Org recalculates every row and does not align.
-      e8.call("org-table-recalculate");
+      // Off its rows, on a #+TBLFM: line, Org applies that line's formulas;
+      // elsewhere it recalculates every row from the table's start.
+      e8.saveExcursion(() => {
+        if (atTBLFM()) calcCurrentTBLFM();
+        else {
+          e8.gotoChar(here.contentsBegin ?? here.begin);
+          recalculate(e8.prefixArg() ?? true);
+        }
+      });
       return;
     }
     if (inTable && /^[ \t]*\|/.test(text)) {
       e8.call("org-table-maybe-eval-formula");
-      e8.call("org-table-align");
+      const arg = e8.prefixArg();
+      if (arg !== null) e8.callWithPrefix(arg, "org-table-recalculate");
+      else if (!maybeRecalculateLine()) e8.call("org-table-align");
       return;
     }
     // On a list's affiliated keyword, as #+ATTR_ORG:, Org's context is the list.
@@ -10239,7 +10274,7 @@ const ctrlCCtrlC = e8.defineCommand({
         if (next.type === "table") {
           e8.saveExcursion(() => {
             e8.gotoChar(next!.begin);
-            e8.call("org-table-recalculate");
+            recalculate(e8.prefixArg() ?? true);
           });
           return;
         }
@@ -10785,7 +10820,7 @@ const ctrlCStar = e8.defineCommand({
   name: "org-ctrl-c-star",
   doc: "C-c * in Org: recalculate a table, or turn the line into a heading as org-toggle-heading does.",
   run: () => {
-    if (atTableP()) e8.call("org-table-recalculate");
+    if (atTableP()) e8.callWithPrefix(e8.prefixArg(), "org-table-recalculate");
     else e8.callWithPrefix(e8.prefixArg(), "org-toggle-heading");
   },
 });
@@ -11339,6 +11374,9 @@ const keys: { [keys: string]: e8.CommandName | e8.DefinedCommand } = {
   "M-h": "org-mark-element",
   "C-c |": "org-table-create-or-convert-from-region",
   "C-c +": "org-table-sum",
+  "C-c =": "org-table-eval-formula",
+  "C-c ?": "org-table-field-info",
+  "C-#": "org-table-rotate-recalc-marks",
   "C-c `": "org-table-edit-field",
   "C-c C-x C-w": "org-cut-special",
   "C-c C-x M-w": "org-copy-special",

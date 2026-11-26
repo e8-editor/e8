@@ -1,0 +1,1793 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "tblfm-cc",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1+$2\n",
+        "point": 65,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 | 3 |\n| 3 | 4 | 7 |\n#+TBLFM: $3=$1+$2\n",
+      "visible": "| a | b | c |\n|---+---+---|\n| 1 | 2 | 3 |\n| 3 | 4 | 7 |\n#+TBLFM: $3=$1+$2\n",
+      "point": 65,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tblfm-cc-start",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1+$2\n",
+        "point": 56,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 | 3 |\n| 3 | 4 | 7 |\n#+TBLFM: $3=$1+$2\n",
+      "visible": "| a | b | c |\n|---+---+---|\n| 1 | 2 | 3 |\n| 3 | 4 | 7 |\n#+TBLFM: $3=$1+$2\n",
+      "point": 56,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "cu-cstar",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1*$2\n",
+        "point": 30,
+        "keys": "C-u C-c *",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b |  c |\n|---+---+----|\n| 1 | 2 |  2 |\n| 3 | 4 | 12 |\n#+TBLFM: $3=$1*$2\n",
+      "visible": "| a | b |  c |\n|---+---+----|\n| 1 | 2 |  2 |\n| 3 | 4 | 12 |\n#+TBLFM: $3=$1*$2\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "cstar-row",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1*$2\n",
+        "point": 44,
+        "keys": "C-c *",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b |  c |\n|---+---+----|\n| 1 | 2 |    |\n| 3 | 4 | 12 |\n#+TBLFM: $3=$1*$2\n",
+      "visible": "| a | b |  c |\n|---+---+----|\n| 1 | 2 |    |\n| 3 | 4 | 12 |\n#+TBLFM: $3=$1*$2\n",
+      "point": 47,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Re-applying formulas... done"
+    },
+    {
+      "name": "cc-at-table-start",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1-$2\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b |  c |\n|---+---+----|\n| 1 | 2 | -1 |\n| 3 | 4 | -1 |\n#+TBLFM: $3=$1-$2\n",
+      "visible": "| a | b |  c |\n|---+---+----|\n| 1 | 2 | -1 |\n| 3 | 4 | -1 |\n#+TBLFM: $3=$1-$2\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "cc-in-row",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1-$2\n",
+        "point": 44,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1-$2\n",
+      "visible": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1-$2\n",
+      "point": 44,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "cu-cc-in-row",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1-$2\n",
+        "point": 44,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b |  c |\n|---+---+----|\n| 1 | 2 | -1 |\n| 3 | 4 | -1 |\n#+TBLFM: $3=$1-$2\n",
+      "visible": "| a | b |  c |\n|---+---+----|\n| 1 | 2 | -1 |\n| 3 | 4 | -1 |\n#+TBLFM: $3=$1-$2\n",
+      "point": 47,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "cc-name-line",
+      "input": {
+        "text": "#+NAME: tab\n| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1/$2\n",
+        "point": 9,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+NAME: tab\n| a | b |    c |\n|---+---+------|\n| 1 | 2 |  0.5 |\n| 3 | 4 | 0.75 |\n#+TBLFM: $3=$1/$2\n",
+      "visible": "#+NAME: tab\n| a | b |    c |\n|---+---+------|\n| 1 | 2 |  0.5 |\n| 3 | 4 | 0.75 |\n#+TBLFM: $3=$1/$2\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "vsum-hlines",
+      "input": {
+        "text": "| x |\n|---|\n| 1 |\n| 2 |\n| 4 |\n|---|\n|   |\n#+TBLFM: @>$1=vsum(@I..@II)\n",
+        "point": 51,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| x |\n|---|\n| 1 |\n| 2 |\n| 4 |\n|---|\n| 7 |\n#+TBLFM: @>$1=vsum(@I..@II)\n",
+      "visible": "| x |\n|---|\n| 1 |\n| 2 |\n| 4 |\n|---|\n| 7 |\n#+TBLFM: @>$1=vsum(@I..@II)\n",
+      "point": 51,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "vsum-range",
+      "input": {
+        "text": "| x | y |\n|---+---|\n| 1 | 5 |\n| 2 | 6 |\n|---+---|\n|   |   |\n#+TBLFM: @>$1=vsum(@2$1..@-1$1)::@>$2=vmean(@2..@-1)\n",
+        "point": 69,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| x |   y |\n|---+-----|\n| 1 |   5 |\n| 2 |   6 |\n|---+-----|\n| 3 | 5.5 |\n#+TBLFM: @>$1=vsum(@2$1..@-1$1)::@>$2=vmean(@2..@-1)\n",
+      "visible": "| x |   y |\n|---+-----|\n| 1 |   5 |\n| 2 |   6 |\n|---+-----|\n| 3 | 5.5 |\n#+TBLFM: @>$1=vsum(@2$1..@-1$1)::@>$2=vmean(@2..@-1)\n",
+      "point": 81,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inline-field-formula-tab",
+      "input": {
+        "text": "| 1 | 2 | :=$1*$2 |\n",
+        "point": 17,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1 | 2 | 2 |\n|   |   |   |\n#+TBLFM: @1$3=$1*$2\n",
+      "visible": "| 1 | 2 | 2 |\n|   |   |   |\n#+TBLFM: @1$3=$1*$2\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inline-column-formula-ret",
+      "input": {
+        "text": "| 1 | 2 | =$1+$2 |\n| 5 | 6 |  |\n",
+        "point": 16,
+        "keys": "RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1 | 2 | 3 |\n| 5 | 6 |   |\n#+TBLFM: $3=$1+$2\n",
+      "visible": "| 1 | 2 | 3 |\n| 5 | 6 |   |\n#+TBLFM: $3=$1+$2\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inline-column-formula-cc",
+      "input": {
+        "text": "| 1 | 2 | =$1+$2 |\n| 5 | 6 |  |\n",
+        "point": 16,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1 | 2 | 3 |\n| 5 | 6 |   |\n#+TBLFM: $3=$1+$2\n",
+      "visible": "| 1 | 2 | 3 |\n| 5 | 6 |   |\n#+TBLFM: $3=$1+$2\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "c-c-equals",
+      "input": {
+        "text": "| 1 | 2 |  |\n| 5 | 6 |  |\n",
+        "point": 10,
+        "keys": "C-c =",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "$1*10"
+        ]
+      },
+      "text": "| 1 | 2 | 10 |\n| 5 | 6 |    |\n#+TBLFM: $3=$1*10\n",
+      "visible": "| 1 | 2 | 10 |\n| 5 | 6 |    |\n#+TBLFM: $3=$1*10\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "c-c-equals-stored",
+      "input": {
+        "text": "| 1 | 2 |  |\n| 5 | 6 |  |\n#+TBLFM: $3=$1+1\n",
+        "point": 10,
+        "keys": "C-c =",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          ""
+        ]
+      },
+      "text": "| 1 | 2 |  |\n| 5 | 6 |  |\n#+TBLFM: \n",
+      "visible": "| 1 | 2 |  |\n| 5 | 6 |  |\n#+TBLFM: \n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Formula removed"
+    },
+    {
+      "name": "cu-c-c-equals-field",
+      "input": {
+        "text": "| 1 | 2 |  |\n| 5 | 6 |  |\n",
+        "point": 10,
+        "keys": "C-u C-c =",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "$1+$2+100"
+        ]
+      },
+      "text": "| 1 | 2 | 103 |\n| 5 | 6 |     |\n#+TBLFM: @1$3=$1+$2+100\n",
+      "visible": "| 1 | 2 | 103 |\n| 5 | 6 |     |\n#+TBLFM: @1$3=$1+$2+100\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "cu-cu-c-c-equals",
+      "input": {
+        "text": "| 1 | 2 |  |\n| 5 | 6 |  |\n#+TBLFM: $3=$1+$2\n",
+        "point": 10,
+        "keys": "C-u C-u C-c =",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1 | 2 | :=$1+$2 |\n| 5 | 6 |         |\n#+TBLFM: $3=$1+$2\n",
+      "visible": "| 1 | 2 | :=$1+$2 |\n| 5 | 6 |         |\n#+TBLFM: $3=$1+$2\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "c-c-equals-remove",
+      "input": {
+        "text": "| 1 | 2 |  |\n#+TBLFM: $3=$1+$2::$1=4\n",
+        "point": 10,
+        "keys": "C-c =",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          " "
+        ]
+      },
+      "text": "| 1 | 2 |  |\n#+TBLFM: $1=4\n",
+      "visible": "| 1 | 2 |  |\n#+TBLFM: $1=4\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Formula removed"
+    },
+    {
+      "name": "c-c-equals-down",
+      "input": {
+        "text": "| 1 | 2 |  |\n| 5 | 6 |  |\n| 7 | 8 |  |\n",
+        "point": 10,
+        "keys": "C-u 2 C-c =",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "$1*$2"
+        ]
+      },
+      "text": "| 1 | 2 |  2 |\n| 5 | 6 | 30 |\n| 7 | 8 |    |\n#+TBLFM: $3=$1*$2\n",
+      "visible": "| 1 | 2 |  2 |\n| 5 | 6 | 30 |\n| 7 | 8 |    |\n#+TBLFM: $3=$1*$2\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "format-2f",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1/$2;%.2f\n",
+        "point": 65,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b |    c |\n|---+---+------|\n| 1 | 2 | 0.50 |\n| 3 | 4 | 0.75 |\n#+TBLFM: $3=$1/$2;%.2f\n",
+      "visible": "| a | b |    c |\n|---+---+------|\n| 1 | 2 | 0.50 |\n| 3 | 4 | 0.75 |\n#+TBLFM: $3=$1/$2;%.2f\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "format-f3",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1/$2;f3\n",
+        "point": 65,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b |     c |\n|---+---+-------|\n| 1 | 2 | 0.500 |\n| 3 | 4 | 0.750 |\n#+TBLFM: $3=$1/$2;f3\n",
+      "visible": "| a | b |     c |\n|---+---+-------|\n| 1 | 2 | 0.500 |\n| 3 | 4 | 0.750 |\n#+TBLFM: $3=$1/$2;f3\n",
+      "point": 81,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "format-int-f2",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1*$2;f2\n",
+        "point": 65,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b |  c |\n|---+---+----|\n| 1 | 2 |  2 |\n| 3 | 4 | 12 |\n#+TBLFM: $3=$1*$2;f2\n",
+      "visible": "| a | b |  c |\n|---+---+----|\n| 1 | 2 |  2 |\n| 3 | 4 | 12 |\n#+TBLFM: $3=$1*$2;f2\n",
+      "point": 69,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "format-percent-d",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1/$2*100;%d%%\n",
+        "point": 65,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b |  c |\n|---+---+----|\n| 1 | 2 | 0% |\n| 3 | 4 | 0% |\n#+TBLFM: $3=$1/$2*100;%d%%\n",
+      "visible": "| a | b |  c |\n|---+---+----|\n| 1 | 2 | 0% |\n| 3 | 4 | 0% |\n#+TBLFM: $3=$1/$2*100;%d%%\n",
+      "point": 69,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "format-s3",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1/$2;s3\n",
+        "point": 65,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b |      c |\n|---+---+--------|\n| 1 | 2 |   5e-1 |\n| 3 | 4 | 7.5e-1 |\n#+TBLFM: $3=$1/$2;s3\n",
+      "visible": "| a | b |      c |\n|---+---+--------|\n| 1 | 2 |   5e-1 |\n| 3 | 4 | 7.5e-1 |\n#+TBLFM: $3=$1/$2;s3\n",
+      "point": 85,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "format-p20",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1/$2;p20\n",
+        "point": 65,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b |    c |\n|---+---+------|\n| 1 | 2 |  0.5 |\n| 3 | 4 | 0.75 |\n#+TBLFM: $3=$1/$2;p20\n",
+      "visible": "| a | b |    c |\n|---+---+------|\n| 1 | 2 |  0.5 |\n| 3 | 4 | 0.75 |\n#+TBLFM: $3=$1/$2;p20\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "format-n3",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1/$2;n3\n",
+        "point": 65,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b |    c |\n|---+---+------|\n| 1 | 2 |  0.5 |\n| 3 | 4 | 0.75 |\n#+TBLFM: $3=$1/$2;n3\n",
+      "visible": "| a | b |    c |\n|---+---+------|\n| 1 | 2 |  0.5 |\n| 3 | 4 | 0.75 |\n#+TBLFM: $3=$1/$2;n3\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "format-frac",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1/$2;F\n",
+        "point": 65,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b |   c |\n|---+---+-----|\n| 1 | 2 | 1:2 |\n| 3 | 4 | 3:4 |\n#+TBLFM: $3=$1/$2;F\n",
+      "visible": "| a | b |   c |\n|---+---+-----|\n| 1 | 2 | 1:2 |\n| 3 | 4 | 3:4 |\n#+TBLFM: $3=$1/$2;F\n",
+      "point": 73,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "format-s-of-float",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1/$2;%s\n",
+        "point": 65,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b |    c |\n|---+---+------|\n| 1 | 2 |  0.5 |\n| 3 | 4 | 0.75 |\n#+TBLFM: $3=$1/$2;%s\n",
+      "visible": "| a | b |    c |\n|---+---+------|\n| 1 | 2 |  0.5 |\n| 3 | 4 | 0.75 |\n#+TBLFM: $3=$1/$2;%s\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "text-symbolic",
+      "input": {
+        "text": "| abc | 2 |   |\n| 1.5 | x y |  |\n#+TBLFM: $3=$1*$2\n",
+        "point": 42,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| abc |   2 | 2 abc   |\n| 1.5 | x y | 1.5 x y |\n#+TBLFM: $3=$1*$2\n",
+      "visible": "| abc |   2 | 2 abc   |\n| 1.5 | x y | 1.5 x y |\n#+TBLFM: $3=$1*$2\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "text-N",
+      "input": {
+        "text": "| abc | 2 |   |\n| 1.5 | 3x |  |\n#+TBLFM: $3=$1*$2;N\n",
+        "point": 41,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| abc |  2 |   0 |\n| 1.5 | 3x | 4.5 |\n#+TBLFM: $3=$1*$2;N\n",
+      "visible": "| abc |  2 |   0 |\n| 1.5 | 3x | 4.5 |\n#+TBLFM: $3=$1*$2;N\n",
+      "point": 47,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "empty-fields",
+      "input": {
+        "text": "| 1 |   |   |\n|   | 2 |   |\n#+TBLFM: $3=$1+$2\n",
+        "point": 37,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1 |   | 1 |\n|   | 2 | 2 |\n#+TBLFM: $3=$1+$2\n",
+      "visible": "| 1 |   | 1 |\n|   | 2 | 2 |\n#+TBLFM: $3=$1+$2\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "empty-fields-E",
+      "input": {
+        "text": "| 1 |   |   |\n|   | 2 |   |\n#+TBLFM: $3=$1+$2;E\n",
+        "point": 37,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1 |   | nan |\n|   | 2 | nan |\n#+TBLFM: $3=$1+$2;E\n",
+      "visible": "| 1 |   | nan |\n|   | 2 | nan |\n#+TBLFM: $3=$1+$2;E\n",
+      "point": 41,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "empty-fields-EN",
+      "input": {
+        "text": "| 1 |   |   |\n|   | 2 |   |\n#+TBLFM: $3=$1+$2;EN\n",
+        "point": 37,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1 |   | 1 |\n|   | 2 | 2 |\n#+TBLFM: $3=$1+$2;EN\n",
+      "visible": "| 1 |   | 1 |\n|   | 2 | 2 |\n#+TBLFM: $3=$1+$2;EN\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "range-empty-vmean",
+      "input": {
+        "text": "| 1 |\n|   |\n| 3 |\n|   |\n#+TBLFM: @4$1=vmean(@1..@3)\n",
+        "point": 33,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1 |\n|   |\n| 3 |\n| 2 |\n#+TBLFM: @4$1=vmean(@1..@3)\n",
+      "visible": "| 1 |\n|   |\n| 3 |\n| 2 |\n#+TBLFM: @4$1=vmean(@1..@3)\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "range-empty-vmean-E",
+      "input": {
+        "text": "| 1 |\n|   |\n| 3 |\n|   |\n#+TBLFM: @4$1=vmean(@1..@3);EN\n",
+        "point": 33,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "|         1 |\n|           |\n|         3 |\n| 1.3333333 |\n#+TBLFM: @4$1=vmean(@1..@3);EN\n",
+      "visible": "|         1 |\n|           |\n|         3 |\n| 1.3333333 |\n#+TBLFM: @4$1=vmean(@1..@3);EN\n",
+      "point": 65,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "durations-T",
+      "input": {
+        "text": "| 1:30 | 2:45 |  |\n| 0:20 | 1:50:30 |  |\n#+TBLFM: $3=$1+$2;T\n",
+        "point": 50,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1:30 |    2:45 | 04:15:00 |\n| 0:20 | 1:50:30 | 02:10:30 |\n#+TBLFM: $3=$1+$2;T\n",
+      "visible": "| 1:30 |    2:45 | 04:15:00 |\n| 0:20 | 1:50:30 | 02:10:30 |\n#+TBLFM: $3=$1+$2;T\n",
+      "point": 69,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "durations-t",
+      "input": {
+        "text": "| 1:30 | 2:45 |  |\n| 0:20 | 1:50:30 |  |\n#+TBLFM: $3=$1+$2;t\n",
+        "point": 50,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1:30 |    2:45 | 4.25 |\n| 0:20 | 1:50:30 | 2.17 |\n#+TBLFM: $3=$1+$2;t\n",
+      "visible": "| 1:30 |    2:45 | 4.25 |\n| 0:20 | 1:50:30 | 2.17 |\n#+TBLFM: $3=$1+$2;t\n",
+      "point": 61,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "durations-U",
+      "input": {
+        "text": "| 1:30 | 2:45 |  |\n| 0:20 | 1:50:30 |  |\n#+TBLFM: $3=$1+$2;U\n",
+        "point": 50,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1:30 |    2:45 | 04:15 |\n| 0:20 | 1:50:30 | 02:10 |\n#+TBLFM: $3=$1+$2;U\n",
+      "visible": "| 1:30 |    2:45 | 04:15 |\n| 0:20 | 1:50:30 | 02:10 |\n#+TBLFM: $3=$1+$2;U\n",
+      "point": 63,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "durations-minus",
+      "input": {
+        "text": "| 1:30 | 2:45 |  |\n#+TBLFM: $3=$1-$2;T\n",
+        "point": 28,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1:30 | 2:45 | -01:15:00 |\n#+TBLFM: $3=$1-$2;T\n",
+      "visible": "| 1:30 | 2:45 | -01:15:00 |\n#+TBLFM: $3=$1-$2;T\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "column-names",
+      "input": {
+        "text": "|   | x | y | z |\n| ! | a | b | c |\n|   | 1 | 2 |   |\n|   | 3 | 4 |   |\n#+TBLFM: $c=$a*$b\n",
+        "point": 81,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "|   | x | y | z |\n| ! | a | b | c |\n|   | 1 | 2 |   |\n|   | 3 | 4 |   |\n#+TBLFM: $c=$a*$b\n",
+      "visible": "|   | x | y | z |\n| ! | a | b | c |\n|   | 1 | 2 |   |\n|   | 3 | 4 |   |\n#+TBLFM: $c=$a*$b\n",
+      "point": 81,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Unknown field: c"
+    },
+    {
+      "name": "parameters",
+      "input": {
+        "text": "|   | x | y |\n| $ | k=10 |  |\n|   | 1 |   |\n|   | 3 |   |\n#+TBLFM: $3=$2*$k\n",
+        "point": 67,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "|   |    x | y |\n| $ | k=10 |   |\n|   |    1 |   |\n|   |    3 |   |\n#+TBLFM: $3=$2*$k\n",
+      "visible": "|   |    x | y |\n| $ | k=10 |   |\n|   |    1 |   |\n|   |    3 |   |\n#+TBLFM: $3=$2*$k\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "named-fields",
+      "input": {
+        "text": "|   | x  | y |\n| _ | lo | hi |\n|   | 1  | 9 |\n| # | 3  |   |\n#+TBLFM: $3=$2+$lo+$hi\n",
+        "point": 70,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "|   |  x |  y |\n| _ | lo | hi |\n|   |  1 |  9 |\n| # |  3 | 13 |\n#+TBLFM: $3=$2+$lo+$hi\n",
+      "visible": "|   |  x |  y |\n| _ | lo | hi |\n|   |  1 |  9 |\n| # |  3 | 13 |\n#+TBLFM: $3=$2+$lo+$hi\n",
+      "point": 73,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "named-field-formula",
+      "input": {
+        "text": "|   | x  | y |\n| ^ | 5  | 6 |\n| _ | lo | hi |\n|   | 1  |  |\n#+TBLFM: $hi=$lo*100\n",
+        "point": 69,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "|   |  x |   y |\n| ^ |  5 |   6 |\n| _ | lo |  hi |\n|   |  1 | 100 |\n#+TBLFM: $hi=$lo*100\n",
+      "visible": "|   |  x |   y |\n| ^ |  5 |   6 |\n| _ | lo |  hi |\n|   |  1 | 100 |\n#+TBLFM: $hi=$lo*100\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "constants",
+      "input": {
+        "text": "#+CONSTANTS: c=3 k=2.5\n| 1 |   |\n| 2 |   |\n#+TBLFM: $2=$1*$c+$k\n",
+        "point": 52,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+CONSTANTS: c=3 k=2.5\n| 1 | 5.5 |\n| 2 | 8.5 |\n#+TBLFM: $2=$1*$c+$k\n",
+      "visible": "#+CONSTANTS: c=3 k=2.5\n| 1 | 5.5 |\n| 2 | 8.5 |\n#+TBLFM: $2=$1*$c+$k\n",
+      "point": 56,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "constants-variable",
+      "input": {
+        "text": "| 1 |   |\n| 2 |   |\n#+TBLFM: $2=$1*$g\n",
+        "point": 29,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-table-formula-constants": {
+            "g": "9.81"
+          }
+        }
+      },
+      "text": "| 1 |  9.81 |\n| 2 | 19.62 |\n#+TBLFM: $2=$1*$g\n",
+      "visible": "| 1 |  9.81 |\n| 2 | 19.62 |\n#+TBLFM: $2=$1*$g\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "undefined-constant",
+      "input": {
+        "text": "| 1 |   |\n#+TBLFM: $2=$1*$nope\n",
+        "point": 19,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1 | #ERROR |\n#+TBLFM: $2=$1*$nope\n",
+      "visible": "| 1 | #ERROR |\n#+TBLFM: $2=$1*$nope\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "prop-constant",
+      "input": {
+        "text": "* H\n:PROPERTIES:\n:RATE: 7\n:END:\n| 1 |   |\n| 2 |   |\n#+TBLFM: $2=$1*$PROP_RATE\n",
+        "point": 61,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* H\n:PROPERTIES:\n:RATE: 7\n:END:\n| 1 |  7 |\n| 2 | 14 |\n#+TBLFM: $2=$1*$PROP_RATE\n",
+      "visible": "* H\n:PROPERTIES:\n:RATE: 7\n:END:\n| 1 |  7 |\n| 2 | 14 |\n#+TBLFM: $2=$1*$PROP_RATE\n",
+      "point": 63,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "prop-constant-inherited",
+      "input": {
+        "text": "* H\n:PROPERTIES:\n:RATE: 7\n:END:\n** Sub\n| 1 |   |\n#+TBLFM: $2=$1*$PROP_RATE\n",
+        "point": 58,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* H\n:PROPERTIES:\n:RATE: 7\n:END:\n** Sub\n| 1 | 7 |\n#+TBLFM: $2=$1*$PROP_RATE\n",
+      "visible": "* H\n:PROPERTIES:\n:RATE: 7\n:END:\n** Sub\n| 1 | 7 |\n#+TBLFM: $2=$1*$PROP_RATE\n",
+      "point": 58,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "remote",
+      "input": {
+        "text": "#+NAME: src\n| 10 | 20 |\n| 30 | 40 |\n\n| a |   |\n| b |   |\n#+TBLFM: $2=remote(src,@2$1)+remote(src,@1$2)\n",
+        "point": 66,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+NAME: src\n| 10 | 20 |\n| 30 | 40 |\n\n| a | 50 |\n| b | 50 |\n#+TBLFM: $2=remote(src,@2$1)+remote(src,@1$2)\n",
+      "visible": "#+NAME: src\n| 10 | 20 |\n| 30 | 40 |\n\n| a | 50 |\n| b | 50 |\n#+TBLFM: $2=remote(src,@2$1)+remote(src,@1$2)\n",
+      "point": 68,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "remote-range",
+      "input": {
+        "text": "#+NAME: src\n| 10 | 20 |\n| 30 | 40 |\n\n| a |   |\n#+TBLFM: $2=vsum(remote(src,@1$1..@2$2))\n",
+        "point": 56,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+NAME: src\n| 10 | 20 |\n| 30 | 40 |\n\n| a | 100 |\n#+TBLFM: $2=vsum(remote(src,@1$1..@2$2))\n",
+      "visible": "#+NAME: src\n| 10 | 20 |\n| 30 | 40 |\n\n| a | 100 |\n#+TBLFM: $2=vsum(remote(src,@1$1..@2$2))\n",
+      "point": 58,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "remote-missing",
+      "input": {
+        "text": "| a |   |\n#+TBLFM: $2=remote(nope,@1$1)\n",
+        "point": 19,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a |   |\n#+TBLFM: $2=remote(nope,@1$1)\n",
+      "visible": "| a |   |\n#+TBLFM: $2=remote(nope,@1$1)\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Can’t find remote table \"nope\""
+    },
+    {
+      "name": "row-col-numbers",
+      "input": {
+        "text": "| a |   |   |\n| b |   |   |\n|---+---+---|\n| c |   |   |\n#+TBLFM: $2=@#::$3=$#\n",
+        "point": 65,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a |   |   |\n| b |   |   |\n|---+---+---|\n| c | 3 | 3 |\n#+TBLFM: $2=@#::$3=$#\n",
+      "visible": "| a |   |   |\n| b |   |   |\n|---+---+---|\n| c | 3 | 3 |\n#+TBLFM: $2=@#::$3=$#\n",
+      "point": 65,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "relative-running-total",
+      "input": {
+        "text": "| n | t |\n|---+---|\n| 1 |   |\n| 2 |   |\n| 3 |   |\n#+TBLFM: $2=vsum(@I$1..@0$1)\n",
+        "point": 59,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| n | t |\n|---+---|\n| 1 | 1 |\n| 2 | 3 |\n| 3 | 6 |\n#+TBLFM: $2=vsum(@I$1..@0$1)\n",
+      "visible": "| n | t |\n|---+---|\n| 1 | 1 |\n| 2 | 3 |\n| 3 | 6 |\n#+TBLFM: $2=vsum(@I$1..@0$1)\n",
+      "point": 59,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "relative-above",
+      "input": {
+        "text": "| 1 |   |\n| 2 |   |\n| 3 |   |\n#+TBLFM: @2$2..@3$2=@-1$1*10\n",
+        "point": 39,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1 |    |\n| 2 | 10 |\n| 3 | 20 |\n#+TBLFM: @2$2..@3$2=@-1$1*10\n",
+      "visible": "| 1 |    |\n| 2 | 10 |\n| 3 | 20 |\n#+TBLFM: @2$2..@3$2=@-1$1*10\n",
+      "point": 42,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "first-last",
+      "input": {
+        "text": "| 1 | 2 | 3 |\n| 4 | 5 | 6 |\n|   |   |   |\n#+TBLFM: @>$<=@<$>+@<$<::@>$>=vsum(@<..@-1)\n",
+        "point": 51,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1 | 2 | 3 |\n| 4 | 5 | 6 |\n| 4 |   | 9 |\n#+TBLFM: @>$<=@<$>+@<$<::@>$>=vsum(@<..@-1)\n",
+      "visible": "| 1 | 2 | 3 |\n| 4 | 5 | 6 |\n| 4 |   | 9 |\n#+TBLFM: @>$<=@<$>+@<$<::@>$>=vsum(@<..@-1)\n",
+      "point": 51,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "hline-relative",
+      "input": {
+        "text": "| a |\n|---|\n| 1 |\n| 2 |\n|---|\n| 3 |\n|---|\n|   |\n#+TBLFM: @>$1=vsum(@I..@III)\n",
+        "point": 57,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a |\n|---|\n| 1 |\n| 2 |\n|---|\n| 3 |\n|---|\n| 6 |\n#+TBLFM: @>$1=vsum(@I..@III)\n",
+      "visible": "| a |\n|---|\n| 1 |\n| 2 |\n|---|\n| 3 |\n|---|\n| 6 |\n#+TBLFM: @>$1=vsum(@I..@III)\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "hline-relative-II",
+      "input": {
+        "text": "| a |\n|---|\n| 1 |\n| 2 |\n|---|\n| 3 |\n|---|\n|   |\n#+TBLFM: @>$1=vsum(@II..@III)\n",
+        "point": 57,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a |\n|---|\n| 1 |\n| 2 |\n|---|\n| 3 |\n|---|\n| 3 |\n#+TBLFM: @>$1=vsum(@II..@III)\n",
+      "visible": "| a |\n|---|\n| 1 |\n| 2 |\n|---|\n| 3 |\n|---|\n| 3 |\n#+TBLFM: @>$1=vsum(@II..@III)\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dates-diff",
+      "input": {
+        "text": "| <2024-01-01 Mon> | <2024-01-05 Fri> |   |\n| [2024-02-01 Thu] | [2024-03-01 Fri] |   |\n#+TBLFM: $3=$2-$1\n",
+        "point": 97,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| <2024-01-01 Mon> | <2024-01-05 Fri> |  4 |\n| [2024-02-01 Thu] | [2024-03-01 Fri] | 29 |\n#+TBLFM: $3=$2-$1\n",
+      "visible": "| <2024-01-01 Mon> | <2024-01-05 Fri> |  4 |\n| [2024-02-01 Thu] | [2024-03-01 Fri] | 29 |\n#+TBLFM: $3=$2-$1\n",
+      "point": 99,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dates-add",
+      "input": {
+        "text": "| <2024-01-01 Mon> |   |\n| [2024-02-28 Wed 10:30] |   |\n#+TBLFM: $2=$1+7\n",
+        "point": 65,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| <2024-01-01 Mon>       | [2024-01-08 Mon]       |\n| [2024-02-28 Wed 10:30] | [2024-03-06 Wed 10:30] |\n#+TBLFM: $2=$1+7\n",
+      "visible": "| <2024-01-01 Mon>       | [2024-01-08 Mon]       |\n| [2024-02-28 Wed 10:30] | [2024-03-06 Wed 10:30] |\n#+TBLFM: $2=$1+7\n",
+      "point": 113,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dates-no-weekday",
+      "input": {
+        "text": "| <2024-01-01> |   |\n#+TBLFM: $2=$1+1\n",
+        "point": 30,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| <2024-01-01> | [2024-01-02 Tue] |\n#+TBLFM: $2=$1+1\n",
+      "visible": "| <2024-01-01> | [2024-01-02 Tue] |\n#+TBLFM: $2=$1+1\n",
+      "point": 45,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "lisp-formula",
+      "input": {
+        "text": "| 1 | 2 |   |\n#+TBLFM: $3='(+ $1 $2);N\n",
+        "point": 23,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1 | 2 | 3 |\n#+TBLFM: $3='(+ $1 $2);N\n",
+      "visible": "| 1 | 2 | 3 |\n#+TBLFM: $3='(+ $1 $2);N\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "parse-error",
+      "input": {
+        "text": "| 1 | 2 |   |\n#+TBLFM: $3=$1+*$2\n",
+        "point": 23,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1 | 2 | #ERROR |\n#+TBLFM: $3=$1+*$2\n",
+      "visible": "| 1 | 2 | #ERROR |\n#+TBLFM: $3=$1+*$2\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "invalid-field",
+      "input": {
+        "text": "| 1 | 2 |   |\n#+TBLFM: $3=$1+$9\n",
+        "point": 23,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1 | 2 |   |\n#+TBLFM: $3=$1+$9\n",
+      "visible": "| 1 | 2 |   |\n#+TBLFM: $3=$1+$9\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Invalid field specifier \"$9\""
+    },
+    {
+      "name": "iterate-stable",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1*$2\n",
+        "point": 30,
+        "keys": "C-u C-u C-c *",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b |  c |\n|---+---+----|\n| 1 | 2 |  2 |\n| 3 | 4 | 12 |\n#+TBLFM: $3=$1*$2\n",
+      "visible": "| a | b |  c |\n|---+---+----|\n| 1 | 2 |  2 |\n| 3 | 4 | 12 |\n#+TBLFM: $3=$1*$2\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Convergence after 2 iterations"
+    },
+    {
+      "name": "iterate-converge",
+      "input": {
+        "text": "| 1 | 0 |\n| 2 | 0 |\n#+TBLFM: $2=@-1$2+$1::@1$2=$1\n",
+        "point": 29,
+        "keys": "C-u C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| 1 | 1 |\n| 2 | 2 |\n#+TBLFM: $2=@-1$2+$1::@1$2=$1\n",
+      "visible": "| 1 | 1 |\n| 2 | 2 |\n#+TBLFM: $2=@-1$2+$1::@1$2=$1\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "marks-hash-tab",
+      "input": {
+        "text": "| # | 1 | 2 |   |\n| # | 3 | 4 |   |\n| * | 5 | 6 |   |\n|   | 7 | 8 |   |\n#+TBLFM: $4=$2+$3\n",
+        "point": 6,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| # | 1 | 2 | 3 |\n| # | 3 | 4 |   |\n| * | 5 | 6 |   |\n|   | 7 | 8 |   |\n#+TBLFM: $4=$2+$3\n",
+      "visible": "| # | 1 | 2 | 3 |\n| # | 3 | 4 |   |\n| * | 5 | 6 |   |\n|   | 7 | 8 |   |\n#+TBLFM: $4=$2+$3\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "marks-cu-cstar",
+      "input": {
+        "text": "| # | 1 | 2 |   |\n| * | 5 | 6 |   |\n|   | 7 | 8 |   |\n#+TBLFM: $4=$2+$3\n",
+        "point": 6,
+        "keys": "C-u C-c *",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| # | 1 | 2 |  3 |\n| * | 5 | 6 | 11 |\n|   | 7 | 8 |    |\n#+TBLFM: $4=$2+$3\n",
+      "visible": "| # | 1 | 2 |  3 |\n| * | 5 | 6 | 11 |\n|   | 7 | 8 |    |\n#+TBLFM: $4=$2+$3\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "marks-protected",
+      "input": {
+        "text": "| ! | a | b | c |\n|   | 1 | 2 |   |\n| / | 5 | 6 |   |\n#+TBLFM: $4=$a+$b\n",
+        "point": 63,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| ! | a | b | c |\n|   | 1 | 2 |   |\n| / | 5 | 6 |   |\n#+TBLFM: $4=$a+$b\n",
+      "visible": "| ! | a | b | c |\n|   | 1 | 2 |   |\n| / | 5 | 6 |   |\n#+TBLFM: $4=$a+$b\n",
+      "point": 63,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "field-info",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n#+TBLFM: $3=$1+$2::@2$2=7\n",
+        "point": 34,
+        "keys": "C-c ?",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n#+TBLFM: $3=$1+$2::@2$2=7\n",
+      "visible": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n#+TBLFM: $3=$1+$2::@2$2=7\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "line @2, col $2, ref @2$2 or B2, formula: @2$2=7"
+    },
+    {
+      "name": "field-info-column",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n#+TBLFM: $3=$1+$2\n",
+        "point": 38,
+        "keys": "C-c ?",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n#+TBLFM: $3=$1+$2\n",
+      "visible": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n#+TBLFM: $3=$1+$2\n",
+      "point": 38,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "line @2, col $3, ref @2$3 or C2, formula: $3=$1+$2"
+    },
+    {
+      "name": "rotate-marks",
+      "input": {
+        "text": "| a | b |\n| c | d |\n",
+        "point": 6,
+        "keys": "C-#",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| # | a | b |\n|   | c | d |\n",
+      "visible": "| # | a | b |\n|   | c | d |\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "rotate-marks-again",
+      "input": {
+        "text": "| # | a | b |\n| # | c | d |\n",
+        "point": 10,
+        "keys": "C-# C-#",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| ! | a | b |\n| # | c | d |\n",
+      "visible": "| ! | a | b |\n| # | c | d |\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "standard-refs-entry",
+      "input": {
+        "text": "| 1 | 2 |  |\n| 5 | 6 |  |\n",
+        "point": 10,
+        "keys": "C-c =",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "A1+B&"
+        ]
+      },
+      "text": "| 1 | 2 | 3 |\n| 5 | 6 |   |\n#+TBLFM: $3=@1$1+$2\n",
+      "visible": "| 1 | 2 | 3 |\n| 5 | 6 |   |\n#+TBLFM: $3=@1$1+$2\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "standard-refs-t",
+      "input": {
+        "text": "| 1 | 2 |  |\n| 5 | 6 |  |\n#+TBLFM: $3=$1+@1$2\n",
+        "point": 10,
+        "keys": "C-u C-c =",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "A1*2"
+        ],
+        "globals": {
+          "org-table-use-standard-references": true
+        }
+      },
+      "text": "| 1 | 2 | 2 |\n| 5 | 6 |   |\n#+TBLFM: $3=$1+@1$2::@1$3=@1$1*2\n",
+      "visible": "| 1 | 2 | 2 |\n| 5 | 6 |   |\n#+TBLFM: $3=$1+@1$2::@1$3=@1$1*2\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "double-definition",
+      "input": {
+        "text": "| 1 |   |\n#+TBLFM: $2=1::$2=2\n",
+        "point": 19,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1 |   |\n#+TBLFM: $2=1::$2=2\n",
+      "visible": "| 1 |   |\n#+TBLFM: $2=1::$2=2\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Double definition ‘$2=’ in TBLFM line, please fix by hand"
+    },
+    {
+      "name": "lhs-row",
+      "input": {
+        "text": "| 1 | 2 |\n| 3 | 4 |\n|   |   |\n#+TBLFM: @3=@1+@2\n",
+        "point": 39,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1 | 2 |\n| 3 | 4 |\n| 4 | 6 |\n#+TBLFM: @3=@1+@2\n",
+      "visible": "| 1 | 2 |\n| 3 | 4 |\n| 4 | 6 |\n#+TBLFM: @3=@1+@2\n",
+      "point": 39,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "vector-arith",
+      "input": {
+        "text": "| 1 | 2 | 3 |   |\n#+TBLFM: $4=vmax($1..$3)-vmin($1..$3)\n",
+        "point": 27,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1 | 2 | 3 | 2 |\n#+TBLFM: $4=vmax($1..$3)-vmin($1..$3)\n",
+      "visible": "| 1 | 2 | 3 | 2 |\n#+TBLFM: $4=vmax($1..$3)-vmin($1..$3)\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "if-formula",
+      "input": {
+        "text": "| 1 |   |\n| 5 |   |\n#+TBLFM: $2=if($1>3, big, small)\n",
+        "point": 29,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1 | small |\n| 5 | big   |\n#+TBLFM: $2=if($1>3, big, small)\n",
+      "visible": "| 1 | small |\n| 5 | big   |\n#+TBLFM: $2=if($1>3, big, small)\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "realign-wider",
+      "input": {
+        "text": "| 1 | 2 |   |\n| 3 | 4 |   |\n#+TBLFM: $3=$1*1000000\n",
+        "point": 37,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1 | 2 | 1000000 |\n| 3 | 4 | 3000000 |\n#+TBLFM: $3=$1*1000000\n",
+      "visible": "| 1 | 2 | 1000000 |\n| 3 | 4 | 3000000 |\n#+TBLFM: $3=$1*1000000\n",
+      "point": 49,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "no-formulas-cstar",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n",
+        "point": 30,
+        "keys": "C-c *",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n",
+      "visible": "| a | b | c |\n|---+---+---|\n| 1 | 2 |   |\n| 3 | 4 |   |\n",
+      "point": 30,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "create-columns-error",
+      "input": {
+        "text": "| 1 |\n#+TBLFM: @1$3=5\n",
+        "point": 15,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1 |\n#+TBLFM: @1$3=5\n",
+      "visible": "| 1 |\n#+TBLFM: @1$3=5\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Missing columns in the table.  Aborting"
+    },
+    {
+      "name": "create-columns-t",
+      "input": {
+        "text": "| 1 |\n#+TBLFM: @1$3=5\n",
+        "point": 15,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-table-formula-create-columns": true
+        }
+      },
+      "text": "| 1 |   | 5 |\n#+TBLFM: @1$3=5\n",
+      "visible": "| 1 |   | 5 |\n#+TBLFM: @1$3=5\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "blank-lines-before-tblfm",
+      "input": {
+        "text": "| 1 |   |\n\n#+TBLFM: $2=$1+1\n",
+        "point": 2,
+        "keys": "C-u C-c *",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1 | 2 |\n\n#+TBLFM: $2=$1+1\n",
+      "visible": "| 1 | 2 |\n\n#+TBLFM: $2=$1+1\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}
