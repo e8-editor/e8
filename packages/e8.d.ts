@@ -5190,7 +5190,7 @@ declare global {
        */
       "org-agenda": [];
       /**
-       * Leave the agenda, killing its buffer, as q does.
+       * Leave the agenda, killing its buffer even when org-agenda-sticky would bury it.
        *
        * Defined in packages/org-agenda.ts.
        */
@@ -5201,6 +5201,12 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-add-note": [];
+      /**
+       * Append another agenda view to this one, asked for as org-agenda asks, after a separator, making a block agenda.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-append-agenda": [];
       /**
        * Archive the subtree of the agenda line at point, with org-archive-subtree.
        *
@@ -5541,6 +5547,12 @@ declare global {
        */
       "org-agenda-kill": [];
       /**
+       * Kill every agenda buffer.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-kill-all-agenda-buffers": [];
+      /**
        * Show the agenda for the days after it, by its span. With a prefix argument, that many spans on.
        *
        * @param arg prefix count
@@ -5681,7 +5693,7 @@ declare global {
        */
       "org-agenda-priority-up": [];
       /**
-       * Leave the agenda: its window goes, or with org-agenda-restore-windows-after-quit the windows are put back as they were, and its buffer is killed.
+       * Leave the agenda: its window goes, or with org-agenda-restore-windows-after-quit the windows are put back as they were, and its buffer is killed, or with org-agenda-sticky buried.
        *
        * Defined in packages/org-agenda.ts.
        */
@@ -5846,6 +5858,15 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-week-view": [isoWeek?: PrefixArg | boolean];
+      /**
+       * Write the agenda to a file: plain text, or for a file ending in .org the entries its lines show. With a prefix argument, open the file.
+       *
+       * @param file file name
+       * @param open raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-write": [file: string, open?: PrefixArg | boolean];
       /**
        * Show a year's agenda, point's year, after asking. With a prefix argument, that year, two digits being one of the next 30 years or the 70 before.
        *
@@ -7337,6 +7358,12 @@ declare global {
        */
       "org-src-mode": [];
       /**
+       * Write the views of the custom agenda commands that name files to write to, after their settings, to those files.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-store-agenda-views": [];
+      /**
        * Store a link to point's place, for org-insert-link (C-c C-l) to insert: in an Org file to the heading, a target or a named element, in another file to the line, in Dired to the file, in the agenda to the entry. C-u turns org-link-context-for-files round, C-u C-u leaves out the link types' own ways of storing, and C-u C-u C-u stores a link to each line of the region.
        *
        * @param arg raw prefix argument
@@ -7876,6 +7903,14 @@ declare global {
        * Defined in packages/org-list.ts.
        */
       "org-toggle-radio-button": [arg?: PrefixArg | boolean];
+      /**
+       * Turn sticky agenda views on or off, killing the agenda buffers there are; with a prefix argument, on if it is positive.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-toggle-sticky-agenda": [arg?: PrefixArg | boolean];
       /**
        * Show the current subtree in an indirect buffer of its own, narrowed to it: the same text, folded apart.
        *
@@ -14419,6 +14454,12 @@ declare global {
        */
       "org-agenda-auto-exclude-function": Value;
       /**
+       * Functions run in a buffer holding the agenda's text before it is written to a file.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-before-write-hook": Value;
+      /**
        * What separates the blocks of a block agenda: a character repeated across the window, a string, or nil for nothing.
        *
        * Defined in packages/org-agenda.ts.
@@ -14508,6 +14549,12 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-entry-text-maxlines": Value;
+      /**
+       * Settings, [variable, value] pairs, bound while agenda views are written to files.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-exporter-settings": Value;
       /**
        * The files the agenda collects entries from, as a list of file names.
        *
@@ -14728,6 +14775,12 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-start-with-log-mode": Value;
+      /**
+       * Whether each agenda view has a buffer of its own, which q buries and the view's command shows again as it was, until r makes it again.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-sticky": Value;
       /**
        * A tag filter every agenda starts with, a list of strings each starting with + or -, as agenda custom commands bind it.
        *

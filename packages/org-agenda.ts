@@ -513,6 +513,8 @@ function agendaLine(
   const line = `  ${(cat === "" ? "" : `${cat}:`).padEnd(12)}${time === undefined ? "" : `${time.field.padEnd(11)} `}${leader === "" ? "" : `${leader} `}${text}`;
   const tags = displayedTags(h);
   if (tags === "") return line;
+  // Where org-agenda-format-item puts them, for a view appended with A, which org-agenda-finalize leaves unaligned.
+  if (unalignedTags) return line + " ".repeat(Math.max(50 - charCount(`${text} ${tags}`), 1)) + tags;
   const width = (e8.windowSize()?.width ?? 80) - 1;
   // SHIFT more for a marked line, as current-column counts its mark's display string in place of the two characters it covers.
   return line + " ".repeat(Math.max(1, width - charCount(visibleText(line)) - charCount(tags) + shift)) + tags;
@@ -1060,7 +1062,6 @@ const multi = (): boolean => collecting !== undefined;
  * goes on after what is there when org-agenda-multi is bound.
  */
 function showAgenda(given: AgendaLines | ((maxChars: number) => AgendaLines), pointLine: number, days: typeof agendaLineDays = []): void {
-  agendaBuffer = bufferTmpName ?? AGENDA;
   e8.getBufferCreate(agendaBuffer);
   // Lines that depend on the agenda window's width are made once it is placed, as org-agenda-prepare selects it first.
   if (typeof given === "function") placeAgendaWindow();
@@ -1087,6 +1088,14 @@ function blockSeparator(): string | undefined {
  * and the separator between them, unless org-agenda-compact-blocks.
  */
 function renderBlocks(blocks: Block[], pointLine: number): void {
+  // The lines shown now where their markers are, for blocks shown again.
+  for (const item of agendaLines) {
+    if (item?.marks) {
+      item.pos = posOf(item);
+      item.heading = headingOf(item);
+    }
+  }
+  shownBlockData = blocks;
   const lines: AgendaLines = [];
   const days: typeof agendaLineDays = [];
   shownBlocks = [];
@@ -1266,6 +1275,9 @@ function fitAgendaWindow(lines: number): void {
  * point goes to today, else to START-DAY.
  */
 function agendaList(arg: e8.PrefixArg | null, startDay?: number, spanArg?: Span, weekdayStart = startOnWeekday(), withHour = false): void {
+  // Its sticky buffer named after the keys and a custom command's match, as org-agenda-list names it.
+  if (typeof spanArg === "number" && !(spanArg > 0)) e8.userError(`Agenda creation impossible for this span(=${spanArg} days)`);
+  if (!prepare(orgKeys === undefined ? stickyName("a") : stickyName(orgKeys, typeof orgMatch === "string" ? orgMatch : undefined))) return;
   lineTagType = "agenda";
   if (typeof arg === "number" && arg > 0) {
     spanArg = arg;
@@ -1512,8 +1524,8 @@ e8.defun("org-agenda-check-for-timestamp-as-reason-to-ignore-todo-item", (end?: 
 function notOrg(): void {
   if (e8.variable("major-mode") === "org-mode" || e8.derivedModeP("org-mode")) return;
   const file = e8.bufferFileName();
-  if (e8.getBuffer(AGENDA)) {
-    e8.withCurrentBuffer(AGENDA, () => e8.letBind({ "inhibit-read-only": true }, () => eraseBuffer()));
+  if (e8.getBuffer(agendaBuffer)) {
+    e8.withCurrentBuffer(agendaBuffer, () => e8.letBind({ "inhibit-read-only": true }, () => eraseBuffer()));
     for (const old of agendaLines) {
       if (old?.marks) {
         e8.deleteMarker(old.marks.pos);
@@ -1532,6 +1544,7 @@ function notOrg(): void {
  * the keywords the header lists, 0 for all of them, or with C-u, asked.
  */
 function todoList(arg: TodoArg = null): void {
+  if (!prepare(stickyName(orgKeys ?? "t"))) return;
   lineTagType = "todo";
   if (typeof arg === "string" && !/\S/.test(arg)) arg = null;
   const buffers = agendaBuffers();
@@ -1645,6 +1658,7 @@ function skippedHeadings(all: Heading[]): boolean[] {
 function tagsView(todoOnly: boolean, match?: string, stuck?: string): void {
   lineTagType = "tags";
   if (match !== undefined && !/\S/.test(match)) match = undefined;
+  if (!prepare(stickyName(orgKeys ?? (todoOnly ? "M" : "m"), match))) return;
   // Read where org-agenda was called from, as org-make-tags-matcher reads it before the agenda is prepared.
   const matcher = makeTagsMatcher(match, todoOnly);
   const items: AgendaItem[] = [];
@@ -1754,6 +1768,8 @@ function searchView(todoOnlyArg: boolean, string?: string, editAt?: number): voi
       e8.removeHook("minibuffer-setup-hook", place);
     }
   }
+  // Its sticky buffer named after the string read, as org-search-view reads it first.
+  if (!prepare(stickyName(orgKeys ?? (todoOnlyArg ? "S" : "s"), string))) return;
   const query = string;
   let words = query;
   let headlinesOnly = false;
@@ -1761,7 +1777,7 @@ function searchView(todoOnlyArg: boolean, string?: string, editAt?: number): voi
   if (words.startsWith("!")) [todoOnly, words] = [true, words.slice(1)];
   if (words.startsWith(":")) [fullWords, words] = [true, words.slice(1)];
   // Read in the agenda buffer, as org-agenda-prepare has made it current by then.
-  const alwaysBoolean = e8.withCurrentBuffer(e8.getBufferCreate(AGENDA), () => truthy(e8.variable("org-agenda-search-view-always-boolean")));
+  const alwaysBoolean = e8.withCurrentBuffer(e8.getBufferCreate(agendaBuffer), () => truthy(e8.variable("org-agenda-search-view-always-boolean")));
   const boolean = alwaysBoolean || /^[-+{]/.test(words);
   let list = searchWords(words);
   if (boolean) {
@@ -1918,10 +1934,30 @@ function redoBlock(view: AgendaView | undefined, cpa: e8.PrefixArg | null): void
   else rebuild(() => todoList(typeof view.arg === "string" ? view.arg : typeof view.arg === "number" ? cpa : null));
 }
 
-/** A new agenda's archives mode, org-agenda-start-with-archives-mode, as org-agenda-mode sets it for each new agenda but not when it is made again. */
+/** Whether lines are made with their tags where org-agenda-format-item puts them, not aligned, as for a view A appends. */
+let unalignedTags = false;
+/** Whether a block agenda was appended with A, which leaves point at the buffer's start. */
+let appendedSeries = false;
+
+/** Whether the next view made is a new agenda, rather than one made again, which prepare starts afresh. */
+let freshPending = false;
+/** Whether the active agenda buffer is a sticky one, as org-agenda-this-buffer-is-sticky. */
+let agendaSticky = false;
+/** The prefix argument the active agenda was made with, as org-agenda-last-prefix-arg, written as JSON. */
+let lastPrefixArg = "null";
+/** The blocks the active agenda shows, for A to show again before the one appended. */
+let shownBlockData: Block[] = [];
+/** The keys org-agenda's menu was answered with, and the match of the custom command they run, as org-keys and org-match. */
+let orgKeys: string | undefined;
+let orgMatch: e8.Value | undefined;
+
+/** Asks for the next view made to be a new agenda, as the commands that make one do; nothing for a block of a block agenda. */
 function freshAgenda(): void {
-  // Nothing for a block of a block agenda, as org-agenda-prepare goes on with what is there.
-  if (collecting) return;
+  if (!collecting) freshPending = true;
+}
+
+/** A new agenda's modes, org-agenda-start-with-archives-mode and its kin, as org-agenda-mode sets them for each new agenda but not when it is made again. */
+function startFresh(): void {
   // Not a block agenda, nor a custom command's settings, until one is made.
   shownSeries = undefined;
   shownSettings = [];
@@ -1963,6 +1999,7 @@ e8.defun("org-follow-timestamp-link", () => {
   // A range that ends before it starts signals before anything is made, as org-agenda-list checks the span first.
   if (last < first) e8.userError(`Agenda creation impossible for this span(=${last - first + 1} days)`);
   freshAgenda();
+  // Named before the view readies it, as org-agenda-buffer-tmp-name is bound.
   bufferTmpName = `*Org Agenda(a:${dates.join("--")})`;
   try {
     agendaList(null, first, last - first + 1, dates.length > 1 ? null : startOnWeekday());
@@ -2298,8 +2335,14 @@ function runSeriesCommand(type: e8.Value, match: e8.Value): void {
 function runSeries(series: Series, override?: { index: number; build: () => void }): void {
   const blocks: Block[] = [];
   const cmdOf: number[] = [];
+  // Appended to the agenda, as A asks, its blocks go after what is there.
+  if (collecting !== undefined) {
+    withSettings(series.settings, () => series.cmds.forEach((cmd) => withSettings(cmd.settings, () => runSeriesCommand(cmd.type, cmd.match))));
+    appendedSeries = true;
+    return;
+  }
   withSettings(series.settings, () => {
-    agendaBuffer = bufferTmpName ?? AGENDA;
+    if (!prepare(stickyName(orgKeys ?? ""))) return;
     e8.getBufferCreate(agendaBuffer);
     placeAgendaWindow();
     const outer = collecting;
@@ -2324,7 +2367,7 @@ function runSeries(series: Series, override?: { index: number; build: () => void
 }
 
 /** A custom agenda command, as org-agenda normalizes org-agenda-custom-commands: its keys, description, type or commands, match and settings. */
-type CustomCommand = { key: string; desc: string; type: e8.Value; match: e8.Value; settings: e8.Value; series?: e8.Value[] };
+type CustomCommand = { key: string; desc: string; type: e8.Value; match: e8.Value; settings: e8.Value; series?: e8.Value[]; files: string[] };
 
 /** The types a custom command can have, which a command's second element is when it has no description. */
 const CUSTOM_TYPES = ["agenda", "agenda*", "alltodo", "search", "stuck", "tags", "tags-todo", "todo", "tags-tree", "todo-tree", "occur-tree"];
@@ -2355,8 +2398,10 @@ function customCommands(): { commands: CustomCommand[]; prefixes: Map<string, st
         !(third !== undefined && (CUSTOM_TYPES.includes(third) || e8.fboundp(third))) && !Array.isArray(x[2]));
     const desc = typeSecond ? "" : typeof x[1] === "string" ? x[1] : "";
     const rest = typeSecond ? x.slice(1) : x.slice(2);
-    if (Array.isArray(rest[0])) commands.push({ key, desc, type: null, match: rest[1] ?? null, settings: rest[1] ?? null, series: rest[0] });
-    else commands.push({ key, desc, type: rest[0] ?? null, match: rest[1] ?? null, settings: rest[2] ?? null });
+    // The files org-store-agenda-views writes it to, a file or a list of them, last.
+    const filesOf = (v: e8.Value | undefined): string[] => (typeof v === "string" ? [v] : Array.isArray(v) ? v.filter((f): f is string => typeof f === "string") : []);
+    if (Array.isArray(rest[0])) commands.push({ key, desc, type: null, match: rest[1] ?? null, settings: rest[1] ?? null, series: rest[0], files: filesOf(rest[2]) });
+    else commands.push({ key, desc, type: rest[0] ?? null, match: rest[1] ?? null, settings: rest[2] ?? null, files: filesOf(rest[3]) });
   }
   return { commands, prefixes };
 }
@@ -2462,7 +2507,11 @@ function agendaDispatch(): { keys: string; restriction: Restriction } {
           custom = custom.filter((c) => [...c.key].length > 1 && [...c.key][0] === key).map((c) => ({ ...c, key: [...c.key].slice(1).join("") }));
           continue;
         }
-        if (key === "*") e8.userError("E8 does not have sticky agenda views yet");
+        if (key === "*") {
+          e8.callInteractively("org-toggle-sticky-agenda");
+          e8.sitFor(2);
+          continue;
+        }
         if (!restrictOk && ["1", "0", "<"].includes(key)) {
           e8.message("Restriction is only possible in Org buffers");
           e8.ding();
@@ -2602,8 +2651,18 @@ e8.defineCommand({
     if (restrictionLock() === undefined) clearRestriction();
     const { keys, restriction: asked } = agendaDispatch();
     if (restrictionLock() === undefined && asked !== undefined) setRestriction(asked);
-    const { commands } = customCommands();
-    const custom = commands.find((c) => c.key === keys);
+    runAgendaKeys(keys, arg);
+  },
+});
+
+/** Runs the agenda command KEYS picks, as org-agenda does once it has them, with ARG its prefix argument. */
+function runAgendaKeys(keys: string, arg: e8.PrefixArg | null): void {
+  const { commands } = customCommands();
+  const custom = commands.find((c) => c.key === keys);
+  const outer = [orgKeys, orgMatch] as const;
+  orgKeys = keys;
+  orgMatch = custom?.series === undefined ? custom?.match : undefined;
+  try {
     // A new agenda's modes for the views that make one, not for sparse trees, occur or Customize.
     const sparse = custom !== undefined && custom.series === undefined && ["tags-tree", "todo-tree", "occur-tree"].includes(symbolText(custom.type) ?? "");
     if ((custom !== undefined && !sparse) || "asStTmM?#".includes(keys)) freshAgenda();
@@ -2623,10 +2682,12 @@ e8.defineCommand({
       e8.withCurrentBuffer(agendaBuffer, () => e8.addHook("post-command-hook", flaggingNote, { local: true, append: true }));
     } else if (keys === "#") stuckProjects();
     else if (keys === "/") e8.callInteractively(occurInAgendaFiles);
-    else if (keys === "e") e8.userError(`E8 does not have that agenda view yet: ${keys}`);
+    else if (keys === "e") storeAgendaViews();
     else e8.userError("Invalid agenda key");
-  },
-});
+  } finally {
+    [orgKeys, orgMatch] = outer;
+  }
+}
 
 /** The menu of agenda views, as org-agenda-get-restriction-and-command shows it. */
 const DISPATCH_HEADER = `Press key for an agenda command:
@@ -4751,7 +4812,7 @@ e8.defineVariable({
  * deleted unless it is the only one or the agenda was shown in it, and
  * its buffer killed.
  */
-function quitAgenda(): void {
+function quitAgenda(bury = false): void {
   const buffer = e8.bufferName();
   const setup = e8.variable("org-agenda-window-setup");
   if (truthy(e8.variable("org-agenda-restore-windows-after-quit") ?? null) && preAgendaWindows !== undefined) {
@@ -4759,19 +4820,26 @@ function quitAgenda(): void {
     preAgendaWindows = undefined;
     e8.setWindowConfiguration(windows);
   } else if (setup !== "current-window" && e8.windowList().length > 1) e8.deleteWindow();
+  // Buried with org-agenda-sticky, to be shown again as it is.
+  if (bury) {
+    e8.withCurrentBuffer(buffer, () => e8.call("bury-buffer"));
+    return;
+  }
   e8.call("kill-buffer", buffer);
   archivesMode = null;
 }
 
 const agendaQuit = e8.defineCommand({
   name: "org-agenda-quit",
-  doc: "Leave the agenda: its window goes, or with org-agenda-restore-windows-after-quit the windows are put back as they were, and its buffer is killed.",
-  run: quitAgenda,
+  doc:
+    "Leave the agenda: its window goes, or with org-agenda-restore-windows-after-quit the windows are put back as they were, and its buffer is killed, " +
+    "or with org-agenda-sticky buried.",
+  run: () => quitAgenda(truthy(e8.variable("org-agenda-sticky") ?? null)),
 });
 e8.defineCommand({
   name: "org-agenda-Quit",
-  doc: "Leave the agenda, killing its buffer, as q does.",
-  run: quitAgenda,
+  doc: "Leave the agenda, killing its buffer even when org-agenda-sticky would bury it.",
+  run: () => quitAgenda(),
 });
 e8.defineCommand({
   name: "org-agenda-exit",
@@ -5448,6 +5516,8 @@ e8.defineCommand({
 
 // More of Org's keys, as org-agenda.el binds them.
 for (const [key, command] of [
+  ["A", "org-agenda-append-agenda"],
+  ["C-x C-w", "org-agenda-write"],
   ["T", "org-agenda-show-tags"],
   ["N", "org-agenda-next-item"],
   ["P", "org-agenda-previous-item"],
@@ -5622,4 +5692,365 @@ e8.defineCommand({
     if (e8.bufferName() === agendaBuffer) agendaLines.forEach((item, l) => dimLine(l, item));
     if (interactive) e8.message("Dim or hide blocked tasks...done");
   },
+});
+
+// Each agenda buffer's own state. What a buffer shows, its view, is its
+// own, as Org keeps it in the text's properties; its modes and filters
+// are its own only in a sticky buffer, as Org makes org-agenda-local-vars
+// local there, and else shared by every agenda buffer, as Org's global
+// variables are. The module's variables hold the state of one agenda
+// buffer, the active one; another's is put in their place when a command
+// runs in it or a view is made there.
+
+/** What an agenda buffer shows. */
+type ViewState = {
+  name: string;
+  sticky: boolean;
+  agendaView: AgendaView;
+  agendaLines: (AgendaItem | undefined)[];
+  agendaLineDays: ({ day: number; cnt: number } | undefined)[];
+  shownBlocks: { view: AgendaView; from: number; to: number }[];
+  shownBlockData: Block[];
+  startingDay: number;
+  shownSeries: Series | undefined;
+  shownSettings: Settings;
+  shownBlockCmds: number[];
+};
+
+/** An agenda's modes and filters, as org-agenda-local-vars. */
+type ModeState = {
+  lastPrefixArg: string;
+  showLog: null | true | "only" | "clockcheck" | string[];
+  preAgendaWindows: e8.WindowConfiguration | undefined;
+  clockreportMode: boolean;
+  entryTextMode: boolean;
+  followMode: boolean;
+  preFollowWindows: e8.WindowConfiguration | undefined;
+  filters: Record<FilterType, string[]>;
+  filterPresets: Record<FilterType, string[]>;
+  topHeadlineFilter: string | undefined;
+  filteredByCategory: boolean;
+  filteredByTopHeadline: boolean;
+  agendaShowWindow: e8.Window | undefined;
+  bulkMarked: AgendaItem[];
+};
+
+/** The views of the agenda buffers other than the active one, by buffer id. */
+const viewStates = new Map<number, ViewState>();
+/** The modes of the sticky agenda buffers other than the active one, by buffer id. */
+const modeStates = new Map<number, ModeState>();
+/** The modes the agenda buffers that are not sticky share, while a sticky one is active. */
+let globalModes: ModeState | undefined;
+/** The id of the agenda buffer whose state the module's variables hold. */
+let activeAgendaId: number | undefined;
+
+function captureView(): ViewState {
+  return { name: agendaBuffer, sticky: agendaSticky, agendaView, agendaLines, agendaLineDays, shownBlocks, shownBlockData, startingDay, shownSeries, shownSettings, shownBlockCmds };
+}
+
+function restoreView(s: ViewState): void {
+  ({ name: agendaBuffer, sticky: agendaSticky, agendaView, agendaLines, agendaLineDays, shownBlocks, shownBlockData, startingDay, shownSeries, shownSettings, shownBlockCmds } = s);
+}
+
+function captureModes(): ModeState {
+  return {
+    lastPrefixArg,
+    showLog,
+    preAgendaWindows,
+    clockreportMode,
+    entryTextMode,
+    followMode,
+    preFollowWindows,
+    filters: { tag: [...agendaFilters.tag], category: [...agendaFilters.category], regexp: [...agendaFilters.regexp], effort: [...agendaFilters.effort] },
+    filterPresets,
+    topHeadlineFilter,
+    filteredByCategory,
+    filteredByTopHeadline,
+    agendaShowWindow,
+    bulkMarked,
+  };
+}
+
+function restoreModes(s: ModeState): void {
+  ({ lastPrefixArg, showLog, preAgendaWindows, clockreportMode, entryTextMode, followMode, preFollowWindows, filterPresets, topHeadlineFilter, filteredByCategory, filteredByTopHeadline, agendaShowWindow, bulkMarked } = s);
+  for (const t of ["tag", "category", "regexp", "effort"] as const) agendaFilters[t] = [...s.filters[t]];
+  representedTagsCache = undefined;
+  representedCategoriesCache = undefined;
+}
+
+/** A new agenda buffer's view: nothing shown. */
+function emptyView(name: string): ViewState {
+  return { name, sticky: false, agendaView: { kind: "todo" }, agendaLines: [], agendaLineDays: [], shownBlocks: [], shownBlockData: [], startingDay: 0, shownSeries: undefined, shownSettings: [], shownBlockCmds: [] };
+}
+
+/** A new sticky buffer's modes: none on, no filters. */
+function emptyModes(): ModeState {
+  const none = (): Record<FilterType, string[]> => ({ tag: [], category: [], regexp: [], effort: [] });
+  return {
+    lastPrefixArg: "null",
+    showLog: null,
+    preAgendaWindows: undefined,
+    clockreportMode: false,
+    entryTextMode: false,
+    followMode: false,
+    preFollowWindows: undefined,
+    filters: none(),
+    filterPresets: none(),
+    topHeadlineFilter: undefined,
+    filteredByCategory: false,
+    filteredByTopHeadline: false,
+    agendaShowWindow: undefined,
+    bulkMarked: [],
+  };
+}
+
+/** Forgets the states of agenda buffers that were killed, freeing their lines' markers. */
+function pruneStates(): void {
+  const live = new Set(e8.bufferList().map((b) => e8.getBuffer(b)?.id));
+  for (const [id, s] of viewStates) {
+    if (live.has(id)) continue;
+    for (const item of s.agendaLines) if (item) freeMarks(item);
+    viewStates.delete(id);
+    modeStates.delete(id);
+  }
+}
+
+/** Makes NAME's state the active one, the active one's kept, as each agenda buffer has its own text and, when sticky, its own local variables. */
+function switchAgendaTo(name: string): void {
+  e8.getBufferCreate(name);
+  const id = e8.getBuffer(name)!.id;
+  if (id === activeAgendaId) return;
+  const wasSticky = activeAgendaId !== undefined && agendaSticky;
+  if (activeAgendaId !== undefined) viewStates.set(activeAgendaId, captureView());
+  // The modes as they are: the sticky buffer's own, or before any agenda or in one not sticky, everyone's.
+  if (wasSticky) modeStates.set(activeAgendaId!, captureModes());
+  else globalModes = captureModes();
+  pruneStates();
+  const view = viewStates.get(id) ?? emptyView(name);
+  viewStates.delete(id);
+  restoreView(view);
+  if (view.sticky) {
+    restoreModes(modeStates.get(id) ?? emptyModes());
+    modeStates.delete(id);
+  } else if (wasSticky && globalModes !== undefined) restoreModes(globalModes);
+  activeAgendaId = id;
+}
+
+// A command in an agenda buffer acts on that buffer's agenda.
+e8.addHook("pre-command-hook", () => {
+  if (e8.variable("major-mode") === "org-agenda-mode") switchAgendaTo(e8.bufferName());
+});
+
+e8.defineVariable({
+  name: "org-agenda-sticky",
+  value: false,
+  doc: "Whether each agenda view has a buffer of its own, which q buries and the view's command shows again as it was, until r makes it again.",
+});
+
+/** Kills every agenda buffer, as org-agenda-kill-all-agenda-buffers. */
+function killAllAgendaBuffers(): void {
+  for (const b of e8.bufferList()) {
+    if (e8.withCurrentBuffer(b, () => e8.variable("major-mode")) === "org-agenda-mode") e8.call("kill-buffer", b);
+  }
+}
+
+e8.defineCommand({
+  name: "org-agenda-kill-all-agenda-buffers",
+  doc: "Kill every agenda buffer.",
+  run: killAllAgendaBuffers,
+});
+
+e8.defineCommand({
+  name: "org-toggle-sticky-agenda",
+  doc: "Turn sticky agenda views on or off, killing the agenda buffers there are; with a prefix argument, on if it is positive.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg) => {
+    const sticky = truthy(e8.variable("org-agenda-sticky") ?? null);
+    const want = arg === null || arg === undefined ? !sticky : e8.prefixNumericValue() > 0;
+    const interactive = e8.calledInteractively();
+    if (want === sticky) {
+      if (interactive) e8.message(`Sticky agenda was already ${sticky ? "enabled" : "disabled"}`);
+      return;
+    }
+    e8.setVariable("org-agenda-sticky", want);
+    killAllAgendaBuffers();
+    if (interactive) e8.message(`Sticky agenda ${want ? "enabled" : "disabled"}`);
+  },
+});
+
+/**
+ * Readies the buffer a view goes into, as org-agenda-prepare does: for a
+ * new agenda, the buffer STICKY-NAME with org-agenda-sticky, else *Org
+ * Agenda*, its modes started afresh; a sticky buffer there is, made with
+ * the same prefix argument, is shown as it is, and false returned.
+ */
+function prepare(stickyName: string): boolean {
+  if (collecting) return true;
+  const fresh = freshPending;
+  freshPending = false;
+  // Made again in its own buffer when sticky, else in *Org Agenda*, as org-agenda--get-buffer-name names it for org-agenda-redo.
+  if (!fresh) {
+    switchAgendaTo(bufferTmpName ?? (truthy(e8.variable("org-agenda-sticky") ?? null) ? agendaBuffer : AGENDA));
+    return true;
+  }
+  const sticky = truthy(e8.variable("org-agenda-sticky") ?? null);
+  const name = bufferTmpName ?? (sticky ? stickyName : AGENDA);
+  const prefix = JSON.stringify(e8.prefixArg() ?? null);
+  if (sticky && bufferTmpName === undefined && e8.getBuffer(name)) {
+    switchAgendaTo(name);
+    if (agendaSticky && lastPrefixArg === prefix) {
+      placeAgendaWindow();
+      e8.message("Sticky Agenda buffer, use ‘r’ to refresh");
+      const setup = e8.variable("org-agenda-window-setup");
+      if (setup === undefined || setup === null || setup === "reorganize-frame") fitAgendaWindow(e8.withCurrentBuffer(name, () => e8.lineCount() - 1));
+      return false;
+    }
+  }
+  switchAgendaTo(name);
+  agendaSticky = sticky;
+  lastPrefixArg = prefix;
+  startFresh();
+  return true;
+}
+
+/** The name a view's sticky buffer has, as each view makes it from org-keys and its match. */
+function stickyName(key: string, match?: string): string {
+  return `*Org Agenda(${key}${match !== undefined ? `:${match}` : ""})*`;
+}
+
+/**
+ * Appends another view to the agenda, as org-agenda-append-agenda: the
+ * menu asked again, its view a block after what the buffer shows.
+ */
+e8.defineCommand({
+  name: "org-agenda-append-agenda",
+  doc: "Append another agenda view to this one, asked for as org-agenda asks, after a separator, making a block agenda.",
+  run: () => {
+    if (e8.variable("major-mode") !== "org-agenda-mode") e8.userError("Can only append from within agenda buffer");
+    const kept = shownBlockData;
+    const added: Block[] = [];
+    const outer = collecting;
+    collecting = added;
+    unalignedTags = true;
+    appendedSeries = false;
+    try {
+      e8.callInteractively("org-agenda");
+    } finally {
+      collecting = outer;
+      unalignedTags = false;
+    }
+    const start = kept.reduce((n, b) => n + b.lines.length, 0);
+    // The kept blocks' lines as they show now.
+    const blocks = kept.map((b) => ({ ...b, lines: b.lines.map((l) => (l.item ? { text: l.item.text, item: l.item } : l)) }));
+    renderBlocks([...blocks, ...added], start);
+    // The appended view's start, as its command left point at its start, after the separator; a block agenda's, the buffer's start.
+    const k = blocks.length;
+    if (shownBlocks[k] !== undefined) e8.withCurrentBuffer(agendaBuffer, () => e8.gotoChar(appendedSeries ? 0 : e8.lineStart(shownBlocks[k].from)));
+    shownSeries = undefined;
+  },
+});
+
+e8.defineVariable({
+  name: "org-agenda-exporter-settings",
+  value: [],
+  doc: "Settings, [variable, value] pairs, bound while agenda views are written to files.",
+});
+e8.defineVariable({
+  name: "org-agenda-before-write-hook",
+  value: [],
+  doc: "Functions run in a buffer holding the agenda's text before it is written to a file.",
+});
+
+/**
+ * Writes the agenda to FILE, as org-agenda-write: its text as it shows,
+ * or for an .org file the entries its lines show, each a level-1 subtree.
+ */
+function agendaWrite(file: string, opts: { open?: boolean; nosettings?: boolean; interactive?: boolean } = {}): void {
+  file = e8.expandFileName(file);
+  if (!e8.fileWritableP(file) || (e8.fileExistsP(file) && opts.interactive && !e8.yOrNP(`Overwrite existing file ${file}? `))) {
+    e8.userError(`Cannot write agenda to file ${file}`);
+  }
+  const ext = /\.([^./]+)$/.exec(file)?.[1] ?? "";
+  if (["html", "htm", "ps", "pdf", "ics"].includes(ext)) e8.userError(`E8 cannot write an agenda as .${ext} yet`);
+  const settings = opts.nosettings ? [] : settingsOf(e8.variable("org-agenda-exporter-settings"));
+  withSettings(settings, () => {
+    const text = e8.withCurrentBuffer(agendaBuffer, () => e8.bufferText(e8.pointMin(), e8.pointMax()));
+    const items = agendaLines;
+    withTempBuffer(() => {
+      e8.insert(text);
+      // Without what a filter hides, as org-agenda-remove-marked-text takes it out.
+      for (let at = e8.textPropertyAny(e8.pointMin(), e8.pointMax(), "invisible", "org-filtered"); at !== undefined; at = e8.textPropertyAny(e8.pointMin(), e8.pointMax(), "invisible", "org-filtered")) {
+        e8.deleteRegion(at, e8.nextSingleCharPropertyChange(at, "invisible"));
+      }
+      e8.runHooks("org-agenda-before-write-hook");
+      if (ext === "org") {
+        // Each entry once, its own text without its children, at level 1, as org-copy-subtree with nosubtrees and org-paste-subtree 1.
+        const seen = new Set<string>();
+        const entries: string[] = [];
+        for (const item of items) {
+          if (!item || !e8.getBuffer(item.buffer)) continue;
+          const entry = e8.withCurrentBuffer(item.buffer, () => widened(() => {
+            const all = headings();
+            const i = all.findIndex((h) => h.start === headingOf(item));
+            if (i < 0) return undefined;
+            const body = e8.bufferText(all[i].start, entryEnd(all, i));
+            // In the kill ring, as org-copy-subtree puts it there.
+            e8.killNew(body);
+            return body.replace(/^\*+/, "*").replace(/\n*$/, "\n");
+          }));
+          if (entry !== undefined && !seen.has(entry)) {
+            seen.add(entry);
+            entries.push(entry);
+          }
+        }
+        eraseBuffer();
+        e8.insert(entries.join(""));
+        e8.writeRegion(null, null, file, { quiet: true });
+        e8.message(`Org file written to ${file}`);
+      } else {
+        e8.writeRegion(null, null, file, { quiet: true });
+        e8.message(`Plain text written to ${file}`);
+      }
+    });
+  });
+  if (opts.open) e8.call("find-file", file);
+}
+
+e8.defineCommand({
+  name: "org-agenda-write",
+  doc: "Write the agenda to a file: plain text, or for a file ending in .org the entries its lines show. With a prefix argument, open the file.",
+  params: [
+    { name: "file", kind: "file", prompt: "Write agenda to file: " },
+    { name: "open", kind: "prefix" },
+  ],
+  run: (file, open) => agendaWrite(String(file), { open: open !== null && open !== undefined, interactive: e8.calledInteractively() }),
+});
+
+/**
+ * Writes each custom command's view to the files its last element names,
+ * as org-store-agenda-views does, with org-agenda-exporter-settings and
+ * the command's own settings bound.
+ */
+function storeAgendaViews(): void {
+  const dir = e8.expandFileName(".");
+  const { commands } = customCommands();
+  e8.saveWindowExcursion(() => {
+    for (const c of commands) {
+      // Its files after its settings, as the normalized command has them.
+      const files = c.files;
+      if (files.length === 0) continue;
+      const settings = [...settingsOf(e8.variable("org-agenda-exporter-settings")), ...settingsOf(c.settings)];
+      withSettings(settings, () => {
+        runAgendaKeys(c.key, null);
+        for (const f of files) agendaWrite(e8.expandFileName(f, dir), { nosettings: true });
+      });
+      if (e8.getBuffer(agendaBuffer)) e8.call("kill-buffer", agendaBuffer);
+    }
+  });
+}
+
+e8.defineCommand({
+  name: "org-store-agenda-views",
+  doc: "Write the views of the custom agenda commands that name files to write to, after their settings, to those files.",
+  run: storeAgendaViews,
 });

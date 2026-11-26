@@ -1,0 +1,969 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "sticky-todo",
+      "input": {
+        "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-views.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "t"
+        ],
+        "globals": {
+          "org-agenda-sticky": true
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)WAIT (3)NEXT\n                      (4)TODO\n  e8-views:   TODO Write report                                          :work:\n  e8-views:   TODO Plan\n  e8-views:   NEXT Go on\n  e8-views:   WAIT Answer                                                :home:\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)WAIT (3)NEXT\n                      (4)TODO\n  e8-views:   TODO Write report                                          :work:\n  e8-views:   TODO Plan\n  e8-views:   NEXT Go on\n  e8-views:   WAIT Answer                                                :home:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda(t)*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "sticky-tags",
+      "input": {
+        "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-views.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "m",
+          "home"
+        ],
+        "globals": {
+          "org-agenda-sticky": true
+        }
+      },
+      "text": "Headlines with TAGS match: home\nPress ‘C-u r’ to search again\n  e8-views:   WAIT Answer                                                :home:\n",
+      "visible": "Headlines with TAGS match: home\nPress ‘C-u r’ to search again\n  e8-views:   WAIT Answer                                                :home:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda(m)*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "sticky-search",
+      "input": {
+        "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-views.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "s",
+          "Project"
+        ],
+        "globals": {
+          "org-agenda-sticky": true
+        }
+      },
+      "text": "Search words: Project\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-views:   Project A\n  e8-views:   Project B\n  e8-views:   Project C\n",
+      "visible": "Search words: Project\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-views:   Project A\n  e8-views:   Project B\n  e8-views:   Project C\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda(s:Project)*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "sticky-agenda",
+      "input": {
+        "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-views.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "a"
+        ],
+        "globals": {
+          "org-agenda-sticky": true
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-views:   Scheduled:  TODO Write report                              :work:\n  e8-views:   In   2 d.:  WAIT Answer                                    :home:\nThursday   29 October 2026\n  e8-views:   10:00...... Meeting \nFriday     30 October 2026\n  e8-views:   Deadline:   WAIT Answer                                    :home:\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-views:   Scheduled:  TODO Write report                              :work:\n  e8-views:   In   2 d.:  WAIT Answer                                    :home:\nThursday   29 October 2026\n  e8-views:   10:00...... Meeting \nFriday     30 October 2026\n  e8-views:   Deadline:   WAIT Answer                                    :home:\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda(a)*",
+          "point": 77,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "sticky-custom",
+      "input": {
+        "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-views.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "x"
+        ],
+        "globals": {
+          "org-agenda-sticky": true,
+          "org-agenda-custom-commands": [
+            [
+              "x",
+              "",
+              "'tags",
+              "home"
+            ]
+          ]
+        }
+      },
+      "text": "Headlines with TAGS match: home\nPress ‘C-u r’ to search again\n  e8-views:   WAIT Answer                                                :home:\n",
+      "visible": "Headlines with TAGS match: home\nPress ‘C-u r’ to search again\n  e8-views:   WAIT Answer                                                :home:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda(x:home)*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "sticky-block",
+      "input": {
+        "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-views.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "n"
+        ],
+        "globals": {
+          "org-agenda-sticky": true
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-views:   Scheduled:  TODO Write report                              :work:\n  e8-views:   In   2 d.:  WAIT Answer                                    :home:\nThursday   29 October 2026\n  e8-views:   10:00...... Meeting \nFriday     30 October 2026\n  e8-views:   Deadline:   WAIT Answer                                    :home:\nSaturday   31 October 2026\nSunday      1 November 2026\n\n===============================================================================\nGlobal list of TODO items of type: ALL\n  e8-views:   TODO Write report                                          :work:\n  e8-views:   TODO Plan\n  e8-views:   NEXT Go on\n  e8-views:   WAIT Answer                                                :home:\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-views:   Scheduled:  TODO Write report                              :work:\n  e8-views:   In   2 d.:  WAIT Answer                                    :home:\nThursday   29 October 2026\n  e8-views:   10:00...... Meeting \nFriday     30 October 2026\n  e8-views:   Deadline:   WAIT Answer                                    :home:\nSaturday   31 October 2026\nSunday      1 November 2026\n\n===============================================================================\nGlobal list of TODO items of type: ALL\n  e8-views:   TODO Write report                                          :work:\n  e8-views:   TODO Plan\n  e8-views:   NEXT Go on\n  e8-views:   WAIT Answer                                                :home:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda(n)*",
+          "point": 0,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "sticky-quit-buries",
+      "input": {
+        "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-views.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "t"
+        ],
+        "globals": {
+          "org-agenda-sticky": true
+        }
+      },
+      "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+      "visible": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "sticky-shown-again",
+      "input": {
+        "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "q M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-views.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "t",
+          "org-agenda",
+          "t"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-sticky": true
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)WAIT (3)NEXT\n                      (4)TODO\n  e8-views:   TODO Write report                                          :work:\n  e8-views:   TODO Plan\n  e8-views:   NEXT Go on\n  e8-views:   WAIT Answer                                                :home:\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)WAIT (3)NEXT\n                      (4)TODO\n  e8-views:   TODO Write report                                          :work:\n  e8-views:   TODO Plan\n  e8-views:   NEXT Go on\n  e8-views:   WAIT Answer                                                :home:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda(t)*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Sticky Agenda buffer, use ‘r’ to refresh"
+    },
+    {
+      "name": "sticky-two-buffers",
+      "input": {
+        "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-views.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "t",
+          "org-agenda",
+          "m",
+          "home"
+        ],
+        "globals": {
+          "org-agenda-sticky": true
+        }
+      },
+      "text": "Headlines with TAGS match: home\nPress ‘C-u r’ to search again\n  e8-views:   WAIT Answer                                                :home:\n",
+      "visible": "Headlines with TAGS match: home\nPress ‘C-u r’ to search again\n  e8-views:   WAIT Answer                                                :home:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*Org Agenda(t)*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda(m)*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "sticky-own-redo",
+      "input": {
+        "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "M-x C-x b r",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-views.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "t",
+          "org-agenda",
+          "m",
+          "home",
+          "*Org Agenda(t)*"
+        ],
+        "globals": {
+          "org-agenda-sticky": true
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)WAIT (3)NEXT\n                      (4)TODO\n  e8-views:   TODO Write report                                          :work:\n  e8-views:   TODO Plan\n  e8-views:   NEXT Go on\n  e8-views:   WAIT Answer                                                :home:\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)WAIT (3)NEXT\n                      (4)TODO\n  e8-views:   TODO Write report                                          :work:\n  e8-views:   TODO Plan\n  e8-views:   NEXT Go on\n  e8-views:   WAIT Answer                                                :home:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*Org Agenda(t)*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda(t)*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "sticky-own-filter",
+      "input": {
+        "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "M-x = C-x b",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-views.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "t",
+          "org-agenda",
+          "m",
+          "work",
+          "Report",
+          "*Org Agenda(t)*"
+        ],
+        "globals": {
+          "org-agenda-sticky": true
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)WAIT (3)NEXT\n                      (4)TODO\n  e8-views:   TODO Write report                                          :work:\n  e8-views:   TODO Plan\n  e8-views:   NEXT Go on\n  e8-views:   WAIT Answer                                                :home:\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)WAIT (3)NEXT\n                      (4)TODO\n  e8-views:   TODO Write report                                          :work:\n  e8-views:   TODO Plan\n  e8-views:   NEXT Go on\n  e8-views:   WAIT Answer                                                :home:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*Org Agenda(t)*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda(t)*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "sticky-capital-q-kills",
+      "input": {
+        "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "Q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-views.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "t"
+        ],
+        "globals": {
+          "org-agenda-sticky": true
+        }
+      },
+      "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+      "visible": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "sticky-toggled-in-menu",
+      "input": {
+        "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "visit": "e8-views.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "*",
+          "t"
+        ],
+        "globals": {
+          "org-agenda-sticky": false
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)WAIT (3)NEXT\n                      (4)TODO\n  e8-views:   TODO Write report                                          :work:\n  e8-views:   TODO Plan\n  e8-views:   NEXT Go on\n  e8-views:   WAIT Answer                                                :home:\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)WAIT (3)NEXT\n                      (4)TODO\n  e8-views:   TODO Write report                                          :work:\n  e8-views:   TODO Plan\n  e8-views:   NEXT Go on\n  e8-views:   WAIT Answer                                                :home:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "not-sticky-tmp-buffer-redo",
+      "input": {
+        "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "r",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-views.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "t"
+        ],
+        "globals": {
+          "org-agenda-sticky": false
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)WAIT (3)NEXT\n                      (4)TODO\n  e8-views:   TODO Write report                                          :work:\n  e8-views:   TODO Plan\n  e8-views:   NEXT Go on\n  e8-views:   WAIT Answer                                                :home:\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)WAIT (3)NEXT\n                      (4)TODO\n  e8-views:   TODO Write report                                          :work:\n  e8-views:   TODO Plan\n  e8-views:   NEXT Go on\n  e8-views:   WAIT Answer                                                :home:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "append-tags",
+      "input": {
+        "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "A",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-views.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "t",
+          "m",
+          "home"
+        ],
+        "globals": {
+          "org-agenda-sticky": false
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)WAIT (3)NEXT\n                      (4)TODO\n  e8-views:   TODO Write report                                          :work:\n  e8-views:   TODO Plan\n  e8-views:   NEXT Go on\n  e8-views:   WAIT Answer                                                :home:\n\n===============================================================================\nHeadlines with TAGS match: home\n  e8-views:   WAIT Answer                                :home:\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)WAIT (3)NEXT\n                      (4)TODO\n  e8-views:   TODO Write report                                          :work:\n  e8-views:   TODO Plan\n  e8-views:   NEXT Go on\n  e8-views:   WAIT Answer                                                :home:\n\n===============================================================================\nHeadlines with TAGS match: home\n  e8-views:   WAIT Answer                                :home:\n",
+      "point": 434,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 434,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "append-then-redo",
+      "input": {
+        "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "A r",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-views.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "t",
+          "m",
+          "home"
+        ],
+        "globals": {
+          "org-agenda-sticky": false
+        }
+      },
+      "text": "Headlines with TAGS match: home\nPress ‘C-u r’ to search again\n  e8-views:   WAIT Answer                                                :home:\n",
+      "visible": "Headlines with TAGS match: home\nPress ‘C-u r’ to search again\n  e8-views:   WAIT Answer                                                :home:\n",
+      "point": 142,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 142,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "append-block",
+      "input": {
+        "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "A",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-views.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "a",
+          "x"
+        ],
+        "globals": {
+          "org-agenda-custom-commands": [
+            [
+              "x",
+              "",
+              [
+                [
+                  "'tags",
+                  "home"
+                ],
+                [
+                  "'todo",
+                  "NEXT"
+                ]
+              ]
+            ]
+          ],
+          "org-agenda-sticky": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-views:   Scheduled:  TODO Write report                              :work:\n  e8-views:   In   2 d.:  WAIT Answer                                    :home:\nThursday   29 October 2026\n  e8-views:   10:00...... Meeting \nFriday     30 October 2026\n  e8-views:   Deadline:   WAIT Answer                                    :home:\nSaturday   31 October 2026\nSunday      1 November 2026\n\n===============================================================================\nHeadlines with TAGS match: home\n  e8-views:   WAIT Answer                                :home:\n\n===============================================================================\nGlobal list of TODO items of type: NEXT\n  e8-views:   NEXT Go on\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-views:   Scheduled:  TODO Write report                              :work:\n  e8-views:   In   2 d.:  WAIT Answer                                    :home:\nThursday   29 October 2026\n  e8-views:   10:00...... Meeting \nFriday     30 October 2026\n  e8-views:   Deadline:   WAIT Answer                                    :home:\nSaturday   31 October 2026\nSunday      1 November 2026\n\n===============================================================================\nHeadlines with TAGS match: home\n  e8-views:   WAIT Answer                                :home:\n\n===============================================================================\nGlobal list of TODO items of type: NEXT\n  e8-views:   NEXT Go on\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "append-outside-agenda",
+      "input": {
+        "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-append-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-views.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-sticky": false
+        }
+      },
+      "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+      "visible": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Can only append from within agenda buffer",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "store-views",
+      "input": {
+        "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "e"
+        ],
+        "files": {
+          "e8-views.org": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n"
+        },
+        "find": "e8-views.org",
+        "globals": {
+          "org-agenda-custom-commands": [
+            [
+              "x",
+              "",
+              "'todo",
+              "",
+              [],
+              "view.txt"
+            ],
+            [
+              "y",
+              "",
+              "'tags",
+              "home",
+              [],
+              [
+                "h.txt",
+                "h.org"
+              ]
+            ]
+          ],
+          "org-agenda-sticky": false
+        }
+      },
+      "text": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+      "visible": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n"
+      ],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "e8-views.org",
+          "point": 0,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "files": {
+        "e8-views.org": "#+TODO: TODO NEXT WAIT | DONE\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* Project A\n** TODO Plan\n** DONE Old\n* Project B\n** NEXT Go on\n* Project C\n** Notes :FLAGGED:\n:PROPERTIES:\n:THEFLAGGINGNOTE: look again\n:END:\n* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "h.org": "* WAIT Answer :home:\nDEADLINE: <2026-10-30 Fri>\n",
+        "h.txt": "Headlines with TAGS match: home\nPress ‘C-u r’ to search again\n  e8-views:   WAIT Answer                                                :home:\n",
+        "view.txt": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)WAIT (3)NEXT\n                      (4)TODO\n  e8-views:   TODO Write report                                          :work:\n  e8-views:   TODO Plan\n  e8-views:   NEXT Go on\n  e8-views:   WAIT Answer                                                :home:\n"
+      }
+    }
+  ]
+}
