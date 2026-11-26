@@ -125,22 +125,31 @@ fn the_file_with_its_archive() {
     );
 }
 
-/// A formula the old table had is kept below the new one.
+/// A formula the old table had is kept below the new one, and applied to
+/// every row after the header, as Emacs 30.2 does.
 #[test]
 fn an_old_formula_stays_with_the_table() {
     let (mut ed, _s, _dir) = visiting(&[("t.org", &format!("#+BEGIN: clocktable :header \"\"\n| old |\n#+TBLFM: $2=1\n#+END:\n{CLOCKED}"))]);
     ed.window_buffer_mut().set_point(0);
     ed.press("C-c C-c").unwrap();
-    assert!(text(&ed).contains("| Task         | 1:30   |\n#+TBLFM: $2=1\n#+END:"), "{}", text(&ed));
+    assert!(
+        text(&ed).contains("| *Total time* | 1      |\n|--------------+--------|\n| Task         | 1      |\n#+TBLFM: $2=1\n#+END:"),
+        "{}",
+        text(&ed)
+    );
 }
 
-/// :formula writes its formula below the table.
+/// :formula writes its formula below the table and applies it, as Emacs 30.2 does.
 #[test]
 fn a_formula_is_written_below() {
     let (mut ed, _s, _dir) = visiting(&[("t.org", &format!("#+BEGIN: clocktable :header \"\" :formula \"$3=2\"\n#+END:\n{CLOCKED}"))]);
     ed.window_buffer_mut().set_point(0);
     ed.press("C-c C-c").unwrap();
-    assert!(text(&ed).contains("| Task         | 1:30   |\n#+TBLFM: $3=2\n#+END:"), "{}", text(&ed));
+    assert!(
+        text(&ed).contains("| *Total time* | *1:30* | 2 |\n|--------------+--------+---|\n| Task         | 1:30   | 2 |\n#+TBLFM: $3=2\n#+END:"),
+        "{}",
+        text(&ed)
+    );
 }
 
 /// Updating says which block, and where.
