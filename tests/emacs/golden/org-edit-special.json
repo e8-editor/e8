@@ -1,0 +1,567 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "export-js",
+      "input": {
+        "text": "Text.\n#+begin_export js\nbold();\n#+end_export\nAfter.\n",
+        "point": 25,
+        "keys": "C-c ' C-e ! C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Text.\n#+begin_export js\nbold();!\n#+end_export\nAfter.\n",
+      "visible": "Text.\n#+begin_export js\nbold();!\n#+end_export\nAfter.\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "export-html",
+      "input": {
+        "text": "Text.\n#+begin_export html\n<b>bold</b>\n#+end_export\nAfter.\n",
+        "point": 30,
+        "keys": "C-c ' C-e ! C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Text.\n#+begin_export html\n<b>bold</b>!\n#+end_export\nAfter.\n",
+      "visible": "Text.\n#+begin_export html\n<b>bold</b>!\n#+end_export\nAfter.\n",
+      "point": 38,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "export-html-abort",
+      "input": {
+        "text": "#+begin_export js\nbold();\n#+end_export\n",
+        "point": 19,
+        "keys": "C-c ' C-e ! C-c C-k",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+begin_export js\nbold();\n#+end_export\n",
+      "visible": "#+begin_export js\nbold();\n#+end_export\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "export-escaped",
+      "input": {
+        "text": "#+begin_export sh\n,* not a heading\nx\n#+end_export\n",
+        "point": 35,
+        "keys": "C-c ' M-< C-k C-k C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+begin_export sh\nx\n#+end_export\n",
+      "visible": "#+begin_export sh\nx\n#+end_export\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* not a heading\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "export-star-added",
+      "input": {
+        "text": "#+begin_export sh\nx\n#+end_export\n",
+        "point": 18,
+        "keys": "C-c ' C-a * SPC h RET C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+begin_export sh\n,* h\nx\n#+end_export\n",
+      "visible": "#+begin_export sh\n,* h\nx\n#+end_export\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "export-no-mode",
+      "input": {
+        "text": "#+begin_export nosuchlang\nx\n#+end_export\n",
+        "point": 26,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+begin_export nosuchlang\nx\n#+end_export\n",
+      "visible": "#+begin_export nosuchlang\nx\n#+end_export\n",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No such language mode: nosuchlang-mode"
+    },
+    {
+      "name": "export-no-type",
+      "input": {
+        "text": "#+begin_export\nx\n#+end_export\n",
+        "point": 15,
+        "keys": "C-c ' y C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+begin_export\nyx\n#+end_export\n",
+      "visible": "#+begin_export\nyx\n#+end_export\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "export-indented",
+      "input": {
+        "text": "- item\n  #+begin_export js\n  f(a);\n  #+end_export\n",
+        "point": 31,
+        "keys": "C-c ' C-e ! C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- item\n  #+begin_export js\n  f(a);!\n  #+end_export\n",
+      "visible": "- item\n  #+begin_export js\n  f(a);!\n  #+end_export\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "comment-block",
+      "input": {
+        "text": "#+begin_comment\nSome text.\n,* escaped\n#+end_comment\n",
+        "point": 21,
+        "keys": "C-c ' C-e ! C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+begin_comment\nSome text.!\n,* escaped\n#+end_comment\n",
+      "visible": "#+begin_comment\nSome text.!\n,* escaped\n#+end_comment\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "comment-block-star",
+      "input": {
+        "text": "#+begin_comment\nx\n#+end_comment\n",
+        "point": 16,
+        "keys": "C-c ' C-a * SPC h RET C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+begin_comment\n,* h\nx\n#+end_comment\n",
+      "visible": "#+begin_comment\n,* h\nx\n#+end_comment\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "comment-block-blank-after",
+      "input": {
+        "text": "#+begin_comment\nx\n#+end_comment\n\n\nmore\n",
+        "point": 33,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+begin_comment\nx\n#+end_comment\n\n\nmore\n",
+      "visible": "#+begin_comment\nx\n#+end_comment\n\n\nmore\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not in a comment block"
+    },
+    {
+      "name": "fixed-width",
+      "input": {
+        "text": ": one\n: two\n:\n: four\n",
+        "point": 10,
+        "keys": "C-c ' C-e ! C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": ": one\n: two!\n: \n: four\n",
+      "visible": ": one\n: two!\n: \n: four\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "fixed-width-indented",
+      "input": {
+        "text": "- item\n  : ab\n  : cd\n",
+        "point": 12,
+        "keys": "C-c ' C-e ! C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- item\n  : ab!\n  : cd\n",
+      "visible": "- item\n  : ab!\n  : cd\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "latex-environment",
+      "input": {
+        "text": "\\begin{equation}\nx = y\n\\end{equation}\n",
+        "point": 21,
+        "keys": "C-c ' C-e ! C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "\\begin{equation}\nx = y!\n\\end{equation}\n",
+      "visible": "\\begin{equation}\nx = y!\n\\end{equation}\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "latex-environment-abort",
+      "input": {
+        "text": "\\begin{equation}\nx = y\n\\end{equation}\n",
+        "point": 21,
+        "keys": "C-c ' C-e ! C-c C-k",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "\\begin{equation}\nx = y\n\\end{equation}\n",
+      "visible": "\\begin{equation}\nx = y\n\\end{equation}\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "include-url",
+      "input": {
+        "text": "#+INCLUDE: \"https://example.com/a.org\"\n",
+        "point": 37,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+INCLUDE: \"https://example.com/a.org\"\n",
+      "visible": "#+INCLUDE: \"https://example.com/a.org\"\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Files located with a URL cannot be edited"
+    },
+    {
+      "name": "include-empty",
+      "input": {
+        "text": "#+INCLUDE:\n",
+        "point": 10,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+INCLUDE:\n",
+      "visible": "#+INCLUDE:\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No file to edit"
+    },
+    {
+      "name": "other-keyword",
+      "input": {
+        "text": "#+TITLE: x\n",
+        "point": 10,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+TITLE: x\n",
+      "visible": "#+TITLE: x\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No special environment to edit here"
+    },
+    {
+      "name": "paragraph",
+      "input": {
+        "text": "Just text.\n",
+        "point": 5,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Just text.\n",
+      "visible": "Just text.\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No special environment to edit here"
+    },
+    {
+      "name": "example-block",
+      "input": {
+        "text": "#+begin_example\nab\n#+end_example\n",
+        "point": 17,
+        "keys": "C-c ' C-e ! C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+begin_example\n  ab!\n#+end_example\n",
+      "visible": "#+begin_example\n  ab!\n#+end_example\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "src-point-return",
+      "input": {
+        "text": "#+begin_src emacs-lisp\n  (a b)\n  (c d)\n#+end_src\n",
+        "point": 28,
+        "keys": "C-c ' C-n C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+begin_src emacs-lisp\n  (a b)\n  (c d)\n#+end_src\n",
+      "visible": "#+begin_src emacs-lisp\n  (a b)\n  (c d)\n#+end_src\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "name-on-export",
+      "input": {
+        "text": "#+NAME: x\n#+begin_export js\nf(a);\n#+end_export\n",
+        "point": 8,
+        "keys": "C-c ' C-e ! C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+NAME: x\n#+begin_export js\nf(a);!\n#+end_export\n",
+      "visible": "#+NAME: x\n#+begin_export js\nf(a);!\n#+end_export\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "planning-deadline",
+      "input": {
+        "text": "* T\nDEADLINE: <2026-11-20 Fri>\n",
+        "point": 30,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2026-12-01"
+        ]
+      },
+      "text": "* T\nDEADLINE: <2026-12-01 Tue>\n",
+      "visible": "* T\nDEADLINE: <2026-12-01 Tue>\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "planning-both",
+      "input": {
+        "text": "* T\nSCHEDULED: <2026-11-20 Fri> DEADLINE: <2026-11-21 Sat>\n",
+        "point": 58,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2026-12-01",
+          "2026-12-02"
+        ]
+      },
+      "text": "* T\nSCHEDULED: <2026-12-02 Wed> DEADLINE: <2026-12-01 Tue>\n",
+      "visible": "* T\nSCHEDULED: <2026-12-02 Wed> DEADLINE: <2026-12-01 Tue>\n",
+      "point": 58,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "timestamp-active",
+      "input": {
+        "text": "* T\nSee <2026-11-20 Fri> then.\n",
+        "point": 21,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2026-12-24"
+        ]
+      },
+      "text": "* T\nSee <2026-12-24 Thu> then.\n",
+      "visible": "* T\nSee <2026-12-24 Thu> then.\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "timestamp-inactive",
+      "input": {
+        "text": "* T\nSee [2026-11-20 Fri] then.\n",
+        "point": 21,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2026-12-24"
+        ]
+      },
+      "text": "* T\nSee [2026-12-24 Thu] then.\n",
+      "visible": "* T\nSee [2026-12-24 Thu] then.\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

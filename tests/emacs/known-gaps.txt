@@ -67,3 +67,4 @@ org-region-loops/region-sibling-narrowed  # region deactivated mid-command
 # evaluate it with, so the field gets #ERROR (ADR 0115).
 org-table-formulas/lisp-formula  # no Lisp for '(...) formulas
 org-table-formulas/comma-decimal  # 1,5 is a complex number to Calc, and E8's Calc has none
+org-edit-special/export-html  # E8 has no html-mode, so the export block's language has no mode (differences.md)

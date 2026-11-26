@@ -1,0 +1,249 @@
+[
+ {
+  "name": "export-js",
+  "text": "Text.\n#+begin_export js\nbold();\n#+end_export\nAfter.\n",
+  "point": 25,
+  "keys": "C-c ' C-e ! C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "export-html",
+  "text": "Text.\n#+begin_export html\n<b>bold</b>\n#+end_export\nAfter.\n",
+  "point": 30,
+  "keys": "C-c ' C-e ! C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "export-html-abort",
+  "text": "#+begin_export js\nbold();\n#+end_export\n",
+  "point": 19,
+  "keys": "C-c ' C-e ! C-c C-k",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "export-escaped",
+  "text": "#+begin_export sh\n,* not a heading\nx\n#+end_export\n",
+  "point": 35,
+  "keys": "C-c ' M-< C-k C-k C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "export-star-added",
+  "text": "#+begin_export sh\nx\n#+end_export\n",
+  "point": 18,
+  "keys": "C-c ' C-a * SPC h RET C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "export-no-mode",
+  "text": "#+begin_export nosuchlang\nx\n#+end_export\n",
+  "point": 26,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "export-no-type",
+  "text": "#+begin_export\nx\n#+end_export\n",
+  "point": 15,
+  "keys": "C-c ' y C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "export-indented",
+  "text": "- item\n  #+begin_export js\n  f(a);\n  #+end_export\n",
+  "point": 31,
+  "keys": "C-c ' C-e ! C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "comment-block",
+  "text": "#+begin_comment\nSome text.\n,* escaped\n#+end_comment\n",
+  "point": 21,
+  "keys": "C-c ' C-e ! C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "comment-block-star",
+  "text": "#+begin_comment\nx\n#+end_comment\n",
+  "point": 16,
+  "keys": "C-c ' C-a * SPC h RET C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "comment-block-blank-after",
+  "text": "#+begin_comment\nx\n#+end_comment\n\n\nmore\n",
+  "point": 33,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "fixed-width",
+  "text": ": one\n: two\n:\n: four\n",
+  "point": 10,
+  "keys": "C-c ' C-e ! C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "fixed-width-indented",
+  "text": "- item\n  : ab\n  : cd\n",
+  "point": 12,
+  "keys": "C-c ' C-e ! C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "latex-environment",
+  "text": "\\begin{equation}\nx = y\n\\end{equation}\n",
+  "point": 21,
+  "keys": "C-c ' C-e ! C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "latex-environment-abort",
+  "text": "\\begin{equation}\nx = y\n\\end{equation}\n",
+  "point": 21,
+  "keys": "C-c ' C-e ! C-c C-k",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "include-url",
+  "text": "#+INCLUDE: \"https://example.com/a.org\"\n",
+  "point": 37,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "include-empty",
+  "text": "#+INCLUDE:\n",
+  "point": 10,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "other-keyword",
+  "text": "#+TITLE: x\n",
+  "point": 10,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "paragraph",
+  "text": "Just text.\n",
+  "point": 5,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "example-block",
+  "text": "#+begin_example\nab\n#+end_example\n",
+  "point": 17,
+  "keys": "C-c ' C-e ! C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "src-point-return",
+  "text": "#+begin_src emacs-lisp\n  (a b)\n  (c d)\n#+end_src\n",
+  "point": 28,
+  "keys": "C-c ' C-n C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "name-on-export",
+  "text": "#+NAME: x\n#+begin_export js\nf(a);\n#+end_export\n",
+  "point": 8,
+  "keys": "C-c ' C-e ! C-c '",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "planning-deadline",
+  "text": "* T\nDEADLINE: <2026-11-20 Fri>\n",
+  "point": 30,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ],
+  "answers": [
+   "2026-12-01"
+  ]
+ },
+ {
+  "name": "planning-both",
+  "text": "* T\nSCHEDULED: <2026-11-20 Fri> DEADLINE: <2026-11-21 Sat>\n",
+  "point": 58,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ],
+  "answers": [
+   "2026-12-01",
+   "2026-12-02"
+  ]
+ },
+ {
+  "name": "timestamp-active",
+  "text": "* T\nSee <2026-11-20 Fri> then.\n",
+  "point": 21,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ],
+  "answers": [
+   "2026-12-24"
+  ]
+ },
+ {
+  "name": "timestamp-inactive",
+  "text": "* T\nSee [2026-11-20 Fri] then.\n",
+  "point": 21,
+  "keys": "C-c '",
+  "modes": [
+   "org-mode"
+  ],
+  "answers": [
+   "2026-12-24"
+  ]
+ }
+]
