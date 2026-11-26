@@ -3177,9 +3177,17 @@ export function fixFormulasConfirmed(): boolean {
   return truthy(e8.funcall(f as string, "Fix formulas? ") ?? null);
 }
 
-/** Whether a position in a line is inside a remote(...), as org-in-regexp finds it around point. */
+/** Puts new text on a line, if it differs. */
+function replaceLine(line: number, text: string): void {
+  if (text === e8.lineText(line)) return;
+  const bol = e8.lineStart(line);
+  edDelete(bol, e8.lineEnd(line));
+  edInsert(bol, text);
+}
+
+/** Whether a position in a line is inside a remote(...), any case, as org-in-regexp finds it around point with case-fold-search. */
 function inRemote(text: string, pos: number): boolean {
-  return allMatches(/remote\([^)]+?\)/g, text).some((m) => (m.index ?? 0) <= pos && pos <= (m.index ?? 0) + m[0].length);
+  return allMatches(/remote\([^)]+?\)/gi, text).some((m) => (m.index ?? 0) <= pos && pos <= (m.index ?? 0) + m[0].length);
 }
 
 /**
@@ -3201,7 +3209,11 @@ export function fixFormulas(key: "@" | "$", replace: [string, string][], limit?:
         for (const m of allMatches(re2, text)) {
           const at = m.index ?? 0;
           if (at < i || inRemote(text, at + m[0].length)) continue;
-          if (text[at - 1] === ".") e8.userError(`Change makes TBLFM term ${m[0]} invalid, use undo to recover`);
+          if (text[at - 1] === ".") {
+            // The terms removed before it stay removed, as Org removes each as it goes.
+            replaceLine(line, out + text.slice(i));
+            e8.userError(`Change makes TBLFM term ${m[0]} invalid, use undo to recover`);
+          }
           out += text.slice(i, at);
           i = at + m[0].length;
         }
@@ -3216,11 +3228,7 @@ export function fixFormulas(key: "@" | "$", replace: [string, string][], limit?:
         if (limit !== undefined && n > limit) return key + String(n + (delta ?? 0));
         return whole;
       });
-      if (text !== e8.lineText(line)) {
-        const bol = e8.lineStart(line);
-        edDelete(bol, e8.lineEnd(line));
-        edInsert(bol, text);
-      }
+      replaceLine(line, text);
       e8.message("The formulas in #+TBLFM have been updated");
     }
   });

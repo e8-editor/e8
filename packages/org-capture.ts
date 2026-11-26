@@ -970,12 +970,16 @@ function placeTableLine(t: CaptureTemplate, where: Target, filled: Filled, prepe
     }
   } else e8.gotoChar(tableEnd);
   const origin = e8.makeMarker(e8.point());
+  const sizeBefore = e8.bufferSize();
   if (e8.point() !== e8.lineStart(lineAt())) e8.insert("\n");
   const start = e8.point();
   e8.insert(text);
   let stop = e8.point();
   const cursor = takeCursor(start, stop);
   if (cursor !== undefined) stop--;
+  // Narrowed to the table, grown by the new line, as Org narrows before
+  // inserting, whether or not :unnarrowed, then to the line unless it.
+  e8.narrowToRegion(tableStart, tableEnd + e8.bufferSize() - sizeBefore);
   captureNarrow(t, start, stop - 1);
   e8.gotoChar(cursor ?? start);
   return { beg: start, end: stop, level: 0, cursor: e8.point(), killStart: origin, killEnd: stop };

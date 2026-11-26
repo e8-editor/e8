@@ -4697,5 +4697,6 @@
       ]
     ]
   },
- {"name": "capture-table-line-formulas", "text": "* one\n* Inbox\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n|---+---|\n|   |   |\n#+TBLFM: @>$1=vsum(@I..@II)::$2=$1*10\n* two\n", "point": 2, "keys": "7 C-c C-c", "answers": ["t"], "modes": ["org-mode"], "visit": "e8-capture.org", "capture_templates": [["t", "T", "table-line", ["file+headline", "FILE", "Inbox"], "| %? |  |"]], "call": ["org-capture"]}
+ {"name": "capture-table-line-formulas", "text": "* one\n* Inbox\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n|---+---|\n|   |   |\n#+TBLFM: @>$1=vsum(@I..@II)::$2=$1*10\n* two\n", "point": 2, "keys": "7 C-c C-c", "answers": ["t"], "modes": ["org-mode"], "visit": "e8-capture.org", "capture_templates": [["t", "T", "table-line", ["file+headline", "FILE", "Inbox"], "| %? |  |"]], "call": ["org-capture"]},
+ {"name": "capture-table-line-unnarrowed-up", "text": "* one\n* Inbox\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n#+TBLFM: @2$2=$1*10::@3$2=$1*100\n* two\n", "point": 2, "keys": "7 C-a C-p C-p C-p C-c C-c", "answers": ["t"], "modes": ["org-mode"], "visit": "e8-capture.org", "capture_templates": [["t", "T", "table-line", ["file+headline", "FILE", "Inbox"], "| %? |  |", ":prepend", true, ":unnarrowed", true]], "call": ["org-capture"]}
 ]

@@ -447,6 +447,119 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "dot-error-after-removal",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 | 3 |\n| 4 | 5 | 6 |\n#+TBLFM: $3=1::@1$1..@2$3=5\n",
+        "point": 38,
+        "keys": "M-S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b |\n|---+---|\n| 1 | 2 |\n| 4 | 5 |\n#+TBLFM: @1$1..@2$3=5\n",
+      "visible": "| a | b |\n|---+---|\n| 1 | 2 |\n| 4 | 5 |\n#+TBLFM: @1$1..@2$3=5\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Change makes TBLFM term @2$3=5 invalid, use undo to recover"
+    },
+    {
+      "name": "dot-error-row",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 | 3 |\n| 4 | 5 | 6 |\n#+TBLFM: @2$1=7::@1$1..@2$3=1\n",
+        "point": 30,
+        "keys": "M-S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b | c |\n|---+---+---|\n| 4 | 5 | 6 |\n#+TBLFM: @1$1..@2$3=1\n",
+      "visible": "| a | b | c |\n|---+---+---|\n| 4 | 5 | 6 |\n#+TBLFM: @1$1..@2$3=1\n",
+      "point": 30,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "| 1 | 2 | 3 |\n"
+      ],
+      "modified": true,
+      "error": "Change makes TBLFM term @2$3=1 invalid, use undo to recover"
+    },
+    {
+      "name": "remote-uppercase",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 | 3 |\n| 4 | 5 | 6 |\n#+TBLFM: $3=REMOTE(t,$1)+Remote(u,$2)+$1\n",
+        "point": 30,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| b | a | c |\n|---+---+---|\n| 2 | 1 | 3 |\n| 5 | 4 | 6 |\n#+TBLFM: $3=REMOTE(t,$1)+Remote(u,$2)+$2\n",
+      "visible": "| b | a | c |\n|---+---+---|\n| 2 | 1 | 3 |\n| 5 | 4 | 6 |\n#+TBLFM: $3=REMOTE(t,$1)+Remote(u,$2)+$2\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "confirm-always",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 | 3 |\n| 4 | 5 | 6 |\n#+TBLFM: $3=$1+$2\n",
+        "point": 30,
+        "keys": "M-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-table-fix-formulas-confirm": "'always"
+        }
+      },
+      "text": "|   | a | b | c |\n|---+---+---+---|\n|   | 1 | 2 | 3 |\n|   | 4 | 5 | 6 |\n#+TBLFM: $4=$2+$3\n",
+      "visible": "|   | a | b | c |\n|---+---+---+---|\n|   | 1 | 2 | 3 |\n|   | 4 | 5 | 6 |\n#+TBLFM: $4=$2+$3\n",
+      "point": 38,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "confirm-ignore",
+      "input": {
+        "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 | 3 |\n| 4 | 5 | 6 |\n#+TBLFM: $3=$1+$2\n",
+        "point": 30,
+        "keys": "M-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-table-fix-formulas-confirm": "'ignore"
+        }
+      },
+      "text": "|   | a | b | c |\n|---+---+---+---|\n|   | 1 | 2 | 3 |\n|   | 4 | 5 | 6 |\n#+TBLFM: $3=$1+$2\n",
+      "visible": "|   | a | b | c |\n|---+---+---+---|\n|   | 1 | 2 | 3 |\n|   | 4 | 5 | 6 |\n#+TBLFM: $3=$1+$2\n",
+      "point": 38,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }

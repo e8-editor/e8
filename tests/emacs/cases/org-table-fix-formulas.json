@@ -195,5 +195,56 @@
   "modes": [
    "org-mode"
   ]
+ },
+ {
+  "name": "dot-error-after-removal",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 | 3 |\n| 4 | 5 | 6 |\n#+TBLFM: $3=1::@1$1..@2$3=5\n",
+  "point": 38,
+  "keys": "M-S-<left>",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "dot-error-row",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 | 3 |\n| 4 | 5 | 6 |\n#+TBLFM: @2$1=7::@1$1..@2$3=1\n",
+  "point": 30,
+  "keys": "M-S-<up>",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "remote-uppercase",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 | 3 |\n| 4 | 5 | 6 |\n#+TBLFM: $3=REMOTE(t,$1)+Remote(u,$2)+$1\n",
+  "point": 30,
+  "keys": "M-<right>",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "confirm-always",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 | 3 |\n| 4 | 5 | 6 |\n#+TBLFM: $3=$1+$2\n",
+  "point": 30,
+  "keys": "M-S-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-table-fix-formulas-confirm": "'always"
+  }
+ },
+ {
+  "name": "confirm-ignore",
+  "text": "| a | b | c |\n|---+---+---|\n| 1 | 2 | 3 |\n| 4 | 5 | 6 |\n#+TBLFM: $3=$1+$2\n",
+  "point": 30,
+  "keys": "M-S-<right>",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-table-fix-formulas-confirm": "'ignore"
+  }
  }
 ]
