@@ -6357,11 +6357,29 @@ declare global {
        */
       "org-edit-fixed-width-region": [];
       /**
+       * Edit the definition of the footnote whose reference point is on, in a buffer of its own; C-c ' puts it back.
+       *
+       * Defined in packages/org-src.ts.
+       */
+      "org-edit-footnote-reference": [];
+      /**
+       * Edit the inline source code at point in its language's mode, on one line; C-c ' puts it back.
+       *
+       * Defined in packages/org-src.ts.
+       */
+      "org-edit-inline-src-code": [];
+      /**
        * Edit the LaTeX environment at point in a buffer of its own, in the mode for LaTeX if there is one. C-c ' there puts it back.
        *
        * Defined in packages/org-src.ts.
        */
       "org-edit-latex-environment": [];
+      /**
+       * Edit the LaTeX fragment at point in a buffer of its own, its delimiters read-only; C-c ' puts it back.
+       *
+       * Defined in packages/org-src.ts.
+       */
+      "org-edit-latex-fragment": [];
       /**
        * Edit the element at point in a buffer of its own: a source, example, export or comment block, a fixed-width area or a LaTeX environment; a table's formulas; the file a #+INCLUDE: line names; a planning line's dates; a timestamp; a link.
        *

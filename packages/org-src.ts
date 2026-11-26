@@ -17,7 +17,8 @@ import { barfIfBufferReadOnly, eraseBuffer, PerBuffer, truthy } from "subr";
 import { type Elem, elementAt, endBeforeBlank, withAffiliated } from "org-element";
 import { orgRegionActive } from "org-macs";
 import { linkHere } from "ol";
-import { openLink } from "org";
+import { footnoteToEdit } from "org-footnote";
+import { expectedIndent, openLink } from "org";
 import { commentOrUncommentRegion } from "newcomment";
 
 const defvar = (name: string, value: e8.Value, doc: string) => e8.defineVariable({ name, value, doc });
@@ -50,6 +51,19 @@ interface Edit {
   writeBack?: (text: string) => string;
   /** The Org buffer's tab width if it indents with tabs, else 0, as org-src--tab-width. */
   tabWidth: number;
+  /** Whether point stays where it is on leaving, as org-src--remote, for a footnote's definition edited from its reference. */
+  remote?: boolean;
+  /** Whether the first line is left as it is, as for a LaTeX fragment, which starts in a paragraph's text. */
+  keepFirstLine?: boolean;
+}
+
+/** What an element editor asks of the edit buffer beyond its text and mode. */
+interface EditOptions {
+  writeBack?: (text: string) => string;
+  /** Read-only stretches of the text, as Org marks a footnote's label: from, to, the message, and whether it sticks to text typed before it and after it. */
+  readOnly?: [number, number, string, boolean, boolean][];
+  remote?: boolean;
+  keepFirstLine?: boolean;
 }
 
 /** An element's text to edit, as org-src--contents-area gives it, and the element's own indentation. */
@@ -135,6 +149,20 @@ function cutColumns(l: string, n: number): string {
   return l.slice(i);
 }
 
+/** Lines after the first without n columns of indentation, as org-do-remove-indentation with N and SKIP-FL. */
+function removeColumnsAfterFirst(text: string, n: number): string {
+  if (n === 0) return text;
+  const lines = text.split("\n");
+  for (let i = 1; i < lines.length; i++) {
+    const ind = lineIndentation(lines[i]);
+    if (ind < n) {
+      if (/\S/.test(lines[i])) break;
+      lines[i] = "";
+    } else lines[i] = cutColumns(lines[i], n);
+  }
+  return lines.join("\n");
+}
+
 /** How many characters a string has, as Emacs counts them. */
 function charCountOf(s: string): number {
   return [...s].length;
@@ -197,13 +225,16 @@ function gotoCoordinates(c: [number, number] | "end", beg: number, end: number):
  * does: its text without the indentation its lines share, in `mode`, point
  * where it was in the element. The current buffer stays as it was.
  */
-function openElement(d: Datum, base: string, mode: string | undefined, writeBack?: (text: string) => string): { name: string; edit: Edit } {
+function openElement(d: Datum, base: string, mode: string | undefined, options: EditOptions | ((text: string) => string) = {}): { name: string; edit: Edit } {
+  const o: EditOptions = typeof options === "function" ? { writeBack: options } : options;
+  const writeBack = o.writeBack;
   const source = e8.bufferName();
   const coords = coordinates(e8.point(), d.beg, d.end);
   // The region, if active and in the element, as org-src--edit-element carries it in.
   const mark = e8.mark();
   const markCoords = orgRegionActive() && mark !== undefined && mark >= d.beg && mark <= d.end ? coordinates(mark, d.beg, d.end) : undefined;
-  const text = d.preserve ? d.contents : removeCommonIndentation(d.contents);
+  // A fragment's lines after its first lose the element's indentation, the rest what they share.
+  const text = d.preserve ? d.contents : o.keepFirstLine ? removeColumnsAfterFirst(d.contents, d.blockIndentation) : removeCommonIndentation(d.contents);
   const tabWidth = truthy(e8.variable("indent-tabs-mode") ?? null) ? Number(e8.variable("tab-width") ?? 8) : 0;
   const edit: Edit = {
     beg: e8.makeMarker(d.beg),
@@ -214,12 +245,19 @@ function openElement(d: Datum, base: string, mode: string | undefined, writeBack
     preserve: d.preserve,
     writeBack,
     tabWidth,
+    remote: o.remote,
+    keepFirstLine: o.keepFirstLine,
   };
   // A buffer of its own, as generate-new-buffer names it, <2> after another's.
   const name = e8.generateNewBufferName(base);
   e8.getBufferCreate(name);
   e8.withCurrentBuffer(name, () => {
     e8.insert(text);
+    for (const [from, to, message, front, rear] of o.readOnly ?? []) {
+      e8.putTextProperty(from, to, "read-only", message);
+      e8.putTextProperty(from, to, "front-sticky", front);
+      e8.putTextProperty(from, to, "rear-nonsticky", rear);
+    }
     // No undoing back to the empty buffer, as Org clears the undo list.
     e8.bufferDisableUndo();
     e8.bufferEnableUndo();
@@ -231,11 +269,19 @@ function openElement(d: Datum, base: string, mode: string | undefined, writeBack
     edits.set(e8.currentBuffer(), edit);
     e8.callWithPrefix(1, orgSrcMode);
     e8.setBufferModified(false);
-    if (markCoords !== undefined) {
-      gotoCoordinates(markCoords, 0, e8.bufferSize());
-      e8.pushMark(e8.point(), { activate: true });
+    if (o.remote) {
+      // At the first text that may be edited, after blanks, as Org puts point remotely.
+      let q = 0;
+      while (q < e8.bufferSize() && truthy(e8.getTextProperty(q, "read-only") ?? null)) q++;
+      e8.gotoChar(q);
+      e8.skipCharsForward(" \r\t\n");
+    } else {
+      if (markCoords !== undefined) {
+        gotoCoordinates(markCoords, 0, e8.bufferSize());
+        e8.pushMark(e8.point(), { activate: true });
+      }
+      gotoCoordinates(coords, 0, e8.bufferSize());
     }
-    gotoCoordinates(coords, 0, e8.bufferSize());
   });
   return { name, edit };
 }
@@ -329,7 +375,7 @@ function contentsForWriteBack(edit: Edit): string {
   if (edit.writeBack) text = edit.writeBack(text);
   const offset = edit.preserve ? 0 : edit.blockIndentation + edit.contentIndentation;
   const indent = indentString(offset, edit.tabWidth);
-  return offset > 0 ? text.split("\n").map((l) => (l === "" ? l : indent + l)).join("\n") : text;
+  return offset > 0 ? text.split("\n").map((l, i) => (l === "" || (i === 0 && edit.keepFirstLine) ? l : indent + l)).join("\n") : text;
 }
 
 /** Puts the block's buffer's text back in place of the block's, if it changed. */
@@ -384,7 +430,10 @@ function exit(abort: boolean): void {
   if (edit.windows) e8.setWindowConfiguration(edit.windows);
   switchTo(edit.source, "exit");
   e8.call("kill-buffer", name);
-  returnPoint(edit, abort ? undefined : at);
+  if (edit.remote) {
+    e8.deleteMarker(edit.beg);
+    e8.deleteMarker(edit.end);
+  } else returnPoint(edit, abort ? undefined : at);
 }
 
 /** Puts point back in the Org buffer where it was in the block's buffer, as org-src--goto-coordinates, and frees the edit's markers. */
@@ -591,7 +640,7 @@ function editLatexEnvironment(): void {
 }
 
 /** Opens an element's edit buffer and shows it, as org-src--edit-element does for the element editors. */
-function openAndShow(d: Datum, name: string, mode: string | undefined, writeBack: (text: string) => string): void {
+function openAndShow(d: Datum, name: string, mode: string | undefined, writeBack: EditOptions | ((text: string) => string)): void {
   if (returnToExisting(d.beg, d.end)) return;
   const windows = savedWindows();
   const opened = openElement(d, name, mode, writeBack);
@@ -679,6 +728,15 @@ const editSpecial = e8.defineCommand({
     // Objects, only in what Org parses for them: a paragraph, a heading's title, a table row, a verse block.
     const headingLine = /^\*+ /.test(e8.lineText(e8.lineOf(e8.point())));
     if (!headingLine && !["paragraph", "table-row", "table", "verse-block"].includes(e?.type ?? "")) e8.userError("No special environment to edit here");
+    // The innermost object, as org-element-context gives it: what an inline footnote holds before the footnote.
+    if (inlineSrcAt()) {
+      editInlineSrcCode();
+      return;
+    }
+    if (latexFragmentAt()) {
+      editLatexFragment();
+      return;
+    }
     const ts = timestampAtPoint();
     if (ts !== undefined) {
       e8.callInteractively(ts ? "org-timestamp" : "org-timestamp-inactive");
@@ -686,6 +744,10 @@ const editSpecial = e8.defineCommand({
     }
     if (linkHere()) {
       e8.callInteractively("ffap");
+      return;
+    }
+    if (footnoteToEdit()?.ref) {
+      editFootnoteReference();
       return;
     }
     e8.userError("No special environment to edit here");
@@ -784,4 +846,225 @@ e8.defun("org-src--fill-paragraph", (justify?: e8.Value) => {
   if (!editableHere()) e8.signal("error", "Not in a sub-editing buffer");
   doInEditBuffer(() => e8.callWithPrefix(justify === null || justify === undefined || justify === false ? null : 4, "fill-paragraph"));
   return true;
+});
+
+// Objects C-c ' edits, after org-src.el's org-edit-footnote-reference,
+// org-edit-latex-fragment and org-edit-inline-src-code: each in a buffer of
+// its own, as the elements are.
+
+/** An object found on point's line: where it begins, ends, and ends with the blanks after it. */
+interface ObjectSpan {
+  begin: number;
+  end: number;
+  objectEnd: number;
+  match: RegExpExecArray;
+}
+
+/** Where =verbatim= and ~code~ are on a line, which hold no other objects, as Org's emphasis markers find them. */
+function verbatimSpans(line: string): [number, number][] {
+  const spans: [number, number][] = [];
+  for (const m of line.matchAll(/(^|[\s\-('"{])([=~])([^\s]|[^\s].*?[^\s])\2(?=[\s\-.,:!?;'")}\[\\]|$)/g)) {
+    const at = (m.index ?? 0) + m[1].length;
+    spans.push([at, at + m[0].length - m[1].length]);
+  }
+  return spans;
+}
+
+/** The first match of a pattern on point's line whose object, blanks after it included, holds point, as org-element-context finds one. */
+function objectOnLine(re: RegExp, accept: (m: RegExpExecArray, line: string) => boolean = () => true): ObjectSpan | undefined {
+  const l = e8.lineOf(e8.point());
+  const line = e8.lineText(l);
+  const col = e8.point() - e8.lineStart(l);
+  const g = new RegExp(re.source, re.flags.includes("g") ? re.flags : `${re.flags}g`);
+  const verbatim = verbatimSpans(line);
+  for (const m of line.matchAll(g)) {
+    const at = m.index ?? 0;
+    if (!accept(m as RegExpExecArray, line)) continue;
+    if (verbatim.some(([a, b]) => at > a && at < b)) continue;
+    const blanks = /^[ \t]*/.exec(line.slice(at + m[0].length))![0].length;
+    if (at <= col && col < at + m[0].length + Math.max(blanks, 1)) {
+      const begin = e8.lineStart(l) + [...line.slice(0, at)].length;
+      const end = begin + [...m[0]].length;
+      return { begin, end, objectEnd: end + blanks, match: m as RegExpExecArray };
+    }
+  }
+  return undefined;
+}
+
+/** Where the bracket opened at i closes, nested ones balanced, as org-element--parse-paired-brackets finds it. */
+function pairedClose(text: string, i: number, open: string, close: string): number | undefined {
+  let depth = 0;
+  for (let k = i; k < text.length; k++) {
+    if (text[k] === open) depth++;
+    else if (text[k] === close && --depth === 0) return k;
+  }
+  return undefined;
+}
+
+/**
+ * The inline source block on point, src_LANG[HEADERS]{CODE}, its brackets
+ * and braces balanced and over the paragraph's lines, as Org's parser finds
+ * one; none in a table, whose cells hold no inline source code.
+ */
+function inlineSrcAt(): ObjectSpan | undefined {
+  const p = e8.point();
+  const e = elementAt(p);
+  if (e && (e.type === "table" || e.type === "table-row")) return undefined;
+  const heading = /^\*+ /.test(e8.lineText(e8.lineOf(p)));
+  const from = !heading && e?.type === "paragraph" ? (e.contentsBegin ?? e.begin) : e8.lineStart(e8.lineOf(p));
+  const to = !heading && e?.type === "paragraph" ? (e.contentsEnd ?? e.end) : e8.lineEnd(e8.lineOf(p));
+  const text = e8.bufferText(from, to);
+  const verbatim = text.split("\n").length === 1 ? verbatimSpans(text) : [];
+  for (const m of text.matchAll(/(?<![\p{L}\p{N}_])src_([^ \t\n[{]+)/gu)) {
+    let i = (m.index ?? 0) + m[0].length;
+    let headers: string | undefined;
+    if (text[i] === "[") {
+      const k = pairedClose(text, i, "[", "]");
+      if (k === undefined || text.slice(i, k).includes("\n")) continue;
+      headers = text.slice(i, k + 1);
+      i = k + 1;
+    }
+    if (text[i] !== "{") continue;
+    const k = pairedClose(text, i, "{", "}");
+    if (k === undefined) continue;
+    if (verbatim.some(([a, b]) => (m.index ?? 0) > a && (m.index ?? 0) < b)) continue;
+    const begin = from + [...text.slice(0, m.index ?? 0)].length;
+    const end = from + [...text.slice(0, k + 1)].length;
+    const blanks = /^[ \t]*/.exec(text.slice(k + 1))![0].length;
+    if (p >= begin && p < end + Math.max(blanks, 1)) {
+      const match = [text.slice(m.index ?? 0, k + 1), m[1], headers as string, text.slice(i + 1, k)] as unknown as RegExpExecArray;
+      return { begin, end, objectEnd: end + blanks, match };
+    }
+  }
+  return undefined;
+}
+
+/** The LaTeX fragment on point: $...$, $$...$$, \(...\), \[...\], or a command with arguments, as Org's parser finds one. */
+function latexFragmentAt(): ObjectSpan | undefined {
+  return objectOnLine(
+    /\\\(.*?\\\)|\\\[.*?\\\]|\$\$.*?\$\$|\$(?:[^ \t\n,;.$]|[^ \t\n,;.$][^$\n]*?[^ \t\n,.$])\$(?=[\s!"#'(),.:;<>?@[\]^`{}]|$)|\\[a-zA-Z]+\*?(?:\[[^\][\n{}]*\]|\{[^{}\n]*\})+/,
+    (m, line) => !(m[0].startsWith("$") && !m[0].startsWith("$$") && (m.index ?? 0) > 0 && line[(m.index ?? 0) - 1] === "$"),
+  );
+}
+
+/** Whether point is on an object, not the blanks after it, as org-src--on-datum-p. */
+function onObject(o: { begin: number; end: number }): boolean {
+  return e8.point() >= o.begin && e8.point() <= o.end;
+}
+
+/**
+ * An object's indentation, as org-src--edit-element takes it: its line's,
+ * when only blanks come before it there, else the column its parent
+ * element is expected at, as org--get-expected-indentation says.
+ */
+function objectIndentation(begin: number): number {
+  const line = e8.lineOf(begin);
+  if (/^[ \t]*$/.test(e8.bufferText(e8.lineStart(line), begin))) return indentationAt(begin);
+  const e = elementAt(begin);
+  return e ? expectedIndent(e, false, line) : indentationAt(begin);
+}
+
+/** Whether a position is in a table's cell, where a newline would break the row. */
+function inTableCell(pos: number): boolean {
+  return /^[ \t]*\|/.test(e8.lineText(e8.lineOf(pos)));
+}
+
+/** Edits the definition of the footnote whose reference point is on, as org-edit-footnote-reference. */
+function editFootnoteReference(): void {
+  const found = footnoteToEdit();
+  if (!found || !onObject(found.ref)) e8.userError("Not on a footnote reference");
+  const { ref, definition, inline } = found!;
+  if (!ref.label) e8.userError("Cannot edit remotely anonymous footnotes");
+  let d: Datum;
+  let contents: string;
+  const readOnly: [number, number, string, boolean, boolean][] = [];
+  const blockIndentation = definition ? indentationAt(definition.postAffiliated) : objectIndentation(inline?.begin ?? ref.begin);
+  e8.saveRestriction(() => {
+    e8.widen();
+    if (inline?.inline) {
+      contents = e8.bufferSubstringNoProperties(inline.begin, inline.inline.end + 1);
+      const label = /^\[fn:.*?:/.exec(contents)!;
+      readOnly.push([0, [...label[0]].length, "Cannot edit footnote label", true, true]);
+      const l = [...contents].length;
+      readOnly.push([l - 1, l, "Cannot edit past footnote reference", false, false]);
+      d = { type: "footnote-reference", beg: inline.inline.begin, end: inline.inline.end, contents, blockIndentation, preserve: false };
+    } else if (definition) {
+      const close = e8.bufferText(definition.postAffiliated, e8.lineEnd(e8.lineOf(definition.postAffiliated))).indexOf("]");
+      const beg = definition.postAffiliated + [...e8.bufferText(definition.postAffiliated, e8.lineEnd(e8.lineOf(definition.postAffiliated))).slice(0, close + 1)].length;
+      const stop = definition.contentsEnd ?? e8.lineEnd(e8.lineOf(definition.postAffiliated));
+      contents = e8.bufferSubstringNoProperties(definition.postAffiliated, stop);
+      const label = /^.*?\]/.exec(contents)!;
+      readOnly.push([0, [...label[0]].length, "Cannot edit footnote label", true, true]);
+      d = { type: "footnote-definition", beg, end: definition.contentsEnd ?? beg, contents, blockIndentation, preserve: false };
+    } else e8.userError(`Cannot find definition of footnote ${ref.label}`);
+  });
+  const isInline = Boolean(inline?.inline);
+  const inCell = isInline && inTableCell(inline!.begin);
+  openAndShow(d!, `*Edit footnote [${ref.label}]*`, "org-mode", {
+    remote: true,
+    readOnly,
+    writeBack: (text) => {
+      if (!isInline) return text.slice(text.indexOf("]") + 1);
+      const second = text.indexOf(":", text.indexOf(":") + 1);
+      let body = text.slice(second + 1, -1);
+      if (/\n[ \t]*\n/.test(body)) e8.userError("Inline definitions cannot contain blank lines");
+      if (inCell) body = body.replace(/\n/g, " ");
+      return body;
+    },
+  });
+}
+
+/** Edits the LaTeX fragment at point, its delimiters read-only, as org-edit-latex-fragment. */
+function editLatexFragment(): void {
+  const f = latexFragmentAt();
+  if (!f || !onObject(f)) e8.userError("Not on a LaTeX fragment");
+  const contents = e8.bufferSubstringNoProperties(f!.begin, f!.end);
+  const delim = /^\$[^$]/.test(contents) ? 1 : 2;
+  const l = [...contents].length;
+  const inCell = inTableCell(f!.begin);
+  const mode = langMode("latex");
+  const d: Datum = { type: "latex-fragment", beg: f!.begin, end: f!.end, contents, blockIndentation: objectIndentation(f!.begin), preserve: false };
+  openAndShow(d, `*Org Src ${e8.bufferName()}[ LaTeX fragment ]*`, e8.commandNames().includes(mode) ? mode : undefined, {
+    keepFirstLine: true,
+    readOnly: [
+      [0, delim, "Cannot edit LaTeX deliminator", true, true],
+      [l - delim, l, "Cannot edit LaTeX deliminator", false, false],
+    ],
+    writeBack: (text) => {
+      // Blank lines break a fragment, and in a table a newline breaks the row.
+      const t = text.replace(/\n[ \t]*\n/g, "\n");
+      return inCell ? t.replace(/\n/g, " ") : t;
+    },
+  });
+}
+
+/** Edits inline source code in its language's mode, on one line, as org-edit-inline-src-code. */
+function editInlineSrcCode(): void {
+  const s = inlineSrcAt();
+  if (!s || !onObject(s)) e8.userError("Not on inline source code");
+  const lang = s!.match[1];
+  const mode = langMode(lang);
+  if (!e8.commandNames().includes(mode)) e8.signal("error", `No such language mode: ${mode}`);
+  const code = s!.match[3];
+  const beg = s!.end - 1 - [...code].length;
+  const d: Datum = { type: "inline-src-block", beg, end: s!.end - 1, contents: code, blockIndentation: 0, preserve: true };
+  openAndShow(d, `*Org Src ${e8.bufferName()}[ ${lang} ]*`, mode, (text) => text.replace(/\n[ \t]*/g, " ").replace(/^[ \t]+|[ \t]+$/g, ""));
+}
+
+e8.defineCommand({
+  name: "org-edit-footnote-reference",
+  doc: "Edit the definition of the footnote whose reference point is on, in a buffer of its own; C-c ' puts it back.",
+  run: () => editFootnoteReference(),
+});
+
+e8.defineCommand({
+  name: "org-edit-latex-fragment",
+  doc: "Edit the LaTeX fragment at point in a buffer of its own, its delimiters read-only; C-c ' puts it back.",
+  run: () => editLatexFragment(),
+});
+
+e8.defineCommand({
+  name: "org-edit-inline-src-code",
+  doc: "Edit the inline source code at point in its language's mode, on one line; C-c ' puts it back.",
+  run: () => editInlineSrcCode(),
 });

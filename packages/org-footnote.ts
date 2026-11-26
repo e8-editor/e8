@@ -222,6 +222,27 @@ function referenceObjectAt(p: number, through: ("markup" | "link" | "timestamp")
   return undefined;
 }
 
+/**
+ * The reference C-c ' edits the definition of from point, as
+ * org-edit-footnote-reference finds it: the reference around point, up to
+ * its end, and where its definition is, a definition's label line or an
+ * inline reference, found as org-footnote-goto-definition finds it, with its
+ * mark and message.
+ */
+export function footnoteToEdit(p = e8.point()): { ref: Reference; definition?: Definition; inline?: Reference } | undefined {
+  const ref = referenceObjectAt(p);
+  if (!ref) return undefined;
+  // On the blanks after it, Org's context is the reference, though C-c ' then refuses it.
+  if (!ref.label || p > ref.end) return { ref };
+  const at = wide(() =>
+    e8.saveExcursion(() => {
+      gotoDefinition(ref.label!);
+      return e8.point() - 1;
+    }),
+  );
+  return wide(() => ({ ref, definition: definitionLabelAt(at), inline: definitionLabelAt(at) ? undefined : referenceObjectAt(at) }));
+}
+
 /** The reference point is on, not on the spaces after it, as org-footnote-at-reference-p finds it. */
 export function referenceAt(p = e8.point()): Reference | undefined {
   const r = referenceObjectAt(p);
@@ -602,8 +623,8 @@ function newFootnote(): void {
       reached = false;
     }
     autoAdjustMaybe();
-    // A definition out of the narrowed part of the buffer is edited there in Org's own buffer, which E8 does not have yet.
-    if (!reached) e8.message(`Footnote ${label} is defined outside the narrowed part of the buffer`);
+    // A definition out of the narrowed part of the buffer is edited remotely, in a buffer of its own.
+    if (!reached) e8.call("org-edit-footnote-reference");
   }
 }
 
@@ -933,7 +954,8 @@ function action(special: boolean): void {
       try {
         gotoDefinition(r.label, at);
       } catch {
-        // Out of the narrowed part of the buffer, which Org edits in a buffer of its own.
+        // Out of the narrowed part of the buffer: edited remotely, in a buffer of its own.
+        e8.call("org-edit-footnote-reference");
       }
     }
     return;
