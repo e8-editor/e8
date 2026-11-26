@@ -4696,5 +4696,6 @@
         "- [ ] %?"
       ]
     ]
-  }
+  },
+ {"name": "capture-table-line-formulas", "text": "* one\n* Inbox\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n|---+---|\n|   |   |\n#+TBLFM: @>$1=vsum(@I..@II)::$2=$1*10\n* two\n", "point": 2, "keys": "7 C-c C-c", "answers": ["t"], "modes": ["org-mode"], "visit": "e8-capture.org", "capture_templates": [["t", "T", "table-line", ["file+headline", "FILE", "Inbox"], "| %? |  |"]], "call": ["org-capture"]}
 ]

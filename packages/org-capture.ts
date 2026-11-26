@@ -15,6 +15,7 @@ import { type Elem, elementAt, endBeforeBlank } from "org-element";
 import { alphabetical, cycleListBullet, endOfMetaData, ITEM_RE } from "org-list";
 import { lineAt, lineStartOrEnd, orgMks, titleWithoutCookies } from "org-macs";
 import { charCount, forwardLine, getBufferWindow, truthy } from "subr";
+import { atTable, currentDline, fixFormulas, fixFormulasConfirmed, getStoredFormulas, recalculate } from "org-table";
 
 e8.defineVariable({
   name: "org-capture-templates",
@@ -1298,12 +1299,24 @@ function finalize(stay: boolean, refiling = false): void {
         ),
       );
     }
-    // A table line's table aligned, if point is still in it, as org-capture-finalize does.
+    // A table line's table, if point is still in it, aligned, or with
+    // formulas, its formulas fixed for the rows added and recalculated, as
+    // org-capture-finalize does.
     if (state?.type === "table-line") {
       e8.withCurrentBuffer(state.buffer, () =>
         e8.saveRestriction(() => {
           e8.widen();
-          if (/^[ \t]*\|/.test(e8.lineText(lineAt()))) e8.call("org-table-align");
+          if (!atTable()) return;
+          if (getStoredFormulas().length === 0) {
+            e8.call("org-table-align");
+            return;
+          }
+          if (truthy(option(state.template, ":immediate-finish") ?? null) || fixFormulasConfirmed()) {
+            const added = e8.bufferText(e8.markerPosition(state.killStart) ?? 0, e8.markerPosition(state.killEnd) ?? 0);
+            const lines = (added.match(/\n/g) ?? []).length + (added !== "" && !added.endsWith("\n") ? 1 : 0);
+            fixFormulas("@", [], currentDline() - 1, lines);
+          }
+          recalculate(true);
         }),
       );
     }

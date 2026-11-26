@@ -9798,7 +9798,8 @@ const shiftMetaDown = e8.defineCommand({
   name: "org-shiftmetadown",
   doc: "M-S-<down> in Org: insert a table row above the one point is on, or drag the line down.",
   run: () => {
-    if (atTableP()) e8.call("org-table-insert-row");
+    // With the prefix argument, as Org calls it interactively: C-u for below.
+    if (atTableP()) e8.callWithPrefix(e8.prefixArg(), "org-table-insert-row");
     else e8.callWithPrefix(e8.prefixArg(), "org-drag-line-forward");
   },
 });

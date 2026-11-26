@@ -434,6 +434,7 @@ function insertRow(below: boolean): void {
   if (m) e8.gotoChar(at + charCount(restOfLine().slice(0, (m.index ?? 0) + m[0].length)));
   if (before) align();
   else markAligned();
+  if (fixFormulasConfirmed()) fixFormulas("@", [], currentDline() - 1, 1);
 }
 
 e8.defineCommand({
@@ -954,6 +955,7 @@ function moveColumn(left: boolean): void {
   });
   gotoColumn(colpos);
   align();
+  if (fixFormulasConfirmed()) fixFormulas("$", [[String(col), String(colpos)], [String(colpos), String(col)]]);
 }
 
 e8.defineCommand({
@@ -971,12 +973,16 @@ e8.defineCommand({
 function moveRow(up: boolean): void {
   const col = currentColumnOfPoint();
   const pos = e8.point();
+  const hline1 = atHline();
+  const dline1 = currentDline();
+  const dline2 = dline1 + (up ? -1 : 1);
   if (up && e8.lineStart(lineAt()) === 0) e8.userError("Cannot move row further");
   forwardLine(up ? -1 : 1);
   if ((!up && e8.point() === e8.pointMax()) || !atTable()) {
     e8.gotoChar(pos);
     e8.userError("Cannot move row further");
   }
+  const hline2 = atHline();
   e8.gotoChar(pos);
   const bol = e8.lineStart(lineAt());
   const row = edDelete(bol, lineStartOrEnd(lineAt() + 1));
@@ -987,6 +993,9 @@ function moveRow(up: boolean): void {
   if (!atBol()) edInsert(e8.point(), "\n");
   forwardLine(-1);
   moveToColumn(col);
+  if (!hline1 && !hline2 && fixFormulasConfirmed()) {
+    fixFormulas("@", [[String(dline1), String(dline2)], [String(dline2), String(dline1)]]);
+  }
 }
 
 e8.defineCommand({
@@ -1013,6 +1022,7 @@ e8.defineCommand({
     tableHere();
     const col = currentColumnOfPoint();
     const line = lineAt();
+    const dline = atHline() ? undefined : currentDline();
     const [from, to] = [e8.lineStart(line), Math.min(e8.lineEnd(line) + 1, e8.bufferSize())];
     const mark = e8.mark();
     // Point after the mark, as Org passes them in order, so a kill joining
@@ -1024,6 +1034,7 @@ e8.defineCommand({
     e8.gotoChar(from);
     if (!atTable()) forwardLine(-1);
     moveToColumn(col);
+    if (dline !== undefined && fixFormulasConfirmed()) fixFormulas("@", [[String(dline), "INVALID"]], dline, -1, dline);
   },
 });
 
@@ -1049,6 +1060,7 @@ e8.defineCommand({
     });
     gotoColumn(col);
     align();
+    if (fixFormulasConfirmed()) fixFormulas("$", [], col - 1, 1);
   },
 });
 
@@ -1075,6 +1087,7 @@ e8.defineCommand({
       }
     });
     align();
+    if (fixFormulasConfirmed()) fixFormulas("$", [[String(col), "INVALID"]], col, -1, col);
   },
 });
 
@@ -1674,7 +1687,7 @@ function numberToLetters(n: number): string {
 }
 
 /** The data lines up to and including point's, as org-table-current-dline counts them. */
-function currentDline(): number {
+export function currentDline(): number {
   const pos = e8.point();
   return saveExcursion(() => {
     e8.gotoChar(orgTableBegin());
@@ -3143,3 +3156,72 @@ e8.defun("org-table-store-formulas", (alist: e8.Value, location?: e8.Value) =>
     typeof location === "number" ? location : undefined,
   ),
 );
+
+// Formulas follow the table's structure, after org-table-fix-formulas:
+// moving, inserting or deleting a column or row changes the references on
+// the #+TBLFM: lines to match, as the commands that change it do in Org.
+
+e8.defineVariable({
+  name: "org-table-fix-formulas-confirm",
+  doc: "A function asked, as y-or-n-p, whether to change the formulas when a column or row moves, or nil to change them without asking.",
+  value: null,
+});
+
+/** Whether to change the formulas after a column or row moved, as org-table-fix-formulas-confirm says. */
+export function fixFormulasConfirmed(): boolean {
+  const f = e8.variable("org-table-fix-formulas-confirm");
+  if (!truthy(f ?? null)) return true;
+  // E8's questions are natives, not functions to call by name.
+  if (f === "y-or-n-p") return e8.yOrNP("Fix formulas? ");
+  if (f === "yes-or-no-p") return e8.yesOrNoP("Fix formulas? ");
+  return truthy(e8.funcall(f as string, "Fix formulas? ") ?? null);
+}
+
+/** Whether a position in a line is inside a remote(...), as org-in-regexp finds it around point. */
+function inRemote(text: string, pos: number): boolean {
+  return allMatches(/remote\([^)]+?\)/g, text).some((m) => (m.index ?? 0) <= pos && pos <= (m.index ?? 0) + m[0].length);
+}
+
+/**
+ * Changes the references on the #+TBLFM: lines after the table's
+ * structure changed, as org-table-fix-formulas does: KEY's numbers in
+ * `replace` become their replacements, those above `limit` move by
+ * `delta`, and with `remove`, the formulas for that column or row go;
+ * references inside remote() are left alone.
+ */
+export function fixFormulas(key: "@" | "$", replace: [string, string][], limit?: number, delta?: number, remove?: number): void {
+  saveExcursion(() => {
+    e8.gotoChar(orgTableEnd());
+    for (let line = lineAt(); line < e8.lineCount() && /^[ \t]*#\+tblfm:/i.test(e8.lineText(line)); line++) {
+      let text = e8.lineText(line);
+      if (remove !== undefined) {
+        const re2 = key === "$" ? new RegExp(`(@[0-9]+)?\\$${remove}=.*?(::|$)`, "g") : new RegExp(`@${remove}\\$[0-9]+=.*?(::|$)`, "g");
+        let out = "";
+        let i = 0;
+        for (const m of allMatches(re2, text)) {
+          const at = m.index ?? 0;
+          if (at < i || inRemote(text, at + m[0].length)) continue;
+          if (text[at - 1] === ".") e8.userError(`Change makes TBLFM term ${m[0]} invalid, use undo to recover`);
+          out += text.slice(i, at);
+          i = at + m[0].length;
+        }
+        text = out + text.slice(i);
+      }
+      const re = new RegExp(`${key === "$" ? "\\$" : "@"}([0-9]+)`, "g");
+      text = text.replace(re, (whole: string, digits: string, at: number, all: string) => {
+        if (inRemote(all, at + whole.length)) return whole;
+        const n = Number(digits);
+        const a = replace.find((r) => r[0] === digits);
+        if (a) return key + a[1];
+        if (limit !== undefined && n > limit) return key + String(n + (delta ?? 0));
+        return whole;
+      });
+      if (text !== e8.lineText(line)) {
+        const bol = e8.lineStart(line);
+        edDelete(bol, e8.lineEnd(line));
+        edInsert(bol, text);
+      }
+      e8.message("The formulas in #+TBLFM have been updated");
+    }
+  });
+}
