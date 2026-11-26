@@ -359,7 +359,7 @@ answers come, and then from its answers, as save-some-buffers' do."
     ((and (pred stringp) v (guard (string-prefix-p "''" v))) (list 'quote (intern (substring v 2))))
     ((and (pred stringp) v (guard (string-prefix-p "'" v))) (intern (substring v 1)))
     ;; An object is an alist of strings, as (("NAME" . "value")).
-    ((and `((,(pred symbolp) . ,_) . ,_) v)
+    ((and `((,(and (pred symbolp) k) . ,_) . ,_) v (guard (not (memq k '(t :json-false)))))
      (mapcar (lambda (c) (cons (symbol-name (car c)) (cdr c))) v))
     ;; A list, each item read as a value: strings, those starting with ' symbols,
     ;; as ("'time" "'todo"), numbers, true and false as t and nil, as a plist
