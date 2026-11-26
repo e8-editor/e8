@@ -13989,6 +13989,10 @@ declare global {
        */
       "minor-mode-alist": Value;
       /**
+       * Keymaps a buffer uses for its minor modes in place of their own: a list of [mode, keymap], a keymap of nil meaning none. Org sets it so visual-line-mode leaves its C-a, C-e and C-k alone.
+       */
+      "minor-mode-overriding-map-alist": Value;
+      /**
        * The buffer's name in the mode line, at least 18 columns wide.
        */
       "mode-line-buffer-identification": Value;
@@ -20639,6 +20643,11 @@ declare global {
      */
     function whereIs(command: string): string | undefined;
     /**
+     * The command the active keymaps remap a command to, as Emacs's
+     * command-remapping, or undefined if none does.
+     */
+    function commandRemapping(command: string): string | undefined;
+    /**
      * Every key sequence that runs a command in the selected window's
      * buffer, as where-is-internal: those in its modes' keymaps first, then
      * the global map's, and none that another binding shadows.
@@ -24353,8 +24362,9 @@ declare global {
     function setKeymapDefault(keymap: string | Keymap, command: CommandName | DefinedCommand | null): void;
     /**
      * While a keymap is active, run `to` wherever keys would run `from`, or
-     * stop that with null, as Emacs's [remap FROM] bindings. Org remaps
-     * self-insert-command to keep tables aligned as you type.
+     * with null remap it to nothing, which also hides a parent keymap's remap
+     * of it, as Emacs's [remap FROM] bindings. Org remaps self-insert-command
+     * to keep tables aligned as you type.
      */
     function remapCommand(
       keymap: string | Keymap,

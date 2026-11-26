@@ -77,11 +77,37 @@ impl Editor {
     }
 
     fn minor_mode_maps_in(&self, b: &Buffer) -> Vec<(String, KeymapId)> {
-        self.minor_modes
-            .iter()
-            .filter(|m| self.minor_mode_on(b, &m.name))
-            .filter_map(|m| m.keymap.as_deref().and_then(|k| self.keymap_named(k)).map(|k| (m.name.clone(), k)))
-            .collect()
+        // A buffer's minor-mode-overriding-map-alist gives a mode another
+        // keymap there, or none, as Emacs's current_minor_maps reads it.
+        let overriding: Vec<(String, Option<KeymapId>)> = match self.variable_in(b, "minor-mode-overriding-map-alist") {
+            Some(Value::List(entries)) => entries
+                .iter()
+                .filter_map(|entry| match entry {
+                    Value::List(pair) if !pair.is_empty() => {
+                        let mode = pair[0].as_str()?.to_string();
+                        Some((mode, pair.get(1).and_then(|map| self.keymap_of(map).ok())))
+                    }
+                    _ => None,
+                })
+                .collect(),
+            _ => Vec::new(),
+        };
+        // The overriding entries first, for any variable that is on, then the
+        // other minor modes' own keymaps, as current_minor_maps goes through both alists.
+        let on = |name: &str| self.minor_mode_on(b, name) || self.variable_in(b, name).is_some_and(|v| v.is_true());
+        let mut maps: Vec<(String, KeymapId)> = Vec::new();
+        for (mode, map) in &overriding {
+            if on(mode) && !maps.iter().any(|(m, _)| m == mode) && let Some(map) = map {
+                maps.push((mode.clone(), *map));
+            }
+        }
+        maps.extend(
+            self.minor_modes
+                .iter()
+                .filter(|m| self.minor_mode_on(b, &m.name) && !overriding.iter().any(|(mode, _)| *mode == m.name))
+                .filter_map(|m| m.keymap.as_deref().and_then(|k| self.keymap_named(k)).map(|k| (m.name.clone(), k))),
+        );
+        maps
     }
 
     /// The minor modes whose keymaps bind a key sequence, each with what it

@@ -310,11 +310,7 @@ e8.defineMinorMode({
     "Continue long lines at word boundaries, and make C-a, C-e and C-k work on screen lines.\n\n" +
     "It turns word-wrap on in the buffer and turns truncate-lines off, lets windows that share the frame's width wrap too (truncate-partial-width-windows), " +
     "and shows visual-line-fringe-indicators, none by default, where lines continue.",
-  bindings: {
-    "C-a": beginningOfVisualLine,
-    "C-e": endOfVisualLine,
-    "C-k": killVisualLine,
-  },
+  bindings: {},
   onChange: (on) => {
     if (on) {
       e8.setVariable("word-wrap", true);
@@ -339,6 +335,10 @@ e8.defineMinorMode({
     }
   },
 });
+// Remaps, as Emacs's visual-line-mode-map has them, so a mode can take them back for its own keys, as Org does.
+e8.remapCommand("visual-line-mode-map", "move-beginning-of-line", beginningOfVisualLine);
+e8.remapCommand("visual-line-mode-map", "move-end-of-line", endOfVisualLine);
+e8.remapCommand("visual-line-mode-map", "kill-line", killVisualLine);
 defineGlobalizedMinorMode("global-visual-line-mode", "visual-line-mode", "Turn visual-line-mode on in every buffer: long lines continue at word boundaries everywhere.");
 
 // Transposing, after simple.el's transpose-subr.

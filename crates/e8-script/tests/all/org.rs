@@ -295,6 +295,69 @@ fn links_are_inserted_and_followed() {
 }
 
 #[test]
+fn visual_line_mode_leaves_org_s_line_keys_alone() {
+    // A heading longer than the window, so screen lines and the logical line differ.
+    let long = (0..30).map(|i| format!("word{i:02}")).collect::<Vec<_>>().join(" ");
+    let text = format!("* TODO {long} :tag:\nbody\n");
+    let (mut ed, _s) = org(&text);
+    ed.call("visual-line-mode", vec![]).unwrap();
+    ed.redisplay();
+    // As in Emacs, where org-mode puts visual-line-mode in minor-mode-overriding-map-alist without its remaps.
+    assert_eq!(ed.command_remapping("move-end-of-line").as_deref(), Some("org-end-of-line"));
+    assert_eq!(ed.command_remapping("move-beginning-of-line").as_deref(), Some("org-beginning-of-line"));
+    ed.window_buffer_mut().set_point(10);
+    ed.press("C-e").unwrap();
+    // Org's own command, which with visual-line-mode moves by screen lines itself, as Org's does.
+    assert_eq!(ed.last_command(), Some("org-end-of-line"));
+    // In another buffer, visual-line-mode's remaps work on screen lines, as in Emacs.
+    ed.call("switch-to-buffer", vec![e8_core::Arg::Str("plain".into())]).unwrap();
+    ed.call("text-mode", vec![]).unwrap();
+    ed.type_text(&long);
+    ed.call("visual-line-mode", vec![]).unwrap();
+    assert_eq!(ed.command_remapping("move-end-of-line").as_deref(), Some("end-of-visual-line"));
+    assert_eq!(ed.command_remapping("kill-line").as_deref(), Some("kill-visual-line"));
+    // Help finds the keys through the remaps, as Emacs's key-binding and where-is-internal do:
+    // beginning-of-visual-line on C-a, kill-visual-line on C-k.
+    let got = _s
+        .eval_expression(
+            &mut ed,
+            r#"import("help").then(({ keyBinding }) => e8.message(JSON.stringify([keyBinding("C-a"), e8.whereIsInternal("beginning-of-visual-line")[0], e8.whereIsInternal("kill-visual-line")[0],
+                 e8.keymapBindings("visual-line-mode-map").find(([k]) => k === "<remap> <kill-line>")])))"#,
+        )
+        .unwrap();
+    let _ = got;
+    assert_eq!(ed.echo(), Some(r#"["beginning-of-visual-line","C-a","C-k",["<remap> <kill-line>","kill-visual-line"]]"#));
+    // In Org, C-a runs and is found for org-beginning-of-line, as in Emacs.
+    ed.call("switch-to-buffer", vec![e8_core::Arg::Str("*scratch*".into())]).unwrap();
+    ed.call("org-mode", vec![]).unwrap();
+    ed.call("visual-line-mode", vec![]).unwrap();
+    _s.eval_expression(&mut ed, r#"import("help").then(({ keyBinding }) => e8.message(JSON.stringify([keyBinding("C-a"), e8.whereIsInternal("org-beginning-of-line")[0]])))"#)
+        .unwrap();
+    assert_eq!(ed.echo(), Some(r#"["org-beginning-of-line","C-a"]"#));
+}
+
+#[test]
+fn an_overriding_minor_mode_map_comes_before_the_other_minor_modes() {
+    let (mut ed, s) = org("");
+    // As Emacs's current_minor_maps: minor-mode-overriding-map-alist's entries first.
+    s.eval_typescript(
+        &mut ed,
+        "t.ts",
+        r#"e8.defineMinorMode({ name: "test-a-mode", bindings: { "C-c z": "forward-char" } });
+           e8.defineMinorMode({ name: "test-b-mode", bindings: { "C-c z": "backward-char" } });
+           e8.call("test-a-mode"); e8.call("test-b-mode");
+           const map = e8.makeSparseKeymap(); e8.defineKey(map, "C-c z", "forward-line");
+           e8.makeLocalVariable("minor-mode-overriding-map-alist");
+           e8.setVariable("minor-mode-overriding-map-alist", [["test-b-mode", map]]);"#
+            .to_string(),
+    )
+    .unwrap();
+    let got = s.eval_expression(&mut ed, r#"import("help").then(({ keyBinding }) => e8.message(keyBinding("C-c z") ?? "none"))"#).unwrap();
+    let _ = got;
+    assert_eq!(ed.echo(), Some("forward-line"));
+}
+
+#[test]
 fn a_table_is_made_from_a_size() {
     let (mut ed, _s) = org("");
     ed.press("C-c | 3 x 2 RET").unwrap();

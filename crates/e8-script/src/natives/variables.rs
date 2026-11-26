@@ -139,14 +139,23 @@ natives! {
     fn keymapBindings(ed, keymap: EditorValue) -> Vec<Vec<String>> {
         let map = ed.keymap_of(&keymap)?;
         let mut out: Vec<(Vec<Key>, String)> = Vec::new();
+        let mut remaps: Vec<(String, Option<String>)> = Vec::new();
         for m in std::iter::successors(Some(map), |&m| ed.keymaps().parent(m)).take(32) {
             for (keys, command) in ed.keymaps().bindings(m) {
                 if !out.iter().any(|(k, _)| *k == keys) {
                     out.push((keys, command));
                 }
             }
+            for (from, to) in ed.keymaps().remaps(m) {
+                if !remaps.iter().any(|(f, _)| f == from) {
+                    remaps.push((from.to_string(), to.map(str::to_string)));
+                }
+            }
         }
-        Ok(out.into_iter().map(|(k, c)| vec![e8_core::format_keys(&k), c]).collect())
+        let mut listed: Vec<Vec<String>> = out.into_iter().map(|(k, c)| vec![e8_core::format_keys(&k), c]).collect();
+        // Remaps as describe-bindings lists them, under <remap>; one to nil is none.
+        listed.extend(remaps.into_iter().filter_map(|(from, to)| to.map(|to| vec![format!("<remap> <{from}>"), to])));
+        Ok(listed)
     }
 
     /// The names of all variables, as all-completions over obarray with boundp.
@@ -281,6 +290,12 @@ natives! {
     /// buffer, as Emacs's where-is-internal with FIRSTONLY, such as "C-x C-f".
     pub fn whereIs(ed, command: String) -> Option<String> {
         Ok(ed.where_is(&command).map(|keys| e8_core::format_keys(&keys)))
+    }
+
+    /// The command the active keymaps remap a command to, as Emacs's
+    /// command-remapping, or undefined if none does.
+    pub fn commandRemapping(ed, command: String) -> Option<String> {
+        Ok(ed.command_remapping(&command))
     }
 
     /// Every key sequence that runs a command in the selected window's
