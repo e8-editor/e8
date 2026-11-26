@@ -1,0 +1,536 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "fn-definition",
+      "input": {
+        "text": "Text[fn:1] more.\n\n[fn:1] The def.\n",
+        "point": 8,
+        "keys": "C-c ' C-e ! C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Text[fn:1] more.\n\n[fn:1] The def.!\n",
+      "visible": "Text[fn:1] more.\n\n[fn:1] The def.!\n",
+      "point": 8,
+      "mark": 8,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "fn-definition-point",
+      "input": {
+        "text": "Text[fn:1] more.\n\n[fn:1] The def.\n",
+        "point": 8,
+        "keys": "C-c ' x C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Text[fn:1] more.\n\n[fn:1] xThe def.\n",
+      "visible": "Text[fn:1] more.\n\n[fn:1] xThe def.\n",
+      "point": 8,
+      "mark": 8,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "fn-definition-two-lines",
+      "input": {
+        "text": "Text[fn:1] more.\n\n[fn:1] Line one\nline two.\n",
+        "point": 8,
+        "keys": "C-c ' M-> ! C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Text[fn:1] more.\n\n[fn:1] Line one\nline two.\n!",
+      "visible": "Text[fn:1] more.\n\n[fn:1] Line one\nline two.\n!",
+      "point": 8,
+      "mark": 8,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "fn-definition-empty",
+      "input": {
+        "text": "Text[fn:1] more.\n\n[fn:1]\n",
+        "point": 8,
+        "keys": "C-c ' x C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Text[fn:1] more.\n\n[fn:1]x\n",
+      "visible": "Text[fn:1] more.\n\n[fn:1]x\n",
+      "point": 8,
+      "mark": 8,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "fn-inline",
+      "input": {
+        "text": "Text[fn:x:inline def] more.\n",
+        "point": 8,
+        "keys": "C-c ' C-f ! C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Text[fn:x:i!nline def] more.\n",
+      "visible": "Text[fn:x:i!nline def] more.\n",
+      "point": 8,
+      "mark": 8,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "fn-inline-end",
+      "input": {
+        "text": "Text[fn:x:inline def] more.\n",
+        "point": 8,
+        "keys": "C-c ' C-e C-b ? C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Text[fn:x:inline def?] more.\n",
+      "visible": "Text[fn:x:inline def?] more.\n",
+      "point": 8,
+      "mark": 8,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "fn-anonymous",
+      "input": {
+        "text": "Text[fn::anon] more.\n",
+        "point": 8,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Text[fn::anon] more.\n",
+      "visible": "Text[fn::anon] more.\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot edit remotely anonymous footnotes"
+    },
+    {
+      "name": "fn-no-definition",
+      "input": {
+        "text": "Text[fn:2] more.\n",
+        "point": 8,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Text[fn:2] more.\n",
+      "visible": "Text[fn:2] more.\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot find definition of footnote 2"
+    },
+    {
+      "name": "fn-label-read-only",
+      "input": {
+        "text": "Text[fn:1] more.\n\n[fn:1] The def.\n",
+        "point": 8,
+        "keys": "C-c ' C-a x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "[fn:1] The def.\n",
+      "visible": "[fn:1] The def.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Text is read-only: \"Cannot edit footnote label\""
+    },
+    {
+      "name": "fn-inline-blank-line",
+      "input": {
+        "text": "Text[fn:x:def] more.\n",
+        "point": 8,
+        "keys": "C-c ' RET RET C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "[fn:x:\n\ndef]",
+      "visible": "[fn:x:\n\ndef]",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Inline definitions cannot contain blank lines"
+    },
+    {
+      "name": "fn-abort",
+      "input": {
+        "text": "Text[fn:1] more.\n\n[fn:1] The def.\n",
+        "point": 8,
+        "keys": "C-c ' x C-c C-k",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Text[fn:1] more.\n\n[fn:1] The def.\n",
+      "visible": "Text[fn:1] more.\n\n[fn:1] The def.\n",
+      "point": 8,
+      "mark": 8,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "fn-after-ref",
+      "input": {
+        "text": "Text[fn:1] more.\n\n[fn:1] The def.\n",
+        "point": 10,
+        "keys": "C-c ' x C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Text[fn:1] more.\n\n[fn:1] xThe def.\n",
+      "visible": "Text[fn:1] more.\n\n[fn:1] xThe def.\n",
+      "point": 10,
+      "mark": 10,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "latex-dollar",
+      "input": {
+        "text": "Euler $e^x$ here.\n",
+        "point": 9,
+        "keys": "C-c ' 2 C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Euler $e^2x$ here.\n",
+      "visible": "Euler $e^2x$ here.\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "latex-paren",
+      "input": {
+        "text": "Euler \\(a + b\\) here.\n",
+        "point": 9,
+        "keys": "C-c ' c C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Euler \\(ac + b\\) here.\n",
+      "visible": "Euler \\(ac + b\\) here.\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "latex-bracket",
+      "input": {
+        "text": "See \\[x = 1\\] here.\n",
+        "point": 7,
+        "keys": "C-c ' C-e C-b C-b y C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "See \\[x = 1y\\] here.\n",
+      "visible": "See \\[x = 1y\\] here.\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "latex-command",
+      "input": {
+        "text": "A \\frac{a}{b} here.\n",
+        "point": 9,
+        "keys": "C-c ' C-e z C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "A \\frac{a}{b} here.\n",
+      "visible": "A \\frac{a}{b} here.\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Text is read-only: \"Cannot edit LaTeX deliminator\""
+    },
+    {
+      "name": "latex-delimiter-read-only",
+      "input": {
+        "text": "Euler $e^x$ here.\n",
+        "point": 9,
+        "keys": "C-c ' C-a q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "$e^x$",
+      "visible": "$e^x$",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Text is read-only: \"Cannot edit LaTeX deliminator\""
+    },
+    {
+      "name": "latex-in-table",
+      "input": {
+        "text": "| $a+b$ | x |\n",
+        "point": 4,
+        "keys": "C-c ' C-e C-b RET c C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| $a+b$ | x |\n#+TBLFM: \n",
+      "visible": "| $a+b$ | x |\n#+TBLFM: \n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Beginning of buffer"
+    },
+    {
+      "name": "inline-src",
+      "input": {
+        "text": "Run src_python{print(1)} now.\n",
+        "point": 21,
+        "keys": "C-c ' 2 C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Run src_python{print(21)} now.\n",
+      "visible": "Run src_python{print(21)} now.\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inline-src-headers",
+      "input": {
+        "text": "Run src_sh[:results output]{echo hi} now.\n",
+        "point": 33,
+        "keys": "C-c ' C-e SPC x C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Run src_sh[:results output]{echo hi x} now.\n",
+      "visible": "Run src_sh[:results output]{echo hi x} now.\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inline-src-newline",
+      "input": {
+        "text": "Run src_python{a} now.\n",
+        "point": 16,
+        "keys": "C-c ' C-e RET SPC b C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Run src_python{a b} now.\n",
+      "visible": "Run src_python{a b} now.\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inline-src-no-mode",
+      "input": {
+        "text": "Run src_nosuchlang{a} now.\n",
+        "point": 20,
+        "keys": "C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Run src_nosuchlang{a} now.\n",
+      "visible": "Run src_nosuchlang{a} now.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No such language mode: nosuchlang-mode"
+    },
+    {
+      "name": "inline-src-abort",
+      "input": {
+        "text": "Run src_python{print(1)} now.\n",
+        "point": 21,
+        "keys": "C-c ' 2 C-c C-k",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Run src_python{print(1)} now.\n",
+      "visible": "Run src_python{print(1)} now.\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "fn-create-narrowed",
+      "input": {
+        "text": "* A\nText\n* B\n",
+        "point": 8,
+        "keys": "C-x n s C-c C-x f x C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\nText[fn:1]\n* B\n\n* Footnotes\n\n[fn:1] x \n",
+      "visible": "* A\nText[fn:1]\n* B\n\n* Footnotes\n\n[fn:1] x \n",
+      "point": 14,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "fn-action-narrowed-create",
+      "input": {
+        "text": "* A\nText[fn:7]\n* B\n",
+        "point": 12,
+        "keys": "C-x n s C-c C-c x C-c '",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "yes"
+        ]
+      },
+      "text": "* A\nText[fn:7]\n* B\n\n* Footnotes\n\n[fn:7] x \n",
+      "visible": "* A\nText[fn:7]\n* B\n\n* Footnotes\n\n[fn:7] x \n",
+      "point": 12,
+      "mark": 12,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}
