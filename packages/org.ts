@@ -14,7 +14,7 @@
 // "org-hide-block" for blocks. A link's brackets and target are hidden by
 // an "org-link" text property, so [[https://gnu.org][GNU]] shows as GNU.
 
-import { jump, type Link, linkHere, linkUnescape, searchInBuffer, showContext } from "ol";
+import { jump, type Link, linkHere, linkUnescape, searchInBuffer, setOwnLinkTypes, showContext } from "ol";
 import { AFFILIATED, type Elem, elementAt, endBeforeBlank, FOOTNOTE_DEFINITION, keepingParse, PLANNING, parseShifts, startsElement, withAffiliated } from "org-element";
 import { createImage, imageMap } from "image";
 import {
@@ -8452,6 +8452,8 @@ export function linkSetParameters(type: string, parameters: LinkParameters): voi
 export function linkTypeEntries(): [string, LinkParameters][] {
   return [...linkTypes.entries()].reverse();
 }
+
+setOwnLinkTypes();
 
 // Org's mark ring, as org-mark-ring and org-mark-ring-last-goto: the places
 // before jumps, newest first, org-mark-ring-length of them.

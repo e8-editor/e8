@@ -891,6 +891,15 @@ declare global {
        */
       "bookmark-set": [arg?: PrefixArg | boolean];
       /**
+       * Open a URL, read in the minibuffer, with the browser browse-url-browser-function names.
+       *
+       * @param url text
+       * @param newWindow raw prefix argument
+       *
+       * Defined in packages/browse-url.ts.
+       */
+      "browse-url": [url: string, newWindow?: PrefixArg | boolean];
+      /**
        * Show the buffer's text in the face buffer-face-mode-face says, variable-pitch to begin with.
        *
        * Run from a key or M-x, it turns the mode on if it is off and off if it is on. A positive prefix argument turns it on and zero or a negative one turns it off. Called from code without an argument, it turns the mode on.
@@ -11354,6 +11363,18 @@ declare global {
        */
       "bookmark-search-size": Value;
       /**
+       * The function browse-url calls with a URL to open it: browse-url-default-browser, the system's way, by default.
+       *
+       * Defined in packages/browse-url.ts.
+       */
+      "browse-url-browser-function": Value;
+      /**
+       * Whether browse-url asks for a new window, which a prefix argument turns round.
+       *
+       * Defined in packages/browse-url.ts.
+       */
+      "browse-url-new-window-flag": Value;
+      /**
        * Whether, in a buffer visiting no file, Auto-Revert may rely on notifications about its directory, as Dired's does.
        *
        * Defined in packages/files.ts.
@@ -16193,6 +16214,18 @@ declare global {
        * Defined in packages/ol.ts.
        */
       "org-link-make-description-function": Value;
+      /**
+       * The function asked whether to run a shell link's command, yes-or-no-p by default; nil runs it without asking.
+       *
+       * Defined in packages/ol.ts.
+       */
+      "org-link-shell-confirm-function": Value;
+      /**
+       * A regexp a shell link's command may match to run without asking.
+       *
+       * Defined in packages/ol.ts.
+       */
+      "org-link-shell-skip-confirm-regexp": Value;
       /**
        * Whether single letters, as a. or B), are bullets of ordered lists, as numbers are; a list of more than 26 items is numbered instead.
        *
