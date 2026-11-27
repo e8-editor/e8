@@ -445,7 +445,7 @@ export function findIdFile(id: string): string | undefined {
 e8.defun("org-id-find-id-file", (id: string) => findIdFile(id));
 
 /** Where the entry with ID starts in the current buffer, widened, or the top for a file's own, as org-find-entry-with-id. */
-function findEntryWithId(id: string): number | undefined {
+export function findEntryWithId(id: string): number | undefined {
   return e8.saveRestriction(() => {
     e8.widen();
     const quoted = id.replace(/[[\]*.\\^$+?]/g, "\\$&");

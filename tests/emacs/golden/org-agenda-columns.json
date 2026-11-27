@@ -1,0 +1,869 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "agenda-columns-week",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %Effort{:} %TAGS\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n* Project\n:PROPERTIES:\n:COLUMNS: %ITEM %Effort{:}\n:END:\n** TODO Sub a\n:PROPERTIES:\n:Effort: 0:10\n:END:\n** TODO Sub b\n:PROPERTIES:\n:Effort: 0:20\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-cols.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "displayed": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-sticky": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-cols:    Scheduled:  TODO Write report                              :work:\n  e8-cols:    Scheduled:  TODO Call Ann\n  e8-cols:    In   2 d.:  TODO Plan trip\nThursday   29 October 2026\nFriday     30 October 2026\n  e8-cols:    Deadline:   TODO Plan trip\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWedn\n  e8\n  e8\n  e8\nThursday   29 October 2026\nFrid\n  e8\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "displayed": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2.. |      | 3:30   |        |\nWrite report              | TODO | 1:00   | :work: |\nCall Ann                  | TODO | 0:30   |        |\nPlan trip                 | TODO | 2:00   |        |\nThursday   29 October 2026\nFriday     30 October 2.. |      | 2:00   |        |\nPlan trip                 | TODO | 2:00   |        |\nSaturday   31 October 2026\nSunday      1 November 2026\n"
+    },
+    {
+      "name": "agenda-columns-todo",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %Effort{:} %TAGS\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n* Project\n:PROPERTIES:\n:COLUMNS: %ITEM %Effort{:}\n:END:\n** TODO Sub a\n:PROPERTIES:\n:Effort: 0:10\n:END:\n** TODO Sub b\n:PROPERTIES:\n:Effort: 0:20\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-cols.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "displayed": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-sticky": false
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-cols:    TODO Write report                                          :work:\n  e8-cols:    TODO Call Ann\n  e8-cols:    TODO Plan trip\n  e8-cols:    TODO Sub a\n  e8-cols:    TODO Sub b\n",
+      "visible": "Glob\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8\n  e8\n  e8\n  e8\n  e8\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "displayed": "Global list of TODO ite.. |      | 4:00   |        |\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\nWrite report              | TODO | 1:00   | :work: |\nCall Ann                  | TODO | 0:30   |        |\nPlan trip                 | TODO | 2:00   |        |\nSub a                     | TODO | 0:10   |        |\nSub b                     | TODO | 0:20   |        |\n"
+    },
+    {
+      "name": "agenda-columns-quit",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %Effort{:} %TAGS\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n* Project\n:PROPERTIES:\n:COLUMNS: %ITEM %Effort{:}\n:END:\n** TODO Sub a\n:PROPERTIES:\n:Effort: 0:10\n:END:\n** TODO Sub b\n:PROPERTIES:\n:Effort: 0:20\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x C-c q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-cols.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "displayed": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-sticky": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-cols:    Scheduled:  TODO Write report                              :work:\n  e8-cols:    Scheduled:  TODO Call Ann\n  e8-cols:    In   2 d.:  TODO Plan trip\nThursday   29 October 2026\nFriday     30 October 2026\n  e8-cols:    Deadline:   TODO Plan trip\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-cols:    Scheduled:  TODO Write report                              :work:\n  e8-cols:    Scheduled:  TODO Call Ann\n  e8-cols:    In   2 d.:  TODO Plan trip\nThursday   29 October 2026\nFriday     30 October 2026\n  e8-cols:    Deadline:   TODO Plan trip\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": "Modification not yet reflected in Agenda buffer, use ‘r’ to refresh",
+      "displayed": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-cols:    Scheduled:  TODO Write report                              :work:\n  e8-cols:    Scheduled:  TODO Call Ann\n  e8-cols:    In   2 d.:  TODO Plan trip\nThursday   29 October 2026\nFriday     30 October 2026\n  e8-cols:    Deadline:   TODO Plan trip\nSaturday   31 October 2026\nSunday      1 November 2026\n"
+    },
+    {
+      "name": "agenda-columns-redo",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %Effort{:} %TAGS\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n* Project\n:PROPERTIES:\n:COLUMNS: %ITEM %Effort{:}\n:END:\n** TODO Sub a\n:PROPERTIES:\n:Effort: 0:10\n:END:\n** TODO Sub b\n:PROPERTIES:\n:Effort: 0:20\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x C-c g",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-cols.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "displayed": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-sticky": false
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-cols:    TODO Write report                                          :work:\n  e8-cols:    TODO Call Ann\n  e8-cols:    TODO Plan trip\n  e8-cols:    TODO Sub a\n  e8-cols:    TODO Sub b\n",
+      "visible": "Glob\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8\n  e8\n  e8\n  e8\n  e8\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "displayed": "Global list of TODO ite.. |      | 4:00   |        |\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\nWrite report              | TODO | 1:00   | :work: |\nCall Ann                  | TODO | 0:30   |        |\nPlan trip                 | TODO | 2:00   |        |\nSub a                     | TODO | 0:10   |        |\nSub b                     | TODO | 0:20   |        |\n"
+    },
+    {
+      "name": "agenda-columns-no-summaries",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %Effort{:} %TAGS\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n* Project\n:PROPERTIES:\n:COLUMNS: %ITEM %Effort{:}\n:END:\n** TODO Sub a\n:PROPERTIES:\n:Effort: 0:10\n:END:\n** TODO Sub b\n:PROPERTIES:\n:Effort: 0:20\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-cols.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "displayed": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-sticky": false,
+          "org-agenda-columns-show-summaries": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-cols:    Scheduled:  TODO Write report                              :work:\n  e8-cols:    Scheduled:  TODO Call Ann\n  e8-cols:    In   2 d.:  TODO Plan trip\nThursday   29 October 2026\nFriday     30 October 2026\n  e8-cols:    Deadline:   TODO Plan trip\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8\n  e8\n  e8\nThursday   29 October 2026\nFriday     30 October 2026\n  e8\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "displayed": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\nWrite report              | TODO | 1:00   | :work: |\nCall Ann                  | TODO | 0:30   |        |\nPlan trip                 | TODO | 2:00   |        |\nThursday   29 October 2026\nFriday     30 October 2026\nPlan trip                 | TODO | 2:00   |        |\nSaturday   31 October 2026\nSunday      1 November 2026\n"
+    },
+    {
+      "name": "agenda-columns-for-agenda",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %Effort{:} %TAGS\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n* Project\n:PROPERTIES:\n:COLUMNS: %ITEM %Effort{:}\n:END:\n** TODO Sub a\n:PROPERTIES:\n:Effort: 0:10\n:END:\n** TODO Sub b\n:PROPERTIES:\n:Effort: 0:20\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-cols.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "displayed": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-sticky": false,
+          "org-columns-default-format-for-agenda": "%ITEM %Effort"
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-cols:    TODO Write report                                          :work:\n  e8-cols:    TODO Call Ann\n  e8-cols:    TODO Plan trip\n  e8-cols:    TODO Sub a\n  e8-cols:    TODO Sub b\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  \n  \n  \n  \n  \n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "displayed": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\nWrite report | 1:00   |\nCall Ann     | 0:30   |\nPlan trip    | 2:00   |\nSub a        | 0:10   |\nSub b        | 0:20   |\n"
+    },
+    {
+      "name": "agenda-columns-initially",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %Effort{:} %TAGS\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n* Project\n:PROPERTIES:\n:COLUMNS: %ITEM %Effort{:}\n:END:\n** TODO Sub a\n:PROPERTIES:\n:Effort: 0:10\n:END:\n** TODO Sub b\n:PROPERTIES:\n:Effort: 0:20\n:END:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-cols.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "displayed": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-sticky": false,
+          "org-agenda-view-columns-initially": true
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-cols:    TODO Write report                                          :work:\n  e8-cols:    TODO Call Ann\n  e8-cols:    TODO Plan trip\n  e8-cols:    TODO Sub a\n  e8-cols:    TODO Sub b\n",
+      "visible": "Glob\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8\n  e8\n  e8\n  e8\n  e8\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "displayed": "Global list of TODO ite.. |      | 4:00   |        |\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\nWrite report              | TODO | 1:00   | :work: |\nCall Ann                  | TODO | 0:30   |        |\nPlan trip                 | TODO | 2:00   |        |\nSub a                     | TODO | 0:10   |        |\nSub b                     | TODO | 0:20   |        |\n"
+    },
+    {
+      "name": "agenda-columns-edit",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %Effort{:} %TAGS\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n* Project\n:PROPERTIES:\n:COLUMNS: %ITEM %Effort{:}\n:END:\n** TODO Sub a\n:PROPERTIES:\n:Effort: 0:10\n:END:\n** TODO Sub b\n:PROPERTIES:\n:Effort: 0:20\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x C-c C-n C-n C-n C-n C-f C-f e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-cols.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "3:00"
+        ],
+        "displayed": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-sticky": false
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-cols:    TODO Write report                                          :work:\n  e8-cols:    TODO Call Ann\n  e8-cols:    TODO Plan trip\n  e8-cols:    TODO Sub a\n  e8-cols:    TODO Sub b\n",
+      "visible": "Glob\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8\n  e8\n  e8\n  e8\n  e8\n",
+      "point": 216,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 216,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "displayed": "Global list of TODO ite.. |      | 5:00   |        |\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\nWrite report              | TODO | 1:00   | :work: |\nCall Ann                  | TODO | 0:30   |        |\nPlan trip                 | TODO | 3:00   |        |\nSub a                     | TODO | 0:10   |        |\nSub b                     | TODO | 0:20   |        |\n"
+    },
+    {
+      "name": "agenda-columns-next-todo",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %Effort{:} %TAGS\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n* Project\n:PROPERTIES:\n:COLUMNS: %ITEM %Effort{:}\n:END:\n** TODO Sub a\n:PROPERTIES:\n:Effort: 0:10\n:END:\n** TODO Sub b\n:PROPERTIES:\n:Effort: 0:20\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x C-c C-n C-n C-n C-f n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-cols.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "displayed": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-sticky": false
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-cols:    TODO Write report                                          :work:\n  e8-cols:    TODO Call Ann\n  e8-cols:    TODO Plan trip\n  e8-cols:    TODO Sub a\n  e8-cols:    TODO Sub b\n",
+      "visible": "Glob\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8\n  e8\n  e8\n  e8\n  e8\n",
+      "point": 187,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 187,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "displayed": "Global list of TODO ite.. |      | 4:00   |        |\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\nWrite report              | TODO | 1:00   | :work: |\nCall Ann                  | DONE | 0:30   |        |\nPlan trip                 | TODO | 2:00   |        |\nSub a                     | TODO | 0:10   |        |\nSub b                     | TODO | 0:20   |        |\n"
+    },
+    {
+      "name": "agenda-columns-on-sub",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %Effort{:} %TAGS\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n* Project\n:PROPERTIES:\n:COLUMNS: %ITEM %Effort{:}\n:END:\n** TODO Sub a\n:PROPERTIES:\n:Effort: 0:10\n:END:\n** TODO Sub b\n:PROPERTIES:\n:Effort: 0:20\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-cols.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "displayed": true,
+        "globals": {
+          "org-agenda-use-time-grid": false,
+          "org-agenda-sticky": false
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-cols:    TODO Write report                                          :work:\n  e8-cols:    TODO Call Ann\n  e8-cols:    TODO Plan trip\n  e8-cols:    TODO Sub a\n  e8-cols:    TODO Sub b\n",
+      "visible": "Glob\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8\n  e8\n  e8\n  e8\n  e8\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "displayed": "Global list of TODO ite.. |      | 4:00   |        |\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\nWrite report              | TODO | 1:00   | :work: |\nCall Ann                  | TODO | 0:30   |        |\nPlan trip                 | TODO | 2:00   |        |\nSub a                     | TODO | 0:10   |        |\nSub b                     | TODO | 0:20   |        |\n"
+    },
+    {
+      "name": "dblock-local",
+      "input": {
+        "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id local\n#+END:\n",
+        "point": 223,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:EFFORT:   0:15\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id local\n| <25>  |        |       |     |\n| ITEM  | Effort | Owner |     |\n|-------+--------+-------+-----|\n| Tasks |   1:15 |       |     |\n| A     |   1:00 | me    | you |\n| B     |   0:15 |       |     |\n| C     |   0:15 |       |     |\n#+END:\n",
+      "visible": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:EFFORT:   0:15\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id local\n| <25>  |        |       |     |\n| ITEM  | Effort | Owner |     |\n|-------+--------+-------+-----|\n| Tasks |   1:15 |       |     |\n| A     |   1:00 | me    | you |\n| B     |   0:15 |       |     |\n| C     |   0:15 |       |     |\n#+END:\n",
+      "point": 225,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dblock-global",
+      "input": {
+        "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global\n#+END:\n",
+        "point": 223,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:EFFORT:   0:15\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global\n| <25>  |        |       |     |\n| ITEM  | Effort | Owner |     |\n|-------+--------+-------+-----|\n| Tasks |   1:15 |       |     |\n| A     |   1:00 | me    | you |\n| B     |   0:15 |       |     |\n| C     |   0:15 |       |     |\n#+END:\n",
+      "visible": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:EFFORT:   0:15\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global\n| <25>  |        |       |     |\n| ITEM  | Effort | Owner |     |\n|-------+--------+-------+-----|\n| Tasks |   1:15 |       |     |\n| A     |   1:00 | me    | you |\n| B     |   0:15 |       |     |\n| C     |   0:15 |       |     |\n#+END:\n",
+      "point": 225,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dblock-id",
+      "input": {
+        "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id \"tasks-id\" :hlines 1\n#+END:\n",
+        "point": 223,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:EFFORT:   0:15\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id \"tasks-id\" :hlines 1\n| <25>  |        |       |     |\n| ITEM  | Effort | Owner |     |\n|-------+--------+-------+-----|\n| Tasks |   1:15 |       |     |\n| A     |   1:00 | me    | you |\n| B     |   0:15 |       |     |\n| C     |   0:15 |       |     |\n#+END:\n",
+      "visible": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:EFFORT:   0:15\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id \"tasks-id\" :hlines 1\n| <25>  |        |       |     |\n| ITEM  | Effort | Owner |     |\n|-------+--------+-------+-----|\n| Tasks |   1:15 |       |     |\n| A     |   1:00 | me    | you |\n| B     |   0:15 |       |     |\n| C     |   0:15 |       |     |\n#+END:\n",
+      "point": 225,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dblock-maxlevel",
+      "input": {
+        "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :maxlevel 2\n#+END:\n",
+        "point": 223,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:EFFORT:   0:15\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :maxlevel 2\n| <25>  |        |       |     |\n| ITEM  | Effort | Owner |     |\n|-------+--------+-------+-----|\n| Tasks |   1:15 |       |     |\n| A     |   1:00 | me    | you |\n| B     |   0:15 |       |     |\n#+END:\n",
+      "visible": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:EFFORT:   0:15\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :maxlevel 2\n| <25>  |        |       |     |\n| ITEM  | Effort | Owner |     |\n|-------+--------+-------+-----|\n| Tasks |   1:15 |       |     |\n| A     |   1:00 | me    | you |\n| B     |   0:15 |       |     |\n#+END:\n",
+      "point": 225,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dblock-skip-empty",
+      "input": {
+        "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :skip-empty-rows t :format \"%ITEM %Owner\"\n#+END:\n",
+        "point": 223,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :skip-empty-rows t :format \"%ITEM %Owner\"\n| ITEM | Owner |     |\n|------+-------+-----|\n| A    | me    | you |\n#+END:\n",
+      "visible": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :skip-empty-rows t :format \"%ITEM %Owner\"\n| ITEM | Owner |     |\n|------+-------+-----|\n| A    | me    | you |\n#+END:\n",
+      "point": 223,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dblock-exclude",
+      "input": {
+        "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :exclude-tags (\"x\")\n#+END:\n",
+        "point": 223,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:EFFORT:   0:15\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :exclude-tags (\"x\")\n| <25>  |        |       |\n| ITEM  | Effort | Owner |\n|-------+--------+-------|\n| Tasks |   1:15 |       |\n| B     |   0:15 |       |\n| C     |   0:15 |       |\n#+END:\n",
+      "visible": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:EFFORT:   0:15\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :exclude-tags (\"x\")\n| <25>  |        |       |\n| ITEM  | Effort | Owner |\n|-------+--------+-------|\n| Tasks |   1:15 |       |\n| B     |   0:15 |       |\n| C     |   0:15 |       |\n#+END:\n",
+      "point": 225,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dblock-indent",
+      "input": {
+        "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :indent t\n#+END:\n",
+        "point": 223,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:EFFORT:   0:15\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :indent t\n| <25>    |        |       |     |\n| ITEM    | Effort | Owner |     |\n|---------+--------+-------+-----|\n| Tasks   |   1:15 |       |     |\n| \\_  A   |   1:00 | me    | you |\n| \\_  B   |   0:15 |       |     |\n| \\_    C |   0:15 |       |     |\n#+END:\n",
+      "visible": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:EFFORT:   0:15\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :indent t\n| <25>    |        |       |     |\n| ITEM    | Effort | Owner |     |\n|---------+--------+-------+-----|\n| Tasks   |   1:15 |       |     |\n| \\_  A   |   1:00 | me    | you |\n| \\_  B   |   0:15 |       |     |\n| \\_    C |   0:15 |       |     |\n#+END:\n",
+      "point": 225,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dblock-vlines",
+      "input": {
+        "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :vlines t\n#+END:\n",
+        "point": 223,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:EFFORT:   0:15\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :vlines t\n| <25> |       |        |       |     |\n|      | ITEM  | Effort | Owner |     |\n|------+-------+--------+-------+-----|\n|      | Tasks |   1:15 |       |     |\n|      | A     |   1:00 | me    | you |\n|      | B     |   0:15 |       |     |\n|      | C     |   0:15 |       |     |\n| /    | <>    |     <> | <>    |     |\n#+END:\n",
+      "visible": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:EFFORT:   0:15\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :vlines t\n| <25> |       |        |       |     |\n|      | ITEM  | Effort | Owner |     |\n|------+-------+--------+-------+-----|\n|      | Tasks |   1:15 |       |     |\n|      | A     |   1:00 | me    | you |\n|      | B     |   0:15 |       |     |\n|      | C     |   0:15 |       |     |\n| /    | <>    |     <> | <>    |     |\n#+END:\n",
+      "point": 225,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dblock-hlines-t",
+      "input": {
+        "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :hlines t\n#+END:\n",
+        "point": 223,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:EFFORT:   0:15\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :hlines t\n| <25>  |        |       |     |\n| ITEM  | Effort | Owner |     |\n|-------+--------+-------+-----|\n| Tasks |   1:15 |       |     |\n|-------+--------+-------+-----|\n| A     |   1:00 | me    | you |\n|-------+--------+-------+-----|\n| B     |   0:15 |       |     |\n|-------+--------+-------+-----|\n| C     |   0:15 |       |     |\n#+END:\n",
+      "visible": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:EFFORT:   0:15\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :hlines t\n| <25>  |        |       |     |\n| ITEM  | Effort | Owner |     |\n|-------+--------+-------+-----|\n| Tasks |   1:15 |       |     |\n|-------+--------+-------+-----|\n| A     |   1:00 | me    | you |\n|-------+--------+-------+-----|\n| B     |   0:15 |       |     |\n|-------+--------+-------+-----|\n| C     |   0:15 |       |     |\n#+END:\n",
+      "point": 225,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dblock-match",
+      "input": {
+        "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :match \"TODO=\\\"TODO\\\"\"\n#+END:\n",
+        "point": 223,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:EFFORT:   0:15\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :match \"TODO=\\\"TODO\\\"\"\n| <25> |        |       |     |\n| ITEM | Effort | Owner |     |\n|------+--------+-------+-----|\n| A    |   1:00 | me    | you |\n#+END:\n",
+      "visible": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:EFFORT:   0:15\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :match \"TODO=\\\"TODO\\\"\"\n| <25> |        |       |     |\n| ITEM | Effort | Owner |     |\n|------+--------+-------+-----|\n| A    |   1:00 | me    | you |\n#+END:\n",
+      "point": 225,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dblock-link",
+      "input": {
+        "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :link t\n#+END:\n",
+        "point": 223,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:EFFORT:   0:15\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :link t\n| <25>  |        |       |     |\n| ITEM  | Effort | Owner |     |\n|-------+--------+-------+-----|\n| [[*Tasks][Tasks]] |   1:15 |       |     |\n| [[*A][A]]     |   1:00 | me    | you |\n| [[*B][B]]     |   0:15 |       |     |\n| [[*C][C]]     |   0:15 |       |     |\n#+END:\n",
+      "visible": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:EFFORT:   0:15\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :link t\n| <25>  |        |       |     |\n| ITEM  | Effort | Owner |     |\n|-------+--------+-------+-----|\n| Tasks |   1:15 |       |     |\n| A     |   1:00 | me    | you |\n| B     |   0:15 |       |     |\n| C     |   0:15 |       |     |\n#+END:\n",
+      "point": 225,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dblock-width",
+      "input": {
+        "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :format \"%10ITEM %Effort\"\n#+END:\n",
+        "point": 223,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :format \"%10ITEM %Effort\"\n| <10>  |        |\n| ITEM  | Effort |\n|-------+--------|\n| Tasks |        |\n| A     |   1:00 |\n| B     |   0:30 |\n| C     |   0:15 |\n#+END:\n",
+      "visible": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :format \"%10ITEM %Effort\"\n| <10>  |        |\n| ITEM  | Effort |\n|-------+--------|\n| Tasks |        |\n| A     |   1:00 |\n| B     |   0:30 |\n| C     |   0:15 |\n#+END:\n",
+      "point": 223,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dblock-tblfm",
+      "input": {
+        "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :format \"%ITEM %N\"\n| a | 1 |\n#+TBLFM: $2=7\n#+END:\n",
+        "point": 223,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :format \"%ITEM %N\"\n| ITEM  | N |\n|-------+---|\n| Tasks | 7 |\n| A     | 7 |\n| B     | 7 |\n| C     | 7 |\n#+TBLFM: $2=7\n#+END:\n",
+      "visible": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :format \"%ITEM %N\"\n| ITEM  | N |\n|-------+---|\n| Tasks | 7 |\n| A     | 7 |\n| B     | 7 |\n| C     | 7 |\n#+TBLFM: $2=7\n#+END:\n",
+      "point": 223,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dblock-caption",
+      "input": {
+        "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :format \"%ITEM\"\n#+CAPTION: Mine\n| x |\n#+END:\n",
+        "point": 223,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :format \"%ITEM\"\n#+CAPTION: Mine\n| ITEM  |\n|-------|\n| Tasks |\n| A     |\n| B     |\n| C     |\n#+END:\n",
+      "visible": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :format \"%ITEM\"\n#+CAPTION: Mine\n| ITEM  |\n|-------|\n| Tasks |\n| A     |\n| B     |\n| C     |\n#+END:\n",
+      "point": 223,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dblock-bad-id",
+      "input": {
+        "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id \"nope\"\n#+END:\n",
+        "point": 223,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id \"nope\"\n\n#+END:\n",
+      "visible": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id \"nope\"\n\n#+END:\n",
+      "point": 223,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Cannot find entry with :ID: nope"
+    },
+    {
+      "name": "dblock-insert",
+      "input": {
+        "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n",
+        "point": 2,
+        "keys": "C-c C-x x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "columnview",
+          "local"
+        ]
+      },
+      "text": "* Tasks\n#+BEGIN: columnview :hlines 1 :id local\n| <25>  |      | <3>      |      |\n| ITEM  | TODO | PRIORITY | TAGS |\n|-------+------+----------+------|\n| Tasks |      | B        |      |\n| A     | TODO | B        | :x:  |\n| B     |      | B        |      |\n| C     |      | B        |      |\n#+END:\n\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n",
+      "visible": "* Tasks\n#+BEGIN: columnview :hlines 1 :id local\n| <25>  |      | <3>      |      |\n| ITEM  | TODO | PRIORITY | TAGS |\n|-------+------+----------+------|\n| Tasks |      | B        |      |\n| A     | TODO | B        | :x:  |\n| B     |      | B        |      |\n| C     |      | B        |      |\n#+END:\n\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dblock-insert-global",
+      "input": {
+        "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n",
+        "point": 2,
+        "keys": "C-c C-x x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "columnview",
+          "global"
+        ]
+      },
+      "text": "* Tasks\n#+BEGIN: columnview :hlines 1 :id global\n| <25>  |      | <3>      |      |\n| ITEM  | TODO | PRIORITY | TAGS |\n|-------+------+----------+------|\n| Tasks |      | B        |      |\n| A     | TODO | B        | :x:  |\n| B     |      | B        |      |\n| C     |      | B        |      |\n#+END:\n\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n",
+      "visible": "* Tasks\n#+BEGIN: columnview :hlines 1 :id global\n| <25>  |      | <3>      |      |\n| ITEM  | TODO | PRIORITY | TAGS |\n|-------+------+----------+------|\n| Tasks |      | B        |      |\n| A     | TODO | B        | :x:  |\n| B     |      | B        |      |\n| C     |      | B        |      |\n#+END:\n\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,371 @@
+[
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-cols.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "displayed": true,
+  "text": "#+COLUMNS: %25ITEM %TODO %Effort{:} %TAGS\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n* Project\n:PROPERTIES:\n:COLUMNS: %ITEM %Effort{:}\n:END:\n** TODO Sub a\n:PROPERTIES:\n:Effort: 0:10\n:END:\n** TODO Sub b\n:PROPERTIES:\n:Effort: 0:20\n:END:\n",
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-sticky": false
+  },
+  "name": "agenda-columns-week",
+  "keys": "C-c C-x C-c",
+  "call": [
+   "org-agenda-list"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-cols.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "displayed": true,
+  "text": "#+COLUMNS: %25ITEM %TODO %Effort{:} %TAGS\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n* Project\n:PROPERTIES:\n:COLUMNS: %ITEM %Effort{:}\n:END:\n** TODO Sub a\n:PROPERTIES:\n:Effort: 0:10\n:END:\n** TODO Sub b\n:PROPERTIES:\n:Effort: 0:20\n:END:\n",
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-sticky": false
+  },
+  "name": "agenda-columns-todo",
+  "keys": "C-c C-x C-c",
+  "call": [
+   "org-todo-list"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-cols.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "displayed": true,
+  "text": "#+COLUMNS: %25ITEM %TODO %Effort{:} %TAGS\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n* Project\n:PROPERTIES:\n:COLUMNS: %ITEM %Effort{:}\n:END:\n** TODO Sub a\n:PROPERTIES:\n:Effort: 0:10\n:END:\n** TODO Sub b\n:PROPERTIES:\n:Effort: 0:20\n:END:\n",
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-sticky": false
+  },
+  "name": "agenda-columns-quit",
+  "keys": "C-c C-x C-c q",
+  "call": [
+   "org-agenda-list"
+  ],
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-cols.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "displayed": true,
+  "text": "#+COLUMNS: %25ITEM %TODO %Effort{:} %TAGS\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n* Project\n:PROPERTIES:\n:COLUMNS: %ITEM %Effort{:}\n:END:\n** TODO Sub a\n:PROPERTIES:\n:Effort: 0:10\n:END:\n** TODO Sub b\n:PROPERTIES:\n:Effort: 0:20\n:END:\n",
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-sticky": false
+  },
+  "name": "agenda-columns-redo",
+  "keys": "C-c C-x C-c g",
+  "call": [
+   "org-todo-list"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-cols.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "displayed": true,
+  "text": "#+COLUMNS: %25ITEM %TODO %Effort{:} %TAGS\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n* Project\n:PROPERTIES:\n:COLUMNS: %ITEM %Effort{:}\n:END:\n** TODO Sub a\n:PROPERTIES:\n:Effort: 0:10\n:END:\n** TODO Sub b\n:PROPERTIES:\n:Effort: 0:20\n:END:\n",
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-sticky": false,
+   "org-agenda-columns-show-summaries": false
+  },
+  "name": "agenda-columns-no-summaries",
+  "keys": "C-c C-x C-c",
+  "call": [
+   "org-agenda-list"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-cols.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "displayed": true,
+  "text": "#+COLUMNS: %25ITEM %TODO %Effort{:} %TAGS\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n* Project\n:PROPERTIES:\n:COLUMNS: %ITEM %Effort{:}\n:END:\n** TODO Sub a\n:PROPERTIES:\n:Effort: 0:10\n:END:\n** TODO Sub b\n:PROPERTIES:\n:Effort: 0:20\n:END:\n",
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-sticky": false,
+   "org-columns-default-format-for-agenda": "%ITEM %Effort"
+  },
+  "name": "agenda-columns-for-agenda",
+  "keys": "C-c C-x C-c",
+  "call": [
+   "org-todo-list"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-cols.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "displayed": true,
+  "text": "#+COLUMNS: %25ITEM %TODO %Effort{:} %TAGS\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n* Project\n:PROPERTIES:\n:COLUMNS: %ITEM %Effort{:}\n:END:\n** TODO Sub a\n:PROPERTIES:\n:Effort: 0:10\n:END:\n** TODO Sub b\n:PROPERTIES:\n:Effort: 0:20\n:END:\n",
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-sticky": false,
+   "org-agenda-view-columns-initially": true
+  },
+  "name": "agenda-columns-initially",
+  "keys": "",
+  "call": [
+   "org-todo-list"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-cols.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "displayed": true,
+  "text": "#+COLUMNS: %25ITEM %TODO %Effort{:} %TAGS\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n* Project\n:PROPERTIES:\n:COLUMNS: %ITEM %Effort{:}\n:END:\n** TODO Sub a\n:PROPERTIES:\n:Effort: 0:10\n:END:\n** TODO Sub b\n:PROPERTIES:\n:Effort: 0:20\n:END:\n",
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-sticky": false
+  },
+  "name": "agenda-columns-edit",
+  "keys": "C-c C-x C-c C-n C-n C-n C-n C-f C-f e",
+  "call": [
+   "org-todo-list"
+  ],
+  "answers": [
+   "3:00"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-cols.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "displayed": true,
+  "text": "#+COLUMNS: %25ITEM %TODO %Effort{:} %TAGS\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n* Project\n:PROPERTIES:\n:COLUMNS: %ITEM %Effort{:}\n:END:\n** TODO Sub a\n:PROPERTIES:\n:Effort: 0:10\n:END:\n** TODO Sub b\n:PROPERTIES:\n:Effort: 0:20\n:END:\n",
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-sticky": false
+  },
+  "name": "agenda-columns-next-todo",
+  "keys": "C-c C-x C-c C-n C-n C-n C-f n",
+  "call": [
+   "org-todo-list"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-cols.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "displayed": true,
+  "text": "#+COLUMNS: %25ITEM %TODO %Effort{:} %TAGS\n* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n:PROPERTIES:\n:Effort: 2:00\n:END:\n* Project\n:PROPERTIES:\n:COLUMNS: %ITEM %Effort{:}\n:END:\n** TODO Sub a\n:PROPERTIES:\n:Effort: 0:10\n:END:\n** TODO Sub b\n:PROPERTIES:\n:Effort: 0:20\n:END:\n",
+  "globals": {
+   "org-agenda-use-time-grid": false,
+   "org-agenda-sticky": false
+  },
+  "name": "agenda-columns-on-sub",
+  "keys": "C-c C-x C-c",
+  "call": [
+   "org-todo-list"
+  ],
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "dblock-local",
+  "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id local\n#+END:\n",
+  "keys": "C-c C-c",
+  "point": 223
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "dblock-global",
+  "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global\n#+END:\n",
+  "keys": "C-c C-c",
+  "point": 223
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "dblock-id",
+  "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id \"tasks-id\" :hlines 1\n#+END:\n",
+  "keys": "C-c C-c",
+  "point": 223
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "dblock-maxlevel",
+  "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :maxlevel 2\n#+END:\n",
+  "keys": "C-c C-c",
+  "point": 223
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "dblock-skip-empty",
+  "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :skip-empty-rows t :format \"%ITEM %Owner\"\n#+END:\n",
+  "keys": "C-c C-c",
+  "point": 223
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "dblock-exclude",
+  "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :exclude-tags (\"x\")\n#+END:\n",
+  "keys": "C-c C-c",
+  "point": 223
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "dblock-indent",
+  "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :indent t\n#+END:\n",
+  "keys": "C-c C-c",
+  "point": 223
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "dblock-vlines",
+  "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :vlines t\n#+END:\n",
+  "keys": "C-c C-c",
+  "point": 223
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "dblock-hlines-t",
+  "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :hlines t\n#+END:\n",
+  "keys": "C-c C-c",
+  "point": 223
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "dblock-match",
+  "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :match \"TODO=\\\"TODO\\\"\"\n#+END:\n",
+  "keys": "C-c C-c",
+  "point": 223
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "dblock-link",
+  "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :link t\n#+END:\n",
+  "keys": "C-c C-c",
+  "point": 223
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "dblock-width",
+  "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :format \"%10ITEM %Effort\"\n#+END:\n",
+  "keys": "C-c C-c",
+  "point": 223
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "dblock-tblfm",
+  "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :format \"%ITEM %N\"\n| a | 1 |\n#+TBLFM: $2=7\n#+END:\n",
+  "keys": "C-c C-c",
+  "point": 223
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "dblock-caption",
+  "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :format \"%ITEM\"\n#+CAPTION: Mine\n| x |\n#+END:\n",
+  "keys": "C-c C-c",
+  "point": 223
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "dblock-bad-id",
+  "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id \"nope\"\n#+END:\n",
+  "keys": "C-c C-c",
+  "point": 223
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "dblock-insert",
+  "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n",
+  "keys": "C-c C-x x",
+  "point": 2,
+  "answers": [
+   "columnview",
+   "local"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "dblock-insert-global",
+  "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n",
+  "keys": "C-c C-x x",
+  "point": 2,
+  "answers": [
+   "columnview",
+   "global"
+  ]
+ }
+]

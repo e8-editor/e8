@@ -1157,6 +1157,8 @@ function renderBlocks(blocks: Block[], pointLine: number, keepMarks = false): vo
   readFilterPresets();
   e8.withCurrentBuffer(agendaBuffer, reapplyFilters);
   placeAgendaWindow();
+  // org-agenda-finalize-hook, in the agenda's buffer, as org-agenda-finalize runs it.
+  e8.withCurrentBuffer(agendaBuffer, () => e8.runHooks("org-agenda-finalize-hook"));
   // The line point goes to in the agenda's window, as Org moves point once the window is selected.
   if (e8.windowBuffer() === agendaBuffer) e8.gotoChar(e8.lineStart(Math.min(pointLine, e8.lineCount() - 1)));
   const setup = e8.variable("org-agenda-window-setup");
@@ -5588,6 +5590,7 @@ for (const [key, command] of [
   ["S-<left>", "org-agenda-do-date-earlier"],
   ["C-c C-x <right>", "org-agenda-do-date-later"],
   ["C-c C-x <", "org-agenda-set-restriction-lock-from-agenda"],
+  ["C-c C-x C-c", "org-agenda-columns"],
   ["C-c C-x >", "org-agenda-remove-restriction-lock"],
   ["C-c C-x <left>", "org-agenda-do-date-earlier"],
   [">", "org-agenda-date-prompt"],
@@ -6127,3 +6130,25 @@ e8.defineCommand({
   doc: "Write the views of the custom agenda commands that name files to write to, after their settings, to those files.",
   run: storeAgendaViews,
 });
+
+/**
+ * Each line of the agenda for column view: "entry" with its entry's buffer
+ * and heading, as org-hd-marker; "date" for a day's line, as
+ * org-date-line; "structure" for a view's first header line, in
+ * org-agenda-structure; else "".
+ */
+e8.defun("org--agenda-column-lines", () =>
+  e8.withCurrentBuffer(agendaBuffer, () => {
+    const out: e8.Value[] = [];
+    for (let l = 0; l < e8.lineCount(); l++) {
+      const item = agendaLines[l];
+      const day = agendaLineDays[l];
+      if (item && e8.getBuffer(item.buffer)) out.push(["entry", item.buffer, headingOf(item)]);
+      else if (day !== undefined && agendaLineDays[l - 1]?.day !== day.day) out.push(["date", null, null]);
+      else if (shownBlocks.some((b) => b.from === l && b.to > l)) out.push(["structure", null, null]);
+      else out.push(["", null, null]);
+    }
+    return out;
+  }),
+);
+e8.defineHook("org-agenda-finalize-hook", "Functions run in the agenda's buffer once a view is made.");
