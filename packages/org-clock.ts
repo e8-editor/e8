@@ -221,14 +221,15 @@ function findPosition(all: Heading[], i: number): number {
   }
   if (clocks.length === 0) {
     let at = endOfMetaData(h);
+    // Before the markers there, as Org's insert-before-markers-and-inherit puts them.
     if (at !== e8.lineStart(lineAt(at))) {
       e8.gotoChar(at);
-      e8.insert("\n");
+      e8.insertBeforeMarkers("\n");
       at = e8.point();
     }
     if (drawer === undefined || (threshold !== undefined && threshold >= 2)) return at;
     e8.gotoChar(at);
-    e8.insert(`:${drawer}:\n:END:\n`);
+    e8.insertBeforeMarkers(`:${drawer}:\n:END:\n`);
     toggleDrawerOrBlock(lineAt(at), true);
     return e8.lineStart(lineAt(at) + 1);
   }
@@ -672,7 +673,8 @@ function clockInHere(selected?: number, startTime?: DateTime, leftover?: DateTim
       } else {
         at = findPosition(headings(), headingIndex(headings(), h.line) as number);
         e8.gotoChar(at);
-        e8.insert(`CLOCK: ${stamp}\n`);
+        // The markers there after the new line, as Org's newline goes in before them.
+        e8.insertBeforeMarkers(`CLOCK: ${stamp}\n`);
       }
       clock = { line: e8.makeMarker(at), heading: e8.makeMarker(h.start), title, start: millis(start), before };
     });
@@ -753,6 +755,11 @@ export function clockOut(failQuietly = false, askState = false, atTime?: DateTim
   // At AT-TIME, as a resolved clock is stopped then.
   const end = atTime ?? now();
   outTime = end;
+  // No idle checks without a clock, as org-clock-out cancels org-clock-idle-timer.
+  if (idleTimer !== undefined && atTime === undefined) {
+    e8.cancelTimer(idleTimer);
+    idleTimer = undefined;
+  }
   const te = `[${formatTimestamp(end, true)}]`;
   let removed = false;
   let minutes = 0;
@@ -764,10 +771,12 @@ export function clockOut(failQuietly = false, askState = false, atTime?: DateTim
         const m = /^([ \t]*CLOCK: \[[^\]]*\])/.exec(e8.lineText(line));
         if (!m) e8.signal("error", "Clock start time is gone");
         const from = e8.lineStart(line) + m[1].length;
-        minutes = Math.max(0, Math.floor((millis(end) - running.start) / 60000));
+        // Negative if it ends before it starts, as Org's floor and mod write it.
+        minutes = Math.floor((millis(end) - running.start) / 60000);
         e8.deleteRegion(from, e8.lineEnd(line));
         e8.gotoChar(from);
-        e8.insert(`--${te} => ${String(Math.floor(minutes / 60)).padStart(2)}:${String(minutes % 60).padStart(2, "0")}`);
+        const mm = minutes - 60 * Math.floor(minutes / 60);
+        e8.insert(`--${te} => ${String(Math.floor(minutes / 60)).padStart(2)}:${String(mm).padStart(2, "0")}`);
         if (minutes === 0 && e8.variable("org-clock-out-remove-zero-time-clocks") === true) {
           removed = true;
           e8.deleteRegion(e8.lineStart(line), lineStartOrEnd(line + 1));
@@ -906,7 +915,8 @@ e8.defineCommand({
           // reach it in org-clock-cancel, which says so and stops anyway.
           // It goes with the newline before it, as org-clock-cancel deletes it.
           const inside = e8.lineStart(line) - 1 >= e8.pointMin() && e8.lineEnd(line) <= e8.pointMax() && pos <= e8.pointMax();
-          if (inside && /^[ \t]*CLOCK: \[[^\]]*\][ \t]*$/.test(e8.lineText(line))) {
+          // Case aside, as org-clock-cancel's looking-back has case-fold-search.
+          if (inside && /^[ \t]*CLOCK: /i.test(e8.lineText(line))) {
             e8.deleteRegion(e8.lineStart(line) - 1, e8.lineEnd(line));
             removeEmptyDrawer(line);
           } else e8.message("Clock gone, cancel the timer anyway");
@@ -2114,18 +2124,19 @@ function filesList(): string[] {
 function findOpenClocks(file: string): OpenClock[] {
   const buffer = e8.getFileBuffer(file) ?? e8.findFileNoselect(file);
   const out: OpenClock[] = [];
-  e8.withCurrentBuffer(buffer, () =>
-    e8.saveRestriction(() => {
-      e8.widen();
-      for (let l = 0; l < e8.lineCount(); l++) {
-        const m = /CLOCK: (\[.*?\])$/.exec(e8.lineText(l));
-        if (!m || elementAt(e8.lineStart(l))?.type !== "clock") continue;
-        const t = /\[(\d{4})-(\d{2})-(\d{2})[^\]]*? (\d{1,2}):(\d{2})/.exec(m[1]);
-        const start = t ? { year: +t[1], month: +t[2], day: +t[3], hour: +t[4], minute: +t[5] } : { ...today(), hour: 0, minute: 0 };
-        out.unshift({ marker: e8.makeMarker(e8.lineEnd(l), { buffer, advances: true }), start });
-      }
-    }),
-  );
+  // In the accessible part, as Org searches from point-min without widening; case aside, as case-fold-search has it.
+  e8.withCurrentBuffer(buffer, () => {
+    for (let l = e8.lineOf(e8.pointMin()); l <= e8.lineOf(e8.pointMax()) && l < e8.lineCount(); l++) {
+      const m = /CLOCK: (\[.*?\])$/i.exec(e8.lineText(l));
+      // A clock, or a lower-case one, which Org's parser takes for a clock too.
+      const type = elementAt(e8.lineStart(l))?.type;
+      if (!m || !(type === "clock" || ((type === "paragraph" || type === "drawer") && /^[ \t]*clock: /i.test(e8.lineText(l))))) continue;
+      // Its date at midnight without a time, as org-time-string-to-time reads it.
+      const t = /\[(\d{4})-(\d{2})-(\d{2})(?:[^\]]*? (\d{1,2}):(\d{2}))?/.exec(m[1]);
+      const start = t ? { year: +t[1], month: +t[2], day: +t[3], hour: t[4] === undefined ? 0 : +t[4], minute: t[5] === undefined ? 0 : +t[5] } : { ...today(), hour: 0, minute: 0 };
+      out.unshift({ marker: e8.makeMarker(e8.lineEnd(l), { buffer, advances: true }), start });
+    }
+  });
   return out;
 }
 
@@ -2212,7 +2223,8 @@ function resolveClock(c: OpenClock, resolveTo: null | "now" | DateTime, clockOut
     const heading = atClockPosition(c, () => {
       const all = headings();
       const i = headingIndex(all, lineAt());
-      return e8.makeMarker(i === undefined ? e8.point() : all[i].start);
+      if (i === undefined) e8.userError(`Before first headline at position ${e8.lineStart(lineAt()) + 1} in buffer ${e8.bufferName()}`);
+      return e8.makeMarker(all[i].start);
     });
     const atHeading = (f: () => void) =>
       e8.withCurrentBuffer(e8.markerBuffer(heading) as string, () =>
@@ -2250,14 +2262,30 @@ function resolveClock(c: OpenClock, resolveTo: null | "now" | DateTime, clockOut
 function jumpToClock(c: OpenClock): void {
   const buffer = e8.markerBuffer(c.marker);
   if (buffer === undefined) e8.userError("No Org clock is currently running");
+  const outer = e8.bufferName();
   e8.call("switch-to-buffer", buffer);
   const pos = e8.markerPosition(c.marker) ?? 0;
   if (pos < e8.pointMin() || pos > e8.pointMax()) e8.widen();
   e8.gotoChar(pos);
-  // Its entry shown, as org-clock-goto shows the context.
+  // Its entry shown, as org-clock-goto shows the context, and its hook run.
   const all = headings();
   const i = headingIndex(all, lineAt());
-  if (i !== undefined) showEntry(all, i);
+  if (i !== undefined) {
+    showEntry(all, i);
+    // The drawer holding the clock opened, as org-clock-jump-to-current-clock toggles it off.
+    const name = drawerName(all[i]);
+    if (name !== undefined) {
+      const re = new RegExp(`^[ \t]*:${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}:[ \t]*$`);
+      for (let l = lineAt(pos); l > all[i].line; l--) {
+        if (!re.test(e8.lineText(l))) continue;
+        if (elementAt(e8.lineStart(l))?.type === "drawer") toggleDrawerOrBlock(l, false);
+        break;
+      }
+    }
+  }
+  e8.runHooks("org-clock-goto-hook");
+  // Back in the buffer it was asked from, as org-with-clock's with-current-buffer leaves it.
+  if (outer !== e8.bufferName() && e8.getBuffer(outer)) e8.setBuffer(outer);
 }
 
 const RESOLVE_HELP = `Select a Clock Resolution Command:
@@ -2322,9 +2350,9 @@ function resolve(c: OpenClock, prompt: string, lastValid: DateTime, failQuietly 
         const w = e8.windowList().find((x) => e8.windowBuffer(x) === help);
         if (w !== undefined) {
           const selected = e8.selectedWindow();
-          e8.selectWindow(w);
+          e8.selectWindow(w, true);
           e8.call("shrink-window-if-larger-than-buffer");
-          e8.selectWindow(selected);
+          e8.selectWindow(selected, true);
         }
       }
       let key: string;
@@ -2370,13 +2398,17 @@ function resolveClocks(onlyDangling: boolean): void {
   resolving = true;
   try {
     for (const file of filesList()) {
-      for (const c of findOpenClocks(file)) {
-        const dangling = !isActiveClock(c);
-        if (!onlyDangling || dangling) {
-          const mins = Math.floor((millis(now()) - millis(c.start)) / 60000);
-          resolve(c, `Dangling clock started ${mins} mins ago`, c.start);
+      const clocks = findOpenClocks(file);
+      try {
+        for (const c of clocks) {
+          const dangling = !isActiveClock(c);
+          if (!onlyDangling || dangling) {
+            const mins = Math.floor((millis(now()) - millis(c.start)) / 60000);
+            resolve(c, `Dangling clock started ${mins} mins ago`, c.start);
+          }
         }
-        e8.deleteMarker(c.marker);
+      } finally {
+        for (const c of clocks) e8.deleteMarker(c.marker);
       }
     }
   } finally {
