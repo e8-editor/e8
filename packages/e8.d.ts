@@ -5851,6 +5851,12 @@ declare global {
        */
       "org-agenda-toggle-time-grid": [];
       /**
+       * Take back what the last agenda command changed in the Org files, and in the agenda; again, the one before.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-undo": [];
+      /**
        * Change how the agenda shows its entries, by a key: d, w, t, m and y for a day's, a week's, two weeks', a month's or a year's agenda, SPC for org-agenda-span's, a to toggle archived trees, A to toggle archive files too, G the time grid, ! deadlines, [ to show inactive timestamps too, q to abort.
        *
        * Defined in packages/org-agenda.ts.
@@ -14671,6 +14677,12 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-adapt-indentation": Value;
+      /**
+       * Whether undo in the agenda takes back the changes its commands made in the Org files.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-allow-remote-undo": Value;
       /**
        * A function given each tag of the agenda's lines, which returns "-TAG" to hide the lines with it, or nil, for RET in the tag filter and C-u C-u C-u / to use.
        *
