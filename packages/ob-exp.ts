@@ -73,10 +73,11 @@ function deleteLines(from: number, to: number): void {
 export function processBuffer(): void {
   if (e8.variable("org-export-use-babel") === false) return;
   e8.saveExcursion(() => {
-    const blocks = collectBlocks();
-    // From the last, so the lines of those before stay where they are.
-    for (let i = blocks.length - 1; i >= 0; i--) {
-      const block = blocks[i];
+    // From the first to the last, as Org evaluates them, finding the blocks
+    // again after each, as one exported as nothing leaves fewer.
+    for (let i = 0; ; ) {
+      const block = collectBlocks()[i];
+      if (block === undefined) break;
       const exports = String(block.params.get(":exports") ?? "code");
       const switches = switchesOf(e8.lineText(block.line));
       const ind = /^[ \t]*/.exec(e8.lineText(block.line))![0];
@@ -99,7 +100,9 @@ export function processBuffer(): void {
         let to = block.end + 1;
         while (to < e8.lineCount() && /^[ \t]*$/.test(e8.lineText(to))) to++;
         deleteLines(block.first, to);
-      } else if (exports === "code" || exports === "both") {
+        continue;
+      }
+      if (exports === "code" || exports === "both") {
         const code = expCode(block, switches);
         const replacement = block.preserveIndent ? code.replace(/^/, ind).replace(/\n([^\n]*)$/, `\n${ind}$1`) : code.replace(/^(?=.)/gm, ind);
         const start = e8.lineStart(block.line);
@@ -110,6 +113,7 @@ export function processBuffer(): void {
           e8.insert(replacement);
         }
       } else e8.message(`Unknown value of src block parameter :exports ${JSON.stringify(exports)}`);
+      i++;
     }
     processInline();
   });
@@ -119,7 +123,24 @@ const INLINE = /\bsrc_([^\s[{]+)(\[[^\]\n]*\])?\{([^}\n]*)\}/g;
 
 /** Inline source blocks and #+CALL: lines: their code, or nothing, as Org exports them with what E8 can run. */
 function processInline(): void {
+  // The lines of verbatim blocks, where nothing is code to export.
+  const verbatim = new Set<number>();
+  let open: string | undefined;
+  for (let l = 0; l < e8.lineCount(); l++) {
+    const t = e8.lineText(l);
+    if (open) {
+      verbatim.add(l);
+      if (new RegExp(`^[ \\t]*#\\+end_${open}\\b`, "i").test(t)) open = undefined;
+      continue;
+    }
+    const b = /^[ \t]*#\+begin_(src|example|export|comment|verse)\b/i.exec(t);
+    if (b) {
+      open = b[1].toLowerCase();
+      verbatim.add(l);
+    }
+  }
   for (let l = e8.lineCount() - 1; l >= 0; l--) {
+    if (verbatim.has(l)) continue;
     const text = e8.lineText(l);
     if (/^[ \t]*#\+CALL:/i.test(text)) {
       const template = String(e8.variable("org-babel-exp-call-line-template") ?? "");

@@ -8,7 +8,7 @@
 
 import { type Node, map } from "org-element-ast";
 import { parseSecondaryString, restriction } from "org-element";
-import { entryGetInherited, headingIndex, headings } from "org";
+import { allKeywords, entryGetInherited, headingIndex, headings } from "org";
 import { entryGet } from "org-list";
 
 /** A template: text with $1, $2 ... for the arguments, or a function of them. */
@@ -171,19 +171,23 @@ const MACRO = /\{\{\{([a-zA-Z][-a-zA-Z0-9_]*)(?:\(([^\u0000]*?)\))?\}\}\}/g;
  */
 export function replaceAll(list: [string, Template][] = templates, keywords: string[] = []): void {
   const record = new Set<string>();
-  const keywordRe = new RegExp(`^[ \\t]*#\\+(${keywords.join("|") || "\\u0000"}):`, "i");
+  // The parsed keywords given, and captions, whose values Org's parser finds macros in.
+  const keywordRe = new RegExp(`^[ \\t]*#\\+(${[...keywords, "CAPTION(?:\\[.*\\])?"].join("|")}):`, "i");
   const propertyRe = new RegExp(`^[ \\t]*:EXPORT_(${keywords.join("|") || "\\u0000"})\\+?:`, "i");
   e8.saveRestriction(() => {
     e8.widen();
     let open: string | undefined;
     let commentedLevel: number | undefined;
+    // A commented heading, as org-in-commented-heading-p reads one: COMMENT after its keyword and priority.
+    const todo = allKeywords().map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
+    const commented = new RegExp(`^\\*+[ \\t]+(?:(?:${todo || "\\u0000"})[ \\t]+)?(?:\\[#.\\][ \\t]+)?COMMENT(?:[ \\t]|$)`);
     for (let l = 0; l < e8.lineCount(); l++) {
       const text = e8.lineText(l);
       const heading = /^(\*+)\s/.exec(text);
       if (heading) {
         const level = heading[1].length;
         if (commentedLevel !== undefined && level <= commentedLevel) commentedLevel = undefined;
-        if (commentedLevel === undefined && /^\*+\s+(?:\S+\s+)?COMMENT(?:\s|$)/.test(text)) commentedLevel = level;
+        if (commentedLevel === undefined && commented.test(text)) commentedLevel = level;
       }
       if (open) {
         if (new RegExp(`^[ \\t]*#\\+end_${open}\\b`, "i").test(text)) open = undefined;
@@ -208,10 +212,13 @@ export function replaceAll(list: [string, Template][] = templates, keywords: str
         let done = true;
         while ((m = MACRO.exec(line))) {
           if (allowed && !allowed.has(m[0])) continue;
-          const key = m[1];
-          const args = m[2] === undefined ? [] : extractArguments(m[2]);
-          const value = expand(key, args, list);
+          const key = m[1].toLowerCase();
+          // Trimmed, and runs of blanks made one space, as org-element-macro-parser reads them.
+          const args = m[2] === undefined ? [] : extractArguments(m[2].trim().replace(/[ \t\r\n]+/g, " "));
           const begin = e8.lineStart(l) + [...line.slice(0, m.index)].length;
+          // Point at the macro, as Org's search leaves it, for {{{property}}} to read its entry.
+          e8.gotoChar(begin);
+          const value = expand(key, args, list);
           const signature = `${begin}\u0000${m[0]}`;
           if (value !== undefined) {
             if (record.has(signature)) e8.signal("error", `Circular macro expansion: ${key}`);

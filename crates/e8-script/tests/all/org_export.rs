@@ -125,3 +125,75 @@ fn exporting_to_a_file_writes_it_beside_the_org_file() {
     // As Emacs writes it: the output ends in a blank line.
     assert_eq!(md, "\n\n# Note\n\nBody.\n\n");
 }
+
+// From the review: each as Emacs 30's Org 9.7 exports the same text.
+
+#[test]
+fn visible_only_leaves_out_folded_text() {
+    let (mut ed, _s) = org("#+OPTIONS: toc:nil author:nil\n* A\nshown\n* B\nhidden\n** C\nalso hidden\n");
+    let b = text(&ed).find("* B").unwrap();
+    ed.window_buffer_mut().set_point(b);
+    ed.press("TAB").unwrap();
+    ed.window_buffer_mut().set_point(0);
+    ed.press("C-c C-e C-v t A").unwrap();
+    assert_eq!(text(&ed), "1 A\n===\n\n  shown\n\n\n2 B\n===\n");
+}
+
+#[test]
+fn a_property_macro_reads_its_own_entry() {
+    let (mut ed, _s) = org("#+OPTIONS: toc:nil author:nil\n* A\n:PROPERTIES:\n:X: 1\n:END:\nValue {{{property(X)}}}.\n* B\n:PROPERTIES:\n:X: 2\n:END:\nValue {{{property(X)}}}.\n");
+    ed.call("org-ascii-export-as-ascii", vec![]).unwrap();
+    assert_eq!(text(&ed), "1 A\n===\n\n  Value 1.\n\n\n2 B\n===\n\n  Value 2.\n");
+}
+
+#[test]
+fn macro_arguments_are_trimmed_and_captions_expand_theirs() {
+    let (mut ed, _s) = org("#+OPTIONS: toc:nil author:nil\n#+MACRO: greet Hello, $1!\n{{{greet(  big   World )}}}\n\n#+CAPTION: Table {{{n(t)}}}\n| a |\n");
+    ed.call("org-ascii-export-as-ascii", vec![]).unwrap();
+    assert_eq!(text(&ed), "Hello, big World!\n\n a \nTable 1: Table 1\n");
+}
+
+#[test]
+fn never_export_blocks_do_not_run() {
+    let (mut ed, _s) = org("#+OPTIONS: toc:nil author:nil\n#+begin_src typescript :exports results :eval never-export\n6 * 7\n#+end_src\nEnd.\n");
+    ed.call("org-ascii-export-as-ascii", vec![]).unwrap();
+    assert_eq!(text(&ed), "End.\n");
+}
+
+#[test]
+fn includes_take_their_levels_before_any_is_expanded() {
+    let dir = tempfile::tempdir().unwrap();
+    let one = dir.path().join("one.org");
+    let two = dir.path().join("two.org");
+    std::fs::write(&one, "* X\n** Y\nunder y\n").unwrap();
+    std::fs::write(&two, "* Z\nunder z\n").unwrap();
+    let (mut ed, _s) = org(&format!(
+        "#+OPTIONS: toc:nil author:nil num:nil\n* A\n#+INCLUDE: \"{}\"\n#+INCLUDE: \"{}\"\n",
+        one.display(),
+        two.display()
+    ));
+    ed.call("org-ascii-export-as-ascii", vec![]).unwrap();
+    assert_eq!(text(&ed), "A\n=\n\nX\n~\n\nY\n-\n\n  under y\n\n\nZ\n~\n\n  under z\n");
+}
+
+#[test]
+fn an_included_section_keeps_a_footnote_defined_outside_it() {
+    let dir = tempfile::tempdir().unwrap();
+    let notes = dir.path().join("notes.org");
+    std::fs::write(&notes, "* Part\nText[fn:1].\n* Other\nmore\n* Footnotes\n[fn:1] The note.\n").unwrap();
+    let (mut ed, _s) = org(&format!("#+OPTIONS: toc:nil author:nil num:nil\n* Main\n#+INCLUDE: \"{}::*Part\"\n", notes.display()));
+    ed.call("org-ascii-export-as-ascii", vec![]).unwrap();
+    assert_eq!(text(&ed), "Main\n====\n\nPart\n~~~~\n\n  Text[1].\n\n\n\nFootnotes\n_________\n\n[1] The note.\n");
+}
+
+#[test]
+fn the_template_for_a_subtree_sets_its_export_properties() {
+    let (mut ed, _s) = org("* H\nbody\n");
+    ed.window_buffer_mut().set_point(3);
+    // As the dispatcher's C-s # calls it, the backend's options asked for.
+    ed.call("org-export-insert-default-template", vec![e8_core::Arg::Str("default".into()), e8_core::Arg::Str("t".into())]).unwrap();
+    let t = text(&ed);
+    assert!(t.starts_with("* H\n:PROPERTIES:\n:EXPORT_OPTIONS: "), "{t}");
+    assert!(t.contains(":EXPORT_TITLE: H\n") || t.contains(":EXPORT_TITLE:"), "{t}");
+    assert!(t.ends_with(":END:\nbody\n"), "{t}");
+}

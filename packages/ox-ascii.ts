@@ -97,6 +97,12 @@ function inFillBuffer<T>(text: string, body: () => T): T {
   });
 }
 
+/** The fill buffer killed, at the end of an export. */
+function killFillBuffer(): void {
+  if (fillBuffer !== undefined && e8.getBuffer(fillBuffer)) e8.call("kill-buffer", fillBuffer);
+  fillBuffer = undefined;
+}
+
 /** Text filled to a width, each part between hard newlines a paragraph, justified as `how` says, as org-ascii--fill-string. */
 function fillString(s: string | undefined, width: number, info: Info, how?: string): string | undefined {
   if (typeof s !== "string") return undefined;
@@ -874,7 +880,10 @@ defineBackend(
       "filter-headline": headlineBlankLines,
       "filter-parse-tree": [paragraphSpacing, commentSpacing],
       "filter-section": headlineBlankLines,
-      "filter-final-output": (s: string) => (typeof s === "string" && s.includes(HARD) ? s.split(HARD).join("") : undefined),
+      "filter-final-output": (s: string) => {
+        killFillBuffer();
+        return typeof s === "string" && s.includes(HARD) ? s.split(HARD).join("") : undefined;
+      },
     },
     options: [
       ["subtitle", "SUBTITLE", undefined, undefined, "parse"],

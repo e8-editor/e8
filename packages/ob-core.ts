@@ -406,13 +406,16 @@ function insertResult(block: Block, result: unknown, rp: string[]): void {
 function confirmEvaluate(block: Block): boolean {
   const named = block.name !== undefined ? ` (${block.name}) ` : " ";
   const evalArg = block.params.get(":eval") ?? (block.params.has(":noeval") ? "no" : undefined);
-  if (evalArg === "no" || evalArg === "never") {
+  // While exporting, as org-babel-check-confirm-evaluate tells by the export's backend, never-export and no-export are never too.
+  const exporting = truthy(e8.variable("org-export-current-backend"));
+  if (evalArg === "no" || evalArg === "never" || (exporting && (evalArg === "no-export" || evalArg === "never-export"))) {
     e8.message(`Evaluation of this ${block.language} code block${named}is disabled.`);
     return false;
   }
   const confirm = e8.variable("org-confirm-babel-evaluate");
   const query =
     evalArg === "query" ||
+    (exporting && evalArg === "query-export") ||
     (typeof confirm === "function" || (typeof confirm === "string" && e8.fboundp(confirm))
       ? truthy(e8.funcall(confirm as string, block.language, block.body))
       : truthy(confirm));

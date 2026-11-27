@@ -3017,6 +3017,11 @@ function indexOf_(text: string, base: number, pos: number): number {
 /** Run `body` with `text` as the text parsed, from `settingsText`'s settings. */
 let lastSettings: { key: string; settings: ParseSettings } | undefined;
 
+/** Forget the settings kept for the last buffer parsed, as when the exporter kills a buffer whose name may be used again. */
+export function forgetSettings(): void {
+  lastSettings = undefined;
+}
+
 /**
  * The current buffer's settings, made again only when its text, its
  * narrowing or the settings read from elsewhere have changed since, as
@@ -3084,9 +3089,10 @@ export function parseBuffer(granularity?: "headline" | "greater-element" | "elem
   const base = e8.pointMin();
   const text = e8.bufferSubstringNoProperties(base, e8.pointMax());
   return withText(text, () => {
+    const position = positionsOf(S, base);
     if (visibleOnly)
       invisible = (p: number) => {
-        const pos = positionsOf(S, base)(p);
+        const pos = position(p);
         if (!e8.invisibleAt(pos)) return undefined;
         const next = e8.nextSingleCharPropertyChange(pos, "invisible", e8.pointMax());
         return indexOf_(S, base, next);

@@ -41,6 +41,7 @@ import {
   linkParser,
   normalizeContents,
   normalizeString,
+  forgetSettings,
   parseBuffer,
   parseSecondaryString,
   restriction,
@@ -48,7 +49,9 @@ import {
 import { allKeywords, entryGetInherited, type Heading, headingIndex, headings, keywordLines, linkTypeEntries, subtreeRegion } from "org";
 import { allMatches, forwardLine, getBufferWindow, withSelectedWindow } from "subr";
 import { keyChar } from "simple";
-import { endOfMetaData, entryGet } from "org-list";
+import { endOfMetaData, entryGet, entryPut } from "org-list";
+import { fileRelativeName } from "files";
+import { orgIdFind } from "org-id";
 import { lineAt, orgFitWindowToBuffer, orgPopToBufferSplit, orgRegionActive } from "org-macs";
 import { initializeTemplates, replaceAll as macroReplaceAll } from "org-macro";
 import { processBuffer as babelExpProcessBuffer } from "ob-exp";
@@ -397,7 +400,7 @@ export function parseOptionKeyword(options: string, backend?: string | Backend):
 /** A property of the heading at a line as org-entry-get reads it with 'selective inheritance. */
 function entryGetSelective(h: Heading, name: string): string | undefined {
   const inherit = varValue("org-use-property-inheritance");
-  const inherits = inherit === true || (Array.isArray(inherit) && inherit.includes(name)) || (typeof inherit === "string" && new RegExp(inherit).test(name));
+  const inherits = inherit === true || (Array.isArray(inherit) && inherit.includes(name)) || (typeof inherit === "string" && e8.stringMatch(inherit, name) !== undefined);
   return inherits ? entryGetInherited(h, name) : entryGet(h.line, name);
 }
 
@@ -520,7 +523,13 @@ function collectTreeProperties(data: Node, info: Info): Info {
   info["parse-tree"] = data;
   info["headline-offset"] = 1 - getMinLevel(data, info);
   info["headline-numbering"] = collectHeadlineNumbering(data, info);
-  info["id-alist"] = [];
+  // Each id: link's file, when the ID is known elsewhere, as Org finds it with org-id-find.
+  info["id-alist"] = map(data, "link", (l) => {
+    if (property("type", l) !== "id") return undefined;
+    const id = property("path", l) as string;
+    const found = orgIdFind(id);
+    return found ? ([id, fileRelativeName(found[0])] as [string, string]) : undefined;
+  });
   return info;
 }
 
@@ -564,11 +573,22 @@ function collectHeadlineNumbering(data: Node, info: Info): Map<Node, number[]> {
 
 /** The map options an export walks with: what it ignores. */
 export function mapOpts(info: Info, more: MapOptions = {}): MapOptions {
-  return { ignore: info["ignore-set"], ...more };
+  return { ignore: ignoreSet(info), ...more };
 }
 
 function isIgnored(d: Datum, info: Info): boolean {
-  return (info["ignore-set"] as Set<Datum> | undefined)?.has(d) ?? false;
+  return ignoreSet(info)?.has(d) ?? false;
+}
+
+/** The ignore list as a set, made again when a filter has added to :ignore-list, as Org's API lets it. */
+function ignoreSet(info: Info): Set<Datum> | undefined {
+  const list: Datum[] | undefined = info["ignore-list"];
+  let set: Set<Datum> | undefined = info["ignore-set"];
+  if (list && (!set || set.size !== list.length)) {
+    set = new Set(list);
+    info["ignore-set"] = set;
+  }
+  return set;
 }
 
 /** Tags as org-tags-expand reads a tag for export: a group tag stands for its members. */
@@ -742,10 +762,11 @@ function missingDefinitions(tree: Node, definitions: Node[]): Node[] {
     else undefinedLabels.unshift(l);
   }
   const missing: Node[] = [];
+  const wide: { tree?: Node } = {};
   while (undefinedLabels.length) {
     const label = undefinedLabels.shift()!;
     let definition: Node | undefined = definitions.find((d) => property("label", d) === label);
-    if (!definition) definition = footnoteDefinitionFromBuffer(label);
+    if (!definition) definition = footnoteDefinitionFromBuffer(label, wide);
     if (!definition) e8.userError(`Definition not found for footnote ${label}`);
     defined.unshift(label);
     missing.unshift(definition);
@@ -757,10 +778,10 @@ function missingDefinitions(tree: Node, definitions: Node[]): Node[] {
 }
 
 /** A footnote definition outside the part exported, parsed from the whole buffer, as org-footnote-get-definition finds it. */
-function footnoteDefinitionFromBuffer(label: string): Node | undefined {
+function footnoteDefinitionFromBuffer(label: string, wide: { tree?: Node }): Node | undefined {
   return e8.saveRestriction(() => {
     e8.widen();
-    const tree = parseBuffer();
+    const tree = (wide.tree ??= parseBuffer());
     return mapFirst(tree, ["footnote-definition", "footnote-reference"], (f) =>
       property("label", f) === label && (typeOf(f) === "footnote-definition" || property("type", f) === "inline") ? (f as Node) : undefined,
     );
@@ -1027,13 +1048,25 @@ function installFilters(info: Info): Info {
 
 // --- The export ------------------------------------------------------------------
 
-/** The buffer's text in a buffer of its own, with its local variables and narrowing, as org-export-copy-buffer. */
+/**
+ * The buffer's text in a buffer of its own, in Org mode, with its text
+ * properties, its folding (overlays that hide text), its local variables
+ * and its narrowing, as org-export-copy-buffer.
+ */
 function withBufferCopy<T>(body: () => T): T {
   const bind = listBoundVariables();
   const source = e8.bufferName();
-  const text = e8.saveRestriction(() => {
+  const size = e8.bufferSize();
+  const hidden: [number, number, e8.Value][] = e8.saveRestriction(() => {
     e8.widen();
-    return e8.bufferText();
+    const out: [number, number, e8.Value][] = [];
+    for (const ov of e8.overlaysIn(0, size)) {
+      const inv = e8.overlayGet(ov, "invisible");
+      const from = e8.overlayStart(ov);
+      const to = e8.overlayEnd(ov);
+      if (inv !== undefined && inv !== null && inv !== false && from !== undefined && to !== undefined && to > from) out.push([from, to, inv]);
+    }
+    return out;
   });
   const min = e8.pointMin();
   const max = e8.pointMax();
@@ -1044,6 +1077,8 @@ function withBufferCopy<T>(body: () => T): T {
   e8.getBufferCreate(name);
   try {
     return e8.withCurrentBuffer(name, () => {
+      // Org mode without its startup, as the copy Org makes runs it.
+      e8.letBind({ "org-inhibit-startup": true }, () => e8.call("org-mode"));
       for (const [variable, value] of locals) {
         if (COPY_SKIPS.has(variable) || variable.startsWith("org-element--cache")) continue;
         try {
@@ -1053,7 +1088,12 @@ function withBufferCopy<T>(body: () => T): T {
           // A variable the copy cannot take, such as a read-only one.
         }
       }
-      e8.insert(text);
+      // From the whole of the source, its narrowing aside, as the copy is narrowed after.
+      e8.withCurrentBuffer(source, () => e8.saveRestriction(() => {
+        e8.widen();
+        e8.withCurrentBuffer(name, () => e8.insertBufferSubstring(source, 0, size));
+      }));
+      for (const [from, to, inv] of hidden) e8.makeOverlay(from, to, { invisible: inv });
       e8.narrowToRegion(min, max);
       e8.gotoChar(pt);
       for (const [variable, value] of bind) {
@@ -1064,13 +1104,14 @@ function withBufferCopy<T>(body: () => T): T {
     });
   } finally {
     e8.call("kill-buffer", name);
+    forgetSettings();
   }
 }
 
 const COPY_SKIPS = new Set([
   "buffer-undo-list", "buffer-file-name", "buffer-file-truename", "buffer-read-only", "buffer-saved-size",
   "buffer-display-count", "buffer-display-time", "mark-active", "point-before-scroll", "buffer-auto-save-file-name",
-  "buffer-file-number", "default-directory", "major-mode", "mode-name", "buffer-invisibility-spec", "font-lock-mode",
+  "buffer-file-number", "major-mode", "mode-name", "font-lock-mode",
   "jit-lock-functions", "after-change-functions", "before-change-functions", "change-major-mode-hook", "kill-buffer-hook",
   "write-contents-functions", "local-write-file-hooks", "auto-save-default", "buffer-auto-save-file-format",
 ]);
@@ -1312,13 +1353,43 @@ export function parseIncludeValue(value: string, dir?: string, inducedLevel?: nu
   return { file, location, onlyContents, lines, env, minlevel, args, block };
 }
 
-/** The lines of a file to include, as org-export--prepare-file-contents: trimmed of blank lines around, indented, with levels shifted. */
-function prepareFileContents(file: string, lines?: string, ind = 0, minlevel?: number, id?: number, footnotes?: Map<string, string>): string {
-  let text = fileContents(file);
+
+/** A link's path written from the includer's directory rather than the included file's, as org-export--update-included-link. */
+function rebasedPath(path: string, fileDir: string, includerDir: string): string {
+  if (path.startsWith("/") || path.startsWith("~") || /^\/[^/:]+:/.test(path)) return path;
+  return fileRelativeName(e8.expandFileName(path, fileDir), includerDir);
+}
+
+/**
+ * The lines of a file to include, as org-export--prepare-file-contents:
+ * those LINES says, file links rebased on the includer's directory,
+ * trimmed of blank lines around, indented, with levels shifted, and with
+ * footnote labels made the file's own, the definitions of those outside
+ * the lines kept in `footnotes` for the end of the document.
+ */
+function prepareFileContents(file: string, lines?: string, ind = 0, minlevel?: number, id?: number, footnotes?: Map<string, string>, includer?: string): string {
+  const full = fileContents(file);
+  const all = full.split(/(?<=\n)/);
+  let first = 0;
+  let last = all.length;
   if (lines) {
     const [b, e] = lines.split("-").map((n) => parseInt(n || "0", 10));
-    const all = text.split(/(?<=\n)/);
-    text = all.slice(b ? b - 1 : 0, e ? e - 1 : all.length).join("");
+    first = b ? Math.min(b - 1, all.length) : 0;
+    last = e ? Math.min(Math.max(e - 1, first), all.length) : all.length;
+  }
+  let text = all.slice(first, last).join("");
+  if (includer) {
+    const fileDir = e8.fileNameDirectory(e8.expandFileName(file)) ?? "/";
+    const includerDir = e8.fileNameDirectory(e8.expandFileName(includer)) ?? "/";
+    if (fileDir !== includerDir) {
+      // Bracket links to files, with or without file:, and plain file: links.
+      text = text.replace(/\[\[(file:)?([^\]]+?)\](\[|\])/g, (m, typed: string | undefined, path: string, after: string) => {
+        if (!typed && !/^\.\.?\//.test(path)) return m;
+        const [p, search] = path.split("::");
+        return `[[file:${rebasedPath(p, fileDir, includerDir)}${search !== undefined ? `::${search}` : ""}]${after}`;
+      });
+      text = text.replace(/(^|[\s(])file:([^\s<>()[\]]+)/g, (_m, pre: string, path: string) => `${pre}file:${rebasedPath(path, fileDir, includerDir)}`);
+    }
   }
   text = text.replace(/^(?:[ \t]*\n)+/, "").replace(/[ \r\t\n]*$/, "");
   if (text !== "") text += "\n";
@@ -1335,7 +1406,8 @@ function prepareFileContents(file: string, lines?: string, ind = 0, minlevel?: n
   if (minlevel !== undefined) {
     const levels = allMatches(/^(\*+) /gm, text).map((m) => m[1].length);
     if (levels.length) {
-      const offset = minlevel - Math.min(...levels);
+      let offset = minlevel - Math.min(...levels);
+      if (offset !== 0 && nonNil(varValue("org-odd-levels-only"))) offset *= 2;
       if (offset !== 0)
         text = text.replace(/^(\*+) /gm, (_m, stars: string) => (offset < 0 ? stars.slice(-offset) : stars + "*".repeat(offset)) + " ");
     }
@@ -1347,6 +1419,9 @@ function prepareFileContents(file: string, lines?: string, ind = 0, minlevel?: n
       if (!neu) {
         neu = `-${id}-${label}`;
         seen.set(label, neu);
+        // A definition outside the lines included goes to the end of the document.
+        const def = footnoteDefinitionIn(all, label);
+        if (def && (def.line < first || def.line >= last)) footnotes.set(neu, normalizeString(def.text));
       }
       return `[fn:${neu}${after}`;
     });
@@ -1354,7 +1429,27 @@ function prepareFileContents(file: string, lines?: string, ind = 0, minlevel?: n
   return normalizeString(text);
 }
 
+/** A footnote's definition among a file's lines, as org-footnote-get-definition finds it: its line and its text, up to the next definition, heading or two blank lines. */
+function footnoteDefinitionIn(lines: string[], label: string): { line: number; text: string } | undefined {
+  const head = `[fn:${label}]`;
+  for (let i = 0; i < lines.length; i++) {
+    if (!lines[i].startsWith(head)) continue;
+    const body = [lines[i].slice(head.length)];
+    let blanks = 0;
+    for (let j = i + 1; j < lines.length; j++) {
+      const l = lines[j];
+      if (/^\[fn:[^\]\s]+\]/.test(l) || /^\*+ /.test(l)) break;
+      blanks = /^[ \t]*\n?$/.test(l) ? blanks + 1 : 0;
+      if (blanks >= 2) break;
+      body.push(l);
+    }
+    return { line: i, text: body.join("").trim() };
+  }
+  return undefined;
+}
+
 function fileContents(file: string): string {
+  if (/^[a-z][-a-z0-9+.]*:\/\//i.test(file)) err(`Cannot include ${file}: E8 does not fetch files to include from the web`);
   const name = e8.generateNewBufferName(" *Org Export include*");
   e8.getBufferCreate(name);
   try {
@@ -1367,32 +1462,59 @@ function fileContents(file: string): string {
   }
 }
 
-/** Replace each #+INCLUDE: keyword with what it includes, as org-export-expand-include-keyword. */
-export function expandIncludeKeyword(included: [string, string | undefined][] = [], dir?: string, footnotes = new Map<string, string>(), _includer?: string, expandEnv = false): void {
+/**
+ * Replace each #+INCLUDE: keyword with what it includes, as
+ * org-export-expand-include-keyword: each line's level for :minlevel is
+ * taken before any is expanded, and those under commented headings are
+ * left, as the commented trees are deleted after.
+ */
+export function expandIncludeKeyword(included: [string, string | undefined][] = [], dir?: string, footnotes = new Map<string, string>(), includer?: string, expandEnv = false): void {
   const filePrefix = new Map<string, number>();
   const top = included.length === 0;
-  for (;;) {
-    let found = -1;
-    for (let l = e8.lineOf(e8.pointMin()); l <= e8.lineOf(e8.pointMax()); l++) {
-      if (/^[ \t]*#\+INCLUDE:/i.test(e8.lineText(l)) && !inVerbatimBlock(l)) {
-        found = l;
-        break;
+  const includerFile = includer ?? (typeof e8.variable("e8--export-source-file") === "string" ? (e8.variable("e8--export-source-file") as string) : e8.bufferFileName());
+  const found: [number, number][] = [];
+  e8.saveRestriction(() => {
+    e8.widen();
+    const odd = nonNil(varValue("org-odd-levels-only"));
+    const todo = allKeywords().map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
+    const commented = new RegExp(`^\\*+[ \\t]+(?:(?:${todo || "\\u0000"})[ \\t]+)?(?:\\[#.\\][ \\t]+)?COMMENT(?:[ \\t]|$)`);
+    let level = 0;
+    let commentedLevel: number | undefined;
+    let open: string | undefined;
+    for (let l = 0; l < e8.lineCount(); l++) {
+      const t = e8.lineText(l);
+      const h = /^(\*+)[ \t]/.exec(t);
+      if (h && !open) {
+        level = h[1].length;
+        if (commentedLevel !== undefined && level <= commentedLevel) commentedLevel = undefined;
+        if (commentedLevel === undefined && commented.test(t)) commentedLevel = level;
+        continue;
       }
+      if (open) {
+        if (new RegExp(`^[ \\t]*#\\+end_${open}\\b`, "i").test(t)) open = undefined;
+        continue;
+      }
+      const b = /^[ \t]*#\+begin_(src|example|export|comment|verse)\b/i.exec(t);
+      if (b) open = b[1].toLowerCase();
+      else if (/^[ \t]*#\+INCLUDE:/i.test(t) && commentedLevel === undefined) found.push([l, 1 + (odd ? Math.floor((level + 1) / 2) : level)]);
     }
-    if (found < 0) break;
-    const text = e8.lineText(found);
+  });
+  // From the last, so the lines of those before stay where they are.
+  for (let k = found.length - 1; k >= 0; k--) {
+    const [line, induced] = found[k];
+    if (line < e8.lineOf(e8.pointMin()) || line > e8.lineOf(e8.pointMax())) continue;
+    const text = e8.lineText(line);
     const ind = /^[ \t]*/.exec(text)![0].length;
     const value = text.replace(/^[ \t]*#\+INCLUDE:[ \t]*/i, "").trim();
-    const level = currentLevelAt(found);
-    const params = parseIncludeValue(value, dir, level + 1);
+    const params = parseIncludeValue(value, dir, induced);
     let file = params.file;
-    if (file && expandEnv) file = e8.substituteInFileName ? e8.substituteInFileName(file) : file;
-    const start = e8.lineStart(found);
-    const lineEnd = found + 1 < e8.lineCount() ? e8.lineStart(found + 1) : e8.pointMax();
+    if (file && expandEnv) file = e8.substituteInFileName(file);
+    const start = e8.lineStart(line);
+    const lineEnd = line + 1 < e8.lineCount() ? e8.lineStart(line + 1) : e8.pointMax();
     e8.deleteRegion(start, lineEnd);
     e8.gotoChar(start);
     if (!file) continue;
-    if (!e8.fileReadableP(file)) err(`Cannot include file ${file}`);
+    if (!/^[a-z][-a-z0-9+.]*:\/\//i.test(file) && !e8.fileReadableP(file)) err(`Cannot include file ${file}`);
     if (included.some(([f, l]) => f === file && l === params.lines)) err(`Recursive file inclusion: ${file}`);
     const indStr = " ".repeat(ind);
     if (params.env === "literal") {
@@ -1404,14 +1526,14 @@ export function expandIncludeKeyword(included: [string, string | undefined][] = 
     } else {
       if (!filePrefix.has(file)) filePrefix.set(file, filePrefix.size);
       const lines = params.location ? inclusionAbsoluteLines(file, params.location, params.onlyContents, params.lines) : params.lines;
-      const body = prepareFileContents(file, lines, ind, params.minlevel, filePrefix.get(file), footnotes);
+      const body = prepareFileContents(file, lines, ind, params.minlevel, filePrefix.get(file), footnotes, includerFile);
       const name = e8.generateNewBufferName(" *Org Export include*");
       e8.getBufferCreate(name);
       let expanded: string;
       try {
         expanded = e8.withCurrentBuffer(name, () => {
           e8.insert(body);
-          expandIncludeKeyword([[file!, lines], ...included], e8.fileNameDirectory(file!), footnotes, undefined, expandEnv);
+          expandIncludeKeyword([[file!, lines], ...included], e8.fileNameDirectory(file!), footnotes, includerFile, expandEnv);
           return e8.bufferText();
         });
       } finally {
@@ -1429,27 +1551,6 @@ export function expandIncludeKeyword(included: [string, string | undefined][] = 
   }
 }
 
-function currentLevelAt(line: number): number {
-  for (let l = line; l >= 0; l--) {
-    const m = /^(\*+) /.exec(e8.lineText(l));
-    if (m) return m[1].length;
-  }
-  return 0;
-}
-
-function inVerbatimBlock(line: number): boolean {
-  let open: string | undefined;
-  for (let l = 0; l < line; l++) {
-    const t = e8.lineText(l);
-    if (open) {
-      if (new RegExp(`^[ \\t]*#\\+end_${open}\\b`, "i").test(t)) open = undefined;
-    } else {
-      const m = /^[ \t]*#\+begin_(src|example|export|comment|verse)\b/i.exec(t);
-      if (m) open = m[1].toLowerCase();
-    }
-  }
-  return open !== undefined;
-}
 
 function inclusionAbsoluteLines(file: string, location: string, onlyContents: boolean, lines?: string): string {
   const text = fileContents(file);
@@ -1459,7 +1560,7 @@ function inclusionAbsoluteLines(file: string, location: string, onlyContents: bo
   const target = location.replace(/^\*/, "").trim();
   for (let i = 0; i < all.length; i++) {
     const m = /^(\*+)\s+(.*?)\s*$/.exec(all[i]);
-    const custom = location.startsWith("#") && new RegExp(`^[ \\t]*:CUSTOM_ID:[ \\t]+${location.slice(1)}[ \\t]*$`).test(all[i]);
+    const custom = location.startsWith("#") && /^[ \t]*:CUSTOM_ID:[ \t]+(.*?)[ \t]*$/i.exec(all[i])?.[1] === location.slice(1);
     if ((m && m[2].replace(/\s+:[\w@#%:]+:$/, "").replace(/^(?:\S+ )?/, (w) => (allKeywords().includes(w.trim()) ? "" : w)) === target) || custom) {
       let h = i;
       if (custom) while (h > 0 && !/^\*+ /.test(all[h])) h--;
@@ -2037,7 +2138,15 @@ export function getReference(datum: Datum, info: Info): string {
     cache = new Map();
     info["internal-references"] = cache;
   }
-  for (const [k, v] of cache) if (v === datum && typeof k === "string" && k.startsWith("org")) return k;
+  let refs: Map<Datum, string> = info["reference-of"];
+  if (!refs || info["reference-cache"] !== cache) {
+    refs = new Map();
+    for (const [k, v] of cache) if (typeof k === "string" && k.startsWith("org") && !refs.has(v)) refs.set(v, k);
+    info["reference-of"] = refs;
+    info["reference-cache"] = cache;
+  }
+  const known = refs.get(datum);
+  if (known !== undefined) return known;
   const cells = searchCells(datum);
   const crossrefs: [string, number][] = info["crossrefs"] ?? [];
   let neu: number | undefined;
@@ -2052,6 +2161,7 @@ export function getReference(datum: Datum, info: Info): string {
   const ref = formatReference(neu);
   for (const c of cells) cache.set("cell:" + c, neu);
   cache.set(ref, datum);
+  refs.set(datum, ref);
   return ref;
 }
 
@@ -2374,7 +2484,7 @@ export function tableCellAlignment(cell: Node, info: Info): "left" | "right" | "
   let totalCells = 0;
   let cookieAlign: string | undefined;
   let previousNumber = false;
-  const numberRe = new RegExp(numberRegexp());
+  const numberRe = String(e8.variable("org-table-number-regexp") ?? "");
   for (const r of table.contents) {
     if (tableRowIsSpecialP(r as Node, info)) {
       const value = cellValue(contents(r)[column]);
@@ -2387,24 +2497,26 @@ export function tableCellAlignment(cell: Node, info: Info): "left" | "right" | "
     } else if (!cookieAlign) {
       const value = data(cellValue(contents(r)[column]), info);
       totalCells++;
-      if (!(numberRe.test(value) || (value === "" && previousNumber))) previousNumber = false;
+      if (!(e8.stringMatch(numberRe, value) !== undefined || (value === "" && previousNumber))) previousNumber = false;
       else {
         previousNumber = true;
         numberCells++;
       }
     }
   }
-  const fraction = Number(varValue("org-table-number-fraction") ?? 0.5);
+  const fractionValue = e8.variable("org-table-number-fraction");
+  const fraction = typeof fractionValue === "number" ? fractionValue : 0.5;
   const align =
     cookieAlign === "l" ? "left" : cookieAlign === "r" ? "right" : cookieAlign === "c" ? "center" : numberCells / totalCells >= fraction ? "right" : "left";
   aligns[column] = align;
   return align;
 }
 
-/** org-table-number-regexp as a JavaScript regexp's source. */
-function numberRegexp(): string {
-  return "^([><]?[-+^.0-9]*[0-9][-+^.0-9eEdDx()%:]*|[<>]?[-+]?0[xX][[:xdigit:].]+|[<>]?[-+]?[0-9]+#[0-9a-zA-Z.]+|nan|[-+u]?inf)$".replace("[[:xdigit:].]", "[0-9a-fA-F.]");
-}
+e8.defineVariable({
+  name: "org-table-number-regexp",
+  value: "^\\([<>]?[-+^.0-9]*[0-9][-+^.0-9eEdDx()%:]*\\|[<>]?[-+]?0[xX][[:xdigit:].]+\\|[<>]?[-+]?[0-9]+#[0-9a-zA-Z.]+\\|nan\\|[-+u]?inf\\)$",
+  doc: "The Emacs regexp a table field that is a number matches, as export counts them to align a column.",
+});
 
 /** The borders around a cell, as org-export-table-cell-borders: top, above, bottom, below, left and right. */
 export function tableCellBorders(cell: Node, info: Info): string[] {
@@ -2788,7 +2900,7 @@ export function translate(s: string, encoding: string, info: Info): string {
 defvar("org-export-dispatch-last-action", null, "The dispatcher's last action, which C-u C-c C-e repeats.");
 
 let lastAction: { action: (...args: any[]) => any; options: string[] } | undefined;
-let lastPosition: [string, number] | undefined;
+let lastPosition: e8.Marker | undefined;
 
 interface Entry {
   key: string;
@@ -2934,7 +3046,7 @@ const dispatch = e8.defineCommand({
     else if (arg !== null && arg !== undefined && lastAction) input = lastAction;
     else {
       try {
-        lastPosition = [e8.bufferName(), e8.point()];
+        lastPosition = e8.makeMarker(e8.point());
         const initial = varValue("org-export-initial-scope") === "subtree" ? ["subtree"] : [];
         if (nonNil(varValue("org-export-body-only"))) initial.push("body");
         if (nonNil(varValue("org-export-visible-only"))) initial.push("visible");
@@ -2949,12 +3061,13 @@ const dispatch = e8.defineCommand({
     }
     const { action, options } = input;
     if (!options.includes("subtree")) lastPosition = undefined;
+    const at = lastPosition ? e8.markerPosition(lastPosition) : undefined;
     if (action === "template") e8.call("org-export-insert-default-template" as any, null, options.includes("subtree"));
     else if (action === "stack") e8.message("E8 exports in the foreground, so the export stack is empty");
     else if (typeof action === "string" && action.startsWith("publish")) e8.userError("Publishing is not supported yet");
     else if (typeof action === "function")
       e8.saveExcursion(() => {
-        if (arg !== null && arg !== undefined && lastPosition && lastPosition[0] === e8.bufferName()) e8.gotoChar(lastPosition[1]);
+        if (arg !== null && arg !== undefined && lastPosition && e8.markerBuffer(lastPosition) === e8.bufferName() && at !== undefined) e8.gotoChar(at);
         action(options.includes("async"), options.includes("subtree"), options.includes("visible"), options.includes("body"));
       });
   },
@@ -2969,7 +3082,10 @@ e8.defineCommand({
     { name: "subtreep", value: () => "" },
   ],
   run: (backendName: string | null, subtreep: any) => {
-    const sub = nonNil(subtreep);
+    const sub = flag(subtreep);
+    if (varValue("major-mode") !== "org-mode") e8.userError("Not in an Org mode buffer");
+    const node = sub ? headingAtPoint() : undefined;
+    if (sub && !node) e8.userError("No subtree to set export options for");
     const name = backendName || e8.completingRead("Options category: ", ["default", ...registered.map((b) => b.name!)], { requireMatch: true });
     const entries = name === "default" ? OPTIONS : getBackend(name)?.options ?? [];
     const options: [string, any][] = [];
@@ -2983,10 +3099,12 @@ e8.defineCommand({
         }
       } else if (option && !options.some(([o]) => o === option)) options.push([option, entry[3] === undefined ? false : typeof entry[3] === "function" ? entry[3]() : varValue(entry[3])]);
     }
-    if (!sub) e8.gotoChar(e8.lineStart(lineAt()));
+    if (!node) e8.gotoChar(e8.lineStart(lineAt()));
     const print = (v: any): string => (v === true ? "t" : v === false || v === undefined ? "nil" : typeof v === "string" ? (/^[-\w{}]+$/.test(v) && !/^\d/.test(v) ? v : JSON.stringify(v)) : Array.isArray(v) ? `(${v.map(print).join(" ")})` : String(v));
     const items = options.sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)).map(([o, v]) => `${o}:${print(v)}`);
     const fill = Number(e8.variable("fill-column") ?? 70);
+    // For a subtree, as its EXPORT_ properties, as org-entry-put sets them.
+    if (node && items.length) entryPut(node.line, "EXPORT_OPTIONS", items.splice(0).join(" "));
     while (items.length) {
       e8.insert("#+options:");
       let width = 10;
@@ -3002,7 +3120,8 @@ e8.defineCommand({
       if (key === "DATE" && !nonNil(val)) val = e8.formatTimeString("<%Y-%m-%d %a>");
       else if (key === "TITLE" && !nonNil(val)) val = e8.bufferFileName() ? e8.fileNameNondirectory(e8.bufferFileName()!).replace(/\.[^.]*$/, "") : e8.bufferName();
       const s = typeof val === "string" ? val : nonNil(val) ? print(val) : "";
-      e8.insert(`#+${key.toLowerCase()}:${/\S/.test(s) ? ` ${s}` : ""}\n`);
+      if (node) entryPut(node.line, `EXPORT_${key}`, s);
+      else e8.insert(`#+${key.toLowerCase()}:${/\S/.test(s) ? ` ${s}` : ""}\n`);
     }
   },
 });

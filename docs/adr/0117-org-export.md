@@ -22,7 +22,7 @@ Values written as Lisp data, in `#+OPTIONS:` (`d:(not "LOGBOOK")`, `^:{}`) and `
 
 ## Consequences
 
-- `C-c C-e` offers plain text (ASCII, Latin-1, UTF-8), HTML and Markdown, to a buffer or a file, for the buffer, the region, a subtree, visible text or the body only; `#+OPTIONS:`, `#+TITLE:` and the other keywords, `EXPORT_` properties, `#+INCLUDE:`, macros, select and exclude tags, footnotes, tables of contents, internal links and the user's filters work as in Org.
+- `C-c C-e` offers plain text (ASCII, Latin-1, UTF-8), HTML and Markdown, to a buffer or a file, for the buffer, the region, a subtree, visible text or the body only; `#+OPTIONS:`, `#+TITLE:` and the other keywords, `EXPORT_` properties, `#+INCLUDE:`, macros, select and exclude tags, footnotes, tables of contents, internal links and the user's filters work as in Org, apart from what `docs/differences.md` lists under Org export.
 - The oracle compares whole exported documents with Emacs's (`tests/emacs/cases/org-export.json`). Org names references at random (`org1a2b3c4`); record.el and E8's oracle both number them from 1, through `e8--export-sequential-references`.
 - Exports run in the foreground: the async option is accepted and ignored, and the export stack is empty. Publishing (`ox-publish.el`) is not ported yet, nor the other backends (LaTeX, ODT, iCalendar, Texinfo, man, Beamer).
 - HTML source blocks are not fontified, as Emacs's are not without htmlize; MathJax is written as Org writes it, and LaTeX converted to images is not supported.
