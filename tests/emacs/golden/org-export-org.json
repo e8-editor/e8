@@ -1,0 +1,458 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "org-basic",
+      "input": {
+        "text": "#+TITLE: A Title\n#+AUTHOR: A. Writer\n#+DATE: 2026-11-27\n\nSome intro text with *bold*, /italic/, _underline_, +strike+, =verbatim= and ~code~.\n\n* First heading\nParagraph one in the first heading,\nspanning two lines.\n\nParagraph two.\n** A subheading\nText under it.\n* Second heading\nMore text.\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-org-export-as-org"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "globals": {
+          "org-export-timestamp-file": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com"
+        }
+      },
+      "text": "#+title: A Title\n#+date: 2026-11-27\n#+author: A. Writer\nSome intro text with *bold*, /italic/, _underline_, +strike+, =verbatim= and ~code~.\n* First heading\nParagraph one in the first heading,\nspanning two lines.\n\nParagraph two.\n** A subheading\nText under it.\n* Second heading\nMore text.\n",
+      "visible": "#+title: A Title\n#+date: 2026-11-27\n#+author: A. Writer\nSome intro text with *bold*, /italic/, _underline_, +strike+, =verbatim= and ~code~.\n* First heading\nParagraph one in the first heading,\nspanning two lines.\n\nParagraph two.\n** A subheading\nText under it.\n* Second heading\nMore text.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-lists",
+      "input": {
+        "text": "#+OPTIONS: toc:nil author:nil\n* Lists\n- one\n- two\n  - nested a\n  - nested b\n- three\n\n1. first\n2. second\n   continued here\n3. third\n\n- [ ] open task\n- [X] done task\n- [-] partial\n\n- term :: its description\n- another term :: another description\n  with a second line\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-org-export-as-org"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "globals": {
+          "org-export-timestamp-file": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com"
+        }
+      },
+      "text": "#+options: toc:nil author:nil\n#+title: \n* Lists\n- one\n- two\n  - nested a\n  - nested b\n- three\n\n- first\n- second\n  continued here\n- third\n\n- [ ] open task\n- [X] done task\n- [-] partial\n\n- term :: its description\n- another term :: another description\n     with a second line\n",
+      "visible": "#+options: toc:nil author:nil\n#+title: \n* Lists\n- one\n- two\n  - nested a\n  - nested b\n- three\n\n- first\n- second\n  continued here\n- third\n\n- [ ] open task\n- [X] done task\n- [-] partial\n\n- term :: its description\n- another term :: another description\n     with a second line\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-tables",
+      "input": {
+        "text": "#+OPTIONS: toc:nil author:nil\n* Tables\n| Name  | Qty | Price |\n|-------+-----+-------|\n| Apple |   3 |  1.50 |\n| Pear  |  12 |  0.75 |\n|-------+-----+-------|\n| Total |  15 |       |\n\n#+CAPTION: Small table\n| a | b |\n| c | d |\n\n| <l> | <r>  |\n| left | right |\n| x | 10 |\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-org-export-as-org"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "globals": {
+          "org-export-timestamp-file": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com"
+        }
+      },
+      "text": "#+options: toc:nil author:nil\n#+title: \n* Tables\n| Name  | Qty | Price |\n|-------+-----+-------|\n| Apple |   3 |  1.50 |\n| Pear  |  12 |  0.75 |\n|-------+-----+-------|\n| Total |  15 |       |\n\n#+caption: Small table\n| a | b |\n| c | d |\n\n| <l>  |   <r> |\n| left | right |\n| x    |    10 |\n",
+      "visible": "#+options: toc:nil author:nil\n#+title: \n* Tables\n| Name  | Qty | Price |\n|-------+-----+-------|\n| Apple |   3 |  1.50 |\n| Pear  |  12 |  0.75 |\n|-------+-----+-------|\n| Total |  15 |       |\n\n#+caption: Small table\n| a | b |\n| c | d |\n\n| <l>  |   <r> |\n| left | right |\n| x    |    10 |\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-blocks",
+      "input": {
+        "text": "#+OPTIONS: toc:nil author:nil\n* Blocks\n#+BEGIN_SRC python\ndef f(x):\n    return x + 1\n#+END_SRC\n\n#+BEGIN_EXAMPLE\n  example text\n    indented\n#+END_EXAMPLE\n\n#+BEGIN_QUOTE\nA quotation that runs on for a little while, long enough to need filling when it is exported to plain text.\n#+END_QUOTE\n\n#+BEGIN_CENTER\nCentred text\n#+END_CENTER\n\n#+BEGIN_VERSE\n  Roses are red,\n    violets are blue.\n#+END_VERSE\n\n: fixed width line\n: another one\n\n-----\n\n#+BEGIN_note\nA special block.\n#+END_note\n\n#+BEGIN_COMMENT\nNot exported.\n#+END_COMMENT\n# a comment line\nAfter the comment.\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-org-export-as-org"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "globals": {
+          "org-export-timestamp-file": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com"
+        }
+      },
+      "text": "#+options: toc:nil author:nil\n#+title: \n* Blocks\n#+begin_src python\n  def f(x):\n      return x + 1\n#+end_src\n\n#+begin_example\n  example text\n    indented\n#+end_example\n\n#+begin_quote\nA quotation that runs on for a little while, long enough to need filling when it is exported to plain text.\n#+end_quote\n\n#+begin_center\nCentred text\n#+end_center\n\n#+begin_verse\nRoses are red,\n  violets are blue.\n#+end_verse\n\n: fixed width line\n: another one\n\n\n-----\n\n#+begin_note\nA special block.\n#+end_note\n\nAfter the comment.\n",
+      "visible": "#+options: toc:nil author:nil\n#+title: \n* Blocks\n#+begin_src python\n  def f(x):\n      return x + 1\n#+end_src\n\n#+begin_example\n  example text\n    indented\n#+end_example\n\n#+begin_quote\nA quotation that runs on for a little while, long enough to need filling when it is exported to plain text.\n#+end_quote\n\n#+begin_center\nCentred text\n#+end_center\n\n#+begin_verse\nRoses are red,\n  violets are blue.\n#+end_verse\n\n: fixed width line\n: another one\n\n\n-----\n\n#+begin_note\nA special block.\n#+end_note\n\nAfter the comment.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-footnotes",
+      "input": {
+        "text": "#+OPTIONS: toc:nil author:nil\n* Notes\nText with a footnote[fn:1] and another[fn:named].\nAn inline one[fn:: Inline definition.] too.\nAgain the first[fn:1].\n\n[fn:1] The first footnote.\n\n[fn:named] The named footnote,\nwith two lines.\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-org-export-as-org"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "globals": {
+          "org-export-timestamp-file": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com"
+        }
+      },
+      "text": "#+options: toc:nil author:nil\n#+title: \n* Notes\nText with a footnote[fn:1] and another[fn:named].\nAn inline one[fn:: Inline definition.] too.\nAgain the first[fn:1].\n\n[fn:1] The first footnote.\n\n[fn:named] The named footnote,\nwith two lines.\n",
+      "visible": "#+options: toc:nil author:nil\n#+title: \n* Notes\nText with a footnote[fn:1] and another[fn:named].\nAn inline one[fn:: Inline definition.] too.\nAgain the first[fn:1].\n\n[fn:1] The first footnote.\n\n[fn:named] The named footnote,\nwith two lines.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-links",
+      "input": {
+        "text": "#+OPTIONS: toc:nil author:nil\n* Links\nSee [[https://example.com][Example]] and https://plain.example.org/path.\nA bare [[https://example.com/bare]] link.\nA file [[file:notes.org][notes]] and [[file:image.png]].\nGo to [[*Target heading]] or [[#custom][custom]] or <<here>>a target, see [[here]].\n* Target heading\n:PROPERTIES:\n:CUSTOM_ID: custom\n:END:\nArrived.\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-org-export-as-org"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "globals": {
+          "org-export-timestamp-file": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com"
+        }
+      },
+      "text": "#+options: toc:nil author:nil\n#+title: \n* Links\nSee [[https://example.com][Example]] and https://plain.example.org/path.\nA bare [[https://example.com/bare]] link.\nA file [[file:notes.org][notes]] and [[file:image.png]].\nGo to [[*Target heading]] or [[#custom][custom]] or <<here>>a target, see [[here]].\n* Target heading\nArrived.\n",
+      "visible": "#+options: toc:nil author:nil\n#+title: \n* Links\nSee Example and https://plain.example.org/path.\nA bare https://example.com/bare link.\nA file notes and file:image.png.\nGo to *Target heading or custom or <<here>>a target, see here.\n* Target heading\nArrived.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-todo",
+      "input": {
+        "text": "#+OPTIONS: toc:nil author:nil\n* TODO [#A] Write the report                                  :work:urgent:\nSCHEDULED: <2026-11-28 Sat> DEADLINE: <2026-11-30 Mon>\nBody of the task.\n* DONE Finished thing                                         :home:\nCLOSED: [2026-11-26 Thu 10:00]\n* Plain heading\n:PROPERTIES:\n:EFFORT:   1:00\n:END:\n:LOGBOOK:\n- Note taken on [2026-11-20 Fri 09:00]\n:END:\nText with <2026-12-01 Tue> and [2026-12-02 Wed 14:00].\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-org-export-as-org"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "globals": {
+          "org-export-timestamp-file": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com"
+        }
+      },
+      "text": "#+options: toc:nil author:nil\n#+title: \n* TODO Write the report                                         :work:urgent:\nBody of the task.\n* DONE Finished thing                                                  :home:\n* Plain heading\nText with <2026-12-01 Tue>  and [2026-12-02 Wed 14:00].\n",
+      "visible": "#+options: toc:nil author:nil\n#+title: \n* TODO Write the report                                         :work:urgent:\nBody of the task.\n* DONE Finished thing                                                  :home:\n* Plain heading\nText with <2026-12-01 Tue>  and [2026-12-02 Wed 14:00].\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-misc",
+      "input": {
+        "text": "#+OPTIONS: toc:nil author:nil\n* Misc\nEntities: \\alpha, \\to, \\nbsp{}x, \\copy and \\mdash.\nSub and super: H_2O and x^2 and a_{ij}.\nSpecial strings: a -- b --- c ... and \\-shy.\nA line\\\\\nbreak here.\nStatistics [2/3] and [66%].\nQuotes \"double\" and 'single'.\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-org-export-as-org"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "globals": {
+          "org-export-timestamp-file": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com"
+        }
+      },
+      "text": "#+options: toc:nil author:nil\n#+title: \n* Misc\nEntities: \\alpha, \\to, \\nbsp{}x, \\copy and \\mdash.\nSub and super: H_2O and x^2 and a_{ij}.\nSpecial strings: a -- b --- c ... and \\-shy.\nA line\\\\\nbreak here.\nStatistics [2/3] and [66%].\nQuotes \"double\" and 'single'.\n",
+      "visible": "#+options: toc:nil author:nil\n#+title: \n* Misc\nEntities: \\alpha, \\to, \\nbsp{}x, \\copy and \\mdash.\nSub and super: H_2O and x^2 and a_{ij}.\nSpecial strings: a -- b --- c ... and \\-shy.\nA line\\\\\nbreak here.\nStatistics [2/3] and [66%].\nQuotes \"double\" and 'single'.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-numbering",
+      "input": {
+        "text": "#+TITLE: Numbered\n#+OPTIONS: toc:2 num:t H:2 author:nil\n* One\n** One point one\n*** Deep heading\nDeep text.\n**** Deeper\nDeeper text.\n** One point two\n* Two\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-org-export-as-org"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "globals": {
+          "org-export-timestamp-file": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com"
+        }
+      },
+      "text": "#+options: toc:2 num:t H:2 author:nil\n#+title: Numbered\n* One\n** One point one\n*** Deep heading\nDeep text.\n**** Deeper\nDeeper text.\n** One point two\n* Two\n",
+      "visible": "#+options: toc:2 num:t H:2 author:nil\n#+title: Numbered\n* One\n** One point one\n*** Deep heading\nDeep text.\n**** Deeper\nDeeper text.\n** One point two\n* Two\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-options",
+      "input": {
+        "text": "#+TITLE: Options\n#+OPTIONS: toc:nil num:nil todo:nil tags:nil pri:nil ^:nil author:nil date:nil\n* TODO [#B] Heading with stuff :tag:\na_b and c^d stay.\n* COMMENT A commented heading\nHidden.\n* Kept heading\n* Not exported :noexport:\nGone.\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-org-export-as-org"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "globals": {
+          "org-export-timestamp-file": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com"
+        }
+      },
+      "text": "#+options: toc:nil num:nil todo:nil tags:nil pri:nil ^:nil author:nil date:nil\n#+title: Options\n* Heading with stuff\na_b and c^d stay.\n* Kept heading\n",
+      "visible": "#+options: toc:nil num:nil todo:nil tags:nil pri:nil ^:nil author:nil date:nil\n#+title: Options\n* Heading with stuff\na_b and c^d stay.\n* Kept heading\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-macros",
+      "input": {
+        "text": "#+TITLE: Macro Title\n#+AUTHOR: Someone\n#+MACRO: greet Hello, $1!\n#+OPTIONS: toc:nil\nThe title is {{{title}}} by {{{author}}}.\n{{{greet(World)}}}\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-org-export-as-org"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "globals": {
+          "org-export-timestamp-file": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com"
+        }
+      },
+      "text": "#+options: toc:nil\n#+title: Macro Title\n#+author: Someone\n#+macro: greet Hello, $1!\nThe title is Macro Title by Someone.\nHello, World!\n",
+      "visible": "#+options: toc:nil\n#+title: Macro Title\n#+author: Someone\n#+macro: greet Hello, $1!\nThe title is Macro Title by Someone.\nHello, World!\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-select",
+      "input": {
+        "text": "#+OPTIONS: toc:nil author:nil\n#+SELECT_TAGS: pick\n* Left out\n* Chosen :pick:\n** Under chosen\nText.\n* Also out\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-org-export-as-org"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "globals": {
+          "org-export-timestamp-file": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com"
+        }
+      },
+      "text": "#+title: \n* Chosen                                                               :pick:\n** Under chosen\nText.\n",
+      "visible": "#+title: \n* Chosen                                                               :pick:\n** Under chosen\nText.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-preamble",
+      "input": {
+        "text": "Text before any heading.\n\n#+begin_src emacs-lisp :exports none\n(+ 1 2)\n#+end_src\n\n* Heading\n#+NAME: tbl\n| 1 | 2 |\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-org-export-as-org"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "globals": {
+          "org-export-timestamp-file": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com"
+        }
+      },
+      "text": "#+title: \n#+author: E. Xample\nText before any heading.\n* Heading\n#+name: tbl\n| 1 | 2 |\n",
+      "visible": "#+title: \n#+author: E. Xample\nText before any heading.\n* Heading\n#+name: tbl\n| 1 | 2 |\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-wrapping",
+      "input": {
+        "text": "#+OPTIONS: toc:nil author:nil\n* A heading that is rather long, long enough that it has to be wrapped when exported to plain text\nA paragraph that is long enough to be filled by the ASCII backend, which fills paragraphs to its text width of seventy-two columns, with words that run on and on.\n- An item whose text is also long enough to wrap onto a second line when it is exported to ASCII.\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-org-export-as-org"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "globals": {
+          "org-export-timestamp-file": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com"
+        }
+      },
+      "text": "#+options: toc:nil author:nil\n#+title: \n* A heading that is rather long, long enough that it has to be wrapped when exported to plain text\nA paragraph that is long enough to be filled by the ASCII backend, which fills paragraphs to its text width of seventy-two columns, with words that run on and on.\n- An item whose text is also long enough to wrap onto a second line when it is exported to ASCII.\n",
+      "visible": "#+options: toc:nil author:nil\n#+title: \n* A heading that is rather long, long enough that it has to be wrapped when exported to plain text\nA paragraph that is long enough to be filled by the ASCII backend, which fills paragraphs to its text width of seventy-two columns, with words that run on and on.\n- An item whose text is also long enough to wrap onto a second line when it is exported to ASCII.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dispatch-org",
+      "input": {
+        "text": "#+OPTIONS: toc:nil author:nil\n* Misc\nEntities: \\alpha, \\to, \\nbsp{}x, \\copy and \\mdash.\nSub and super: H_2O and x^2 and a_{ij}.\nSpecial strings: a -- b --- c ... and \\-shy.\nA line\\\\\nbreak here.\nStatistics [2/3] and [66%].\nQuotes \"double\" and 'single'.\n",
+        "point": 0,
+        "keys": "C-c C-e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-27",
+        "answers": [
+          "O",
+          "O"
+        ],
+        "globals": {
+          "org-export-timestamp-file": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com"
+        }
+      },
+      "text": "#+options: toc:nil author:nil\n#+title: \n* Misc\nEntities: \\alpha, \\to, \\nbsp{}x, \\copy and \\mdash.\nSub and super: H_2O and x^2 and a_{ij}.\nSpecial strings: a -- b --- c ... and \\-shy.\nA line\\\\\nbreak here.\nStatistics [2/3] and [66%].\nQuotes \"double\" and 'single'.\n",
+      "visible": "#+options: toc:nil author:nil\n#+title: \n* Misc\nEntities: \\alpha, \\to, \\nbsp{}x, \\copy and \\mdash.\nSub and super: H_2O and x^2 and a_{ij}.\nSpecial strings: a -- b --- c ... and \\-shy.\nA line\\\\\nbreak here.\nStatistics [2/3] and [66%].\nQuotes \"double\" and 'single'.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

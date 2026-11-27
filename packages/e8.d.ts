@@ -7377,6 +7377,30 @@ declare global {
        */
       "org-open-line": [];
       /**
+       * Export current buffer to an Org buffer.
+       *
+       * @param async raw prefix argument
+       * @param subtreep raw prefix argument
+       * @param visible-only raw prefix argument
+       * @param body-only raw prefix argument
+       * @param ext-plist raw prefix argument
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-org-export-as-org": [async?: PrefixArg | boolean, subtreep?: PrefixArg | boolean, visibleOnly?: PrefixArg | boolean, bodyOnly?: PrefixArg | boolean, extPlist?: PrefixArg | boolean];
+      /**
+       * Export current buffer to an Org file.
+       *
+       * @param async raw prefix argument
+       * @param subtreep raw prefix argument
+       * @param visible-only raw prefix argument
+       * @param body-only raw prefix argument
+       * @param ext-plist raw prefix argument
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-org-export-to-org": [async?: PrefixArg | boolean, subtreep?: PrefixArg | boolean, visibleOnly?: PrefixArg | boolean, bodyOnly?: PrefixArg | boolean, extPlist?: PrefixArg | boolean];
+      /**
        * Make the item point is on a sibling of its parent, leaving its children where they are.
        *
        * Defined in packages/org-element.ts.
@@ -7470,6 +7494,53 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-property-previous-allowed-value": [];
+      /**
+       * Publish PROJECT.
+       *
+       * @param project text
+       * @param force raw prefix argument
+       * @param async raw prefix argument
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-publish": [project: string, force?: PrefixArg | boolean, async?: PrefixArg | boolean];
+      /**
+       * Publish all projects.
+       *
+       * @param force raw prefix argument
+       * @param async raw prefix argument
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-publish-all": [force?: PrefixArg | boolean, async?: PrefixArg | boolean];
+      /**
+       * Publish the current file.
+       *
+       * @param force raw prefix argument
+       * @param async raw prefix argument
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-publish-current-file": [force?: PrefixArg | boolean, async?: PrefixArg | boolean];
+      /**
+       * Publish the project associated with the current file.
+       *
+       * @param force raw prefix argument
+       * @param async raw prefix argument
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-publish-current-project": [force?: PrefixArg | boolean, async?: PrefixArg | boolean];
+      /**
+       * Publish PROJECT.
+       *
+       * @param project text
+       * @param force raw prefix argument
+       * @param async raw prefix argument
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-publish-project": [project: string, force?: PrefixArg | boolean, async?: PrefixArg | boolean];
       /**
        * Show the images links point at inline, read afresh.
        *

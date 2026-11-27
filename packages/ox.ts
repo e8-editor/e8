@@ -1053,7 +1053,7 @@ function installFilters(info: Info): Info {
  * properties, its folding (overlays that hide text), its local variables
  * and its narrowing, as org-export-copy-buffer.
  */
-function withBufferCopy<T>(body: () => T): T {
+export function withBufferCopy<T>(body: () => T): T {
   const bind = listBoundVariables();
   const source = e8.bufferName();
   const size = e8.bufferSize();
@@ -2105,6 +2105,11 @@ export function fileUri(filename: string): string {
   return (full.startsWith("/") ? "file://" : "file:///") + full;
 }
 
+/** A timestamp as text, with the blanks after it, as org-timestamp-translate writes it without custom times. */
+export function timestampTranslate(ts: Node): string {
+  return interpretData(ts);
+}
+
 // References.
 
 /** A new reference among those used, as org-export-new-reference: random, or the next free one for the oracle. */
@@ -3064,7 +3069,14 @@ const dispatch = e8.defineCommand({
     const at = lastPosition ? e8.markerPosition(lastPosition) : undefined;
     if (action === "template") e8.call("org-export-insert-default-template" as any, null, options.includes("subtree"));
     else if (action === "stack") e8.message("E8 exports in the foreground, so the export stack is empty");
-    else if (typeof action === "string" && action.startsWith("publish")) e8.userError("Publishing is not supported yet");
+    else if (typeof action === "string" && action.startsWith("publish")) {
+      const force = options.includes("force");
+      const async = options.includes("async");
+      if (action === "publish-choose-project") {
+        const projects = (varValue("org-publish-project-alist") as any[]) ?? [];
+        e8.call("org-publish" as any, e8.completingRead("Publish project: ", projects.map((p) => String(p[0])), { requireMatch: true }), force, async);
+      } else e8.call(`org-${action}` as any, force, async);
+    }
     else if (typeof action === "function")
       e8.saveExcursion(() => {
         if (arg !== null && arg !== undefined && lastPosition && e8.markerBuffer(lastPosition) === e8.bufferName() && at !== undefined) e8.gotoChar(at);
