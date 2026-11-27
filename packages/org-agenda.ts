@@ -1087,7 +1087,7 @@ function blockSeparator(): string | undefined {
  * and org-agenda-finalize do: each block after the one before, a blank line
  * and the separator between them, unless org-agenda-compact-blocks.
  */
-function renderBlocks(blocks: Block[], pointLine: number): void {
+function renderBlocks(blocks: Block[], pointLine: number, keepMarks = false): void {
   // The lines shown now where their markers are, for blocks shown again.
   for (const item of agendaLines) {
     if (item?.marks) {
@@ -1096,6 +1096,8 @@ function renderBlocks(blocks: Block[], pointLine: number): void {
     }
   }
   shownBlockData = blocks;
+  blockSeries = blocks.map(() => undefined);
+  shownBlockCmds = [];
   const lines: AgendaLines = [];
   const days: typeof agendaLineDays = [];
   shownBlocks = [];
@@ -1116,8 +1118,9 @@ function renderBlocks(blocks: Block[], pointLine: number): void {
   }
   agendaLineDays = days;
   e8.withCurrentBuffer(agendaBuffer, () => {
-    // No line marked for bulk action, as org-agenda-mode starts with none.
-    resetBulkMarks();
+    // No line marked for bulk action, as org-agenda-mode starts with none; A keeps them, as Org appends without the mode.
+    if (keepMarks) removeMarkOverlays();
+    else resetBulkMarks();
     e8.setReadOnly(false);
     eraseBuffer();
     e8.insert(lines.map((l) => l.text).join("\n") + "\n");
@@ -1154,6 +1157,8 @@ function renderBlocks(blocks: Block[], pointLine: number): void {
   readFilterPresets();
   e8.withCurrentBuffer(agendaBuffer, reapplyFilters);
   placeAgendaWindow();
+  // The line point goes to in the agenda's window, as Org moves point once the window is selected.
+  if (e8.windowBuffer() === agendaBuffer) e8.gotoChar(e8.lineStart(Math.min(pointLine, e8.lineCount() - 1)));
   const setup = e8.variable("org-agenda-window-setup");
   if (setup === undefined || setup === null || setup === "reorganize-frame") fitAgendaWindow(lines.length);
 }
@@ -1658,7 +1663,8 @@ function skippedHeadings(all: Heading[]): boolean[] {
 function tagsView(todoOnly: boolean, match?: string, stuck?: string): void {
   lineTagType = "tags";
   if (match !== undefined && !/\S/.test(match)) match = undefined;
-  if (!prepare(stickyName(orgKeys ?? (todoOnly ? "M" : "m"), match))) return;
+  // After the keys only with a match, as org-tags-view names it.
+  if (!prepare(match !== undefined ? stickyName(orgKeys ?? (todoOnly ? "M" : "m"), match) : stickyName(todoOnly ? "M" : "m"))) return;
   // Read where org-agenda was called from, as org-make-tags-matcher reads it before the agenda is prepared.
   const matcher = makeTagsMatcher(match, todoOnly);
   const items: AgendaItem[] = [];
@@ -1754,6 +1760,8 @@ function searchView(todoOnlyArg: boolean, string?: string, editAt?: number): voi
   lineTagType = "todo";
   let todoOnly = todoOnlyArg;
   let fullWords = truthy(e8.variable("org-agenda-search-view-force-full-words"));
+  // Whether it is a new agenda, kept over the prompt, whose commands the pre-command hook sees.
+  const fresh = freshPending;
   if (editAt !== undefined || string === undefined || !/\S/.test(string)) {
     const prompt = truthy(e8.variable("org-agenda-search-view-always-boolean")) ? "[+-]Word/{Regexp} ...: " : "Phrase or [+-]Word/{Regexp} ...: ";
     const at = editAt;
@@ -1769,6 +1777,7 @@ function searchView(todoOnlyArg: boolean, string?: string, editAt?: number): voi
     }
   }
   // Its sticky buffer named after the string read, as org-search-view reads it first.
+  freshPending = fresh;
   if (!prepare(stickyName(orgKeys ?? (todoOnlyArg ? "S" : "s"), string))) return;
   const query = string;
   let words = query;
@@ -1899,7 +1908,10 @@ function redoAgenda(): void {
 function redoView(cpa: e8.PrefixArg | null = e8.prefixArg() ?? null): void {
   const line = e8.lineOf(e8.point());
   const view = viewHere();
-  if (shownSeries !== undefined) redoBlock(view, cpa);
+  const at = seriesAt(line);
+  // A block agenda again, the block at point remade as Org's overriding arguments say, or between blocks or in a block appended to one, as it was.
+  if (at !== undefined && at.cmd === undefined) runSeries(at.series);
+  else if (at !== undefined) redoBlock(view, cpa);
   else if (view === undefined) return;
   else if (view.kind === "agenda") rebuild(() => agendaList(view.arg, view.startDay, view.span, startOnWeekday(), view.withHour));
   // Stuck projects found again, as their redo command does.
@@ -1920,10 +1932,7 @@ function redoView(cpa: e8.PrefixArg | null = e8.prefixArg() ?? null): void {
  * make them. Between blocks, every block as its command makes it.
  */
 function redoBlock(view: AgendaView | undefined, cpa: e8.PrefixArg | null): void {
-  if (view === undefined) {
-    runSeries(shownSeries!);
-    return;
-  }
+  if (view === undefined) return;
   const given = (arg: e8.PrefixArg | null | undefined) => cpa ?? arg ?? null;
   if (view.kind === "agenda") rebuild(() => agendaList(given(view.arg), view.startDay, view.span, startOnWeekday(), view.withHour));
   else if (view.kind === "tags" && view.stuck) rebuild(stuckProjects);
@@ -1936,8 +1945,8 @@ function redoBlock(view: AgendaView | undefined, cpa: e8.PrefixArg | null): void
 
 /** Whether lines are made with their tags where org-agenda-format-item puts them, not aligned, as for a view A appends. */
 let unalignedTags = false;
-/** Whether a block agenda was appended with A, which leaves point at the buffer's start. */
-let appendedSeries = false;
+/** The block agenda A appended, and the command each of its blocks came from: it leaves point at the buffer's start, and is what r makes again anywhere in the buffer. */
+let appendedSeries: { series: Series; cmds: number[] } | undefined;
 
 /** Whether the next view made is a new agenda, rather than one made again, which prepare starts afresh. */
 let freshPending = false;
@@ -1959,7 +1968,8 @@ function freshAgenda(): void {
 /** A new agenda's modes, org-agenda-start-with-archives-mode and its kin, as org-agenda-mode sets them for each new agenda but not when it is made again. */
 function startFresh(): void {
   // Not a block agenda, nor a custom command's settings, until one is made.
-  shownSeries = undefined;
+  blockSeries = [];
+  shownBlockCmds = [];
   shownSettings = [];
   for (const b of new Set([AGENDA, agendaBuffer])) {
     if (e8.getBuffer(b)) e8.withCurrentBuffer(b, () => e8.removeHook("post-command-hook", flaggingNote, { local: true }));
@@ -2286,12 +2296,20 @@ function blockIndexAt(line: number): number | undefined {
 /** A block agenda's commands: each its type, match and settings; and the settings for them all; as org-agenda-run-series is given them. */
 type Series = { name: string; cmds: { type: e8.Value; match: e8.Value; settings: Settings }[]; settings: Settings };
 
-/** The block agenda the buffer shows, as its org-series-redo-cmd, to make it again. */
-let shownSeries: Series | undefined;
+/** The block agenda each block is part of, as the org-series-redo-cmd its text has, to make it again; none for a view of its own. */
+let blockSeries: (Series | undefined)[] = [];
 /** The settings of the custom command the buffer shows, as its org-lprops, bound again when it is made again. */
 let shownSettings: Settings = [];
-/** Which of the block agenda's commands made each block. */
-let shownBlockCmds: number[] = [];
+/** Which of its block agenda's commands made each block, as its org-series-cmd; none for a block appended to a block agenda. */
+let shownBlockCmds: (number | undefined)[] = [];
+
+/** The block agenda the text at LINE belongs to, and the command that made its block, the separators taking the block before them's. */
+function seriesAt(line: number): { series: Series; cmd: number | undefined } | undefined {
+  let k = blockIndexAt(line);
+  if (k === undefined) for (let j = 0; j < shownBlocks.length; j++) if (shownBlocks[j].from <= line) k = j;
+  const series = k === undefined ? undefined : blockSeries[k];
+  return series === undefined ? undefined : { series, cmd: shownBlockCmds[k!] };
+}
 
 /**
  * Makes the view at point again with BUILD: in a block agenda, the whole
@@ -2300,13 +2318,12 @@ let shownBlockCmds: number[] = [];
  * with the custom command's settings bound again.
  */
 function rebuild(build: () => void): void {
-  if (shownSeries === undefined) {
+  const at = seriesAt(e8.withCurrentBuffer(agendaBuffer, () => e8.lineOf(e8.point())));
+  if (at === undefined) {
     withSettings(shownSettings, build);
     return;
   }
-  const line = e8.withCurrentBuffer(agendaBuffer, () => e8.lineOf(e8.point()));
-  const k = blockIndexAt(line);
-  runSeries(shownSeries, k === undefined ? undefined : { index: shownBlockCmds[k] ?? 0, build });
+  runSeries(at.series, at.cmd === undefined ? undefined : { index: at.cmd, build });
 }
 
 /** Runs one command of a block agenda, as org-agenda-run-series does by its type. */
@@ -2337,8 +2354,17 @@ function runSeries(series: Series, override?: { index: number; build: () => void
   const cmdOf: number[] = [];
   // Appended to the agenda, as A asks, its blocks go after what is there.
   if (collecting !== undefined) {
-    withSettings(series.settings, () => series.cmds.forEach((cmd) => withSettings(cmd.settings, () => runSeriesCommand(cmd.type, cmd.match))));
-    appendedSeries = true;
+    const into = collecting;
+    const start = into.length;
+    const cmds: number[] = [];
+    withSettings(series.settings, () =>
+      series.cmds.forEach((cmd, i) => {
+        const before = into.length;
+        withSettings(cmd.settings, () => runSeriesCommand(cmd.type, cmd.match));
+        for (let k = before; k < into.length; k++) cmds[k - start] = i;
+      }),
+    );
+    appendedSeries = { series, cmds };
     return;
   }
   withSettings(series.settings, () => {
@@ -2360,7 +2386,7 @@ function runSeries(series: Series, override?: { index: number; build: () => void
       collecting = outer;
       // What was made before an error stays, as Org's blocks are in the buffer as each is made.
       renderBlocks(blocks, 0);
-      shownSeries = series;
+      blockSeries = blocks.map(() => series);
       shownBlockCmds = cmdOf;
     }
   });
@@ -4827,6 +4853,7 @@ function quitAgenda(bury = false): void {
   }
   e8.call("kill-buffer", buffer);
   archivesMode = null;
+  releaseKilled();
 }
 
 const agendaQuit = e8.defineCommand({
@@ -5712,9 +5739,9 @@ type ViewState = {
   shownBlocks: { view: AgendaView; from: number; to: number }[];
   shownBlockData: Block[];
   startingDay: number;
-  shownSeries: Series | undefined;
+  blockSeries: (Series | undefined)[];
   shownSettings: Settings;
-  shownBlockCmds: number[];
+  shownBlockCmds: (number | undefined)[];
 };
 
 /** An agenda's modes and filters, as org-agenda-local-vars. */
@@ -5745,11 +5772,11 @@ let globalModes: ModeState | undefined;
 let activeAgendaId: number | undefined;
 
 function captureView(): ViewState {
-  return { name: agendaBuffer, sticky: agendaSticky, agendaView, agendaLines, agendaLineDays, shownBlocks, shownBlockData, startingDay, shownSeries, shownSettings, shownBlockCmds };
+  return { name: agendaBuffer, sticky: agendaSticky, agendaView, agendaLines, agendaLineDays, shownBlocks, shownBlockData, startingDay, blockSeries, shownSettings, shownBlockCmds };
 }
 
 function restoreView(s: ViewState): void {
-  ({ name: agendaBuffer, sticky: agendaSticky, agendaView, agendaLines, agendaLineDays, shownBlocks, shownBlockData, startingDay, shownSeries, shownSettings, shownBlockCmds } = s);
+  ({ name: agendaBuffer, sticky: agendaSticky, agendaView, agendaLines, agendaLineDays, shownBlocks, shownBlockData, startingDay, blockSeries, shownSettings, shownBlockCmds } = s);
 }
 
 function captureModes(): ModeState {
@@ -5780,7 +5807,7 @@ function restoreModes(s: ModeState): void {
 
 /** A new agenda buffer's view: nothing shown. */
 function emptyView(name: string): ViewState {
-  return { name, sticky: false, agendaView: { kind: "todo" }, agendaLines: [], agendaLineDays: [], shownBlocks: [], shownBlockData: [], startingDay: 0, shownSeries: undefined, shownSettings: [], shownBlockCmds: [] };
+  return { name, sticky: false, agendaView: { kind: "todo" }, agendaLines: [], agendaLineDays: [], shownBlocks: [], shownBlockData: [], startingDay: 0, blockSeries: [], shownSettings: [], shownBlockCmds: [] };
 }
 
 /** A new sticky buffer's modes: none on, no filters. */
@@ -5838,8 +5865,21 @@ function switchAgendaTo(name: string): void {
 
 // A command in an agenda buffer acts on that buffer's agenda.
 e8.addHook("pre-command-hook", () => {
+  // A new agenda asked for by a command that failed before making it is not asked for by the next.
+  freshPending = false;
   if (e8.variable("major-mode") === "org-agenda-mode") switchAgendaTo(e8.bufferName());
 });
+
+/** Lets the active agenda go if its buffer was killed, freeing its lines' markers, as org-agenda-reset-markers does on kill-buffer-hook. */
+function releaseKilled(): void {
+  pruneStates();
+  if (activeAgendaId === undefined || e8.bufferList().some((b) => e8.getBuffer(b)?.id === activeAgendaId)) return;
+  for (const item of agendaLines) if (item) freeMarks(item);
+  const sticky = agendaSticky;
+  restoreView(emptyView(AGENDA));
+  if (sticky && globalModes !== undefined) restoreModes(globalModes);
+  activeAgendaId = undefined;
+}
 
 e8.defineVariable({
   name: "org-agenda-sticky",
@@ -5852,6 +5892,7 @@ function killAllAgendaBuffers(): void {
   for (const b of e8.bufferList()) {
     if (e8.withCurrentBuffer(b, () => e8.variable("major-mode")) === "org-agenda-mode") e8.call("kill-buffer", b);
   }
+  releaseKilled();
 }
 
 e8.defineCommand({
@@ -5889,16 +5930,23 @@ function prepare(stickyName: string): boolean {
   const fresh = freshPending;
   freshPending = false;
   // Made again in its own buffer when sticky, else in *Org Agenda*, as org-agenda--get-buffer-name names it for org-agenda-redo.
+  const sticky = truthy(e8.variable("org-agenda-sticky") ?? null);
+  const prefix = JSON.stringify(e8.prefixArg() ?? null);
   if (!fresh) {
-    switchAgendaTo(bufferTmpName ?? (truthy(e8.variable("org-agenda-sticky") ?? null) ? agendaBuffer : AGENDA));
+    switchAgendaTo(bufferTmpName ?? (sticky ? agendaBuffer : AGENDA));
+    // Sticky as org-agenda-mode makes a buffer remade while org-agenda-sticky is on, its modes from then its own.
+    if (sticky && !agendaSticky) globalModes = captureModes();
+    agendaSticky = sticky;
+    // The prefix argument it was made with, as org-agenda-prepare sets it each time.
+    lastPrefixArg = prefix;
     return true;
   }
-  const sticky = truthy(e8.variable("org-agenda-sticky") ?? null);
   const name = bufferTmpName ?? (sticky ? stickyName : AGENDA);
-  const prefix = JSON.stringify(e8.prefixArg() ?? null);
-  if (sticky && bufferTmpName === undefined && e8.getBuffer(name)) {
+  if (sticky && e8.getBuffer(name)) {
     switchAgendaTo(name);
     if (agendaSticky && lastPrefixArg === prefix) {
+      // Its filters set again from the filter alist, nil unless org-agenda-persistent-filter, as org-agenda-prepare-window sets them; the text stays as it was.
+      if (!truthy(e8.variable("org-agenda-persistent-filter") ?? null)) for (const t of ["tag", "category", "regexp", "effort"] as const) agendaFilters[t] = [];
       placeAgendaWindow();
       e8.message("Sticky Agenda buffer, use ‘r’ to refresh");
       const setup = e8.variable("org-agenda-window-setup");
@@ -5928,11 +5976,13 @@ e8.defineCommand({
   run: () => {
     if (e8.variable("major-mode") !== "org-agenda-mode") e8.userError("Can only append from within agenda buffer");
     const kept = shownBlockData;
+    const [keptSeries, keptCmds] = [blockSeries, shownBlockCmds];
+    const marked = bulkMarked;
     const added: Block[] = [];
     const outer = collecting;
     collecting = added;
     unalignedTags = true;
-    appendedSeries = false;
+    appendedSeries = undefined;
     try {
       e8.callInteractively("org-agenda");
     } finally {
@@ -5942,11 +5992,32 @@ e8.defineCommand({
     const start = kept.reduce((n, b) => n + b.lines.length, 0);
     // The kept blocks' lines as they show now.
     const blocks = kept.map((b) => ({ ...b, lines: b.lines.map((l) => (l.item ? { text: l.item.text, item: l.item } : l)) }));
-    renderBlocks([...blocks, ...added], start);
-    // The appended view's start, as its command left point at its start, after the separator; a block agenda's, the buffer's start.
+    // As the appended command set it, which the compiler cannot see through the call.
+    const appended = appendedSeries as unknown as { series: Series; cmds: number[] } | undefined;
     const k = blocks.length;
-    if (shownBlocks[k] !== undefined) e8.withCurrentBuffer(agendaBuffer, () => e8.gotoChar(appendedSeries ? 0 : e8.lineStart(shownBlocks[k].from)));
-    shownSeries = undefined;
+    // The appended view's line point goes to, after the separator, as its command left it; a block agenda's, the buffer's start.
+    const pointLine = appended || added.length === 0 ? 0 : start + (added[0].point ?? 0);
+    renderBlocks([...blocks, ...added], pointLine, true);
+    const from = shownBlocks[k]?.from;
+    if (from !== undefined && !appended) {
+      e8.withCurrentBuffer(agendaBuffer, () => e8.gotoChar(e8.lineStart(from + (added[0].point ?? 0))));
+      if (e8.windowBuffer() === agendaBuffer) e8.gotoChar(e8.lineStart(from + (added[0].point ?? 0)));
+    }
+    // A block agenda appended is what r makes again anywhere, as its org-series-redo-cmd covers the buffer; else the kept blocks' own.
+    blockSeries = shownBlocks.map((_b, j) => (appended ? appended.series : j < k ? keptSeries[j] : undefined));
+    shownBlockCmds = shownBlocks.map((_b, j) => (j < k ? (appended ? undefined : keptCmds[j]) : appended?.cmds[j - k]));
+    // The marks kept, and the appended view left unfiltered, as Org does not finish an appended view.
+    bulkMarked = marked;
+    e8.withCurrentBuffer(agendaBuffer, () => {
+      agendaLines.forEach((item, l) => item && marked.includes(item) && putMarkOverlay(l));
+      if (from !== undefined) {
+        e8.letBind({ "inhibit-read-only": true }, () => {
+          const begin = Math.max(e8.pointMin(), e8.lineStart(from) - 1);
+          e8.putTextProperty(begin, e8.pointMax(), "invisible", null);
+          e8.putTextProperty(begin, e8.pointMax(), "org-filter-type", null);
+        });
+      }
+    });
   },
 });
 
@@ -5974,10 +6045,10 @@ function agendaWrite(file: string, opts: { open?: boolean; nosettings?: boolean;
   if (["html", "htm", "ps", "pdf", "ics"].includes(ext)) e8.userError(`E8 cannot write an agenda as .${ext} yet`);
   const settings = opts.nosettings ? [] : settingsOf(e8.variable("org-agenda-exporter-settings"));
   withSettings(settings, () => {
-    const text = e8.withCurrentBuffer(agendaBuffer, () => e8.bufferText(e8.pointMin(), e8.pointMax()));
-    const items = agendaLines;
+    // The lines a filter leaves, which the .org file takes its entries from.
+    const items = e8.withCurrentBuffer(agendaBuffer, () => agendaLines.filter((_item, l) => e8.charProperty(e8.lineStart(l), "invisible") !== "org-filtered"));
     withTempBuffer(() => {
-      e8.insert(text);
+      e8.insertBufferSubstring(agendaBuffer);
       // Without what a filter hides, as org-agenda-remove-marked-text takes it out.
       for (let at = e8.textPropertyAny(e8.pointMin(), e8.pointMax(), "invisible", "org-filtered"); at !== undefined; at = e8.textPropertyAny(e8.pointMin(), e8.pointMax(), "invisible", "org-filtered")) {
         e8.deleteRegion(at, e8.nextSingleCharPropertyChange(at, "invisible"));
@@ -6040,6 +6111,8 @@ function storeAgendaViews(): void {
       const files = c.files;
       if (files.length === 0) continue;
       const settings = [...settingsOf(e8.variable("org-agenda-exporter-settings")), ...settingsOf(c.settings)];
+      // Unrestricted, unless locked, as (org-agenda nil KEY) starts.
+      if (restrictionLock() === undefined) clearRestriction();
       withSettings(settings, () => {
         runAgendaKeys(c.key, null);
         for (const f of files) agendaWrite(e8.expandFileName(f, dir), { nosettings: true });
