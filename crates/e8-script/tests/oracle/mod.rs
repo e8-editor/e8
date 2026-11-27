@@ -504,7 +504,10 @@ pub fn run(case: &Case) -> State {
     }
     // As record.el has it: the buffer visits a file in the temporary
     // directory, which may be the agenda's, and the agenda's day is fixed.
-    let file = case.visit.as_ref().filter(|_| found.is_none()).map(|name| std::env::temp_dir().join(name));
+    // A directory of its own for each case, as cases run side by side and
+    // would otherwise write, and be asked about, one another's file.
+    let visit_dir = case.visit.as_ref().filter(|_| found.is_none()).map(|_| VisitDir::new());
+    let file = case.visit.as_ref().zip(visit_dir.as_ref()).map(|(name, dir)| dir.0.join(name));
     if let Some(file) = &file {
         std::fs::write(file, &case.text).expect("the visited file can be written");
         b.path = Some(file.clone());
@@ -785,5 +788,25 @@ fn case_value(case: &Case, name: &str, value: &serde_json::Value) -> e8_core::Va
                 .collect(),
         ),
         _ => panic!("{}: {name} must be a number, string, boolean, list of strings or object of strings", case.name),
+    }
+}
+
+/// A fresh directory in the temporary one for a case's visited file,
+/// removed when the case is done.
+struct VisitDir(std::path::PathBuf);
+
+impl VisitDir {
+    fn new() -> VisitDir {
+        static NEXT: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
+        let n = NEXT.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+        let dir = std::env::temp_dir().join(format!("e8-oracle-visit-{}-{n}", std::process::id()));
+        std::fs::create_dir_all(&dir).expect("the visited file's directory can be made");
+        VisitDir(dir)
+    }
+}
+
+impl Drop for VisitDir {
+    fn drop(&mut self) {
+        let _ = std::fs::remove_dir_all(&self.0);
     }
 }

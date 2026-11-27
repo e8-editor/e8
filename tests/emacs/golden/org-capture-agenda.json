@@ -1,0 +1,955 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "agenda-k-day",
+      "input": {
+        "text": "* Inbox\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "C-n C-n k C-c C-c C-x b M-g c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %t entry %?"
+          ]
+        ],
+        "answers": [
+          "a",
+          "t",
+          "*e8-oracle*",
+          "1"
+        ]
+      },
+      "text": "* Inbox\n** <2026-10-29 Thu> entry \n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+      "visible": "* Inbox\n** <2026-10-29 Thu> entry \n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "agenda-k-header",
+      "input": {
+        "text": "* Inbox\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "k C-c C-c C-x b M-g c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %t entry %?"
+          ]
+        ],
+        "answers": [
+          "a",
+          "t",
+          "*e8-oracle*",
+          "1"
+        ]
+      },
+      "text": "* Inbox\n** <2026-10-28 Wed> entry \n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+      "visible": "* Inbox\n** <2026-10-28 Wed> entry \n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "agenda-k-time",
+      "input": {
+        "text": "* Inbox\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "C-s M e e t RET C-1 k C-c C-c C-x b M-g c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %T entry %?"
+          ]
+        ],
+        "answers": [
+          "a",
+          "t",
+          "*e8-oracle*",
+          "1"
+        ]
+      },
+      "text": "* Inbox\n** <2026-10-29 Thu 10:00> entry \n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+      "visible": "* Inbox\n** <2026-10-29 Thu 10:00> entry \n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "agenda-k-datetree",
+      "input": {
+        "text": "* Inbox\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "C-n C-n k C-c C-c C-x b M-g c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+olp+datetree",
+              "FILE"
+            ],
+            "* entry %u"
+          ]
+        ],
+        "answers": [
+          "a",
+          "t",
+          "*e8-oracle*",
+          "1"
+        ]
+      },
+      "text": "* Inbox\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n* 2026\n** 2026-10 October\n*** 2026-10-29 Thursday\n**** entry [2026-10-29 Thu]\n",
+      "visible": "* Inbox\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n* 2026\n** 2026-10 October\n*** 2026-10-29 Thursday\n**** entry [2026-10-29 Thu]\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "agenda-k-item",
+      "input": {
+        "text": "* Inbox\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "C-s W r i t e RET k C-c C-c C-x b M-g c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %t entry %?"
+          ]
+        ],
+        "answers": [
+          "a",
+          "t",
+          "*e8-oracle*",
+          "1"
+        ]
+      },
+      "text": "* Inbox\n** <2026-10-28 Wed> entry \n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+      "visible": "* Inbox\n** <2026-10-28 Wed> entry \n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "agenda-use-date",
+      "input": {
+        "text": "* Inbox\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "C-n C-n M-x C-c C-c C-x b M-g c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %t entry %?"
+          ]
+        ],
+        "answers": [
+          "a",
+          "org-capture",
+          "t",
+          "*e8-oracle*",
+          "1"
+        ],
+        "globals": {
+          "org-capture-use-agenda-date": true
+        }
+      },
+      "text": "* Inbox\n** <2026-10-29 Thu> entry \n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+      "visible": "* Inbox\n** <2026-10-29 Thu> entry \n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "agenda-use-date-off",
+      "input": {
+        "text": "* Inbox\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "C-n C-n M-x C-c C-c C-x b M-g c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %t entry %?"
+          ]
+        ],
+        "answers": [
+          "a",
+          "org-capture",
+          "t",
+          "*e8-oracle*",
+          "1"
+        ]
+      },
+      "text": "* Inbox\n** <2026-10-28 Wed> entry \n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+      "visible": "* Inbox\n** <2026-10-28 Wed> entry \n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "agenda-use-date-tree",
+      "input": {
+        "text": "* Inbox\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "C-n C-n M-x C-c C-c C-x b M-g c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+olp+datetree",
+              "FILE"
+            ],
+            "* entry %u"
+          ]
+        ],
+        "answers": [
+          "a",
+          "org-capture",
+          "t",
+          "*e8-oracle*",
+          "1"
+        ],
+        "globals": {
+          "org-capture-use-agenda-date": true
+        }
+      },
+      "text": "* Inbox\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n* 2026\n** 2026-10 October\n*** 2026-10-29 Thursday\n**** entry [2026-10-29 Thu]\n",
+      "visible": "* Inbox\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n* 2026\n** 2026-10 October\n*** 2026-10-29 Thursday\n**** entry [2026-10-29 Thu]\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "agenda-use-date-prompt",
+      "input": {
+        "text": "* Inbox\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "C-n C-n M-x C-c C-c C-x b M-g c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %^t entry"
+          ]
+        ],
+        "answers": [
+          "a",
+          "org-capture",
+          "t",
+          "",
+          "*e8-oracle*",
+          "1"
+        ],
+        "globals": {
+          "org-capture-use-agenda-date": true
+        }
+      },
+      "text": "* Inbox\n** <2026-10-29 Thu> entry\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+      "visible": "* Inbox\n** <2026-10-29 Thu> entry\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-property-global",
+      "input": {
+        "text": "* Inbox\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %?\n%^{Effort}p"
+          ]
+        ],
+        "answers": [
+          "t",
+          "0:15"
+        ],
+        "globals": {
+          "org-global-properties": {
+            "Effort_ALL": "0:05 0:15"
+          }
+        }
+      },
+      "text": "* Inbox\n** new\n:PROPERTIES:\n:Effort:   0:15\n:END:\n",
+      "visible": "* Inbox\n** new\n:PROPERTIES:\n:Effort:   0:15\n:END:\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-property-keyword",
+      "input": {
+        "text": "#+PROPERTY: Effort_ALL 1:00 2:00\n* Inbox\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %?\n%^{Effort}p"
+          ]
+        ],
+        "answers": [
+          "t",
+          "2:00"
+        ]
+      },
+      "text": "#+PROPERTY: Effort_ALL 1:00 2:00\n* Inbox\n** new\n:PROPERTIES:\n:Effort:   2:00\n:END:\n",
+      "visible": "#+PROPERTY: Effort_ALL 1:00 2:00\n* Inbox\n** new\n:PROPERTIES:\n:Effort:   2:00\n:END:\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-property-keyword-file",
+      "input": {
+        "text": "#+PROPERTY: Owner_ALL ann bob\n* Inbox\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file",
+              "FILE"
+            ],
+            "* %?\n%^{Owner}p"
+          ]
+        ],
+        "answers": [
+          "t",
+          "bob"
+        ]
+      },
+      "text": "#+PROPERTY: Owner_ALL ann bob\n* Inbox\n* new\n:PROPERTIES:\n:Owner:    bob\n:END:\n",
+      "visible": "#+PROPERTY: Owner_ALL ann bob\n* Inbox\n* new\n:PROPERTIES:\n:Owner:    bob\n:END:\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-property-global-and-heading",
+      "input": {
+        "text": "* Inbox\n:PROPERTIES:\n:Effort_ALL: 3:00\n:END:\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %?\n%^{Effort}p"
+          ]
+        ],
+        "answers": [
+          "t",
+          "0:05"
+        ],
+        "globals": {
+          "org-global-properties": {
+            "Effort_ALL": "0:05 0:15"
+          }
+        }
+      },
+      "text": "* Inbox\n:PROPERTIES:\n:Effort_ALL: 3:00\n:END:\n** new\n:PROPERTIES:\n:Effort:   0:05\n:END:\n",
+      "visible": "* Inbox\n:PROPERTIES:\n:Effort_ALL: 3:00\n:END:\n** new\n:PROPERTIES:\n:Effort:   0:05\n:END:\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "agenda-k-date-prompt",
+      "input": {
+        "text": "* Inbox\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "C-n C-n k C-c C-c C-x b M-g c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %^t entry"
+          ]
+        ],
+        "answers": [
+          "a",
+          "t",
+          "++2",
+          "*e8-oracle*",
+          "1"
+        ]
+      },
+      "text": "* Inbox\n** <2026-10-31 Sat> entry\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+      "visible": "* Inbox\n** <2026-10-31 Sat> entry\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-c1k-untimed",
+      "input": {
+        "text": "* Inbox\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "C-n C-1 k C-c C-c C-x b M-g c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %T entry %?"
+          ]
+        ],
+        "answers": [
+          "a",
+          "t",
+          "*e8-oracle*",
+          "1"
+        ]
+      },
+      "text": "* Inbox\n** <2026-10-28 Wed 00:00> entry \n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+      "visible": "* Inbox\n** <2026-10-28 Wed 00:00> entry \n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-grid",
+      "input": {
+        "text": "* Inbox\n* Standup <2026-10-28 Wed 09:00>\n",
+        "point": 0,
+        "keys": "C-s 1 2 : 0 0 RET C-1 k C-c C-c C-x b M-g c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %T entry %?"
+          ]
+        ],
+        "answers": [
+          "a",
+          "t",
+          "*e8-oracle*",
+          "1"
+        ],
+        "globals": {
+          "org-agenda-show-current-time-in-grid": false
+        }
+      },
+      "text": "* Inbox\n** <2026-10-28 Wed 12:00> entry \n* Standup <2026-10-28 Wed 09:00>\n",
+      "visible": "* Inbox\n** <2026-10-28 Wed 12:00> entry \n* Standup <2026-10-28 Wed 09:00>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-use-date-bulk",
+      "input": {
+        "text": "* Inbox\n* Meeting <2026-10-29 Thu 10:00>\n* TODO Write report\nSCHEDULED: <2026-10-30 Fri>\n",
+        "point": 0,
+        "keys": "C-n M-x C-c C-c C-n C-n C-n m B C-x b M-g c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* entry %?"
+          ]
+        ],
+        "answers": [
+          "a",
+          "org-capture",
+          "t",
+          "s",
+          "",
+          "*e8-oracle*",
+          "1"
+        ],
+        "globals": {
+          "org-capture-use-agenda-date": true
+        }
+      },
+      "text": "* Inbox\n** entry \n* Meeting <2026-10-29 Thu 10:00>\n* TODO Write report\nSCHEDULED: <2026-10-31 Sat>\n",
+      "visible": "* Inbox\n** entry \n* Meeting <2026-10-29 Thu 10:00>\n* TODO Write report\nSCHEDULED: <2026-10-31 Sat>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "review-cu-k",
+      "input": {
+        "text": "* Inbox\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+        "point": 0,
+        "keys": "C-n C-n C-u k",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Meeting"
+            ],
+            "* entry"
+          ]
+        ],
+        "answers": [
+          "a",
+          "t"
+        ]
+      },
+      "text": "* Inbox\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n* Meeting\n",
+      "visible": "* Inbox\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n* Meeting\n",
+      "point": 89,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "review-prop-category",
+      "input": {
+        "text": "* Inbox\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %?\n%^{CATEGORY}p"
+          ]
+        ],
+        "answers": [
+          "t",
+          "zed"
+        ],
+        "globals": {
+          "org-global-properties": {
+            "CATEGORY_ALL": "a b"
+          }
+        }
+      },
+      "text": "* Inbox\n** new\n:PROPERTIES:\n:CATEGORY: zed\n:END:\n",
+      "visible": "* Inbox\n** new\n:PROPERTIES:\n:CATEGORY: zed\n:END:\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-prop-file-pointmin-heading",
+      "input": {
+        "text": "* Inbox\n:PROPERTIES:\n:Owner_ALL: carl\n:END:\n#+PROPERTY: Owner_ALL ann bob\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file",
+              "FILE"
+            ],
+            "* %?\n%^{Owner}p"
+          ]
+        ],
+        "answers": [
+          "t",
+          "carl"
+        ]
+      },
+      "text": "* Inbox\n:PROPERTIES:\n:Owner_ALL: carl\n:END:\n#+PROPERTY: Owner_ALL ann bob\n* new\n:PROPERTIES:\n:Owner:    carl\n:END:\n",
+      "visible": "* Inbox\n:PROPERTIES:\n:Owner_ALL: carl\n:END:\n#+PROPERTY: Owner_ALL ann bob\n* new\n:PROPERTIES:\n:Owner:    carl\n:END:\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "review-prop-deeper-template",
+      "input": {
+        "text": "* Top\n:PROPERTIES:\n:Owner_ALL: outer\n:END:\n** Inbox\n:PROPERTIES:\n:Owner_ALL: inner\n:END:\nbody\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "plain",
+            [
+              "file",
+              "FILE"
+            ],
+            "*** %?\n%^{Owner}p"
+          ]
+        ],
+        "answers": [
+          "t",
+          "outer"
+        ]
+      },
+      "text": "* Top\n:PROPERTIES:\n:Owner_ALL: outer\n:END:\n** Inbox\n:PROPERTIES:\n:Owner_ALL: inner\n:END:\nbody\n*** new\n:PROPERTIES:\n:Owner:    outer\n:END:\n",
+      "visible": "* Top\n:PROPERTIES:\n:Owner_ALL: outer\n:END:\n** Inbox\n:PROPERTIES:\n:Owner_ALL: inner\n:END:\nbody\n*** new\n:PROPERTIES:\n:Owner:    outer\n:END:\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    }
+  ]
+}

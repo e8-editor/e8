@@ -4,7 +4,7 @@
 // E8 narrows the target buffer itself.
 
 import { bookmarkSet, jumpTo } from "bookmark";
-import { alignTags, allowedValues, type DateTime, formatTimestamp, globalTagsCompletionTable, type Heading, headingIndex, headings, isHeadingLine, killIsSubtree, parseDate, parseHeading, plistGet, readDateAnswer, shiftHeadings, stampFor, subtreeRegion, today, updateCheckboxCount, updateParentTodoStatistics, validLevel } from "org";
+import { alignTags, type DateTime, overridingDefaultTime, parseAllowedValues, propertyAllowedValues, formatTimestamp, globalTagsCompletionTable, type Heading, headingIndex, headings, isHeadingLine, killIsSubtree, parseDate, parseHeading, plistGet, readDateAnswer, shiftHeadings, stampFor, subtreeRegion, today, updateCheckboxCount, updateParentTodoStatistics, validLevel } from "org";
 import { clockIn, clockOut, refreshClockHeading, runningClockLine, runningEntry } from "org-clock";
 import { dateTreeRoot, findDateCreate } from "org-datetree";
 import { ancestors, flag, showHeadingLine } from "org-fold";
@@ -183,6 +183,29 @@ function inCaptureBuffer(text: string, body: () => void): string {
   }
 }
 
+/** A property's allowed values outside any entry, its special cases first, as org-property-get-allowed-values finds them in the template's buffer. */
+function globalOrSpecialAllowedValues(property: string): { values: string[]; restricted: boolean } | undefined {
+  if (["TODO", "PRIORITY", "CATEGORY"].includes(property) || e8.runHookWithArgsUntilSuccess("org-property-allowed-value-functions", property)) {
+    return propertyAllowedValues(property);
+  }
+  const found = globalAllowedValues(property);
+  return found.values.length > 0 ? found : undefined;
+}
+
+/** A property's allowed values from org-global-properties alone, as org-property-get-allowed-values finds them outside an entry with no keywords. */
+function globalAllowedValues(property: string): { values: string[]; restricted: boolean } {
+  const key = `${property}_ALL`.toLowerCase();
+  const user = e8.variable("org-global-properties");
+  let all: string | undefined;
+  if (Array.isArray(user)) {
+    for (const e of user) if (Array.isArray(e) && typeof e[0] === "string" && e[0].toLowerCase() === key && typeof e[1] === "string") {
+      all = e[1];
+      break;
+    }
+  }
+  return parseAllowedValues(all);
+}
+
 /** A link to VALUE as org-insert-link writes it, with no description, as %^L inserts it. */
 function linkText(value: string): string {
   return inCaptureBuffer("", () => insertLink(0, value, undefined, false));
@@ -194,8 +217,14 @@ function linkText(value: string): string {
  * entry goes, has them.
  */
 function readPropertyValue(property: string, dflt: string | undefined, target: Target | undefined, before: string): string {
-  let allowed: { values: string[]; restricted: boolean } | undefined;
-  if (target) {
+  // As org-property-get-allowed-values gives them: TODO's keywords, PRIORITY's letters, none for CATEGORY or a special
+  // property, org-property-allowed-value-functions'; else org-global-properties' first, as the template's buffer has
+  // them without the target's #+PROPERTY: lines.
+  let allowed = e8.saveExcursion(() => {
+    e8.gotoChar(e8.pointMin());
+    return globalOrSpecialAllowedValues(property);
+  });
+  if (allowed === undefined && target) {
     // The template's level: its first heading's, before where the escape is.
     const level = (/^(\*+) /m.exec(before) ?? /^(\*+) /m.exec(before + "\n"))?.[1].length ?? 1;
     allowed = e8.withCurrentBuffer(target.buffer, () =>
@@ -203,14 +232,22 @@ function readPropertyValue(property: string, dflt: string | undefined, target: T
         e8.widen();
         const all = headings();
         let i = headingIndex(all, lineAt(target.pos));
-        if (!target.entryP) while (i !== undefined && all[i].level >= level) {
-          let k = i - 1;
-          while (k >= 0 && all[k].level >= all[i].level) k--;
-          i = k >= 0 ? k : undefined;
+        // The entry the capture goes under, or the heading above where it goes, else the buffer's start.
+        if (!target.entryP) {
+          // Up a level, as org-up-heading-safe goes from the entry point is in.
+          const up = (k: number): number | undefined => {
+            let j = k - 1;
+            while (j >= 0 && all[j].level >= all[k].level) j--;
+            return j >= 0 ? j : undefined;
+          };
+          // Off a heading, from its entry's parent.
+          if (i !== undefined && all[i].start !== e8.lineStart(lineAt(target.pos))) i = up(i);
+          while (i !== undefined && all[i].level >= level) i = up(i);
         }
-        if (i === undefined) return undefined;
-        const found = allowedValues(all[i], property);
-        return found.values.length > 0 ? found : undefined;
+        return e8.saveExcursion(() => {
+          e8.gotoChar(i === undefined ? e8.pointMin() : all[i].start);
+          return propertyAllowedValues(property);
+        });
       }),
     );
   }
@@ -605,9 +642,11 @@ function setTargetLocation(t: CaptureTemplate, prepend: boolean, env: TargetEnv 
         const tree = option(t, ":tree-type");
         const treeName = typeof tree === "symbol" ? e8.symbolName(tree) : tree;
         const grouping = treeName === "week" ? "week" : treeName === "month" ? "month" : "day";
-        // The day: one asked for with :time-prompt or C-1, else today.
+        // The day: org-overriding-default-time's, or one asked for with :time-prompt or C-1, else today.
         let day: DateTime = today();
-        if (truthy(option(t, ":time-prompt") ?? null) || env.askDate) {
+        const over = overridingDefaultTime();
+        if (over) day = { year: over.year, month: over.month, day: over.day };
+        else if (truthy(option(t, ":time-prompt") ?? null) || env.askDate) {
           const answer = readDateAnswer("Date for tree entry: ");
           // A range's end is read and left out, as org-end-time-was-given is bound there.
           const asked = parseDate(answer, false, undefined, true);
@@ -1054,7 +1093,8 @@ function captureWith(key: string, goto: e8.Value = null): void {
       })
     : undefined;
   const prepend = truthy(option(t, ":prepend") ?? null);
-  const env: TargetEnv = { here: goto === 0, askDate: goto === 1 };
+  // The capture's time: org-overriding-default-time, as :default-time takes it, else now.
+  const env: TargetEnv = { here: goto === 0, askDate: goto === 1, time: overridingDefaultTime() };
   const where = setTargetLocation(t, prepend, env);
   const buffer = where.buffer;
   const modified = e8.withCurrentBuffer(buffer, () => e8.bufferModified());
@@ -1187,6 +1227,10 @@ e8.defineCommand({
   params: [{ name: "goto", kind: "prefix" }],
   run: (goto: e8.PrefixArg) => {
     const keys = "";
+    // From the agenda, the date at point, as org-capture-use-agenda-date says: set, as Org's setq leaves it.
+    if (truthy(e8.variable("org-capture-use-agenda-date") ?? null) && e8.derivedModeP("org-agenda-mode")) {
+      e8.setVariable("org-overriding-default-time", e8.funcall("org-get-cursor-date", goto === 1) as number);
+    }
     // With C-u, to the template's target; with C-u C-u, to where the last capture went.
     if (Array.isArray(goto) && goto[0] === 4) return gotoTarget(keys || undefined);
     if (Array.isArray(goto) && goto[0] === 16) return goLastStored();
