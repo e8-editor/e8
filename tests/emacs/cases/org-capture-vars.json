@@ -1,0 +1,182 @@
+[
+ {
+  "name": "vars-todo-file-keywords",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "call": [
+   "org-capture"
+  ],
+  "point": 2,
+  "text": "#+TODO: OPEN | SHUT\n* Inbox\n",
+  "keys": "n e w C-c C-c",
+  "answers": [
+   "t",
+   "SHUT"
+  ],
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* %?\n%^{TODO}p"
+   ]
+  ]
+ },
+ {
+  "name": "vars-todo-file-keywords-open",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "call": [
+   "org-capture"
+  ],
+  "point": 2,
+  "text": "#+TODO: OPEN | SHUT\n* Inbox\n",
+  "keys": "n e w C-c C-c",
+  "answers": [
+   "t",
+   "OPEN"
+  ],
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* %?\n%^{TODO}p"
+   ]
+  ]
+ },
+ {
+  "name": "vars-todo-default-keywords",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "call": [
+   "org-capture"
+  ],
+  "point": 2,
+  "text": "* Inbox\n",
+  "keys": "n e w C-c C-c",
+  "answers": [
+   "t",
+   "DONE"
+  ],
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* %?\n%^{TODO}p"
+   ]
+  ]
+ },
+ {
+  "name": "vars-priority-file",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "call": [
+   "org-capture"
+  ],
+  "point": 2,
+  "text": "#+PRIORITIES: A E C\n* Inbox\n",
+  "keys": "n e w C-c C-c",
+  "answers": [
+   "t",
+   "E"
+  ],
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* %?\n%^{PRIORITY}p"
+   ]
+  ]
+ },
+ {
+  "name": "vars-todo-file-typed",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "call": [
+   "org-capture"
+  ],
+  "point": 2,
+  "text": "#+TYP_TODO: Ann Bob | Done\n* Inbox\n",
+  "keys": "n e w C-c C-c",
+  "answers": [
+   "t",
+   "Bob"
+  ],
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* %?\n%^{TODO}p"
+   ]
+  ]
+ },
+ {
+  "name": "vars-tags-file",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "call": [
+   "org-capture"
+  ],
+  "point": 2,
+  "text": "#+TAGS: alpha beta\n* Inbox\n",
+  "keys": "n e w C-c C-c",
+  "answers": [
+   "t",
+   "beta"
+  ],
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* %? %^g"
+   ]
+  ]
+ }
+]

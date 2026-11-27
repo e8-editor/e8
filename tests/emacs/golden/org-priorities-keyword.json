@@ -1,0 +1,270 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "prio-letters-up",
+      "input": {
+        "text": "#+PRIORITIES: A E C\n* Task\n",
+        "point": 20,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+PRIORITIES: A E C\n* [#C] Task\n",
+      "visible": "#+PRIORITIES: A E C\n* [#C] Task\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "prio-letters-down",
+      "input": {
+        "text": "#+PRIORITIES: A E C\n* Task\n",
+        "point": 20,
+        "keys": "S-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+PRIORITIES: A E C\n* [#C] Task\n",
+      "visible": "#+PRIORITIES: A E C\n* [#C] Task\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "prio-letters-down-many",
+      "input": {
+        "text": "#+PRIORITIES: A E C\n* Task\n",
+        "point": 20,
+        "keys": "S-<down> S-<down> S-<down> S-<down> S-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+PRIORITIES: A E C\n* [#A] Task\n",
+      "visible": "#+PRIORITIES: A E C\n* [#A] Task\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "prio-letters-set",
+      "input": {
+        "text": "#+PRIORITIES: A E C\n* Task\n",
+        "point": 20,
+        "keys": "C-c ,",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "E"
+        ]
+      },
+      "text": "#+PRIORITIES: A E C\n* [#E] Task\n",
+      "visible": "#+PRIORITIES: A E C\n* [#E] Task\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "prio-letters-set-out-of-range",
+      "input": {
+        "text": "#+PRIORITIES: A E C\n* Task\n",
+        "point": 20,
+        "keys": "C-c ,",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "F"
+        ]
+      },
+      "text": "#+PRIORITIES: A E C\n* Task\n",
+      "visible": "#+PRIORITIES: A E C\n* Task\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Priority must be between ‘A’ and ‘E’"
+    },
+    {
+      "name": "prio-numbers-up",
+      "input": {
+        "text": "#+PRIORITIES: 1 9 5\n* Task\n",
+        "point": 20,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+PRIORITIES: 1 9 5\n* [#5] Task\n",
+      "visible": "#+PRIORITIES: 1 9 5\n* [#5] Task\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "prio-numbers-down-many",
+      "input": {
+        "text": "#+PRIORITIES: 1 9 5\n* Task\n",
+        "point": 20,
+        "keys": "S-<down> S-<down> S-<down> S-<down> S-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+PRIORITIES: 1 9 5\n* [#9] Task\n",
+      "visible": "#+PRIORITIES: 1 9 5\n* [#9] Task\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "prio-numbers-set",
+      "input": {
+        "text": "#+PRIORITIES: 1 9 5\n* Task\n",
+        "point": 20,
+        "keys": "C-c ,",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "7"
+        ]
+      },
+      "text": "#+PRIORITIES: 1 9 5\n* [#7] Task\n",
+      "visible": "#+PRIORITIES: 1 9 5\n* [#7] Task\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "prio-default-remove",
+      "input": {
+        "text": "#+PRIORITIES: A E C\n* Task\n",
+        "point": 20,
+        "keys": "S-<up> C-c ,",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          " "
+        ]
+      },
+      "text": "#+PRIORITIES: A E C\n* Task\n",
+      "visible": "#+PRIORITIES: A E C\n* Task\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "prio-two-lines",
+      "input": {
+        "text": "#+PRIORITIES: A E C\n#+PRIORITIES: 1 9 5\n* Task\n",
+        "point": 40,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+PRIORITIES: A E C\n#+PRIORITIES: 1 9 5\n* [#C] Task\n",
+      "visible": "#+PRIORITIES: A E C\n#+PRIORITIES: 1 9 5\n* [#C] Task\n",
+      "point": 40,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "prio-lower-case",
+      "input": {
+        "text": "#+priorities: A D B\n* Task\n",
+        "point": 20,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+priorities: A D B\n* [#B] Task\n",
+      "visible": "#+priorities: A D B\n* [#B] Task\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "prio-short",
+      "input": {
+        "text": "#+PRIORITIES: A E\n* Task\n",
+        "point": 18,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+PRIORITIES: A E\n* [#B] Task\n",
+      "visible": "#+PRIORITIES: A E\n* [#B] Task\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

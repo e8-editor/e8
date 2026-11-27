@@ -1,0 +1,122 @@
+[
+ {
+  "name": "prio-letters-up",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "#+PRIORITIES: A E C\n* Task\n",
+  "keys": "S-<up>",
+  "point": 20
+ },
+ {
+  "name": "prio-letters-down",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "#+PRIORITIES: A E C\n* Task\n",
+  "keys": "S-<down>",
+  "point": 20
+ },
+ {
+  "name": "prio-letters-down-many",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "#+PRIORITIES: A E C\n* Task\n",
+  "keys": "S-<down> S-<down> S-<down> S-<down> S-<down>",
+  "point": 20
+ },
+ {
+  "name": "prio-letters-set",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "#+PRIORITIES: A E C\n* Task\n",
+  "keys": "C-c ,",
+  "point": 20,
+  "answers": [
+   "E"
+  ]
+ },
+ {
+  "name": "prio-letters-set-out-of-range",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "#+PRIORITIES: A E C\n* Task\n",
+  "keys": "C-c ,",
+  "point": 20,
+  "answers": [
+   "F"
+  ]
+ },
+ {
+  "name": "prio-numbers-up",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "#+PRIORITIES: 1 9 5\n* Task\n",
+  "keys": "S-<up>",
+  "point": 20
+ },
+ {
+  "name": "prio-numbers-down-many",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "#+PRIORITIES: 1 9 5\n* Task\n",
+  "keys": "S-<down> S-<down> S-<down> S-<down> S-<down>",
+  "point": 20
+ },
+ {
+  "name": "prio-numbers-set",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "#+PRIORITIES: 1 9 5\n* Task\n",
+  "keys": "C-c ,",
+  "point": 20,
+  "answers": [
+   "7"
+  ]
+ },
+ {
+  "name": "prio-default-remove",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "#+PRIORITIES: A E C\n* Task\n",
+  "keys": "S-<up> C-c ,",
+  "point": 20,
+  "answers": [
+   " "
+  ]
+ },
+ {
+  "name": "prio-two-lines",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "#+PRIORITIES: A E C\n#+PRIORITIES: 1 9 5\n* Task\n",
+  "keys": "S-<up>",
+  "point": 40
+ },
+ {
+  "name": "prio-lower-case",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "#+priorities: A D B\n* Task\n",
+  "keys": "S-<up>",
+  "point": 20
+ },
+ {
+  "name": "prio-short",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "#+PRIORITIES: A E\n* Task\n",
+  "keys": "S-<up>",
+  "point": 18
+ }
+]

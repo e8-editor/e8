@@ -13263,6 +13263,16 @@ e8.defineMajorMode({
       }
     }
     if (indented) e8.callWithPrefix(1, "org-indent-mode");
+    // #+PRIORITIES: the highest, lowest and default priority, as org-set-regexps-and-options sets them for the buffer.
+    for (const [, , text] of keywordLines()) {
+      const m = /^#\+PRIORITIES:[ \t]*(\S+)[ \t]+(\S+)[ \t]+(\S+)/i.exec(text);
+      if (!m) continue;
+      for (const [name, value] of [["org-priority-highest", m[1]], ["org-priority-lowest", m[2]], ["org-priority-default", m[3]]] as const) {
+        e8.makeLocalVariable(name);
+        e8.setVariable(name, priorityToValue(value));
+      }
+      break;
+    }
     // Tables aligned or shrunk, then linked images shown, from the variables or a #+STARTUP: line, as org-mode does last.
     const startupWords: Record<string, [string, boolean]> = {
       inlineimages: ["org-startup-with-inline-images", true],

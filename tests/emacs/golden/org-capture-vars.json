@@ -1,0 +1,252 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "vars-todo-file-keywords",
+      "input": {
+        "text": "#+TODO: OPEN | SHUT\n* Inbox\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %?\n%^{TODO}p"
+          ]
+        ],
+        "answers": [
+          "t",
+          "SHUT"
+        ]
+      },
+      "text": "#+TODO: OPEN | SHUT\n* Inbox\n** SHUT new\n",
+      "visible": "#+TODO: OPEN | SHUT\n* Inbox\n** SHUT new\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "vars-todo-file-keywords-open",
+      "input": {
+        "text": "#+TODO: OPEN | SHUT\n* Inbox\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %?\n%^{TODO}p"
+          ]
+        ],
+        "answers": [
+          "t",
+          "OPEN"
+        ]
+      },
+      "text": "#+TODO: OPEN | SHUT\n* Inbox\n** OPEN new\n",
+      "visible": "#+TODO: OPEN | SHUT\n* Inbox\n** OPEN new\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "vars-todo-default-keywords",
+      "input": {
+        "text": "* Inbox\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %?\n%^{TODO}p"
+          ]
+        ],
+        "answers": [
+          "t",
+          "DONE"
+        ]
+      },
+      "text": "* Inbox\n** DONE new\n",
+      "visible": "* Inbox\n** DONE new\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "vars-priority-file",
+      "input": {
+        "text": "#+PRIORITIES: A E C\n* Inbox\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %?\n%^{PRIORITY}p"
+          ]
+        ],
+        "answers": [
+          "t",
+          "E"
+        ]
+      },
+      "text": "#+PRIORITIES: A E C\n* Inbox\n** [#E] new\n",
+      "visible": "#+PRIORITIES: A E C\n* Inbox\n** [#E] new\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "vars-todo-file-typed",
+      "input": {
+        "text": "#+TYP_TODO: Ann Bob | Done\n* Inbox\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %?\n%^{TODO}p"
+          ]
+        ],
+        "answers": [
+          "t",
+          "Bob"
+        ]
+      },
+      "text": "#+TYP_TODO: Ann Bob | Done\n* Inbox\n** Bob new\n",
+      "visible": "#+TYP_TODO: Ann Bob | Done\n* Inbox\n** Bob new\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "vars-tags-file",
+      "input": {
+        "text": "#+TAGS: alpha beta\n* Inbox\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %? %^g"
+          ]
+        ],
+        "answers": [
+          "t",
+          "beta"
+        ]
+      },
+      "text": "#+TAGS: alpha beta\n* Inbox\n** new                                                                 :beta:\n",
+      "visible": "#+TAGS: alpha beta\n* Inbox\n** new                                                                 :beta:\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    }
+  ]
+}

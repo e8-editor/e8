@@ -168,12 +168,22 @@ function fileContents(name: string): string {
 }
 
 /** Runs BODY in a temporary Org buffer holding TEXT, as the *Capture* buffer the template is filled in, and returns its text. */
-function inCaptureBuffer(text: string, body: () => void): string {
+function inCaptureBuffer(text: string, body: () => void, from?: string): string {
   const temp = e8.bufferName(e8.getBufferCreate(e8.generateNewBufferName(" *Capture*"))) as string;
+  // The target's own org- settings, as its TODO keywords, as org-capture-fill-template clones them.
+  const locals = from !== undefined && e8.getBuffer(from) ? orgLocalVariables(from) : [];
   try {
     return e8.withCurrentBuffer(temp, () => {
       e8.insert(text);
-      e8.call("org-mode");
+      e8.letBind({ "org-inhibit-startup": true }, () => e8.call("org-mode"));
+      for (const [name, value] of locals) {
+        try {
+          e8.makeLocalVariable(name);
+          e8.setVariable(name, value);
+        } catch {
+          // One that cannot be set is left, as org-clone-local-variables ignores errors.
+        }
+      }
       e8.gotoChar(e8.pointMin());
       body();
       return e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax());
@@ -181,6 +191,11 @@ function inCaptureBuffer(text: string, body: () => void): string {
   } finally {
     e8.call("kill-buffer", temp);
   }
+}
+
+/** A buffer's local variables whose names start with org-, as org-clone-local-variables takes them with "\\`org-". */
+function orgLocalVariables(buffer: string): [string, e8.Value][] {
+  return e8.bufferLocalVariables(buffer).filter(([name]) => name.startsWith("org-"));
 }
 
 /** A property's allowed values outside any entry, its special cases first, as org-property-get-allowed-values finds them in the template's buffer. */
@@ -220,10 +235,13 @@ function readPropertyValue(property: string, dflt: string | undefined, target: T
   // As org-property-get-allowed-values gives them: TODO's keywords, PRIORITY's letters, none for CATEGORY or a special
   // property, org-property-allowed-value-functions'; else org-global-properties' first, as the template's buffer has
   // them without the target's #+PROPERTY: lines.
-  let allowed = e8.saveExcursion(() => {
-    e8.gotoChar(e8.pointMin());
-    return globalOrSpecialAllowedValues(property);
-  });
+  // In the target's buffer, whose org- settings, as its TODO keywords, the template's buffer takes.
+  let allowed = e8.withCurrentBuffer(target?.buffer ?? e8.bufferName(e8.currentBuffer())!, () =>
+    e8.saveExcursion(() => {
+      e8.gotoChar(e8.pointMin());
+      return globalOrSpecialAllowedValues(property);
+    }),
+  );
   if (allowed === undefined && target) {
     // The template's level: its first heading's, before where the escape is.
     const level = (/^(\*+) /m.exec(before) ?? /^(\*+) /m.exec(before + "\n"))?.[1].length ?? 1;
@@ -261,7 +279,7 @@ function readPropertyValue(property: string, dflt: string | undefined, target: T
 }
 
 /** Sets the properties %^{PROP}p read where their marks are in TEXT, on the template's entry there, as org-set-property. */
-function setTemplateProperties(text: string, properties: [string, string, boolean][]): string {
+function setTemplateProperties(text: string, properties: [string, string, boolean][], target?: Target): string {
   return inCaptureBuffer(text, () => {
     for (let n = 0; n < properties.length; n++) {
       const mark = `\u0001${n}\u0001`;
@@ -283,7 +301,7 @@ function setTemplateProperties(text: string, properties: [string, string, boolea
       }
       e8.call("org-set-property", properties[n][0], properties[n][1]);
     }
-  });
+  }, target?.buffer);
 }
 
 /**
@@ -428,7 +446,7 @@ function fillTemplate(template: string, context: Context = { annotation: "", ini
     strings.push(answer);
     return answer;
   });
-  if (properties.length > 0) text = setTemplateProperties(text, properties);
+  if (properties.length > 0) text = setTemplateProperties(text, properties, context.target);
   text = fillPass(text, /%\\([1-9][0-9]*)/g, (m) => {
     const answer = strings[Number(m[1]) - 1];
     return answer ?? e8.signal("wrong-type-argument", "Wrong type argument: stringp, nil");
