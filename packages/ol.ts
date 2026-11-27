@@ -750,7 +750,8 @@ function openShellLink(path: string): void {
   if (!ok) e8.userError("Abort");
   const buffer = e8.generateNewBufferName("*Org Shell Output*");
   e8.message(`Executing ${path}`);
-  e8.letBind({ "shell-command-buffer-name": buffer }, () => e8.call("shell-command", path));
+  // There for a command run in the background too, as shell-command takes the buffer it is given.
+  e8.letBind({ "shell-command-buffer-name": buffer, "shell-command-buffer-name-async": buffer }, () => e8.call("shell-command", path));
 }
 
 /**
@@ -762,7 +763,8 @@ export function setOwnLinkTypes(): void {
   linkSetParameters("help", { follow: openHelpLink, store: { name: "org-link--store-help", run: () => storeHelpLink() } });
   // The web's links open in a browser, as browse-url does.
   for (const scheme of ["ftp", "http", "https", "mailto", "news"]) {
-    linkSetParameters(scheme, { follow: (path) => browseUrl(`${scheme}:${path}`) });
+    // With the prefix argument, nil without one, as ol.el passes ARG on.
+    linkSetParameters(scheme, { follow: (path) => browseUrl(`${scheme}:${path}`, e8.prefixArg() ?? null) });
   }
   linkSetParameters("shell", { follow: openShellLink });
 }

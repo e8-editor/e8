@@ -2367,8 +2367,22 @@ function hide(start: number, end: number, spec = "org-link"): void {
 }
 
 export const LINK = /\[\[((?:[^\][\\]|\\.)+)\](?:\[([^\n]+?)\])?\]/g;
-export const PLAIN_LINK = /(?:^|(?<=[\s(]))(?:https?|ftp|mailto|file|news|doi):[^\s<>()[\]]*[^\s<>()[\].,;:!?'"]/g;
-export const ANGLE_LINK = /<(?:https?|ftp|mailto|file|news|doi):[^>\n]*>/g;
+/** The link types plain and angle links have, longest first: file and doi, and those linkSetParameters adds, as org-link-types. */
+function linkTypesPattern(): string {
+  // None yet while this file is still loading, before the table of link types is made.
+  let added: string[] = [];
+  try {
+    added = [...linkTypes.keys()];
+  } catch {
+    added = [];
+  }
+  const types = new Set(["https", "http", "ftp", "mailto", "file", "news", "doi", ...added]);
+  return [...types].sort((a, b) => b.length - a.length).map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
+}
+/** A plain link, as org-link-plain-re, made again as link types are added. */
+export let PLAIN_LINK = new RegExp(`(?:^|(?<=[\\s(]))(?:${linkTypesPattern()}):[^\\s<>()[\\]]*[^\\s<>()[\\].,;:!?'"]`, "g");
+/** An angle link, as org-link-angle-re, made again as link types are added. */
+export let ANGLE_LINK = new RegExp(`<(?:${linkTypesPattern()}):[^>\\n]*>`, "g");
 const TIMESTAMP = /[<[]\d{4}-\d{2}-\d{2}(?: [^\]>\n]*?)?[>\]](?:--[<[]\d{4}-\d{2}-\d{2}(?: [^\]>\n]*?)?[>\]])?/g;
 const EMPHASIS = /(^|[-\s('"{])(([*/_=~+])([^\s]|[^\s].*?[^\s])\3)(?=[-\s.,:!?;'")}[]|$)/g;
 const EMPHASIS_FACES: { [marker: string]: string } = {
@@ -8440,12 +8454,19 @@ const linkTypes = new Map<string, LinkParameters>();
 
 /** Whether a link type is one Org knows, as org-link-any-re matches only those. */
 export function linkTypeKnown(type: string): boolean {
-  return linkTypes.has(type.toLowerCase());
+  // In the case it is written in, as org-link-types holds them.
+  return linkTypes.has(type);
 }
 
 /** Sets what links of TYPE do, as org-link-set-parameters: id: links, as org-id.ts does, or a package's own; other parameters are kept. */
 export function linkSetParameters(type: string, parameters: LinkParameters): void {
+  const added = !linkTypes.has(type);
   linkTypes.set(type, { ...linkTypes.get(type), ...parameters });
+  // Plain and angle links of the new type, as org-link-set-parameters remakes org-link-plain-re and its kin.
+  if (added) {
+    PLAIN_LINK = new RegExp(`(?:^|(?<=[\\s(]))(?:${linkTypesPattern()}):[^\\s<>()[\\]]*[^\\s<>()[\\].,;:!?'"]`, "g");
+    ANGLE_LINK = new RegExp(`<(?:${linkTypesPattern()}):[^>\\n]*>`, "g");
+  }
 }
 
 /** The link types and their parameters, newest first, as org-link-parameters lists them. */
@@ -8532,11 +8553,14 @@ e8.defineCommand({
 export function openLink(link: Link): void {
   const path = link.path;
   const type = /^([a-z][a-z0-9+.-]*):(.*)$/is.exec(path);
-  const handler = type ? linkTypes.get(type[1].toLowerCase()) : undefined;
+  // The type in the case it is written in, as Org's types are.
+  const handler = type ? linkTypes.get(type[1]) : undefined;
   if (type && handler?.follow) {
     handler.follow(type[2]);
     return;
   }
+  // A known type in another case, as HELP:, is parsed as a link of that type, which has no follow function: nothing happens, as in org-link-open.
+  if (type && !handler && [...linkTypes.keys()].some((t) => t.toLowerCase() === type[1].toLowerCase())) return;
   const file = /^file:(.*)$/.exec(path)?.[1] ?? (/^(?:\/|~\/|\.\.?\/)/.test(path) ? path : undefined);
   if (file !== undefined) {
     const [name, search] = file.split("::");

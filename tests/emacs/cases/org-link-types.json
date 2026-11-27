@@ -1,0 +1,88 @@
+[
+ {
+  "name": "links-plain-help",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "see help:no-such-thing-zz here\n",
+  "keys": "C-c C-o",
+  "point": 4,
+  "message": true
+ },
+ {
+  "name": "links-angle-help",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "see <help:no-such-thing-zz> here\n",
+  "keys": "C-c C-o",
+  "point": 5,
+  "message": true
+ },
+ {
+  "name": "links-plain-shell-no",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "see shell:echo hi\n",
+  "keys": "C-c C-o",
+  "point": 4,
+  "message": true,
+  "answers": [
+   "no"
+  ]
+ },
+ {
+  "name": "links-angle-shell-no",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "see <shell:echo hi>\n",
+  "keys": "C-c C-o",
+  "point": 5,
+  "message": true,
+  "answers": [
+   "no"
+  ]
+ },
+ {
+  "name": "links-upper-case-type",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "[[HELP:no-such-thing-zz]]\n",
+  "keys": "C-c C-o",
+  "point": 3,
+  "message": true
+ },
+ {
+  "name": "links-heading-plain",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "* See\nsee help:no-such-thing-zz\n",
+  "keys": "C-c C-o",
+  "point": 0,
+  "message": true
+ },
+ {
+  "name": "links-bracket-help",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "[[help:no-such-thing-zz]]\n",
+  "keys": "C-c C-o",
+  "point": 3,
+  "message": true
+ },
+ {
+  "name": "links-plain-id-fontified",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "see id:abc-123 and doi:10.1/x\n",
+  "keys": "",
+  "point": 0,
+  "message": true
+ }
+]

@@ -891,7 +891,7 @@ declare global {
        */
       "bookmark-set": [arg?: PrefixArg | boolean];
       /**
-       * Open a URL, read in the minibuffer, with the browser browse-url-browser-function names.
+       * Open a URL, read in the minibuffer from the region or the URL at point, with the handler browse-url-handlers picks or browse-url-browser-function; a prefix argument turns browse-url-new-window-flag round.
        *
        * @param url text
        * @param newWindow raw prefix argument
@@ -11363,13 +11363,25 @@ declare global {
        */
       "bookmark-search-size": Value;
       /**
-       * The function browse-url calls with a URL to open it: browse-url-default-browser, the system's way, by default.
+       * The function browse-url calls with a URL to open it, when no handler in browse-url-handlers matches: browse-url-default-browser, the system's way, by default. An alist of regexps and functions, as Emacs once took, still works.
        *
        * Defined in packages/browse-url.ts.
        */
       "browse-url-browser-function": Value;
       /**
-       * Whether browse-url asks for a new window, which a prefix argument turns round.
+       * Handlers tried after browse-url-handlers, as that alist.
+       *
+       * Defined in packages/browse-url.ts.
+       */
+      "browse-url-default-handlers": Value;
+      /**
+       * An alist of (REGEXP-OR-PREDICATE . HANDLER): the first whose regexp matches a URL, or whose predicate is true of it, opens it in place of browse-url-browser-function.
+       *
+       * Defined in packages/browse-url.ts.
+       */
+      "browse-url-handlers": Value;
+      /**
+       * Whether browse-url asks for a new window; a prefix argument to it turns this round.
        *
        * Defined in packages/browse-url.ts.
        */

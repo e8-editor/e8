@@ -90,3 +90,15 @@ fn help_links_are_stored_from_help() {
     eval(&mut ed, &s, "e8.withCurrentBuffer('*Help*', () => e8.callInteractively('org-store-link'))");
     assert_eq!(eval(&mut ed, &s, "JSON.stringify(e8.variable('org-stored-links')[0])"), r#"[\"help:forward-char\",null]"#);
 }
+
+/// browse-url-handlers picks a handler by regexp before
+/// browse-url-browser-function, which gets browse-url-new-window-flag when
+/// no argument is given; browse-url-encode-url encodes what misleads browsers.
+#[test]
+fn browse_url_handlers_and_encoding() {
+    let (mut ed, s) = org("x\n");
+    eval(&mut ed, &s, "(globalThis.urls = [], e8.defun('test-handler', (url, w) => { globalThis.urls.push('handler ' + url + ' ' + w); }), e8.defun('test-browser', (url, w) => { globalThis.urls.push('browser ' + url + ' ' + w); }), e8.setVariable('browse-url-handlers', [['^https://docs\\\\.', 'test-handler']]), e8.setVariable('browse-url-browser-function', 'test-browser'), e8.setVariable('browse-url-new-window-flag', true), 'ok')");
+    eval(&mut ed, &s, "import('browse-url').then((b) => { b.browseUrl('https://docs.example/a'); b.browseUrl('https://other.example/b'); globalThis.encoded = b.browseUrlEncodeUrl('https://e.x/a b(\"c\")'); })");
+    assert_eq!(eval(&mut ed, &s, "globalThis.urls.join(' | ')"), "handler https://docs.example/a true | browser https://other.example/b true");
+    assert_eq!(eval(&mut ed, &s, "globalThis.encoded"), "https://e.x/a%20b%28%22c%22%29");
+}
