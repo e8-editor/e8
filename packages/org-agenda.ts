@@ -59,6 +59,7 @@ import {
   matchSparseTree,
   orgOccur,
   subtreeEnd,
+  asYesterday,
 } from "org";
 import { completingReadMultiple } from "crm";
 import { linkUnescape, setAgendaEntryHere, storeLink } from "ol";
@@ -1302,6 +1303,8 @@ function agendaList(arg: e8.PrefixArg | null, startDay?: number, spanArg?: Span,
   // org-agenda-start-day, read as a date when the agenda is made, and kept as the day it read for making it again.
   const startVar = e8.variable("org-agenda-start-day");
   if (startDay === undefined && typeof startVar === "string") startDay = dayNumber(parseDate(startVar));
+  // A number is an absolute day, as calendar-absolute-from-gregorian counts them from the year 1, 1970-01-01 being 719163.
+  else if (startDay === undefined && typeof startVar === "number") startDay = startVar - 719163;
   const span = ndaysToSpan(spanArg ?? spanOf(e8.variable("org-agenda-span")));
   const today = dayNumber(today_());
   const sd = startDay ?? today;
@@ -4615,6 +4618,18 @@ const agendaTodo = e8.defineCommand({
   doc: "Change the TODO state of the entry the agenda line at point shows, as C-c C-t does there.",
   // Interactively, with the agenda's prefix argument, as Org's call-interactively: a blocked change is then an error.
   run: () => maybeLoop(false, () => agendaTodoWith(() => e8.funcallInteractively("org-todo"))),
+});
+
+e8.defineCommand({
+  name: "org-agenda-todo-yesterday",
+  doc: "Change the TODO state of the entry the agenda line at point shows, the time of the change a minute before midnight yesterday.",
+  run: () => {
+    const arg = e8.prefixArg();
+    asYesterday(() => {
+      if (arg !== null) e8.setPrefixArg(arg);
+      e8.callInteractively("org-agenda-todo");
+    });
+  },
 });
 
 const agendaRedo = e8.defineCommand({

@@ -1,0 +1,1051 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "time-closed-rounded",
+      "input": {
+        "text": "* TODO Write\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 09:07",
+        "globals": {
+          "org-timestamp-rounding-minutes": [
+            5,
+            5
+          ],
+          "org-log-done": "'time"
+        }
+      },
+      "text": "* DONE Write\nCLOSED: [2026-11-04 Wed 09:05]\n",
+      "visible": "* DONE Write\nCLOSED: [2026-11-04 Wed 09:05]\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "time-closed-rounded-up",
+      "input": {
+        "text": "* TODO Write\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 09:08",
+        "globals": {
+          "org-timestamp-rounding-minutes": [
+            5,
+            5
+          ],
+          "org-log-done": "'time"
+        }
+      },
+      "text": "* DONE Write\nCLOSED: [2026-11-04 Wed 09:10]\n",
+      "visible": "* DONE Write\nCLOSED: [2026-11-04 Wed 09:10]\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "time-closed-rounded-half",
+      "input": {
+        "text": "* TODO Write\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 09:13",
+        "globals": {
+          "org-timestamp-rounding-minutes": [
+            10,
+            5
+          ],
+          "org-log-done": "'time"
+        }
+      },
+      "text": "* DONE Write\nCLOSED: [2026-11-04 Wed 09:10]\n",
+      "visible": "* DONE Write\nCLOSED: [2026-11-04 Wed 09:10]\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "time-closed-hour-carry",
+      "input": {
+        "text": "* TODO Write\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 09:58",
+        "globals": {
+          "org-timestamp-rounding-minutes": [
+            5,
+            5
+          ],
+          "org-log-done": "'time"
+        }
+      },
+      "text": "* DONE Write\nCLOSED: [2026-11-04 Wed 10:00]\n",
+      "visible": "* DONE Write\nCLOSED: [2026-11-04 Wed 10:00]\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "time-closed-no-rounding",
+      "input": {
+        "text": "* TODO Write\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 09:07",
+        "globals": {
+          "org-log-done": "'time"
+        }
+      },
+      "text": "* DONE Write\nCLOSED: [2026-11-04 Wed 09:07]\n",
+      "visible": "* DONE Write\nCLOSED: [2026-11-04 Wed 09:07]\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "time-closed-effective",
+      "input": {
+        "text": "* TODO Write\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 03:07",
+        "globals": {
+          "org-use-effective-time": true,
+          "org-extend-today-until": 4,
+          "org-log-done": "'time"
+        }
+      },
+      "text": "* DONE Write\nCLOSED: [2026-11-03 Tue 23:59]\n",
+      "visible": "* DONE Write\nCLOSED: [2026-11-03 Tue 23:59]\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "time-closed-effective-after",
+      "input": {
+        "text": "* TODO Write\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 05:07",
+        "globals": {
+          "org-use-effective-time": true,
+          "org-extend-today-until": 4,
+          "org-log-done": "'time"
+        }
+      },
+      "text": "* DONE Write\nCLOSED: [2026-11-04 Wed 05:07]\n",
+      "visible": "* DONE Write\nCLOSED: [2026-11-04 Wed 05:07]\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "time-closed-extend-only",
+      "input": {
+        "text": "* TODO Write\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 03:07",
+        "globals": {
+          "org-extend-today-until": 4,
+          "org-log-done": "'time"
+        }
+      },
+      "text": "* DONE Write\nCLOSED: [2026-11-04 Wed 03:07]\n",
+      "visible": "* DONE Write\nCLOSED: [2026-11-04 Wed 03:07]\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "time-todo-yesterday",
+      "input": {
+        "text": "* TODO Write\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 09:07",
+        "answers": [
+          "org-todo-yesterday"
+        ],
+        "globals": {
+          "org-log-done": "'time"
+        }
+      },
+      "text": "* DONE Write\nCLOSED: [2026-11-03 Tue 23:59]\n",
+      "visible": "* DONE Write\nCLOSED: [2026-11-03 Tue 23:59]\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "time-todo-yesterday-rounded",
+      "input": {
+        "text": "* TODO Write\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 09:07",
+        "answers": [
+          "org-todo-yesterday"
+        ],
+        "globals": {
+          "org-timestamp-rounding-minutes": [
+            5,
+            5
+          ],
+          "org-log-done": "'time"
+        }
+      },
+      "text": "* DONE Write\nCLOSED: [2026-11-03 Tue 23:59]\n",
+      "visible": "* DONE Write\nCLOSED: [2026-11-03 Tue 23:59]\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "time-todo-yesterday-note",
+      "input": {
+        "text": "#+TODO: TODO(t!) | DONE(d!)\n* TODO Write\n",
+        "point": 0,
+        "keys": "C-n M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 09:07",
+        "answers": [
+          "org-todo-yesterday",
+          "d"
+        ],
+        "globals": {
+          "org-log-into-drawer": true
+        }
+      },
+      "text": "#+TODO: TODO(t!) | DONE(d!)\n* DONE Write\n:LOGBOOK:\n- State \"DONE\"       from \"TODO\"       [2026-11-03 Tue 23:59]\n:END:\n",
+      "visible": "#+TODO: TODO(t!) | DONE(d!)\n* DONE Write\n:LOGBOOK:\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "time-state-log-rounded",
+      "input": {
+        "text": "#+TODO: TODO(t!) | DONE(d!)\n* TODO Write\n",
+        "point": 0,
+        "keys": "C-n C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 09:07",
+        "answers": [
+          "d"
+        ],
+        "globals": {
+          "org-timestamp-rounding-minutes": [
+            5,
+            5
+          ]
+        }
+      },
+      "text": "#+TODO: TODO(t!) | DONE(d!)\n* DONE Write\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 09:05]",
+      "visible": "#+TODO: TODO(t!) | DONE(d!)\n* DONE Write\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 09:05]",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "time-repeat-rounded",
+      "input": {
+        "text": "* TODO Water\nSCHEDULED: <2026-11-04 Wed +1w>\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 09:07",
+        "globals": {
+          "org-timestamp-rounding-minutes": [
+            5,
+            5
+          ],
+          "org-log-repeat": "'time"
+        }
+      },
+      "text": "* TODO Water\nSCHEDULED: <2026-11-11 Wed +1w>\n:PROPERTIES:\n:LAST_REPEAT: [2026-11-04 Wed 09:05]\n:END:\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 09:05]",
+      "visible": "* TODO Water\nSCHEDULED: <2026-11-11 Wed +1w>\n:PROPERTIES:\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 09:05]",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "time-repeat-effective",
+      "input": {
+        "text": "* TODO Water\nSCHEDULED: <2026-11-04 Wed +1w>\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 03:07",
+        "globals": {
+          "org-use-effective-time": true,
+          "org-extend-today-until": 4,
+          "org-log-repeat": "'time"
+        }
+      },
+      "text": "* TODO Water\nSCHEDULED: <2026-11-11 Wed +1w>\n:PROPERTIES:\n:LAST_REPEAT: [2026-11-03 Tue 23:59]\n:END:\n- State \"DONE\"       from \"TODO\"       [2026-11-03 Tue 23:59]",
+      "visible": "* TODO Water\nSCHEDULED: <2026-11-11 Wed +1w>\n:PROPERTIES:\n- State \"DONE\"       from \"TODO\"       [2026-11-03 Tue 23:59]",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "time-last-clock-out",
+      "input": {
+        "text": "* TODO Write\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 16:00]--[2026-11-03 Tue 17:30] =>  1:30\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 09:07",
+        "globals": {
+          "org-use-last-clock-out-time-as-effective-time": true,
+          "org-log-done": "'time"
+        }
+      },
+      "text": "* DONE Write\nCLOSED: [2026-11-03 Tue 17:30]\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 16:00]--[2026-11-03 Tue 17:30] =>  1:30\n:END:\n",
+      "visible": "* DONE Write\nCLOSED: [2026-11-03 Tue 17:30]\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 16:00]--[2026-11-03 Tue 17:30] =>  1:30\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "time-last-clock-out-none",
+      "input": {
+        "text": "* TODO Write\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 09:07",
+        "globals": {
+          "org-use-last-clock-out-time-as-effective-time": true,
+          "org-log-done": "'time"
+        }
+      },
+      "text": "* DONE Write\nCLOSED: [2026-11-04 Wed 09:07]\n",
+      "visible": "* DONE Write\nCLOSED: [2026-11-04 Wed 09:07]\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "time-clock-in-rounded",
+      "input": {
+        "text": "* TODO Write\n",
+        "point": 0,
+        "keys": "C-c C-x C-i C-c C-x C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 09:07",
+        "globals": {
+          "org-clock-rounding-minutes": 5
+        }
+      },
+      "text": "* TODO Write\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 09:05]--[2026-11-04 Wed 09:05] =>  0:00\n:END:\n",
+      "visible": "* TODO Write\n:LOGBOOK:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "time-clock-in-on-step",
+      "input": {
+        "text": "* TODO Write\n",
+        "point": 0,
+        "keys": "C-c C-x C-i C-c C-x C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 09:05",
+        "globals": {
+          "org-clock-rounding-minutes": 5
+        }
+      },
+      "text": "* TODO Write\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:05] =>  0:05\n:END:\n",
+      "visible": "* TODO Write\n:LOGBOOK:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "time-clock-in-up",
+      "input": {
+        "text": "* TODO Write\n",
+        "point": 0,
+        "keys": "C-c C-x C-i C-c C-x C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 09:08",
+        "globals": {
+          "org-clock-rounding-minutes": 5
+        }
+      },
+      "text": "* TODO Write\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 09:05]--[2026-11-04 Wed 09:10] =>  0:05\n:END:\n",
+      "visible": "* TODO Write\n:LOGBOOK:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "time-clock-not-rounded",
+      "input": {
+        "text": "* TODO Write\n",
+        "point": 0,
+        "keys": "C-c C-x C-i C-c C-x C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 09:07",
+        "globals": {
+          "org-timestamp-rounding-minutes": [
+            5,
+            5
+          ]
+        }
+      },
+      "text": "* TODO Write\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 09:07]--[2026-11-04 Wed 09:07] =>  0:00\n:END:\n",
+      "visible": "* TODO Write\n:LOGBOOK:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "time-prompt-default-rounded",
+      "input": {
+        "text": "x ",
+        "point": 0,
+        "keys": "C-e C-u C-c .",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 09:07",
+        "answers": [
+          ""
+        ],
+        "globals": {
+          "org-timestamp-rounding-minutes": [
+            5,
+            5
+          ]
+        }
+      },
+      "text": "x <2026-11-04 Wed 09:05>",
+      "visible": "x <2026-11-04 Wed 09:05>",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "time-prompt-default-now",
+      "input": {
+        "text": "x ",
+        "point": 0,
+        "keys": "C-e C-u C-c .",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 09:07",
+        "answers": [
+          ""
+        ]
+      },
+      "text": "x <2026-11-04 Wed 09:07>",
+      "visible": "x <2026-11-04 Wed 09:07>",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "time-capture-u",
+      "input": {
+        "text": "* Inbox\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-11-04 09:07",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %?\n%U"
+          ]
+        ],
+        "answers": [
+          "t"
+        ],
+        "globals": {
+          "org-timestamp-rounding-minutes": [
+            15,
+            5
+          ]
+        }
+      },
+      "text": "* Inbox\n** new\n[2026-11-04 Wed 09:00]\n",
+      "visible": "* Inbox\n** new\n[2026-11-04 Wed 09:00]\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "time-capture-T",
+      "input": {
+        "text": "* Inbox\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-11-04 09:07",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %?\n%T"
+          ]
+        ],
+        "answers": [
+          "t"
+        ],
+        "globals": {
+          "org-timestamp-rounding-minutes": [
+            5,
+            5
+          ]
+        }
+      },
+      "text": "* Inbox\n** new\n<2026-11-04 Wed 09:05>\n",
+      "visible": "* Inbox\n** new\n<2026-11-04 Wed 09:05>\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "time-capture-u-plain",
+      "input": {
+        "text": "* Inbox\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-11-04 09:07",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %?\n%U"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\n** new\n[2026-11-04 Wed 09:07]\n",
+      "visible": "* Inbox\n** new\n[2026-11-04 Wed 09:07]\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "time-capture-extend",
+      "input": {
+        "text": "* Inbox\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-11-04 03:07",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %?\n%U"
+          ]
+        ],
+        "answers": [
+          "t"
+        ],
+        "globals": {
+          "org-extend-today-until": 4
+        }
+      },
+      "text": "* Inbox\n** new\n[2026-11-03 Tue 23:59]\n",
+      "visible": "* Inbox\n** new\n[2026-11-03 Tue 23:59]\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "time-bulk-plus-plus-body",
+      "input": {
+        "text": "* TODO Write\nSome text.\nSCHEDULED: <2026-11-05 Thu>\n",
+        "point": 0,
+        "keys": "C-s W r i t e RET m B C-x b M-g c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "visit": "e8-ts.org",
+        "today": "2026-11-04",
+        "agenda_files": true,
+        "answers": [
+          "a",
+          "s",
+          "++2",
+          "*e8-oracle*",
+          "1"
+        ]
+      },
+      "text": "* TODO Write\nSCHEDULED: <2026-11-07 Sat>\nSome text.\nSCHEDULED: <2026-11-05 Thu>\n",
+      "visible": "* TODO Write\nSCHEDULED: <2026-11-07 Sat>\nSome text.\nSCHEDULED: <2026-11-05 Thu>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "time-bulk-plus-plus-planning",
+      "input": {
+        "text": "* TODO Write\nSCHEDULED: <2026-11-05 Thu>\n",
+        "point": 0,
+        "keys": "C-s W r i t e RET m B C-x b M-g c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "visit": "e8-ts.org",
+        "today": "2026-11-04",
+        "agenda_files": true,
+        "answers": [
+          "a",
+          "s",
+          "++2",
+          "*e8-oracle*",
+          "1"
+        ]
+      },
+      "text": "* TODO Write\nSCHEDULED: <2026-11-07 Sat>\n",
+      "visible": "* TODO Write\nSCHEDULED: <2026-11-07 Sat>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "time-start-day-number",
+      "input": {
+        "text": "* TODO Write\nSCHEDULED: <2026-11-06 Fri>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "visit": "e8-ts.org",
+        "today": "2026-11-04",
+        "agenda_files": true,
+        "answers": [
+          "a"
+        ],
+        "globals": {
+          "org-agenda-start-day": 739926,
+          "org-agenda-span": 1
+        }
+      },
+      "text": "Day-agenda (W45):\nFriday      6 November 2026\n  e8-ts:      Scheduled:  TODO Write\n",
+      "visible": "Day-agenda (W45):\nFriday      6 November 2026\n  e8-ts:      Scheduled:  TODO Write\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "review-sched-overriding-vars",
+      "input": {
+        "text": "* TODO Write\nSCHEDULED: <2026-11-05 Thu>\n",
+        "point": 0,
+        "keys": "C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 09:07",
+        "answers": [
+          "++1"
+        ],
+        "vars": {
+          "org-overriding-default-time": 1794312000
+        }
+      },
+      "text": "* TODO Write\nSCHEDULED: <2026-11-11 Wed>\n",
+      "visible": "* TODO Write\nSCHEDULED: <2026-11-11 Wed>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "review-sched-overriding-none",
+      "input": {
+        "text": "* TODO Write\n",
+        "point": 0,
+        "keys": "C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 09:07",
+        "answers": [
+          "++1"
+        ],
+        "vars": {
+          "org-overriding-default-time": 1794312000
+        }
+      },
+      "text": "* TODO Write\nSCHEDULED: <2026-11-11 Wed>\n",
+      "visible": "* TODO Write\nSCHEDULED: <2026-11-11 Wed>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "review-state-note-body",
+      "input": {
+        "text": "#+TODO: TODO(t) | DONE(d@)\n* TODO Write\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 16:00]--[2026-11-03 Tue 17:30] =>  1:30\n:END:\nBody\n",
+        "point": 0,
+        "keys": "M-> C-p C-c C-t h i C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 09:07",
+        "answers": [
+          "d"
+        ],
+        "globals": {
+          "org-use-last-clock-out-time-as-effective-time": true
+        }
+      },
+      "text": "#+TODO: TODO(t) | DONE(d@)\n* DONE Write\n- State \"DONE\"       from \"TODO\"       [2026-11-03 Tue 17:30] \\\\\n  hi\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 16:00]--[2026-11-03 Tue 17:30] =>  1:30\n:END:\nBody\n",
+      "visible": "#+TODO: TODO(t) | DONE(d@)\n* DONE Write\n- State \"DONE\"       from \"TODO\"       [2026-11-03 Tue 17:30] \\\\\n  hi\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 16:00]--[2026-11-03 Tue 17:30] =>  1:30\n:END:\nBody\n",
+      "point": 189,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "review-repeat-clock",
+      "input": {
+        "text": "* TODO Water\nSCHEDULED: <2026-11-04 Wed +1w>\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 16:00]--[2026-11-03 Tue 17:30] =>  1:30\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 09:07",
+        "globals": {
+          "org-log-repeat": false
+        }
+      },
+      "text": "* TODO Water\nSCHEDULED: <2026-11-11 Wed +1w>\n:PROPERTIES:\n:LAST_REPEAT: [2026-11-04 Wed 09:07]\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 16:00]--[2026-11-03 Tue 17:30] =>  1:30\n:END:\n",
+      "visible": "* TODO Water\nSCHEDULED: <2026-11-11 Wed +1w>\n:PROPERTIES:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 16:00]--[2026-11-03 Tue 17:30] =>  1:30\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "review-sched-time-body",
+      "input": {
+        "text": "* TODO Write\nSome text.\nSCHEDULED: <2026-11-05 Thu>\n",
+        "point": 0,
+        "keys": "C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 09:07",
+        "answers": [
+          "10:00"
+        ]
+      },
+      "text": "* TODO Write\nSCHEDULED: <2026-11-05 Thu 10:00>\nSome text.\nSCHEDULED: <2026-11-05 Thu>\n",
+      "visible": "* TODO Write\nSCHEDULED: <2026-11-05 Thu 10:00>\nSome text.\nSCHEDULED: <2026-11-05 Thu>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "review-deadline-time-planning",
+      "input": {
+        "text": "* TODO Write\nDEADLINE: <2026-11-05 Thu>\n",
+        "point": 0,
+        "keys": "C-c C-d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 09:07",
+        "answers": [
+          "++1"
+        ]
+      },
+      "text": "* TODO Write\nDEADLINE: <2026-11-06 Fri>\n",
+      "visible": "* TODO Write\nDEADLINE: <2026-11-06 Fri>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

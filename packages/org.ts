@@ -284,7 +284,7 @@ for (const [name, doc, value] of variables) e8.defineVariable({ name, doc, value
 e8.defvaralias("org-time-stamp-rounding-minutes", "org-timestamp-rounding-minutes");
 
 /** org-timestamp-rounding-minutes as a pair, a number alone standing for both, as Org normalizes it. */
-function roundingMinutes(): [number, number] {
+export function roundingMinutes(): [number, number] {
   const v = e8.variable("org-timestamp-rounding-minutes");
   if (typeof v === "number") return [v, v];
   const list = Array.isArray(v) ? v : [];
@@ -1799,7 +1799,7 @@ function storeLogNote(
   state: string | undefined,
   previous: string | undefined,
   lines: string[],
-  time = `[${formatTimestamp(today(true), true)}]`,
+  time = `[${formatTimestamp(currentEffectiveTime(e8.lineStart(headingLine)), true)}]`,
   place?: number,
 ): boolean {
   const h = parseHeading(headingLine);
@@ -1874,7 +1874,7 @@ function freeNoteMarkers(n: { heading: e8.Marker; at?: e8.Marker; returnTo?: e8.
  * `extra` goes in *Org Note* after its header, and a note `at` a place,
  * as a clock's, is stored there rather than where the log begins.
  */
-export function addLogNote(headingLine: number, purpose: string, state?: string, previous?: string, opts: { how?: string; extra?: string; at?: number } = {}): void {
+export function addLogNote(headingLine: number, purpose: string, state?: string, previous?: string, opts: { how?: string; extra?: string; at?: number; from?: number } = {}): void {
   setups++;
   if (noteSetup !== undefined) freeNoteMarkers(noteSetup);
   noteSetup = {
@@ -1887,7 +1887,8 @@ export function addLogNote(headingLine: number, purpose: string, state?: string,
     at: opts.at === undefined ? undefined : e8.makeMarker(opts.at),
     // Where point was, which the entry's window shows while the note is taken, as org-log-note-marker.
     point: e8.makeMarker(e8.point()),
-    time: `[${formatTimestamp(today(true), true)}]`,
+    // As org-add-log-setup takes org-current-effective-time, where it is called from.
+    time: `[${formatTimestamp(currentEffectiveTime(opts.from ?? e8.point()), true)}]`,
     command: e8.thisCommand(),
     depth: e8.recursionDepth(),
   };
@@ -4542,7 +4543,7 @@ function insertTodoHeading(arg: e8.PrefixArg, force: boolean): void {
   // As org-insert-todo-heading logs the new state, when it is treated as a change.
   if (e8.variable("org-treat-insert-todo-heading-as-state-change") === true) {
     const how = logHow(state, undefined);
-    if (how === "note") addLogNote(line, "state", state, undefined);
+    if (how === "note") addLogNote(line, "state", state, undefined, { from: e8.lineStart(line) });
     else if (how !== undefined) storeStateNote(line, state, undefined);
   }
 }
@@ -5863,7 +5864,7 @@ function todoLogged(direction: number, state?: string, across = false, options: 
     // No state keeps CLOSED with org-closed-keep-when-no-todo.
     if ((next === undefined && !truthy(e8.variable("org-closed-keep-when-no-todo") ?? null)) || (notDone(next) && !notDone(before))) setPlanning(h.line, "CLOSED", undefined);
     // At the planning line's start, as org-add-planning-info puts a keyword it adds.
-    if (isDone(next) && !isDone(before) && logDone !== null && logDone !== false) addPlanningInfo(h.line, "CLOSED", `[${formatTimestamp(today(true), true)}]`, []);
+    if (isDone(next) && !isDone(before) && logDone !== null && logDone !== false) addPlanningInfo(h.line, "CLOSED", `[${formatTimestamp(currentEffectiveTime(h.start), true)}]`, []);
   }
   updateParentTodoStatistics(h.line);
   // What to log, as org-todo's org-add-log-setup calls: a closing note
@@ -5896,7 +5897,8 @@ function todoLogged(direction: number, state?: string, across = false, options: 
   e8.saveExcursion(() => e8.runHooks("org-trigger-hook", change));
   // Org stores the note from post-command-hook, after the command, asking
   // for one in *Org Note* when the state's @ says so.
-  if (setup?.how === "note") addLogNote(h.line, setup.purpose, setup.state, setup.previous);
+  // From the heading, as org-todo sets the note up there.
+  if (setup?.how === "note") addLogNote(h.line, setup.purpose, setup.state, setup.previous, { from: e8.lineStart(h.line) });
   else if (setup !== undefined) storeLogNote(h.line, setup.purpose, setup.state, setup.previous, []);
 }
 
@@ -5994,7 +5996,9 @@ function autoRepeat(line: number, last: string | undefined, done: string): [stri
   updateParentTodoStatistics(line);
   setPlanning(line, "CLOSED", undefined);
   const log = e8.variable("org-log-repeat");
-  if (log) entryPut(line, "LAST_REPEAT", `[${formatTimestamp(today(true), true)}]`);
+  // Also when the entry has a clock line, as org-auto-repeat-maybe sets it then.
+  const clocked = /^[ \t]*CLOCK:/m.test(e8.bufferText(e8.lineStart(line), end));
+  if (log || clocked) entryPut(line, "LAST_REPEAT", `[${formatTimestamp(currentEffectiveTime(e8.lineStart(line)), true)}]`);
   // A SCHEDULED without a repeater is no longer relevant, and goes, as
   // org-auto-repeat-maybe removes it.
   const planning = line + 1 < e8.lineCount() ? e8.lineText(line + 1) : "";
@@ -7083,9 +7087,12 @@ export interface DateTime {
 }
 
 export function today(withTime = false): DateTime {
-  // Tests fix the day with e8--today, as "YYYY-MM-DD".
-  const fixed = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(e8.variable("e8--today") ?? ""));
-  if (fixed) return { year: Number(fixed[1]), month: Number(fixed[2]), day: Number(fixed[3]), ...(withTime ? { hour: 12, minute: 0 } : {}) };
+  // Tests fix the day with e8--today, as "YYYY-MM-DD", at noon, or "YYYY-MM-DD HH:MM".
+  const fixed = /^(\d{4})-(\d{2})-(\d{2})(?: (\d{1,2}):(\d{2}))?$/.exec(String(e8.variable("e8--today") ?? ""));
+  if (fixed) {
+    const time = { hour: fixed[4] === undefined ? 12 : Number(fixed[4]), minute: fixed[5] === undefined ? 0 : Number(fixed[5]) };
+    return { year: Number(fixed[1]), month: Number(fixed[2]), day: Number(fixed[3]), ...(withTime ? time : {}) };
+  }
   // E8's clock in its own zone, as set-time-zone-rule sets it, as Emacs's decode-time.
   const [, minute, hour, day, month, year] = e8.decodeTime() as number[];
   return { year, month, day, ...(withTime ? { hour, minute } : {}) };
@@ -7666,23 +7673,67 @@ const PLAIN_TIME_OF_DAY = new RegExp(
   "u",
 );
 
-/** The time now, its minutes rounded to org-timestamp-rounding-minutes's first, as org-current-time gives it. */
-function currentTime(): DateTime {
+/**
+ * The time now, its minutes rounded to ROUNDING, or without a whole number
+ * to org-timestamp-rounding-minutes's first; with PAST, a time not after
+ * now, a step earlier if rounding went past it, as org-current-time.
+ */
+export function orgCurrentTime(rounding?: e8.Value, past = false): DateTime {
   const now = today(true);
-  const step = roundingMinutes()[0];
+  const step = typeof rounding === "number" && Number.isInteger(rounding) ? rounding : roundingMinutes()[0];
   if (step < 1) return now;
   // Halves to the even step, as Emacs's round of integers does.
   const q = (now.minute ?? 0) / step;
   const down = Math.floor(q);
   const nearest = q - down === 0.5 ? (down % 2 === 0 ? down : down + 1) : Math.round(q);
-  return normalize({ ...now, minute: nearest * step });
+  const res = normalize({ ...now, minute: nearest * step });
+  if (!past) return res;
+  // The seconds now, none at a time tests fix, as the rounded time has none.
+  const seconds = typeof e8.variable("e8--today") === "string" && e8.variable("e8--today") !== "" ? 0 : (e8.decodeTime() as number[])[0];
+  const before = (nearest * step) < (now.minute ?? 0) || ((nearest * step) === (now.minute ?? 0) && seconds > 0);
+  return before ? res : normalize({ ...res, minute: (res.minute ?? 0) - step });
+}
+
+function currentTime(): DateTime {
+  return orgCurrentTime();
 }
 
 /**
- * The prompt's default when none is given: the time now, or before
- * org-extend-today-until's hour, a minute before midnight yesterday, as
- * org-read-date has it.
+ * The time logged changes are stamped with, as org-current-effective-time:
+ * the last clock-out in the entry at point with
+ * org-use-last-clock-out-time-as-effective-time, a minute before midnight
+ * yesterday before org-extend-today-until's hour with
+ * org-use-effective-time, else the time now.
  */
+export function currentEffectiveTime(pos = e8.point()): DateTime {
+  const ct = orgCurrentTime();
+  if (truthy(e8.variable("org-use-last-clock-out-time-as-effective-time") ?? null)) {
+    // The first CLOCK line closed in the subtree from POS, as org-clock-get-last-clock-out-time searches.
+    const all = headings();
+    const i = headingIndex(all, lineAt(pos));
+    const end = i === undefined ? e8.pointMax() : subtreeEnd(all, i);
+    const found = e8.saveExcursion(() =>
+      (e8.gotoChar(pos), e8.reSearchForward("CLOCK:.*\\]--\\(\\[[^]]+\\]\\)", { bound: end, noerror: true })) === undefined ? undefined : timestampTime(e8.matchString(1) ?? ""),
+    );
+    return found ?? ct;
+  }
+  if (truthy(e8.variable("org-use-effective-time") ?? null) && (ct.hour ?? 0) < Number(e8.variable("org-extend-today-until") ?? 0)) {
+    return normalize({ year: ct.year, month: ct.month, day: ct.day - 1, hour: 23, minute: 59 });
+  }
+  return ct;
+}
+
+e8.defineVariable({
+  name: "org-use-effective-time",
+  doc: "Whether the times Org stamps changes with, as CLOSED and logged state changes, take org-extend-today-until: before its hour, a minute before midnight the day before.",
+  value: false,
+});
+e8.defineVariable({
+  name: "org-use-last-clock-out-time-as-effective-time",
+  doc: "Whether changes are stamped with the entry's last clock-out time, ahead of org-use-effective-time.",
+  value: false,
+});
+
 /* The time that stands for now, as org.el's org-overriding-default-time. */
 e8.defineVariable({
   name: "org-overriding-default-time",
@@ -7698,6 +7749,11 @@ export function overridingDefaultTime(): DateTime | undefined {
   return { year, month, day, hour, minute };
 }
 
+/**
+ * The prompt's default when none is given: the time now, or before
+ * org-extend-today-until's hour, a minute before midnight yesterday, as
+ * org-read-date has it.
+ */
 function promptDefault(): DateTime {
   const def = currentTime();
   const extend = Number(e8.variable("org-extend-today-until") ?? 0);
@@ -7905,9 +7961,10 @@ export function readDateAnalyze(input: string, def: DateTime, withEnd = false): 
  * DEF is the default, the time now unless a timestamp is being changed.
  * The result has a range's end time, if WITH_END and one was given.
  */
-export function parseDate(input: string, withTime = false, def?: DateTime, withEnd = false): DateTime & { endTime?: string } {
-  // org-overriding-default-time first, as org-read-date takes it before its default.
-  const base = overridingDefaultTime() ?? def ?? promptDefault();
+export function parseDate(input: string, withTime = false, def?: DateTime, withEnd = false, prompted = true): DateTime & { endTime?: string } {
+  // org-overriding-default-time first, as org-read-date takes it before its default; not for a date code gives,
+  // which org-add-planning-info reads with org-read-date-analyze alone.
+  const base = (prompted ? overridingDefaultTime() : undefined) ?? def ?? promptDefault();
   const r = readDateAnalyze(input, { hour: 0, minute: 0, ...base }, withEnd);
   if (r.forcedYear) e8.message("Year was forced into compatible range (1970-2037)");
   const d: DateTime & { endTime?: string } = { year: r.date.year, month: r.date.month, day: r.date.day };
@@ -7922,8 +7979,26 @@ export function parseDate(input: string, withTime = false, def?: DateTime, withE
  * calendar, which E8 does not show. So the answer is never ISO 8601 text
  * alone, which parse-time-string would read whole.
  */
-export function readDateAnswer(prompt: string): string {
-  return `${e8.readString(prompt, { history: "org-read-date-history" })} `;
+export function readDateAnswer(prompt: string, initial?: string): string {
+  return `${e8.readString(prompt, { history: "org-read-date-history", ...(initial === undefined ? {} : { initial }) })} `;
+}
+
+/** A timestamp's time, or its range of times as 10:00+1:30, as org-get-compact-tod gives the date prompt to start with. */
+export function compactTod(s: string): string | undefined {
+  const m = /(([012]?[0-9]):([0-5][0-9]))(-(([012]?[0-9]):([0-5][0-9])))?/.exec(s);
+  if (!m) return undefined;
+  if (m[4] === undefined) return m[1];
+  let dh = Number(m[6]) - Number(m[2]);
+  let dm = Number(m[7]) - Number(m[3]);
+  if (dm < 0) [dm, dh] = [dm + 60, dh - 1];
+  return `${m[1]}+${dh}${dm !== 0 ? `:${pad2(dm)}` : ""}`;
+}
+
+/** What the date prompt starts with for C-c . on a timestamp: its time, as org-timestamp gives org-read-date. */
+function timestampPromptInput(): string | undefined {
+  const p = e8.point();
+  const ts = tsMatches(lineAt()).find((t) => t.start <= p && p <= t.end);
+  return ts === undefined ? undefined : compactTod(e8.bufferText(ts.start, ts.end));
 }
 
 /** A range's end time as org-insert-timestamp puts it before the bracket, -HH:MM, if it has hours and minutes. */
@@ -8004,14 +8079,14 @@ const timestamp = e8.defineCommand({
     "fri is the next Friday; 2026-11-03, 11-03, 3, 3.11.2026, 11/3/26, nov 3 and w45 are the next such date; " +
     "add a time as 10:30, 3pm or 15h, or a range as 10:00-11:00 or 10:00+1:30. With C-u, the time goes in too; " +
     "with C-u C-u, the time now, without asking.",
-  params: [{ name: "date", value: () => (doublePrefix() ? "" : readDateAnswer("Date: ")) }],
+  params: [{ name: "date", value: () => (doublePrefix() ? "" : readDateAnswer("Date: ", timestampPromptInput())) }],
   run: (input: string) => insertTimestamp(doublePrefix() ? undefined : input, true),
 });
 
 const inactiveTimestamp = e8.defineCommand({
   name: "org-timestamp-inactive",
   doc: "Insert an inactive timestamp, such as [2026-10-28 Wed], which the agenda leaves out. See org-timestamp.",
-  params: [{ name: "date", value: () => (doublePrefix() ? "" : readDateAnswer("Date: ")) }],
+  params: [{ name: "date", value: () => (doublePrefix() ? "" : readDateAnswer("Date: ", timestampPromptInput())) }],
   run: (input: string) => insertTimestamp(doublePrefix() ? undefined : input, false),
 });
 
@@ -8105,12 +8180,21 @@ function dayCount(d: DateTime): number {
 }
 
 /** Plans the heading point is under, its edits not unfolding what they touch, as org--deadline-or-schedule ignores them. */
-function plan(keyword: string, input: string | (() => string)): void {
-  withoutFoldChecks(() => planHere(keyword, typeof input === "string" ? () => input : input));
+function plan(keyword: string, input: string | (() => string), fromCode = false): void {
+  withoutFoldChecks(() => planHere(keyword, typeof input === "string" ? () => input : input, fromCode));
+}
+
+/** The KEYWORD date anywhere in the entry at point, as org-add-planning-info looks for its default time up to the next heading. */
+function entryPlanDate(keyword: string): string | undefined {
+  const all = headings();
+  const i = headingIndex(all, lineAt());
+  if (i === undefined) return undefined;
+  const end = i + 1 < all.length ? all[i + 1].start : e8.pointMax();
+  return new RegExp(`${keyword}: *(<[^>\n]+>)`).exec(e8.bufferText(all[i].start, end))?.[1];
 }
 
 /** Plans the heading point is under, reading the date from `input` only once it is needed, as org--deadline-or-schedule reads it. */
-function planHere(keyword: string, input: () => string): void {
+function planHere(keyword: string, input: () => string, fromCode = false): void {
   const [all, i] = backToHeading();
   const deadline = keyword === "DEADLINE";
   const log = e8.variable(deadline ? "org-log-redeadline" : "org-log-reschedule");
@@ -8144,8 +8228,12 @@ function planHere(keyword: string, input: () => string): void {
     e8.message(deadline ? "Entry no longer has a deadline." : "Entry is no longer scheduled.");
     return;
   }
-  // The parts not given come from the old date, as its default time.
-  const date = parseDate(input(), false, old === undefined ? undefined : timestampTime(old), true);
+  // The parts not given come from the keyword's date anywhere in the entry, as org-add-planning-info takes its
+  // default time: for a date read, with org-overriding-default-time before it; for one code gives, as the agenda's
+  // bulk action gives ++3d, only when it is relative, and without the overriding time, as org-read-date-analyze reads it.
+  const answer = input();
+  const base = fromCode && !/^[-+]+[0-9]/.test(answer) ? undefined : e8.saveExcursion(() => (e8.gotoChar(all[i].start), entryPlanDate(keyword)));
+  const date = parseDate(answer, false, base === undefined ? undefined : timestampTime(base), true, !fromCode);
   // The old date's repeater and warning stay, as org--deadline-or-schedule keeps them.
   const inserted = stampFor(date, true);
   const ts = withRepeater(inserted, old);
@@ -8167,10 +8255,10 @@ function planEach(keyword: string, input: string): void {
   const asks = e8.calledInteractively();
   let date: string | undefined = input;
   const once = () => {
-    plan(keyword, date ?? (() => readPlanDate(keyword)));
+    plan(keyword, date ?? (() => readPlanDate(keyword)), !asks);
     if (asks) date = undefined;
   };
-  if (!forEachHeadingInRegion(once)) plan(keyword, input);
+  if (!forEachHeadingInRegion(once)) plan(keyword, input, !asks);
 }
 
 /**
@@ -8188,7 +8276,9 @@ function readPlanDate(keyword: string, check = true): string {
       e8.userError(keyword === "DEADLINE" ? "No deadline information to update" : "No scheduled information to update");
   }
   const prompt = doublePrefix() ? (keyword === "DEADLINE" ? "Warn starting from: " : "Delay until: ") : "Date: ";
-  return readDateAnswer(prompt);
+  // Starting with the entry's date's time, as org-add-planning-info gives org-get-compact-tod.
+  const old = doublePrefix() ? undefined : entryPlanDate(keyword);
+  return readDateAnswer(prompt, old === undefined ? undefined : compactTod(old));
 }
 
 /**
@@ -13932,3 +14022,24 @@ e8.remapCommand("org-mode-map", "move-end-of-line", "org-end-of-line");
 // A remap, as Org's, so C-y is still yank's key to where-is and \[yank].
 e8.remapCommand("org-mode-map", "yank", "org-yank");
 e8.remapCommand("org-mode-map", "move-beginning-of-line", orgBeginningOfLine);
+
+/** Runs F with the time of change a minute before midnight yesterday, as org-todo-yesterday binds org-use-effective-time and org-extend-today-until. */
+export function asYesterday<T>(f: () => T): T {
+  const hour = orgCurrentTime().hour ?? 0;
+  return e8.letBind({ "org-use-effective-time": true, "org-extend-today-until": hour + 1 }, f);
+}
+
+e8.defineCommand({
+  name: "org-todo-yesterday",
+  doc: "Change the TODO state as C-c C-t does, the time of the change, as CLOSED and a logged note have it, a minute before midnight yesterday.",
+  run: () => {
+    // With the prefix argument, as call-interactively passes it on.
+    const arg = e8.prefixArg();
+    const call = (command: e8.CommandName) => {
+      if (arg !== null) e8.setPrefixArg(arg);
+      e8.callInteractively(command);
+    };
+    if (e8.derivedModeP("org-agenda-mode")) call("org-agenda-todo-yesterday" as e8.CommandName);
+    else asYesterday(() => call("org-todo"));
+  },
+});

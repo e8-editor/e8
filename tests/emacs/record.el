@@ -153,14 +153,23 @@ while the case's keys are queued would read those instead."
 (defvar e8-oracle--today nil
   "The day a case fixes, as calendar-absolute-from-gregorian counts it.")
 
+(defvar e8-oracle--time '(12 0)
+  "The hour and minute a case fixes on its day, noon unless `today' gives
+one, as \"2026-11-04 09:07\".")
+
 (defun e8-oracle--today ()
   "The case's fixed day, for org-today."
   e8-oracle--today)
 
 (defun e8-oracle--now (&rest _)
-  "Noon on the case's fixed day, for org-current-effective-time and org-current-time, as E8's tests stamp times."
+  "The case's fixed time, noon on its day unless it gives a time, as E8's tests stamp times."
   (let ((d (calendar-gregorian-from-absolute e8-oracle--today)))
-    (encode-time (list 0 0 12 (nth 1 d) (nth 0 d) (nth 2 d) nil -1 nil))))
+    (encode-time (list 0 (nth 1 e8-oracle--time) (nth 0 e8-oracle--time) (nth 1 d) (nth 0 d) (nth 2 d) nil -1 nil))))
+
+(defun e8-oracle--current-time (orig &rest args)
+  "org-current-time as Org works it out, rounding and all, from the case's fixed time."
+  (cl-letf (((symbol-function 'current-time) #'e8-oracle--now))
+    (apply orig args)))
 
 (defun e8-oracle--timestamp-to-now (timestamp-string &optional seconds)
   "org-timestamp-to-now from noon on the case's fixed day, as E8's tests count."
@@ -486,8 +495,7 @@ its `globals' bound for the case, before the modes start."
                        org-capture-templates (alist-get 'capture_templates case)))
       ;; A fixed day for the agenda, as YYYY-MM-DD.
       (advice-remove 'org-today #'e8-oracle--today)
-      (advice-remove 'org-current-effective-time #'e8-oracle--now)
-      (advice-remove 'org-current-time #'e8-oracle--now)
+      (advice-remove 'org-current-time #'e8-oracle--current-time)
       (advice-remove 'org-clock-special-range #'e8-oracle--range-now)
       (advice-remove 'org-clocktable-write-default #'e8-oracle--caption-now)
       (advice-remove 'org-clock-get-clocked-time #'e8-oracle--clocked-time)
@@ -497,11 +505,16 @@ its `globals' bound for the case, before the modes start."
       (when-let* ((day (alist-get 'today case)))
         (setq e8-oracle--today
               (calendar-absolute-from-gregorian
-               (let ((d (mapcar #'string-to-number (split-string day "-"))))
-                 (list (nth 1 d) (nth 2 d) (nth 0 d)))))
+               (let ((d (mapcar #'string-to-number (split-string (car (split-string day " ")) "-"))))
+                 (list (nth 1 d) (nth 2 d) (nth 0 d))))
+              e8-oracle--time
+              (if (string-match " \\([0-9]+\\):\\([0-9]+\\)\\'" day)
+                  (list (string-to-number (match-string 1 day)) (string-to-number (match-string 2 day)))
+                '(12 0)))
         (advice-add 'org-today :override #'e8-oracle--today)
-        (advice-add 'org-current-effective-time :override #'e8-oracle--now)
-        (advice-add 'org-current-time :override #'e8-oracle--now)
+        ;; Org's own org-current-time, from the fixed time, and so its
+        ;; org-current-effective-time, which takes it.
+        (advice-add 'org-current-time :around #'e8-oracle--current-time)
         ;; With timestamp_now, org-timestamp-to-now counts from it too, as the agenda's ignore options do.
         (when (eq (alist-get 'timestamp_now case) t)
           (advice-add 'org-timestamp-to-now :override #'e8-oracle--timestamp-to-now))

@@ -1,0 +1,632 @@
+[
+ {
+  "name": "time-closed-rounded",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "* TODO Write\n",
+  "keys": "C-c C-t",
+  "point": 0,
+  "today": "2026-11-04 09:07",
+  "globals": {
+   "org-timestamp-rounding-minutes": [
+    5,
+    5
+   ],
+   "org-log-done": "'time"
+  }
+ },
+ {
+  "name": "time-closed-rounded-up",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "* TODO Write\n",
+  "keys": "C-c C-t",
+  "point": 0,
+  "today": "2026-11-04 09:08",
+  "globals": {
+   "org-timestamp-rounding-minutes": [
+    5,
+    5
+   ],
+   "org-log-done": "'time"
+  }
+ },
+ {
+  "name": "time-closed-rounded-half",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "* TODO Write\n",
+  "keys": "C-c C-t",
+  "point": 0,
+  "today": "2026-11-04 09:13",
+  "globals": {
+   "org-timestamp-rounding-minutes": [
+    10,
+    5
+   ],
+   "org-log-done": "'time"
+  }
+ },
+ {
+  "name": "time-closed-hour-carry",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "* TODO Write\n",
+  "keys": "C-c C-t",
+  "point": 0,
+  "today": "2026-11-04 09:58",
+  "globals": {
+   "org-timestamp-rounding-minutes": [
+    5,
+    5
+   ],
+   "org-log-done": "'time"
+  }
+ },
+ {
+  "name": "time-closed-no-rounding",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "* TODO Write\n",
+  "keys": "C-c C-t",
+  "point": 0,
+  "today": "2026-11-04 09:07",
+  "globals": {
+   "org-log-done": "'time"
+  }
+ },
+ {
+  "name": "time-closed-effective",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "* TODO Write\n",
+  "keys": "C-c C-t",
+  "point": 0,
+  "today": "2026-11-04 03:07",
+  "globals": {
+   "org-use-effective-time": true,
+   "org-extend-today-until": 4,
+   "org-log-done": "'time"
+  }
+ },
+ {
+  "name": "time-closed-effective-after",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "* TODO Write\n",
+  "keys": "C-c C-t",
+  "point": 0,
+  "today": "2026-11-04 05:07",
+  "globals": {
+   "org-use-effective-time": true,
+   "org-extend-today-until": 4,
+   "org-log-done": "'time"
+  }
+ },
+ {
+  "name": "time-closed-extend-only",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "* TODO Write\n",
+  "keys": "C-c C-t",
+  "point": 0,
+  "today": "2026-11-04 03:07",
+  "globals": {
+   "org-extend-today-until": 4,
+   "org-log-done": "'time"
+  }
+ },
+ {
+  "name": "time-todo-yesterday",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "* TODO Write\n",
+  "keys": "M-x",
+  "point": 0,
+  "today": "2026-11-04 09:07",
+  "answers": [
+   "org-todo-yesterday"
+  ],
+  "globals": {
+   "org-log-done": "'time"
+  }
+ },
+ {
+  "name": "time-todo-yesterday-rounded",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "* TODO Write\n",
+  "keys": "M-x",
+  "point": 0,
+  "today": "2026-11-04 09:07",
+  "answers": [
+   "org-todo-yesterday"
+  ],
+  "globals": {
+   "org-timestamp-rounding-minutes": [
+    5,
+    5
+   ],
+   "org-log-done": "'time"
+  }
+ },
+ {
+  "name": "time-todo-yesterday-note",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "#+TODO: TODO(t!) | DONE(d!)\n* TODO Write\n",
+  "keys": "C-n M-x",
+  "point": 0,
+  "today": "2026-11-04 09:07",
+  "answers": [
+   "org-todo-yesterday",
+   "d"
+  ],
+  "globals": {
+   "org-log-into-drawer": true
+  }
+ },
+ {
+  "name": "time-state-log-rounded",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "#+TODO: TODO(t!) | DONE(d!)\n* TODO Write\n",
+  "keys": "C-n C-c C-t",
+  "point": 0,
+  "today": "2026-11-04 09:07",
+  "answers": [
+   "d"
+  ],
+  "globals": {
+   "org-timestamp-rounding-minutes": [
+    5,
+    5
+   ]
+  }
+ },
+ {
+  "name": "time-repeat-rounded",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "* TODO Water\nSCHEDULED: <2026-11-04 Wed +1w>\n",
+  "keys": "C-c C-t",
+  "point": 0,
+  "today": "2026-11-04 09:07",
+  "globals": {
+   "org-timestamp-rounding-minutes": [
+    5,
+    5
+   ],
+   "org-log-repeat": "'time"
+  }
+ },
+ {
+  "name": "time-repeat-effective",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "* TODO Water\nSCHEDULED: <2026-11-04 Wed +1w>\n",
+  "keys": "C-c C-t",
+  "point": 0,
+  "today": "2026-11-04 03:07",
+  "globals": {
+   "org-use-effective-time": true,
+   "org-extend-today-until": 4,
+   "org-log-repeat": "'time"
+  }
+ },
+ {
+  "name": "time-last-clock-out",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "* TODO Write\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 16:00]--[2026-11-03 Tue 17:30] =>  1:30\n:END:\n",
+  "keys": "C-c C-t",
+  "point": 0,
+  "today": "2026-11-04 09:07",
+  "globals": {
+   "org-use-last-clock-out-time-as-effective-time": true,
+   "org-log-done": "'time"
+  }
+ },
+ {
+  "name": "time-last-clock-out-none",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "* TODO Write\n",
+  "keys": "C-c C-t",
+  "point": 0,
+  "today": "2026-11-04 09:07",
+  "globals": {
+   "org-use-last-clock-out-time-as-effective-time": true,
+   "org-log-done": "'time"
+  }
+ },
+ {
+  "name": "time-clock-in-rounded",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "* TODO Write\n",
+  "keys": "C-c C-x C-i C-c C-x C-o",
+  "point": 0,
+  "today": "2026-11-04 09:07",
+  "globals": {
+   "org-clock-rounding-minutes": 5
+  }
+ },
+ {
+  "name": "time-clock-in-on-step",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "* TODO Write\n",
+  "keys": "C-c C-x C-i C-c C-x C-o",
+  "point": 0,
+  "today": "2026-11-04 09:05",
+  "globals": {
+   "org-clock-rounding-minutes": 5
+  }
+ },
+ {
+  "name": "time-clock-in-up",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "* TODO Write\n",
+  "keys": "C-c C-x C-i C-c C-x C-o",
+  "point": 0,
+  "today": "2026-11-04 09:08",
+  "globals": {
+   "org-clock-rounding-minutes": 5
+  }
+ },
+ {
+  "name": "time-clock-not-rounded",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "* TODO Write\n",
+  "keys": "C-c C-x C-i C-c C-x C-o",
+  "point": 0,
+  "today": "2026-11-04 09:07",
+  "globals": {
+   "org-timestamp-rounding-minutes": [
+    5,
+    5
+   ]
+  }
+ },
+ {
+  "name": "time-prompt-default-rounded",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "x ",
+  "keys": "C-e C-u C-c .",
+  "point": 0,
+  "today": "2026-11-04 09:07",
+  "answers": [
+   ""
+  ],
+  "globals": {
+   "org-timestamp-rounding-minutes": [
+    5,
+    5
+   ]
+  }
+ },
+ {
+  "name": "time-prompt-default-now",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "x ",
+  "keys": "C-e C-u C-c .",
+  "point": 0,
+  "today": "2026-11-04 09:07",
+  "answers": [
+   ""
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "call": [
+   "org-capture"
+  ],
+  "point": 2,
+  "name": "time-capture-u",
+  "text": "* Inbox\n",
+  "keys": "n e w C-c C-c",
+  "answers": [
+   "t"
+  ],
+  "today": "2026-11-04 09:07",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* %?\n%U"
+   ]
+  ],
+  "globals": {
+   "org-timestamp-rounding-minutes": [
+    15,
+    5
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "call": [
+   "org-capture"
+  ],
+  "point": 2,
+  "name": "time-capture-T",
+  "text": "* Inbox\n",
+  "keys": "n e w C-c C-c",
+  "answers": [
+   "t"
+  ],
+  "today": "2026-11-04 09:07",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* %?\n%T"
+   ]
+  ],
+  "globals": {
+   "org-timestamp-rounding-minutes": [
+    5,
+    5
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "call": [
+   "org-capture"
+  ],
+  "point": 2,
+  "name": "time-capture-u-plain",
+  "text": "* Inbox\n",
+  "keys": "n e w C-c C-c",
+  "answers": [
+   "t"
+  ],
+  "today": "2026-11-04 09:07",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* %?\n%U"
+   ]
+  ],
+  "globals": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "call": [
+   "org-capture"
+  ],
+  "point": 2,
+  "name": "time-capture-extend",
+  "text": "* Inbox\n",
+  "keys": "n e w C-c C-c",
+  "answers": [
+   "t"
+  ],
+  "today": "2026-11-04 03:07",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* %?\n%U"
+   ]
+  ],
+  "globals": {
+   "org-extend-today-until": 4
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-ts.org",
+  "agenda_files": true,
+  "call": [
+   "org-agenda"
+  ],
+  "name": "time-bulk-plus-plus-body",
+  "text": "* TODO Write\nSome text.\nSCHEDULED: <2026-11-05 Thu>\n",
+  "today": "2026-11-04",
+  "keys": "C-s W r i t e RET m B C-x b M-g c",
+  "answers": [
+   "a",
+   "s",
+   "++2",
+   "*e8-oracle*",
+   "1"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-ts.org",
+  "agenda_files": true,
+  "call": [
+   "org-agenda"
+  ],
+  "name": "time-bulk-plus-plus-planning",
+  "text": "* TODO Write\nSCHEDULED: <2026-11-05 Thu>\n",
+  "today": "2026-11-04",
+  "keys": "C-s W r i t e RET m B C-x b M-g c",
+  "answers": [
+   "a",
+   "s",
+   "++2",
+   "*e8-oracle*",
+   "1"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-ts.org",
+  "agenda_files": true,
+  "call": [
+   "org-agenda"
+  ],
+  "name": "time-start-day-number",
+  "text": "* TODO Write\nSCHEDULED: <2026-11-06 Fri>\n",
+  "today": "2026-11-04",
+  "keys": "",
+  "answers": [
+   "a"
+  ],
+  "globals": {
+   "org-agenda-start-day": 739926,
+   "org-agenda-span": 1
+  }
+ },
+ {
+  "name": "review-sched-overriding-vars",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "text": "* TODO Write\nSCHEDULED: <2026-11-05 Thu>\n",
+  "keys": "C-c C-s",
+  "answers": [
+   "++1"
+  ],
+  "today": "2026-11-04 09:07",
+  "vars": {
+   "org-overriding-default-time": 1794312000
+  }
+ },
+ {
+  "name": "review-sched-overriding-none",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "text": "* TODO Write\n",
+  "keys": "C-c C-s",
+  "answers": [
+   "++1"
+  ],
+  "today": "2026-11-04 09:07",
+  "vars": {
+   "org-overriding-default-time": 1794312000
+  }
+ },
+ {
+  "name": "review-state-note-body",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "text": "#+TODO: TODO(t) | DONE(d@)\n* TODO Write\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 16:00]--[2026-11-03 Tue 17:30] =>  1:30\n:END:\nBody\n",
+  "keys": "M-> C-p C-c C-t h i C-c C-c",
+  "answers": [
+   "d"
+  ],
+  "today": "2026-11-04 09:07",
+  "globals": {
+   "org-use-last-clock-out-time-as-effective-time": true
+  }
+ },
+ {
+  "name": "review-repeat-clock",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "text": "* TODO Water\nSCHEDULED: <2026-11-04 Wed +1w>\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 16:00]--[2026-11-03 Tue 17:30] =>  1:30\n:END:\n",
+  "keys": "C-c C-t",
+  "today": "2026-11-04 09:07",
+  "globals": {
+   "org-log-repeat": false
+  }
+ },
+ {
+  "name": "review-sched-time-body",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "text": "* TODO Write\nSome text.\nSCHEDULED: <2026-11-05 Thu>\n",
+  "keys": "C-c C-s",
+  "answers": [
+   "10:00"
+  ],
+  "today": "2026-11-04 09:07"
+ },
+ {
+  "name": "review-deadline-time-planning",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "text": "* TODO Write\nDEADLINE: <2026-11-05 Thu>\n",
+  "keys": "C-c C-d",
+  "answers": [
+   "++1"
+  ],
+  "today": "2026-11-04 09:07"
+ }
+]

@@ -5841,6 +5841,12 @@ declare global {
        */
       "org-agenda-todo-previousset": [];
       /**
+       * Change the TODO state of the entry the agenda line at point shows, the time of the change a minute before midnight yesterday.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-todo-yesterday": [];
+      /**
        * Toggle the ARCHIVE tag of the entry the agenda line at point shows.
        *
        * Defined in packages/org-agenda.ts.
@@ -8123,6 +8129,12 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-todo-set": [state: string];
+      /**
+       * Change the TODO state as C-c C-t does, the time of the change, as CLOSED and a logged note have it, a minute before midnight yesterday.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-todo-yesterday": [];
       /**
        * Toggle the archive tag for the current headline, folding its subtree when it is set. With a prefix argument, offer to tag each child, or each top-level tree, with no open TODO. With the region active, toggle every heading in it.
        *
@@ -15546,6 +15558,12 @@ declare global {
        */
       "org-clock-resolve-expert": Value;
       /**
+       * Round the times clocking in and out take to this many minutes, a clock-in time to one not after now; 0 does not round.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-rounding-minutes": Value;
+      /**
        * What sounds when the clock runs past the entry's effort: t for the bell twice, a sound file's name, or nil for nothing.
        *
        * Defined in packages/org-clock.ts.
@@ -16898,6 +16916,12 @@ declare global {
        */
       "org-treat-insert-todo-heading-as-state-change": Value;
       /**
+       * Whether the times Org stamps changes with, as CLOSED and logged state changes, take org-extend-today-until: before its hour, a minute before midnight the day before.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-use-effective-time": Value;
+      /**
        * Whether Org binds its keys for terminals, as C-c C-x l for M-<left> and C-c <up> for S-<up>, which it does on a terminal anyway. Org reads it only when it loads; E8 binds them when it is set too, as init.ts runs after Org has loaded.
        *
        * Defined in packages/org.ts.
@@ -16915,6 +16939,12 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-use-fast-todo-selection": Value;
+      /**
+       * Whether changes are stamped with the entry's last clock-out time, ahead of org-use-effective-time.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-use-last-clock-out-time-as-effective-time": Value;
       /**
        * Which properties an entry takes from the headings above it when a match asks for them: true for all, false for none, a list of names, or a regexp.
        *

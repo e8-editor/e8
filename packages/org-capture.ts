@@ -4,7 +4,7 @@
 // E8 narrows the target buffer itself.
 
 import { bookmarkSet, jumpTo } from "bookmark";
-import { alignTags, type DateTime, overridingDefaultTime, parseAllowedValues, propertyAllowedValues, formatTimestamp, globalTagsCompletionTable, type Heading, headingIndex, headings, isHeadingLine, killIsSubtree, parseDate, parseHeading, plistGet, readDateAnswer, shiftHeadings, stampFor, subtreeRegion, today, updateCheckboxCount, updateParentTodoStatistics, validLevel } from "org";
+import { alignTags, type DateTime, orgCurrentTime, overridingDefaultTime, roundingMinutes, parseAllowedValues, propertyAllowedValues, formatTimestamp, globalTagsCompletionTable, type Heading, headingIndex, headings, isHeadingLine, killIsSubtree, parseDate, parseHeading, plistGet, readDateAnswer, shiftHeadings, stampFor, subtreeRegion, today, updateCheckboxCount, updateParentTodoStatistics, validLevel } from "org";
 import { clockIn, clockOut, refreshClockHeading, runningClockLine, runningEntry } from "org-clock";
 import { dateTreeRoot, findDateCreate } from "org-datetree";
 import { ancestors, flag, showHeadingLine } from "org-fold";
@@ -296,17 +296,20 @@ function setTemplateProperties(text: string, properties: [string, string, boolea
  * and where %? is the cursor goes. Also the lines %^g put tags on.
  */
 function fillTemplate(template: string, context: Context = { annotation: "", initial: "", tags: [] }): { text: string; cursor?: number; tagLines: number[] } {
-  let now = context.time ?? today(true);
+  // :default-time, org-current-time rounded to org-timestamp-rounding-minutes's first.
+  let now = context.time ?? orgCurrentTime();
   // Before org-extend-today-until, the day before at 23:59, as org-capture-fill-template has it.
   const extend = Number(e8.variable("org-extend-today-until") ?? 0);
-  if ((now.hour ?? 0) < extend) {
+  const shifted = (now.hour ?? 0) < extend;
+  if (shifted) {
     const t = new Date(Date.UTC(now.year, now.month - 1, now.day - 1));
     now = { year: t.getUTCFullYear(), month: t.getUTCMonth() + 1, day: t.getUTCDate(), hour: 23, minute: 59 };
   }
   const day = { year: now.year, month: now.month, day: now.day };
   // The time now, or noon on a fixed day, as tests fix org-current-effective-time.
   const fixed = typeof e8.variable("e8--today") === "string" && e8.variable("e8--today") !== "";
-  const time = fixed || context.time !== undefined ? e8.encodeTime([0, now.minute ?? 0, now.hour ?? 0, now.day, now.month, now.year]) : e8.currentTime();
+  const rounded = roundingMinutes()[0] >= 1;
+  const time = fixed || rounded || shifted || context.time !== undefined ? e8.encodeTime([0, now.minute ?? 0, now.hour ?? 0, now.day, now.month, now.year]) : e8.currentTime();
   const a = context.annotation === "[[]]" ? "" : context.annotation;
   let kill = "";
   try {
@@ -656,7 +659,7 @@ function setTargetLocation(t: CaptureTemplate, prepend: boolean, env: TargetEnv 
           // The capture's time: as given, or for another day without one, its start, as :default-time.
           env.time =
             asked.hour !== undefined || isToday
-              ? { ...asked, hour: asked.hour ?? today(true).hour, minute: asked.minute ?? today(true).minute }
+              ? { ...asked, hour: asked.hour ?? orgCurrentTime().hour, minute: asked.minute ?? orgCurrentTime().minute }
               : { ...day, hour: Number(e8.variable("org-extend-today-until") ?? 0), minute: 0 };
         }
         // Under the outline path's heading, else a DATE_TREE (or WEEK_TREE) heading or the whole buffer, as Org's capture asks org-datetree.
