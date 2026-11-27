@@ -319,6 +319,16 @@
   "modes": [
    "org-mode"
   ],
+  "name": "dblock-width-shrunk",
+  "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :format \"%10ITEM %Effort\"\n#+END:\n",
+  "keys": "C-c C-c",
+  "point": 223,
+  "displayed": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
   "name": "dblock-tblfm",
   "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :format \"%ITEM %N\"\n| a | 1 |\n#+TBLFM: $2=7\n#+END:\n",
   "keys": "C-c C-c",

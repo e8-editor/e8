@@ -1423,6 +1423,8 @@ function dblockWriteDefault(ipos: number, table: { titles: string[]; rows: Row[]
   });
   if (recalc) e8.callWithPrefix([16], "org-table-recalculate");
   e8.call("org-table-align");
+  // The columns with widths shown at them, as their cookies say.
+  if (widths.some((w) => w !== undefined)) e8.call("org-table-shrink" as e8.CommandName);
 }
 
 e8.defun("org-columns-dblock-write-default", (ipos: number, table: unknown, params: e8.Value[]) => {

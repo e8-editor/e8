@@ -140,6 +140,8 @@ import {
   recalculate,
   restOfLine,
   setEntryPropertyLookup,
+  startupTables,
+  withShrunkColumns,
 } from "org-table";
 import { completingReadMultiple } from "crm";
 import { allMatches, autoFillAllowed, barfIfBufferReadOnly, charCount, eraseBuffer, escapeRegExp, forwardLine, getBufferWindow, truthy } from "subr";
@@ -2105,7 +2107,11 @@ e8.defineCommand({
     "of as many levels as the prefix argument says; else fold the subtree and show its children, that many levels of them.",
   params: [{ name: "arg", kind: "count" }],
   run: (arg: number) => {
-    if (atTableP()) e8.userError("E8 cannot shrink a table's columns yet");
+    if (atTableP()) {
+      // With the raw prefix argument, as call-interactively passes it on.
+      interactively(e8.prefixArg(), "org-table-toggle-column-width" as e8.CommandName);
+      return;
+    }
     const all = headings();
     const first = all.find((h) => h.start >= e8.pointMin());
     if (!first || e8.point() < first.start) {
@@ -9361,7 +9367,8 @@ export function tableSortLines(withCase: boolean, interactive: boolean, sortingT
     if (!interactive) throw new Error("Missing key extractor to sort rows");
     functions = readSortFunctions();
   }
-  e8.saveRestriction(() => {
+  // The sorted column shown in full after, the others shrunk again, as org-table-sort-lines leaves them.
+  withShrunkColumns(() => e8.saveRestriction(() => {
     if (orgRegionActive()) {
       const [rb, re] = [Math.min(e8.point(), e8.mark()!), Math.max(e8.point(), e8.mark()!)];
       e8.gotoChar(rb);
@@ -9424,7 +9431,7 @@ export function tableSortLines(withCase: boolean, interactive: boolean, sortingT
     e8.gotoChar(e8.pointMin());
     forwardLine(row);
     e8.moveToColumn(col);
-  });
+  }), (cs) => cs.filter((c) => c !== column));
 }
 
 /**
@@ -11585,6 +11592,12 @@ e8.defun("org-cycle-optimize-window-after-visibility-change", (state: string) =>
 // file, without a description or with one that is itself such a link,
 // shown as the image, on a graphical frame.
 
+e8.defineVariable({ name: "org-startup-align-all-tables", doc: "Whether Org mode aligns every table when it starts. #+STARTUP: align or noalign says otherwise for a file.", value: false });
+e8.defineVariable({
+  name: "org-startup-shrink-all-tables",
+  doc: "Whether Org mode shrinks every table's columns that have a width cookie, <N> or <lN>, when it starts. #+STARTUP: shrink says so for a file.",
+  value: false,
+});
 e8.defineVariable({
   name: "org-startup-with-inline-images",
   doc: "Whether Org mode shows linked images inline when it starts. #+STARTUP: inlineimages or noinlineimages says otherwise for a file.",
@@ -13135,18 +13148,30 @@ e8.defineMajorMode({
       }
     }
     if (indented) e8.callWithPrefix(1, "org-indent-mode");
-    // Linked images shown, from the variable or a #+STARTUP: line, as org-mode does last.
+    // Tables aligned or shrunk, then linked images shown, from the variables or a #+STARTUP: line, as org-mode does last.
+    const startupWords: Record<string, [string, boolean]> = {
+      inlineimages: ["org-startup-with-inline-images", true],
+      noinlineimages: ["org-startup-with-inline-images", false],
+      align: ["org-startup-align-all-tables", true],
+      noalign: ["org-startup-align-all-tables", false],
+      shrink: ["org-startup-shrink-all-tables", true],
+    };
     for (const [, , text] of keywordLines()) {
       const m = /^#\+STARTUP:(.*)$/i.exec(text);
       for (const word of m ? m[1].trim().split(/\s+/) : []) {
         // Any case, set for the buffer, as org-set-regexps-and-options does.
-        const w = word.toLowerCase();
-        if (w !== "inlineimages" && w !== "noinlineimages") continue;
-        e8.makeLocalVariable("org-startup-with-inline-images");
-        e8.setVariable("org-startup-with-inline-images", w === "inlineimages");
+        const option = startupWords[word.toLowerCase()];
+        if (option === undefined) continue;
+        e8.makeLocalVariable(option[0]);
+        e8.setVariable(option[0], option[1]);
       }
     }
-    if (truthy(e8.variable("org-startup-with-inline-images") ?? null) && !truthy(e8.variable("org-inhibit-startup") ?? null)) displayInlineImages();
+    if (!truthy(e8.variable("org-inhibit-startup") ?? null)) {
+      const alignTables = truthy(e8.variable("org-startup-align-all-tables") ?? null);
+      const shrinkTables = truthy(e8.variable("org-startup-shrink-all-tables") ?? null);
+      if (alignTables || shrinkTables) startupTables(alignTables, shrinkTables);
+      if (truthy(e8.variable("org-startup-with-inline-images") ?? null)) displayInlineImages();
+    }
     // The logging #+STARTUP: words set their variables for the buffer, as org-set-regexps-and-options does.
     for (const [, , text] of keywordLines()) {
       const m = /^#\+STARTUP:(.*)$/i.exec(text);
