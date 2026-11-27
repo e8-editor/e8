@@ -13238,7 +13238,7 @@ e8.defineMajorMode({
     e8.addToInvisibilitySpec("org-emphasis");
     storeTodoSets();
     storeTagsLines();
-    if (e8.variable("org-startup-truncated") === true) e8.setVariable("truncate-lines", true);
+    if (e8.variable("org-startup-truncated") === true && !truthy(e8.variable("org-inhibit-startup") ?? null)) e8.setVariable("truncate-lines", true);
     // A folded heading ends in org-ellipsis, through the buffer's display table, as org-mode sets it up.
     const ellipsis = e8.variable("org-ellipsis");
     if (typeof ellipsis === "string" && ellipsis !== "") {
@@ -13262,7 +13262,20 @@ e8.defineMajorMode({
         else if (word === "noindent") indented = false;
       }
     }
-    if (indented) e8.callWithPrefix(1, "org-indent-mode");
+    // Not with org-inhibit-startup, as org-mode leaves it out then.
+    if (indented && !truthy(e8.variable("org-inhibit-startup") ?? null)) e8.callWithPrefix(1, "org-indent-mode");
+    // #+PRIORITIES: the highest, lowest and default priority, as org-set-regexps-and-options sets them for the buffer.
+    // The first such line only, empty or not, as org-collect-keywords gives a unique keyword's first value.
+    for (const [, , text] of keywordLines()) {
+      if (!/^#\+PRIORITIES:/i.test(text)) continue;
+      const m = /^#\+PRIORITIES:[ \t]*(\S+)[ \t]+(\S+)[ \t]+(\S+)/i.exec(text);
+      if (!m) break;
+      for (const [name, value] of [["org-priority-highest", m[1]], ["org-priority-lowest", m[2]], ["org-priority-default", m[3]]] as const) {
+        e8.makeLocalVariable(name);
+        e8.setVariable(name, priorityToValue(value));
+      }
+      break;
+    }
     // Tables aligned or shrunk, then linked images shown, from the variables or a #+STARTUP: line, as org-mode does last.
     const startupWords: Record<string, [string, boolean]> = {
       inlineimages: ["org-startup-with-inline-images", true],
