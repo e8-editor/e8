@@ -1,0 +1,403 @@
+[
+ {
+  "name": "ics-events",
+  "text": "#+TITLE: Work, plans; and more\n#+AUTHOR: A. Writer\n#+CATEGORY: work\n\n* Meeting with the team, a long title that goes on past seventy-five characters for sure :office:\n:PROPERTIES:\n:ID:       ev-1\n:LOCATION: Room 1; floor 2\n:END:\n<2026-11-30 Mon 10:00-11:30>\nBring the slides, notes and a \\ backslash.\n\nSecond paragraph.\n* Lunch\n:PROPERTIES:\n:ID:       ev-2\n:END:\n<2026-12-01 Tue 12:00> and <2026-12-02 Wed>\n* Conference\n:PROPERTIES:\n:ID:       ev-3\n:END:\n<2026-12-03 Thu>--<2026-12-05 Sat>\n* Night shift\n:PROPERTIES:\n:ID:       ev-4\n:END:\n<2026-12-06 Sun 22:00>--<2026-12-07 Mon 06:00>\n* No timestamp here\nJust text.\n* Inactive one\n:PROPERTIES:\n:ID:       ev-5\n:END:\n[2026-12-08 Tue 09:00]\n* Timestamp in the title <2026-12-09 Wed 08:15>\n:PROPERTIES:\n:ID:       ev-6\n:END:\n",
+  "find": "cal.org",
+  "call": ["org-icalendar-export-to-ics"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "org-icalendar-timezone": "Europe/Stockholm"
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "ics-todos",
+  "text": "#+CATEGORY: tasks\n* TODO Write report\nDEADLINE: <2026-12-04 Fri> SCHEDULED: <2026-12-01 Tue>\n:PROPERTIES:\n:ID:       td-1\n:END:\nBody of the report.\n* DONE Finished task\nCLOSED: [2026-11-20 Fri 10:00] DEADLINE: <2026-11-20 Fri>\n:PROPERTIES:\n:ID:       td-2\n:END:\n* TODO [#A] Urgent call\nSCHEDULED: <2026-12-02 Wed 14:00>\n:PROPERTIES:\n:ID:       td-3\n:END:\n* TODO [#C] Someday\n:PROPERTIES:\n:ID:       td-4\n:END:\n* Plain deadline\nDEADLINE: <2026-12-10 Thu>\n:PROPERTIES:\n:ID:       td-5\n:END:\n* Plain scheduled\nSCHEDULED: <2026-12-11 Fri>\n:PROPERTIES:\n:ID:       td-6\n:END:\n",
+  "find": "tasks.org",
+  "call": ["org-icalendar-export-to-ics"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "org-icalendar-timezone": "Europe/Stockholm",
+   "org-icalendar-include-todo": true
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "ics-todos-all-and-uses",
+  "text": "#+CATEGORY: tasks\n#+FILETAGS: :home:\n* Area :life:\n** TODO Write report :desk:\nDEADLINE: <2026-12-04 Fri> SCHEDULED: <2026-12-01 Tue>\n:PROPERTIES:\n:ID:       tu-1\n:END:\nBody of the report.\n** DONE Finished task\nCLOSED: [2026-11-20 Fri 10:00] DEADLINE: <2026-11-20 Fri> SCHEDULED: <2026-11-18 Wed>\n:PROPERTIES:\n:ID:       tu-2\n:END:\n** Plain deadline :desk:\nDEADLINE: <2026-12-10 Thu>\n:PROPERTIES:\n:ID:       tu-5\n:END:\n** Plain scheduled\nSCHEDULED: <2026-12-11 Fri 09:30>\n:PROPERTIES:\n:ID:       tu-6\n:END:\n",
+  "find": "tasks.org",
+  "call": ["org-icalendar-export-to-ics"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "org-icalendar-timezone": "Europe/Stockholm",
+   "org-icalendar-include-todo": "'all",
+   "org-icalendar-use-deadline": ["'event-if-todo", "'todo-due"],
+   "org-icalendar-use-scheduled": ["'event-if-not-todo", "'event-if-todo-not-done", "'todo-start"],
+   "org-icalendar-scheduled-summary-prefix": "Sched: ",
+   "org-icalendar-deadline-summary-prefix": "Due; ",
+   "org-icalendar-categories": ["'todo-state", "'all-tags", "'category"]
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "ics-todo-keywords",
+  "text": "#+TODO: TODO WAIT | DONE\n* TODO Not this one\n:PROPERTIES:\n:ID:       k-1\n:END:\n* WAIT Waiting for a reply\nSCHEDULED: <2026-12-01 Tue>\n:PROPERTIES:\n:ID:       k-2\n:END:\n* DONE Done one\n:PROPERTIES:\n:ID:       k-3\n:END:\n",
+  "find": "keys.org",
+  "call": ["org-icalendar-export-to-ics"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "org-icalendar-timezone": "Europe/Stockholm",
+   "org-icalendar-include-todo": ["WAIT", "DONE"]
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "ics-unblocked",
+  "text": "* TODO Project\n:PROPERTIES:\n:ID:       p-1\n:ORDERED:  t\n:END:\n** DONE Step one\n:PROPERTIES:\n:ID:       p-2\n:END:\n** TODO Step two\n:PROPERTIES:\n:ID:       p-3\n:END:\n** TODO Step three\n:PROPERTIES:\n:ID:       p-4\n:END:\n*** TODO Sub step\n:PROPERTIES:\n:ID:       p-5\n:END:\n* TODO Free task\n:PROPERTIES:\n:ID:       p-6\n:END:\n* Group\n** TODO Under a plain heading\n:PROPERTIES:\n:ID:       p-7\n:END:\n",
+  "find": "project.org",
+  "call": ["org-icalendar-export-to-ics"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "org-icalendar-timezone": "Europe/Stockholm",
+   "org-icalendar-include-todo": "'unblocked"
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "ics-repeaters",
+  "text": "* Weekly sync\n:PROPERTIES:\n:ID:       r-1\n:END:\n<2026-12-02 Wed 09:00 +1w>\n* Every other day\n:PROPERTIES:\n:ID:       r-2\n:END:\n<2026-12-02 Wed +2d>\n* Monthly bill\n:PROPERTIES:\n:ID:       r-3\n:END:\n<2026-12-15 Tue ++1m>\n* Birthday\n:PROPERTIES:\n:ID:       r-4\n:END:\n<2026-03-14 Sat .+1y>\n* Hourly\n:PROPERTIES:\n:ID:       r-41\n:END:\n<2026-12-02 Wed 08:00 +3h>\n* TODO Water plants\nSCHEDULED: <2026-12-01 Tue +1w> DEADLINE: <2026-12-31 Thu>\n:PROPERTIES:\n:ID:       r-5\n:END:\n* TODO Pay rent\nDEADLINE: <2026-12-01 Tue +1m>\n:PROPERTIES:\n:ID:       r-6\n:END:\n* TODO Timed repeat\nSCHEDULED: <2026-12-01 Tue 08:30 +1d> DEADLINE: <2026-12-20 Sun 18:00>\n:PROPERTIES:\n:ID:       r-7\n:END:\n* TODO Both repeat\nSCHEDULED: <2026-12-01 Tue +1w> DEADLINE: <2026-12-03 Thu +1w>\n:PROPERTIES:\n:ID:       r-8\n:END:\n* TODO Different repeats\nSCHEDULED: <2026-12-01 Tue +1w> DEADLINE: <2026-12-03 Thu +2w>\n:PROPERTIES:\n:ID:       r-9\n:END:\n* TODO Deadline repeats only\nSCHEDULED: <2026-12-01 Tue> DEADLINE: <2026-12-03 Thu +1w>\n:PROPERTIES:\n:ID:       r-10\n:END:\n* TODO Restart repeater\nDEADLINE: <2026-12-05 Sat .+1w -3d>\n:PROPERTIES:\n:ID:       r-11\n:END:\n* TODO Warning days\nDEADLINE: <2026-12-20 Sun 07:00 +1w -5d>\n:PROPERTIES:\n:ID:       r-12\n:END:\n* TODO Default warning\nDEADLINE: <2026-12-03 Thu +1w>\n:PROPERTIES:\n:ID:       r-13\n:END:\n",
+  "find": "repeat.org",
+  "call": ["org-icalendar-export-to-ics"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "org-icalendar-timezone": "Europe/Stockholm",
+   "org-icalendar-include-todo": true
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "ics-alarms",
+  "text": "* Timed\n:PROPERTIES:\n:ID:       a-1\n:END:\n<2026-12-01 Tue 10:00>\n* Own warning time\n:PROPERTIES:\n:ID:       a-2\n:APPT_WARNTIME: 5\n:END:\n<2026-12-01 Tue 11:00>\n* Midnight\n:PROPERTIES:\n:ID:       a-3\n:END:\n<2026-12-01 Tue 00:00>\n* All day\n:PROPERTIES:\n:ID:       a-4\n:END:\n<2026-12-02 Wed>\n",
+  "find": "alarms.org",
+  "call": ["org-icalendar-export-to-ics"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "org-icalendar-timezone": "Europe/Stockholm",
+   "org-icalendar-alarm-time": 15
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "ics-forced-alarms",
+  "text": "* Timed\n:PROPERTIES:\n:ID:       f-1\n:END:\n<2026-12-01 Tue 10:00>\n* Zero warning time\n:PROPERTIES:\n:ID:       f-2\n:APPT_WARNTIME: 0\n:END:\n<2026-12-01 Tue 11:00>\n* Ten minutes\n:PROPERTIES:\n:ID:       f-3\n:APPT_WARNTIME: 10\n:END:\n<2026-12-01 Tue 12:00>\n",
+  "find": "alarms.org",
+  "call": ["org-icalendar-export-to-ics"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "org-icalendar-timezone": "Europe/Stockholm",
+   "org-icalendar-force-alarm": true
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "ics-timezones",
+  "text": "* Local meeting\n:PROPERTIES:\n:ID:       z-1\n:END:\n<2026-12-01 Tue 10:00>\n* New York call\n:PROPERTIES:\n:ID:       z-2\n:TIMEZONE: America/New_York\n:END:\n<2026-12-01 Tue 15:00-16:00>\n* All day in Tokyo\n:PROPERTIES:\n:ID:       z-3\n:TIMEZONE: Asia/Tokyo\n:END:\n<2026-12-03 Thu>\n* Parent with a zone\n:PROPERTIES:\n:TIMEZONE: Europe/London\n:END:\n** Child does not inherit it\n:PROPERTIES:\n:ID:       z-4\n:END:\n<2026-12-04 Fri 09:00>\n",
+  "find": "zones.org",
+  "call": ["org-icalendar-export-to-ics"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "org-icalendar-timezone": "Europe/Stockholm",
+   "org-icalendar-date-time-format": ";TZID=%Z:%Y%m%dT%H%M%S"
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "ics-body-limit-and-properties",
+  "text": "* Planning session\n:PROPERTIES:\n:ID:       b-1\n:CLASS:    PRIVATE\n:LOCATION: Room 2\n:LOCATION+: second floor\n:END:\n<2026-12-01 Tue 10:00>\nA long description that will be cut at twenty characters.\n* Custom summary\n:PROPERTIES:\n:ID:       b-2\n:SUMMARY:  Override; with semicolon\n:DESCRIPTION: Given description\n:END:\n<2026-12-02 Wed>\nBody not used, as DESCRIPTION is set.\n",
+  "find": "body.org",
+  "call": ["org-icalendar-export-to-ics"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "org-icalendar-timezone": "Europe/Stockholm",
+   "org-icalendar-include-body": 20
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "ics-rich-description",
+  "text": "* Rich *bold* title with [[https://example.com][a link]] and =code=\n:PROPERTIES:\n:ID:       b-3\n:END:\n<2026-12-03 Thu>\nSome /italic/ text with a link to [[https://orgmode.org]].\n\n- a list item\n- another, with a footnote[fn:1]\n\n| a | b |\n|---+---|\n| 1 | 2 |\n\n#+begin_src sh\necho hi\n#+end_src\n:LOGBOOK:\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n:END:\n\n[fn:1] The note.\n",
+  "find": "rich.org",
+  "call": ["org-icalendar-export-to-ics"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "org-icalendar-timezone": "Europe/Stockholm"
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "ics-no-body",
+  "text": "* Event\n:PROPERTIES:\n:ID:       n-1\n:END:\n<2026-12-01 Tue 10:00>\nText that is left out.\n",
+  "find": "nobody.org",
+  "call": ["org-icalendar-export-to-ics"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "org-icalendar-timezone": "Europe/Stockholm",
+   "org-icalendar-include-body": false
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "ics-exclude-tags-keyword",
+  "text": "#+ICALENDAR_EXCLUDE_TAGS: private\n* Shown even with noexport :noexport:\n:PROPERTIES:\n:ID:       x-1\n:END:\n<2026-12-01 Tue>\n* Private :private:\n:PROPERTIES:\n:ID:       x-2\n:END:\n<2026-12-02 Wed>\n** Child of private\n:PROPERTIES:\n:ID:       x-3\n:END:\n<2026-12-03 Thu>\n* COMMENT Commented\n:PROPERTIES:\n:ID:       x-4\n:END:\n<2026-12-04 Fri>\n* Archived :ARCHIVE:\n:PROPERTIES:\n:ID:       x-5\n:END:\n<2026-12-05 Sat>\n",
+  "find": "tags.org",
+  "call": ["org-icalendar-export-to-ics"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "org-icalendar-timezone": "Europe/Stockholm"
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "ics-exclude-tags-variable",
+  "text": "* Kept\n:PROPERTIES:\n:ID:       y-1\n:END:\n<2026-12-01 Tue>\n* Left out :noexport:\n:PROPERTIES:\n:ID:       y-2\n:END:\n<2026-12-02 Wed>\n",
+  "find": "tags.org",
+  "call": ["org-icalendar-export-to-ics"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "org-icalendar-timezone": "Europe/Stockholm",
+   "org-icalendar-exclude-tags": ["noexport"]
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "ics-all-timestamps-option",
+  "text": "#+OPTIONS: <:t\n* Both kinds\n:PROPERTIES:\n:ID:       o-1\n:END:\n<2026-12-01 Tue 10:00>\n\n[2026-12-02 Wed 11:00]\n",
+  "find": "opts.org",
+  "call": ["org-icalendar-export-to-ics"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "org-icalendar-timezone": "Europe/Stockholm"
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "ics-inactive-timestamps-option",
+  "text": "#+OPTIONS: <:inactive\n* Both kinds\n:PROPERTIES:\n:ID:       o-2\n:END:\n<2026-12-01 Tue 10:00>\n\n[2026-12-02 Wed 11:00]\n",
+  "find": "opts.org",
+  "call": ["org-icalendar-export-to-ics"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "org-icalendar-timezone": "Europe/Stockholm"
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "ics-no-timestamps",
+  "text": "* Dated\n:PROPERTIES:\n:ID:       o-3\n:END:\nOn <2026-12-01 Tue 10:00> there is something.\n* Deadline still counts\nDEADLINE: <2026-12-05 Sat>\n:PROPERTIES:\n:ID:       o-4\n:END:\n",
+  "find": "opts.org",
+  "call": ["org-icalendar-export-to-ics"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "org-icalendar-timezone": "Europe/Stockholm",
+   "org-icalendar-with-timestamps": false
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "ics-header-ttl-and-no-author",
+  "text": "#+TITLE: A calendar, with a title; that is long enough to be folded when it is written out\n#+OPTIONS: author:nil\n#+ICAL-TTL: PT1H\n* Event\n:PROPERTIES:\n:ID:       h-1\n:END:\n<2026-12-01 Tue>\n",
+  "find": "header.org",
+  "call": ["org-icalendar-export-to-ics"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "org-icalendar-timezone": "Europe/Stockholm"
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "ics-appointment-duration",
+  "text": "* Short\n:PROPERTIES:\n:ID:       d-1\n:END:\n<2026-12-01 Tue 10:45>\n* With an end\n:PROPERTIES:\n:ID:       d-2\n:END:\n<2026-12-01 Tue 13:00-14:15>\n",
+  "find": "dur.org",
+  "call": ["org-icalendar-export-to-ics"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "org-icalendar-timezone": "Europe/Stockholm",
+   "org-agenda-default-appointment-duration": 30
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "ics-unscheduled-start-deadline-warning",
+  "text": "* TODO Due soon\nDEADLINE: <2026-12-10 Thu>\n:PROPERTIES:\n:ID:       w-1\n:END:\n* TODO Own warning\nDEADLINE: <2026-12-03 Thu 16:00 -2d>\n:PROPERTIES:\n:ID:       w-2\n:END:\n* TODO No deadline\n:PROPERTIES:\n:ID:       w-3\n:END:\n",
+  "find": "warn.org",
+  "call": ["org-icalendar-export-to-ics"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "org-icalendar-timezone": "Europe/Stockholm",
+   "org-icalendar-include-todo": true,
+   "org-icalendar-todo-unscheduled-start": "'deadline-warning",
+   "org-deadline-warning-days": 7
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "ics-unicode-folding",
+  "text": "* Möte på kontoret med åtta kollegor från avdelningen för långsiktig planering och översyn\n:PROPERTIES:\n:ID:       u-1\n:END:\n<2026-12-01 Tue 10:00>\nÅ, ä och ö; ett lite längre stycke text som går över mer än sjuttiofem tecken.\n",
+  "find": "unicode.org",
+  "call": ["org-icalendar-export-to-ics"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "org-icalendar-timezone": "Europe/Stockholm"
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "ics-empty",
+  "text": "Just some text, no headings.\n",
+  "find": "empty.org",
+  "call": ["org-icalendar-export-to-ics"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "org-icalendar-timezone": "Europe/Stockholm"
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "ics-agenda-files",
+  "text": "#+CATEGORY: agenda\n* Event\n:PROPERTIES:\n:ID:       g-1\n:END:\n<2026-12-01 Tue 10:00>\n",
+  "find": "agenda.org",
+  "agenda_files": true,
+  "call": ["org-icalendar-export-agenda-files"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "org-icalendar-timezone": "Europe/Stockholm"
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "ics-combine-agenda-files",
+  "text": "#+TITLE: Not used when combined\n* Event\n:PROPERTIES:\n:ID:       c-1\n:END:\n<2026-12-01 Tue 10:00>\n* TODO Task\nDEADLINE: <2026-12-02 Wed>\n:PROPERTIES:\n:ID:       c-2\n:END:\n",
+  "find": "agenda.org",
+  "agenda_files": true,
+  "call": ["org-icalendar-combine-agenda-files"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "org-icalendar-timezone": "Europe/Stockholm",
+   "org-icalendar-combined-agenda-file": "all.ics",
+   "org-icalendar-combined-name": "Everything",
+   "org-icalendar-combined-description": "All of it, combined",
+   "org-icalendar-include-todo": true
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "ics-nil-summary-prefixes",
+  "text": "* Plain deadline\nDEADLINE: <2026-12-10 Thu>\n:PROPERTIES:\n:ID:       np-1\n:END:\n* Plain scheduled\nSCHEDULED: <2026-12-11 Fri>\n:PROPERTIES:\n:ID:       np-2\n:END:\n",
+  "find": "prefix.org",
+  "call": ["org-icalendar-export-to-ics"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "org-icalendar-timezone": "Europe/Stockholm",
+   "org-icalendar-use-scheduled": ["'event-if-not-todo"],
+   "org-icalendar-deadline-summary-prefix": false,
+   "org-icalendar-scheduled-summary-prefix": false
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "ics-carriage-return-in-a-heading",
+  "text": "",
+  "files": {
+   "cr.org": "* Meeting with CR\r\n:PROPERTIES:\n:ID:       cr-1\n:LOCATION: Room 3\n:END:\n<2026-12-01 Tue 10:00>\n"
+  },
+  "find": "cr.org",
+  "call": ["org-icalendar-export-to-ics"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "org-icalendar-timezone": "Europe/Stockholm"
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "ics-no-break-space-is-not-blank",
+  "text": "* Event\n:PROPERTIES:\n:ID:       nb-1\n:LOCATION:  \n:CLASS:    \f\n:END:\n<2026-12-01 Tue>\n",
+  "find": "nbsp.org",
+  "call": ["org-icalendar-export-to-ics"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "org-icalendar-timezone": "Europe/Stockholm"
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "ics-combine-with-nil-names",
+  "text": "* Event\n:PROPERTIES:\n:ID:       cn-1\n:END:\n<2026-12-01 Tue 10:00>\n",
+  "find": "agenda.org",
+  "agenda_files": true,
+  "call": ["org-icalendar-combine-agenda-files"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": false,
+   "org-icalendar-timezone": "Europe/Stockholm",
+   "org-icalendar-combined-agenda-file": "all.ics",
+   "org-icalendar-combined-name": false,
+   "org-icalendar-combined-description": false
+  },
+  "today": "2026-11-27"
+ }
+]

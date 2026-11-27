@@ -6976,6 +6976,34 @@ declare global {
        */
       "org-html-export-to-html": [async?: PrefixArg | boolean, subtreep?: PrefixArg | boolean, visibleOnly?: PrefixArg | boolean, bodyOnly?: PrefixArg | boolean, extPlist?: PrefixArg | boolean];
       /**
+       * Combine all agenda files into a single iCalendar file.
+       *
+       * @param async raw prefix argument
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-icalendar-combine-agenda-files": [async?: PrefixArg | boolean];
+      /**
+       * Export all agenda files to iCalendar files.
+       *
+       * @param async raw prefix argument
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-icalendar-export-agenda-files": [async?: PrefixArg | boolean];
+      /**
+       * Export current buffer to an iCalendar file.
+       *
+       * @param async raw prefix argument
+       * @param subtreep raw prefix argument
+       * @param visible-only raw prefix argument
+       * @param body-only raw prefix argument
+       * @param ext-plist raw prefix argument
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-icalendar-export-to-ics": [async?: PrefixArg | boolean, subtreep?: PrefixArg | boolean, visibleOnly?: PrefixArg | boolean, bodyOnly?: PrefixArg | boolean, extPlist?: PrefixArg | boolean];
+      /**
        * Copy the ID of the entry at point to the kill ring. Create an ID if necessary.
        *
        * Defined in packages/org-id.ts.
@@ -15995,7 +16023,7 @@ declare global {
        */
       "org-entities-user": Value;
       /**
-       * The export backends the dispatcher offers, loaded with it: ascii, html and md.
+       * The export backends the dispatcher offers, loaded with it: ascii, html, icalendar and md.
        *
        * Defined in packages/org-loaddefs.ts.
        */

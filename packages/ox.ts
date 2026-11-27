@@ -1156,8 +1156,8 @@ export function exportAs(backendName: string | Backend, subtreep = false, visibl
         "back-end": backend,
         "translate-alist": getAllTranscoders(backend),
         "exported-data": new Map(),
-        "input-buffer": e8.bufferName(),
-        "input-file": e8.bufferFileName(),
+        "input-buffer": baseBufferName(),
+        "input-file": baseFileName(),
       };
       return e8.letBind({ "org-export-current-backend": backend!.name ?? null }, () =>
         withBufferCopy(() => {
@@ -1266,9 +1266,21 @@ export function toFile(backend: string | Backend, file: string, subtreep = false
   return (postProcess && postProcess(file)) || file;
 }
 
+/** The name of the buffer an indirect buffer shares its text with, or the current buffer's, as (buffer-name (buffer-base-buffer)). */
+export function baseBufferName(): string {
+  const base = e8.bufferBaseBuffer();
+  return (base && e8.bufferName(base)) || e8.bufferName();
+}
+
+/** The file of the buffer an indirect buffer shares its text with, or the current buffer's, as (buffer-file-name (buffer-base-buffer)). */
+export function baseFileName(): string | undefined {
+  const base = e8.bufferBaseBuffer();
+  return base ? e8.withCurrentBuffer(base, () => e8.bufferFileName()) : e8.bufferFileName();
+}
+
 /** The file to export to, with an extension, as org-export-output-file-name. */
 export function outputFileName(extension: string, subtreep = false, pubDir?: string): string {
-  const visited = e8.bufferFileName();
+  const visited = baseFileName();
   let base: string | undefined;
   if (subtreep) {
     const h = headingAtPoint();

@@ -584,7 +584,7 @@ function agendaBuffers(files = agendaFilesIfMode()): string[] {
  * variable applies whatever the timestamp says, else its own -Nd, -Nw, -Nm
  * or -Ny, else the variable.
  */
-function wdays(ts: string, delay: boolean): number {
+export function wdays(ts: string, delay: boolean): number {
   const tv = Number(e8.variable(delay ? "org-scheduled-delay-days" : "org-deadline-warning-days") ?? (delay ? 0 : 14));
   if ((delay && tv < 0) || (!delay && tv <= 0)) return -tv;
   const m = /-([0-9]+)([hdwmy])(?=$|>| )/.exec(ts);
@@ -6123,6 +6123,11 @@ e8.defineVariable({
   doc: "Functions run in a buffer holding the agenda's text before it is written to a file.",
 });
 
+/** The agenda's lines a filter leaves, as org-agenda-write takes them after org-agenda-remove-marked-text. */
+function shownLines(): (AgendaItem | undefined)[] {
+  return e8.withCurrentBuffer(agendaBuffer, () => agendaLines.filter((_item, l) => e8.charProperty(e8.lineStart(l), "invisible") !== "org-filtered"));
+}
+
 /**
  * Writes the agenda to FILE, as org-agenda-write: its text as it shows,
  * or for an .org file the entries its lines show, each a level-1 subtree.
@@ -6133,19 +6138,36 @@ function agendaWrite(file: string, opts: { open?: boolean; nosettings?: boolean;
     e8.userError(`Cannot write agenda to file ${file}`);
   }
   const ext = /\.([^./]+)$/.exec(file)?.[1] ?? "";
-  if (["html", "htm", "ps", "pdf", "ics"].includes(ext)) e8.userError(`E8 cannot write an agenda as .${ext} yet`);
+  if (["html", "htm", "ps", "pdf"].includes(ext)) e8.userError(`E8 cannot write an agenda as .${ext} yet`);
   const settings = opts.nosettings ? [] : settingsOf(e8.variable("org-agenda-exporter-settings"));
   withSettings(settings, () => {
     // The lines a filter leaves, which the .org file takes its entries from.
-    const items = e8.withCurrentBuffer(agendaBuffer, () => agendaLines.filter((_item, l) => e8.charProperty(e8.lineStart(l), "invisible") !== "org-filtered"));
+    const items = shownLines();
     withTempBuffer(() => {
       e8.insertBufferSubstring(agendaBuffer);
       // Without what a filter hides, as org-agenda-remove-marked-text takes it out.
       for (let at = e8.textPropertyAny(e8.pointMin(), e8.pointMax(), "invisible", "org-filtered"); at !== undefined; at = e8.textPropertyAny(e8.pointMin(), e8.pointMax(), "invisible", "org-filtered")) {
         e8.deleteRegion(at, e8.nextSingleCharPropertyChange(at, "invisible"));
       }
+      // For an iCalendar file, each entry's line points to its heading, as Org's org-hd-marker does.
+      const markers: e8.Marker[] = [];
+      if (ext === "ics")
+        items.forEach((item, l) => {
+          if (!item || !e8.getBuffer(item.buffer) || l >= e8.lineCount() || e8.lineEnd(l) === e8.lineStart(l)) return;
+          const m = e8.makeMarker(headingOf(item), { buffer: item.buffer });
+          markers.push(m);
+          e8.putTextProperty(e8.lineStart(l), e8.lineEnd(l), "org-hd-marker", m);
+        });
       e8.runHooks("org-agenda-before-write-hook");
-      if (ext === "org") {
+      if (ext === "ics") {
+        // The entries the text, as the hook left it, points to, as ox-icalendar writes them.
+        try {
+          e8.require("ox-icalendar");
+          e8.funcall("org-icalendar-export-current-agenda", file);
+        } finally {
+          for (const m of markers) e8.deleteMarker(m);
+        }
+      } else if (ext === "org") {
         // Each entry once, its own text without its children, at level 1, as org-copy-subtree with nosubtrees and org-paste-subtree 1.
         const seen = new Set<string>();
         const entries: string[] = [];

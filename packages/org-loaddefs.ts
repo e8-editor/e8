@@ -48,6 +48,9 @@ const AUTOLOADS: [string, string, string, e8.Param[]][] = [
   ["org-publish-all", "ox-publish", "Publish all projects.", PUBLISH_PARAMS],
   ["org-publish-current-file", "ox-publish", "Publish the current file.", PUBLISH_PARAMS],
   ["org-publish-current-project", "ox-publish", "Publish the project associated with the current file.", PUBLISH_PARAMS],
+  ["org-icalendar-export-to-ics", "ox-icalendar", "Export current buffer to an iCalendar file.", EXPORT_PARAMS],
+  ["org-icalendar-export-agenda-files", "ox-icalendar", "Export all agenda files to iCalendar files.", [{ name: "async", kind: "prefix" }]],
+  ["org-icalendar-combine-agenda-files", "ox-icalendar", "Combine all agenda files into a single iCalendar file.", [{ name: "async", kind: "prefix" }]],
 ];
 
 /** The functions projects name to publish their files, loading the backend that defines each when it is first called. */
@@ -95,6 +98,6 @@ e8.defineKey("org-mode-map", "C-c C-e", "org-export-dispatch" as any);
 
 e8.defineVariable({
   name: "org-export-backends",
-  value: [e8.intern("ascii"), e8.intern("html"), e8.intern("md")],
-  doc: "The export backends the dispatcher offers, loaded with it: ascii, html and md.",
+  value: [e8.intern("ascii"), e8.intern("html"), e8.intern("icalendar"), e8.intern("md")],
+  doc: "The export backends the dispatcher offers, loaded with it: ascii, html, icalendar and md.",
 });

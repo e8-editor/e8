@@ -251,6 +251,7 @@ const LIBRARY: &[(&str, &str)] = &[
     ("packages/ox-ascii.ts", include_str!("../../../packages/ox-ascii.ts")),
     ("packages/ox-dictionary.ts", include_str!("../../../packages/ox-dictionary.ts")),
     ("packages/ox-html.ts", include_str!("../../../packages/ox-html.ts")),
+    ("packages/ox-icalendar.ts", include_str!("../../../packages/ox-icalendar.ts")),
     ("packages/ox-md.ts", include_str!("../../../packages/ox-md.ts")),
     ("packages/ox-org.ts", include_str!("../../../packages/ox-org.ts")),
     ("packages/ox-publish.ts", include_str!("../../../packages/ox-publish.ts")),
