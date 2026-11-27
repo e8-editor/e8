@@ -194,6 +194,17 @@ one, as \"2026-11-04 09:07\".")
   (let ((d (calendar-gregorian-from-absolute e8-oracle--today)))
     (encode-time (list 0 (nth 1 e8-oracle--time) (nth 0 e8-oracle--time) (nth 1 d) (nth 0 d) (nth 2 d) nil -1 nil))))
 
+(defun e8-oracle--icalendar-dtstamp (orig)
+  "An iCalendar export's DTSTAMP at the case's fixed day and time, written
+as UTC whatever the zone, in place of the time now, so a calendar is the
+same in every run and on every machine; E8 stamps the same when
+`e8--today' is set, as its oracle sets it."
+  (if (not e8-oracle--today) (funcall orig)
+    (let ((d (calendar-gregorian-from-absolute e8-oracle--today)))
+      (format "DTSTAMP:%04d%02d%02dT%02d%02d00Z" (nth 2 d) (nth 0 d) (nth 1 d)
+              (nth 0 e8-oracle--time) (nth 1 e8-oracle--time)))))
+(advice-add 'org-icalendar-dtstamp :around #'e8-oracle--icalendar-dtstamp)
+
 (defun e8-oracle--current-time (orig &rest args)
   "org-current-time as Org works it out, rounding and all, from the case's fixed time."
   (cl-letf (((symbol-function 'current-time) #'e8-oracle--now))

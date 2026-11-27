@@ -22,6 +22,9 @@ const AUTOLOADS: [string, string, string, e8.Param[]][] = [
   ["org-md-export-as-markdown", "ox-md", "Export current buffer to a Markdown buffer.", EXPORT_PARAMS],
   ["org-md-export-to-markdown", "ox-md", "Export current buffer to a Markdown file.", EXPORT_PARAMS],
   ["org-md-convert-region-to-md", "ox-md", "Assume the current region has Org syntax, and convert it to Markdown.", []],
+  ["org-icalendar-export-to-ics", "ox-icalendar", "Export current buffer to an iCalendar file.", EXPORT_PARAMS],
+  ["org-icalendar-export-agenda-files", "ox-icalendar", "Export all agenda files to iCalendar files.", [{ name: "async", kind: "prefix" }]],
+  ["org-icalendar-combine-agenda-files", "ox-icalendar", "Combine all agenda files into a single iCalendar file.", [{ name: "async", kind: "prefix" }]],
 ];
 
 /** The stubs running, so one whose library does not replace it fails rather than calling itself. */
@@ -49,6 +52,6 @@ e8.defineKey("org-mode-map", "C-c C-e", "org-export-dispatch" as any);
 
 e8.defineVariable({
   name: "org-export-backends",
-  value: [e8.intern("ascii"), e8.intern("html"), e8.intern("md")],
-  doc: "The export backends the dispatcher offers, loaded with it: ascii, html and md.",
+  value: [e8.intern("ascii"), e8.intern("html"), e8.intern("icalendar"), e8.intern("md")],
+  doc: "The export backends the dispatcher offers, loaded with it: ascii, html, icalendar and md.",
 });

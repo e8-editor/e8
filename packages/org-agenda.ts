@@ -584,7 +584,7 @@ function agendaBuffers(files = agendaFilesIfMode()): string[] {
  * variable applies whatever the timestamp says, else its own -Nd, -Nw, -Nm
  * or -Ny, else the variable.
  */
-function wdays(ts: string, delay: boolean): number {
+export function wdays(ts: string, delay: boolean): number {
   const tv = Number(e8.variable(delay ? "org-scheduled-delay-days" : "org-deadline-warning-days") ?? (delay ? 0 : 14));
   if ((delay && tv < 0) || (!delay && tv <= 0)) return -tv;
   const m = /-([0-9]+)([hdwmy])(?=$|>| )/.exec(ts);
@@ -6123,6 +6123,39 @@ e8.defineVariable({
   doc: "Functions run in a buffer holding the agenda's text before it is written to a file.",
 });
 
+/** The agenda's lines a filter leaves, as org-agenda-write takes them after org-agenda-remove-marked-text. */
+function shownLines(): (AgendaItem | undefined)[] {
+  return e8.withCurrentBuffer(agendaBuffer, () => agendaLines.filter((_item, l) => e8.charProperty(e8.lineStart(l), "invisible") !== "org-filtered"));
+}
+
+/**
+ * The text of each entry the agenda's lines show, once each, in their
+ * order, from its heading to the next heading, as
+ * org-icalendar-export-current-agenda collects it through the lines'
+ * org-hd-marker, leaving out what a filter hides, as org-agenda-write does.
+ */
+export function agendaEntryTexts(): string[] {
+  const items = shownLines();
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const item of items) {
+    if (!item || !e8.getBuffer(item.buffer)) continue;
+    const at = headingOf(item);
+    const key = `${item.buffer}\u0000${at}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const text = e8.withCurrentBuffer(item.buffer, () =>
+      widened(() => {
+        const all = headings();
+        const i = all.findIndex((h) => h.start === at);
+        return i < 0 ? undefined : e8.bufferText(all[i].start, entryEnd(all, i));
+      }),
+    );
+    if (text !== undefined) out.push(text);
+  }
+  return out;
+}
+
 /**
  * Writes the agenda to FILE, as org-agenda-write: its text as it shows,
  * or for an .org file the entries its lines show, each a level-1 subtree.
@@ -6133,11 +6166,17 @@ function agendaWrite(file: string, opts: { open?: boolean; nosettings?: boolean;
     e8.userError(`Cannot write agenda to file ${file}`);
   }
   const ext = /\.([^./]+)$/.exec(file)?.[1] ?? "";
-  if (["html", "htm", "ps", "pdf", "ics"].includes(ext)) e8.userError(`E8 cannot write an agenda as .${ext} yet`);
+  if (["html", "htm", "ps", "pdf"].includes(ext)) e8.userError(`E8 cannot write an agenda as .${ext} yet`);
   const settings = opts.nosettings ? [] : settingsOf(e8.variable("org-agenda-exporter-settings"));
   withSettings(settings, () => {
+    // An iCalendar file of the entries shown, as ox-icalendar writes it.
+    if (ext === "ics") {
+      e8.require("ox-icalendar");
+      e8.funcall("org-icalendar-export-current-agenda", file);
+      return;
+    }
     // The lines a filter leaves, which the .org file takes its entries from.
-    const items = e8.withCurrentBuffer(agendaBuffer, () => agendaLines.filter((_item, l) => e8.charProperty(e8.lineStart(l), "invisible") !== "org-filtered"));
+    const items = shownLines();
     withTempBuffer(() => {
       e8.insertBufferSubstring(agendaBuffer);
       // Without what a filter hides, as org-agenda-remove-marked-text takes it out.
