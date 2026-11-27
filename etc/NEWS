@@ -8,6 +8,28 @@ A package that is a repository of its own keeps its news in a NEWS file
 of the same form, which 'C-h P' shows under its description.
 
 
+* Changes in E8 0.5.22
+
+** Org export.
+'C-c C-e' exports an Org buffer as plain text (ASCII, Latin-1 or
+UTF-8), HTML or Markdown, to a buffer or a file, as Org 9.7 does: the
+whole buffer, the region or a subtree, the visible text or the body
+only, with '#+TITLE:' and the other keywords, '#+OPTIONS:', 'EXPORT_'
+properties, '#+INCLUDE:', macros, select and exclude tags, footnotes,
+tables of contents and internal links.  'C-u C-c C-e' repeats the last
+export.  Filters and backends of one's own are written in TypeScript,
+with 'defineDerivedBackend' from "ox".  Source blocks in TypeScript run
+for their results as the document is exported.  Publishing and the
+other backends, as LaTeX and ODT, are not there yet.
+
+** E8 has no Lisp, by design.
+What in Emacs evaluates Lisp is left out for good, not "not yet":
+Org capture's '%(sexp)', Lisp table formulas, 'elisp:' links, and in
+export a '#+MACRO:' defined as '(eval ...)', which is an error.
+'#+OPTIONS:' and '#+BIND:' values written as Lisp data are read, never
+evaluated.
+
+
 * Changes in E8 0.5.21
 
 ** The Org agenda has Org's views, modes and commands.
