@@ -221,11 +221,13 @@ export function markAligned(line = lineAt(), widths?: number[], aligns?: string[
 /**
  * How wide a field shows, as org-string-width measures it: a bracket link
  * as its description, or its link without one, while org-link-descriptive
- * hides the rest.
+ * hides the rest, which only Org mode does: in another mode, as
+ * orgtbl-mode's or the buffer Org's interpreter aligns tables in, a link
+ * shows whole.
  */
 function shownWidth(field: string): number {
   const descriptive = e8.variable("org-link-descriptive");
-  const shown = descriptive === false || descriptive === null
+  const shown = descriptive === false || descriptive === null || !e8.derivedModeP("org-mode")
     ? field
     : // The description up to the ]] that ends it, ] and all, as org-link-bracket-re takes it.
       field.replace(/\[\[((?:[^\]\\]|\\.)+)\](?:\[([\s\S]+?)\])?\]/g, (_m, link: string, desc?: string) => desc ?? link);

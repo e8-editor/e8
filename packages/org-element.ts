@@ -3519,32 +3519,20 @@ function interpretLink(n: Node, contents: string | undefined): string {
 }
 
 /** A table's rows aligned, as org-table-align leaves them. */
+/** A table's rows aligned by org-table-align in a buffer of their own, as Org's table interpreter aligns them. */
 function alignTable(rows: string): string {
-  const lines = rows.replace(/\n$/, "").split("\n");
-  const cells = lines.map((l) => (/^[ \t]*\|-/.test(l) ? undefined : l.replace(/^[ \t]*\|/, "").replace(/\|[ \t]*$/, "").split("|").map((c) => c.trim())));
-  const widths: number[] = [];
-  for (const row of cells) if (row) row.forEach((c, i) => (widths[i] = Math.max(widths[i] ?? 0, stringWidth(c))));
-  const numeric = widths.map((_w, i) => {
-    const col = cells.filter((r): r is string[] => !!r).map((r) => r[i] ?? "").filter((c) => c !== "");
-    return col.length > 0 && col.filter((c) => /^[-+]?[0-9.,]+(?:[eE][-+]?[0-9]+)?$/.test(c)).length / col.length >= 0.5;
-  });
-  return (
-    cells
-      .map((row) =>
-        row
-          ? "|" + widths.map((w, i) => {
-              const c = row[i] ?? "";
-              const pad = " ".repeat(w - stringWidth(c));
-              return " " + (numeric[i] ? pad + c : c + pad) + " ";
-            }).join("|") + "|"
-          : "|" + widths.map((w) => "-".repeat(w + 2)).join("+") + "|",
-      )
-      .join("\n") + "\n"
-  );
-}
-
-function stringWidth(s: string): number {
-  return e8.stringWidth(s);
+  const buffer = e8.generateNewBufferName(" *temp*");
+  e8.getBufferCreate(buffer);
+  try {
+    return e8.withCurrentBuffer(buffer, () => {
+      e8.insert(rows);
+      e8.gotoChar(e8.pointMin());
+      e8.call("org-table-align");
+      return e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax());
+    });
+  } finally {
+    e8.call("kill-buffer", buffer);
+  }
 }
 
 /** An element's affiliated keywords written out, as org-element--interpret-affiliated-keywords; "" for none. */
