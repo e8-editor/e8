@@ -243,7 +243,8 @@ function alignField(field: string, width: number, align: string): string {
  * puts point at the start of the field it was in, as org-table-align does.
  */
 function align(): void {
-  withShrunkColumns(alignShown);
+  // The shrunk columns as the first row has them, as org-table-align reads them from the table's start.
+  withShrunkColumns(alignShown, undefined, true);
 }
 
 function alignShown(): void {
@@ -481,10 +482,11 @@ e8.defineCommand({
       }
       if (charAt(e8.point()) === "-") {
         forwardLine(-1);
-        insertRow(true);
+        withShrunkColumns(() => insertRow(true));
       } else if (charAt(e8.point()) === " ") e8.gotoChar(e8.point() + 1);
     } catch {
-      insertRow(true);
+      // A new row with the columns shrunk, as org-table-insert-row makes it.
+      withShrunkColumns(() => insertRow(true));
     }
   },
 });
@@ -577,7 +579,7 @@ function nextRow(alignFirst: boolean): void {
   if (!atBol()) edInsert(e8.point(), "\n");
   if (!atTable() || atHline()) {
     forwardLine(-1);
-    insertRow(true);
+    withShrunkColumns(() => insertRow(true));
   }
   gotoColumn(col);
   const before = beforeOnLine();
@@ -4166,8 +4168,11 @@ function shrinkField(width: number, align: string, start: number, end: number, c
 
 /** Shrinks COLUMNS of the table from BEG to END, each to its first width cookie's width, as org-table--shrink-columns. */
 function shrinkColumns(columns: number[], beg: number, end: number): void {
+  if (columns.length === 0) return;
   e8.saveRestriction(() => {
     e8.widen();
+    // Links' hidden parts hidden, as their widths count without them.
+    e8.call("font-lock-ensure");
     for (const c of columns) {
       let align: string | undefined;
       let width: number | undefined;
@@ -4262,10 +4267,10 @@ function shrinkTable(begin: number, end: number): void {
  * those that were shrunk again, numbered as RENUMBER says, as
  * org-table-with-shrunk-columns does.
  */
-export function withShrunkColumns<T>(body: () => T, renumber: (columns: number[]) => number[] = (c) => c): T {
+export function withShrunkColumns<T>(body: () => T, renumber: (columns: number[]) => number[] = (c) => c, fromFirstRow = false): T {
   if (!isTableLine(lineAt())) return body();
-  const shrunk = listShrunkColumns();
-  if (shrunk.length === 0) return body();
+  // As the row at point, or the first, has them.
+  const shrunk = fromFirstRow ? saveExcursion(() => (e8.gotoChar(tableBegin()), listShrunkColumns())) : listShrunkColumns();
   const begin = marker(tableBegin());
   const end = marker(tableEnd(), true);
   expandColumns(begin.pos, end.pos);
@@ -4278,17 +4283,30 @@ export function withShrunkColumns<T>(body: () => T, renumber: (columns: number[]
   }
 }
 
-/** Runs BODY with the field at point's shrinking overlay set aside, and puts it back over the field's end after, as org-table-with-shrunk-field. */
-function withShrunkField<T>(body: () => T): T {
+/**
+ * Runs BODY with the field at point's shrinking overlay set aside, and
+ * puts it back over the field's end after, as org-table-with-shrunk-field:
+ * as E8 cannot move a deleted overlay back, one like it, in its place
+ * among its column's.
+ */
+export function withShrunkField<T>(body: () => T): T {
   const shrunk = shrunkField();
   if (shrunk === undefined) return body();
   const end = marker(e8.overlayEnd(shrunk)!, true);
   const size = end.pos - e8.overlayStart(shrunk)!;
+  const props = e8.overlayProperties(shrunk) ?? {};
   e8.deleteOverlay(shrunk);
   try {
     return body();
   } finally {
-    e8.moveOverlay(shrunk, end.pos - size, end.pos);
+    const again = e8.makeOverlay(end.pos - size, end.pos);
+    for (const [name, value] of Object.entries(props)) e8.overlayPut(again, name, value);
+    // The column's overlays know it by its new number.
+    const chain = props["org-table-column-overlays"];
+    if (Array.isArray(chain)) {
+      const renamed = chain.map((o) => (o === shrunk ? again : o));
+      for (const o of renamed.slice(1)) if (typeof o === "number" && e8.overlayBuffer(o) !== undefined) e8.overlayPut(o, "org-table-column-overlays", renamed as e8.Value);
+    }
     dropMarker(end);
   }
 }
@@ -4312,8 +4330,8 @@ e8.defineCommand({
       const before = beforeOnLine();
       const outside = !before.includes("|") || /^[ \t]*$/.test(e8.bufferText(e8.lineStart(lineAt()) + charCount(before.slice(0, before.lastIndexOf("|") + 1)), e8.lineEnd(lineAt())));
       columns = outside ? readColumnSelection(e8.readString("Column ranges (e.g. 2-4 6-): "), maxColumns) : [currentColumn()];
-    } else if (typeof arg === "string") columns = readColumnSelection(arg, maxColumns);
-    else if (raw !== 4 && raw !== 16) e8.userError(`Invalid argument: ${typeof arg === "number" ? arg : String(arg)}`);
+    } else if (typeof arg === "string" && arg !== "-") columns = readColumnSelection(arg, maxColumns);
+    else if (raw !== 4 && raw !== 16) e8.userError(`Invalid argument: ${Array.isArray(arg) ? `(${arg[0]})` : String(arg)}`);
     if (raw === 4) shrinkTable(begin, end);
     else if (raw === 16) expandColumns(begin, end);
     else {

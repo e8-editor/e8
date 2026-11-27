@@ -1166,6 +1166,238 @@
       "modified": false,
       "error": null,
       "displayed": "\n"
+    },
+    {
+      "name": "shrink-review-edit-field-c-c",
+      "input": {
+        "text": "| a | <3>          |\n| b | abcdefgh     |\n",
+        "point": 27,
+        "keys": "C-c TAB C-c ` C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "| a | <3>      |\n| b | abcdefgh |\n",
+      "visible": "| a | <3>      |\n| b | abcdefgh |\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "| a | <3>      |\n| b | abcdefgh |\n"
+    },
+    {
+      "name": "shrink-review-cd-at-field-start",
+      "input": {
+        "text": "| Name  | <5>          | Notes |\n|-------+--------------+-------|\n| Alice | short        | a     |\n| Bob   | longer value | x     |\n",
+        "point": 76,
+        "keys": "C-c TAB C-d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "| Name  | <5>          | Notes |\n|-------+--------------+-------|\n| Alice | hort         | a     |\n| Bob   | longer value | x     |\n",
+      "visible": "| Name  | <5>          | Notes |\n|-------+--------------+-------|\n| Alice | hort         | a     |\n| Bob   | longer value | x     |\n",
+      "point": 76,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "| Name  | <5>  …| Notes |\n|-------+------…+-------|\n| Alice | hort …| a     |\n| Bob   | longe…| x     |\n"
+    },
+    {
+      "name": "shrink-review-del-in-field",
+      "input": {
+        "text": "| Name  | <5>          | Notes |\n|-------+--------------+-------|\n| Alice | short        | a     |\n| Bob   | longer value | x     |\n",
+        "point": 78,
+        "keys": "C-c TAB DEL",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "| Name  | <5>          | Notes |\n|-------+--------------+-------|\n| Alice | sort         | a     |\n| Bob   | longer value | x     |\n",
+      "visible": "| Name  | <5>          | Notes |\n|-------+--------------+-------|\n| Alice | sort         | a     |\n| Bob   | longer value | x     |\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "| Name  | <5>  …| Notes |\n|-------+------…+-------|\n| Alice | sort …| a     |\n| Bob   | longe…| x     |\n"
+    },
+    {
+      "name": "shrink-review-type-in-cut-field",
+      "input": {
+        "text": "| a | <3>          |\n| b | abcdefgh     |\n",
+        "point": 28,
+        "keys": "C-c TAB x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "| a | <3>          |\n| b | axbcdefgh    |\n",
+      "visible": "| a | <3>          |\n| b | axbcdefgh    |\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "| a | <3>…|\n| b | axb…|\n"
+    },
+    {
+      "name": "shrink-review-meta-minus",
+      "input": {
+        "text": "| Name  | <5>          | Notes |\n|-------+--------------+-------|\n| Alice | short        | a     |\n| Bob   | longer value | x     |\n",
+        "point": 76,
+        "keys": "M-- C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "| Name  | <5>          | Notes |\n|-------+--------------+-------|\n| Alice | short        | a     |\n| Bob   | longer value | x     |\n",
+      "visible": "| Name  | <5>          | Notes |\n|-------+--------------+-------|\n| Alice | short        | a     |\n| Bob   | longer value | x     |\n",
+      "point": 76,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Invalid argument: -",
+      "displayed": "| Name  | <5>          | Notes |\n|-------+--------------+-------|\n| Alice | short        | a     |\n| Bob   | longer value | x     |\n"
+    },
+    {
+      "name": "shrink-review-tab-last-field",
+      "input": {
+        "text": "| a | <3>          |\n| b | abcdefgh     |\n",
+        "point": 27,
+        "keys": "C-c TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "| a | <3>      |\n| b | abcdefgh |\n|   |          |\n",
+      "visible": "| a | <3>      |\n| b | abcdefgh |\n|   |          |\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "| a | <3>…|\n| b | abc…|\n|   |    …|\n"
+    },
+    {
+      "name": "shrink-review-ret-in-shrunk",
+      "input": {
+        "text": "| a | <3>     |\n| b | abcdefg |\n",
+        "point": 22,
+        "keys": "C-c TAB RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "| a | <3>     |\n| b | abcdefg |\n|   |         |\n",
+      "visible": "| a | <3>     |\n| b | abcdefg |\n|   |         |\n",
+      "point": 38,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "| a | <3>…|\n| b | abc…|\n|   |    …|\n"
+    },
+    {
+      "name": "shrink-review-link-typed",
+      "input": {
+        "text": "| <4> | x |\n| ab | y |\n",
+        "point": 14,
+        "keys": "[ [ h t t p s : / / e . c o m ] [ a b c d e f ] ] C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "| <4> | x |\n| [[https://e.com][abcdef]]ab | y |\n",
+      "visible": "| <4> | x |\n| abcdefab | y |\n",
+      "point": 39,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "| <4> …| x |\n| abcd…| y |\n"
+    },
+    {
+      "name": "shrink-review-align-from-other-row-tab",
+      "input": {
+        "text": "| a |\n| b | <3> |\n| c | abcdef |\n",
+        "point": 24,
+        "keys": "C-c TAB C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "| a |        |\n| b | <3>    |\n| c | abcdef |\n",
+      "visible": "| a |        |\n| b | <3>    |\n| c | abcdef |\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "| a |        |\n| b | <3>    |\n| c | abcdef |\n"
+    },
+    {
+      "name": "shrink-review-cu-cu-cu",
+      "input": {
+        "text": "| Name  | <5>          | Notes |\n|-------+--------------+-------|\n| Alice | short        | a     |\n| Bob   | longer value | x     |\n",
+        "point": 76,
+        "keys": "C-u C-u C-u C-c TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "displayed": true
+      },
+      "text": "| Name  | <5>          | Notes |\n|-------+--------------+-------|\n| Alice | short        | a     |\n| Bob   | longer value | x     |\n",
+      "visible": "| Name  | <5>          | Notes |\n|-------+--------------+-------|\n| Alice | short        | a     |\n| Bob   | longer value | x     |\n",
+      "point": 76,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Invalid argument: (64)",
+      "message": null,
+      "displayed": "| Name  | <5>          | Notes |\n|-------+--------------+-------|\n| Alice | short        | a     |\n| Bob   | longer value | x     |\n"
     }
   ]
 }

@@ -525,5 +525,106 @@
   "text": "text\n| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
   "keys": "C-c TAB",
   "point": 0
+ },
+ {
+  "name": "shrink-review-edit-field-c-c",
+  "text": "| a | <3>          |\n| b | abcdefgh     |\n",
+  "keys": "C-c TAB C-c ` C-c C-c",
+  "point": 27,
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true
+ },
+ {
+  "name": "shrink-review-cd-at-field-start",
+  "text": "| Name  | <5>          | Notes |\n|-------+--------------+-------|\n| Alice | short        | a     |\n| Bob   | longer value | x     |\n",
+  "keys": "C-c TAB C-d",
+  "point": 76,
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true
+ },
+ {
+  "name": "shrink-review-del-in-field",
+  "text": "| Name  | <5>          | Notes |\n|-------+--------------+-------|\n| Alice | short        | a     |\n| Bob   | longer value | x     |\n",
+  "keys": "C-c TAB DEL",
+  "point": 78,
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true
+ },
+ {
+  "name": "shrink-review-type-in-cut-field",
+  "text": "| a | <3>          |\n| b | abcdefgh     |\n",
+  "keys": "C-c TAB x",
+  "point": 28,
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true
+ },
+ {
+  "name": "shrink-review-meta-minus",
+  "text": "| Name  | <5>          | Notes |\n|-------+--------------+-------|\n| Alice | short        | a     |\n| Bob   | longer value | x     |\n",
+  "keys": "M-- C-c TAB",
+  "point": 76,
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true
+ },
+ {
+  "name": "shrink-review-tab-last-field",
+  "text": "| a | <3>          |\n| b | abcdefgh     |\n",
+  "keys": "C-c TAB TAB",
+  "point": 27,
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true
+ },
+ {
+  "name": "shrink-review-ret-in-shrunk",
+  "text": "| a | <3>     |\n| b | abcdefg |\n",
+  "keys": "C-c TAB RET",
+  "point": 22,
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true
+ },
+ {
+  "name": "shrink-review-link-typed",
+  "text": "| <4> | x |\n| ab | y |\n",
+  "keys": "[ [ h t t p s : / / e . c o m ] [ a b c d e f ] ] C-c TAB",
+  "point": 14,
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true
+ },
+ {
+  "name": "shrink-review-align-from-other-row-tab",
+  "text": "| a |\n| b | <3> |\n| c | abcdef |\n",
+  "keys": "C-c TAB C-c C-c",
+  "point": 24,
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true
+ },
+ {
+  "name": "shrink-review-cu-cu-cu",
+  "text": "| Name  | <5>          | Notes |\n|-------+--------------+-------|\n| Alice | short        | a     |\n| Bob   | longer value | x     |\n",
+  "keys": "C-u C-u C-u C-c TAB",
+  "point": 76,
+  "message": true,
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true
  }
 ]

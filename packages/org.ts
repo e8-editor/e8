@@ -142,6 +142,7 @@ import {
   setEntryPropertyLookup,
   startupTables,
   withShrunkColumns,
+  withShrunkField,
 } from "org-table";
 import { completingReadMultiple } from "crm";
 import { allMatches, autoFillAllowed, barfIfBufferReadOnly, charCount, eraseBuffer, escapeRegExp, forwardLine, getBufferWindow, truthy } from "subr";
@@ -8606,7 +8607,8 @@ e8.defineCommand({
         e8.call("self-insert-command");
         const rest = restOfLine();
         const bar = e8.point() + charCount(rest.slice(0, rest.indexOf("|")));
-        e8.saveExcursion(() => edDelete(bar - 2, bar - 1));
+        // The field's shrinking overlay set aside, so its column stays shrunk.
+        withShrunkField(() => e8.saveExcursion(() => edDelete(bar - 2, bar - 1)));
         return;
       }
     }
@@ -9563,7 +9565,7 @@ function orgDeleteChar(n: number): void {
     // Org goes back two characters from the match's end as it was. Org's
     // after-change functions save and restore the match data as markers,
     // though, which cannot be past the end of the buffer.
-    e8.saveExcursion(() => edInsert(Math.min(end, e8.bufferSize()) - 2, " "));
+    withShrunkField(() => e8.saveExcursion(() => edInsert(Math.min(end, e8.bufferSize()) - 2, " ")));
     if (noalign && !update) markAligned();
   } else deleteChars(n);
 }
