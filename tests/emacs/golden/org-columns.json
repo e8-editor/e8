@@ -1,0 +1,1214 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "columns-buffer",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 0,
+        "keys": "C-c C-x C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "visible": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TOD\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TO\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DO\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Oth\nSome text.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "displayed": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* Project                 | TODO | A   | 1:30   | :work:  |\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** Write report           | TODO | B   | 1:00   |         |\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** Call Ann               | DONE | B   | 0:30   | :phone: |\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other                   |      | B   |        |         |\nSome text.\n"
+    },
+    {
+      "name": "columns-subtree",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 55,
+        "keys": "C-c C-x C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "visible": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TOD\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TO\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DO\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "point": 55,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "displayed": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* Project                 | TODO | A   | 1:30   | :work:  |\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** Write report           | TODO | B   | 1:00   |         |\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** Call Ann               | DONE | B   | 0:30   | :phone: |\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n"
+    },
+    {
+      "name": "columns-global",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 132,
+        "keys": "C-u C-c C-x C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "visible": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TOD\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TO\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DO\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Oth\nSome text.\n",
+      "point": 132,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "displayed": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* Project                 | TODO | A   | 1:30   | :work:  |\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** Write report           | TODO | B   | 1:00   |         |\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** Call Ann               | DONE | B   | 0:30   | :phone: |\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other                   |      | B   |        |         |\nSome text.\n"
+    },
+    {
+      "name": "columns-quit",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 0,
+        "keys": "C-c C-x C-c q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "q#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "visible": "q#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TOD\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TO\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DO\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Oth\nSome text.\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "q#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* Project                 | TODO | A   | 1:30   | :work:  |\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** Write report           | TODO | B   | 1:00   |         |\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** Call Ann               | DONE | B   | 0:30   | :phone: |\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other                   |      | B   |        |         |\nSome text.\n"
+    },
+    {
+      "name": "columns-summaries",
+      "input": {
+        "text": "* Budget\n:PROPERTIES:\n:COLUMNS: %20ITEM %Cost{+;%.2f} %Done{X} %Hours{:} %Est{est+} %N{max} %M{mean} %S{X/}\n:END:\n** Food\n:PROPERTIES:\n:Cost: 12.5\n:Done: [X]\n:Hours: 1:30\n:Est: 2-4\n:N: 3\n:M: 2\n:S: [X]\n:END:\n** Rent\n:PROPERTIES:\n:Cost: 100\n:Done: [ ]\n:Hours: 2:15\n:Est: 1-3\n:N: 7\n:M: 5\n:S: [ ]\n:END:\n*** Deposit\n:PROPERTIES:\n:Cost: 50\n:Hours: 0:45\n:END:\n",
+        "point": 3,
+        "keys": "C-c C-x C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "* Budget\n:PROPERTIES:\n:COLUMNS: %20ITEM %Cost{+;%.2f} %Done{X} %Hours{:} %Est{est+} %N{max} %M{mean} %S{X/}\n:END:\n** Food \n:PROPERTIES:\n:Cost: 12.5\n:Done: [X]\n:Hours: 1:30\n:Est: 2-4\n:N: 3\n:M: 2\n:S: [X]\n:END:\n** Rent \n:PROPERTIES:\n:COST:     50.00\n:Done: [ ]\n:HOURS:    0:45\n:Est: 1-3\n:N: 7\n:M: 5\n:S: [ ]\n:END:\n*** Deposit\n:PROPERTIES:\n:Cost: 50\n:Hours: 0:45\n:END:\n",
+      "visible": "* Budget\n:PROPERTIES:\n:COLUMNS: %20ITEM %Cost{+;%.2f} %Done{X} %Hours{:} %Est{est+} %N{max} %M{mean} %S{X/}\n:END:\n** Food \n:PROPERTIES:\n:Cost: 12.5\n:Done: [X]\n:Hours: 1:30\n:Est: 2-4\n:N: 3\n:M: 2\n:S: [X]\n:END:\n** Rent \n:PROPERTIES:\n:COST:     50.00\n:Done: [ ]\n:HOURS:    0:45\n:Est: 1-3\n:N: 7\n:M: 5\n:S: [ ]\n:END:\n*** Depo\n:PROPERTIES:\n:Cost: 50\n:Hours: 0:45\n:END:\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "* Budget             | 62.50 | [-]  | 2:15  | 4-6 | 7 | 3.5 | [1/2] |\n:PROPERTIES:\n:COLUMNS: %20ITEM %Cost{+;%.2f} %Done{X} %Hours{:} %Est{est+} %N{max} %M{mean} %S{X/}\n:END:\n** Food              | 12.50 | [X]  | 1:30  | 2-4 | 3 | 2   | [X]   |\n:PROPERTIES:\n:Cost: 12.5\n:Done: [X]\n:Hours: 1:30\n:Est: 2-4\n:N: 3\n:M: 2\n:S: [X]\n:END:\n** Rent              | 50.00 | [ ]  | 0:45  | 1-3 | 7 | 5   | [ ]   |\n:PROPERTIES:\n:COST:     50.00\n:Done: [ ]\n:HOURS:    0:45\n:Est: 1-3\n:N: 7\n:M: 5\n:S: [ ]\n:END:\n*** Deposit          | 50.00 |      | 0:45  |     |   |     |       |\n:PROPERTIES:\n:Cost: 50\n:Hours: 0:45\n:END:\n"
+    },
+    {
+      "name": "columns-default-format",
+      "input": {
+        "text": "* TODO One :a:\n** Two\n",
+        "point": 0,
+        "keys": "C-c C-x C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "* TODO One :a:\n** Two\n",
+      "visible": "* TO\n** T\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "displayed": "* One                     | TODO | B   | :a:  |\n** Two                    |      | B   |      |\n"
+    },
+    {
+      "name": "columns-show-value",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 0,
+        "keys": "C-c C-x C-c C-n v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "visible": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TOD\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TO\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DO\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Oth\nSome text.\n",
+      "point": 53,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Value is: Project",
+      "displayed": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* Project                 | TODO | A   | 1:30   | :work:  |\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** Write report           | TODO | B   | 1:00   |         |\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** Call Ann               | DONE | B   | 0:30   | :phone: |\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other                   |      | B   |        |         |\nSome text.\n"
+    },
+    {
+      "name": "columns-next-allowed",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 0,
+        "keys": "C-c C-x C-c C-n C-n C-n C-n C-n C-n C-n C-f C-f C-f n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Efnfort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "visible": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TOD\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TO\n:PROPERTIES:\n:Efnfort: 1:00\n:END:\n** DO\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Oth\nSome text.\n",
+      "point": 170,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* Project                 | TODO | A   | 1:30   | :work:  |\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** Write report           | TODO | B   | 1:00   |         |\n:PROPERTIES:\n:Efnfort: 1:00\n:END:\n** Call Ann               | DONE | B   | 0:30   | :phone: |\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other                   |      | B   |        |         |\nSome text.\n"
+    },
+    {
+      "name": "columns-todo-next",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 0,
+        "keys": "C-c C-x C-c C-n C-n C-n C-n C-n C-n C-n C-f n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:nEffort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "visible": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TOD\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TO\n:PROPERTIES:\n:nEffort: 1:00\n:END:\n** DO\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Oth\nSome text.\n",
+      "point": 168,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* Project                 | TODO | A   | 1:30   | :work:  |\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** Write report           | TODO | B   | 1:00   |         |\n:PROPERTIES:\n:nEffort: 1:00\n:END:\n** Call Ann               | DONE | B   | 0:30   | :phone: |\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other                   |      | B   |        |         |\nSome text.\n"
+    },
+    {
+      "name": "columns-priority-prev",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 0,
+        "keys": "C-c C-x C-c C-n C-f C-f p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#C] Project            :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "visible": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TOD\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TO\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DO\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Oth\nSome text.\n",
+      "point": 55,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* Project                 | TODO | C   | 1:30   | :work:  |\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** Write report           | TODO | B   | 1:00   |         |\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** Call Ann               | DONE | B   | 0:30   | :phone: |\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other                   |      | B   |        |         |\nSome text.\n"
+    },
+    {
+      "name": "columns-digit",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 0,
+        "keys": "C-c C-x C-c C-n C-n C-n C-n C-n C-n C-n C-f C-f C-f 4",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Ef4fort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "visible": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TOD\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TO\n:PROPERTIES:\n:Ef4fort: 1:00\n:END:\n** DO\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Oth\nSome text.\n",
+      "point": 170,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* Project                 | TODO | A   | 1:30   | :work:  |\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** Write report           | TODO | B   | 1:00   |         |\n:PROPERTIES:\n:Ef4fort: 1:00\n:END:\n** Call Ann               | DONE | B   | 0:30   | :phone: |\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other                   |      | B   |        |         |\nSome text.\n"
+    },
+    {
+      "name": "columns-edit-effort",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 0,
+        "keys": "C-c C-x C-c C-n C-n C-n C-n C-n C-n C-n C-f C-f C-f e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2:00"
+        ],
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Efefort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "visible": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TOD\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TO\n:PROPERTIES:\n:Efefort: 1:00\n:END:\n** DO\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Oth\nSome text.\n",
+      "point": 170,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* Project                 | TODO | A   | 1:30   | :work:  |\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** Write report           | TODO | B   | 1:00   |         |\n:PROPERTIES:\n:Efefort: 1:00\n:END:\n** Call Ann               | DONE | B   | 0:30   | :phone: |\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other                   |      | B   |        |         |\nSome text.\n"
+    },
+    {
+      "name": "columns-edit-computed",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 0,
+        "keys": "C-c C-x C-c C-n C-f C-f C-f e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "visible": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TOD\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TO\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DO\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Oth\nSome text.\n",
+      "point": 56,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "This value is computed from the entry’s children",
+      "displayed": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* Project                 | TODO | A   | 1:30   | :work:  |\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** Write report           | TODO | B   | 1:00   |         |\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** Call Ann               | DONE | B   | 0:30   | :phone: |\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other                   |      | B   |        |         |\nSome text.\n"
+    },
+    {
+      "name": "columns-widen",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 0,
+        "keys": "C-c C-x C-c C-n C-f >",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %25ITEM %5TODO %3PRIORITY %EFFORT(Effort){:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "visible": "#+COLUMNS: %25ITEM %5TODO %3PRIORITY %EFFORT(Effort){:} %TAGS\n* TOD\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TO\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DO\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Oth\nSome text.\n",
+      "point": 63,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "#+COLUMNS: %25ITEM %5TODO %3PRIORITY %EFFORT(Effort){:} %TAGS\n* Project                 | TODO  | A   | 1:30   | :work:  |\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** Write report           | TODO  | B   | 1:00   |         |\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** Call Ann               | DONE  | B   | 0:30   | :phone: |\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other                   |       | B   |        |         |\nSome text.\n"
+    },
+    {
+      "name": "columns-narrow",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 0,
+        "keys": "C-c C-x C-c C-n < <",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %23ITEM %TODO %3PRIORITY %EFFORT(Effort){:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "visible": "#+COLUMNS: %23ITEM %TODO %3PRIORITY %EFFORT(Effort){:} %TAGS\n* TOD\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TO\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DO\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Oth\nSome text.\n",
+      "point": 61,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "#+COLUMNS: %23ITEM %TODO %3PRIORITY %EFFORT(Effort){:} %TAGS\n* Project               | TODO | A   | 1:30   | :work:  |\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** Write report         | TODO | B   | 1:00   |         |\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** Call Ann             | DONE | B   | 0:30   | :phone: |\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other                 |      | B   |        |         |\nSome text.\n"
+    },
+    {
+      "name": "columns-move-right",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 0,
+        "keys": "C-c C-x C-c C-n C-f M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %25ITEM %3PRIORITY %TODO %EFFORT(Effort){:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "visible": "#+COLUMNS: %25ITEM %3PRIORITY %TODO %EFFORT(Effort){:} %TAGS\n* TOD\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TO\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DO\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Oth\nSome text.\n",
+      "point": 63,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "#+COLUMNS: %25ITEM %3PRIORITY %TODO %EFFORT(Effort){:} %TAGS\n* Project                 | A   | TODO | 1:30   | :work:  |\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** Write report           | B   | TODO | 1:00   |         |\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** Call Ann               | B   | DONE | 0:30   | :phone: |\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other                   | B   |      |        |         |\nSome text.\n"
+    },
+    {
+      "name": "columns-move-left-first",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 0,
+        "keys": "C-c C-x C-c C-n M-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "visible": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TOD\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TO\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DO\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Oth\nSome text.\n",
+      "point": 53,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot shift this column further to the left",
+      "displayed": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* Project                 | TODO | A   | 1:30   | :work:  |\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** Write report           | TODO | B   | 1:00   |         |\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** Call Ann               | DONE | B   | 0:30   | :phone: |\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other                   |      | B   |        |         |\nSome text.\n"
+    },
+    {
+      "name": "columns-delete",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 0,
+        "keys": "C-c C-x C-c C-n C-f C-f S-M-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "y"
+        ],
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %25ITEM %TODO %EFFORT(Effort){:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "visible": "#+COLUMNS: %25ITEM %TODO %EFFORT(Effort){:} %TAGS\n* TO\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** T\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** D\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Ot\nSome text.\n",
+      "point": 52,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "#+COLUMNS: %25ITEM %TODO %EFFORT(Effort){:} %TAGS\n* Project                 | TODO | 1:30   | :work:  |\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** Write report           | TODO | 1:00   |         |\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** Call Ann               | DONE | 0:30   | :phone: |\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other                   |      |        |         |\nSome text.\n"
+    },
+    {
+      "name": "columns-new",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 0,
+        "keys": "C-c C-x C-c C-n S-M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "Owner",
+          "Who",
+          "",
+          "",
+          ""
+        ],
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %Owner(Who) %25ITEM %TODO %3PRIORITY %EFFORT(Effort){:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "visible": "#+COLUMNS: %Owner(Who) %25ITEM %TODO %3PRIORITY %EFFORT(Effort){:} %TAGS\n* TODO\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TOD\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DON\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Othe\nSome text.\n",
+      "point": 73,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "#+COLUMNS: %Owner(Who) %25ITEM %TODO %3PRIORITY %EFFORT(Effort){:} %TAGS\n    | * Project                 | TODO | A   | 1:30   | :work:  |\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n    | ** Write report           | TODO | B   | 1:00   |         |\n:PROPERTIES:\n:Effort: 1:00\n:END:\n    | ** Call Ann               | DONE | B   | 0:30   | :phone: |\n:PROPERTIES:\n:Effort: 0:30\n:END:\n    | * Other                   |      | B   |        |         |\nSome text.\n"
+    },
+    {
+      "name": "columns-checkbox-toggle",
+      "input": {
+        "text": "* Budget\n:PROPERTIES:\n:COLUMNS: %20ITEM %Cost{+;%.2f} %Done{X} %Hours{:} %Est{est+} %N{max} %M{mean} %S{X/}\n:END:\n** Food\n:PROPERTIES:\n:Cost: 12.5\n:Done: [X]\n:Hours: 1:30\n:Est: 2-4\n:N: 3\n:M: 2\n:S: [X]\n:END:\n** Rent\n:PROPERTIES:\n:Cost: 100\n:Done: [ ]\n:Hours: 2:15\n:Est: 1-3\n:N: 7\n:M: 5\n:S: [ ]\n:END:\n*** Deposit\n:PROPERTIES:\n:Cost: 50\n:Hours: 0:45\n:END:\n",
+        "point": 116,
+        "keys": "C-c C-x C-c C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "* Budget\n:PROPERTIES:\n:COLUMNS: %20ITEM %Cost{+;%.2f} %Done{X} %Hours{:} %Est{est+} %N{max} %M{mean} %S{X/}\n:END:\n** Food \n:PROPERTIES:\n:Cost: 12.5\n:DONE:     [ ]\n:Hours: 1:30\n:Est: 2-4\n:N: 3\n:M: 2\n:S: [X]\n:END:\n** Rent \n:PROPERTIES:\n:COST:     50.00\n:Done: [ ]\n:HOURS:    0:45\n:Est: 1-3\n:N: 7\n:M: 5\n:S: [ ]\n:END:\n*** Deposit\n:PROPERTIES:\n:Cost: 50\n:Hours: 0:45\n:END:\n",
+      "visible": "* Budget\n:PROPERTIES:\n:COLUMNS: %20ITEM %Cost{+;%.2f} %Done{X} %Hours{:} %Est{est+} %N{max} %M{mean} %S{X/}\n:END:\n** Food \n:PROPERTIES:\n:Cost: 12.5\n:DONE:     [ ]\n:Hours: 1:30\n:Est: 2-4\n:N: 3\n:M: 2\n:S: [X]\n:END:\n** Rent \n:PROPERTIES:\n:COST:     50.00\n:Done: [ ]\n:HOURS:    0:45\n:Est: 1-3\n:N: 7\n:M: 5\n:S: [ ]\n:END:\n*** Depo\n:PROPERTIES:\n:Cost: 50\n:Hours: 0:45\n:END:\n",
+      "point": 116,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "* Budget             | 62.50 | [ ]  | 2:15  | 4-6 | 7 | 3.5 | [1/2] |\n:PROPERTIES:\n:COLUMNS: %20ITEM %Cost{+;%.2f} %Done{X} %Hours{:} %Est{est+} %N{max} %M{mean} %S{X/}\n:END:\n** Food              | 12.50 | [ ]  | 1:30  | 2-4 | 3 | 2   | [X]   |\n:PROPERTIES:\n:Cost: 12.5\n:DONE:     [ ]\n:Hours: 1:30\n:Est: 2-4\n:N: 3\n:M: 2\n:S: [X]\n:END:\n** Rent              | 50.00 | [ ]  | 0:45  | 1-3 | 7 | 5   | [ ]   |\n:PROPERTIES:\n:COST:     50.00\n:Done: [ ]\n:HOURS:    0:45\n:Est: 1-3\n:N: 7\n:M: 5\n:S: [ ]\n:END:\n*** Deposit          | 50.00 |      | 0:45  |     |   |     |       |\n:PROPERTIES:\n:Cost: 50\n:Hours: 0:45\n:END:\n"
+    },
+    {
+      "name": "columns-typing-read-only",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 0,
+        "keys": "C-c C-x C-c C-n x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "visible": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TOD\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TO\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DO\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Oth\nSome text.\n",
+      "point": 53,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Text is read-only: #(\"Type ‘e’ to edit property\" 6 7 (font-lock-face help-key-binding face help-key-binding))",
+      "displayed": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* Project                 | TODO | A   | 1:30   | :work:  |\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** Write report           | TODO | B   | 1:00   |         |\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** Call Ann               | DONE | B   | 0:30   | :phone: |\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other                   |      | B   |        |         |\nSome text.\n"
+    },
+    {
+      "name": "columns-redo",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 0,
+        "keys": "C-c C-x C-c g",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "g#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "visible": "g#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TOD\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TO\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DO\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Oth\nSome text.\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "g#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* Project                 | TODO | A   | 1:30   | :work:  |\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** Write report           | TODO | B   | 1:00   |         |\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** Call Ann               | DONE | B   | 0:30   | :phone: |\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other                   |      | B   |        |         |\nSome text.\n"
+    },
+    {
+      "name": "columns-item-edit",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 0,
+        "keys": "C-c C-x C-c C-n C-n C-n C-n C-n C-n C-n e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "Write the report"
+        ],
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\ne:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "visible": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TOD\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TO\n:PROPERTIES:\ne:Effort: 1:00\n:END:\n** DO\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Oth\nSome text.\n",
+      "point": 167,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* Project                 | TODO | A   | 1:30   | :work:  |\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** Write report           | TODO | B   | 1:00   |         |\n:PROPERTIES:\ne:Effort: 1:00\n:END:\n** Call Ann               | DONE | B   | 0:30   | :phone: |\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other                   |      | B   |        |         |\nSome text.\n"
+    },
+    {
+      "name": "columns-hide-leading-stars",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 0,
+        "keys": "C-c C-x C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true,
+        "vars": {
+          "org-hide-leading-stars": true
+        }
+      },
+      "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "visible": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TOD\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TO\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DO\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Oth\nSome text.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "displayed": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* Project                 | TODO | A   | 1:30   | :work:  |\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n * Write report           | TODO | B   | 1:00   |         |\n:PROPERTIES:\n:Effort: 1:00\n:END:\n * Call Ann               | DONE | B   | 0:30   | :phone: |\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other                   |      | B   |        |         |\nSome text.\n"
+    },
+    {
+      "name": "columns-timestamps",
+      "input": {
+        "text": "#+COLUMNS: %ITEM %SCHEDULED %DEADLINE\n* A\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-10-30 Fri 10:00>\n",
+        "point": 0,
+        "keys": "C-c C-x C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %ITEM %SCHEDULED %DEADLINE\n* A\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-10-30 Fri 10:00>\n",
+      "visible": "#+COLUMNS: %ITEM %SCHEDULED %DEADLINE\n* A\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-10-30 Fri 10:00>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "displayed": "#+COLUMNS: %ITEM %SCHEDULED %DEADLINE\n* A  | [2026-10-28 Wed] | [2026-10-30 Fri 10:00] |\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-10-30 Fri 10:00>\n"
+    },
+    {
+      "name": "columns-scheduled-later",
+      "input": {
+        "text": "#+COLUMNS: %ITEM %SCHEDULED\n* A\nSCHEDULED: <2026-10-28 Wed>\n",
+        "point": 0,
+        "keys": "C-c C-x C-c C-n C-n C-f n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %ITEM %SCHEDULED\n* A\nSnCHEDULED: <2026-10-28 Wed>\n",
+      "visible": "#+COLUMNS: %ITEM %SCHEDULED\n* \nSnCHEDULED: <2026-10-28 Wed>\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "#+COLUMNS: %ITEM %SCHEDULED\n* A  | [2026-10-28 Wed] |\nSnCHEDULED: <2026-10-28 Wed>\n"
+    },
+    {
+      "name": "columns-allowed-dates",
+      "input": {
+        "text": "#+COLUMNS: %ITEM %When\n* A\n:PROPERTIES:\n:When: <2026-10-28 Wed>\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x C-c C-n C-n C-f n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %ITEM %When\n* A\n:nPROPERTIES:\n:When: <2026-10-28 Wed>\n:END:\n",
+      "visible": "#+COLUMNS: %ITEM %When\n* \n:nPROPERTIES:\n:When: <2026-10-28 Wed>\n:END:\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "#+COLUMNS: %ITEM %When\n* A  | <2026-10-28 Wed> |\n:nPROPERTIES:\n:When: <2026-10-28 Wed>\n:END:\n"
+    },
+    {
+      "name": "columns-no-allowed",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 0,
+        "keys": "C-c C-x C-c C-n C-f C-f C-f C-f n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "visible": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TOD\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TO\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DO\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Oth\nSome text.\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Allowed values for this property have not been defined",
+      "displayed": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* Project                 | TODO | A   | 1:30   | :work:  |\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** Write report           | TODO | B   | 1:00   |         |\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** Call Ann               | DONE | B   | 0:30   | :phone: |\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other                   |      | B   |        |         |\nSome text.\n"
+    },
+    {
+      "name": "columns-ellipses",
+      "input": {
+        "text": "#+COLUMNS: %5ITEM %TODO\n* TODO A long heading here\n",
+        "point": 0,
+        "keys": "C-c C-x C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %5ITEM %TODO\n* TODO A long heading here\n",
+      "visible": "#+COLUMNS: %5ITEM %TODO\n* \n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "displayed": "#+COLUMNS: %5ITEM %TODO\n* A.. | TODO |\n"
+    },
+    {
+      "name": "columns-property-format",
+      "input": {
+        "text": "* A\n:PROPERTIES:\n:COLUMNS: %ITEM %X{+;%5.1f}\n:END:\n** B\n:PROPERTIES:\n:X: 2\n:END:\n** C\n:PROPERTIES:\n:X: 3.5\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "* A\n:PROPERTIES:\n:COLUMNS: %ITEM %X{+;%5.1f}\n:END:\n** B\n:PROPERTIES:\n:X: 2\n:END:\n** C\n:PROPERTIES:\n:X: 3.5\n:END:\n",
+      "visible": "* \n:PROPERTIES:\n:COLUMNS: %ITEM %X{+;%5.1f}\n:END:\n**\n:PROPERTIES:\n:X: 2\n:END:\n**\n:PROPERTIES:\n:X: 3.5\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "displayed": "* A  |   5.5 |\n:PROPERTIES:\n:COLUMNS: %ITEM %X{+;%5.1f}\n:END:\n** B |   2.0 |\n:PROPERTIES:\n:X: 2\n:END:\n** C |   3.5 |\n:PROPERTIES:\n:X: 3.5\n:END:\n"
+    },
+    {
+      "name": "columns-clocksum",
+      "input": {
+        "text": "#+COLUMNS: %ITEM %CLOCKSUM %CLOCKSUM_T\n* A\n** B\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 09:00]--[2026-10-27 Tue 10:30] =>  1:30\nCLOCK: [2026-10-28 Wed 09:00]--[2026-10-28 Wed 09:20] =>  0:20\n:END:\n** C\n:LOGBOOK:\nCLOCK: [2026-10-20 Tue 09:00]--[2026-10-21 Wed 10:00] => 25:00\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %ITEM %CLOCKSUM %CLOCKSUM_T\n* A\n** B\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 09:00]--[2026-10-27 Tue 10:30] =>  1:30\nCLOCK: [2026-10-28 Wed 09:00]--[2026-10-28 Wed 09:20] =>  0:20\n:END:\n** C\n:LOGBOOK:\nCLOCK: [2026-10-20 Tue 09:00]--[2026-10-21 Wed 10:00] => 25:00\n:END:\n",
+      "visible": "#+COLUMNS: %ITEM %CLOCKSUM %CLOCKSUM_T\n* A\n** \n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 09:00]--[2026-10-27 Tue 10:30] =>  1:30\nCLOCK: [2026-10-28 Wed 09:00]--[2026-10-28 Wed 09:20] =>  0:20\n:END:\n** \n:LOGBOOK:\nCLOCK: [2026-10-20 Tue 09:00]--[2026-10-21 Wed 10:00] => 25:00\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "displayed": "#+COLUMNS: %ITEM %CLOCKSUM %CLOCKSUM_T\n* A  | 1d 2:50  | 0:20       |\n** B | 1:50     | 0:20       |\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 09:00]--[2026-10-27 Tue 10:30] =>  1:30\nCLOCK: [2026-10-28 Wed 09:00]--[2026-10-28 Wed 09:20] =>  0:20\n:END:\n** C | 1d 1:00  |            |\n:LOGBOOK:\nCLOCK: [2026-10-20 Tue 09:00]--[2026-10-21 Wed 10:00] => 25:00\n:END:\n"
+    },
+    {
+      "name": "columns-inherited-property",
+      "input": {
+        "text": "* A\n:PROPERTIES:\n:COLUMNS: %ITEM %Owner\n:END:\n** B\n:PROPERTIES:\n:Owner: me\n:END:\n*** C\n* D\n",
+        "point": 88,
+        "keys": "C-c C-x C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "* A\n:PROPERTIES:\n:COLUMNS: %ITEM %Owner\n:END:\n** B\n:PROPERTIES:\n:Owner: me\n:END:\n*** C\n* D \n",
+      "visible": "* A\n:PROPERTIES:\n:COLUMNS: %ITEM %Owner\n:END:\n** B\n:PROPERTIES:\n:Owner: me\n:END:\n*** C\n* D \n",
+      "point": 88,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "* A\n:PROPERTIES:\n:COLUMNS: %ITEM %Owner\n:END:\n** B\n:PROPERTIES:\n:Owner: me\n:END:\n*** C\n* D                       |      | B   |      |\n"
+    },
+    {
+      "name": "columns-link-item",
+      "input": {
+        "text": "#+COLUMNS: %ITEM\n* See [[https://example.com][the site]] now\n",
+        "point": 0,
+        "keys": "C-c C-x C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %ITEM\n* See [[https://example.com][the site]] now\n",
+      "visible": "#+COLUMNS: %ITEM\n*\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "displayed": "#+COLUMNS: %ITEM\n* See the site now |\n"
+    },
+    {
+      "name": "columns-move-row-down",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 0,
+        "keys": "C-c C-x C-c C-n M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* Other\nSome text.\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n",
+      "visible": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* Oth\nSome text.\n* TOD\n:PROPERTIES:\n** TO\n:PROPERTIES:\n** DO\n:PROPERTIES:\n",
+      "point": 72,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* Other                   |      | B   |        |         |\nSome text.\n* Project                 | TODO | A   | 1:30   | :work:  |\n:PROPERTIES:\n** Write report           | TODO | B   | 1:00   |         |\n:PROPERTIES:\n** Call Ann               | DONE | B   | 0:30   | :phone: |\n:PROPERTIES:\n"
+    },
+    {
+      "name": "columns-move-row-up",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 0,
+        "keys": "C-c C-x C-c C-n C-n C-n C-n C-n C-n C-n C-n C-n C-n C-n C-n C-n M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* Other\nSome text.\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n",
+      "visible": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* Oth\nSome text.\n* TOD\n:PROPERTIES:\n** TO\n:PROPERTIES:\n** DO\n:PROPERTIES:\n",
+      "point": 53,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* Other                   |      | B   |        |         |\nSome text.\n* Project                 | TODO | A   | 1:30   | :work:  |\n:PROPERTIES:\n** Write report           | TODO | B   | 1:00   |         |\n:PROPERTIES:\n** Call Ann               | DONE | B   | 0:30   | :phone: |\n:PROPERTIES:\n"
+    },
+    {
+      "name": "columns-edit-allowed",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 0,
+        "keys": "C-c C-x C-c C-n C-n C-n C-n C-n C-n C-n C-f C-f C-f a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "0:15 0:45"
+        ],
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Efafort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "visible": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TOD\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TO\n:PROPERTIES:\n:Efafort: 1:00\n:END:\n** DO\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Oth\nSome text.\n",
+      "point": 170,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* Project                 | TODO | A   | 1:30   | :work:  |\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** Write report           | TODO | B   | 1:00   |         |\n:PROPERTIES:\n:Efafort: 1:00\n:END:\n** Call Ann               | DONE | B   | 0:30   | :phone: |\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other                   |      | B   |        |         |\nSome text.\n"
+    },
+    {
+      "name": "columns-edit-attributes",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 0,
+        "keys": "C-c C-x C-c C-n C-f C-f s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "PRIORITY",
+          "Pri",
+          "5",
+          "",
+          ""
+        ],
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %25ITEM %TODO %5PRIORITY(Pri) %EFFORT(Effort){:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "visible": "#+COLUMNS: %25ITEM %TODO %5PRIORITY(Pri) %EFFORT(Effort){:} %TAGS\n* TOD\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TO\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DO\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Oth\nSome text.\n",
+      "point": 68,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "#+COLUMNS: %25ITEM %TODO %5PRIORITY(Pri) %EFFORT(Effort){:} %TAGS\n* Project                 | TODO | A     | 1:30   | :work:  |\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** Write report           | TODO | B     | 1:00   |         |\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** Call Ann               | DONE | B     | 0:30   | :phone: |\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other                   |      | B     |        |         |\nSome text.\n"
+    },
+    {
+      "name": "columns-max-min-mean",
+      "input": {
+        "text": "#+COLUMNS: %ITEM %A{max} %B{min} %C{mean;%.1f} %D{:max} %E{:min} %F{:mean} %G{X%}\n* T\n** a\n:PROPERTIES:\n:A: 3\n:B: 4\n:C: 1\n:D: 1:00\n:E: 2:00\n:F: 0:10\n:G: [X]\n:END:\n** b\n:PROPERTIES:\n:A: 9\n:B: 2\n:C: 4\n:D: 0:30\n:E: 3:00\n:F: 0:21\n:G: [ ]\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %ITEM %A{max} %B{min} %C{mean;%.1f} %D{:max} %E{:min} %F{:mean} %G{X%}\n* T     \n** a    \n:PROPERTIES:\n:A: 3\n:B: 4\n:C: 1\n:D: 1:00\n:E: 2:00\n:F: 0:10\n:G: [X]\n:END:\n** b    \n:PROPERTIES:\n:A: 9\n:B: 2\n:C: 4\n:D: 0:30\n:E: 3:00\n:F: 0:21\n:G: [ ]\n:END:\n",
+      "visible": "#+COLUMNS: %ITEM %A{max} %B{min} %C{mean;%.1f} %D{:max} %E{:min} %F{:mean} %G{X%}\n* T     \n** a    \n:PROPERTIES:\n:A: 3\n:B: 4\n:C: 1\n:D: 1:00\n:E: 2:00\n:F: 0:10\n:G: [X]\n:END:\n** b    \n:PROPERTIES:\n:A: 9\n:B: 2\n:C: 4\n:D: 0:30\n:E: 3:00\n:F: 0:21\n:G: [ ]\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "#+COLUMNS: %ITEM %A{max} %B{min} %C{mean;%.1f} %D{:max} %E{:min} %F{:mean} %G{X%}\n* T  | 9 | 2 | 2.5 | 1:00 | 2:00 | 0:15 | [50%] |\n** a | 3 | 4 | 1.0 | 1:00 | 2:00 | 0:10 | [X]   |\n:PROPERTIES:\n:A: 3\n:B: 4\n:C: 1\n:D: 1:00\n:E: 2:00\n:F: 0:10\n:G: [X]\n:END:\n** b | 9 | 2 | 4.0 | 0:30 | 3:00 | 0:21 | [ ]   |\n:PROPERTIES:\n:A: 9\n:B: 2\n:C: 4\n:D: 0:30\n:E: 3:00\n:F: 0:21\n:G: [ ]\n:END:\n"
+    },
+    {
+      "name": "columns-sum-days",
+      "input": {
+        "text": "#+COLUMNS: %ITEM %T{:}\n* T\n** a\n:PROPERTIES:\n:T: 1d 3h\n:END:\n** b\n:PROPERTIES:\n:T: 20:00\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %ITEM %T{:}\n* T\n** a\n:PROPERTIES:\n:T: 1d 3h\n:END:\n** b\n:PROPERTIES:\n:T: 20:00\n:END:\n",
+      "visible": "#+COLUMNS: %ITEM %T{:}\n* \n**\n:PROPERTIES:\n:T: 1d 3h\n:END:\n**\n:PROPERTIES:\n:T: 20:00\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "displayed": "#+COLUMNS: %ITEM %T{:}\n* T  | 1d 23:00 |\n** a | 1d 3h    |\n:PROPERTIES:\n:T: 1d 3h\n:END:\n** b | 20:00    |\n:PROPERTIES:\n:T: 20:00\n:END:\n"
+    },
+    {
+      "name": "columns-sum-ints",
+      "input": {
+        "text": "#+COLUMNS: %ITEM %N{+}\n* T\n** a\n:PROPERTIES:\n:N: 2\n:END:\n** b\n:PROPERTIES:\n:N: 3\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %ITEM %N{+}\n* T\n** a\n:PROPERTIES:\n:N: 2\n:END:\n** b\n:PROPERTIES:\n:N: 3\n:END:\n",
+      "visible": "#+COLUMNS: %ITEM %N{+}\n* \n**\n:PROPERTIES:\n:N: 2\n:END:\n**\n:PROPERTIES:\n:N: 3\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "displayed": "#+COLUMNS: %ITEM %N{+}\n* T  | 5 |\n** a | 2 |\n:PROPERTIES:\n:N: 2\n:END:\n** b | 3 |\n:PROPERTIES:\n:N: 3\n:END:\n"
+    },
+    {
+      "name": "columns-sum-floats",
+      "input": {
+        "text": "#+COLUMNS: %ITEM %N{+}\n* T\n** a\n:PROPERTIES:\n:N: 2.5\n:END:\n** b\n:PROPERTIES:\n:N: 3\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %ITEM %N{+}\n* T\n** a\n:PROPERTIES:\n:N: 2.5\n:END:\n** b\n:PROPERTIES:\n:N: 3\n:END:\n",
+      "visible": "#+COLUMNS: %ITEM %N{+}\n* \n**\n:PROPERTIES:\n:N: 2.5\n:END:\n**\n:PROPERTIES:\n:N: 3\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "displayed": "#+COLUMNS: %ITEM %N{+}\n* T  | 5.5 |\n** a | 2.5 |\n:PROPERTIES:\n:N: 2.5\n:END:\n** b | 3   |\n:PROPERTIES:\n:N: 3\n:END:\n"
+    },
+    {
+      "name": "columns-currency",
+      "input": {
+        "text": "#+COLUMNS: %ITEM %N{$}\n* T\n** a\n:PROPERTIES:\n:N: 2.5\n:END:\n** b\n:PROPERTIES:\n:N: 3\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %ITEM %N{$}\n* T\n** a\n:PROPERTIES:\n:N: 2.5\n:END:\n** b\n:PROPERTIES:\n:N: 3\n:END:\n",
+      "visible": "#+COLUMNS: %ITEM %N{$}\n* \n**\n:PROPERTIES:\n:N: 2.5\n:END:\n**\n:PROPERTIES:\n:N: 3\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "displayed": "#+COLUMNS: %ITEM %N{$}\n* T  | 5.50 |\n** a | 2.5  |\n:PROPERTIES:\n:N: 2.5\n:END:\n** b | 3    |\n:PROPERTIES:\n:N: 3\n:END:\n"
+    },
+    {
+      "name": "columns-checkbox-cycle",
+      "input": {
+        "text": "#+COLUMNS: %ITEM %Done{X}\n* T\n** a\n:PROPERTIES:\n:Done: [ ]\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x C-c C-n C-n C-f n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %ITEM %Done{X}\n* T\n** a\n:PROPERTIES:\n:DONE:     [X]\n:END:\n",
+      "visible": "#+COLUMNS: %ITEM %Done{X}\n* \n**\n:PROPERTIES:\n:DONE:     [X]\n:END:\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "#+COLUMNS: %ITEM %Done{X}\n* T  | [X]  |\n** a | [X]  |\n:PROPERTIES:\n:DONE:     [X]\n:END:\n"
+    },
+    {
+      "name": "columns-tags-wide",
+      "input": {
+        "text": "#+COLUMNS: %ITEM %TAGS %ALLTAGS\n#+FILETAGS: :f:\n* A :x:\n** B :y:\n",
+        "point": 0,
+        "keys": "C-c C-x C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %ITEM %TAGS %ALLTAGS\n#+FILETAGS: :f:\n* A :x:\n** B :y:\n",
+      "visible": "#+COLUMNS: %ITEM %TAGS %ALLTAGS\n#+FILETAGS: :f:\n* A\n** \n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "displayed": "#+COLUMNS: %ITEM %TAGS %ALLTAGS\n#+FILETAGS: :f:\n* A  | :x:  | :f:x:   |\n** B | :y:  | :f:x:y: |\n"
+    },
+    {
+      "name": "columns-category",
+      "input": {
+        "text": "#+COLUMNS: %ITEM %CATEGORY %FILE\n* A\n:PROPERTIES:\n:CATEGORY: work\n:END:\n** B\n",
+        "point": 0,
+        "keys": "C-c C-x C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %ITEM %CATEGORY %FILE\n* A\n:PROPERTIES:\n:CATEGORY: work\n:END:\n** B\n",
+      "visible": "#+COLUMNS: %ITEM %CATEGORY %FILE\n* A\n:PROPERTIES:\n:CATEGORY: work\n:END:\n** \n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "displayed": "#+COLUMNS: %ITEM %CATEGORY %FILE\n* A  | work     |      |\n:PROPERTIES:\n:CATEGORY: work\n:END:\n** B | work     |      |\n"
+    },
+    {
+      "name": "columns-quit-key",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 0,
+        "keys": "C-c C-x C-c C-n q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "visible": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "point": 53,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "displayed": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n"
+    },
+    {
+      "name": "columns-redo-r",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 0,
+        "keys": "C-c C-x C-c C-n r",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "visible": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TOD\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TO\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DO\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Oth\nSome text.\n",
+      "point": 53,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "displayed": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* Project                 | TODO | A   | 1:30   | :work:  |\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** Write report           | TODO | B   | 1:00   |         |\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** Call Ann               | DONE | B   | 0:30   | :phone: |\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other                   |      | B   |        |         |\nSome text.\n"
+    },
+    {
+      "name": "columns-content",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 0,
+        "keys": "C-c C-x C-c C-n c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "visible": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TOD\n** TO\n** DO\n* Oth",
+      "point": 53,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "displayed": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* Project                 | TODO | A   | 1:30   | :work:  |\n** Write report           | TODO | B   | 1:00   |         |\n** Call Ann               | DONE | B   | 0:30   | :phone: |\n* Other                   |      | B   |        |         |"
+    },
+    {
+      "name": "columns-move-left",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 0,
+        "keys": "C-c C-x C-c C-n C-f C-f M-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %25ITEM %3PRIORITY %TODO %EFFORT(Effort){:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "visible": "#+COLUMNS: %25ITEM %3PRIORITY %TODO %EFFORT(Effort){:} %TAGS\n* TOD\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TO\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DO\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Oth\nSome text.\n",
+      "point": 62,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "#+COLUMNS: %25ITEM %3PRIORITY %TODO %EFFORT(Effort){:} %TAGS\n* Project                 | A   | TODO | 1:30   | :work:  |\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** Write report           | B   | TODO | 1:00   |         |\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** Call Ann               | B   | DONE | 0:30   | :phone: |\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other                   | B   |      |        |         |\nSome text.\n"
+    },
+    {
+      "name": "columns-move-right-last",
+      "input": {
+        "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+        "point": 0,
+        "keys": "C-c C-x C-c C-n C-f C-f C-f C-f M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+      "visible": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TOD\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TO\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DO\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Oth\nSome text.\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot shift this column further to the right",
+      "displayed": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* Project                 | TODO | A   | 1:30   | :work:  |\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** Write report           | TODO | B   | 1:00   |         |\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** Call Ann               | DONE | B   | 0:30   | :phone: |\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other                   |      | B   |        |         |\nSome text.\n"
+    },
+    {
+      "name": "columns-done-blocks",
+      "input": {
+        "text": "#+COLUMNS: %ITEM %TODO %BLOCKED\n* TODO A\n** TODO B\n",
+        "point": 0,
+        "keys": "C-c C-x C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true,
+        "globals": {
+          "org-enforce-todo-dependencies": true
+        }
+      },
+      "text": "#+COLUMNS: %ITEM %TODO %BLOCKED\n* TODO A\n** TODO B\n",
+      "visible": "#+COLUMNS: %ITEM %TODO %BLOCKED\n* T\n** \n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "displayed": "#+COLUMNS: %ITEM %TODO %BLOCKED\n* A  | TODO | t       |\n** B | TODO |         |\n"
+    }
+  ]
+}

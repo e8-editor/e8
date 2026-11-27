@@ -358,6 +358,8 @@ const faces: [string, string, e8.FaceAttributes][] = [
   ["org-target", "Link targets, such as <<target>>.", { underline: true }],
   ["org-ellipsis", "The text a folded heading shows after it, as org-ellipsis says.", { foreground: "warn", underline: true }],
   ["org-hide", "The leading stars of headings org-hide-leading-stars hides, in the colour of the background.", { foreground: "bg" }],
+  ["org-column", "The values of column view.", { background: "sunken", bold: false, italic: false, underline: false, strike: false }],
+  ["org-column-title", "The titles of column view's columns.", { background: "sunken", bold: true, underline: true }],
 ];
 for (const [name, doc, attributes] of faces) e8.defineFace({ name, doc, attributes });
 for (let i = 1; i <= 8; i++) {
@@ -8928,7 +8930,7 @@ function clockMinutes(text: string): number {
 }
 
 /** The properties the buffer's entries and keywords name, and Org's special ones, sorted, as org-buffer-property-keys with specials. */
-function bufferPropertyKeys(): string[] {
+export function bufferPropertyKeys(): string[] {
   const keys = new Set<string>(["ALLTAGS", "BLOCKED", "CLOCKSUM", "CLOCKSUM_T", "CLOSED", "DEADLINE", "FILE", "ITEM", "PRIORITY", "SCHEDULED", "TAGS", "TIMESTAMP", "TIMESTAMP_IA", "TODO"]);
   for (const [, , text] of keywordLines()) {
     const m = /^#\+PROPERTY:[ \t]*(\S+)/i.exec(text);
@@ -11822,6 +11824,14 @@ export function durationFromMinutes(minutes: number): string {
   return days > 0 ? `${days}d ${hm}` : hm;
 }
 
+/** A property's value at heading H, as org-entry-get with inheritance `selective` reads it, special ones worked out. */
+export function entryGetSelective(h: Heading, name: string): string | undefined {
+  const all = headings();
+  const i = headingIndex(all, h.line);
+  if (name === "CATEGORY") return i === undefined ? category() : matchContexts(all)(i).category();
+  return i === undefined ? undefined : matchProperty(matchContexts(all)(i), name);
+}
+
 /** A property's value for a match, as org-entry-get with inheritance `selective` reads it. */
 function matchProperty(ctx: MatchContext, name: string): string | undefined {
   if (SPECIAL_PROPERTIES.includes(name)) return specialProperty(ctx, name);
@@ -12656,6 +12666,10 @@ e8.defun("org-read-property-name", () => readPropertyName());
  * special properties, what org-property-allowed-value-functions gives, or
  * NAME_ALL's; and whether others may be typed, as :ETC says.
  */
+export function propertyAllowedValues(property: string): { values: string[]; restricted: boolean } | undefined {
+  return allowedAtPoint(property);
+}
+
 function allowedAtPoint(property: string): { values: string[]; restricted: boolean } | undefined {
   if (property === "TODO") return { values: [...allKeywords(), ""], restricted: true };
   if (property === "PRIORITY") {
@@ -13335,6 +13349,7 @@ const EXTRA_KEYS: [string, e8.CommandName][] = [
   ["C-c <right>", "org-shiftright"],
   ["C-c C-x <right>", "org-shiftcontrolright"],
   ["C-c C-x <", "org-agenda-set-restriction-lock"],
+  ["C-c C-x C-c", "org-columns"],
   ["C-c C-x >", "org-agenda-remove-restriction-lock"],
   ["C-c C-x <left>", "org-shiftcontrolleft"],
 ];

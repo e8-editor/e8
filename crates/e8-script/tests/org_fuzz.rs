@@ -220,6 +220,7 @@ fn random_case(rng: &mut Rng, name: String) -> Case {
         lockfiles: false,
         capf: Vec::new(),
         completions: false,
+        displayed: false,
     }
 }
 
@@ -497,6 +498,7 @@ fn random_text_case(rng: &mut Rng, name: String) -> Case {
         lockfiles: false,
         capf: Vec::new(),
         completions: false,
+        displayed: false,
     }
 }
 
@@ -583,6 +585,7 @@ fn random_fill_case(rng: &mut Rng, name: String) -> Case {
         lockfiles: false,
         capf: Vec::new(),
         completions: false,
+        displayed: false,
     }
 }
 
@@ -677,6 +680,7 @@ fn random_file_case(rng: &mut Rng, name: String) -> Case {
         lockfiles: false,
         capf: Vec::new(),
         completions: false,
+        displayed: false,
     }
 }
 
@@ -734,6 +738,7 @@ fn random_dired_case(rng: &mut Rng, name: String) -> Case {
         lockfiles: false,
         capf: Vec::new(),
         completions: false,
+        displayed: false,
     }
 }
 

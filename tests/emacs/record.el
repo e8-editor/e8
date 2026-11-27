@@ -24,7 +24,10 @@
 ;; `message' (true to record the last message), `capf' (a list of strings
 ;; that a function on completion-at-point-functions offers for the word at
 ;; point), `completions' (true to record the text of *Completions* if a
-;; window shows it), and `platform' (an Emacs `system-type' such as
+;; window shows it), `displayed' (true to record the buffer as it is
+;; drawn: the text with overlays' display strings in place and invisible
+;; text left out, as column view draws it), and
+;; `platform' (an Emacs `system-type' such as
 ;; "darwin", for cases that only hold on one platform).
 ;; Cases with files record what the directory holds afterwards.
 ;;
@@ -679,6 +682,7 @@ The whole buffer, even if the case left it narrowed."
                   ,@(and (alist-get 'message case) '((message . t)))
                   ,@(and (alist-get 'capf case) `((capf . ,(vconcat (alist-get 'capf case)))))
                   ,@(and (alist-get 'completions case) '((completions . t)))
+                  ,@(and (alist-get 'displayed case) '((displayed . t)))
                   ,@(and (alist-get 'vars case) `((vars . ,(alist-get 'vars case))))
                   ,@(and (alist-get 'globals case)
                          `((globals . ,(mapcar (lambda (g) (cons (car g) (e8-oracle--json (cdr g))))
@@ -705,12 +709,28 @@ The whole buffer, even if the case left it narrowed."
                `((files . ,(e8-oracle--listing))))
         ,@(and (alist-get 'message case)
                `((message . ,(e8-oracle--last-message))))
+        ,@(and (alist-get 'displayed case)
+               `((displayed . ,(e8-oracle--displayed))))
         ,@(and (alist-get 'completions case)
                `((completions . ,(let ((b (get-buffer "*Completions*")))
                                    (if (and b (get-buffer-window b 0))
                                        (with-current-buffer b
                                          (buffer-substring-no-properties (point-min) (point-max)))
                                      nil)))))))
+
+(defun e8-oracle--displayed ()
+  "The buffer as it is drawn: the text with each overlay's display string
+in place of what it covers and the invisible text left out.  Not the
+header line, which column view sets only from a post-command hook."
+  (let ((out nil) (p (point-min)))
+    (while (< p (point-max))
+      (let ((ov (seq-find (lambda (o) (and (stringp (overlay-get o 'display)) (= (overlay-start o) p)))
+                          (overlays-at p t))))
+        (cond (ov (push (substring-no-properties (overlay-get ov 'display)) out)
+                  (setq p (max (overlay-end ov) (1+ p))))
+              ((invisible-p p) (setq p (1+ p)))
+              (t (push (string (char-after p)) out) (setq p (1+ p))))))
+    (apply #'concat (nreverse out))))
 
 (defun e8-oracle--windows ()
   "The frame's windows in cyclic order: buffer, point and total size."

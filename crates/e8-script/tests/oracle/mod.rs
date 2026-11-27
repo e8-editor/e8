@@ -79,6 +79,12 @@ pub struct Case {
     /// Whether to compare the text of *Completions*, if a window shows it.
     #[serde(default, skip_serializing_if = "is_false")]
     pub completions: bool,
+    /// Whether to compare the buffer as it is drawn: overlays' display
+    /// strings in place of their text and invisible text left out, as
+    /// column view draws it. Not the header line, which batch Emacs sets
+    /// only from a post-command hook.
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub displayed: bool,
 }
 
 #[derive(Deserialize)]
@@ -137,6 +143,8 @@ pub struct Input {
     pub capf: Vec<String>,
     #[serde(default)]
     pub completions: bool,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub displayed: bool,
 }
 
 impl Input {
@@ -164,6 +172,7 @@ impl Input {
             lockfiles: case.lockfiles,
             capf: case.capf.clone(),
             completions: case.completions,
+            displayed: case.displayed,
         }
     }
 }
@@ -205,6 +214,9 @@ pub struct State {
     /// The text of *Completions*, if a window shows it, for cases that ask.
     #[serde(default)]
     pub completions: Option<String>,
+    /// The buffer as it is drawn, for cases that ask.
+    #[serde(default)]
+    pub displayed: Option<String>,
 }
 
 /// Writes a case's file: UTF-8, or Latin-1 for text marked `latin-1:`.
@@ -663,7 +675,30 @@ pub fn run(case: &Case) -> State {
             .then(|| ed.windows().iter().find(|w| w.buffer.name == "*Completions*").map(|w| w.buffer.slice(0..w.buffer.len())))
             .flatten(),
         error: answering.borrow().error.clone().map(|e| without_dir(&e, dir.as_ref())),
+        displayed: case.displayed.then(|| displayed(&ed)),
     }
+}
+
+/// The window's buffer as it is drawn, as record.el's e8-oracle--displayed
+/// reads it: the text with each overlay's display string in place of what
+/// it covers and the invisible text left out.
+fn displayed(ed: &e8_core::Editor) -> String {
+    let b = ed.window_buffer();
+    let mut out = String::new();
+    let mut p = 0;
+    while p < b.len() {
+        let shown = b.overlays_at(p).into_iter().find(|o| o.start == p && o.props.get("display").and_then(|d| d.as_str()).is_some());
+        if let Some(o) = shown {
+            out.push_str(o.props.get("display").and_then(|d| d.as_str()).unwrap_or_default());
+            p = o.end.max(p + 1);
+        } else {
+            if ed.invisible_in(b, p).is_none() {
+                out.extend(b.char_at(p));
+            }
+            p += 1;
+        }
+    }
+    out
 }
 
 /// The fields where E8 differs from Emacs, one per line.
@@ -698,6 +733,9 @@ pub fn differences(emacs: &State, e8: &State) -> String {
     }
     if emacs.message != e8.message {
         out.push(format!("    message: Emacs {:?}, E8 {:?}", emacs.message, e8.message));
+    }
+    if emacs.displayed != e8.displayed {
+        out.push(format!("    displayed: Emacs {:?}, E8 {:?}", emacs.displayed, e8.displayed));
     }
     if emacs.completions != e8.completions {
         out.push(format!("    completions: Emacs {:?}, E8 {:?}", emacs.completions, e8.completions));
