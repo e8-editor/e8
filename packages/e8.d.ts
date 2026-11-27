@@ -7355,6 +7355,14 @@ declare global {
        */
       "org-remove-occur-highlights": [];
       /**
+       * Resolve the clocks left open in the agenda files and Org buffers, asking what to do with each; with a prefix argument, only those not running.
+       *
+       * @param onlyDangling raw prefix argument
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-resolve-clocks": [onlyDangling?: PrefixArg | boolean];
+      /**
        * RET in Org: in a table, move to the next row; elsewhere start a new line, indented as org-indent-line does.
        *
        * On a heading, the title after point goes to the new line, but the state, priority and tags stay. In a list item, the text after point moves to the new line after it is indented.
@@ -15296,6 +15304,12 @@ declare global {
        */
       "org-clock-ask-before-exiting": Value;
       /**
+       * When clocking in resolves clocks left open in Org files: t always, when-no-clock-is-running when none is running, nil never.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-auto-clock-resolution": Value;
+      /**
        * The properties a new clock table's #+BEGIN: line starts with.
        *
        * Defined in packages/org-clock.ts.
@@ -15374,6 +15388,12 @@ declare global {
        */
       "org-clock-history-length": Value;
       /**
+       * Minutes idle after which a running clock asks what to do with the idle time, or nil for never.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-idle-time": Value;
+      /**
        * Whether clocking into an entry with a CLOCK line not closed goes on with it, from when it started.
        *
        * Defined in packages/org-clock.ts.
@@ -15451,6 +15471,12 @@ declare global {
        * Defined in packages/org-clock.ts.
        */
       "org-clock-report-include-clocking-task": Value;
+      /**
+       * Whether resolving a clock asks without showing the *Org Clock* help first.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-resolve-expert": Value;
       /**
        * What sounds when the clock runs past the entry's effort: t for the bell twice, a sound file's name, or nil for nothing.
        *

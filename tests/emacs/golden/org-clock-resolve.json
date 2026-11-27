@@ -1,0 +1,779 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "resolve-cancel",
+      "input": {
+        "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+        "point": 62,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-clock.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "C"
+        ]
+      },
+      "text": "* TODO Old task\n* TODO New task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]\n:END:\n",
+      "visible": "* TODO Old task\n* TODO New task\n:LOGBOOK:\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "resolve-ignore",
+      "input": {
+        "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+        "point": 62,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-clock.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "i"
+        ]
+      },
+      "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]\n:END:\n",
+      "visible": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n:LOGBOOK:\n",
+      "point": 62,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "resolve-quit",
+      "input": {
+        "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+        "point": 62,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-clock.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "q"
+        ]
+      },
+      "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]\n:END:\n",
+      "visible": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n:LOGBOOK:\n",
+      "point": 62,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "resolve-subtract",
+      "input": {
+        "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+        "point": 62,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-clock.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "s"
+        ]
+      },
+      "text": "* TODO Old task\n* TODO New task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]\n:END:\n",
+      "visible": "* TODO Old task\n* TODO New task\n:LOGBOOK:\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "resolve-subtract-out",
+      "input": {
+        "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+        "point": 62,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-clock.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "S"
+        ]
+      },
+      "text": "* TODO Old task\n* TODO New task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]\n:END:\n",
+      "visible": "* TODO Old task\n* TODO New task\n:LOGBOOK:\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "resolve-keep-all",
+      "input": {
+        "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+        "point": 62,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-clock.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "k",
+          ""
+        ]
+      },
+      "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]--[2026-10-28 Wed 12:00] =>  3:00\n:END:\n* TODO New task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]\n:END:\n",
+      "visible": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]--[2026-10-28 Wed 12:00] =>  3:00\n:END:\n* TODO New task\n:LOGBOOK:\n",
+      "point": 95,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "resolve-keep-all-out",
+      "input": {
+        "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+        "point": 62,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-clock.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "K",
+          ""
+        ]
+      },
+      "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]--[2026-10-28 Wed 12:00] =>  3:00\n:END:\n* TODO New task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]\n:END:\n",
+      "visible": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]--[2026-10-28 Wed 12:00] =>  3:00\n:END:\n* TODO New task\n:LOGBOOK:\n",
+      "point": 95,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "resolve-keep-some",
+      "input": {
+        "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+        "point": 62,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-clock.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "k",
+          "30"
+        ]
+      },
+      "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]--[2026-10-28 Wed 09:30] =>  0:30\n:END:\n* TODO New task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]\n:END:\n",
+      "visible": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]--[2026-10-28 Wed 09:30] =>  0:30\n:END:\n* TODO New task\n:LOGBOOK:\n",
+      "point": 95,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "resolve-keep-some-out",
+      "input": {
+        "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+        "point": 62,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-clock.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "K",
+          "30",
+          "y"
+        ]
+      },
+      "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]--[2026-10-28 Wed 09:30] =>  0:30\n:END:\n* TODO New task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]\n:END:\n",
+      "visible": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]--[2026-10-28 Wed 09:30] =>  0:30\n:END:\n* TODO New task\n:LOGBOOK:\n",
+      "point": 95,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "resolve-keep-some-out-no",
+      "input": {
+        "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+        "point": 62,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-clock.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "K",
+          "30",
+          "n"
+        ]
+      },
+      "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]--[2026-10-28 Wed 09:30] =>  0:30\n:END:\n* TODO New task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]\n:END:\n",
+      "visible": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]--[2026-10-28 Wed 09:30] =>  0:30\n:END:\n* TODO New task\n:LOGBOOK:\n",
+      "point": 95,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "resolve-got-back",
+      "input": {
+        "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+        "point": 62,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-clock.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "g",
+          "60"
+        ]
+      },
+      "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]--[2026-10-28 Wed 09:00] =>  0:00\n:END:\n* TODO New task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]\n:END:\n",
+      "visible": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]--[2026-10-28 Wed 09:00] =>  0:00\n:END:\n* TODO New task\n:LOGBOOK:\n",
+      "point": 95,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "resolve-got-back-out",
+      "input": {
+        "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+        "point": 62,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-clock.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "G",
+          "60"
+        ]
+      },
+      "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]--[2026-10-28 Wed 09:00] =>  0:00\n:END:\n* TODO New task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]\n:END:\n",
+      "visible": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]--[2026-10-28 Wed 09:00] =>  0:00\n:END:\n* TODO New task\n:LOGBOOK:\n",
+      "point": 95,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "resolve-got-back-zero",
+      "input": {
+        "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+        "point": 62,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-clock.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "g",
+          "0"
+        ]
+      },
+      "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]--[2026-10-28 Wed 09:00] =>  0:00\n:END:\n* TODO New task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]\n:END:\n",
+      "visible": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]--[2026-10-28 Wed 09:00] =>  0:00\n:END:\n* TODO New task\n:LOGBOOK:\n",
+      "point": 95,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "resolve-time",
+      "input": {
+        "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+        "point": 62,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-clock.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "t",
+          "10:30"
+        ]
+      },
+      "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]--[2026-10-28 Wed 10:30] =>  1:30\n:END:\n* TODO New task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]\n:END:\n",
+      "visible": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]--[2026-10-28 Wed 10:30] =>  1:30\n:END:\n* TODO New task\n:LOGBOOK:\n",
+      "point": 95,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "resolve-jump",
+      "input": {
+        "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+        "point": 62,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-clock.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "j"
+        ]
+      },
+      "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+      "visible": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+      "point": 85,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "resolve-jump-out",
+      "input": {
+        "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+        "point": 62,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-clock.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "J"
+        ]
+      },
+      "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]\nCLOCK: [2026-10-28 Wed 09:00]--[2026-10-28 Wed 12:00] =>  3:00\n:END:\n* TODO New task\n",
+      "visible": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]\nCLOCK: [2026-10-28 Wed 09:00]--[2026-10-28 Wed 12:00] =>  3:00\n:END:\n* TODO New task\n",
+      "point": 118,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "resolve-invalid-then-c",
+      "input": {
+        "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+        "point": 62,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-clock.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "x",
+          "C"
+        ]
+      },
+      "text": "* TODO Old task\n* TODO New task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]\n:END:\n",
+      "visible": "* TODO Old task\n* TODO New task\n:LOGBOOK:\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "resolve-barely-started",
+      "input": {
+        "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 11:59]\n:END:\n* TODO New task\n",
+        "point": 62,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-clock.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "s"
+        ]
+      },
+      "text": "* TODO Old task\n* TODO New task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]\n:END:\n",
+      "visible": "* TODO Old task\n* TODO New task\n:LOGBOOK:\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "resolve-barely-started-out",
+      "input": {
+        "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 11:59]\n:END:\n* TODO New task\n",
+        "point": 62,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-clock.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "S"
+        ]
+      },
+      "text": "* TODO Old task\n* TODO New task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]\n:END:\n",
+      "visible": "* TODO Old task\n* TODO New task\n:LOGBOOK:\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "resolve-command",
+      "input": {
+        "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+        "point": 0,
+        "keys": "C-c C-x C-z",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-clock.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "C"
+        ]
+      },
+      "text": "* TODO Old task\n* TODO New task\n",
+      "visible": "* TODO Old task\n* TODO New task\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "resolve-command-subtract",
+      "input": {
+        "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+        "point": 0,
+        "keys": "C-c C-x C-z",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-clock.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "S"
+        ]
+      },
+      "text": "* TODO Old task\n* TODO New task\n",
+      "visible": "* TODO Old task\n* TODO New task\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "resolve-command-only-dangling",
+      "input": {
+        "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+        "point": 0,
+        "keys": "C-u C-c C-x C-z",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-clock.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "C"
+        ]
+      },
+      "text": "* TODO Old task\n* TODO New task\n",
+      "visible": "* TODO Old task\n* TODO New task\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "resolve-same-task",
+      "input": {
+        "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+        "point": 3,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-clock.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "k",
+          ""
+        ]
+      },
+      "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]\nCLOCK: [2026-10-28 Wed 09:00]--[2026-10-28 Wed 12:00] =>  3:00\n:END:\n* TODO New task\n",
+      "visible": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]\nCLOCK: [2026-10-28 Wed 09:00]--[2026-10-28 Wed 12:00] =>  3:00\n:END:\n* TODO New task\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "resolve-off",
+      "input": {
+        "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+        "point": 62,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-clock.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-clock-auto-clock-resolution": false
+        }
+      },
+      "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]\n:END:\n",
+      "visible": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n:LOGBOOK:\n",
+      "point": 62,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "resolve-expert",
+      "input": {
+        "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+        "point": 62,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-clock.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "C"
+        ],
+        "globals": {
+          "org-clock-resolve-expert": true
+        }
+      },
+      "text": "* TODO Old task\n* TODO New task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]\n:END:\n",
+      "visible": "* TODO Old task\n* TODO New task\n:LOGBOOK:\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "resolve-two",
+      "input": {
+        "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO Mid\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]\n:END:\n* TODO New task\n",
+        "point": 62,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-clock.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "C",
+          "s"
+        ]
+      },
+      "text": "* TODO Old task\n* TODO Mid\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]\n:END:\n* TODO New task\n",
+      "visible": "* TODO Old task\n* TODO Mid\n:LOGBOOK:\n* TODO New task\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "resolve-running-not-asked",
+      "input": {
+        "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n* TODO Third\n",
+        "point": 62,
+        "keys": "C-c C-x C-i M-> C-p C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-clock.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "C"
+        ]
+      },
+      "text": "* TODO Old task\n* TODO New task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]--[2026-10-28 Wed 12:00] =>  0:00\n:END:\n* TODO Third\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]\n:END:\n",
+      "visible": "* TODO Old task\n* TODO New task\n:LOGBOOK:\n* TODO Third\n:LOGBOOK:\n",
+      "point": 111,
+      "mark": 16,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "resolve-no-drawer",
+      "input": {
+        "text": "* A\nCLOCK: [2026-10-28 Wed 09:00]\n* B\n",
+        "point": 0,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-clock.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "C"
+        ]
+      },
+      "text": "* A\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]\n:END:\n* B\n",
+      "visible": "* A\n:LOGBOOK:\n* B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

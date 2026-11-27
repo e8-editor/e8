@@ -410,6 +410,8 @@ its `globals' bound for the case, before the modes start."
           (remove-hook 'kill-buffer-hook #'org-check-running-clock t)))
       (when (timerp org-clock-mode-line-timer) (cancel-timer org-clock-mode-line-timer))
       (setq org-clock-history nil)
+      ;; Nor a resolved clock's leftover time, nor when one last stopped.
+      (setq org-clock-leftover-time nil org-clock-out-time nil)
       (setq org-markers-to-move nil)
       (set-marker org-clock-default-task nil)
       (set-marker org-clock-interrupted-task nil))
