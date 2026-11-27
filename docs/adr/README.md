@@ -118,3 +118,4 @@ One record per decision, in the order they were made; a later one can change an 
 - [0114](0114-control-characters-as-emacs-reads-them.md) Control characters as Emacs reads them: C-m is RET, C-i is TAB and C-[ is ESC, in every front end and description
 - [0115](0115-table-formulas-on-a-part-of-calc.md) Table formulas on a part of Calc: calc-eval in TypeScript, and Org's formula machinery calling it
 - [0116](0116-e8-has-no-lisp.md) E8 has no Lisp: features that evaluate Lisp, as %(sexp), Lisp table formulas and elisp: links, are left out for good
+- [0117](0117-org-export.md) Org export: ox.el and its ASCII, HTML and Markdown backends in TypeScript, on a full parser of Org's syntax

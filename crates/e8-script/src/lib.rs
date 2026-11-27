@@ -209,6 +209,8 @@ const PACKAGES: &[(&str, &str)] = &[
     ("packages/org-table.ts", include_str!("../../../packages/org-table.ts")),
     ("packages/iso8601.ts", include_str!("../../../packages/iso8601.ts")),
     ("packages/parse-time.ts", include_str!("../../../packages/parse-time.ts")),
+    ("packages/org-element-ast.ts", include_str!("../../../packages/org-element-ast.ts")),
+    ("packages/org-entities.ts", include_str!("../../../packages/org-entities.ts")),
     ("packages/org.ts", include_str!("../../../packages/org.ts")),
     ("packages/org-element.ts", include_str!("../../../packages/org-element.ts")),
     ("packages/org-fold.ts", include_str!("../../../packages/org-fold.ts")),
@@ -229,6 +231,8 @@ const PACKAGES: &[(&str, &str)] = &[
     ("packages/org-src.ts", include_str!("../../../packages/org-src.ts")),
     ("packages/ob-core.ts", include_str!("../../../packages/ob-core.ts")),
     ("packages/ob-tangle.ts", include_str!("../../../packages/ob-tangle.ts")),
+    // Org export's entry commands, which load ox.ts and its backends, as Emacs autoloads them.
+    ("packages/org-loaddefs.ts", include_str!("../../../packages/org-loaddefs.ts")),
     // Preloaded for its commands, which Emacs autoloads.
     ("packages/package-vc.ts", include_str!("../../../packages/package-vc.ts")),
     ("packages/agent-shell.ts", include_str!("../../../packages/agent-shell.ts")),
@@ -240,7 +244,14 @@ const PACKAGES: &[(&str, &str)] = &[
 const LIBRARY: &[(&str, &str)] = &[
     ("packages/ediff.ts", include_str!("../../../packages/ediff.ts")),
     ("packages/ert.ts", include_str!("../../../packages/ert.ts")),
+    ("packages/ob-exp.ts", include_str!("../../../packages/ob-exp.ts")),
+    ("packages/org-macro.ts", include_str!("../../../packages/org-macro.ts")),
     ("packages/org-tempo.ts", include_str!("../../../packages/org-tempo.ts")),
+    ("packages/ox.ts", include_str!("../../../packages/ox.ts")),
+    ("packages/ox-ascii.ts", include_str!("../../../packages/ox-ascii.ts")),
+    ("packages/ox-dictionary.ts", include_str!("../../../packages/ox-dictionary.ts")),
+    ("packages/ox-html.ts", include_str!("../../../packages/ox-html.ts")),
+    ("packages/ox-md.ts", include_str!("../../../packages/ox-md.ts")),
     ("packages/transient.ts", include_str!("../../../packages/transient.ts")),
     ("packages/use-package.ts", include_str!("../../../packages/use-package.ts")),
 ];

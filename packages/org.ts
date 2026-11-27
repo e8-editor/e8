@@ -8449,6 +8449,8 @@ export interface LinkParameters {
   store?: { name: string; run: (interactive: boolean) => unknown };
   complete?: () => string;
   insertDescription?: string | ((link: string, description: string | undefined) => string | undefined);
+  /** How an export writes a link of the type, as :export: from its path, description, backend's name and the export's information; undefined leaves it to the backend. */
+  export?: (path: string, description: string | undefined, backend: string, info: { [key: string]: any }) => string | undefined;
 }
 const linkTypes = new Map<string, LinkParameters>();
 

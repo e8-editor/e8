@@ -168,6 +168,16 @@ while the case's keys are queued would read those instead."
 (advice-add 'call-last-kbd-macro :around #'e8-oracle--set-aside-typed-keys)
 (advice-add 'execute-kbd-macro :around #'e8-oracle--set-aside-typed-keys)
 
+(defun e8-oracle--new-reference (references)
+  "The smallest number REFERENCES does not use, in place of Org's random
+one, so the references an export makes, as HTML's ids, are the same in
+every run; E8 counts the same way when `e8--export-sequential-references'
+is set, as its oracle sets it."
+  (let ((new 1))
+    (while (rassq new references) (setq new (1+ new)))
+    new))
+(advice-add 'org-export-new-reference :override #'e8-oracle--new-reference)
+
 (defvar e8-oracle--today nil
   "The day a case fixes, as calendar-absolute-from-gregorian counts it.")
 

@@ -96,6 +96,8 @@ mod org_clock_persist;
 mod org_clock_rest;
 mod org_clocktable;
 mod org_columns;
+mod org_element_parse;
+mod org_export;
 mod org_link_types;
 mod org_timestamps;
 mod org_inline_images;

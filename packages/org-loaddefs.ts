@@ -1,0 +1,54 @@
+// The entry points of Org's export, preloaded, as org-loaddefs.el
+// autoloads them: the dispatcher on C-c C-e and each backend's export
+// commands. The exporter (ox.ts) and its backends load when one of these
+// is first used; the command of the same name they define then takes the
+// stub's place, and runs with the stub's arguments.
+
+/** The parameters an export command takes, none of them asked for: async, subtree, visible only, body only and extra options. */
+// Of kind "prefix", which code may leave out: a command call fills it with
+// the call's prefix argument, nil without one, as Lisp's &optional is nil.
+export const EXPORT_PARAMS: e8.Param[] = ["async", "subtreep", "visible-only", "body-only", "ext-plist"].map((name) => ({ name, kind: "prefix" as const }));
+
+const AUTOLOADS: [string, string, string, e8.Param[]][] = [
+  ["org-export-dispatch", "ox", "Export dispatcher for Org mode.", [{ name: "arg", kind: "prefix" }]],
+  ["org-export-insert-default-template", "ox", "Insert all export keywords with default values at beginning of line.", [{ name: "backend", value: () => "" }, { name: "subtreep", value: () => "" }]],
+  ["org-ascii-export-as-ascii", "ox-ascii", "Export current buffer to a text buffer.", EXPORT_PARAMS],
+  ["org-ascii-export-to-ascii", "ox-ascii", "Export current buffer to a text file.", EXPORT_PARAMS],
+  ["org-ascii-convert-region-to-ascii", "ox-ascii", "Assume region has Org syntax, and convert it to plain ASCII.", []],
+  ["org-ascii-convert-region-to-utf8", "ox-ascii", "Assume region has Org syntax, and convert it to UTF-8.", []],
+  ["org-html-export-as-html", "ox-html", "Export current buffer to an HTML buffer.", EXPORT_PARAMS],
+  ["org-html-export-to-html", "ox-html", "Export current buffer to an HTML file.", EXPORT_PARAMS],
+  ["org-html-convert-region-to-html", "ox-html", "Assume the current region has Org syntax, and convert it to HTML.", []],
+  ["org-md-export-as-markdown", "ox-md", "Export current buffer to a Markdown buffer.", EXPORT_PARAMS],
+  ["org-md-export-to-markdown", "ox-md", "Export current buffer to a Markdown file.", EXPORT_PARAMS],
+  ["org-md-convert-region-to-md", "ox-md", "Assume the current region has Org syntax, and convert it to Markdown.", []],
+];
+
+/** The stubs running, so one whose library does not replace it fails rather than calling itself. */
+const running = new Set<string>();
+
+for (const [name, feature, doc, params] of AUTOLOADS) {
+  e8.defineCommand({
+    name,
+    doc,
+    params,
+    run: (...args: any[]) => {
+      if (running.has(name)) e8.userError(`Autoloading ${feature} did not define ${name}`);
+      running.add(name);
+      try {
+        e8.require(feature);
+        return e8.call(name as any, ...args);
+      } finally {
+        running.delete(name);
+      }
+    },
+  });
+}
+
+e8.defineKey("org-mode-map", "C-c C-e", "org-export-dispatch" as any);
+
+e8.defineVariable({
+  name: "org-export-backends",
+  value: [e8.intern("ascii"), e8.intern("html"), e8.intern("md")],
+  doc: "The export backends the dispatcher offers, loaded with it: ascii, html and md.",
+});

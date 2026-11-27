@@ -301,7 +301,7 @@ const RESULTS = /^[ \t]*#\+results(?:\[[^\]\n]*\])?:[ \t]*(.*?)[ \t]*$/i;
  * finds it, or undefined: a named block's anywhere by its name, else the
  * unnamed one just after the block.
  */
-function resultsLine(block: Block): number | undefined {
+export function resultsLine(block: Block): number | undefined {
   if (block.name !== undefined) {
     for (let k = 0; k < e8.lineCount(); k++) {
       const m = RESULTS.exec(e8.lineText(k));
@@ -323,7 +323,7 @@ const HEADING = /^\*+[ \t]/;
  * that does not close before the next heading is no result, so nothing is
  * taken.
  */
-function resultEnd(line: number): number {
+export function resultEnd(line: number): number {
   let k = line + 1;
   const text = (n: number) => (n < e8.lineCount() ? e8.lineText(n) : "");
   const begin = /^[ \t]*#\+begin_(\S+)/i.exec(text(k));
@@ -406,13 +406,16 @@ function insertResult(block: Block, result: unknown, rp: string[]): void {
 function confirmEvaluate(block: Block): boolean {
   const named = block.name !== undefined ? ` (${block.name}) ` : " ";
   const evalArg = block.params.get(":eval") ?? (block.params.has(":noeval") ? "no" : undefined);
-  if (evalArg === "no" || evalArg === "never") {
+  // While exporting, as org-babel-check-confirm-evaluate tells by the export's backend, never-export and no-export are never too.
+  const exporting = truthy(e8.variable("org-export-current-backend"));
+  if (evalArg === "no" || evalArg === "never" || (exporting && (evalArg === "no-export" || evalArg === "never-export"))) {
     e8.message(`Evaluation of this ${block.language} code block${named}is disabled.`);
     return false;
   }
   const confirm = e8.variable("org-confirm-babel-evaluate");
   const query =
     evalArg === "query" ||
+    (exporting && evalArg === "query-export") ||
     (typeof confirm === "function" || (typeof confirm === "string" && e8.fboundp(confirm))
       ? truthy(e8.funcall(confirm as string, block.language, block.body))
       : truthy(confirm));
