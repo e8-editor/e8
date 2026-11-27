@@ -11592,7 +11592,7 @@ e8.defineVariable({
 });
 e8.defineVariable({
   name: "org-image-actual-width",
-  doc: "The width inline images are shown at: t for their own width, a number of pixels, or nil or a list of one number to take a #+ATTR_ORG: or other #+ATTR_ line's :width first, the list's number otherwise. A heading's ORG-IMAGE-ACTUAL-WIDTH property, inherited, says otherwise for its subtree.",
+  doc: "The width inline images are shown at: t for their own width, a number of pixels, or nil or a list of one number to take a #+ATTR_ORG: or other #+ATTR_ line's :width first, the list's number otherwise. An entry's own ORG-IMAGE-ACTUAL-WIDTH property says otherwise for its images.",
   value: true,
 });
 e8.defineVariable({
@@ -11621,25 +11621,25 @@ function paragraphAt(pos: number): Elem | undefined {
   return el?.type === "paragraph" ? withAffiliated(el) : undefined;
 }
 
-/** A paragraph's #+ATTR_ lines, by back-end in the order they come, each back-end's lines joined, as its :attr_ properties. */
-function attrLines(par: Elem | undefined): [string, string][] {
-  const out: [string, string][] = [];
+/** A paragraph's #+ATTR_ lines, by back-end in the order they come, each back-end's lines in order, as its :attr_ properties. */
+function attrLines(par: Elem | undefined): [string, string[]][] {
+  const out: [string, string[]][] = [];
   if (par === undefined || par.postAffiliated === undefined) return out;
   for (let l = e8.lineOf(par.begin); e8.lineStart(l) < par.postAffiliated; l++) {
     const m = /^[ \t]*#\+ATTR_([-_A-Za-z0-9]+):[ \t]*(.*)$/i.exec(e8.lineText(l));
     if (!m) continue;
     const key = m[1].toLowerCase();
     const at = out.findIndex(([k]) => k === key);
-    if (at < 0) out.push([key, m[2]]);
-    else out[at][1] += ` ${m[2]}`;
+    if (at < 0) out.push([key, [m[2]]]);
+    else out[at][1].push(m[2]);
   }
   return out;
 }
 
-/** An attribute's value in a #+ATTR_ line's text, the words up to the next keyword, as org-export-read-attribute reads :NAME. */
-function readAttribute(text: string | undefined, name: string): string | undefined {
-  if (text === undefined) return undefined;
-  const words = text.trim().split(/[ \t]+/);
+/** An attribute's value in a back-end's #+ATTR_ lines, joined, the words up to the next keyword, as org-export-read-attribute reads :NAME. */
+function readAttribute(lines: string[] | undefined, name: string): string | undefined {
+  if (lines === undefined) return undefined;
+  const words = lines.join(" ").trim().split(/[ \t]+/);
   const at = words.indexOf(name);
   if (at < 0) return undefined;
   const value: string[] = [];
@@ -11647,7 +11647,16 @@ function readAttribute(text: string | undefined, name: string): string | undefin
     if (w.startsWith(":")) break;
     value.push(w);
   }
-  return value.length > 0 ? value.join(" ").replace(/^"(.*)"$/, "$1") : undefined;
+  return value.length > 0 ? value.join(" ") : undefined;
+}
+
+/** The number at the start of a string, and whether it is a float, as string-to-number reads it: 0 if there is none. */
+function readLispNumber(v: string): [number, boolean] {
+  const m = /^[ \t\n]*([-+]?(?:[0-9]+(\.[0-9]+)?(e[-+]?[0-9]+)?|\.[0-9]+(e[-+]?[0-9]+)?|[0-9]+\.))/i.exec(v);
+  if (!m) return [0, false];
+  const float = m[2] !== undefined || m[3] !== undefined || m[4] !== undefined || m[1].startsWith(".") || /^[-+]?\./.test(m[1]);
+  // "1." is the integer 1, as Emacs reads it.
+  return [parseFloat(m[1]), float && !/^[-+]?[0-9]+\.$/.test(m[1])];
 }
 
 /** Whether a :width cannot be read as a width, as org-display-inline-image--width's width-unreadable?. */
@@ -11655,15 +11664,16 @@ function widthUnreadable(v: string | undefined): boolean {
   if (v === undefined) return true;
   if (v === "t") return false;
   if (!/^\+?\.?[0-9]/.test(v)) return true;
-  const n = parseFloat(v.replace(/^\+/, ""));
-  return /^\+?[0-9]*\.|e/i.test(v) && !(n >= 0 && n <= 2);
+  const [n, float] = readLispNumber(v);
+  return float && !(n >= 0 && n <= 2);
 }
 
 /** org-image-actual-width, or a heading's ORG-IMAGE-ACTUAL-WIDTH property read as Lisp, as org-property-or-variable-value. */
 function imageActualWidth(pos: number): e8.Value {
   const all = headings();
   const i = headingIndex(all, e8.lineOf(pos));
-  const own = i === undefined ? undefined : entryGetInherited(all[i], "ORG-IMAGE-ACTUAL-WIDTH", false);
+  // The entry's own, not inherited, as org-property-or-variable-value reads it.
+  const own = i === undefined ? topGet("ORG-IMAGE-ACTUAL-WIDTH") : entryGet(all[i].line, "ORG-IMAGE-ACTUAL-WIDTH");
   if (own === undefined) return e8.variable("org-image-actual-width") ?? null;
   const v = own.trim();
   if (v === "t") return true;
@@ -11693,8 +11703,8 @@ function inlineImageWidth(pos: number, par: Elem | undefined): number | undefine
     const first = Array.isArray(setting) ? setting[0] : undefined;
     n = typeof first === "number" ? first : undefined;
     float = n !== undefined && !Number.isInteger(n);
-  } else if (/^[[+]?[0-9.]+%/.test(width!)) [n, float] = [parseFloat(width!.replace(/^[[+]/, "")) / 100, true];
-  else [n, float] = [parseFloat(width!.replace(/^\+/, "")), /[.e]/i.test(width!)];
+  } else if (/^[[+]?[0-9.]+%/.test(width!)) [n, float] = [readLispNumber(width!.replace(/^\[/, ""))[0] / 100, true];
+  else [n, float] = readLispNumber(width!);
   if (n !== undefined && float && n >= 0 && n <= 2) {
     // That much of the text's width, as a share of the window's.
     const fill = truthy(e8.variable("auto-fill-function") ?? null) ? Number(e8.variable("fill-column") ?? 70) : e8.windowTextWidth();
@@ -11712,7 +11722,8 @@ function inlineImageAlign(start: number, end: number, par: Elem | undefined): "c
   const contentsEnd = Math.min(endBeforeBlank(par) + 1, e8.pointMax());
   if (start !== begin + lead || contentsEnd - end > 1) return undefined;
   let found: string | undefined;
-  for (const [key, text] of attrLines(par)) {
+  for (const [key, [text]] of attrLines(par)) {
+    // A back-end's first line only, as org-image--align takes its car.
     const m = /:(center)[ \t]+t\b/.exec(text) ?? /:align[ \t]+(left|center|right)\b/.exec(text);
     if (m) {
       found = m[1];
@@ -11732,7 +11743,7 @@ function imageMaxWidth(): number | undefined {
   if (name === "window") return e8.windowBodyWidth(null, true);
   if (typeof v === "number") return Number.isInteger(v) ? v : Math.floor(v * e8.windowBodyWidth(null, true));
   if (v === null || v === undefined || v === false) return undefined;
-  return e8.signal("error", `Unsupported value of ‘org-image-max-width’: ${String(name ?? v)}`);
+  return e8.signal("error", `Unsupported value of ‘org-image-max-width’: ${typeof v === "string" ? JSON.stringify(v) : String(name ?? v)}`);
 }
 
 /** Whether a position is inside =verbatim= or ~code~, where Org finds no link. */
@@ -11772,20 +11783,22 @@ export function displayInlineImages(includeLinked = false, refresh = false, beg 
         const linkEnd = start + charCount(m[0]);
         if (start < beg || start >= end) continue;
         const type = elementAt(start)?.type;
-        if ((type !== undefined && NO_OBJECTS.includes(type)) || inVerbatim(start)) continue;
+        // A caption's value has objects, as Org's parser reads it; other keywords' none.
+        const caption = type === "keyword" && /^[ \t]*#\+CAPTION(?:\[.*\])?:/i.test(text);
+        if ((type !== undefined && NO_OBJECTS.includes(type) && !caption) || inVerbatim(start)) continue;
         const target = linkUnescape(m[1]);
         let path: string | undefined;
         let linkType: string | undefined;
         if (m[2] === undefined || includeLinked) {
           // A file link: file: or attachment:, or a file's name.
-          const typed = /^(file|attachment):(.*)$/s.exec(target);
-          if (typed) [linkType, path] = [typed[1], typed[2]];
+          const typed = /^(file|attachment):(.*)$/is.exec(target);
+          if (typed) [linkType, path] = [typed[1].toLowerCase(), typed[2]];
           else if (/^[./~]/.test(target)) [linkType, path] = ["file", target];
           path = path?.replace(/::.*$/s, "");
         } else {
           // A description that is all one plain or angle link to a file.
-          const d = /^(?:<(file|attachment):([^\]<>\n]+)>|(file|attachment):([^\s()<>\][]+))$/.exec(m[2]);
-          if (d) [linkType, path] = [d[1] ?? d[3], d[2] ?? d[4]];
+          const d = /^(?:<(file|attachment):([^\]<>\n]+)>|(file|attachment):([^\s()<>\][]+))$/i.exec(m[2]);
+          if (d) [linkType, path] = [(d[1] ?? d[3]).toLowerCase(), d[2] ?? d[4]];
         }
         if (path === undefined || !IMAGE_FILE.test(path)) continue;
         // Attachments need org-attach, which E8 has not got.
@@ -11864,7 +11877,8 @@ e8.defineCommand({
   doc: "Show the images links point at inline, read afresh.",
   run: () => {
     e8.call("org-toggle-inline-images" as e8.CommandName);
-    if (inlineImageOverlays().length === 0) e8.call("org-toggle-inline-images" as e8.CommandName);
+    // Any in the whole buffer, as org-inline-image-overlays holds them.
+    if (e8.saveRestriction(() => (e8.widen(), inlineImageOverlays().length)) === 0) e8.call("org-toggle-inline-images" as e8.CommandName);
   },
 });
 
@@ -13122,15 +13136,17 @@ e8.defineMajorMode({
     }
     if (indented) e8.callWithPrefix(1, "org-indent-mode");
     // Linked images shown, from the variable or a #+STARTUP: line, as org-mode does last.
-    let inlineImages = truthy(e8.variable("org-startup-with-inline-images") ?? null);
     for (const [, , text] of keywordLines()) {
       const m = /^#\+STARTUP:(.*)$/i.exec(text);
       for (const word of m ? m[1].trim().split(/\s+/) : []) {
-        if (word === "inlineimages") inlineImages = true;
-        else if (word === "noinlineimages") inlineImages = false;
+        // Any case, set for the buffer, as org-set-regexps-and-options does.
+        const w = word.toLowerCase();
+        if (w !== "inlineimages" && w !== "noinlineimages") continue;
+        e8.makeLocalVariable("org-startup-with-inline-images");
+        e8.setVariable("org-startup-with-inline-images", w === "inlineimages");
       }
     }
-    if (inlineImages) displayInlineImages();
+    if (truthy(e8.variable("org-startup-with-inline-images") ?? null) && !truthy(e8.variable("org-inhibit-startup") ?? null)) displayInlineImages();
     // The logging #+STARTUP: words set their variables for the buffer, as org-set-regexps-and-options does.
     for (const [, , text] of keywordLines()) {
       const m = /^#\+STARTUP:(.*)$/i.exec(text);

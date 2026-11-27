@@ -16006,7 +16006,7 @@ declare global {
        */
       "org-id-uuid-program": Value;
       /**
-       * The width inline images are shown at: t for their own width, a number of pixels, or nil or a list of one number to take a #+ATTR_ORG: or other #+ATTR_ line's :width first, the list's number otherwise. A heading's ORG-IMAGE-ACTUAL-WIDTH property, inherited, says otherwise for its subtree.
+       * The width inline images are shown at: t for their own width, a number of pixels, or nil or a list of one number to take a #+ATTR_ORG: or other #+ATTR_ line's :width first, the list's number otherwise. An entry's own ORG-IMAGE-ACTUAL-WIDTH property says otherwise for its images.
        *
        * Defined in packages/org.ts.
        */

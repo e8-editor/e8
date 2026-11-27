@@ -157,12 +157,32 @@ fn widths_from_the_option_and_attributes() {
     assert_eq!(shown(&mut ed, &s), ["[[file:red-blue.png]] nil"; 5].join(";"));
 }
 
-/// A heading's ORG-IMAGE-ACTUAL-WIDTH property says the width in its subtree.
+/// An entry's own ORG-IMAGE-ACTUAL-WIDTH property says the width of its
+/// images, not inherited, as org-property-or-variable-value reads it.
 #[test]
-fn the_width_property_of_a_subtree() {
-    let (mut ed, s) = org("* A\n:PROPERTIES:\n:ORG-IMAGE-ACTUAL-WIDTH: 90\n:END:\n** B\n[[file:{red}]]\n* C\n[[file:{red}]]\n", true);
+fn the_width_property_of_an_entry() {
+    let (mut ed, s) = org("* A\n:PROPERTIES:\n:ORG-IMAGE-ACTUAL-WIDTH: 90\n:END:\n[[file:{red}]]\n** B\n[[file:{red}]]\n", true);
     ed.call("org-display-inline-images", vec![]).unwrap();
     assert_eq!(shown(&mut ed, &s), "[[file:red-blue.png]] 90;[[file:red-blue.png]] nil");
+}
+
+/// Widths are read as string-to-number reads them: a number then text is
+/// the number, a quoted one is no width, and a float only with a point.
+#[test]
+fn widths_read_as_numbers() {
+    let (mut ed, s) = org("#+ATTR_LATEX: :width 1\\linewidth\n[[file:{red}]]\n\n#+ATTR_HTML: :width 12em\n[[file:{red}]]\n\n#+ATTR_ORG: :width \"200\"\n[[file:{red}]]\n", true);
+    eval(&mut ed, &s, "e8.setVariable('org-image-actual-width', null)");
+    ed.call("org-display-inline-images", vec![]).unwrap();
+    assert_eq!(shown(&mut ed, &s), "[[file:red-blue.png]] 1;[[file:red-blue.png]] 12;[[file:red-blue.png]] nil");
+}
+
+/// A link in a caption shows, as Org's parser reads a caption's value, and
+/// FILE: is file:, as Org searches ignoring case; not one in a title.
+#[test]
+fn captions_and_link_types_in_any_case() {
+    let (mut ed, s) = org("#+TITLE: [[file:{red}]]\n#+CAPTION: [[file:{dot}]]\nx\n[[FILE:{red}]]\n", true);
+    ed.call("org-display-inline-images", vec![]).unwrap();
+    assert_eq!(shown(&mut ed, &s), "[[file:dot.png]] nil;[[FILE:red-blue.png]] nil");
 }
 
 /// #+STARTUP: inlineimages shows them when Org mode starts.
@@ -172,13 +192,17 @@ fn startup_shows_the_images() {
     assert_eq!(shown(&mut ed, &s), "[[file:red-blue.png]] nil");
     let (mut ed, s) = org("#+STARTUP: noinlineimages\n[[file:{red}]]\n", true);
     assert_eq!(shown(&mut ed, &s), "");
+    // In any case, and set for the buffer.
+    let (mut ed, s) = org("#+STARTUP: InlineImages\n[[file:{red}]]\n", true);
+    assert_eq!(shown(&mut ed, &s), "[[file:red-blue.png]] nil");
+    assert_eq!(eval(&mut ed, &s, "String(e8.localVariableP('org-startup-with-inline-images'))"), "true");
 }
 
 /// An image alone in its paragraph is centred or put at the right, as
 /// org-image-align or its #+ATTR_ORG: :align says; one among text is not.
 #[test]
 fn alignment_of_an_image_alone_in_its_paragraph() {
-    let (mut ed, s) = org("#+ATTR_ORG: :align right\n[[file:{red}]]\n\n#+ATTR_HTML: :center t\n[[file:{red}]]\n\nSee [[file:{red}]]\n\n[[file:{red}]]\n", true);
+    let (mut ed, s) = org("#+ATTR_ORG: :align right\n[[file:{red}]]\n\n#+ATTR_HTML: :center t\n[[file:{red}]]\n\nSee [[file:{red}]]\n\n[[file:{red}]]\n\n#+ATTR_ORG: :width 100\n#+ATTR_ORG: :align center\n[[file:{red}]]\n", true);
     ed.call("org-display-inline-images", vec![]).unwrap();
     let before = |ed: &mut Editor, s: &Scripting| {
         eval(
@@ -195,10 +219,12 @@ fn alignment_of_an_image_alone_in_its_paragraph() {
     // Images 32 pixels, 5 columns, wide, in 100 columns less the fringes'.
     let got = before(&mut ed, &s);
     let cols: Vec<&str> = got.split(',').collect();
-    assert_eq!(cols.len(), 4, "{got}");
+    // Only a back-end's first line says how to align, as Org takes its car.
+    assert_eq!(cols.len(), 5, "{got}");
+    assert_eq!(cols[4], "-", "{got}");
     assert!(cols[0].parse::<i64>().unwrap() > 90, "{got}");
     assert!((40..55).contains(&cols[1].parse::<i64>().unwrap()), "{got}");
-    assert_eq!(&cols[2..], ["-", "-"]);
+    assert_eq!(&cols[2..4], ["-", "-"]);
     eval(&mut ed, &s, "e8.setVariable('org-image-align', Symbol.for('center'))");
     ed.call("org-redisplay-inline-images", vec![]).unwrap();
     let got = before(&mut ed, &s);
