@@ -4943,6 +4943,7 @@ e8.defineMajorMode({
     b: agendaEarlier,
     d: dayView,
     j: "org-agenda-goto-date",
+    k: "org-agenda-capture",
     w: weekView,
     y: yearView,
     ".": agendaToday,
@@ -5318,6 +5319,43 @@ function markerText(item: AgendaItem): string {
   const pos = m === undefined ? undefined : e8.markerPosition(m);
   return pos === undefined ? "#<marker in no buffer>" : `#<marker at ${pos + 1} in ${e8.markerBuffer(m!)}>`;
 }
+
+/**
+ * The day of the agenda's line at point, as a time: at the time of the
+ * line's entry with WITH-TIME, or the time now, else at
+ * org-extend-today-until's hour; now off a dated line, as
+ * org-get-cursor-date.
+ */
+function cursorDate(withTime: boolean): number {
+  let hour: number | undefined;
+  let minute: number | undefined;
+  const l = e8.lineOf(e8.point());
+  if (withTime) {
+    const field = agendaLines[l]?.time?.field;
+    const m = field === undefined ? null : /([0-2]?[0-9]):([0-5][0-9])/.exec(field);
+    if (m) [hour, minute] = [Number(m[1]), Number(m[2])];
+    else if (field === undefined) {
+      const [, mi, h] = e8.decodeTime() as number[];
+      [hour, minute] = [h, mi];
+    }
+  }
+  const day = e8.derivedModeP("org-agenda-mode") ? agendaLineDays[l]?.day : undefined;
+  if (day === undefined) return e8.currentTime();
+  const d = dayFromNumber(day);
+  return e8.encodeTime([0, minute ?? 0, hour ?? Number(e8.variable("org-extend-today-until") ?? 0), d.day, d.month, d.year]);
+}
+
+e8.defun("org-get-cursor-date", (withTime?: e8.Value) => cursorDate(truthy(withTime ?? null)));
+
+e8.defineCommand({
+  name: "org-agenda-capture",
+  doc: "Capture with the date of the agenda's line at point as the capture's date; with C-1, the time of its entry too, or the time now.",
+  params: [{ name: "withTime", kind: "prefix" }],
+  run: (withTime: e8.PrefixArg) => {
+    if (!e8.derivedModeP("org-agenda-mode")) e8.userError("You cannot do this outside of agenda buffers");
+    e8.letBind({ "org-overriding-default-time": cursorDate(withTime === 1) }, () => e8.callInteractively("org-capture"));
+  },
+});
 
 /** The date of the date line at point, at midnight, as org-get-cursor-date gives org-overriding-default-time on a line with org-agenda-date-header. */
 function dateHeaderHere(): DateTime | undefined {

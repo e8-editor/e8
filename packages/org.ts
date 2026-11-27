@@ -7683,6 +7683,20 @@ function currentTime(): DateTime {
  * org-extend-today-until's hour, a minute before midnight yesterday, as
  * org-read-date has it.
  */
+e8.defineVariable({
+  name: "org-overriding-default-time",
+  doc: "A time that stands for now as the date prompt's default and a capture's time, as the agenda's capture sets it to the date at point; nil for now.",
+  value: null,
+});
+
+/** org-overriding-default-time as a date and time, if it is set. */
+export function overridingDefaultTime(): DateTime | undefined {
+  const v = e8.variable("org-overriding-default-time");
+  if (v === null || v === undefined || v === false) return undefined;
+  const [, minute, hour, day, month, year] = e8.decodeTime(v) as number[];
+  return { year, month, day, hour, minute };
+}
+
 function promptDefault(): DateTime {
   const def = currentTime();
   const extend = Number(e8.variable("org-extend-today-until") ?? 0);
@@ -7890,8 +7904,10 @@ export function readDateAnalyze(input: string, def: DateTime, withEnd = false): 
  * DEF is the default, the time now unless a timestamp is being changed.
  * The result has a range's end time, if WITH_END and one was given.
  */
-export function parseDate(input: string, withTime = false, def: DateTime = promptDefault(), withEnd = false): DateTime & { endTime?: string } {
-  const r = readDateAnalyze(input, { hour: 0, minute: 0, ...def }, withEnd);
+export function parseDate(input: string, withTime = false, def?: DateTime, withEnd = false): DateTime & { endTime?: string } {
+  // org-overriding-default-time first, as org-read-date takes it before its default.
+  const base = overridingDefaultTime() ?? def ?? promptDefault();
+  const r = readDateAnalyze(input, { hour: 0, minute: 0, ...base }, withEnd);
   if (r.forcedYear) e8.message("Year was forced into compatible range (1970-2037)");
   const d: DateTime & { endTime?: string } = { year: r.date.year, month: r.date.month, day: r.date.day };
   if (r.timeGiven || withTime) [d.hour, d.minute] = [r.date.hour, r.date.minute];
@@ -8785,6 +8801,11 @@ e8.defineCommand({
 export function allowedValues(h: Heading | undefined, property: string): { values: string[]; restricted: boolean } {
   // Before the first heading, the file's own, as org-entry-get finds them at point-min.
   const all = h === undefined ? topGet(`${property}_ALL`) ?? globalProperty(`${property}_ALL`) : entryGetInherited(h, `${property}_ALL`, false);
+  return parseAllowedValues(all);
+}
+
+/** A NAME_ALL value's words read as Lisp, as org-property-get-allowed-values reads them; :ETC means others may be typed. */
+export function parseAllowedValues(all: string | undefined): { values: string[]; restricted: boolean } {
   const values: string[] = [];
   let restricted = true;
   for (const m of allMatches(/"((?:[^"\\]|\\.)*)"|(\S+)/g, all ?? "")) {

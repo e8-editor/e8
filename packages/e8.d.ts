@@ -5305,6 +5305,14 @@ declare global {
        */
       "org-agenda-bulk-unmark-all": [];
       /**
+       * Capture with the date of the agenda's line at point as the capture's date; with C-1, the time of its entry too, or the time now.
+       *
+       * @param withTime raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-capture": [withTime?: PrefixArg | boolean];
+      /**
        * Cancel the running clock, from the agenda.
        *
        * Defined in packages/org-agenda.ts.
@@ -16325,6 +16333,12 @@ declare global {
        * Defined in packages/org-colview.ts.
        */
       "org-overriding-columns-format": Value;
+      /**
+       * A time that stands for now as the date prompt's default and a capture's time, as the agenda's capture sets it to the date at point; nil for now.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-overriding-default-time": Value;
       /**
        * What may end an ordered item's number or letter: t for either . or ), or the character ?. or ?) for that one alone.
        *

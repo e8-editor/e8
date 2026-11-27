@@ -1,0 +1,474 @@
+[
+ {
+  "name": "agenda-k-day",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "call": [
+   "org-agenda"
+  ],
+  "text": "* Inbox\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "keys": "C-n C-n k C-c C-c C-x b M-g c",
+  "answers": [
+   "a",
+   "t",
+   "*e8-oracle*",
+   "1"
+  ],
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* %t entry %?"
+   ]
+  ]
+ },
+ {
+  "name": "agenda-k-header",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "call": [
+   "org-agenda"
+  ],
+  "text": "* Inbox\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "keys": "k C-c C-c C-x b M-g c",
+  "answers": [
+   "a",
+   "t",
+   "*e8-oracle*",
+   "1"
+  ],
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* %t entry %?"
+   ]
+  ]
+ },
+ {
+  "name": "agenda-k-time",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "call": [
+   "org-agenda"
+  ],
+  "text": "* Inbox\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "keys": "C-s M e e t RET C-1 k C-c C-c C-x b M-g c",
+  "answers": [
+   "a",
+   "t",
+   "*e8-oracle*",
+   "1"
+  ],
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* %T entry %?"
+   ]
+  ]
+ },
+ {
+  "name": "agenda-k-datetree",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "call": [
+   "org-agenda"
+  ],
+  "text": "* Inbox\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "keys": "C-n C-n k C-c C-c C-x b M-g c",
+  "answers": [
+   "a",
+   "t",
+   "*e8-oracle*",
+   "1"
+  ],
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+olp+datetree",
+     "FILE"
+    ],
+    "* entry %u"
+   ]
+  ]
+ },
+ {
+  "name": "agenda-k-item",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "call": [
+   "org-agenda"
+  ],
+  "text": "* Inbox\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "keys": "C-s W r i t e RET k C-c C-c C-x b M-g c",
+  "answers": [
+   "a",
+   "t",
+   "*e8-oracle*",
+   "1"
+  ],
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* %t entry %?"
+   ]
+  ]
+ },
+ {
+  "name": "agenda-use-date",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "call": [
+   "org-agenda"
+  ],
+  "text": "* Inbox\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "keys": "C-n C-n M-x C-c C-c C-x b M-g c",
+  "answers": [
+   "a",
+   "org-capture",
+   "t",
+   "*e8-oracle*",
+   "1"
+  ],
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* %t entry %?"
+   ]
+  ],
+  "globals": {
+   "org-capture-use-agenda-date": true
+  }
+ },
+ {
+  "name": "agenda-use-date-off",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "call": [
+   "org-agenda"
+  ],
+  "text": "* Inbox\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "keys": "C-n C-n M-x C-c C-c C-x b M-g c",
+  "answers": [
+   "a",
+   "org-capture",
+   "t",
+   "*e8-oracle*",
+   "1"
+  ],
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* %t entry %?"
+   ]
+  ]
+ },
+ {
+  "name": "agenda-use-date-tree",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "call": [
+   "org-agenda"
+  ],
+  "text": "* Inbox\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "keys": "C-n C-n M-x C-c C-c C-x b M-g c",
+  "answers": [
+   "a",
+   "org-capture",
+   "t",
+   "*e8-oracle*",
+   "1"
+  ],
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+olp+datetree",
+     "FILE"
+    ],
+    "* entry %u"
+   ]
+  ],
+  "globals": {
+   "org-capture-use-agenda-date": true
+  }
+ },
+ {
+  "name": "agenda-use-date-prompt",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "call": [
+   "org-agenda"
+  ],
+  "text": "* Inbox\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "keys": "C-n C-n M-x C-c C-c C-x b M-g c",
+  "answers": [
+   "a",
+   "org-capture",
+   "t",
+   "",
+   "*e8-oracle*",
+   "1"
+  ],
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* %^t entry"
+   ]
+  ],
+  "globals": {
+   "org-capture-use-agenda-date": true
+  }
+ },
+ {
+  "name": "capture-property-global",
+  "text": "* Inbox\n",
+  "point": 2,
+  "keys": "n e w C-c C-c",
+  "answers": [
+   "t",
+   "0:15"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* %?\n%^{Effort}p"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ],
+  "globals": {
+   "org-global-properties": {
+    "Effort_ALL": "0:05 0:15"
+   }
+  }
+ },
+ {
+  "name": "capture-property-keyword",
+  "text": "#+PROPERTY: Effort_ALL 1:00 2:00\n* Inbox\n",
+  "point": 2,
+  "keys": "n e w C-c C-c",
+  "answers": [
+   "t",
+   "2:00"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* %?\n%^{Effort}p"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ]
+ },
+ {
+  "name": "capture-property-keyword-file",
+  "text": "#+PROPERTY: Owner_ALL ann bob\n* Inbox\n",
+  "point": 2,
+  "keys": "n e w C-c C-c",
+  "answers": [
+   "t",
+   "bob"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file",
+     "FILE"
+    ],
+    "* %?\n%^{Owner}p"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ]
+ },
+ {
+  "name": "capture-property-global-and-heading",
+  "text": "* Inbox\n:PROPERTIES:\n:Effort_ALL: 3:00\n:END:\n",
+  "point": 2,
+  "keys": "n e w C-c C-c",
+  "answers": [
+   "t",
+   "0:05"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* %?\n%^{Effort}p"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ],
+  "globals": {
+   "org-global-properties": {
+    "Effort_ALL": "0:05 0:15"
+   }
+  }
+ },
+ {
+  "name": "agenda-k-date-prompt",
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "call": [
+   "org-agenda"
+  ],
+  "text": "* Inbox\n* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* Meeting <2026-10-29 Thu 10:00>\n",
+  "keys": "C-n C-n k C-c C-c C-x b M-g c",
+  "answers": [
+   "a",
+   "t",
+   "++2",
+   "*e8-oracle*",
+   "1"
+  ],
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* %^t entry"
+   ]
+  ]
+ }
+]
