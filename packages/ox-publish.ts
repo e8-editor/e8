@@ -22,6 +22,7 @@ import { type Info, brokenLink, flag, formatReference, getEnvironment, newRefere
 import { listToOrg } from "ox-org";
 import { entryGet } from "org-list";
 import { searchInBuffer } from "ol";
+import { regexpQuote } from "subr";
 import { fileRelativeName as relativeName, findBufferVisiting } from "files";
 
 const defvar = (name: string, value: e8.Value, doc: string) => e8.defineVariable({ name, value, doc });
@@ -68,11 +69,8 @@ export function property(prop: string, project: Project, dflt?: any): any {
 /** A project's properties as export options: :with-toc as with-toc, symbols as their names. */
 function optionsOf(plist: e8.Value[]): Info {
   const info: Info = {};
-  // The first of a key's values counts, as plist-get finds it.
-  for (let i = 0; i + 1 < plist.length; i += 2) {
-    const key = keyName(plist[i]).replace(/^:/, "");
-    if (!(key in info)) info[key] = sym(plist[i + 1]);
-  }
+  // The last of a key's values counts, as org-export-get-environment puts each pair in turn.
+  for (let i = 0; i + 1 < plist.length; i += 2) info[keyName(plist[i]).replace(/^:/, "")] = sym(plist[i + 1]);
   return info;
 }
 
@@ -84,10 +82,23 @@ function rel(file: string, dir: string): string {
   return isDirName(file) && r !== "." ? r + "/" : r;
 }
 
-const extension = (f: string) => /\.([^./]*)$/.exec(e8.fileNameNondirectory(f))?.[1];
-const sansExtension = (f: string) => f.replace(/\.[^./]*$/, "");
+/** A file's extension, none when its name's only dot starts it, as file-name-extension. */
+const extension = (f: string) => /^.+?\.([^.]*)$/.exec(e8.fileNameNondirectory(f))?.[1];
+/** A file's name without its extension, as file-name-sans-extension. */
+const sansExtension = (f: string) => {
+  const ext = extension(f);
+  return ext === undefined ? f : f.slice(0, f.length - ext.length - 1);
+};
 const fileEqualP = (a: string, b: string) => e8.fileTruename(e8.expandFileName(a)) === e8.fileTruename(e8.expandFileName(b));
 const uniquify = <T>(xs: T[]) => [...new Set(xs)];
+
+/** A string split at a separator, without the empty pieces a separator at either end makes, as org-split-string. */
+function orgSplitString(s: string, separator: string): string[] {
+  const parts = s.split(separator);
+  if (parts[0] === "") parts.shift();
+  if (parts.length && parts[parts.length - 1] === "") parts.pop();
+  return parts;
+}
 
 function asFunctionList(v: any): any[] {
   if (isNil(v)) return [];
@@ -194,7 +205,8 @@ export function expandProjects(alist: Project[]): Project[] {
       rest.unshift(...list.map((x: unknown) => assoc(x) ?? e8.userError(`Unknown component ${S(x)} in project ${S(p![0])}`)));
     } else out.push(p);
   }
-  return uniquify(out);
+  // Each project once, where it last comes, as delete-dups on the list built backwards keeps it.
+  return out.filter((x, i) => out.lastIndexOf(x) === i);
 }
 
 /** Every file of a project, as org-publish-get-base-files. */
@@ -387,7 +399,11 @@ export function sitemap(project: Project, sitemapFilename = "sitemap.org"): void
   e8.message(`Generating sitemap for ${title}`);
   let files = getBaseFiles(project).filter((f) => f !== file);
   if (!(style === "list" && sortFolders === "ignore")) files = [...uniquify(files.map((f) => e8.fileNameDirectory(f) ?? "")).filter((d) => d !== root), ...files];
-  if (!isNil(sortFiles) || sortFolders !== "ignore") files = [...files].sort((a, b) => (predicate(a, b) ? (predicate(b, a) ? 0 : -1) : 1));
+  // Entries the predicate finds equal end up the other way round, as Emacs's sort leaves them with a predicate that is "less or equal".
+  if (!isNil(sortFiles) || sortFolders !== "ignore") {
+    const index = new Map(files.map((f, i) => [f, i]));
+    files = [...files].sort((a, b) => (predicate(a, b) ? (predicate(b, a) ? index.get(b)! - index.get(a)! : -1) : 1));
+  }
   writeFile(file, String(call(builder, title, sitemapFilesToLisp(files, project, style, formatEntry))));
 }
 
@@ -413,27 +429,27 @@ export function findTitle(file: string, project: Project): string {
   return cacheSetFileProperty(f, ":title", title, undefined, true);
 }
 
-/** The time of an Org timestamp's text, midnight when it has none, in milliseconds, as org-time-string-to-time. */
+/** The time of an Org timestamp's text, midnight when it has none, in seconds, as org-time-string-to-time. */
 function timeStringToTime(s: string): number | undefined {
   const m = /(\d{4})-(\d{2})-(\d{2})(?:[^\]>\d]*?(\d{1,2}):(\d{2}))?/.exec(s);
   if (!m) return undefined;
-  return e8.encodeTime([0, m[5] === undefined ? 0 : +m[5], m[4] === undefined ? 0 : +m[4], +m[3], +m[2], +m[1], null, -1, null]) * 1000;
+  return e8.encodeTime([0, m[5] === undefined ? 0 : +m[5], m[4] === undefined ? 0 : +m[4], +m[3], +m[2], +m[1], null, -1, null]);
 }
 
-/** A file's #+DATE: as a time, or the time it was last changed, in milliseconds, as org-publish-find-date. */
+/** A file's #+DATE: as a time, or the time it was last changed, in seconds as e8.formatTimeString takes it, as org-publish-find-date. */
 export function findDate(file: string, project: Project): number {
   const f = expandIn(file, project);
   const cached = cacheGetFileProperty(f, ":date", undefined, true);
   if (cached !== undefined && cached !== null) return cached;
   let date: number | undefined;
-  if (e8.fileDirectoryP(f)) date = e8.fileAttributes(f)!.modified;
+  if (e8.fileDirectoryP(f)) date = e8.fileAttributes(f)!.modified / 1000;
   else {
     const parsed = findProperty(f, ":date", project);
     const ts = Array.isArray(parsed) ? (parsed as Datum[]).find((d) => typeof d !== "string" && d.type === "timestamp") : undefined;
     const value = ts ? interpretData(ts) : undefined;
     date = value && /\S/.test(value) ? timeStringToTime(value) : undefined;
     if (date === undefined) {
-      if (e8.fileExistsP(f)) date = e8.fileAttributes(f)!.modified;
+      if (e8.fileExistsP(f)) date = e8.fileAttributes(f)!.modified / 1000;
       else err(`No such file: "${f}"`);
     }
   }
@@ -562,7 +578,7 @@ function indexGenerateTheindex(project: Project, directory: string): void {
   let currentLetter: string | undefined;
   let lastEntry: string[] = [];
   for (const idx of full) {
-    const entry = String(idx[0]).split("!").filter((s) => s !== "");
+    const entry = orgSplitString(String(idx[0]), "!");
     const letter = entry[0].slice(0, 1).toUpperCase();
     const file = relativeName(idx[1], plistGet(project.slice(1), ":base-directory"));
     if (letter !== currentLetter) out += `* ${letter}\n`;
@@ -618,11 +634,21 @@ export function resolveExternalLink(search: string, file: string, preferCustom =
       ? search.slice(1)
       : e8.withCurrentBuffer(e8.findFileNoselect(file), () =>
           e8.saveExcursion(() => {
-            let pos: number;
-            try {
-              pos = searchInBuffer(search);
-            } catch (e) {
-              return brokenLink(e instanceof Error ? e.message : String(e));
+            // As org-link-search finds it with org-link-search-must-match-exact-headline:
+            // a /regexp/ makes a sparse tree, which puts point at no heading;
+            // else a target or a #+NAME:, then a heading of that title.
+            if (/^\/.*\/$/.test(search)) return undefined;
+            let pos: number | undefined;
+            if (!search.startsWith("*")) {
+              const q = regexpQuote(search);
+              pos = e8.search(`<<${q}>>\\|^[ \t]*#\\+NAME:[ \t]*${q}[ \t]*$`, { from: e8.pointMin(), regexp: true, caseFold: true })?.start;
+            }
+            if (pos === undefined) {
+              try {
+                pos = searchInBuffer(search.startsWith("*") ? search : "*" + search);
+              } catch {
+                return brokenLink(`No match for fuzzy expression: ${search}`);
+              }
             }
             e8.gotoChar(pos);
             if (!e8.derivedModeP("org-mode") || !e8.lookingAt("\\*+ ")) return undefined;

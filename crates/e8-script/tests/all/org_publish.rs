@@ -189,3 +189,61 @@ fn a_file_in_no_project_is_an_error() {
     let err = site.ed.call("org-publish-current-file", vec![]).unwrap_err().to_string();
     assert!(err.contains("is not part of any known project"), "{err}");
 }
+
+// From the review: each as Emacs 30's Org 9.7 does with the same files.
+
+#[test]
+fn a_projects_later_value_wins_equal_titles_sort_backwards_and_dates_are_in_seconds() {
+    let dir = tempfile::tempdir().unwrap();
+    let root = dir.path().canonicalize().unwrap();
+    let src = root.join("src");
+    std::fs::create_dir_all(&src).unwrap();
+    std::fs::write(src.join("b.org"), "#+TITLE: Same\n#+DATE: <2024-01-02 Tue>\n* B\n").unwrap();
+    std::fs::write(src.join("c.org"), "#+TITLE: Same\n* C\n").unwrap();
+    let mut ed = Editor::new();
+    let s = Scripting::new(&mut ed).unwrap();
+    ed.set_variable("user-full-name", Value::Str("A. Writer".into()));
+    ed.set_variable("org-export-timestamp-file", Value::Bool(false));
+    ed.set_variable("org-export-copy-to-kill-ring", Value::Bool(false));
+    ed.set_variable("org-publish-timestamp-directory", Value::Str(format!("{}/ts/", root.display())));
+    let (src_dir, out) = (format!("{}/", src.display()), format!("{}/out/", root.display()));
+    // The project's :ascii-charset comes after the one publishing to ASCII sets, and the second :with-toc after the first.
+    s.eval_expression(
+        &mut ed,
+        &format!(
+            r#"(e8.setVariable("org-publish-project-alist", [["p", ":base-directory", "{src_dir}", ":publishing-directory", "{out}",
+               ":publishing-function", "org-ascii-publish-to-ascii", ":ascii-charset", e8.intern("utf-8"), ":with-toc", true, ":with-toc", false,
+               ":auto-sitemap", true, ":sitemap-style", "list"]]), e8.call("org-publish", "p", true))"#
+        ),
+    )
+    .unwrap();
+    assert_eq!(std::fs::read_to_string(src.join("sitemap.org")).unwrap(), "#+TITLE: Sitemap for project p\n\n- [[file:c.org][Same]]\n- [[file:b.org][Same]]");
+    assert_eq!(
+        std::fs::read_to_string(root.join("out/b.txt")).unwrap(),
+        "                              ━━━━━━━━━━━\n                                  SAME\n\n                               A. Writer\n                              ━━━━━━━━━━━\n\n\n                            <2024-01-02 Tue>\n\n\n1 B\n═══\n"
+    );
+    let date = s
+        .eval_expression(&mut ed, r#"e8.formatTimeString("%Y-%m-%d", e8.funcall("org-publish-find-date", "b.org", e8.variable("org-publish-project-alist")[0]))"#)
+        .unwrap();
+    assert_eq!(date, "\"2024-01-02\"");
+}
+
+#[test]
+fn links_to_names_and_regexps_in_other_files_are_missing_references_outside_publishing() {
+    let dir = tempfile::tempdir().unwrap();
+    std::fs::write(dir.path().join("n.org"), "#+NAME: tbl\n| 1 |\n").unwrap();
+    std::fs::write(dir.path().join("b.org"), "* B\n").unwrap();
+    let file = dir.path().join("l.org");
+    std::fs::write(&file, "#+OPTIONS: toc:nil\n[[file:n.org::tbl][t]] and [[file:b.org::/here/][r]]\n").unwrap();
+    let mut ed = Editor::new();
+    let s = Scripting::new(&mut ed).unwrap();
+    ed.call("find-file", vec![e8_core::Arg::Str(file.display().to_string())]).unwrap();
+    // The body only, as Org exports it when nothing is being published.
+    s.eval_expression(&mut ed, r#"e8.call("org-html-export-as-html", null, null, null, true)"#).unwrap();
+    assert_eq!(text(&ed), "<p>\n<a href=\"n.html#MissingReference\">t</a> and <a href=\"b.html#MissingReference\">r</a>\n</p>\n");
+}
+
+fn text(ed: &Editor) -> String {
+    let b = ed.window_buffer();
+    b.slice(0..b.len())
+}

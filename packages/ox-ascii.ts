@@ -999,7 +999,7 @@ e8.defineCommand({
   run: () => convertRegion("utf-8"),
 });
 
-// Publishing to text files, the charset set first so it wins over the project's, as Org's.
+// Publishing to text files, the charset put first so a project's own :ascii-charset, later, wins, as in Org.
 for (const [charset, name] of [
   ["ascii", "ascii"],
   ["latin1", "latin1"],

@@ -92,7 +92,8 @@ function template(contents: string, info: Info): string {
 function section(s: Node, contents: string | undefined, info: Info): string {
   const up = lineage(s, ["headline"])[0];
   const footnotes = map(
-    up ? [up, s] : [s],
+    // Before the first heading, none: Org maps over (nil SECTION), which it does not walk.
+    up ? [up, s] : [],
     "footnote-reference",
     (fn) => {
       const f = fn as Node;
@@ -395,5 +396,8 @@ e8.defun("org-list-to-generic", (list: any[], params?: ListParams) => listToGene
 e8.defun("org-list-to-org", (list: any[], params?: ListParams) => listToOrg(list, params));
 e8.defun("org-list-to-subtree", (list: any[], startLevel?: number, params?: ListParams) => listToSubtree(list, startLevel, params));
 
-/** Publish an Org file as Org, as org-org-publish-to-org; :htmlized-source makes no HTML, as E8 has no htmlize. */
-e8.defun("org-org-publish-to-org", (plist: e8.Value[], filename: string, pubDir: string) => e8.funcall("org-publish-org-to", "org", filename, ".org", plist, pubDir));
+/** Publish an Org file as Org, as org-org-publish-to-org; nil, as Org's returns, for the after-publishing hook. :htmlized-source makes no HTML, as E8 has no htmlize. */
+e8.defun("org-org-publish-to-org", (plist: e8.Value[], filename: string, pubDir: string) => {
+  e8.funcall("org-publish-org-to", "org", filename, ".org", plist, pubDir);
+  return null;
+});

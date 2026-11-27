@@ -1382,7 +1382,9 @@ e8.defineCommand({
 
 /** Publish an Org file to HTML, as org-html-publish-to-html; returns the file written. */
 e8.defun("org-html-publish-to-html", (plist: e8.Value[], filename: string, pubDir: string) => {
-  const htmlExt = String(varValue("org-html-extension") || "");
-  const ext = plistGet(plist, ":html-extension") ?? (htmlExt || "html");
+  const variable = varValue("org-html-extension");
+  const htmlExt = typeof variable === "string" ? variable : "";
+  // An empty org-html-extension is not nil, so it is the extension, as in Lisp's or.
+  const ext = plistGet(plist, ":html-extension") ?? (typeof variable === "string" ? variable : "html");
   return publishOrgTo("html", filename, (htmlExt.length > 0 ? "." : "") + ext, plist, pubDir);
 });
