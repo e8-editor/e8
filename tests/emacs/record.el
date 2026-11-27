@@ -51,6 +51,22 @@
 ;; A case's buffer may visit a file it never writes; leave no lock files.
 (setq create-lockfiles nil)
 
+(defconst e8-oracle--codings
+  (cons (coding-system-priority-list)
+        (mapcar (lambda (v) (cons v (default-value v)))
+                '(buffer-file-coding-system default-terminal-coding-system
+                  default-keyboard-coding-system default-process-coding-system
+                  default-file-name-coding-system)))
+  "The coding systems Emacs starts with: the priority list and the
+defaults `prefer-coding-system' changes, put back before each case.")
+
+(defun e8-oracle--reset-codings ()
+  "Undo an earlier case's `prefer-coding-system', which otherwise reads
+the next case files themselves as Latin-1."
+  (apply #'set-coding-system-priority (car e8-oracle--codings))
+  (dolist (v (cdr e8-oracle--codings))
+    (set-default (car v) (cdr v))))
+
 (defconst e8-oracle--files
   (let ((dir (getenv "E8_ORACLE_FILES")))
     (if (and dir (not (string-empty-p dir)))
@@ -124,7 +140,9 @@ slash, then what it holds."
   "TEXT with the case's directory written as DIR."
   (and text
        (let ((dir (directory-file-name e8-oracle--files)))
-         (dolist (form (list (file-truename dir) dir (abbreviate-file-name dir)) text)
+         (dolist (form (list (file-truename dir) dir (abbreviate-file-name dir)
+                             (abbreviate-file-name (file-truename dir)))
+                   text)
            (setq text (string-replace form "DIR" text))))))
 
 (defun e8-oracle--last-message ()
@@ -216,6 +234,15 @@ one, as \"2026-11-04 09:07\".")
 (defvar org-clock-interrupted-task)
 (defvar org-clock-mode-line-timer)
 (defvar org-markers-to-move)
+(defvar org-log-post-message)
+(defvar org-time-was-given)
+(defvar org-end-time-was-given)
+(defvar org-agenda-restriction-lock-overlay)
+(defvar org-agenda-overriding-restriction)
+(defvar org-agenda-restrict)
+(defvar org-agenda-restrict-begin)
+(defvar org-agenda-restrict-end)
+(defvar dired-mode-map)
 
 (defun e8-oracle--clocked-time ()
   "The running clock's minutes counted to noon on the case's fixed day, as E8's tests count them."
@@ -402,10 +429,12 @@ its `globals' bound for the case, before the modes start."
   (let ((globals (alist-get 'globals case)))
     (prog1 (cl-progv (mapcar #'car globals) (mapcar (lambda (g) (e8-oracle--value (cdr g))) globals)
              (e8-oracle--run-1 case))
-      ;; A case that brought Org's parser up to date with its globals, as
-      ;; org-list-allow-alphabetical, leaves it as the defaults have it.
-      (when (equal (car (alist-get 'call case)) "org-element-update-syntax")
-        (org-element-update-syntax)))))
+      ;; A case that brought Org's parser up to date with its globals or
+      ;; its buffer's own values, as org-list-allow-alphabetical, from
+      ;; `call' or `modes', leaves it as the defaults have it.
+      (when (or (equal (car (alist-get 'call case)) "org-element-update-syntax")
+                (member "org-element-update-syntax" (alist-get 'modes case)))
+        (with-temp-buffer (org-element-update-syntax))))))
 
 (defun e8-oracle--run-1 (case)
   "Type CASE's keys and return the buffer's state afterwards, as an alist."
@@ -414,12 +443,26 @@ its `globals' bound for the case, before the modes start."
         (start (or (alist-get 'point case) 0))
         (modes (mapcar #'intern (alist-get 'modes case)))
         (call (alist-get 'call case)))
+    (e8-oracle--reset-codings)
+    ;; dired-x as a case that turns on dired-omit-mode loads it: once
+    ;; loaded, deleting a visited file asks whether to kill its buffer.
+    (when (featurep 'dired-x)
+      (unload-feature 'dired-x t)
+      ;; Unloading leaves the keys it bound in dired's map, naming
+      ;; functions it took away; a fresh dired has none of them.
+      (dolist (key '("*(" "*O" "*." "\C-x\M-o" "\M-(" "\M-!" "F" "V"))
+        (define-key dired-mode-map key nil)))
     (delete-other-windows)
     (set-window-dedicated-p nil nil)
     ;; The frame laid out afresh: an earlier case's incremental search can
     ;; grow the echo area and leave the windows a line short after it.
+    ;; Batch Emacs applies a frame's new size only while it waits: without
+    ;; the waits the 24 lines could land in the middle of the case, unless
+    ;; an earlier case had waited, as a minibuffer message does.
     (set-frame-size (selected-frame) 80 24)
+    (sleep-for 0.001)
     (set-frame-size (selected-frame) 80 25)
+    (sleep-for 0.001)
     ;; A clock an earlier case left running is forgotten, not asked about
     ;; as its buffer goes, and the clock's history starts afresh, as each
     ;; E8 case starts with none.
@@ -436,8 +479,29 @@ its `globals' bound for the case, before the modes start."
       (set-marker org-clock-interrupted-task nil))
     ;; Nor a date an agenda's capture left as the default, as
     ;; org-capture-use-agenda-date sets it for good.
+    ;; Nor the message a repeating entry left for the next stored note to
+    ;; show, as org-auto-repeat-maybe sets it and Org never clears it:
+    ;; after a bulk action that repeats an entry without a note, a later
+    ;; case's note said "Entry repeats: ..." in place of "Note stored".
+    ;; Nor whether the last date read had a time, which Org binds only
+    ;; around the reads that want it, and tests with boundp: unbound, as
+    ;; in a fresh Emacs, not nil, or the agenda's bulk scheduling keeps
+    ;; the time it is given.
     (when (featurep 'org)
-      (setq org-overriding-default-time nil))
+      (setq org-overriding-default-time nil
+            org-log-post-message nil)
+      (makunbound 'org-time-was-given)
+      (makunbound 'org-end-time-was-given))
+    ;; Nor an agenda restriction lock (C-c C-x <), which would keep every
+    ;; later agenda to the file or subtree it was set on; removed as
+    ;; org-agenda-remove-restriction-lock does, with no message.
+    (when (featurep 'org-agenda)
+      (delete-overlay org-agenda-restriction-lock-overlay)
+      (setq org-agenda-overriding-restriction nil
+            org-agenda-restrict nil)
+      (put 'org-agenda-files 'org-restrict nil)
+      (move-marker org-agenda-restrict-begin nil)
+      (move-marker org-agenda-restrict-end nil))
     ;; Org's stored links start afresh too.
     (when (featurep 'ol)
       (setq org-stored-links nil org-link--insert-history nil))
@@ -451,6 +515,15 @@ its `globals' bound for the case, before the modes start."
     ;; the case's buffer, then *Messages*, then *scratch*.
     (bury-buffer "*Messages*")
     (bury-buffer "*scratch*")
+    ;; Both empty, as E8 starts them: an earlier case could type into
+    ;; *scratch*, and the log would hold every earlier case's messages.
+    (with-current-buffer "*scratch*"
+      (let ((inhibit-read-only t)) (erase-buffer))
+      (setq buffer-read-only nil
+            buffer-undo-list nil)
+      (set-buffer-modified-p nil))
+    (with-current-buffer (messages-buffer)
+      (let ((inhibit-read-only t)) (erase-buffer)))
     ;; Lock files only where a case asks for them.
     (setq create-lockfiles (eq (alist-get 'lockfiles case) t))
     ;; A fresh spelling session, as E8 starts each case with: an earlier
@@ -775,7 +848,9 @@ header line, which column view sets only from a post-command hook."
 (defun e8-oracle--record-file (file golden-dir)
   "Run the cases in FILE and write their results into GOLDEN-DIR."
   (let* ((cases (let ((json-object-type 'alist)
-                      (json-array-type 'list))
+                      (json-array-type 'list)
+                      ;; In UTF-8, whatever coding the last case preferred.
+                      (coding-system-for-read 'utf-8))
                   (json-read-file file)))
          (results (mapcar #'e8-oracle--run cases))
          (out (expand-file-name (file-name-nondirectory file) golden-dir))

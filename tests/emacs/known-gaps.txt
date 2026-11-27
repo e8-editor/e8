@@ -83,6 +83,3 @@ org-columns/columns-priority-prev  # tags aligned by the displayed column
 # substitute-command-keys gave it; E8 prints the string.
 org-columns/columns-typing-read-only  # the string's properties in the error
 
-# With the agenda in column view, Emacs's agenda window is a line shorter;
-# what it shows is the same.
-org-agenda-columns/agenda-columns-week  # the agenda window's height with columns
