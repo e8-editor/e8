@@ -6558,6 +6558,14 @@ declare global {
        */
       "org-demote-subtree": [];
       /**
+       * Show the images that links point at inline: links to image files without a description, links whose description is a link to an image file, and with a prefix argument, links to image files with a description too.
+       *
+       * @param includeLinked raw prefix argument
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-display-inline-images": [includeLinked?: PrefixArg | boolean];
+      /**
        * Say where point is in the outline: its heading and the ones above it.
        *
        * Defined in packages/org.ts.
@@ -7327,6 +7335,12 @@ declare global {
        */
       "org-property-previous-allowed-value": [];
       /**
+       * Show the images links point at inline, read afresh.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-redisplay-inline-images": [];
+      /**
        * Move the entry or entries at point to another heading, one org-refile-targets names, by default a top-level heading of this buffer, as its last child (first with org-reverse-note-order). With an active region, its subtrees move. With C-u, go to the heading instead; with C-u C-u, to where the last refile put its entry; with C-0 or C-u C-u C-u, clear the targets kept (org-refile-use-cache); with 2, refile to the running clock; with 3, copy.
        *
        * @param arg raw prefix argument
@@ -7354,6 +7368,12 @@ declare global {
        * Defined in packages/org-refile.ts.
        */
       "org-refile-reverse": [arg?: PrefixArg | boolean];
+      /**
+       * Stop showing images inline.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-remove-inline-images": [];
       /**
        * Remove the highlights of a sparse tree from the buffer.
        *
@@ -8103,6 +8123,14 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-toggle-heading": [];
+      /**
+       * Show the images links point at inline, or stop showing them if any show; with a prefix argument, links to images with a description too.
+       *
+       * @param includeLinked raw prefix argument
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-toggle-inline-images": [includeLinked?: PrefixArg | boolean];
       /**
        * Turn the line, or the lines of the region, into list items; headings into items, their text into the items' text; or items back into plain lines.
        *
@@ -15596,7 +15624,7 @@ declare global {
        */
       "org-cycle-global-status": Value;
       /**
-       * Whether TAB shows the inline images of a subtree it opens, as org-cycle-display-inline-images does. E8 shows no inline images in Org buffers yet, so it does nothing.
+       * Whether TAB shows the inline images of a subtree it opens, and stops showing them when it folds it, as org-cycle-display-inline-images does.
        *
        * Defined in packages/org.ts.
        */
@@ -15977,6 +16005,24 @@ declare global {
        * Defined in packages/org-id.ts.
        */
       "org-id-uuid-program": Value;
+      /**
+       * The width inline images are shown at: t for their own width, a number of pixels, or nil or a list of one number to take a #+ATTR_ORG: or other #+ATTR_ line's :width first, the list's number otherwise. A heading's ORG-IMAGE-ACTUAL-WIDTH property, inherited, says otherwise for its subtree.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-image-actual-width": Value;
+      /**
+       * Where an image alone in its paragraph is shown: left, center or right. A #+ATTR_ line's :align or :center says otherwise for an image.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-image-align": Value;
+      /**
+       * How wide an inline image shown at its own width may be: fill-column, window, a number of pixels, a fraction of the window's width, or nil for any width.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-image-max-width": Value;
       /**
        * How deep in the outline M-x imenu lists headings.
        *
@@ -16521,6 +16567,12 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-startup-truncated": Value;
+      /**
+       * Whether Org mode shows linked images inline when it starts. #+STARTUP: inlineimages or noinlineimages says otherwise for a file.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-startup-with-inline-images": Value;
       /**
        * The properties of the link stored last, as a link type's store function gave them with org-link-store-props.
        *

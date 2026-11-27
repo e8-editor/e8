@@ -14,8 +14,9 @@
 // "org-hide-block" for blocks. A link's brackets and target are hidden by
 // an "org-link" text property, so [[https://gnu.org][GNU]] shows as GNU.
 
-import { jump, type Link, linkHere, searchInBuffer, showContext } from "ol";
+import { jump, type Link, linkHere, linkUnescape, searchInBuffer, showContext } from "ol";
 import { AFFILIATED, type Elem, elementAt, endBeforeBlank, FOOTNOTE_DEFINITION, keepingParse, PLANNING, parseShifts, startsElement, withAffiliated } from "org-element";
+import { createImage, imageMap } from "image";
 import {
   ancestors,
   BLOCK_BEGIN,
@@ -11543,7 +11544,7 @@ e8.defineHook(
 );
 e8.defineVariable({ name: "org-cycle-global-at-bob", doc: "Whether TAB at the very start of the buffer, not on a heading, cycles the whole buffer as S-TAB does.", value: false });
 e8.defineVariable({ name: "org-cycle-open-archived-trees", doc: "Whether TAB opens archived subtrees as it does others; nil keeps them closed, as org-cycle-hide-archived-subtrees does.", value: false });
-e8.defineVariable({ name: "org-cycle-inline-images-display", doc: "Whether TAB shows the inline images of a subtree it opens, as org-cycle-display-inline-images does. E8 shows no inline images in Org buffers yet, so it does nothing.", value: false });
+e8.defineVariable({ name: "org-cycle-inline-images-display", doc: "Whether TAB shows the inline images of a subtree it opens, and stops showing them when it folds it, as org-cycle-display-inline-images does.", value: false });
 
 /** Where the window started when TAB last opened a subtree, so folding it again scrolls back, as org-cycle-scroll-position-to-restore. */
 let cycleScrollPosition: number | undefined;
@@ -11580,9 +11581,311 @@ e8.defun("org-cycle-optimize-window-after-visibility-change", (state: string) =>
   }
 });
 
+// Inline images, as org.el's org-display-inline-images: a link to an image
+// file, without a description or with one that is itself such a link,
+// shown as the image, on a graphical frame.
+
+e8.defineVariable({
+  name: "org-startup-with-inline-images",
+  doc: "Whether Org mode shows linked images inline when it starts. #+STARTUP: inlineimages or noinlineimages says otherwise for a file.",
+  value: false,
+});
+e8.defineVariable({
+  name: "org-image-actual-width",
+  doc: "The width inline images are shown at: t for their own width, a number of pixels, or nil or a list of one number to take a #+ATTR_ORG: or other #+ATTR_ line's :width first, the list's number otherwise. A heading's ORG-IMAGE-ACTUAL-WIDTH property, inherited, says otherwise for its subtree.",
+  value: true,
+});
+e8.defineVariable({
+  name: "org-image-max-width",
+  doc: "How wide an inline image shown at its own width may be: fill-column, window, a number of pixels, a fraction of the window's width, or nil for any width.",
+  value: Symbol.for("fill-column") as e8.Value,
+});
+e8.defineVariable({ name: "org-image-align", doc: "Where an image alone in its paragraph is shown: left, center or right. A #+ATTR_ line's :align or :center says otherwise for an image.", value: Symbol.for("left") as e8.Value });
+
+/** The name a symbol or string option holds, or undefined. */
+function optionName(v: e8.Value | undefined): string | undefined {
+  return typeof v === "symbol" ? e8.symbolName(v) : typeof v === "string" ? v : undefined;
+}
+
+/** The inline image overlays between BEG and END, as org--inline-image-overlays. */
+function inlineImageOverlays(beg = e8.pointMin(), end = e8.pointMax()): number[] {
+  return e8.overlaysIn(beg, end).filter((o) => truthy(e8.overlayGet(o, "org-image-overlay") ?? null));
+}
+
+/** Image files by their names, as image-file-name-regexp has them for the types E8 shows. */
+const IMAGE_FILE = /\.(?:png|jpe?g|gif|svg|webp|tiff?|bmp|xbm|xpm|pbm|pgm|ppm|pnm|heic|avif)$/i;
+
+/** The paragraph a position is in, its affiliated keywords' lines with it, as org-element-lineage finds it for a link. */
+function paragraphAt(pos: number): Elem | undefined {
+  const el = elementAt(pos);
+  return el?.type === "paragraph" ? withAffiliated(el) : undefined;
+}
+
+/** A paragraph's #+ATTR_ lines, by back-end in the order they come, each back-end's lines joined, as its :attr_ properties. */
+function attrLines(par: Elem | undefined): [string, string][] {
+  const out: [string, string][] = [];
+  if (par === undefined || par.postAffiliated === undefined) return out;
+  for (let l = e8.lineOf(par.begin); e8.lineStart(l) < par.postAffiliated; l++) {
+    const m = /^[ \t]*#\+ATTR_([-_A-Za-z0-9]+):[ \t]*(.*)$/i.exec(e8.lineText(l));
+    if (!m) continue;
+    const key = m[1].toLowerCase();
+    const at = out.findIndex(([k]) => k === key);
+    if (at < 0) out.push([key, m[2]]);
+    else out[at][1] += ` ${m[2]}`;
+  }
+  return out;
+}
+
+/** An attribute's value in a #+ATTR_ line's text, the words up to the next keyword, as org-export-read-attribute reads :NAME. */
+function readAttribute(text: string | undefined, name: string): string | undefined {
+  if (text === undefined) return undefined;
+  const words = text.trim().split(/[ \t]+/);
+  const at = words.indexOf(name);
+  if (at < 0) return undefined;
+  const value: string[] = [];
+  for (const w of words.slice(at + 1)) {
+    if (w.startsWith(":")) break;
+    value.push(w);
+  }
+  return value.length > 0 ? value.join(" ").replace(/^"(.*)"$/, "$1") : undefined;
+}
+
+/** Whether a :width cannot be read as a width, as org-display-inline-image--width's width-unreadable?. */
+function widthUnreadable(v: string | undefined): boolean {
+  if (v === undefined) return true;
+  if (v === "t") return false;
+  if (!/^\+?\.?[0-9]/.test(v)) return true;
+  const n = parseFloat(v.replace(/^\+/, ""));
+  return /^\+?[0-9]*\.|e/i.test(v) && !(n >= 0 && n <= 2);
+}
+
+/** org-image-actual-width, or a heading's ORG-IMAGE-ACTUAL-WIDTH property read as Lisp, as org-property-or-variable-value. */
+function imageActualWidth(pos: number): e8.Value {
+  const all = headings();
+  const i = headingIndex(all, e8.lineOf(pos));
+  const own = i === undefined ? undefined : entryGetInherited(all[i], "ORG-IMAGE-ACTUAL-WIDTH", false);
+  if (own === undefined) return e8.variable("org-image-actual-width") ?? null;
+  const v = own.trim();
+  if (v === "t") return true;
+  if (v === "nil" || v === "()") return null;
+  if (/^[-+]?[0-9]+$/.test(v)) return Number(v);
+  const list = /^\(\s*([-+]?[0-9.]+)\s*\)$/.exec(v);
+  if (list) return [Number(list[1])];
+  return v;
+}
+
+/** The width an inline image is shown at, in pixels, or undefined for its own, as org-display-inline-image--width. */
+function inlineImageWidth(pos: number, par: Elem | undefined): number | undefined {
+  const setting = imageActualWidth(pos);
+  if (setting === true) return undefined;
+  if (typeof setting === "number") return setting;
+  if (!(Array.isArray(setting) || setting === null || setting === false)) return undefined;
+  const attrs = attrLines(par);
+  let width = readAttribute(attrs.find(([k]) => k === "org")?.[1], ":width");
+  if (widthUnreadable(width)) {
+    const other = attrs.find(([k, text]) => k !== "org" && !widthUnreadable(readAttribute(text, ":width")));
+    width = other === undefined ? undefined : readAttribute(other[1], ":width");
+  }
+  let n: number | undefined;
+  let float = false;
+  if (width === "t") return undefined;
+  if (widthUnreadable(width)) {
+    const first = Array.isArray(setting) ? setting[0] : undefined;
+    n = typeof first === "number" ? first : undefined;
+    float = n !== undefined && !Number.isInteger(n);
+  } else if (/^[[+]?[0-9.]+%/.test(width!)) [n, float] = [parseFloat(width!.replace(/^[[+]/, "")) / 100, true];
+  else [n, float] = [parseFloat(width!.replace(/^\+/, "")), /[.e]/i.test(width!)];
+  if (n !== undefined && float && n >= 0 && n <= 2) {
+    // That much of the text's width, as a share of the window's.
+    const fill = truthy(e8.variable("auto-fill-function") ?? null) ? Number(e8.variable("fill-column") ?? 70) : e8.windowTextWidth();
+    return Math.round(n * e8.windowPixelWidth() * (fill / Math.max(1, e8.windowTotalWidth())));
+  }
+  return n === undefined ? undefined : Math.trunc(n);
+}
+
+/** How an image alone in its paragraph is aligned, as org-image--align: center, right, or undefined. */
+function inlineImageAlign(start: number, end: number, par: Elem | undefined): "center" | "right" | undefined {
+  if (par === undefined) return undefined;
+  const begin = par.contentsBegin ?? par.postAffiliated ?? par.begin;
+  const lead = /^[ \t]*/.exec(e8.bufferText(begin, e8.lineEnd(e8.lineOf(begin))))![0].length;
+  // Its contents end after its last line's newline, before any blank lines.
+  const contentsEnd = Math.min(endBeforeBlank(par) + 1, e8.pointMax());
+  if (start !== begin + lead || contentsEnd - end > 1) return undefined;
+  let found: string | undefined;
+  for (const [key, text] of attrLines(par)) {
+    const m = /:(center)[ \t]+t\b/.exec(text) ?? /:align[ \t]+(left|center|right)\b/.exec(text);
+    if (m) {
+      found = m[1];
+      if (key === "org") break;
+    }
+  }
+  if (found !== undefined) return found === "center" || found === "right" ? found : undefined;
+  const option = optionName(e8.variable("org-image-align"));
+  return option === "center" || option === "right" ? option : undefined;
+}
+
+/** The pixels an image may be wide, as org--create-inline-image reads org-image-max-width. */
+function imageMaxWidth(): number | undefined {
+  const v = e8.variable("org-image-max-width");
+  const name = optionName(v);
+  if (name === "fill-column") return Number(e8.variable("fill-column") ?? 70) * e8.frameCharWidth();
+  if (name === "window") return e8.windowBodyWidth(null, true);
+  if (typeof v === "number") return Number.isInteger(v) ? v : Math.floor(v * e8.windowBodyWidth(null, true));
+  if (v === null || v === undefined || v === false) return undefined;
+  return e8.signal("error", `Unsupported value of ‘org-image-max-width’: ${String(name ?? v)}`);
+}
+
+/** Whether a position is inside =verbatim= or ~code~, where Org finds no link. */
+function inVerbatim(pos: number): boolean {
+  const line = e8.lineOf(pos);
+  const text = e8.lineText(line);
+  const col = pos - e8.lineStart(line);
+  for (const m of allMatches(/(?:^|[\s\-({'"])([=~])\S(?:[^\n]*?\S)?\1(?=[\s\-.,;:!?'")}\[]|$)/g, text)) {
+    const start = charCount(text.slice(0, m.index! + 1));
+    const end = charCount(text.slice(0, m.index! + m[0].length));
+    if (start <= col && col < end) return true;
+  }
+  return false;
+}
+
+/** Takes an image's overlay away once its text is changed, as org-display-inline-remove-overlay. */
+const removeImageOverlay = e8.defun("org-display-inline-remove-overlay", (ov: number, after: e8.Value) => {
+  if (truthy(after)) e8.deleteOverlay(ov);
+});
+
+/**
+ * Shows the images links point at between BEG and END, as
+ * org-display-inline-images: a file link without a description, or with
+ * INCLUDE-LINKED any, or a link whose description is a plain or angle
+ * link to an image file; with REFRESH, read afresh.
+ */
+export function displayInlineImages(includeLinked = false, refresh = false, beg = e8.pointMin(), end = e8.pointMax()): void {
+  if (!e8.displayGraphicP()) return;
+  if (refresh) removeInlineImages(beg, end);
+  e8.saveExcursion(() => {
+    const bracket = /\[\[((?:[^\][\\]|\\.)+)\](?:\[((?:[^\]]|\](?!\]))+)\])?\]/g;
+    for (let l = e8.lineOf(beg); l < e8.lineCount() && e8.lineStart(l) < end; l++) {
+      const text = e8.lineText(l);
+      if (!text.includes("[[")) continue;
+      for (const m of allMatches(bracket, text)) {
+        const start = e8.lineStart(l) + charCount(text.slice(0, m.index));
+        const linkEnd = start + charCount(m[0]);
+        if (start < beg || start >= end) continue;
+        const type = elementAt(start)?.type;
+        if ((type !== undefined && NO_OBJECTS.includes(type)) || inVerbatim(start)) continue;
+        const target = linkUnescape(m[1]);
+        let path: string | undefined;
+        let linkType: string | undefined;
+        if (m[2] === undefined || includeLinked) {
+          // A file link: file: or attachment:, or a file's name.
+          const typed = /^(file|attachment):(.*)$/s.exec(target);
+          if (typed) [linkType, path] = [typed[1], typed[2]];
+          else if (/^[./~]/.test(target)) [linkType, path] = ["file", target];
+          path = path?.replace(/::.*$/s, "");
+        } else {
+          // A description that is all one plain or angle link to a file.
+          const d = /^(?:<(file|attachment):([^\]<>\n]+)>|(file|attachment):([^\s()<>\][]+))$/.exec(m[2]);
+          if (d) [linkType, path] = [d[1] ?? d[3], d[2] ?? d[4]];
+        }
+        if (path === undefined || !IMAGE_FILE.test(path)) continue;
+        // Attachments need org-attach, which E8 has not got.
+        if (linkType === "attachment") continue;
+        const file = e8.substituteInFileName(e8.expandFileName(path));
+        if (!e8.fileExistsP(file)) continue;
+        // One shown there already stays, where Org would show it twice.
+        if (inlineImageOverlays(start, start + 1).some((o) => e8.overlayStart(o) === start)) continue;
+        const par = paragraphAt(start);
+        const width = inlineImageWidth(start, par);
+        // The link as an object ends after the blanks that follow it.
+        const align = inlineImageAlign(start, linkEnd + /^[ \t]*/.exec(text.slice(m.index! + m[0].length))![0].length, par);
+        const maxWidth = imageMaxWidth();
+        const image = createImage(file, null, false, Symbol.for(":width"), width ?? null, Symbol.for(":max-width"), maxWidth ?? null, Symbol.for(":scale"), 1);
+        if (image === undefined) continue;
+        // Over the link, and the blanks after it if they end the line.
+        const lineEnd = e8.lineEnd(l);
+        const ovEnd = /^[ \t]*$/.test(e8.bufferText(linkEnd, lineEnd)) ? lineEnd : linkEnd;
+        const ov = e8.makeOverlay(start, ovEnd);
+        e8.overlayPut(ov, "display", image as unknown as e8.Value);
+        e8.overlayPut(ov, "face", "default");
+        e8.overlayPut(ov, "org-image-overlay", true);
+        e8.overlayPut(ov, "modification-hooks", [removeImageOverlay]);
+        e8.overlayPut(ov, "keymap", imageMap as unknown as e8.Value);
+        if (align !== undefined) {
+          // Space to where the image is centred or ends at the right, as a column, as E8 aligns to a column.
+          const [cols] = e8.imageSize(image as unknown as e8.Value);
+          const textCols = e8.windowBodyWidth();
+          const column = Math.max(0, align === "center" ? Math.round(textCols / 2 - cols / 2) : Math.round(textCols - cols));
+          e8.overlayPut(ov, "before-string", e8.propertize(" ", { face: "default", display: [Symbol.for("space"), Symbol.for(":align-to"), column] as e8.Value }));
+        }
+      }
+    }
+  });
+}
+
+/** Stops showing the images between BEG and END, as org-remove-inline-images. */
+export function removeInlineImages(beg = e8.pointMin(), end = e8.pointMax()): void {
+  for (const o of inlineImageOverlays(beg, end)) e8.deleteOverlay(o);
+}
+
+e8.defineCommand({
+  name: "org-display-inline-images",
+  doc: "Show the images that links point at inline: links to image files without a description, links whose description is a link to an image file, and with a prefix argument, links to image files with a description too.",
+  params: [{ name: "includeLinked", kind: "prefix" }],
+  run: (includeLinked) => displayInlineImages(truthy(includeLinked ?? null)),
+});
+
+e8.defineCommand({
+  name: "org-remove-inline-images",
+  doc: "Stop showing images inline.",
+  run: () => removeInlineImages(),
+});
+
+e8.defineCommand({
+  name: "org-toggle-inline-images",
+  doc: "Show the images links point at inline, or stop showing them if any show; with a prefix argument, links to images with a description too.",
+  params: [{ name: "includeLinked", kind: "prefix" }],
+  run: (includeLinked) => {
+    const interactive = e8.calledInteractively();
+    if (inlineImageOverlays().length > 0) {
+      removeInlineImages();
+      if (interactive) e8.message("Inline image display turned off");
+      return;
+    }
+    displayInlineImages(truthy(includeLinked ?? null));
+    if (interactive) {
+      const n = inlineImageOverlays().length;
+      e8.message(n > 0 ? `${n} images displayed inline` : "No images to display inline");
+    }
+  },
+});
+
+e8.defineCommand({
+  name: "org-redisplay-inline-images",
+  doc: "Show the images links point at inline, read afresh.",
+  run: () => {
+    e8.call("org-toggle-inline-images" as e8.CommandName);
+    if (inlineImageOverlays().length === 0) e8.call("org-toggle-inline-images" as e8.CommandName);
+  },
+});
+
 e8.defun("org-cycle-display-inline-images", (state: string) => {
-  if (!truthy(e8.variable("org-cycle-inline-images-display")) || !e8.commandExists("org-display-inline-images")) return;
-  if (state === "children" || state === "subtree") e8.call("org-display-inline-images" as e8.CommandName);
+  if (!truthy(e8.variable("org-cycle-inline-images-display") ?? null)) return;
+  if (state !== "children" && state !== "subtree" && state !== "folded") return;
+  const all = headings();
+  const i = headingIndex(all, lineAt());
+  if (i === undefined) return;
+  e8.saveRestriction(() => {
+    e8.widen();
+    const beg = all[i].start;
+    const end = subtreeEnd(all, i);
+    if (state === "folded") removeInlineImages(beg, end);
+    else if (state === "subtree") displayInlineImages(false, false, beg, end);
+    else {
+      // From the heading to its first child, the next visible heading.
+      const child = all.slice(i + 1).find((h) => h.start < end && !e8.invisibleP(h.start));
+      displayInlineImages(false, false, beg, child === undefined ? end : child.start);
+    }
+  });
 });
 
 e8.setDefault("org-cycle-hook", ["org-cycle-hide-archived-subtrees", "org-cycle-show-empty-lines", "org-cycle-optimize-window-after-visibility-change", "org-cycle-display-inline-images"]);
@@ -12818,6 +13121,16 @@ e8.defineMajorMode({
       }
     }
     if (indented) e8.callWithPrefix(1, "org-indent-mode");
+    // Linked images shown, from the variable or a #+STARTUP: line, as org-mode does last.
+    let inlineImages = truthy(e8.variable("org-startup-with-inline-images") ?? null);
+    for (const [, , text] of keywordLines()) {
+      const m = /^#\+STARTUP:(.*)$/i.exec(text);
+      for (const word of m ? m[1].trim().split(/\s+/) : []) {
+        if (word === "inlineimages") inlineImages = true;
+        else if (word === "noinlineimages") inlineImages = false;
+      }
+    }
+    if (inlineImages) displayInlineImages();
     // The logging #+STARTUP: words set their variables for the buffer, as org-set-regexps-and-options does.
     for (const [, , text] of keywordLines()) {
       const m = /^#\+STARTUP:(.*)$/i.exec(text);
@@ -13363,6 +13676,8 @@ const EXTRA_KEYS: [string, e8.CommandName][] = [
   ["C-c C-x <right>", "org-shiftcontrolright"],
   ["C-c C-x <", "org-agenda-set-restriction-lock"],
   ["C-c C-x C-c", "org-columns"],
+  ["C-c C-x C-v", "org-toggle-inline-images"],
+  ["C-c C-x C-M-v", "org-redisplay-inline-images"],
   ["C-c C-x C-z", "org-resolve-clocks"],
   ["C-c C-x >", "org-agenda-remove-restriction-lock"],
   ["C-c C-x <left>", "org-shiftcontrolleft"],

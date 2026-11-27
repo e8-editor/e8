@@ -241,7 +241,7 @@ function checkImage(image: e8.Value, area?: string | symbol | null): void {
 }
 
 const imageSliceMap = e8.defineKeymap("image-slice-map");
-const imageMap = e8.defineKeymap("image-map", "image-slice-map");
+export const imageMap = e8.defineKeymap("image-map", "image-slice-map");
 
 /**
  * Puts an image in front of a position, as put-image: an overlay there
