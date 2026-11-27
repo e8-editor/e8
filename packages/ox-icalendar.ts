@@ -11,6 +11,7 @@ import { normalizeString } from "org-element";
 import { EXPORT_PARAMS } from "org-loaddefs";
 import {
   type Info,
+  baseFileName,
   data,
   defineDerivedBackend,
   exportAs,
@@ -27,7 +28,7 @@ import {
   varValue,
 } from "ox";
 import { type Heading, agendaFiles as orgAgendaFiles, headingIndex, headings, propertyInheritP, selectiveGetter, today } from "org";
-import { agendaEntryTexts, wdays } from "org-agenda";
+import { wdays } from "org-agenda";
 import { orgIdGet, orgIdNew } from "org-id";
 import { displayWarning, warn } from "warnings";
 
@@ -142,7 +143,8 @@ if (!e8.boundp("org-agenda-default-appointment-duration"))
 
 // --- Internal Functions --------------------------------------------------------------
 
-const nw = (s: unknown): s is string => typeof s === "string" && /\S/.test(s);
+/** Whether a string has a character other than space, tab, CR and LF, as org-string-nw-p. */
+const nw = (s: unknown): s is string => typeof s === "string" && /[^ \t\r\n]/.test(s);
 const trim = (s: string) => s.replace(/^[ \t\n\r]+|[ \t\n\r]+$/g, "");
 const pad = (n: number, w = 2) => String(n).padStart(w, "0");
 
@@ -189,10 +191,15 @@ function commentedHeadings(all: Heading[]): boolean[] {
 function createUid(file: string, bell: boolean): void {
   let modified = false;
   e8.saveExcursion(() => {
-    // Markers at the headings, which the drawers added move.
-    const all = headings();
+    // The headings in the accessible part, a heading under a COMMENT one
+    // outside it commented too, as the element lineage reaches beyond a
+    // narrowing. Markers at them, which the drawers added move.
+    const all = e8.saveRestriction(() => (e8.widen(), headings()));
     const commented = commentedHeadings(all);
-    const starts = all.map((h, i) => (commented[i] ? undefined : e8.makeMarker(h.start))).filter((m): m is e8.Marker => m !== undefined);
+    const [min, max] = [e8.pointMin(), e8.pointMax()];
+    const starts = all
+      .map((h, i) => (commented[i] || h.start < min || h.start >= max ? undefined : e8.makeMarker(h.start)))
+      .filter((m): m is e8.Marker => m !== undefined);
     try {
       for (const m of starts) {
         e8.gotoChar(e8.markerPosition(m)!);
@@ -306,6 +313,11 @@ function cleanupString(s: string | undefined): string | undefined {
   return s.replace(/[\\,;]/g, "\\$&").replace(/[ \t]*\n/g, "\\n");
 }
 
+/** A summary prefix cleaned up, nothing for nil, as concat takes a nil org-icalendar-cleanup-string gives. */
+function summaryPrefix(prefix: unknown): string {
+  return typeof prefix === "string" ? cleanupString(prefix)! : "";
+}
+
 /** A string split at newlines, one at either end dropped, as org-split-string. */
 function splitLines(s: string): string[] {
   const parts = s.split("\n");
@@ -347,7 +359,8 @@ function postProcessFile(file: string): undefined {
 
 /** A transcoded heading without its blank lines, as org-icalendar-clear-blank-lines. */
 function clearBlankLines(headline: string): string {
-  return headline.replace(/^(?:[ \t]*\n)+/gm, "");
+  // Lines start only after a newline, as Emacs's ^ has it, not after a CR.
+  return headline.replace(/(?:^|(?<=\n))(?:[ \t]*\n)+/g, "");
 }
 
 // --- Transcode Functions ---------------------------------------------------------------
@@ -435,12 +448,12 @@ function icalendarEntry(entry: Node, contents: string | undefined, info: Info): 
   const deadline: Node | undefined = entry.p.deadline;
   if (eventFor(deadline, toList(info["icalendar-use-deadline"]))) {
     const { uid, summary, loc, desc, cat, tz, cls } = f();
-    out += vevent(entry, deadline!, "DL-" + uid, cleanupString(String(info["icalendar-deadline-summary-prefix"] ?? "")) + summary, loc, desc, cat, tz, cls);
+    out += vevent(entry, deadline!, "DL-" + uid, summaryPrefix(info["icalendar-deadline-summary-prefix"]) + summary, loc, desc, cat, tz, cls);
   }
   const scheduled: Node | undefined = entry.p.scheduled;
   if (eventFor(scheduled, toList(info["icalendar-use-scheduled"]))) {
     const { uid, summary, loc, desc, cat, tz, cls } = f();
-    out += vevent(entry, scheduled!, "SC-" + uid, cleanupString(String(info["icalendar-scheduled-summary-prefix"] ?? "")) + summary, loc, desc, cat, tz, cls);
+    out += vevent(entry, scheduled!, "SC-" + uid, summaryPrefix(info["icalendar-scheduled-summary-prefix"]) + summary, loc, desc, cat, tz, cls);
   }
   // Timestamps in the title and the entry's own text; an inline task's are its own.
   let counter = 0;
@@ -681,15 +694,20 @@ function timezoneName(): string {
   return nw(tz) ? tz : e8.formatTimeString("%Z");
 }
 
-/** A VCALENDAR component of a name, an owner, a time zone, a description, a time to live and the components, folded, as org-icalendar--vcalendar. */
-function vcalendar(name: string, owner: string, tz: string, description: string, ttl: unknown, contents: string): string {
+/**
+ * A VCALENDAR component of a name, an owner, a time zone, a description,
+ * a time to live and the components, folded, as org-icalendar--vcalendar:
+ * one that is nil is written "nil", as format's %s writes it.
+ */
+function vcalendar(name: string | undefined, owner: string | undefined, tz: string, description: string | undefined, ttl: unknown, contents: string): string {
+  const s = (v: string | undefined) => cleanupString(v) ?? "nil";
   return foldString(
     "BEGIN:VCALENDAR\n" +
       "VERSION:2.0\n" +
-      `X-WR-CALNAME:${cleanupString(name)}\n` +
-      `PRODID:-//${cleanupString(owner)}//Emacs with Org mode//EN\n` +
-      `X-WR-TIMEZONE:${cleanupString(tz)}\n` +
-      `X-WR-CALDESC:${cleanupString(description)}\n` +
+      `X-WR-CALNAME:${s(name)}\n` +
+      `PRODID:-//${s(owner)}//Emacs with Org mode//EN\n` +
+      `X-WR-TIMEZONE:${s(tz)}\n` +
+      `X-WR-CALDESC:${s(description)}\n` +
       (nonNil(ttl) && typeof ttl === "string" ? `X-PUBLISHED-TTL:${cleanupString(ttl)}\n` : "") +
       "CALSCALE:GREGORIAN\n" +
       contents +
@@ -752,12 +770,6 @@ export function exportToIcs(_async?: unknown, subtreep?: unknown, visibleOnly?: 
   if (file && nonNil(varValue("org-icalendar-store-UID"))) createUid(file, true);
   const outfile = outputFileName(".ics", flag(subtreep));
   return toFile("icalendar", outfile, flag(subtreep), flag(visibleOnly), flag(bodyOnly), ASCII_OPTIONS, postProcessFile);
-}
-
-/** The file of the current buffer, or of the buffer an indirect one shares its text with. */
-function baseFileName(): string | undefined {
-  const base = e8.bufferBaseBuffer();
-  return base ? e8.withCurrentBuffer(base, () => e8.bufferFileName()) : e8.bufferFileName();
 }
 
 /**
@@ -828,6 +840,37 @@ export function combineAgendaFiles(_async?: unknown): void {
   combineFiles(agendaFiles());
 }
 
+/**
+ * The text of each entry the current buffer's agenda text points to with
+ * org-hd-marker, once each, from its heading to the next heading, as
+ * org-icalendar-export-current-agenda collects them: from the first change
+ * of the property after the buffer's start.
+ */
+function agendaEntryTexts(): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (let p = e8.nextSinglePropertyChange(e8.pointMin(), "org-hd-marker"); p !== undefined; p = e8.nextSinglePropertyChange(p, "org-hd-marker")) {
+    const m = e8.getTextProperty(p, "org-hd-marker") as e8.Marker | undefined;
+    const buffer = m ? e8.markerBuffer(m) : undefined;
+    const at = m ? e8.markerPosition(m) : undefined;
+    if (buffer === undefined || at === undefined) continue;
+    const key = `${buffer}\u0000${at}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(
+      e8.withCurrentBuffer(buffer, () =>
+        e8.saveRestriction(() => {
+          e8.widen();
+          // To the next heading, as org-entry-end-position.
+          const next = headings().find((h) => h.start > at);
+          return e8.bufferText(at, next ? next.start : e8.pointMax());
+        }),
+      ),
+    );
+  }
+  return out;
+}
+
 /** Export the current agenda view's entries to an iCalendar FILE, as org-icalendar-export-current-agenda. */
 export function exportCurrentAgenda(file: string): void {
   const text = agendaEntryTexts()
@@ -840,13 +883,18 @@ export function exportCurrentAgenda(file: string): void {
   writeCalendar(file, contents);
 }
 
+/** A variable's string, or undefined for nil. */
+function stringOrNil(v: e8.Value | undefined): string | undefined {
+  return typeof v === "string" ? v : undefined;
+}
+
 /** Write a calendar of the combined name, owner, zone, description and time to live around CONTENTS to FILE, then post-process it. */
 function writeCalendar(file: string, contents: string): void {
   const out = vcalendar(
-    String(varValue("org-icalendar-combined-name")),
-    String(e8.variable("user-full-name") ?? ""),
+    stringOrNil(e8.variable("org-icalendar-combined-name")),
+    stringOrNil(e8.variable("user-full-name")),
     timezoneName(),
-    String(varValue("org-icalendar-combined-description")),
+    stringOrNil(e8.variable("org-icalendar-combined-description")),
     e8.variable("org-icalendar-ttl"),
     contents,
   );

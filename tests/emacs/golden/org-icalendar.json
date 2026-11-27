@@ -812,6 +812,146 @@
         "agenda.org": "#+TITLE: Not used when combined\n* Event\n:PROPERTIES:\n:ID:       c-1\n:END:\n<2026-12-01 Tue 10:00>\n* TODO Task\nDEADLINE: <2026-12-02 Wed>\n:PROPERTIES:\n:ID:       c-2\n:END:\n",
         "all.ics": "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nX-WR-CALNAME:Everything\r\nPRODID:-//E. Xample//Emacs with Org mode//EN\r\nX-WR-TIMEZONE:Europe/Stockholm\r\nX-WR-CALDESC:All of it\\, combined\r\nCALSCALE:GREGORIAN\r\nBEGIN:VEVENT\r\nDTSTAMP:20261127T120000Z\r\nUID:TS1-c-1\r\nDTSTART:20261201T100000\r\nDTEND:20261201T120000\r\nSUMMARY:Event\r\nDESCRIPTION:<2026-12-01 Tue 10:00>\r\nCATEGORIES:agenda\r\nEND:VEVENT\r\nBEGIN:VTODO\r\nUID:TODO-c-2\r\nDTSTAMP:20261127T120000Z\r\nDUE;VALUE=DATE:20261202\r\nSUMMARY:Task\r\nCATEGORIES:agenda\r\nSEQUENCE:1\r\nPRIORITY:5\r\nSTATUS:NEEDS-ACTION\r\nEND:VTODO\r\nEND:VCALENDAR\r\n"
       }
+    },
+    {
+      "name": "ics-nil-summary-prefixes",
+      "input": {
+        "text": "* Plain deadline\nDEADLINE: <2026-12-10 Thu>\n:PROPERTIES:\n:ID:       np-1\n:END:\n* Plain scheduled\nSCHEDULED: <2026-12-11 Fri>\n:PROPERTIES:\n:ID:       np-2\n:END:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [],
+        "call": [
+          "org-icalendar-export-to-ics"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "find": "prefix.org",
+        "globals": {
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "org-icalendar-timezone": "Europe/Stockholm",
+          "org-icalendar-use-scheduled": [
+            "'event-if-not-todo"
+          ],
+          "org-icalendar-deadline-summary-prefix": false,
+          "org-icalendar-scheduled-summary-prefix": false
+        }
+      },
+      "text": "* Plain deadline\nDEADLINE: <2026-12-10 Thu>\n:PROPERTIES:\n:ID:       np-1\n:END:\n* Plain scheduled\nSCHEDULED: <2026-12-11 Fri>\n:PROPERTIES:\n:ID:       np-2\n:END:\n",
+      "visible": "* Plain deadline\nDEADLINE: <2026-12-10 Thu>\n:PROPERTIES:\n:ID:       np-1\n:END:\n* Plain scheduled\nSCHEDULED: <2026-12-11 Fri>\n:PROPERTIES:\n:ID:       np-2\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "prefix.ics": "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nX-WR-CALNAME:prefix\r\nPRODID:-//E. Xample//Emacs with Org mode//EN\r\nX-WR-TIMEZONE:Europe/Stockholm\r\nX-WR-CALDESC:\r\nCALSCALE:GREGORIAN\r\nBEGIN:VEVENT\r\nDTSTAMP:20261127T120000Z\r\nUID:DL-np-1\r\nDTSTART;VALUE=DATE:20261210\r\nDTEND;VALUE=DATE:20261211\r\nSUMMARY:Plain deadline\r\nCATEGORIES:prefix\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nDTSTAMP:20261127T120000Z\r\nUID:SC-np-2\r\nDTSTART;VALUE=DATE:20261211\r\nDTEND;VALUE=DATE:20261212\r\nSUMMARY:Plain scheduled\r\nCATEGORIES:prefix\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n",
+        "prefix.org": "* Plain deadline\nDEADLINE: <2026-12-10 Thu>\n:PROPERTIES:\n:ID:       np-1\n:END:\n* Plain scheduled\nSCHEDULED: <2026-12-11 Fri>\n:PROPERTIES:\n:ID:       np-2\n:END:\n"
+      }
+    },
+    {
+      "name": "ics-carriage-return-in-a-heading",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "",
+        "modes": [],
+        "call": [
+          "org-icalendar-export-to-ics"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "files": {
+          "cr.org": "* Meeting with CR\r\n:PROPERTIES:\n:ID:       cr-1\n:LOCATION: Room 3\n:END:\n<2026-12-01 Tue 10:00>\n"
+        },
+        "find": "cr.org",
+        "globals": {
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "org-icalendar-timezone": "Europe/Stockholm"
+        }
+      },
+      "text": "* Meeting with CR\r\n:PROPERTIES:\n:ID:       cr-1\n:LOCATION: Room 3\n:END:\n<2026-12-01 Tue 10:00>\n",
+      "visible": "* Meeting with CR\r\n:PROPERTIES:\n:ID:       cr-1\n:LOCATION: Room 3\n:END:\n<2026-12-01 Tue 10:00>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "cr.ics": "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nX-WR-CALNAME:cr\r\nPRODID:-//E. Xample//Emacs with Org mode//EN\r\nX-WR-TIMEZONE:Europe/Stockholm\r\nX-WR-CALDESC:\r\nCALSCALE:GREGORIAN\r\nBEGIN:VEVENT\r\nDTSTAMP:20261127T120000Z\r\nUID:TS1-cr-1\r\nDTSTART:20261201T100000\r\nDTEND:20261201T120000\r\nSUMMARY:Meeting with CR\r\r\nLOCATION:Room 3\r\nDESCRIPTION:<2026-12-01 Tue 10:00>\r\nCATEGORIES:cr\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n",
+        "cr.org": "* Meeting with CR\r\n:PROPERTIES:\n:ID:       cr-1\n:LOCATION: Room 3\n:END:\n<2026-12-01 Tue 10:00>\n"
+      }
+    },
+    {
+      "name": "ics-no-break-space-is-not-blank",
+      "input": {
+        "text": "* Event\n:PROPERTIES:\n:ID:       nb-1\n:LOCATION:  \n:CLASS:    \f\n:END:\n<2026-12-01 Tue>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [],
+        "call": [
+          "org-icalendar-export-to-ics"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "find": "nbsp.org",
+        "globals": {
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "org-icalendar-timezone": "Europe/Stockholm"
+        }
+      },
+      "text": "* Event\n:PROPERTIES:\n:ID:       nb-1\n:LOCATION:  \n:CLASS:    \f\n:END:\n<2026-12-01 Tue>\n",
+      "visible": "* Event\n:PROPERTIES:\n:ID:       nb-1\n:LOCATION:  \n:CLASS:    \f\n:END:\n<2026-12-01 Tue>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "nbsp.ics": "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nX-WR-CALNAME:nbsp\r\nPRODID:-//E. Xample//Emacs with Org mode//EN\r\nX-WR-TIMEZONE:Europe/Stockholm\r\nX-WR-CALDESC:\r\nCALSCALE:GREGORIAN\r\nBEGIN:VEVENT\r\nDTSTAMP:20261127T120000Z\r\nUID:TS1-nb-1\r\nDTSTART;VALUE=DATE:20261201\r\nDTEND;VALUE=DATE:20261202\r\nSUMMARY:Event\r\nLOCATION: \r\nCLASS:\f\r\nDESCRIPTION:<2026-12-01 Tue>\r\nCATEGORIES:nbsp\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n",
+        "nbsp.org": "* Event\n:PROPERTIES:\n:ID:       nb-1\n:LOCATION:  \n:CLASS:    \f\n:END:\n<2026-12-01 Tue>\n"
+      }
+    },
+    {
+      "name": "ics-combine-with-nil-names",
+      "input": {
+        "text": "* Event\n:PROPERTIES:\n:ID:       cn-1\n:END:\n<2026-12-01 Tue 10:00>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [],
+        "call": [
+          "org-icalendar-combine-agenda-files"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "agenda_files": true,
+        "find": "agenda.org",
+        "globals": {
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": false,
+          "org-icalendar-timezone": "Europe/Stockholm",
+          "org-icalendar-combined-agenda-file": "all.ics",
+          "org-icalendar-combined-name": false,
+          "org-icalendar-combined-description": false
+        }
+      },
+      "text": "* Event\n:PROPERTIES:\n:ID:       cn-1\n:END:\n<2026-12-01 Tue 10:00>\n",
+      "visible": "* Event\n:PROPERTIES:\n:ID:       cn-1\n:END:\n<2026-12-01 Tue 10:00>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "agenda.org": "* Event\n:PROPERTIES:\n:ID:       cn-1\n:END:\n<2026-12-01 Tue 10:00>\n",
+        "all.ics": "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nX-WR-CALNAME:nil\r\nPRODID:-//nil//Emacs with Org mode//EN\r\nX-WR-TIMEZONE:Europe/Stockholm\r\nX-WR-CALDESC:nil\r\nCALSCALE:GREGORIAN\r\nBEGIN:VEVENT\r\nDTSTAMP:20261127T120000Z\r\nUID:TS1-cn-1\r\nDTSTART:20261201T100000\r\nDTEND:20261201T120000\r\nSUMMARY:Event\r\nDESCRIPTION:<2026-12-01 Tue 10:00>\r\nCATEGORIES:agenda\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n"
+      }
     }
   ]
 }

@@ -241,3 +241,56 @@ fn the_dispatcher_combines_the_agenda_files() {
     // The file the export visited is not left open.
     assert!(ed.find_buffer("two.org").is_none());
 }
+
+// From the review: each as Emacs 30.2 writes the same text.
+
+#[test]
+fn an_indirect_buffer_exports_beside_its_base_buffers_file() {
+    let (mut ed, s, dir, _) = visit("ind.org", "* Event\n:PROPERTIES:\n:ID:       i-1\n:END:\n<2026-12-01 Tue>\n");
+    s.eval_expression(&mut ed, "e8.makeIndirectBuffer(e8.bufferName(), 'ind', true), e8.call('switch-to-buffer', 'ind')").unwrap();
+    assert_eq!(ed.window_buffer().name, "ind");
+    // Named after the base buffer's file, and asking nothing.
+    ed.call("org-icalendar-export-to-ics", vec![]).unwrap();
+    let expected = header("ind", "")
+        + "BEGIN:VEVENT\nDTSTAMP:20261127T120000Z\nUID:TS1-i-1\nDTSTART;VALUE=DATE:20261201\nDTEND;VALUE=DATE:20261202\nSUMMARY:Event\nDESCRIPTION:<2026-12-01 Tue>\nCATEGORIES:ind\nEND:VEVENT\n"
+        + "END:VCALENDAR\n";
+    assert_eq!(read(&dir.path().join("ind.ics")), crlf(&expected));
+}
+
+#[test]
+fn stored_uids_skip_a_narrowed_heading_under_a_comment() {
+    let text = "* COMMENT Plain commented\n** Inside\n*** Deeper\n<2026-12-01 Tue>\n* Normal\n<2026-12-02 Wed>\n";
+    let (mut ed, s, dir, _) = visit("narrow.org", text);
+    ed.set_default("org-icalendar-store-UID", Value::Bool(true));
+    s.eval_expression(&mut ed, "e8.gotoChar(e8.reSearchForward('^\\\\*\\\\* Inside')), e8.call('org-narrow-to-subtree')").unwrap();
+    ed.call("org-icalendar-export-to-ics", vec![]).unwrap();
+    s.eval_expression(&mut ed, "e8.widen()").unwrap();
+    // The comment above the narrowing counts: no ID is made, and the calendar is empty.
+    let b = ed.window_buffer();
+    assert_eq!(b.slice(0..b.len()), text);
+    assert!(!b.is_modified());
+    assert_eq!(read(&dir.path().join("narrow.ics")), crlf(&(header("narrow", "") + "END:VCALENDAR\n")));
+}
+
+#[test]
+fn the_agendas_before_write_hook_changes_what_goes_in_the_calendar() {
+    let (mut ed, s, dir, path) = visit(
+        "ag.org",
+        "* Meeting\n:PROPERTIES:\n:ID:       ag-1\n:END:\n<2026-11-27 Fri 10:00>\n* Call\n:PROPERTIES:\n:ID:       ag-3\n:END:\n<2026-11-27 Fri 15:00>\n",
+    );
+    ed.set_default("org-agenda-files", Value::List(vec![Value::Str(path.display().to_string())]));
+    ed.set_default("org-agenda-span", Value::Symbol("day".into()));
+    ed.call("org-agenda-list", vec![]).unwrap();
+    // A hook that takes the meeting's line out of the text written.
+    s.eval_expression(
+        &mut ed,
+        "e8.addHook('org-agenda-before-write-hook', () => { e8.gotoChar(e8.pointMin()); if (e8.reSearchForward('^.*Meeting.*\\n', { noerror: true }) !== undefined) e8.deleteRegion(e8.matchBeginning(0), e8.matchEnd(0)); })",
+    )
+    .unwrap();
+    let out = dir.path().join("agenda.ics");
+    ed.call("org-agenda-write", vec![Arg::Str(out.display().to_string())]).unwrap();
+    let expected = header("OrgMode", "")
+        + "BEGIN:VEVENT\nDTSTAMP:20261127T120000Z\nUID:TS1-ag-3\nDTSTART:20261127T150000\nDTEND:20261127T170000\nSUMMARY:Call\nDESCRIPTION:<2026-11-27 Fri 15:00>\nCATEGORIES:???\nEND:VEVENT\n"
+        + "END:VCALENDAR\n";
+    assert_eq!(read(&out), crlf(&expected));
+}

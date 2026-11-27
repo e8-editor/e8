@@ -337,5 +337,67 @@
    "org-icalendar-include-todo": true
   },
   "today": "2026-11-27"
+ },
+ {
+  "name": "ics-nil-summary-prefixes",
+  "text": "* Plain deadline\nDEADLINE: <2026-12-10 Thu>\n:PROPERTIES:\n:ID:       np-1\n:END:\n* Plain scheduled\nSCHEDULED: <2026-12-11 Fri>\n:PROPERTIES:\n:ID:       np-2\n:END:\n",
+  "find": "prefix.org",
+  "call": ["org-icalendar-export-to-ics"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "org-icalendar-timezone": "Europe/Stockholm",
+   "org-icalendar-use-scheduled": ["'event-if-not-todo"],
+   "org-icalendar-deadline-summary-prefix": false,
+   "org-icalendar-scheduled-summary-prefix": false
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "ics-carriage-return-in-a-heading",
+  "text": "",
+  "files": {
+   "cr.org": "* Meeting with CR\r\n:PROPERTIES:\n:ID:       cr-1\n:LOCATION: Room 3\n:END:\n<2026-12-01 Tue 10:00>\n"
+  },
+  "find": "cr.org",
+  "call": ["org-icalendar-export-to-ics"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "org-icalendar-timezone": "Europe/Stockholm"
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "ics-no-break-space-is-not-blank",
+  "text": "* Event\n:PROPERTIES:\n:ID:       nb-1\n:LOCATION:  \n:CLASS:    \f\n:END:\n<2026-12-01 Tue>\n",
+  "find": "nbsp.org",
+  "call": ["org-icalendar-export-to-ics"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "org-icalendar-timezone": "Europe/Stockholm"
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "ics-combine-with-nil-names",
+  "text": "* Event\n:PROPERTIES:\n:ID:       cn-1\n:END:\n<2026-12-01 Tue 10:00>\n",
+  "find": "agenda.org",
+  "agenda_files": true,
+  "call": ["org-icalendar-combine-agenda-files"],
+  "keys": "",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": false,
+   "org-icalendar-timezone": "Europe/Stockholm",
+   "org-icalendar-combined-agenda-file": "all.ics",
+   "org-icalendar-combined-name": false,
+   "org-icalendar-combined-description": false
+  },
+  "today": "2026-11-27"
  }
 ]
