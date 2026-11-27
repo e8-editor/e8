@@ -37,6 +37,8 @@ The test fails if a case is missing from the golden files, if a case changed sin
 
 Each case starts in a fresh Fundamental mode buffer named `*e8-oracle*`, with no mark and an empty kill ring, and with `transient-mark-mode` and `shift-select-mode` on, as in interactive Emacs. Once the modes are on, the buffer is fontified, as redisplay would fontify it.
 
+Batch Emacs runs every case in one session, where E8 starts each afresh, so `record.el` puts back before each case what an earlier one could leave behind: the other buffers, an empty `*scratch*` and `*Messages*`, the coding systems `prefer-coding-system` changes, `dired-x` unloaded, the frame's size (waiting for batch Emacs to apply it), and Org's global leftovers, as a running clock, stored links, an agenda restriction lock, the parser's syntax after `org-element-update-syntax`, the note a repeating entry left to show and whether the last date read had a time. A case file recorded on its own and in a run of them all gives the same golden file; when it does not, an earlier file left something behind, and the reset belongs in `e8-oracle--run-1`.
+
 Besides the text, point, mark, kill ring and first error, each case records the text left visible: the buffer without its invisible characters, fontified again at the end. That is how folding and org's hidden link brackets are checked. The keys are typed into Emacs's real command loop, not run as a keyboard macro. An error shows its message and the next key still runs, just as when a person types, and keyboard macros can be recorded and replayed. E8's test types the keys the same way.
 
 ## Limits of batch mode

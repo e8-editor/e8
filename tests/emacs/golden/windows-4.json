@@ -130,9 +130,9 @@
           "a"
         ]
       },
-      "text": "-- enlarge-the-top-window\n-- enlarge-by-three\n-- enlarge-the-bottom-window\n-- enlarge-a-sole-window\n-- enlarge-too-far\n-- shrink-with-a-negative-count\n-- widen-the-left-window\n-- narrow-the-left-window\n-- widen-the-right-window\n-- balance-three-windows\n-- balance-after-resizing\n-- enlarge-inside-side-by-side\n-- help-pops-up-a-window\nType q in help window to delete it\n-- help-uses-the-other-window\nType q in help window to restore previous buffer\n-- help-reuses-its-window\nType q in help window to delete it\n\n-- quit-window-deletes-the-help-window\nType q in help window to delete it\n-- quit-window-shows-the-buffer-before\nType q in help window to restore previous buffer\n-- help-with-three-windows\nType q in help window to restore previous buffer\n-- switch-to-buffer-other-window\n-- switch-to-buffer-other-window-with-two\n-- find-file-other-window\n-- kill-buffer-and-window\n-- scroll-other-window\n-- display-buffer-does-not-select\n-- split-with-too-small-a-size\n-- split-right-with-a-size\n-- split-below-with-a-size\n-- shrinking-a-narrow-window-fails\n-- scrolling-another-window-at-the-end-leaves-its-point\nMark set\n-- transposing-keeps-the-other-windows-point\n-- transposing-words-keeps-the-other-windows-point\n-- split-a-twenty-column-window\n-- undo-puts-back-the-other-windows-point\nUndo\nwindows-2.json: 33 cases\n-- previous-buffer-goes-back\n-- previous-buffer-twice-goes-further-back\n-- next-buffer-comes-forward-again\n-- each-window-goes-back-through-its-own-buffers\nwindows-3.json: 4 cases\n-- kill-buffer-shows-each-windows-own-previous-buffer\n-- kill-buffer-in-two-windows\n-- previous-buffer-in-a-fresh-window\n-- next-buffer-with-none-left\n",
-      "visible": "-- enlarge-the-top-window\n-- enlarge-by-three\n-- enlarge-the-bottom-window\n-- enlarge-a-sole-window\n-- enlarge-too-far\n-- shrink-with-a-negative-count\n-- widen-the-left-window\n-- narrow-the-left-window\n-- widen-the-right-window\n-- balance-three-windows\n-- balance-after-resizing\n-- enlarge-inside-side-by-side\n-- help-pops-up-a-window\nType q in help window to delete it\n-- help-uses-the-other-window\nType q in help window to restore previous buffer\n-- help-reuses-its-window\nType q in help window to delete it\n\n-- quit-window-deletes-the-help-window\nType q in help window to delete it\n-- quit-window-shows-the-buffer-before\nType q in help window to restore previous buffer\n-- help-with-three-windows\nType q in help window to restore previous buffer\n-- switch-to-buffer-other-window\n-- switch-to-buffer-other-window-with-two\n-- find-file-other-window\n-- kill-buffer-and-window\n-- scroll-other-window\n-- display-buffer-does-not-select\n-- split-with-too-small-a-size\n-- split-right-with-a-size\n-- split-below-with-a-size\n-- shrinking-a-narrow-window-fails\n-- scrolling-another-window-at-the-end-leaves-its-point\nMark set\n-- transposing-keeps-the-other-windows-point\n-- transposing-words-keeps-the-other-windows-point\n-- split-a-twenty-column-window\n-- undo-puts-back-the-other-windows-point\nUndo\nwindows-2.json: 33 cases\n-- previous-buffer-goes-back\n-- previous-buffer-twice-goes-further-back\n-- next-buffer-comes-forward-again\n-- each-window-goes-back-through-its-own-buffers\nwindows-3.json: 4 cases\n-- kill-buffer-shows-each-windows-own-previous-buffer\n-- kill-buffer-in-two-windows\n-- previous-buffer-in-a-fresh-window\n-- next-buffer-with-none-left\n",
-      "point": 1649,
+      "text": "-- next-buffer-with-none-left\n",
+      "visible": "-- next-buffer-with-none-left\n",
+      "point": 30,
       "mark": null,
       "mark_active": false,
       "kill_ring": [],
@@ -141,7 +141,7 @@
       "windows": [
         {
           "buffer": "*Messages*",
-          "point": 1649,
+          "point": 30,
           "width": 80,
           "height": 24,
           "selected": true
@@ -235,9 +235,9 @@
           "b"
         ]
       },
-      "text": "-- enlarge-the-top-window\n-- enlarge-by-three\n-- enlarge-the-bottom-window\n-- enlarge-a-sole-window\n-- enlarge-too-far\n-- shrink-with-a-negative-count\n-- widen-the-left-window\n-- narrow-the-left-window\n-- widen-the-right-window\n-- balance-three-windows\n-- balance-after-resizing\n-- enlarge-inside-side-by-side\n-- help-pops-up-a-window\nType q in help window to delete it\n-- help-uses-the-other-window\nType q in help window to restore previous buffer\n-- help-reuses-its-window\nType q in help window to delete it\n\n-- quit-window-deletes-the-help-window\nType q in help window to delete it\n-- quit-window-shows-the-buffer-before\nType q in help window to restore previous buffer\n-- help-with-three-windows\nType q in help window to restore previous buffer\n-- switch-to-buffer-other-window\n-- switch-to-buffer-other-window-with-two\n-- find-file-other-window\n-- kill-buffer-and-window\n-- scroll-other-window\n-- display-buffer-does-not-select\n-- split-with-too-small-a-size\n-- split-right-with-a-size\n-- split-below-with-a-size\n-- shrinking-a-narrow-window-fails\n-- scrolling-another-window-at-the-end-leaves-its-point\nMark set\n-- transposing-keeps-the-other-windows-point\n-- transposing-words-keeps-the-other-windows-point\n-- split-a-twenty-column-window\n-- undo-puts-back-the-other-windows-point\nUndo\nwindows-2.json: 33 cases\n-- previous-buffer-goes-back\n-- previous-buffer-twice-goes-further-back\n-- next-buffer-comes-forward-again\n-- each-window-goes-back-through-its-own-buffers\nwindows-3.json: 4 cases\n-- kill-buffer-shows-each-windows-own-previous-buffer\n-- kill-buffer-in-two-windows\n-- previous-buffer-in-a-fresh-window\n-- next-buffer-with-none-left\n-- previous-buffer-in-a-split-window\n-- previous-buffer-three-times\n-- previous-buffer-four-times\n",
-      "visible": "-- enlarge-the-top-window\n-- enlarge-by-three\n-- enlarge-the-bottom-window\n-- enlarge-a-sole-window\n-- enlarge-too-far\n-- shrink-with-a-negative-count\n-- widen-the-left-window\n-- narrow-the-left-window\n-- widen-the-right-window\n-- balance-three-windows\n-- balance-after-resizing\n-- enlarge-inside-side-by-side\n-- help-pops-up-a-window\nType q in help window to delete it\n-- help-uses-the-other-window\nType q in help window to restore previous buffer\n-- help-reuses-its-window\nType q in help window to delete it\n\n-- quit-window-deletes-the-help-window\nType q in help window to delete it\n-- quit-window-shows-the-buffer-before\nType q in help window to restore previous buffer\n-- help-with-three-windows\nType q in help window to restore previous buffer\n-- switch-to-buffer-other-window\n-- switch-to-buffer-other-window-with-two\n-- find-file-other-window\n-- kill-buffer-and-window\n-- scroll-other-window\n-- display-buffer-does-not-select\n-- split-with-too-small-a-size\n-- split-right-with-a-size\n-- split-below-with-a-size\n-- shrinking-a-narrow-window-fails\n-- scrolling-another-window-at-the-end-leaves-its-point\nMark set\n-- transposing-keeps-the-other-windows-point\n-- transposing-words-keeps-the-other-windows-point\n-- split-a-twenty-column-window\n-- undo-puts-back-the-other-windows-point\nUndo\nwindows-2.json: 33 cases\n-- previous-buffer-goes-back\n-- previous-buffer-twice-goes-further-back\n-- next-buffer-comes-forward-again\n-- each-window-goes-back-through-its-own-buffers\nwindows-3.json: 4 cases\n-- kill-buffer-shows-each-windows-own-previous-buffer\n-- kill-buffer-in-two-windows\n-- previous-buffer-in-a-fresh-window\n-- next-buffer-with-none-left\n-- previous-buffer-in-a-split-window\n-- previous-buffer-three-times\n-- previous-buffer-four-times\n",
-      "point": 1747,
+      "text": "-- previous-buffer-four-times\n",
+      "visible": "-- previous-buffer-four-times\n",
+      "point": 30,
       "mark": null,
       "mark_active": false,
       "kill_ring": [],
@@ -246,7 +246,7 @@
       "windows": [
         {
           "buffer": "*Messages*",
-          "point": 1747,
+          "point": 30,
           "width": 80,
           "height": 24,
           "selected": true
@@ -269,9 +269,9 @@
           "c"
         ]
       },
-      "text": "-- enlarge-the-top-window\n-- enlarge-by-three\n-- enlarge-the-bottom-window\n-- enlarge-a-sole-window\n-- enlarge-too-far\n-- shrink-with-a-negative-count\n-- widen-the-left-window\n-- narrow-the-left-window\n-- widen-the-right-window\n-- balance-three-windows\n-- balance-after-resizing\n-- enlarge-inside-side-by-side\n-- help-pops-up-a-window\nType q in help window to delete it\n-- help-uses-the-other-window\nType q in help window to restore previous buffer\n-- help-reuses-its-window\nType q in help window to delete it\n\n-- quit-window-deletes-the-help-window\nType q in help window to delete it\n-- quit-window-shows-the-buffer-before\nType q in help window to restore previous buffer\n-- help-with-three-windows\nType q in help window to restore previous buffer\n-- switch-to-buffer-other-window\n-- switch-to-buffer-other-window-with-two\n-- find-file-other-window\n-- kill-buffer-and-window\n-- scroll-other-window\n-- display-buffer-does-not-select\n-- split-with-too-small-a-size\n-- split-right-with-a-size\n-- split-below-with-a-size\n-- shrinking-a-narrow-window-fails\n-- scrolling-another-window-at-the-end-leaves-its-point\nMark set\n-- transposing-keeps-the-other-windows-point\n-- transposing-words-keeps-the-other-windows-point\n-- split-a-twenty-column-window\n-- undo-puts-back-the-other-windows-point\nUndo\nwindows-2.json: 33 cases\n-- previous-buffer-goes-back\n-- previous-buffer-twice-goes-further-back\n-- next-buffer-comes-forward-again\n-- each-window-goes-back-through-its-own-buffers\nwindows-3.json: 4 cases\n-- kill-buffer-shows-each-windows-own-previous-buffer\n-- kill-buffer-in-two-windows\n-- previous-buffer-in-a-fresh-window\n-- next-buffer-with-none-left\n-- previous-buffer-in-a-split-window\n-- previous-buffer-three-times\n-- previous-buffer-four-times\n-- switching-forgets-next-buffers\n",
-      "visible": "-- enlarge-the-top-window\n-- enlarge-by-three\n-- enlarge-the-bottom-window\n-- enlarge-a-sole-window\n-- enlarge-too-far\n-- shrink-with-a-negative-count\n-- widen-the-left-window\n-- narrow-the-left-window\n-- widen-the-right-window\n-- balance-three-windows\n-- balance-after-resizing\n-- enlarge-inside-side-by-side\n-- help-pops-up-a-window\nType q in help window to delete it\n-- help-uses-the-other-window\nType q in help window to restore previous buffer\n-- help-reuses-its-window\nType q in help window to delete it\n\n-- quit-window-deletes-the-help-window\nType q in help window to delete it\n-- quit-window-shows-the-buffer-before\nType q in help window to restore previous buffer\n-- help-with-three-windows\nType q in help window to restore previous buffer\n-- switch-to-buffer-other-window\n-- switch-to-buffer-other-window-with-two\n-- find-file-other-window\n-- kill-buffer-and-window\n-- scroll-other-window\n-- display-buffer-does-not-select\n-- split-with-too-small-a-size\n-- split-right-with-a-size\n-- split-below-with-a-size\n-- shrinking-a-narrow-window-fails\n-- scrolling-another-window-at-the-end-leaves-its-point\nMark set\n-- transposing-keeps-the-other-windows-point\n-- transposing-words-keeps-the-other-windows-point\n-- split-a-twenty-column-window\n-- undo-puts-back-the-other-windows-point\nUndo\nwindows-2.json: 33 cases\n-- previous-buffer-goes-back\n-- previous-buffer-twice-goes-further-back\n-- next-buffer-comes-forward-again\n-- each-window-goes-back-through-its-own-buffers\nwindows-3.json: 4 cases\n-- kill-buffer-shows-each-windows-own-previous-buffer\n-- kill-buffer-in-two-windows\n-- previous-buffer-in-a-fresh-window\n-- next-buffer-with-none-left\n-- previous-buffer-in-a-split-window\n-- previous-buffer-three-times\n-- previous-buffer-four-times\n-- switching-forgets-next-buffers\n",
-      "point": 1781,
+      "text": "-- switching-forgets-next-buffers\n",
+      "visible": "-- switching-forgets-next-buffers\n",
+      "point": 34,
       "mark": null,
       "mark_active": false,
       "kill_ring": [],
@@ -280,7 +280,7 @@
       "windows": [
         {
           "buffer": "*Messages*",
-          "point": 1781,
+          "point": 34,
           "width": 80,
           "height": 24,
           "selected": true
