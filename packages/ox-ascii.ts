@@ -6,6 +6,7 @@ import { ALL_ELEMENTS, type Datum, type Node, ancestor, contents, lineage, map, 
 import { interpretData, normalizeString } from "org-element";
 import { EXPORT_PARAMS } from "org-loaddefs";
 import { fillRegionAsParagraph } from "fill";
+import { publishOrgTo } from "ox-publish";
 import {
   type Info,
   activateSmartQuotes,
@@ -29,6 +30,7 @@ import {
   getPreviousElement,
   getRelativeLevel,
   getTags,
+  timestampTranslate,
   itemNumber,
   lowLevelP,
   mapOpts,
@@ -530,8 +532,9 @@ function template(c: string, info: Info): string {
 
 // --- Transcoders -------------------------------------------------------------------
 
-function timestampTranslate(ts: Node): string {
-  return interpretData(ts).replace(/[ \t]+$/, "");
+/** A timestamp as text without the blanks after it, which filling would take out. */
+function trimmedTimestamp(ts: Node): string {
+  return timestampTranslate(ts).replace(/[ \t]+$/, "");
 }
 
 function plainText(text: string, info: Info): string {
@@ -791,7 +794,7 @@ defineBackend(
       justifyElement(
         String(varValue("org-clock-string") || "CLOCK:") +
           " " +
-          timestampTranslate(clock.p.value) +
+          trimmedTimestamp(clock.p.value) +
           (clock.p.duration ? " => " + clock.p.duration.split(":").map((p: string, i: number) => (i === 0 ? p.padStart(2) : p.padStart(2, "0"))).join(":") : ""),
         clock,
         info,
@@ -834,9 +837,9 @@ defineBackend(
     planning: (p: Node, _c, info) =>
       justifyElement(
         [
-          p.p.closed ? `${varValue("org-closed-string") || "CLOSED:"} ${timestampTranslate(p.p.closed)}` : undefined,
-          p.p.deadline ? `${varValue("org-deadline-string") || "DEADLINE:"} ${timestampTranslate(p.p.deadline)}` : undefined,
-          p.p.scheduled ? `${varValue("org-scheduled-string") || "SCHEDULED:"} ${timestampTranslate(p.p.scheduled)}` : undefined,
+          p.p.closed ? `${varValue("org-closed-string") || "CLOSED:"} ${trimmedTimestamp(p.p.closed)}` : undefined,
+          p.p.deadline ? `${varValue("org-deadline-string") || "DEADLINE:"} ${trimmedTimestamp(p.p.deadline)}` : undefined,
+          p.p.scheduled ? `${varValue("org-scheduled-string") || "SCHEDULED:"} ${trimmedTimestamp(p.p.scheduled)}` : undefined,
         ]
           .filter(Boolean)
           .join(" "),
@@ -858,7 +861,7 @@ defineBackend(
     "table-row": tableRow,
     target: () => undefined,
     template: template as any,
-    timestamp: (ts: Node, _c, info) => plainText(timestampTranslate(ts), info),
+    timestamp: (ts: Node, _c, info) => plainText(trimmedTimestamp(ts), info),
     underline: (_b, c) => `_${c}_`,
     verbatim: (v: Node, _c, info) => verbatimFormat(info, v.p.value),
     "verse-block": (v: Node, c, info) => indentLines(justifyElement(c, v, info), info["ascii-quote-margin"]),
@@ -995,5 +998,13 @@ e8.defineCommand({
   doc: "Assume region has Org syntax, and convert it to UTF-8.",
   run: () => convertRegion("utf-8"),
 });
+
+// Publishing to text files, the charset put first so a project's own :ascii-charset, later, wins, as in Org.
+for (const [charset, name] of [
+  ["ascii", "ascii"],
+  ["latin1", "latin1"],
+  ["utf-8", "utf8"],
+])
+  e8.defun(`org-ascii-publish-to-${name}`, (plist: e8.Value[], filename: string, pubDir: string) => publishOrgTo("ascii", filename, ".txt", [":ascii-charset", charset, ...plist], pubDir));
 
 void getPreviousElement;

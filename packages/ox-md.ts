@@ -6,6 +6,7 @@
 import { ALL_ELEMENTS, type Datum, type Node, lineage, map, mapFirst, typeOf } from "org-element-ast";
 import { EXPORT_PARAMS } from "org-loaddefs";
 import { browseUrl } from "browse-url";
+import { publishOrgTo } from "ox-publish";
 import {
   type Info,
   activateSmartQuotes,
@@ -392,5 +393,8 @@ e8.defineCommand({
   doc: "Assume the current region has Org syntax, and convert it to Markdown.",
   run: () => replaceRegionBy("md"),
 });
+
+/** Publish an Org file to Markdown, as org-md-publish-to-md; returns the file written. */
+e8.defun("org-md-publish-to-md", (plist: e8.Value[], filename: string, pubDir: string) => publishOrgTo("md", filename, ".md", plist, pubDir));
 
 void extPlistOf;

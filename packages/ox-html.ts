@@ -10,6 +10,7 @@ import { ALL_ELEMENTS, ALL_OBJECTS, type Datum, type Node, ancestor, contents as
 import { interpretData, normalizeString } from "org-element";
 import { EXPORT_PARAMS } from "org-loaddefs";
 import { browseUrl } from "browse-url";
+import { fileRelativeName as publishFileRelativeName, plistGet, publishOrgTo, resolveExternalLink as publishResolveExternalLink } from "ox-publish";
 import {
   type Backend,
   type Info,
@@ -859,7 +860,7 @@ function link(l: Node, desc: string | undefined, info: Info): string | undefined
     if (home && nonNil(info["html-link-use-abs-url"]) && !e8.fileNameAbsoluteP(rawPath)) rawPath = e8.fileNameAsDirectory(home) + rawPath;
     rawPath = orgAsHtml(rawPath);
     const option = l.p["search-option"];
-    path = option ? rawPath + "#" + publishResolveExternalLink(option, l.p.path) : rawPath;
+    path = option ? rawPath + "#" + publishResolveExternalLink(option, l.p.path, true) : rawPath;
   } else path = urlEncodeUrl(type + ":" + rawPath);
   const parent = parentElement(l);
   const container = l.parent;
@@ -918,19 +919,6 @@ function link(l: Node, desc: string | undefined, info: Info): string | undefined
     return format('<a href="%s"%s>%s</a>', p, attributes, p);
   }
   return format("<i>%s</i>", d);
-}
-
-/** A file name relative to the publishing project's base, as org-publish-file-relative-name; unchanged outside publishing. */
-function publishFileRelativeName(filename: string, info: Info): string {
-  const base = info["base-directory"];
-  if (base && e8.fileNameAbsoluteP(filename) && filename.startsWith(e8.fileNameAsDirectory(e8.expandFileName(base)))) return filename.slice(e8.fileNameAsDirectory(e8.expandFileName(base)).length);
-  return filename;
-}
-
-/** A search option in another file, which only publishing can resolve, as org-publish-resolve-external-link. */
-function publishResolveExternalLink(search: string, file: string): string {
-  e8.message(`Reference ${JSON.stringify(search)} in file ${JSON.stringify(file)} cannot be resolved without publishing`);
-  return "MissingReference";
 }
 
 function paragraph(p: Node, contents: string, info: Info): string {
@@ -1390,4 +1378,13 @@ e8.defineCommand({
   name: "org-html-convert-region-to-html",
   doc: "Assume the current region has Org syntax, and convert it to HTML.",
   run: () => replaceRegionBy("html"),
+});
+
+/** Publish an Org file to HTML, as org-html-publish-to-html; returns the file written. */
+e8.defun("org-html-publish-to-html", (plist: e8.Value[], filename: string, pubDir: string) => {
+  const variable = varValue("org-html-extension");
+  const htmlExt = typeof variable === "string" ? variable : "";
+  // An empty org-html-extension is not nil, so it is the extension, as in Lisp's or.
+  const ext = plistGet(plist, ":html-extension") ?? (typeof variable === "string" ? variable : "html");
+  return publishOrgTo("html", filename, (htmlExt.length > 0 ? "." : "") + ext, plist, pubDir);
 });

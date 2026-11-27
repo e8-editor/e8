@@ -9,6 +9,26 @@
 // the call's prefix argument, nil without one, as Lisp's &optional is nil.
 export const EXPORT_PARAMS: e8.Param[] = ["async", "subtreep", "visible-only", "body-only", "ext-plist"].map((name) => ({ name, kind: "prefix" as const }));
 
+/** A publishing command's parameters: force, from the prefix argument, and async, which E8 ignores. */
+const PUBLISH_PARAMS: e8.Param[] = [
+  { name: "force", kind: "prefix" },
+  { name: "async", kind: "prefix" },
+];
+
+/** org-publish's: the project's name, completed from org-publish-project-alist, then force and async. */
+const PUBLISH_PROJECT_PARAMS: e8.Param[] = [
+  {
+    name: "project",
+    prompt: "Publish project: ",
+    collection: () => ((e8.variable("org-publish-project-alist") as e8.Value[][] | null) ?? []).map((p) => String(p[0])),
+    requireMatch: true,
+  },
+  ...PUBLISH_PARAMS,
+];
+
+/** The stubs running, so one whose library does not replace it fails rather than calling itself. */
+const running = new Set<string>();
+
 const AUTOLOADS: [string, string, string, e8.Param[]][] = [
   ["org-export-dispatch", "ox", "Export dispatcher for Org mode.", [{ name: "arg", kind: "prefix" }]],
   ["org-export-insert-default-template", "ox", "Insert all export keywords with default values at beginning of line.", [{ name: "backend", value: () => "" }, { name: "subtreep", value: () => "" }]],
@@ -22,13 +42,39 @@ const AUTOLOADS: [string, string, string, e8.Param[]][] = [
   ["org-md-export-as-markdown", "ox-md", "Export current buffer to a Markdown buffer.", EXPORT_PARAMS],
   ["org-md-export-to-markdown", "ox-md", "Export current buffer to a Markdown file.", EXPORT_PARAMS],
   ["org-md-convert-region-to-md", "ox-md", "Assume the current region has Org syntax, and convert it to Markdown.", []],
+  ["org-org-export-as-org", "ox-org", "Export current buffer to an Org buffer.", EXPORT_PARAMS],
+  ["org-org-export-to-org", "ox-org", "Export current buffer to an Org file.", EXPORT_PARAMS],
+  ...["org-publish", "org-publish-project"].map((name): [string, string, string, e8.Param[]] => [name, "ox-publish", "Publish PROJECT.", PUBLISH_PROJECT_PARAMS]),
+  ["org-publish-all", "ox-publish", "Publish all projects.", PUBLISH_PARAMS],
+  ["org-publish-current-file", "ox-publish", "Publish the current file.", PUBLISH_PARAMS],
+  ["org-publish-current-project", "ox-publish", "Publish the project associated with the current file.", PUBLISH_PARAMS],
   ["org-icalendar-export-to-ics", "ox-icalendar", "Export current buffer to an iCalendar file.", EXPORT_PARAMS],
   ["org-icalendar-export-agenda-files", "ox-icalendar", "Export all agenda files to iCalendar files.", [{ name: "async", kind: "prefix" }]],
   ["org-icalendar-combine-agenda-files", "ox-icalendar", "Combine all agenda files into a single iCalendar file.", [{ name: "async", kind: "prefix" }]],
 ];
 
-/** The stubs running, so one whose library does not replace it fails rather than calling itself. */
-const running = new Set<string>();
+/** The functions projects name to publish their files, loading the backend that defines each when it is first called. */
+const PUBLISHING_FUNCTIONS: [string, string][] = [
+  ["org-html-publish-to-html", "ox-html"],
+  ["org-ascii-publish-to-ascii", "ox-ascii"],
+  ["org-ascii-publish-to-latin1", "ox-ascii"],
+  ["org-ascii-publish-to-utf8", "ox-ascii"],
+  ["org-md-publish-to-md", "ox-md"],
+  ["org-org-publish-to-org", "ox-org"],
+  ["org-publish-attachment", "ox-publish"],
+];
+
+for (const [name, feature] of PUBLISHING_FUNCTIONS)
+  e8.defun(name, (...args: any[]) => {
+    if (running.has(name)) e8.userError(`Autoloading ${feature} did not define ${name}`);
+    running.add(name);
+    try {
+      e8.require(feature);
+      return e8.funcall(name, ...args);
+    } finally {
+      running.delete(name);
+    }
+  });
 
 for (const [name, feature, doc, params] of AUTOLOADS) {
   e8.defineCommand({
