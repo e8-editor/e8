@@ -4,7 +4,8 @@
 
 import { filenameAt } from "dired";
 import { fileRelativeName } from "files";
-import { ANGLE_LINK, at, COOKIE, entryEnd, type Heading, headingIndex, headings, LINK, linkTypeEntries, PLAIN_LINK, plistGet } from "org";
+import { browseUrl } from "browse-url";
+import { ANGLE_LINK, at, COOKIE, entryEnd, type Heading, headingIndex, headings, LINK, linkSetParameters, linkTypeEntries, PLAIN_LINK, plistGet } from "org";
 import { AFFILIATED, elementAt } from "org-element";
 import { flag, folded } from "org-fold";
 import { entryGet } from "org-list";
@@ -705,3 +706,65 @@ e8.defineCommand({
   params: [{ name: "arg", kind: "count" }],
   run: (arg: number) => insertAllLinks(arg, "", "\n"),
 });
+
+// Org's own link types, as ol.el sets them: help, the web's and shell.
+
+e8.defineVariable({
+  name: "org-link-shell-confirm-function",
+  doc: "The function asked whether to run a shell link's command, yes-or-no-p by default; nil runs it without asking.",
+  value: "yes-or-no-p",
+});
+e8.defineVariable({ name: "org-link-shell-skip-confirm-regexp", doc: "A regexp a shell link's command may match to run without asking.", value: "" });
+
+/** Shows the help of the function or variable a help link names, as org-link--open-help. */
+function openHelpLink(path: string): void {
+  if (e8.commandExists(path) || e8.fboundp(path)) e8.call("describe-function", path);
+  else if (e8.boundp(path)) e8.call("describe-variable", path);
+  else e8.userError(`Unknown function or variable: ${path}`);
+}
+
+/** Stores a link to what *Help* shows, as org-link--store-help: the command a key runs, else the name the help starts with. */
+function storeHelpLink(): boolean {
+  if (e8.variable("major-mode") !== "help-mode") return false;
+  const first = e8.lineText(lineAt(e8.pointMin()));
+  // The name read as Lisp reads it, without the full stop E8's key help ends its sentence with.
+  const symbol = (/runs the command (\S+)/.exec(first)?.[1] ?? /^\s*([^\s()'"`,;]+)/.exec(first)?.[1])?.replace(/[.,]$/, "");
+  if (symbol === undefined) return false;
+  linkStoreProps([e8.intern(":type"), "help", e8.intern(":link"), `help:${symbol}`, e8.intern(":description"), null]);
+  return true;
+}
+
+
+/** Runs a shell link's command after asking, its output in *Org Shell Output*, as org-link--open-shell. */
+function openShellLink(path: string): void {
+  const skip = String(e8.variable("org-link-shell-skip-confirm-regexp") ?? "");
+  const confirm = e8.variable("org-link-shell-confirm-function");
+  // yes-or-no-p and y-or-n-p asked as E8 asks them, any other function called.
+  const ask = (prompt: string): boolean => {
+    const name = typeof confirm === "symbol" ? e8.symbolName(confirm) : confirm;
+    if (name === "yes-or-no-p") return e8.yesOrNoP(prompt);
+    if (name === "y-or-n-p") return e8.yOrNP(prompt);
+    return truthy((e8.funcall(confirm as string, prompt) as e8.Value) ?? null);
+  };
+  const ok = (skip !== "" && e8.emacsRegexp(skip).test(path)) || !truthy(confirm ?? null) || ask(`Execute ${path} in shell? `);
+  if (!ok) e8.userError("Abort");
+  const buffer = e8.generateNewBufferName("*Org Shell Output*");
+  e8.message(`Executing ${path}`);
+  // There for a command run in the background too, as shell-command takes the buffer it is given.
+  e8.letBind({ "shell-command-buffer-name": buffer, "shell-command-buffer-name-async": buffer }, () => e8.call("shell-command", path));
+}
+
+/**
+ * Sets Org's own link types up, as ol.el's org-link-set-parameters calls:
+ * called by org.ts once its table of link types is there, as the two
+ * packages import each other.
+ */
+export function setOwnLinkTypes(): void {
+  linkSetParameters("help", { follow: openHelpLink, store: { name: "org-link--store-help", run: () => storeHelpLink() } });
+  // The web's links open in a browser, as browse-url does.
+  for (const scheme of ["ftp", "http", "https", "mailto", "news"]) {
+    // With the prefix argument, nil without one, as ol.el passes ARG on.
+    linkSetParameters(scheme, { follow: (path) => browseUrl(`${scheme}:${path}`, e8.prefixArg() ?? null) });
+  }
+  linkSetParameters("shell", { follow: openShellLink });
+}

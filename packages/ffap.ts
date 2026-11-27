@@ -3,6 +3,8 @@
 // there, as the starting input of a find-file prompt. Emacs also guesses
 // from URLs, mail addresses and library names; E8 only from file names.
 
+import { browseUrl } from "browse-url";
+
 /** The characters a file name at point may have, as ffap-string-at-point-mode-alist's file entry, for skip-chars. */
 const FILE_CHARS = "-~/A-Za-z0-9_.${}#%,:+@*?<>[]";
 
@@ -47,7 +49,11 @@ const findFileAtPoint = e8.defineCommand({
     },
   }],
   run: (file: string) => {
-    if (/^[a-z]+:\/\//.test(file)) throw new Error("E8 cannot open URLs yet");
+    // A URL opens in a browser, as ffap-url-fetcher's browse-url.
+    if (/^[a-z]+:\/\//.test(file)) {
+      browseUrl(file);
+      return;
+    }
     e8.call("find-file", file);
   },
 });

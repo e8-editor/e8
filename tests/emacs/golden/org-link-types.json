@@ -1,0 +1,196 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "links-plain-help",
+      "input": {
+        "text": "see help:no-such-thing-zz here\n",
+        "point": 4,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "see help:no-such-thing-zz here\n",
+      "visible": "see help:no-such-thing-zz here\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Unknown function or variable: no-such-thing-zz",
+      "message": null
+    },
+    {
+      "name": "links-angle-help",
+      "input": {
+        "text": "see <help:no-such-thing-zz> here\n",
+        "point": 5,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "see <help:no-such-thing-zz> here\n",
+      "visible": "see <help:no-such-thing-zz> here\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Unknown function or variable: no-such-thing-zz",
+      "message": null
+    },
+    {
+      "name": "links-plain-shell-no",
+      "input": {
+        "text": "see shell:echo hi\n",
+        "point": 4,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "no"
+        ],
+        "message": true
+      },
+      "text": "see shell:echo hi\n",
+      "visible": "see shell:echo hi\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Abort",
+      "message": null
+    },
+    {
+      "name": "links-angle-shell-no",
+      "input": {
+        "text": "see <shell:echo hi>\n",
+        "point": 5,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "no"
+        ],
+        "message": true
+      },
+      "text": "see <shell:echo hi>\n",
+      "visible": "see <shell:echo hi>\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Abort",
+      "message": null
+    },
+    {
+      "name": "links-upper-case-type",
+      "input": {
+        "text": "[[HELP:no-such-thing-zz]]\n",
+        "point": 3,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[[HELP:no-such-thing-zz]]\n",
+      "visible": "HELP:no-such-thing-zz\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "links-heading-plain",
+      "input": {
+        "text": "* See\nsee help:no-such-thing-zz\n",
+        "point": 0,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* See\nsee help:no-such-thing-zz\n",
+      "visible": "* See\nsee help:no-such-thing-zz\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Unknown function or variable: no-such-thing-zz",
+      "message": null
+    },
+    {
+      "name": "links-bracket-help",
+      "input": {
+        "text": "[[help:no-such-thing-zz]]\n",
+        "point": 3,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[[help:no-such-thing-zz]]\n",
+      "visible": "help:no-such-thing-zz\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Unknown function or variable: no-such-thing-zz",
+      "message": null
+    },
+    {
+      "name": "links-plain-id-fontified",
+      "input": {
+        "text": "see id:abc-123 and doi:10.1/x\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "see id:abc-123 and doi:10.1/x\n",
+      "visible": "see id:abc-123 and doi:10.1/x\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    }
+  ]
+}
