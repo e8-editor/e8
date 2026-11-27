@@ -1874,7 +1874,7 @@ function freeNoteMarkers(n: { heading: e8.Marker; at?: e8.Marker; returnTo?: e8.
  * `extra` goes in *Org Note* after its header, and a note `at` a place,
  * as a clock's, is stored there rather than where the log begins.
  */
-export function addLogNote(headingLine: number, purpose: string, state?: string, previous?: string, opts: { how?: string; extra?: string; at?: number } = {}): void {
+export function addLogNote(headingLine: number, purpose: string, state?: string, previous?: string, opts: { how?: string; extra?: string; at?: number; from?: number } = {}): void {
   setups++;
   if (noteSetup !== undefined) freeNoteMarkers(noteSetup);
   noteSetup = {
@@ -1887,8 +1887,8 @@ export function addLogNote(headingLine: number, purpose: string, state?: string,
     at: opts.at === undefined ? undefined : e8.makeMarker(opts.at),
     // Where point was, which the entry's window shows while the note is taken, as org-log-note-marker.
     point: e8.makeMarker(e8.point()),
-    // As org-add-log-setup takes org-current-effective-time.
-    time: `[${formatTimestamp(currentEffectiveTime(), true)}]`,
+    // As org-add-log-setup takes org-current-effective-time, where it is called from.
+    time: `[${formatTimestamp(currentEffectiveTime(opts.from ?? e8.point()), true)}]`,
     command: e8.thisCommand(),
     depth: e8.recursionDepth(),
   };
@@ -4543,7 +4543,7 @@ function insertTodoHeading(arg: e8.PrefixArg, force: boolean): void {
   // As org-insert-todo-heading logs the new state, when it is treated as a change.
   if (e8.variable("org-treat-insert-todo-heading-as-state-change") === true) {
     const how = logHow(state, undefined);
-    if (how === "note") addLogNote(line, "state", state, undefined);
+    if (how === "note") addLogNote(line, "state", state, undefined, { from: e8.lineStart(line) });
     else if (how !== undefined) storeStateNote(line, state, undefined);
   }
 }
@@ -5897,7 +5897,8 @@ function todoLogged(direction: number, state?: string, across = false, options: 
   e8.saveExcursion(() => e8.runHooks("org-trigger-hook", change));
   // Org stores the note from post-command-hook, after the command, asking
   // for one in *Org Note* when the state's @ says so.
-  if (setup?.how === "note") addLogNote(h.line, setup.purpose, setup.state, setup.previous);
+  // From the heading, as org-todo sets the note up there.
+  if (setup?.how === "note") addLogNote(h.line, setup.purpose, setup.state, setup.previous, { from: e8.lineStart(h.line) });
   else if (setup !== undefined) storeLogNote(h.line, setup.purpose, setup.state, setup.previous, []);
 }
 
@@ -5995,7 +5996,9 @@ function autoRepeat(line: number, last: string | undefined, done: string): [stri
   updateParentTodoStatistics(line);
   setPlanning(line, "CLOSED", undefined);
   const log = e8.variable("org-log-repeat");
-  if (log) entryPut(line, "LAST_REPEAT", `[${formatTimestamp(currentEffectiveTime(e8.lineStart(line)), true)}]`);
+  // Also when the entry has a clock line, as org-auto-repeat-maybe sets it then.
+  const clocked = /^[ \t]*CLOCK:/m.test(e8.bufferText(e8.lineStart(line), end));
+  if (log || clocked) entryPut(line, "LAST_REPEAT", `[${formatTimestamp(currentEffectiveTime(e8.lineStart(line)), true)}]`);
   // A SCHEDULED without a repeater is no longer relevant, and goes, as
   // org-auto-repeat-maybe removes it.
   const planning = line + 1 < e8.lineCount() ? e8.lineText(line + 1) : "";
@@ -8177,12 +8180,21 @@ function dayCount(d: DateTime): number {
 }
 
 /** Plans the heading point is under, its edits not unfolding what they touch, as org--deadline-or-schedule ignores them. */
-function plan(keyword: string, input: string | (() => string)): void {
-  withoutFoldChecks(() => planHere(keyword, typeof input === "string" ? () => input : input, typeof input === "string"));
+function plan(keyword: string, input: string | (() => string), fromCode = false): void {
+  withoutFoldChecks(() => planHere(keyword, typeof input === "string" ? () => input : input, fromCode));
+}
+
+/** The KEYWORD date anywhere in the entry at point, as org-add-planning-info looks for its default time up to the next heading. */
+function entryPlanDate(keyword: string): string | undefined {
+  const all = headings();
+  const i = headingIndex(all, lineAt());
+  if (i === undefined) return undefined;
+  const end = i + 1 < all.length ? all[i + 1].start : e8.pointMax();
+  return new RegExp(`${keyword}: *(<[^>\n]+>)`).exec(e8.bufferText(all[i].start, end))?.[1];
 }
 
 /** Plans the heading point is under, reading the date from `input` only once it is needed, as org--deadline-or-schedule reads it. */
-function planHere(keyword: string, input: () => string, given = false): void {
+function planHere(keyword: string, input: () => string, fromCode = false): void {
   const [all, i] = backToHeading();
   const deadline = keyword === "DEADLINE";
   const log = e8.variable(deadline ? "org-log-redeadline" : "org-log-reschedule");
@@ -8216,16 +8228,12 @@ function planHere(keyword: string, input: () => string, given = false): void {
     e8.message(deadline ? "Entry no longer has a deadline." : "Entry is no longer scheduled.");
     return;
   }
-  // The parts not given come from the old date, as its default time. A relative date code gives, as the agenda's
-  // bulk action gives ++3d, counts from the keyword's date anywhere in the entry, as org-add-planning-info finds it.
+  // The parts not given come from the keyword's date anywhere in the entry, as org-add-planning-info takes its
+  // default time: for a date read, with org-overriding-default-time before it; for one code gives, as the agenda's
+  // bulk action gives ++3d, only when it is relative, and without the overriding time, as org-read-date-analyze reads it.
   const answer = input();
-  let base = old;
-  if (given && /^[-+]+[0-9]/.test(answer)) {
-    const end = i + 1 < all.length ? all[i + 1].start : e8.pointMax();
-    const found = new RegExp(`${keyword}: *(<[^>\n]+>)`).exec(e8.bufferText(all[i].start, end));
-    base = found?.[1];
-  }
-  const date = parseDate(answer, false, base === undefined ? undefined : timestampTime(base), true, !given);
+  const base = fromCode && !/^[-+]+[0-9]/.test(answer) ? undefined : e8.saveExcursion(() => (e8.gotoChar(all[i].start), entryPlanDate(keyword)));
+  const date = parseDate(answer, false, base === undefined ? undefined : timestampTime(base), true, !fromCode);
   // The old date's repeater and warning stay, as org--deadline-or-schedule keeps them.
   const inserted = stampFor(date, true);
   const ts = withRepeater(inserted, old);
@@ -8247,10 +8255,10 @@ function planEach(keyword: string, input: string): void {
   const asks = e8.calledInteractively();
   let date: string | undefined = input;
   const once = () => {
-    plan(keyword, date ?? (() => readPlanDate(keyword)));
+    plan(keyword, date ?? (() => readPlanDate(keyword)), !asks);
     if (asks) date = undefined;
   };
-  if (!forEachHeadingInRegion(once)) plan(keyword, input);
+  if (!forEachHeadingInRegion(once)) plan(keyword, input, !asks);
 }
 
 /**
@@ -8268,7 +8276,9 @@ function readPlanDate(keyword: string, check = true): string {
       e8.userError(keyword === "DEADLINE" ? "No deadline information to update" : "No scheduled information to update");
   }
   const prompt = doublePrefix() ? (keyword === "DEADLINE" ? "Warn starting from: " : "Delay until: ") : "Date: ";
-  return readDateAnswer(prompt);
+  // Starting with the entry's date's time, as org-add-planning-info gives org-get-compact-tod.
+  const old = doublePrefix() ? undefined : entryPlanDate(keyword);
+  return readDateAnswer(prompt, old === undefined ? undefined : compactTod(old));
 }
 
 /**

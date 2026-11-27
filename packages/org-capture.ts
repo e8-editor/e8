@@ -300,7 +300,8 @@ function fillTemplate(template: string, context: Context = { annotation: "", ini
   let now = context.time ?? orgCurrentTime();
   // Before org-extend-today-until, the day before at 23:59, as org-capture-fill-template has it.
   const extend = Number(e8.variable("org-extend-today-until") ?? 0);
-  if ((now.hour ?? 0) < extend) {
+  const shifted = (now.hour ?? 0) < extend;
+  if (shifted) {
     const t = new Date(Date.UTC(now.year, now.month - 1, now.day - 1));
     now = { year: t.getUTCFullYear(), month: t.getUTCMonth() + 1, day: t.getUTCDate(), hour: 23, minute: 59 };
   }
@@ -308,7 +309,7 @@ function fillTemplate(template: string, context: Context = { annotation: "", ini
   // The time now, or noon on a fixed day, as tests fix org-current-effective-time.
   const fixed = typeof e8.variable("e8--today") === "string" && e8.variable("e8--today") !== "";
   const rounded = roundingMinutes()[0] >= 1;
-  const time = fixed || rounded || context.time !== undefined ? e8.encodeTime([0, now.minute ?? 0, now.hour ?? 0, now.day, now.month, now.year]) : e8.currentTime();
+  const time = fixed || rounded || shifted || context.time !== undefined ? e8.encodeTime([0, now.minute ?? 0, now.hour ?? 0, now.day, now.month, now.year]) : e8.currentTime();
   const a = context.annotation === "[[]]" ? "" : context.annotation;
   let kill = "";
   try {

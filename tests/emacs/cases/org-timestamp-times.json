@@ -541,5 +541,92 @@
    "org-agenda-start-day": 739926,
    "org-agenda-span": 1
   }
+ },
+ {
+  "name": "review-sched-overriding-vars",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "text": "* TODO Write\nSCHEDULED: <2026-11-05 Thu>\n",
+  "keys": "C-c C-s",
+  "answers": [
+   "++1"
+  ],
+  "today": "2026-11-04 09:07",
+  "vars": {
+   "org-overriding-default-time": 1794312000
+  }
+ },
+ {
+  "name": "review-sched-overriding-none",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "text": "* TODO Write\n",
+  "keys": "C-c C-s",
+  "answers": [
+   "++1"
+  ],
+  "today": "2026-11-04 09:07",
+  "vars": {
+   "org-overriding-default-time": 1794312000
+  }
+ },
+ {
+  "name": "review-state-note-body",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "text": "#+TODO: TODO(t) | DONE(d@)\n* TODO Write\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 16:00]--[2026-11-03 Tue 17:30] =>  1:30\n:END:\nBody\n",
+  "keys": "M-> C-p C-c C-t h i C-c C-c",
+  "answers": [
+   "d"
+  ],
+  "today": "2026-11-04 09:07",
+  "globals": {
+   "org-use-last-clock-out-time-as-effective-time": true
+  }
+ },
+ {
+  "name": "review-repeat-clock",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "text": "* TODO Water\nSCHEDULED: <2026-11-04 Wed +1w>\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 16:00]--[2026-11-03 Tue 17:30] =>  1:30\n:END:\n",
+  "keys": "C-c C-t",
+  "today": "2026-11-04 09:07",
+  "globals": {
+   "org-log-repeat": false
+  }
+ },
+ {
+  "name": "review-sched-time-body",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "text": "* TODO Write\nSome text.\nSCHEDULED: <2026-11-05 Thu>\n",
+  "keys": "C-c C-s",
+  "answers": [
+   "10:00"
+  ],
+  "today": "2026-11-04 09:07"
+ },
+ {
+  "name": "review-deadline-time-planning",
+  "modes": [
+   "org-mode"
+  ],
+  "point": 0,
+  "text": "* TODO Write\nDEADLINE: <2026-11-05 Thu>\n",
+  "keys": "C-c C-d",
+  "answers": [
+   "++1"
+  ],
+  "today": "2026-11-04 09:07"
  }
 ]

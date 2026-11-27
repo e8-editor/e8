@@ -887,6 +887,165 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "review-sched-overriding-vars",
+      "input": {
+        "text": "* TODO Write\nSCHEDULED: <2026-11-05 Thu>\n",
+        "point": 0,
+        "keys": "C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 09:07",
+        "answers": [
+          "++1"
+        ],
+        "vars": {
+          "org-overriding-default-time": 1794312000
+        }
+      },
+      "text": "* TODO Write\nSCHEDULED: <2026-11-11 Wed>\n",
+      "visible": "* TODO Write\nSCHEDULED: <2026-11-11 Wed>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "review-sched-overriding-none",
+      "input": {
+        "text": "* TODO Write\n",
+        "point": 0,
+        "keys": "C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 09:07",
+        "answers": [
+          "++1"
+        ],
+        "vars": {
+          "org-overriding-default-time": 1794312000
+        }
+      },
+      "text": "* TODO Write\nSCHEDULED: <2026-11-11 Wed>\n",
+      "visible": "* TODO Write\nSCHEDULED: <2026-11-11 Wed>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "review-state-note-body",
+      "input": {
+        "text": "#+TODO: TODO(t) | DONE(d@)\n* TODO Write\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 16:00]--[2026-11-03 Tue 17:30] =>  1:30\n:END:\nBody\n",
+        "point": 0,
+        "keys": "M-> C-p C-c C-t h i C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 09:07",
+        "answers": [
+          "d"
+        ],
+        "globals": {
+          "org-use-last-clock-out-time-as-effective-time": true
+        }
+      },
+      "text": "#+TODO: TODO(t) | DONE(d@)\n* DONE Write\n- State \"DONE\"       from \"TODO\"       [2026-11-03 Tue 17:30] \\\\\n  hi\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 16:00]--[2026-11-03 Tue 17:30] =>  1:30\n:END:\nBody\n",
+      "visible": "#+TODO: TODO(t) | DONE(d@)\n* DONE Write\n- State \"DONE\"       from \"TODO\"       [2026-11-03 Tue 17:30] \\\\\n  hi\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 16:00]--[2026-11-03 Tue 17:30] =>  1:30\n:END:\nBody\n",
+      "point": 189,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "review-repeat-clock",
+      "input": {
+        "text": "* TODO Water\nSCHEDULED: <2026-11-04 Wed +1w>\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 16:00]--[2026-11-03 Tue 17:30] =>  1:30\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 09:07",
+        "globals": {
+          "org-log-repeat": false
+        }
+      },
+      "text": "* TODO Water\nSCHEDULED: <2026-11-11 Wed +1w>\n:PROPERTIES:\n:LAST_REPEAT: [2026-11-04 Wed 09:07]\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 16:00]--[2026-11-03 Tue 17:30] =>  1:30\n:END:\n",
+      "visible": "* TODO Water\nSCHEDULED: <2026-11-11 Wed +1w>\n:PROPERTIES:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 16:00]--[2026-11-03 Tue 17:30] =>  1:30\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "review-sched-time-body",
+      "input": {
+        "text": "* TODO Write\nSome text.\nSCHEDULED: <2026-11-05 Thu>\n",
+        "point": 0,
+        "keys": "C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 09:07",
+        "answers": [
+          "10:00"
+        ]
+      },
+      "text": "* TODO Write\nSCHEDULED: <2026-11-05 Thu 10:00>\nSome text.\nSCHEDULED: <2026-11-05 Thu>\n",
+      "visible": "* TODO Write\nSCHEDULED: <2026-11-05 Thu 10:00>\nSome text.\nSCHEDULED: <2026-11-05 Thu>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "review-deadline-time-planning",
+      "input": {
+        "text": "* TODO Write\nDEADLINE: <2026-11-05 Thu>\n",
+        "point": 0,
+        "keys": "C-c C-d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04 09:07",
+        "answers": [
+          "++1"
+        ]
+      },
+      "text": "* TODO Write\nDEADLINE: <2026-11-06 Fri>\n",
+      "visible": "* TODO Write\nDEADLINE: <2026-11-06 Fri>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }

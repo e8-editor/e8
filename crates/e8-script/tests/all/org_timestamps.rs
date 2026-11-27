@@ -36,3 +36,15 @@ fn the_prompt_starts_with_the_timestamps_time() {
     ed.press("C-f C-f C-f C-c . RET").unwrap();
     assert_eq!(text(&ed), "x <2026-11-04 Wed>\n");
 }
+
+/// C-c C-s and C-c C-d start the prompt with the entry's date's time, as
+/// org-add-planning-info gives org-get-compact-tod, so RET keeps it.
+#[test]
+fn scheduling_starts_with_the_old_dates_time() {
+    let (mut ed, _s) = org("* TODO Write\nSCHEDULED: <2026-11-05 Thu 10:00>\n");
+    ed.press("C-c C-s RET").unwrap();
+    assert_eq!(text(&ed), "* TODO Write\nSCHEDULED: <2026-11-05 Thu 10:00>\n");
+    let (mut ed, _s) = org("* TODO Write\nDEADLINE: <2026-11-05 Thu 09:00-10:30>\n");
+    ed.press("C-c C-d RET").unwrap();
+    assert_eq!(text(&ed), "* TODO Write\nDEADLINE: <2026-11-05 Thu 09:00-10:30>\n");
+}
