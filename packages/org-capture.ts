@@ -4,7 +4,7 @@
 // E8 narrows the target buffer itself.
 
 import { bookmarkSet, jumpTo } from "bookmark";
-import { alignTags, allowedValues, type DateTime, overridingDefaultTime, parseAllowedValues, formatTimestamp, globalTagsCompletionTable, type Heading, headingIndex, headings, isHeadingLine, killIsSubtree, parseDate, parseHeading, plistGet, readDateAnswer, shiftHeadings, stampFor, subtreeRegion, today, updateCheckboxCount, updateParentTodoStatistics, validLevel } from "org";
+import { alignTags, type DateTime, overridingDefaultTime, parseAllowedValues, propertyAllowedValues, formatTimestamp, globalTagsCompletionTable, type Heading, headingIndex, headings, isHeadingLine, killIsSubtree, parseDate, parseHeading, plistGet, readDateAnswer, shiftHeadings, stampFor, subtreeRegion, today, updateCheckboxCount, updateParentTodoStatistics, validLevel } from "org";
 import { clockIn, clockOut, refreshClockHeading, runningClockLine, runningEntry } from "org-clock";
 import { dateTreeRoot, findDateCreate } from "org-datetree";
 import { ancestors, flag, showHeadingLine } from "org-fold";
@@ -183,6 +183,15 @@ function inCaptureBuffer(text: string, body: () => void): string {
   }
 }
 
+/** A property's allowed values outside any entry, its special cases first, as org-property-get-allowed-values finds them in the template's buffer. */
+function globalOrSpecialAllowedValues(property: string): { values: string[]; restricted: boolean } | undefined {
+  if (["TODO", "PRIORITY", "CATEGORY"].includes(property) || e8.runHookWithArgsUntilSuccess("org-property-allowed-value-functions", property)) {
+    return propertyAllowedValues(property);
+  }
+  const found = globalAllowedValues(property);
+  return found.values.length > 0 ? found : undefined;
+}
+
 /** A property's allowed values from org-global-properties alone, as org-property-get-allowed-values finds them outside an entry with no keywords. */
 function globalAllowedValues(property: string): { values: string[]; restricted: boolean } {
   const key = `${property}_ALL`.toLowerCase();
@@ -208,11 +217,14 @@ function linkText(value: string): string {
  * entry goes, has them.
  */
 function readPropertyValue(property: string, dflt: string | undefined, target: Target | undefined, before: string): string {
-  let allowed: { values: string[]; restricted: boolean } | undefined;
-  // org-global-properties' first, as the template's buffer finds them, its #+PROPERTY: lines left out.
-  const global = globalAllowedValues(property);
-  if (global.values.length > 0) allowed = global;
-  else if (target) {
+  // As org-property-get-allowed-values gives them: TODO's keywords, PRIORITY's letters, none for CATEGORY or a special
+  // property, org-property-allowed-value-functions'; else org-global-properties' first, as the template's buffer has
+  // them without the target's #+PROPERTY: lines.
+  let allowed = e8.saveExcursion(() => {
+    e8.gotoChar(e8.pointMin());
+    return globalOrSpecialAllowedValues(property);
+  });
+  if (allowed === undefined && target) {
     // The template's level: its first heading's, before where the escape is.
     const level = (/^(\*+) /m.exec(before) ?? /^(\*+) /m.exec(before + "\n"))?.[1].length ?? 1;
     allowed = e8.withCurrentBuffer(target.buffer, () =>
@@ -220,14 +232,22 @@ function readPropertyValue(property: string, dflt: string | undefined, target: T
         e8.widen();
         const all = headings();
         let i = headingIndex(all, lineAt(target.pos));
-        if (!target.entryP) while (i !== undefined && all[i].level >= level) {
-          let k = i - 1;
-          while (k >= 0 && all[k].level >= all[i].level) k--;
-          i = k >= 0 ? k : undefined;
+        // The entry the capture goes under, or the heading above where it goes, else the buffer's start.
+        if (!target.entryP) {
+          // Up a level, as org-up-heading-safe goes from the entry point is in.
+          const up = (k: number): number | undefined => {
+            let j = k - 1;
+            while (j >= 0 && all[j].level >= all[k].level) j--;
+            return j >= 0 ? j : undefined;
+          };
+          // Off a heading, from its entry's parent.
+          if (i !== undefined && all[i].start !== e8.lineStart(lineAt(target.pos))) i = up(i);
+          while (i !== undefined && all[i].level >= level) i = up(i);
         }
-        // Before any heading, the file's own, its #+PROPERTY: lines and org-global-properties.
-        const found = allowedValues(i === undefined ? undefined : all[i], property);
-        return found.values.length > 0 ? found : undefined;
+        return e8.saveExcursion(() => {
+          e8.gotoChar(i === undefined ? e8.pointMin() : all[i].start);
+          return propertyAllowedValues(property);
+        });
       }),
     );
   }

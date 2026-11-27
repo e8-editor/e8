@@ -7683,6 +7683,7 @@ function currentTime(): DateTime {
  * org-extend-today-until's hour, a minute before midnight yesterday, as
  * org-read-date has it.
  */
+/* The time that stands for now, as org.el's org-overriding-default-time. */
 e8.defineVariable({
   name: "org-overriding-default-time",
   doc: "A time that stands for now as the date prompt's default and a capture's time, as the agenda's capture sets it to the date at point; nil for now.",
@@ -12797,7 +12798,8 @@ function dateMatchCounts(type: string | null): boolean {
 
 /** A date read as org-read-date reads one, as YYYY-MM-DD with any time after it. */
 export function readDate(prompt?: string): string {
-  const t = today();
+  // org-overriding-default-time's day, if set, as the prompt shows org-def.
+  const t = overridingDefaultTime() ?? today();
   const def = `${t.year}-${String(t.month).padStart(2, "0")}-${String(t.day).padStart(2, "0")}`;
   const input = readDateAnswer(`${prompt ?? "Date+time"} [${def}]: `);
   const d = parseDate(input);

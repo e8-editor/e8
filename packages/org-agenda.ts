@@ -5331,7 +5331,9 @@ function cursorDate(withTime: boolean): number {
   let minute: number | undefined;
   const l = e8.lineOf(e8.point());
   if (withTime) {
-    const field = agendaLines[l]?.time?.field;
+    // The line's time property, as Org gives every item one, empty without a time, and the grid's lines theirs.
+    const item = agendaLines[l];
+    const field = item ? (item.time?.field ?? "") : /^[ \t]+([0-2]?[0-9]:[0-5][0-9])/.exec(e8.lineText(l))?.[1];
     const m = field === undefined ? null : /([0-2]?[0-9]):([0-5][0-9])/.exec(field);
     if (m) [hour, minute] = [Number(m[1]), Number(m[2])];
     else if (field === undefined) {
@@ -5353,7 +5355,11 @@ e8.defineCommand({
   params: [{ name: "withTime", kind: "prefix" }],
   run: (withTime: e8.PrefixArg) => {
     if (!e8.derivedModeP("org-agenda-mode")) e8.userError("You cannot do this outside of agenda buffers");
-    e8.letBind({ "org-overriding-default-time": cursorDate(withTime === 1) }, () => e8.callInteractively("org-capture"));
+    e8.letBind({ "org-overriding-default-time": cursorDate(withTime === 1) }, () => {
+      // With the prefix argument, as call-interactively passes current-prefix-arg on.
+      if (withTime !== null && withTime !== undefined) e8.setPrefixArg(withTime);
+      e8.callInteractively("org-capture");
+    });
   },
 });
 
@@ -5502,7 +5508,11 @@ function bulkAction(arg: e8.PrefixArg | null): void {
     case "s":
     case "d": {
       const schedule = action === "s";
-      const date = arg === null ? readBulkDate(schedule ? "(Re)Schedule to" : "(Re)Set Deadline to", def) : undefined;
+      // A date header's day, else none, as org-agenda-bulk-action binds org-overriding-default-time.
+      const date =
+        arg === null
+          ? e8.letBind({ "org-overriding-default-time": def === undefined ? null : cursorDate(false) }, () => readBulkDate(schedule ? "(Re)Schedule to" : "(Re)Set Deadline to", def))
+          : undefined;
       // A time logged rather than a note, as Org cannot take a note for each entry at once.
       const log = schedule ? "org-log-reschedule" : "org-log-redeadline";
       cmd = () =>
