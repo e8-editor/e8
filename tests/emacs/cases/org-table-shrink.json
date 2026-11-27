@@ -1,0 +1,630 @@
+[
+ {
+  "name": "shrink-column-cookie",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-c TAB",
+  "point": 102
+ },
+ {
+  "name": "shrink-column-toggle-back",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-c TAB C-c TAB",
+  "point": 102
+ },
+ {
+  "name": "shrink-column-no-cookie",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-c TAB",
+  "point": 94
+ },
+ {
+  "name": "shrink-column-last",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-c TAB",
+  "point": 119
+ },
+ {
+  "name": "shrink-all-cookies",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-u C-c TAB",
+  "point": 102
+ },
+ {
+  "name": "shrink-expand-all",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-u C-c TAB C-u C-u C-c TAB",
+  "point": 102
+ },
+ {
+  "name": "shrink-ranges",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-c TAB",
+  "point": 92,
+  "answers": [
+   "2-3"
+  ]
+ },
+ {
+  "name": "shrink-ranges-open",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-c TAB",
+  "point": 92,
+  "answers": [
+   "-"
+  ]
+ },
+ {
+  "name": "shrink-ranges-from",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-c TAB",
+  "point": 92,
+  "answers": [
+   "2-"
+  ]
+ },
+ {
+  "name": "shrink-ranges-bad",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-c TAB",
+  "point": 92,
+  "answers": [
+   "x 9 0"
+  ]
+ },
+ {
+  "name": "shrink-after-last",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-e C-c TAB",
+  "point": 92,
+  "answers": [
+   "1"
+  ]
+ },
+ {
+  "name": "shrink-on-hline",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-c TAB",
+  "point": 57
+ },
+ {
+  "name": "shrink-command-shrink",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "M-x",
+  "point": 102,
+  "answers": [
+   "org-table-shrink"
+  ]
+ },
+ {
+  "name": "shrink-command-expand",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-u C-c TAB M-x",
+  "point": 102,
+  "answers": [
+   "org-table-expand"
+  ]
+ },
+ {
+  "name": "shrink-toggle-other",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-u C-c TAB C-c TAB",
+  "point": 94
+ },
+ {
+  "name": "shrink-align-cookies",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| <r6> | <c7>  | <l3> | <2> |\n|------+-------+------+-----|\n| ab   | xy    | z    | 123 |\n| abc  | three | ab   | 1   |\n",
+  "keys": "C-u C-c TAB",
+  "point": 62
+ },
+ {
+  "name": "shrink-align-cookies-1",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| <r6> | <c7>  | <l3> | <2> |\n|------+-------+------+-----|\n| ab   | xy    | z    | 123 |\n| abc  | three | ab   | 1   |\n",
+  "keys": "C-c TAB",
+  "point": 62
+ },
+ {
+  "name": "shrink-align-cookies-2",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| <r6> | <c7>  | <l3> | <2> |\n|------+-------+------+-----|\n| ab   | xy    | z    | 123 |\n| abc  | three | ab   | 1   |\n",
+  "keys": "C-c TAB",
+  "point": 69
+ },
+ {
+  "name": "shrink-align-cookies-3",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| <r6> | <c7>  | <l3> | <2> |\n|------+-------+------+-----|\n| ab   | xy    | z    | 123 |\n| abc  | three | ab   | 1   |\n",
+  "keys": "C-c TAB",
+  "point": 77
+ },
+ {
+  "name": "shrink-align-cookies-4",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| <r6> | <c7>  | <l3> | <2> |\n|------+-------+------+-----|\n| ab   | xy    | z    | 123 |\n| abc  | three | ab   | 1   |\n",
+  "keys": "C-c TAB",
+  "point": 84
+ },
+ {
+  "name": "shrink-unaligned-1",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "|  ab |x|   lead  |\n|  abcdef|  y  |z|\n",
+  "keys": "C-c TAB",
+  "point": 3,
+  "answers": []
+ },
+ {
+  "name": "shrink-unaligned-2",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "|  ab |x|   lead  |\n|  abcdef|  y  |z|\n",
+  "keys": "C-c TAB",
+  "point": 7
+ },
+ {
+  "name": "shrink-unaligned-3",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "|  ab |x|   lead  |\n|  abcdef|  y  |z|\n",
+  "keys": "C-c TAB",
+  "point": 12
+ },
+ {
+  "name": "shrink-unaligned-ranges",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "|  ab |x|   lead  |\n|  abcdef|  y  |z|\n",
+  "keys": "C-c TAB",
+  "point": 0,
+  "answers": [
+   "1-3"
+  ]
+ },
+ {
+  "name": "shrink-link",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| <4>            | b |\n| [[https://example.com][link text]] | 1 |\n| plain words    | 2 |\n",
+  "keys": "C-c TAB",
+  "point": 68
+ },
+ {
+  "name": "shrink-indicator",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-c TAB",
+  "point": 102,
+  "globals": {
+   "org-table-shrunk-column-indicator": ">>"
+  }
+ },
+ {
+  "name": "shrink-tab-keeps",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-c TAB TAB TAB",
+  "point": 102
+ },
+ {
+  "name": "shrink-align-keeps",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-c TAB C-c C-c",
+  "point": 102
+ },
+ {
+  "name": "shrink-type-expands",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-c TAB x",
+  "point": 102
+ },
+ {
+  "name": "shrink-type-other-column",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-c TAB C-n C-a C-f C-f C-f x C-c C-c",
+  "point": 102
+ },
+ {
+  "name": "shrink-insert-column",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-c TAB M-S-<right>",
+  "point": 94
+ },
+ {
+  "name": "shrink-insert-column-after",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-c TAB M-S-<right>",
+  "point": 119
+ },
+ {
+  "name": "shrink-delete-column",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-c TAB M-S-<left>",
+  "point": 94
+ },
+ {
+  "name": "shrink-delete-shrunk-column",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-c TAB M-S-<left>",
+  "point": 102
+ },
+ {
+  "name": "shrink-move-column-right",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-c TAB M-<right>",
+  "point": 102
+ },
+ {
+  "name": "shrink-move-column-left",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-c TAB M-<left>",
+  "point": 102
+ },
+ {
+  "name": "shrink-move-other-column",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-c TAB C-e C-b C-b M-<left>",
+  "point": 102
+ },
+ {
+  "name": "shrink-move-row",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-c TAB M-<down>",
+  "point": 102
+ },
+ {
+  "name": "shrink-kill-row",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-c TAB M-S-<up>",
+  "point": 102
+ },
+ {
+  "name": "shrink-insert-row",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-c TAB M-S-<down>",
+  "point": 102
+ },
+ {
+  "name": "shrink-insert-hline",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-c TAB C-c -",
+  "point": 102
+ },
+ {
+  "name": "shrink-sort",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-c TAB C-n C-a C-f C-f C-c ^",
+  "point": 102,
+  "answers": [
+   "a"
+  ]
+ },
+ {
+  "name": "shrink-sort-shrunk-column",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-u C-c TAB C-c ^",
+  "point": 102,
+  "answers": [
+   "a"
+  ]
+ },
+ {
+  "name": "shrink-recalculate",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| a | <3> | b |\n|---+-----+---|\n| 1 |  10 | 3 |\n| 2 |  20 | 4 |\n#+TBLFM: $3=$2*2\n",
+  "keys": "C-u C-c TAB C-u C-c *",
+  "point": 34
+ },
+ {
+  "name": "shrink-startup-shrink",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "#+STARTUP: shrink\n| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "",
+  "point": 0
+ },
+ {
+  "name": "shrink-startup-align-shrink",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "#+STARTUP: align shrink\n|  ab |x|   lead  |\n|  abcdef|  y  |<2>|\n",
+  "keys": "",
+  "point": 0
+ },
+ {
+  "name": "shrink-startup-align",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "#+STARTUP: align\n|  ab |x|   lead  |\n|  abcdef|  y  |z|\n",
+  "keys": "",
+  "point": 0
+ },
+ {
+  "name": "shrink-startup-option",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "",
+  "point": 0,
+  "globals": {
+   "org-startup-shrink-all-tables": true
+  }
+ },
+ {
+  "name": "shrink-not-in-table",
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "text": "text\n| Name  | <5>          | Notes              |\n|-------+--------------+--------------------|\n| Alice | short        | a rather long note |\n| Bob   | longer value | x                  |\n|       |              |                    |\n",
+  "keys": "C-c TAB",
+  "point": 0
+ },
+ {
+  "name": "shrink-review-edit-field-c-c",
+  "text": "| a | <3>          |\n| b | abcdefgh     |\n",
+  "keys": "C-c TAB C-c ` C-c C-c",
+  "point": 27,
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true
+ },
+ {
+  "name": "shrink-review-cd-at-field-start",
+  "text": "| Name  | <5>          | Notes |\n|-------+--------------+-------|\n| Alice | short        | a     |\n| Bob   | longer value | x     |\n",
+  "keys": "C-c TAB C-d",
+  "point": 76,
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true
+ },
+ {
+  "name": "shrink-review-del-in-field",
+  "text": "| Name  | <5>          | Notes |\n|-------+--------------+-------|\n| Alice | short        | a     |\n| Bob   | longer value | x     |\n",
+  "keys": "C-c TAB DEL",
+  "point": 78,
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true
+ },
+ {
+  "name": "shrink-review-type-in-cut-field",
+  "text": "| a | <3>          |\n| b | abcdefgh     |\n",
+  "keys": "C-c TAB x",
+  "point": 28,
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true
+ },
+ {
+  "name": "shrink-review-meta-minus",
+  "text": "| Name  | <5>          | Notes |\n|-------+--------------+-------|\n| Alice | short        | a     |\n| Bob   | longer value | x     |\n",
+  "keys": "M-- C-c TAB",
+  "point": 76,
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true
+ },
+ {
+  "name": "shrink-review-tab-last-field",
+  "text": "| a | <3>          |\n| b | abcdefgh     |\n",
+  "keys": "C-c TAB TAB",
+  "point": 27,
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true
+ },
+ {
+  "name": "shrink-review-ret-in-shrunk",
+  "text": "| a | <3>     |\n| b | abcdefg |\n",
+  "keys": "C-c TAB RET",
+  "point": 22,
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true
+ },
+ {
+  "name": "shrink-review-link-typed",
+  "text": "| <4> | x |\n| ab | y |\n",
+  "keys": "[ [ h t t p s : / / e . c o m ] [ a b c d e f ] ] C-c TAB",
+  "point": 14,
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true
+ },
+ {
+  "name": "shrink-review-align-from-other-row-tab",
+  "text": "| a |\n| b | <3> |\n| c | abcdef |\n",
+  "keys": "C-c TAB C-c C-c",
+  "point": 24,
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true
+ },
+ {
+  "name": "shrink-review-cu-cu-cu",
+  "text": "| Name  | <5>          | Notes |\n|-------+--------------+-------|\n| Alice | short        | a     |\n| Bob   | longer value | x     |\n",
+  "keys": "C-u C-u C-u C-c TAB",
+  "point": 76,
+  "message": true,
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true
+ }
+]

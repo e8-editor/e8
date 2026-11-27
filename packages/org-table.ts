@@ -243,6 +243,11 @@ function alignField(field: string, width: number, align: string): string {
  * puts point at the start of the field it was in, as org-table-align does.
  */
 function align(): void {
+  // The shrunk columns as the first row has them, as org-table-align reads them from the table's start.
+  withShrunkColumns(alignShown, undefined, true);
+}
+
+function alignShown(): void {
   const lineMark = marker(e8.lineStart(lineAt()));
   const column = currentColumn();
   // On the line just after a table, as org-table-begin and org-table-end find it, the table is the one above.
@@ -477,10 +482,11 @@ e8.defineCommand({
       }
       if (charAt(e8.point()) === "-") {
         forwardLine(-1);
-        insertRow(true);
+        withShrunkColumns(() => insertRow(true));
       } else if (charAt(e8.point()) === " ") e8.gotoChar(e8.point() + 1);
     } catch {
-      insertRow(true);
+      // A new row with the columns shrunk, as org-table-insert-row makes it.
+      withShrunkColumns(() => insertRow(true));
     }
   },
 });
@@ -573,7 +579,7 @@ function nextRow(alignFirst: boolean): void {
   if (!atBol()) edInsert(e8.point(), "\n");
   if (!atTable() || atHline()) {
     forwardLine(-1);
-    insertRow(true);
+    withShrunkColumns(() => insertRow(true));
   }
   gotoColumn(col);
   const before = beforeOnLine();
@@ -612,8 +618,10 @@ function getField(n?: number, replace?: string): string {
   if (start === e8.lineStart(lineAt()) || /^[ \t]*$/.test(restOfLine())) return "";
   const val = /^[^|\r\n]*/.exec(restOfLine())?.[0] ?? "";
   if (replace !== undefined) {
-    edDelete(start, start + charCount(val));
-    edInsert(start, replace === "" ? " " : replace);
+    withShrunkField(() => {
+      edDelete(start, start + charCount(val));
+      edInsert(start, replace === "" ? " " : replace);
+    });
   }
   e8.gotoChar(Math.min(e8.lineEnd(lineAt()), start + 1));
   return val;
@@ -929,6 +937,13 @@ function eachDataRow(body: () => void): void {
 
 function moveColumn(left: boolean): void {
   tableHere();
+  const col = currentColumn();
+  const colpos = left ? col - 1 : col + 1;
+  // The shrunk columns follow the moved one, as org-table-move-column shifts them.
+  withShrunkColumns(() => moveColumnShown(left), (cs) => cs.map((c) => (c === col ? colpos : c === colpos ? col : c)));
+}
+
+function moveColumnShown(left: boolean): void {
   findDataline();
   checkInsideDataField(true);
   const col = currentColumn();
@@ -1002,24 +1017,24 @@ function moveRow(up: boolean): void {
 e8.defineCommand({
   name: "org-table-move-row-up",
   doc: "Swap the row at point with the one above it.",
-  run: () => moveRow(true),
+  run: () => withShrunkColumns(() => moveRow(true)),
 });
 e8.defineCommand({
   name: "org-table-move-row-down",
   doc: "Swap the row at point with the one below it.",
-  run: () => moveRow(false),
+  run: () => withShrunkColumns(() => moveRow(false)),
 });
 
 e8.defineCommand({
   name: "org-table-insert-row",
   doc: "Insert an empty row above the one at point, or below it with a prefix argument.",
-  run: () => insertRow(e8.prefixArg() !== null),
+  run: () => withShrunkColumns(() => insertRow(e8.prefixArg() !== null)),
 });
 
 e8.defineCommand({
   name: "org-table-kill-row",
   doc: "Kill the row at point, so C-y can put it back.",
-  run: () => {
+  run: () => withShrunkColumns(() => {
     tableHere();
     const col = currentColumnOfPoint();
     const line = lineAt();
@@ -1036,7 +1051,7 @@ e8.defineCommand({
     if (!atTable()) forwardLine(-1);
     moveToColumn(col);
     if (dline !== undefined && fixFormulasConfirmed()) fixFormulas("@", [[String(dline), "INVALID"]], dline, -1, dline);
-  },
+  }),
 });
 
 e8.defineCommand({
@@ -1048,20 +1063,22 @@ e8.defineCommand({
     if (!/\|[ \t]*$/.test(e8.lineText(lineAt()))) align();
     findDataline();
     const col = Math.max(1, currentColumn());
-    saveExcursion(() => {
-      const end = marker(tableEnd());
-      for (let l = firstLine(); l < e8.lineCount() && e8.lineStart(l) < end.pos; l++) {
-        e8.gotoChar(e8.lineStart(l));
-        if (!atHline()) {
-          gotoColumn(col, true);
-          edInsert(e8.point(), "|");
+    withShrunkColumns(() => {
+      saveExcursion(() => {
+        const end = marker(tableEnd());
+        for (let l = firstLine(); l < e8.lineCount() && e8.lineStart(l) < end.pos; l++) {
+          e8.gotoChar(e8.lineStart(l));
+          if (!atHline()) {
+            gotoColumn(col, true);
+            edInsert(e8.point(), "|");
+          }
         }
-      }
-      dropMarker(end);
-    });
-    gotoColumn(col);
-    align();
-    if (fixFormulasConfirmed()) fixFormulas("$", [], col - 1, 1);
+        dropMarker(end);
+      });
+      gotoColumn(col);
+      align();
+      if (fixFormulasConfirmed()) fixFormulas("$", [], col - 1, 1);
+    }, (cs) => cs.map((c) => (c < col ? c : c + 1)));
   },
 });
 
@@ -1078,24 +1095,26 @@ e8.defineCommand({
     }
     checkInsideDataField(true);
     const col = currentColumn();
-    eachDataRow(() => {
-      gotoColumn(col, true);
-      const m = /^\|[^|\n]+\|/.exec(restOfLine());
-      if (m) {
-        const p = e8.point();
-        edDelete(p, p + charCount(m[0]));
-        edInsert(p, "|");
-      }
-    });
-    align();
-    if (fixFormulasConfirmed()) fixFormulas("$", [[String(col), "INVALID"]], col, -1, col);
+    withShrunkColumns(() => {
+      eachDataRow(() => {
+        gotoColumn(col, true);
+        const m = /^\|[^|\n]+\|/.exec(restOfLine());
+        if (m) {
+          const p = e8.point();
+          edDelete(p, p + charCount(m[0]));
+          edInsert(p, "|");
+        }
+      });
+      align();
+      if (fixFormulasConfirmed()) fixFormulas("$", [[String(col), "INVALID"]], col, -1, col);
+    }, (cs) => cs.filter((c) => c !== col).map((c) => (c < col ? c : c - 1)));
   },
 });
 
 e8.defineCommand({
   name: "org-table-insert-hline",
   doc: "Insert a rule below the row at point, or above it with a prefix argument, as wide as the row's fields.",
-  run: () => {
+  run: () => withShrunkColumns(() => {
     tableHere();
     const above = e8.prefixArg() !== null;
     if (e8.point() === e8.pointMax()) saveExcursion(() => edInsert(e8.point(), "\n"));
@@ -1111,7 +1130,7 @@ e8.defineCommand({
     forwardLine(above ? 0 : -2);
     moveToColumn(col);
     if (truthy(e8.variable("org-table-overlay-coordinates") ?? null)) align();
-  },
+  }),
 });
 
 /**
@@ -3108,7 +3127,7 @@ e8.defineCommand({
   name: "org-table-recalculate",
   doc: "Recalculate the row at point by the table's formulas; with C-u, every row; with C-u C-u, until the table stops changing.",
   params: [{ name: "all", kind: "prefix" }],
-  run: (all: e8.PrefixArg) => recalculate(all),
+  run: (all: e8.PrefixArg) => withShrunkColumns(() => recalculate(all)),
 });
 
 e8.defineCommand({
@@ -4007,4 +4026,352 @@ for (const [key, cmd] of [
   ["C-c }", "org-table-fedit-toggle-coordinates"],
 ] as const) {
   e8.defineKey("org-table-fedit-map", key, cmd);
+}
+
+// Columns shrinking, as org-table.el's: a column shown as wide as its
+// width cookie, <N> or <lN>, or one character, by overlays over its fields.
+
+e8.defineVariable({ name: "org-table-shrunk-column-indicator", doc: "What shows at the end of a shrunk column's fields.", value: "…" });
+
+/** The space before a field's shown text, as org-table--separator-space-pre. */
+const separatorSpacePre = (): e8.PropertizedString => e8.propertize(" ", { display: [Symbol.for("space"), Symbol.for(":relative-width"), 1] as e8.Value });
+
+/** Whether an overlay is one shrinking a column. */
+function shrinkingOverlayP(o: number): boolean {
+  const type = e8.overlayGet(o, "org-overlay-type");
+  return (typeof type === "symbol" ? e8.symbolName(type) : type) === "table-column-hide";
+}
+
+/** The overlay shrinking the field point is in, at its last character, as org-table--shrunk-field. */
+function shrunkField(pos = e8.point()): number | undefined {
+  const line = lineAt(pos);
+  const rest = e8.bufferText(pos, e8.lineEnd(line));
+  const skip = /^[^|]*/.exec(HLINE.test(e8.lineText(line)) ? rest.replace(/\+[\s\S]*$/, "") : rest)![0];
+  const at = pos + charCount(skip) - 1;
+  return e8.overlaysAt(at).find(shrinkingOverlayP);
+}
+
+/** The shrunk columns of the table at point, as its current row has them, as org-table--list-shrunk-columns. */
+function listShrunkColumns(): number[] {
+  const line = lineAt();
+  const bol = e8.lineStart(line);
+  const text = e8.lineText(line);
+  const bar = text.indexOf("|");
+  if (bar < 0) return [];
+  const separator = HLINE.test(text) ? "+" : "|";
+  const shrunk: number[] = [];
+  let column = 1;
+  let i = bar + 1;
+  if (shrunkField(bol + charCount(text.slice(0, i))) !== undefined) shrunk.push(1);
+  for (let j = text.indexOf(separator, i); j >= 0; j = text.indexOf(separator, i)) {
+    i = j + 1;
+    column++;
+    if (shrunkField(bol + charCount(text.slice(0, i))) !== undefined) shrunk.push(column);
+  }
+  return shrunk;
+}
+
+/** Deletes every overlay of a shrunk column, as one of its fields is edited. */
+const showBeforeEdit = e8.defun("org-table--show-before-edit", (o: number) => {
+  const chain = e8.overlayGet(o, "org-table-column-overlays");
+  if (Array.isArray(chain)) for (const other of chain.slice(1)) if (typeof other === "number") e8.deleteOverlay(other);
+});
+
+/**
+ * An overlay showing DISPLAY in place of the text from START to END, the
+ * field's text FIELD as its help, with the indicator after it, or with
+ * PRE the separator's space before it, as org-table--make-shrinking-overlay.
+ */
+function makeShrinkingOverlay(start: number, end: number, display: string, field: string | undefined, pre = false): number {
+  const o = e8.makeOverlay(start, end);
+  e8.overlayPut(o, "insert-behind-hooks", [showBeforeEdit]);
+  e8.overlayPut(o, "insert-in-front-hooks", [showBeforeEdit]);
+  e8.overlayPut(o, "modification-hooks", [showBeforeEdit]);
+  e8.overlayPut(o, "org-overlay-type", Symbol.for("table-column-hide") as e8.Value);
+  if (field !== undefined) e8.overlayPut(o, "help-echo", field);
+  // Above the coordinates' overlays, as org-table-overlay-coordinates makes them.
+  e8.overlayPut(o, "priority", 1);
+  const indicator = String(e8.variable("org-table-shrunk-column-indicator") ?? "…");
+  e8.overlayPut(o, "display", pre ? e8.concat(separatorSpacePre(), display) : display + indicator);
+  e8.overlayPut(o, "face", "org-table");
+  e8.overlayPut(o, "evaporate", true);
+  return o;
+}
+
+/** How wide text from START to END shows, as org-string-width measures it for a table. */
+function regionWidth(start: number, end: number): number {
+  // The characters that show, as a link's hidden parts do not.
+  let w = 0;
+  const text = [...e8.bufferText(start, end)];
+  for (let i = 0; i < text.length; i++) if (!e8.invisibleP(start + i)) w += e8.stringWidth(text[i]);
+  return w;
+}
+
+/**
+ * Shrinks a field from START to END to WIDTH characters and the
+ * indicator, aligned as ALIGN says, its trimmed CONTENTS a string or
+ * "hline" for a rule, as org-table--shrink-field: the overlays hiding it,
+ * none if it is empty or shrunk already.
+ */
+function shrinkField(width: number, align: string, start: number, end: number, contents: string | { hline: true }): number[] {
+  if (start === end) return [];
+  if (shrunkField(end) !== undefined) return [];
+  const hline = typeof contents !== "string";
+  if (width === 0) return [makeShrinkingOverlay(start, end, "", hline ? "" : contents)];
+  if (hline) return [makeShrinkingOverlay(start, end, "-".repeat(width + 1), "")];
+  if (contents === "") {
+    const w = regionWidth(start, end);
+    // Its blanks as wide as WIDTH and the blanks around a field.
+    const full = width + 2;
+    return [w <= full ? makeShrinkingOverlay(end - 1, end, " ".repeat(full - w), "") : makeShrinkingOverlay(end - (w - full) - 1, end, "", "")];
+  }
+  const text = e8.bufferText(start, end);
+  const lead = /^ */.exec(text)![0].length;
+  const trail = /( *)$/.exec(text)![1].length;
+  const contentsWidth = regionWidth(start + lead, end - trail);
+  if (width <= contentsWidth) {
+    // Too wide: a single blank before it, and cut where WIDTH characters show.
+    const pre = lead > 0 ? makeShrinkingOverlay(start, start + lead, "", contents, true) : undefined;
+    const begin = start + lead;
+    let lower = begin;
+    let upper = end - 1;
+    // Without a blank before it, one more, so the columns line up.
+    const want = lead === 0 ? width + 1 : width;
+    let cut: number | undefined;
+    while (upper - lower > 1) {
+      const mean = (lower >> 1) + (upper >> 1) + (lower & upper & 1);
+      const w = regionWidth(begin, mean);
+      if (w === want) {
+        cut = mean;
+        break;
+      }
+      if (w > want) upper = mean;
+      else lower = mean;
+    }
+    const post = makeShrinkingOverlay(cut ?? upper, end, "", contents);
+    return pre === undefined ? [post] : [pre, post];
+  }
+  // It fits: blanks on each side as the alignment says.
+  const required = width - contentsWidth;
+  const before = lead === 0 ? -1 : align === "r" ? required : align === "c" ? Math.floor(required / 2) : 0;
+  const after = required - before;
+  let pre: number | undefined;
+  if (lead === 0 || lead - 1 === before) pre = undefined;
+  else if (before < lead - 1) pre = makeShrinkingOverlay(start, start + (lead - before), "", contents, true);
+  else pre = makeShrinkingOverlay(start, start + 1, " ".repeat(before - (lead - 1)), contents, true);
+  let post: number;
+  if (trail - 1 === after) post = makeShrinkingOverlay(end - 1, end, "", contents);
+  else if (after < trail - 1) post = makeShrinkingOverlay(after + (end - trail), end, "", contents);
+  else post = makeShrinkingOverlay(end - 1, end, " ".repeat(after - (trail - 1)), contents);
+  return pre === undefined ? [post] : [pre, post];
+}
+
+/** Shrinks COLUMNS of the table from BEG to END, each to its first width cookie's width, as org-table--shrink-columns. */
+function shrinkColumns(columns: number[], beg: number, end: number): void {
+  if (columns.length === 0) return;
+  e8.saveRestriction(() => {
+    e8.widen();
+    // Links' hidden parts hidden, as their widths count without them.
+    e8.call("font-lock-ensure");
+    for (const c of columns) {
+      let align: string | undefined;
+      let width: number | undefined;
+      const fields: [number, number, string | { hline: true }][] = [];
+      for (let l = lineAt(beg); l < e8.lineCount() && e8.lineStart(l) < end; l++) {
+        const bol = e8.lineStart(l);
+        const text = e8.lineText(l);
+        const hline = HLINE.test(text);
+        const separator = hline ? "+" : "|";
+        // To the column: past the first bar, then past C - 1 separators.
+        let i = text.indexOf("|");
+        if (i < 0) continue;
+        i++;
+        let found = true;
+        for (let k = 1; k < c; k++) {
+          const j = text.indexOf(separator, i);
+          if (j < 0) {
+            found = false;
+            break;
+          }
+          i = j + 1;
+        }
+        if (!found) continue;
+        const rest = text.slice(i);
+        const fieldText = (hline ? /^[^|+]*/ : /^[^|]*/).exec(rest)![0];
+        const start = bol + charCount(text.slice(0, i));
+        const stop = start + charCount(fieldText);
+        const contents = hline ? { hline: true as const } : fieldText.trim();
+        fields.unshift([start, stop, contents]);
+        if (!hline) {
+          const m = /^<([lrc])?([0-9]+)>$/.exec(contents as string);
+          if (m) {
+            if (align === undefined) align = m[1];
+            if (width === undefined) width = Number(m[2]);
+          }
+        }
+      }
+      // Every overlay of the column knows the others, so editing one field shows the column.
+      const chain: number[] = [];
+      for (const [start, stop, contents] of fields) chain.push(...shrinkField(width ?? 0, align ?? "l", start, stop, contents));
+      for (const o of chain) e8.overlayPut(o, "org-table-column-overlays", [Symbol.for("siblings"), ...chain] as e8.Value);
+    }
+  });
+}
+
+/** The columns a selection such as "2-4 6-" names, between 1 and MAX, as org-table--read-column-selection. */
+function readColumnSelection(select: string, max: number): number[] {
+  const out = new Set<number>();
+  const range = (a: number, b: number) => {
+    for (let n = a; n <= b; n++) out.add(n);
+  };
+  for (const s of select.trim().split(/\s+/)) {
+    if (s === "-" || s === "1-") return Array.from({ length: Math.max(0, max) }, (_, i) => i + 1);
+    let m: RegExpExecArray | null;
+    if (/^[0-9]+$/.test(s)) {
+      const n = Number(s);
+      if (n > 0 && n <= max) out.add(n);
+    } else if ((m = /^([0-9]+)?-([0-9]+)?$/.exec(s))) {
+      range(m[1] === undefined ? 1 : Math.max(1, Number(m[1])), m[2] === undefined ? max : Math.min(max, Number(m[2])));
+    }
+  }
+  return [...out].sort((a, b) => a - b);
+}
+
+/** Shows every column of the table from BEGIN to END in full, as org-table-expand. */
+function expandColumns(begin: number, end: number): void {
+  e8.saveRestriction(() => {
+    e8.widen();
+    for (const o of e8.overlaysIn(begin, end)) if (shrinkingOverlayP(o)) e8.deleteOverlay(o);
+  });
+}
+
+/** Shrinks the columns of the table from BEGIN to END that have a width cookie and shows the others, as org-table-shrink. */
+function shrinkTable(begin: number, end: number): void {
+  e8.saveRestriction(() => {
+    e8.widen();
+    const columns = new Set<number>();
+    saveExcursion(() => {
+      e8.gotoChar(begin);
+      while (e8.reSearchForward("|[ \t]*<[lrc]?[0-9]+>[ \t]*\\(|\\|$\\)", { bound: end, noerror: true }) !== undefined) {
+        e8.gotoChar(e8.matchBeginning(1)!);
+        columns.add(currentColumn());
+      }
+    });
+    expandColumns(begin, end);
+    shrinkColumns([...columns].sort((a, b) => a - b), begin, end);
+  });
+}
+
+/**
+ * Runs BODY with the table at point's columns shown in full, then shrinks
+ * those that were shrunk again, numbered as RENUMBER says, as
+ * org-table-with-shrunk-columns does.
+ */
+export function withShrunkColumns<T>(body: () => T, renumber: (columns: number[]) => number[] = (c) => c, fromFirstRow = false): T {
+  if (!isTableLine(lineAt())) return body();
+  // As the row at point, or the first, has them.
+  const shrunk = fromFirstRow ? saveExcursion(() => (e8.gotoChar(tableBegin()), listShrunkColumns())) : listShrunkColumns();
+  const begin = marker(tableBegin());
+  const end = marker(tableEnd(), true);
+  expandColumns(begin.pos, end.pos);
+  try {
+    return body();
+  } finally {
+    shrinkColumns(renumber(shrunk), begin.pos, end.pos);
+    dropMarker(begin);
+    dropMarker(end);
+  }
+}
+
+/**
+ * Runs BODY with the field at point's shrinking overlay set aside, and
+ * puts it back over the field's end after, as org-table-with-shrunk-field:
+ * as E8 cannot move a deleted overlay back, one like it, in its place
+ * among its column's.
+ */
+export function withShrunkField<T>(body: () => T): T {
+  const shrunk = shrunkField();
+  if (shrunk === undefined) return body();
+  const end = marker(e8.overlayEnd(shrunk)!, true);
+  const size = end.pos - e8.overlayStart(shrunk)!;
+  const props = e8.overlayProperties(shrunk) ?? {};
+  e8.deleteOverlay(shrunk);
+  try {
+    return body();
+  } finally {
+    const again = e8.makeOverlay(end.pos - size, end.pos);
+    for (const [name, value] of Object.entries(props)) e8.overlayPut(again, name, value);
+    // The column's overlays know it by its new number.
+    const chain = props["org-table-column-overlays"];
+    if (Array.isArray(chain)) {
+      const renamed = chain.map((o) => (o === shrunk ? again : o));
+      for (const o of renamed.slice(1)) if (typeof o === "number" && e8.overlayBuffer(o) !== undefined) e8.overlayPut(o, "org-table-column-overlays", renamed as e8.Value);
+    }
+    dropMarker(end);
+  }
+}
+
+e8.defineCommand({
+  name: "org-table-toggle-column-width",
+  doc:
+    "Shrink the column at point to its width cookie's width, or one character, or show it in full; before the first column or after the last, " +
+    "ask which columns, as ranges such as 2-4 6-. With C-u, shrink the columns that have a width cookie and show the others; with C-u C-u, show them all.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg: e8.PrefixArg | string) => {
+    if (!atTable()) e8.userError("Not in a table");
+    const begin = tableBegin();
+    const end = tableEnd();
+    // More than the columns there can be; columns not there are left alone.
+    const maxColumns = Math.floor((e8.lineEnd(lineAt()) - e8.lineStart(lineAt())) / 2);
+    const shrunk = listShrunkColumns();
+    const raw = Array.isArray(arg) ? arg[0] : undefined;
+    let columns: number[] = [];
+    if (arg === null || arg === undefined) {
+      const before = beforeOnLine();
+      const outside = !before.includes("|") || /^[ \t]*$/.test(e8.bufferText(e8.lineStart(lineAt()) + charCount(before.slice(0, before.lastIndexOf("|") + 1)), e8.lineEnd(lineAt())));
+      columns = outside ? readColumnSelection(e8.readString("Column ranges (e.g. 2-4 6-): "), maxColumns) : [currentColumn()];
+    } else if (typeof arg === "string" && arg !== "-") columns = readColumnSelection(arg, maxColumns);
+    else if (raw !== 4 && raw !== 16) e8.userError(`Invalid argument: ${Array.isArray(arg) ? `(${arg[0]})` : String(arg)}`);
+    if (raw === 4) shrinkTable(begin, end);
+    else if (raw === 16) expandColumns(begin, end);
+    else {
+      expandColumns(begin, end);
+      shrinkColumns([...columns.filter((c) => !shrunk.includes(c)), ...shrunk.filter((c) => !columns.includes(c))], begin, end);
+    }
+  },
+});
+
+e8.defineCommand({
+  name: "org-table-shrink",
+  doc: "Shrink the columns of the table at point that have a width cookie, <N> or <lN>, to that width, and show the others in full.",
+  run: () => {
+    if (!atTable()) e8.userError("Not at a table");
+    shrinkTable(tableBegin(), tableEnd());
+  },
+});
+
+e8.defineCommand({
+  name: "org-table-expand",
+  doc: "Show every column of the table at point in full.",
+  run: () => {
+    if (!atTable()) e8.userError("Not at a table");
+    expandColumns(tableBegin(), tableEnd());
+  },
+});
+
+/** Shrinks every table's columns that have a width cookie, aligning each first with ALIGN, as org-mode does at startup with org-table-map-tables. */
+export function startupTables(alignThem: boolean, shrinkThem: boolean): void {
+  saveExcursion(() => {
+    e8.gotoChar(e8.pointMin());
+    for (let l = 0; l < e8.lineCount(); l++) {
+      if (!isTableLine(l) || (l > 0 && isTableLine(l - 1))) continue;
+      e8.gotoChar(e8.lineStart(l));
+      // An Org table, not a table.el one or one inside a block, as the parser finds it.
+      const el = elementAt(e8.lineStart(l));
+      if (el?.type !== "table" || el.tableType === "table.el") continue;
+      if (alignThem) align();
+      if (shrinkThem) shrinkTable(tableBegin(), tableEnd());
+      l = lastLine(l);
+    }
+  });
 }

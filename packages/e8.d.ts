@@ -7714,6 +7714,12 @@ declare global {
        */
       "org-table-eval-formula": [arg?: PrefixArg | boolean];
       /**
+       * Show every column of the table at point in full.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-expand": [];
+      /**
        * Leave the formula editor without installing the formulas.
        *
        * Defined in packages/org-table.ts.
@@ -7976,6 +7982,12 @@ declare global {
        */
       "org-table-show-reference": [];
       /**
+       * Shrink the columns of the table at point that have a width cookie, <N> or <lN>, to that width, and show the others in full.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-shrink": [];
+      /**
        * Sort the table's lines between the rules around point, or the region's, by the column point is in: a alphabetically, n numerically, t by time or duration, f by a function; a capital reverses it. With a prefix argument, case counts.
        *
        * @param with-case raw prefix argument
@@ -7989,6 +8001,14 @@ declare global {
        * Defined in packages/org-table.ts.
        */
       "org-table-sum": [];
+      /**
+       * Shrink the column at point to its width cookie's width, or one character, or show it in full; before the first column or after the last, ask which columns, as ranges such as 2-4 6-. With C-u, shrink the columns that have a width cookie and show the others; with C-u C-u, show them all.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-toggle-column-width": [arg?: PrefixArg | boolean];
       /**
        * Number tables' rows beside them and columns over their rules, or stop.
        *
@@ -16550,6 +16570,12 @@ declare global {
        */
       "org-src-window-setup": Value;
       /**
+       * Whether Org mode aligns every table when it starts. #+STARTUP: align or noalign says otherwise for a file.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-startup-align-all-tables": Value;
+      /**
        * How much of a file org-mode shows when it starts: "showeverything", "showall" (drawers folded), "content" (all headings) or "overview" (top headings). A #+STARTUP: line in the file says otherwise.
        *
        * Defined in packages/org.ts.
@@ -16561,6 +16587,12 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-startup-indented": Value;
+      /**
+       * Whether Org mode shrinks every table's columns that have a width cookie, <N> or <lN>, when it starts. #+STARTUP: shrink says so for a file.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-startup-shrink-all-tables": Value;
       /**
        * Whether org-mode turns on truncate-lines, so long lines run off the window.
        *
@@ -16749,6 +16781,12 @@ declare global {
        * Defined in packages/org-table.ts.
        */
       "org-table-relative-ref-may-cross-hline": Value;
+      /**
+       * What shows at the end of a shrunk column's fields.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-shrunk-column-indicator": Value;
       /**
        * Whether TAB at the end of a row goes past a rule below it to the next row, rather than adding a row.
        *

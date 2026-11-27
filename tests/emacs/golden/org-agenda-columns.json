@@ -753,6 +753,29 @@
       "error": null
     },
     {
+      "name": "dblock-width-shrunk",
+      "input": {
+        "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :format \"%10ITEM %Effort\"\n#+END:\n",
+        "point": 223,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :format \"%10ITEM %Effort\"\n| <10>  |        |\n| ITEM  | Effort |\n|-------+--------|\n| Tasks |        |\n| A     |   1:00 |\n| B     |   0:30 |\n| C     |   0:15 |\n#+END:\n",
+      "visible": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :format \"%10ITEM %Effort\"\n| <10>  |        |\n| ITEM  | Effort |\n|-------+--------|\n| Tasks |        |\n| A     |   1:00 |\n| B     |   0:30 |\n| C     |   0:15 |\n#+END:\n",
+      "point": 223,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :format \"%10ITEM %Effort\"\n| <10>      …|        |\n| ITEM      …| Effort |\n|-----------…+--------|\n| Tasks     …|        |\n| A         …|   1:00 |\n| B         …|   0:30 |\n| C         …|   0:15 |\n#+END:\n"
+    },
+    {
       "name": "dblock-tblfm",
       "input": {
         "text": "* Tasks\n:PROPERTIES:\n:COLUMNS: %25ITEM %Effort{:} %Owner\n:ID: tasks-id\n:END:\n** TODO A [1/2] :x:\n:PROPERTIES:\n:Effort: 1:00\n:Owner: me|you\n:END:\n** B\n:PROPERTIES:\n:Effort: 0:30\n:END:\n*** C\n:PROPERTIES:\n:Effort: 0:15\n:END:\n#+BEGIN: columnview :id global :format \"%ITEM %N\"\n| a | 1 |\n#+TBLFM: $2=7\n#+END:\n",
