@@ -8,6 +8,93 @@ A package that is a repository of its own keeps its news in a NEWS file
 of the same form, which 'C-h P' shows under its description.
 
 
+* Changes in E8 0.5.21
+
+** The Org agenda has Org's views, modes and commands.
+Custom commands and block agendas ('org-agenda-custom-commands'),
+stuck projects, restriction to a buffer, subtree or region ('<', 'C-c
+C-x <'), sticky agendas, 'A' to append a view, and 'C-x C-w' and 'e' to
+write views to files.  Spans of a day to a year, 'j' to a date, follow,
+log, entry text and clock report modes, the time grid and deadline
+views, filters by category, headline, tag, regexp and effort, bulk
+actions ('m', 'B'), dates changed with 'S-<right>' and '>', 'k' to
+capture with the date at point, and undo ('C-_') of what the agenda's
+commands changed in the Org files.
+
+** Column view, in Org buffers and the agenda.
+'C-c C-x C-c' shows headings as rows of their properties, as
+'#+COLUMNS:' says, with Org's summaries up the tree, editing in place
+and the 'columnview' dynamic block.
+
+** Org's table formulas.
+'#+TBLFM:' lines are worked out by a part of Calc, with Org's
+references, ranges, named fields, constants and formats; 'C-c =',
+'C-c *', 'C-c C-c' and 'C-u C-c *', the formula editor (C-c '),
+coordinates ('C-c }'), the formula debugger, and references kept right
+as rows and columns move.  'C-c TAB' shrinks a column to its width
+cookie, '<5>', and '#+STARTUP: shrink' every table.
+
+** More of Org's tables.
+'C-c |' makes a table or converts the region, 'C-c +' sums a column,
+'S-RET' copies a field down, 'C-c `' edits a field in a window of its
+own, and 'M-x org-table-transpose-table-at-point' swaps rows and
+columns.
+
+** Inline images in Org.
+'C-c C-x C-v' shows links to image files as the images, at the width
+'org-image-actual-width' or an '#+ATTR_ORG:' line gives, centred or at
+the right as 'org-image-align' says; '#+STARTUP: inlineimages' shows
+them when the file opens.
+
+** Clocks left open are resolved, and idle time asked about.
+'C-c C-x C-z' and clocking in find clocks left running and ask what to
+do with the time; after 'org-clock-idle-time' minutes away the clock
+asks too.  'org-clock-rounding-minutes' rounds clocking in and out.
+
+** C-c ' edits more of an Org file in a buffer of its own.
+Export and comment blocks, fixed-width areas, LaTeX environments and
+fragments, inline source code, footnote definitions and table fields,
+each in its language's mode.
+
+** Org's footnotes.
+'C-c C-x f' makes, finds and follows footnotes, and with 'C-u' sorts,
+renumbers, normalizes or deletes them.
+
+** Org's times as Org stamps them.
+CLOSED, logged notes and capture's '%U' are rounded to
+'org-timestamp-rounding-minutes', and with 'org-use-effective-time' a
+change before 'org-extend-today-until' counts as the day before, as
+'M-x org-todo-yesterday' makes it.  The date prompt reads dates as
+Org's does and starts with the timestamp's time.
+
+** Capture from the agenda, and templates with the target's settings.
+'k' in the agenda, or 'org-capture-use-agenda-date', captures for the
+day at point.  A template's '%^{PROP}p' offers allowed values from
+'#+PROPERTY:' lines and 'org-global-properties', and takes the target
+file's own TODO keywords and priorities.
+
+** '#+PRIORITIES:' sets a file's range of priorities.
+
+** Web, shell and help links in Org are followed.
+'C-c C-o' opens 'http', 'https', 'ftp', 'mailto' and 'news' links with
+the new 'M-x browse-url', runs a 'shell:' link's command after asking,
+and shows the help a 'help:' link names; 'org-store-link' in *Help*
+stores one.
+
+** Org's editing follows Org more closely.
+TAB as 'org-cycle-emulate-tab' and 'org-cycle-max-level' say, odd levels
+only, cloning a subtree with its dates moved ('C-c C-x c'), yanking
+subtrees at the level around point, lettered list bullets, Org's
+'C-a' and 'C-e', sentence and element motion, 'M-<up>' and 'M-<down>'
+moving an element with its keywords, filling and commenting as Org
+does, Auto Fill on RET, and shift selection with
+'org-support-shift-select'.
+
+** Commands refuse a read-only buffer first, as Emacs's do.
+'buffer-read-only' is a variable, and 'undo' honours
+'inhibit-read-only'.
+
+
 * Changes in E8 0.5.20
 
 ** 'C-m', 'C-i' and 'C-[' are 'RET', 'TAB' and 'ESC', as Emacs reads them.
