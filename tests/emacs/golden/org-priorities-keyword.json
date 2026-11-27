@@ -265,6 +265,48 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "prio-empty-first",
+      "input": {
+        "text": "#+PRIORITIES:\n#+PRIORITIES: 1 9 5\n* Task\n",
+        "point": 35,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+PRIORITIES:\n#+PRIORITIES: 1 9 5\n* [#B] Task\n",
+      "visible": "#+PRIORITIES:\n#+PRIORITIES: 1 9 5\n* [#B] Task\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "prio-short-first",
+      "input": {
+        "text": "#+PRIORITIES: A E\n#+PRIORITIES: 1 9 5\n* Task\n",
+        "point": 39,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+PRIORITIES: A E\n#+PRIORITIES: 1 9 5\n* [#B] Task\n",
+      "visible": "#+PRIORITIES: A E\n#+PRIORITIES: 1 9 5\n* [#B] Task\n",
+      "point": 39,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }

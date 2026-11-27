@@ -118,5 +118,23 @@
   "text": "#+PRIORITIES: A E\n* Task\n",
   "keys": "S-<up>",
   "point": 18
+ },
+ {
+  "name": "prio-empty-first",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "#+PRIORITIES:\n#+PRIORITIES: 1 9 5\n* Task\n",
+  "keys": "S-<up>",
+  "point": 35
+ },
+ {
+  "name": "prio-short-first",
+  "modes": [
+   "org-mode"
+  ],
+  "text": "#+PRIORITIES: A E\n#+PRIORITIES: 1 9 5\n* Task\n",
+  "keys": "S-<up>",
+  "point": 39
  }
 ]
