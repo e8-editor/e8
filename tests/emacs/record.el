@@ -55,7 +55,8 @@
   (cons (coding-system-priority-list)
         (mapcar (lambda (v) (cons v (default-value v)))
                 '(buffer-file-coding-system default-terminal-coding-system
-                  default-keyboard-coding-system default-process-coding-system)))
+                  default-keyboard-coding-system default-process-coding-system
+                  default-file-name-coding-system)))
   "The coding systems Emacs starts with: the priority list and the
 defaults `prefer-coding-system' changes, put back before each case.")
 
@@ -231,6 +232,7 @@ one, as \"2026-11-04 09:07\".")
 (defvar org-agenda-restrict)
 (defvar org-agenda-restrict-begin)
 (defvar org-agenda-restrict-end)
+(defvar dired-mode-map)
 
 (defun e8-oracle--clocked-time ()
   "The running clock's minutes counted to noon on the case's fixed day, as E8's tests count them."
@@ -435,7 +437,11 @@ its `globals' bound for the case, before the modes start."
     ;; dired-x as a case that turns on dired-omit-mode loads it: once
     ;; loaded, deleting a visited file asks whether to kill its buffer.
     (when (featurep 'dired-x)
-      (unload-feature 'dired-x t))
+      (unload-feature 'dired-x t)
+      ;; Unloading leaves the keys it bound in dired's map, naming
+      ;; functions it took away; a fresh dired has none of them.
+      (dolist (key '("*(" "*O" "*." "\C-x\M-o" "\M-(" "\M-!" "F" "V"))
+        (define-key dired-mode-map key nil)))
     (delete-other-windows)
     (set-window-dedicated-p nil nil)
     ;; The frame laid out afresh: an earlier case's incremental search can
@@ -502,7 +508,9 @@ its `globals' bound for the case, before the modes start."
     ;; Both empty, as E8 starts them: an earlier case could type into
     ;; *scratch*, and the log would hold every earlier case's messages.
     (with-current-buffer "*scratch*"
-      (erase-buffer)
+      (let ((inhibit-read-only t)) (erase-buffer))
+      (setq buffer-read-only nil
+            buffer-undo-list nil)
       (set-buffer-modified-p nil))
     (with-current-buffer (messages-buffer)
       (let ((inhibit-read-only t)) (erase-buffer)))
@@ -830,7 +838,9 @@ header line, which column view sets only from a post-command hook."
 (defun e8-oracle--record-file (file golden-dir)
   "Run the cases in FILE and write their results into GOLDEN-DIR."
   (let* ((cases (let ((json-object-type 'alist)
-                      (json-array-type 'list))
+                      (json-array-type 'list)
+                      ;; In UTF-8, whatever coding the last case preferred.
+                      (coding-system-for-read 'utf-8))
                   (json-read-file file)))
          (results (mapcar #'e8-oracle--run cases))
          (out (expand-file-name (file-name-nondirectory file) golden-dir))
