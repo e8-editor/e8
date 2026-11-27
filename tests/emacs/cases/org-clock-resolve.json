@@ -1,0 +1,437 @@
+[
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-clock.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+  "name": "resolve-cancel",
+  "keys": "C-c C-x C-i",
+  "answers": [
+   "C"
+  ],
+  "point": 62
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-clock.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+  "name": "resolve-ignore",
+  "keys": "C-c C-x C-i",
+  "answers": [
+   "i"
+  ],
+  "point": 62
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-clock.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+  "name": "resolve-quit",
+  "keys": "C-c C-x C-i",
+  "answers": [
+   "q"
+  ],
+  "point": 62
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-clock.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+  "name": "resolve-subtract",
+  "keys": "C-c C-x C-i",
+  "answers": [
+   "s"
+  ],
+  "point": 62
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-clock.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+  "name": "resolve-subtract-out",
+  "keys": "C-c C-x C-i",
+  "answers": [
+   "S"
+  ],
+  "point": 62
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-clock.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+  "name": "resolve-keep-all",
+  "keys": "C-c C-x C-i",
+  "answers": [
+   "k",
+   ""
+  ],
+  "point": 62
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-clock.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+  "name": "resolve-keep-all-out",
+  "keys": "C-c C-x C-i",
+  "answers": [
+   "K",
+   ""
+  ],
+  "point": 62
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-clock.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+  "name": "resolve-keep-some",
+  "keys": "C-c C-x C-i",
+  "answers": [
+   "k",
+   "30"
+  ],
+  "point": 62
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-clock.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+  "name": "resolve-keep-some-out",
+  "keys": "C-c C-x C-i",
+  "answers": [
+   "K",
+   "30",
+   "y"
+  ],
+  "point": 62
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-clock.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+  "name": "resolve-keep-some-out-no",
+  "keys": "C-c C-x C-i",
+  "answers": [
+   "K",
+   "30",
+   "n"
+  ],
+  "point": 62
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-clock.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+  "name": "resolve-got-back",
+  "keys": "C-c C-x C-i",
+  "answers": [
+   "g",
+   "60"
+  ],
+  "point": 62
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-clock.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+  "name": "resolve-got-back-out",
+  "keys": "C-c C-x C-i",
+  "answers": [
+   "G",
+   "60"
+  ],
+  "point": 62
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-clock.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+  "name": "resolve-got-back-zero",
+  "keys": "C-c C-x C-i",
+  "answers": [
+   "g",
+   "0"
+  ],
+  "point": 62
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-clock.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+  "name": "resolve-time",
+  "keys": "C-c C-x C-i",
+  "answers": [
+   "t",
+   "10:30"
+  ],
+  "point": 62
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-clock.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+  "name": "resolve-jump",
+  "keys": "C-c C-x C-i",
+  "answers": [
+   "j"
+  ],
+  "point": 62
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-clock.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+  "name": "resolve-jump-out",
+  "keys": "C-c C-x C-i",
+  "answers": [
+   "J"
+  ],
+  "point": 62
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-clock.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+  "name": "resolve-invalid-then-c",
+  "keys": "C-c C-x C-i",
+  "answers": [
+   "x",
+   "C"
+  ],
+  "point": 62
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-clock.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 11:59]\n:END:\n* TODO New task\n",
+  "name": "resolve-barely-started",
+  "keys": "C-c C-x C-i",
+  "answers": [
+   "s"
+  ],
+  "point": 62
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-clock.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 11:59]\n:END:\n* TODO New task\n",
+  "name": "resolve-barely-started-out",
+  "keys": "C-c C-x C-i",
+  "answers": [
+   "S"
+  ],
+  "point": 62
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-clock.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+  "name": "resolve-command",
+  "keys": "C-c C-x C-z",
+  "answers": [
+   "C"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-clock.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+  "name": "resolve-command-subtract",
+  "keys": "C-c C-x C-z",
+  "answers": [
+   "S"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-clock.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+  "name": "resolve-command-only-dangling",
+  "keys": "C-u C-c C-x C-z",
+  "answers": [
+   "C"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-clock.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+  "name": "resolve-same-task",
+  "keys": "C-c C-x C-i",
+  "answers": [
+   "k",
+   ""
+  ],
+  "point": 3
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-clock.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+  "name": "resolve-off",
+  "keys": "C-c C-x C-i",
+  "answers": [],
+  "point": 62,
+  "globals": {
+   "org-clock-auto-clock-resolution": false
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-clock.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n",
+  "name": "resolve-expert",
+  "keys": "C-c C-x C-i",
+  "answers": [
+   "C"
+  ],
+  "point": 62,
+  "globals": {
+   "org-clock-resolve-expert": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-clock.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO Mid\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]\n:END:\n* TODO New task\n",
+  "name": "resolve-two",
+  "keys": "C-c C-x C-i",
+  "answers": [
+   "C",
+   "s"
+  ],
+  "point": 62
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-clock.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "text": "* TODO Old task\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:00]\n:END:\n* TODO New task\n* TODO Third\n",
+  "name": "resolve-running-not-asked",
+  "keys": "C-c C-x C-i M-> C-p C-c C-x C-i",
+  "answers": [
+   "C"
+  ],
+  "point": 62
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-clock.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "text": "* A\nCLOCK: [2026-10-28 Wed 09:00]\n* B\n",
+  "name": "resolve-no-drawer",
+  "keys": "C-c C-x C-i",
+  "answers": [
+   "C"
+  ],
+  "point": 0
+ }
+]

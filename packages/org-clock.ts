@@ -546,6 +546,19 @@ function markDefaultTask(): void {
  */
 export function clockIn(select?: e8.PrefixArg, startTime?: DateTime): void {
   const raw = Array.isArray(select) ? select[0] : undefined;
+  // Clocks left open resolved first, as org-clock-auto-clock-resolution says; the time a resolved clock stopped, offered.
+  const interrupting = !resolvingDueToIdleness && clock !== undefined;
+  const leftover = resolving ? undefined : leftoverTime;
+  const auto = e8.variable("org-clock-auto-clock-resolution") ?? null;
+  if (truthy(auto) && (!interrupting || auto === true) && !clockingIn && !resolving) {
+    leftoverTime = undefined;
+    clockingIn = true;
+    try {
+      resolveClocks(false);
+    } finally {
+      clockingIn = false;
+    }
+  }
   // C-u C-u C-u: from when the clock was last stopped, as with org-clock-continuously.
   if (raw === 64) {
     e8.letBind({ "org-clock-continuously": true }, () => clockIn(null, outTime));
@@ -566,11 +579,11 @@ export function clockIn(select?: e8.PrefixArg, startTime?: DateTime): void {
         e8.saveRestriction(() => {
           e8.widen();
           e8.gotoChar(pos);
-          clockInHere(pos, startTime);
+          clockInHere(pos, startTime, leftover);
         }),
       ),
     );
-  } else clockInHere(undefined, startTime);
+  } else clockInHere(undefined, startTime, leftover);
 }
 
 /**
@@ -579,7 +592,7 @@ export function clockIn(select?: e8.PrefixArg, startTime?: DateTime): void {
  * SELECTED, is the running entry's heading, as Org compares it: the
  * running task picked as c is its clock line, so it is clocked again.
  */
-function clockInHere(selected?: number, startTime?: DateTime): void {
+function clockInHere(selected?: number, startTime?: DateTime, leftover?: DateTime): void {
   let [all, i] = headingHere();
   let h = all[i];
   notified = false;
@@ -642,7 +655,12 @@ function clockInHere(selected?: number, startTime?: DateTime): void {
   }
   // From the last clock-out with org-clock-continuously, else when given, else now, as org-clock-in starts it.
   const continuing = truthy(e8.variable("org-clock-continuously") ?? null) ? outTime : undefined;
-  const start = open?.start ?? continuing ?? startTime ?? now();
+  // From when a resolved clock stopped, if the user says so, as org-clock-in offers org-clock-leftover-time.
+  const fromLeftover = open === undefined && continuing === undefined && leftover !== undefined &&
+    e8.yOrNP(`You stopped another clock ${Math.floor((millis(now()) - millis(leftover)) / 60000)} mins ago; start this one from then? `)
+    ? leftover
+    : undefined;
+  const start = open?.start ?? continuing ?? fromLeftover ?? startTime ?? now();
   const stamp = open?.stamp ?? `[${formatTimestamp(start, true)}]`;
   e8.saveExcursion(() => {
     e8.saveRestriction(() => {
@@ -669,6 +687,9 @@ function clockInHere(selected?: number, startTime?: DateTime): void {
   last = e8.makeMarker(h.start);
   updateModeLine();
   timer = e8.runWithTimer(60, 60, updateModeLine);
+  // Whether the user is idle checked each minute, as org-clock-in sets org-clock-idle-timer.
+  if (idleTimer !== undefined) e8.cancelTimer(idleTimer);
+  idleTimer = e8.runWithTimer(60, 60, resolveIfIdle);
   e8.message(`Clock starts at ${stamp} - ${extra}`);
   e8.runHooks("org-clock-in-hook");
 }
@@ -712,7 +733,7 @@ function unclosedClockLine(h: Heading): { line: number; stamp: string; start: Da
 }
 
 /** Stops the running clock, writing its end and duration, as org-clock-out. */
-export function clockOut(failQuietly = false, askState = false): void {
+export function clockOut(failQuietly = false, askState = false, atTime?: DateTime): void {
   if (!clock) {
     clearModeLine();
     if (failQuietly) return;
@@ -729,7 +750,8 @@ export function clockOut(failQuietly = false, askState = false): void {
   const outSwitch = askState
     ? e8.withCurrentBuffer(buffer, () => e8.completingRead("Switch to state: ", allKeywords(), { requireMatch: true, initial: "DONE" }))
     : (e8.variable("org-clock-out-switch-to-state") ?? null);
-  const end = now();
+  // At AT-TIME, as a resolved clock is stopped then.
+  const end = atTime ?? now();
   outTime = end;
   const te = `[${formatTimestamp(end, true)}]`;
   let removed = false;
@@ -2047,3 +2069,350 @@ function clocktableShift(dir: string, arg: e8.PrefixArg): boolean {
 
 e8.defun("org-clocktable-shift", clocktableShift);
 
+// Resolving open clocks, as org-clock.el's org-resolve-clocks: clocks left
+// running in a file, found when clocking in or asked for with C-c C-x C-z,
+// and the time a running clock was idle, after org-clock-idle-time.
+
+defvar("org-clock-idle-time", null, "Minutes idle after which a running clock asks what to do with the idle time, or nil for never.");
+defvar(
+  "org-clock-auto-clock-resolution",
+  "when-no-clock-is-running",
+  "When clocking in resolves clocks left open in Org files: t always, when-no-clock-is-running when none is running, nil never.",
+);
+defvar("org-clock-resolve-expert", false, "Whether resolving a clock asks without showing the *Org Clock* help first.");
+
+/** While clocks are being resolved, as org-clock-resolving-clocks; and because the clock was idle, as -due-to-idleness. */
+let resolving = false;
+let resolvingDueToIdleness = false;
+/** While clocking in resolves clocks, as org-clock-clocking-in. */
+let clockingIn = false;
+/** When a clock closed by resolving stopped, for the next clock-in to offer starting from, as org-clock-leftover-time. */
+let leftoverTime: DateTime | undefined;
+/** The timer checking whether the user is idle, as org-clock-idle-timer. */
+let idleTimer: number | undefined;
+
+/** A clock open in a file: where its timestamp ends, and when it started, as org-find-open-clocks gives it. */
+type OpenClock = { marker: e8.Marker; start: DateTime };
+
+/** An Org time from milliseconds, in E8's zone, as decode-time. */
+function fromMillis(ms: number): DateTime {
+  const [, minute, hour, day, month, year] = e8.decodeTime(ms / 1000) as number[];
+  return { year, month, day, hour, minute };
+}
+
+/** The agenda files and every Org buffer's file, as org-files-list. */
+function filesList(): string[] {
+  const files = agendaFiles().map((f) => e8.expandFileName(f));
+  for (const b of e8.bufferList()) {
+    const file = e8.withCurrentBuffer(b, () => (e8.derivedModeP("org-mode") ? e8.bufferFileName() : undefined));
+    if (file !== undefined && !files.includes(e8.expandFileName(file))) files.unshift(e8.expandFileName(file));
+  }
+  return files;
+}
+
+/** The clocks open in FILE, last first, as org-find-open-clocks pushes them. */
+function findOpenClocks(file: string): OpenClock[] {
+  const buffer = e8.getFileBuffer(file) ?? e8.findFileNoselect(file);
+  const out: OpenClock[] = [];
+  e8.withCurrentBuffer(buffer, () =>
+    e8.saveRestriction(() => {
+      e8.widen();
+      for (let l = 0; l < e8.lineCount(); l++) {
+        const m = /CLOCK: (\[.*?\])$/.exec(e8.lineText(l));
+        if (!m || elementAt(e8.lineStart(l))?.type !== "clock") continue;
+        const t = /\[(\d{4})-(\d{2})-(\d{2})[^\]]*? (\d{1,2}):(\d{2})/.exec(m[1]);
+        const start = t ? { year: +t[1], month: +t[2], day: +t[3], hour: +t[4], minute: +t[5] } : { ...today(), hour: 0, minute: 0 };
+        out.unshift({ marker: e8.makeMarker(e8.lineEnd(l), { buffer, advances: true }), start });
+      }
+    }),
+  );
+  return out;
+}
+
+/** Whether C is the running clock, as org-is-active-clock. */
+function isActiveClock(c: OpenClock): boolean {
+  if (!clock) return false;
+  return e8.markerBuffer(clock.line) === e8.markerBuffer(c.marker) &&
+    e8.withCurrentBuffer(e8.markerBuffer(c.marker) as string, () => lineAt(e8.markerPosition(clock!.line) ?? 0) === lineAt(e8.markerPosition(c.marker) ?? 0));
+}
+
+/** Runs F at the start of C's line, its buffer widened, as org-with-clock-position. */
+function atClockPosition<T>(c: OpenClock, f: () => T): T {
+  return e8.withCurrentBuffer(e8.markerBuffer(c.marker) as string, () =>
+    e8.saveExcursion(() =>
+      e8.saveRestriction(() => {
+        e8.widen();
+        e8.gotoChar(e8.lineStart(lineAt(e8.markerPosition(c.marker) ?? 0)));
+        return f();
+      }),
+    ),
+  );
+}
+
+/** Runs F with C as the running clock, the running one put back after, as org-with-clock. */
+function withClock<T>(c: OpenClock, f: () => T): T {
+  const saved = clock;
+  const savedTask = e8.variable("org-clock-current-task") ?? null;
+  return atClockPosition(c, () => {
+    const all = headings();
+    const i = headingIndex(all, lineAt());
+    const h = i === undefined ? undefined : all[i];
+    clock = {
+      line: e8.makeMarker(e8.point()),
+      heading: e8.makeMarker(h?.start ?? e8.point()),
+      title: h?.title ?? "",
+      start: millis(c.start),
+      before: 0,
+    };
+    try {
+      return f();
+    } finally {
+      if (clock && clock !== saved) {
+        e8.deleteMarker(clock.line);
+        e8.deleteMarker(clock.heading);
+      }
+      clock = saved;
+      e8.setVariable("org-clock-current-task", savedTask);
+      if (saved) {
+        updateModeLine();
+        timer ??= e8.runWithTimer(60, 60, updateModeLine);
+      }
+    }
+  });
+}
+
+/** Stops clock C, at AT-TIME if given, as org-clock-clock-out. */
+function clockClockOut(c: OpenClock, failQuietly: boolean, atTime?: DateTime): void {
+  if (isActiveClock(c)) clockOut(failQuietly, false, atTime);
+  else withClock(c, () => clockOut(failQuietly, false, atTime));
+}
+
+/** Cancels clock C, as org-clock-clock-cancel. */
+function clockClockCancel(c: OpenClock): void {
+  if (isActiveClock(c)) e8.call("org-clock-cancel");
+  else withClock(c, () => e8.call("org-clock-cancel"));
+}
+
+/** Clocks in again at C, resuming it, as org-clock-clock-in. */
+function clockClockIn(c: OpenClock, resume: boolean, startTime?: DateTime): void {
+  atClockPosition(c, () =>
+    e8.letBind({ "org-clock-in-resume": resume || truthy(e8.variable("org-clock-in-resume") ?? null) }, () => clockIn(null, startTime)),
+  );
+}
+
+/**
+ * Resolves clock C to RESOLVE-TO, as org-clock-resolve-clock: nil cancels
+ * it, "now" keeps it running, a time stops it then, and unless CLOSE, the
+ * task is clocked in again, from CLOCK-OUT-TIME's RESOLVE-TO if given.
+ */
+function resolveClock(c: OpenClock, resolveTo: null | "now" | DateTime, clockOutTime: DateTime | undefined, close: boolean, restart: boolean, failQuietly: boolean): void {
+  const outer = resolving;
+  resolving = true;
+  try {
+    const heading = atClockPosition(c, () => {
+      const all = headings();
+      const i = headingIndex(all, lineAt());
+      return e8.makeMarker(i === undefined ? e8.point() : all[i].start);
+    });
+    const atHeading = (f: () => void) =>
+      e8.withCurrentBuffer(e8.markerBuffer(heading) as string, () =>
+        e8.saveExcursion(() => {
+          e8.gotoChar(e8.markerPosition(heading) ?? 0);
+          f();
+        }),
+      );
+    try {
+      if (resolveTo === null) {
+        clockClockCancel(c);
+        if (restart && !clockingIn) atHeading(() => clockIn(null));
+      } else if (resolveTo === "now") {
+        if (restart) e8.signal("error", "RESTART is not valid here");
+        if (close || clockingIn) clockClockOut(c, failQuietly);
+        else if (!isActiveClock(c)) clockClockIn(c, true);
+      } else {
+        if (millis(resolveTo) > millis(now())) e8.signal("error", "RESOLVE-TO must refer to a time in the past");
+        if (restart) e8.signal("error", "RESTART is not valid here");
+        clockClockOut(c, failQuietly, clockOutTime ?? resolveTo);
+        if (clockingIn) {
+          // Clocking in goes on as it was.
+        } else if (close) leftoverTime = clockOutTime === undefined ? resolveTo : undefined;
+        else atHeading(() => clockIn(null, clockOutTime !== undefined ? resolveTo : undefined));
+      }
+    } finally {
+      e8.deleteMarker(heading);
+    }
+  } finally {
+    resolving = outer;
+  }
+}
+
+/** Shows clock C's entry, its drawer open, as org-clock-jump-to-current-clock. */
+function jumpToClock(c: OpenClock): void {
+  const buffer = e8.markerBuffer(c.marker);
+  if (buffer === undefined) e8.userError("No Org clock is currently running");
+  e8.call("switch-to-buffer", buffer);
+  const pos = e8.markerPosition(c.marker) ?? 0;
+  if (pos < e8.pointMin() || pos > e8.pointMax()) e8.widen();
+  e8.gotoChar(pos);
+  // Its entry shown, as org-clock-goto shows the context.
+  const all = headings();
+  const i = headingIndex(all, lineAt());
+  if (i !== undefined) showEntry(all, i);
+}
+
+const RESOLVE_HELP = `Select a Clock Resolution Command:
+
+i/q      Ignore this question; the same as keeping all the idle time.
+
+k/K      Keep X minutes of the idle time (default is all).  If this
+         amount is less than the default, you will be clocked out
+         that many minutes after the time that idling began, and then
+         clocked back in at the present time.
+
+t/T      Like ‘k’, but will ask you to specify a time (when you got
+         distracted away), instead of a number of minutes.
+
+g/G      Indicate that you "got back" X minutes ago.  This is quite
+         different from ‘k’: it clocks you out from the beginning of
+         the idle period and clock you back in X minutes ago.
+
+s/S      Subtract the idle time from the current clock.  This is the
+         same as keeping 0 minutes.
+
+C        Cancel the open timer altogether.  It will be as though you
+         never clocked in.
+
+j/J      Jump to the current clock, to make manual adjustments.
+
+For all these options, using uppercase makes your final state
+to be CLOCKED OUT.`;
+
+/** A number read with DEFAULT for an empty answer, as read-number. */
+function readNumber(prompt: string, def: number): number {
+  for (;;) {
+    const answer = e8.readString(prompt.replace(/: $/, ` (default ${def}): `));
+    if (answer.trim() === "") return def;
+    const n = Number(answer.trim());
+    if (Number.isFinite(n)) return n;
+    e8.message("Please enter a number.");
+    e8.sitFor(1);
+  }
+}
+
+/**
+ * Asks what to do with clock C, open since LAST-VALID, and does it, as
+ * org-clock-resolve: keep the time (k, t), say when you got back (g),
+ * subtract it (s), cancel the clock (C), go to it (j) or ignore it (i,
+ * q); upper case leaves the clock stopped.
+ */
+function resolve(c: OpenClock, prompt: string, lastValid: DateTime, failQuietly = false): void {
+  const ch = e8.saveWindowExcursion(() =>
+    e8.saveExcursion(() => {
+      if (!resolvingDueToIdleness) jumpToClock(c);
+      if (!truthy(e8.variable("org-clock-resolve-expert") ?? null)) {
+        const help = "*Org Clock*";
+        e8.withCurrentBuffer(e8.getBufferCreate(help), () =>
+          e8.letBind({ "inhibit-read-only": true }, () => {
+            eraseBuffer();
+            e8.insert(RESOLVE_HELP);
+            e8.gotoChar(0);
+          }),
+        );
+        e8.call("display-buffer", help);
+        const w = e8.windowList().find((x) => e8.windowBuffer(x) === help);
+        if (w !== undefined) {
+          const selected = e8.selectedWindow();
+          e8.selectWindow(w);
+          e8.call("shrink-window-if-larger-than-buffer");
+          e8.selectWindow(selected);
+        }
+      }
+      let key: string;
+      for (;;) {
+        key = e8.readKey(`${prompt} [jkKtTgGSscCiq]? `);
+        if ("kKgGsSCjJiqtT".includes(key) && [...key].length === 1) break;
+        e8.ding();
+      }
+      return key === "i" || key === "q" ? undefined : key;
+    }),
+  );
+  const nowMs = millis(now());
+  const def = Math.floor((nowMs - millis(lastValid)) / 60000);
+  const keep = ch === "k" || ch === "K" ? readNumber("Keep how many minutes: ", def)
+    : ch === "t" || ch === "T" ? Math.floor((millis(parseDate(readDateAnswer("Date+time: "), true)) - millis(lastValid)) / 60000)
+    : undefined;
+  const gotback = ch === "g" || ch === "G" ? readNumber("Got back how many minutes ago: ", def) : undefined;
+  const subtract = ch === "s" || ch === "S";
+  const barelyStarted = millis(lastValid) - millis(c.start) < 45000;
+  const startOver = subtract && barelyStarted;
+  if (ch === "j" || ch === "J") {
+    if (ch === "J") resolveClock(c, "now", undefined, true, false, failQuietly);
+    jumpToClock(c);
+    return;
+  }
+  if (ch === undefined) {
+    e8.message("");
+    return;
+  }
+  let to: null | "now" | DateTime;
+  if (ch === "C" || startOver) to = null;
+  else if (subtract || gotback === 0) to = lastValid;
+  else if ((keep !== undefined && keep === def) || (gotback !== undefined && gotback === def)) to = "now";
+  else if (keep !== undefined) to = fromMillis(millis(lastValid) + 60000 * keep);
+  else if (gotback !== undefined) to = fromMillis(nowMs - 60000 * gotback);
+  else return e8.signal("error", "Unexpected, please report this as a bug");
+  resolveClock(c, to, gotback !== undefined ? lastValid : undefined, "KGST".includes(ch), startOver && !"KGSC".includes(ch), failQuietly);
+}
+
+/** Resolves the open clocks in the agenda files and Org buffers, with ONLY-DANGLING those not running, as org-resolve-clocks. */
+function resolveClocks(onlyDangling: boolean): void {
+  if (resolving) return;
+  resolving = true;
+  try {
+    for (const file of filesList()) {
+      for (const c of findOpenClocks(file)) {
+        const dangling = !isActiveClock(c);
+        if (!onlyDangling || dangling) {
+          const mins = Math.floor((millis(now()) - millis(c.start)) / 60000);
+          resolve(c, `Dangling clock started ${mins} mins ago`, c.start);
+        }
+        e8.deleteMarker(c.marker);
+      }
+    }
+  } finally {
+    resolving = false;
+  }
+}
+
+e8.defineCommand({
+  name: "org-resolve-clocks",
+  doc: "Resolve the clocks left open in the agenda files and Org buffers, asking what to do with each; with a prefix argument, only those not running.",
+  params: [{ name: "onlyDangling", kind: "prefix" }],
+  run: (onlyDangling) => resolveClocks(onlyDangling !== null && onlyDangling !== undefined),
+});
+
+/** Seconds since the user last typed, as org-user-idle-seconds counts E8's idle time. */
+function userIdleSeconds(): number {
+  return e8.currentIdleTime() ?? 0;
+}
+
+/** Asks what to do with the time the running clock was idle, once org-clock-idle-time minutes pass, as org-resolve-clocks-if-idle. */
+function resolveIfIdle(): void {
+  const minutes = e8.variable("org-clock-idle-time");
+  if (typeof minutes !== "number" || resolving || !clock || e8.markerBuffer(clock.line) === undefined) return;
+  const idle = userIdleSeconds();
+  if (idle <= 60 * minutes) return;
+  if (idleTimer !== undefined) e8.cancelTimer(idleTimer);
+  idleTimer = undefined;
+  const idleStart = fromMillis(millis(now()) - idle * 1000);
+  const running = clock;
+  const c: OpenClock = { marker: e8.makeMarker(e8.markerPosition(running.line) ?? 0, { buffer: e8.markerBuffer(running.line) as string }), start: fromMillis(running.start) };
+  resolvingDueToIdleness = true;
+  try {
+    resolve(c, `Clocked in & idle for ${((millis(now()) - millis(idleStart)) / 60000).toFixed(1)} mins`, idleStart);
+  } finally {
+    resolvingDueToIdleness = false;
+    e8.deleteMarker(c.marker);
+  }
+  if (clock && idleTimer === undefined) idleTimer = e8.runWithTimer(60, 60, resolveIfIdle);
+}

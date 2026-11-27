@@ -13363,6 +13363,7 @@ const EXTRA_KEYS: [string, e8.CommandName][] = [
   ["C-c C-x <right>", "org-shiftcontrolright"],
   ["C-c C-x <", "org-agenda-set-restriction-lock"],
   ["C-c C-x C-c", "org-columns"],
+  ["C-c C-x C-z", "org-resolve-clocks"],
   ["C-c C-x >", "org-agenda-remove-restriction-lock"],
   ["C-c C-x <left>", "org-shiftcontrolleft"],
 ];
