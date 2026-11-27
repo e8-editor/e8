@@ -1121,8 +1121,10 @@ function renderBlocks(blocks: Block[], pointLine: number, keepMarks = false): vo
     // No line marked for bulk action, as org-agenda-mode starts with none; A keeps them, as Org appends without the mode.
     if (keepMarks) removeMarkOverlays();
     else resetBulkMarks();
+    // Out of column view, as org-agenda-prepare resets org-agenda-columns-active, its read-only text erased with the rest.
+    if (e8.fboundp("org--agenda-columns-reset")) e8.funcall("org--agenda-columns-reset");
     e8.setReadOnly(false);
-    eraseBuffer();
+    e8.letBind({ "inhibit-read-only": true }, () => eraseBuffer());
     e8.insert(lines.map((l) => l.text).join("\n") + "\n");
     insertHabitGraphs(lines);
     if (e8.variable("major-mode") !== "org-agenda-mode") e8.call("org-agenda-mode");
@@ -1157,6 +1159,8 @@ function renderBlocks(blocks: Block[], pointLine: number, keepMarks = false): vo
   readFilterPresets();
   e8.withCurrentBuffer(agendaBuffer, reapplyFilters);
   placeAgendaWindow();
+  // org-agenda-finalize-hook, in the agenda's buffer, as org-agenda-finalize runs it.
+  e8.withCurrentBuffer(agendaBuffer, () => e8.runHooks("org-agenda-finalize-hook"));
   // The line point goes to in the agenda's window, as Org moves point once the window is selected.
   if (e8.windowBuffer() === agendaBuffer) e8.gotoChar(e8.lineStart(Math.min(pointLine, e8.lineCount() - 1)));
   const setup = e8.variable("org-agenda-window-setup");
@@ -4839,6 +4843,11 @@ e8.defineVariable({
  * its buffer killed.
  */
 function quitAgenda(bury = false): void {
+  // Column view left, not the agenda, as org-agenda--quit does with org-agenda-columns-active.
+  if (truthy(e8.funcall("org--agenda-columns-active-p"))) {
+    e8.call("org-columns-quit");
+    return;
+  }
   const buffer = e8.bufferName();
   const setup = e8.variable("org-agenda-window-setup");
   if (truthy(e8.variable("org-agenda-restore-windows-after-quit") ?? null) && preAgendaWindows !== undefined) {
@@ -4872,6 +4881,8 @@ e8.defineCommand({
   name: "org-agenda-exit",
   doc: "Leave the agenda, killing the Org buffers it visited that were not open, asking to save those that changed.",
   run: () => {
+    // Out of column view first, as org-agenda-exit leaves it.
+    if (truthy(e8.funcall("org--agenda-columns-active-p"))) e8.call("org-columns-quit");
     // As org-release-buffers: saved if the user agrees, then killed.
     for (const visited of agendaNewBuffers) {
       const buffer = visited.name;
@@ -5588,6 +5599,7 @@ for (const [key, command] of [
   ["S-<left>", "org-agenda-do-date-earlier"],
   ["C-c C-x <right>", "org-agenda-do-date-later"],
   ["C-c C-x <", "org-agenda-set-restriction-lock-from-agenda"],
+  ["C-c C-x C-c", "org-agenda-columns"],
   ["C-c C-x >", "org-agenda-remove-restriction-lock"],
   ["C-c C-x <left>", "org-agenda-do-date-earlier"],
   [">", "org-agenda-date-prompt"],
@@ -6127,3 +6139,25 @@ e8.defineCommand({
   doc: "Write the views of the custom agenda commands that name files to write to, after their settings, to those files.",
   run: storeAgendaViews,
 });
+
+/**
+ * Each line of the agenda for column view: "entry" with its entry's buffer
+ * and heading, as org-hd-marker; "date" for a day's line, as
+ * org-date-line; "structure" for a view's first header line, in
+ * org-agenda-structure; else "".
+ */
+e8.defun("org--agenda-column-lines", () =>
+  e8.withCurrentBuffer(agendaBuffer, () => {
+    const out: e8.Value[] = [];
+    for (let l = 0; l < e8.lineCount(); l++) {
+      const item = agendaLines[l];
+      const day = agendaLineDays[l];
+      if (item && e8.getBuffer(item.buffer)) out.push(["entry", item.buffer, headingOf(item)]);
+      else if (day !== undefined && agendaLineDays[l - 1]?.day !== day.day) out.push(["date", null, null]);
+      else if (shownBlocks.some((b) => b.from === l && b.to > l)) out.push(["structure", null, null]);
+      else out.push(["", null, null]);
+    }
+    return out;
+  }),
+);
+e8.defineHook("org-agenda-finalize-hook", "Functions run in the agenda's buffer once a view is made.");

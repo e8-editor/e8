@@ -21,9 +21,11 @@ import {
   todoFaceOf,
 } from "org";
 import { entryGet, entryPutHere, topGet } from "org-list";
-import { linkDisplayFormat, linkUnescape } from "ol";
+import { linkDisplayFormat, linkHeadingSearchString, linkMakeString, linkUnescape } from "ol";
 import { clockSpecialRange, clockSum } from "org-clock";
 import { truthy } from "subr";
+import { findEntryWithId } from "org-id";
+import { allTagsOf, createDblock, dynamicBlockDefine, makeTagsMatcher, plistGet, updateDblock } from "org";
 
 for (const [name, value, doc] of [
   ["org-columns-default-format", "%25ITEM %TODO %3PRIORITY %TAGS", "The columns column view shows where no COLUMNS property or #+COLUMNS: line says otherwise."],
@@ -335,7 +337,7 @@ function computeAll(s: ColumnsState): void {
 }
 
 /** A value as its column shows it, as org-columns--displayed-value: ITEM with its stars, dates as inactive, numbers by printf. */
-function displayedValue(spec: Spec, value: string, h: Heading): string {
+function displayedValue(spec: Spec, value: string, h: Heading, noStar = false): string {
   const modify = e8.variable("org-columns-modify-value-for-display-function");
   // Only a function, as Org checks functionp.
   if (typeof modify === "function" || (typeof modify === "string" && e8.fboundp(modify))) {
@@ -343,6 +345,7 @@ function displayedValue(spec: Spec, value: string, h: Heading): string {
     if (typeof r === "string") return r;
   }
   if (spec.property === "ITEM") {
+    if (noStar) return linkDisplayFormat(value);
     const lead = truthy(e8.variable("org-hide-leading-stars") ?? null) ? " " : "*";
     return `${lead.repeat(h.level - 1)}* ${linkDisplayFormat(value)}`;
   }
@@ -352,11 +355,11 @@ function displayedValue(spec: Spec, value: string, h: Heading): string {
 }
 
 /** Each column's spec, value and the value shown at heading H, as org-columns--collect-values. */
-function collectValues(s: ColumnsState, h: Heading, get: (h: Heading, name: string) => string | undefined): [Spec, string, string][] {
+function collectValues(s: ColumnsState, h: Heading, get: (h: Heading, name: string) => string | undefined, noStar = false): [Spec, string, string][] {
   const summaries = summariesAt(h.start);
   return s.compiled.map((spec) => {
     const v = summaries.find(([key]) => key === specKey(spec))?.[1] ?? get(h, spec.property) ?? "";
-    return [spec, v, displayedValue(spec, v, h)];
+    return [spec, v, displayedValue(spec, v, h, noStar)];
   });
 }
 
@@ -399,13 +402,14 @@ function valueFace(property: string, original: string): e8.Value | undefined {
 const columnsMap = e8.defineKeymap("org-columns-map");
 
 /** Draws the columns over the line at point, as org-columns--display-here. */
-function displayHere(s: ColumnsState, columns: [Spec, string, string][]): void {
+function displayHere(s: ColumnsState, columns: [Spec, string, string][], dateline = false): void {
   e8.saveExcursion(() => {
     const line = e8.lineOf(e8.point());
     const bol = e8.lineStart(line);
     e8.gotoChar(bol);
     const level = /^(\*+) /.exec(e8.lineText(line))?.[1].length;
-    const face = level !== undefined ? ["org-column", `org-level-${((level - 1) % 8) + 1}`] : ["org-column"];
+    const own = dateline ? "org-agenda-column-dateline" : "org-column";
+    const face = level !== undefined && !inAgenda() ? [own, `org-level-${((level - 1) % 8) + 1}`] : [own];
     // As many characters on the line as columns, each column drawn over one.
     const chars = e8.lineEnd(line) - bol;
     if (columns.length > chars) {
@@ -510,32 +514,39 @@ function getFormat(s: ColumnsState, given?: string): string {
   const all = headings();
   const i = headingIndex(all, e8.lineOf(e8.point()));
   const inherited = i === undefined ? topGet("COLUMNS") : inheritedColumns(all, i)?.value;
-  let fmt = given ?? inherited;
-  if (fmt === undefined) {
-    e8.saveRestriction(() => {
-      e8.widen();
-      // A keyword's, not a line in a block, as Org checks the element.
-      let block: string | undefined;
-      for (let l = 0; l < e8.lineCount() && fmt === undefined; l++) {
-        const text = e8.lineText(l);
-        if (block !== undefined) {
-          if (new RegExp(`^[ \\t]*#\\+end_${block}[ \\t]*$`, "i").test(text)) block = undefined;
-          continue;
-        }
-        const b = /^[ \t]*#\+begin_(\S+)/i.exec(text);
-        if (b) {
-          block = b[1].replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-          continue;
-        }
-        const m = /^[ \t]*#\+COLUMNS: (.+)$/i.exec(text);
-        if (m) fmt = m[1].trim();
-      }
-    });
-  }
-  fmt ??= String(e8.variable("org-columns-default-format") ?? "");
+  const fmt = given ?? inherited ?? bufferColumnsFormat();
   s.fmt = fmt;
   s.compiled = compileFormat(fmt);
   return fmt;
+}
+
+/**
+ * The buffer's columns format: its #+COLUMNS: keyword, a line in a block
+ * not one, else org-columns-default-format, as Org mode sets that variable
+ * locally from the keyword.
+ */
+function bufferColumnsFormat(): string {
+  let fmt: string | undefined;
+  e8.saveRestriction(() => {
+    e8.widen();
+    // A keyword's, not a line in a block, as Org checks the element.
+    let block: string | undefined;
+    for (let l = 0; l < e8.lineCount() && fmt === undefined; l++) {
+      const text = e8.lineText(l);
+      if (block !== undefined) {
+        if (new RegExp(`^[ \\t]*#\\+end_${block}[ \\t]*$`, "i").test(text)) block = undefined;
+        continue;
+      }
+      const b = /^[ \t]*#\+begin_(\S+)/i.exec(text);
+      if (b) {
+        block = b[1].replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        continue;
+      }
+      const m = /^[ \t]*#\+COLUMNS: (.+)$/i.exec(text);
+      if (m) fmt = m[1].trim();
+    }
+  });
+  return fmt ?? String(e8.variable("org-columns-default-format") ?? "");
 }
 
 /** The COLUMNS property the heading at I has or inherits, and the heading it is on, as org-entry-get with inheritance and org-entry-property-inherited-from. */
@@ -624,6 +635,16 @@ let inhibitRecalculation = false;
 function redo(recalc = true): void {
   const s = state();
   if (s.overlays.length === 0) return;
+  // The agenda made again, and its columns, as org-columns-redo does there.
+  if (inAgenda()) {
+    e8.message("Recomputing columns...");
+    e8.call("org-agenda-redo");
+    if (!agendaColumnsActive.has(e8.currentBuffer().id)) agendaColumns();
+    // At the top, where the buffer's erasing left Org's begin marker, at which it does all this.
+    e8.gotoChar(e8.pointMin());
+    e8.message("Recomputing columns...done");
+    return;
+  }
   e8.message("Recomputing columns...");
   const at = s.begin ? (e8.markerPosition(s.begin) ?? e8.point()) : e8.point();
   const [global, fmt] = [s.global, s.fmt];
@@ -653,16 +674,28 @@ function columnProperty(name: string): e8.Value | undefined {
   return undefined;
 }
 
-/** The heading of point's line, for the column commands. */
-function headingHere(): Heading {
+/** Whether the current buffer is the agenda, where column view's rows are its lines' entries. */
+const inAgenda = (): boolean => e8.variable("major-mode") === "org-agenda-mode";
+
+/** The entry of point's row, for the column commands: in the agenda, its line's entry, as org-hd-marker. */
+function rowHere(): { place: Place; h: Heading } {
+  if (inAgenda()) {
+    const line = agendaColumnLines()[e8.lineOf(e8.point())];
+    const place = line && line[0] === "entry" ? { buffer: line[1]!, start: line[2]! } : undefined;
+    const h = place === undefined ? undefined : headingAt(place);
+    if (place === undefined || h === undefined) e8.userError("No column to edit at point");
+    return { place, h };
+  }
   const all = headings();
   const i = headingIndex(all, e8.lineOf(e8.point()));
   if (i === undefined) e8.userError("Before first headline");
-  return all[i];
+  return { place: { buffer: e8.bufferName(), start: all[i].start }, h: all[i] };
 }
 
 /** Signals if the value at point is a summary, as org-columns-check-computed. */
 function checkComputed(s: ColumnsState): void {
+  // The agenda's lines have no summaries.
+  if (inAgenda()) return;
   const spec = s.compiled[textColumn()];
   if (spec?.op !== undefined && summariesAt(e8.lineStart(e8.lineOf(e8.point()))).some(([key]) => key === specKey(spec))) {
     e8.signal("error", "This value is computed from the entry\u2019s children");
@@ -671,6 +704,14 @@ function checkComputed(s: ColumnsState): void {
 
 /** Runs F with the line made writable, then draws the columns again, summarizing again, as org-columns-edit-value does. */
 function afterEdit(s: ColumnsState, f: () => void, col: number): void {
+  // In the agenda, the entry changed and the columns drawn again from the entries, in the format they have, as org-columns-edit-value does there.
+  if (inAgenda()) {
+    f();
+    const fmt = s.fmt;
+    e8.letBind({ "org-overriding-columns-format": fmt }, agendaColumns);
+    e8.gotoChar(Math.min(e8.lineStart(e8.lineOf(e8.point())) + col, e8.lineEnd(e8.lineOf(e8.point()))));
+    return;
+  }
   const line = e8.lineOf(e8.point());
   e8.withSilentModifications(() =>
     e8.letBind({ "inhibit-read-only": true }, () => e8.removeTextProperty(Math.max(e8.pointMin(), e8.lineStart(line) - 1), e8.lineEnd(line), "read-only")),
@@ -706,42 +747,44 @@ function editHeadline(title: string, old: string): void {
   e8.call("org-align-tags");
 }
 
-/** Runs F at the heading of point's line, as org-with-point-at its marker. */
-function atHeading<T>(h: Heading, f: () => T): T {
-  return e8.saveExcursion(() => {
-    e8.gotoChar(h.start);
-    return f();
-  });
+/** Runs F at an entry's heading, in its buffer, as org-with-point-at its marker. */
+function atHeading<T>(p: Place, f: () => T): T {
+  return e8.withCurrentBuffer(p.buffer, () =>
+    e8.saveExcursion(() => {
+      e8.gotoChar(p.start);
+      return f();
+    }),
+  );
 }
 
 function editValue(key?: string): void {
   const s = state();
   checkComputed(s);
   const col = textColumn();
-  const h = headingHere();
+  const { place, h } = rowHere();
   key ??= columnProperty("org-columns-key") as string | undefined;
   if (key === undefined) e8.userError("No column to edit at point");
   let action: (() => void) | undefined;
   if (key === "CLOCKSUM") e8.userError("This special column cannot be edited");
-  else if (key === "ITEM") action = () => atHeading(h, () => editHeadline(e8.readString("Edit: ", { initial: h.title }), h.title));
-  else if (key === "TODO") action = () => atHeading(h, () => e8.callInteractively("org-todo"));
-  else if (key === "PRIORITY") action = () => atHeading(h, () => e8.callInteractively("org-priority"));
+  else if (key === "ITEM") action = () => atHeading(place, () => editHeadline(e8.readString("Edit: ", { initial: h.title }), h.title));
+  else if (key === "TODO") action = () => atHeading(place, () => e8.callInteractively("org-todo"));
+  else if (key === "PRIORITY") action = () => atHeading(place, () => e8.callInteractively("org-priority"));
   else if (key === "TAGS") {
     action = () =>
-      atHeading(h, () => {
+      atHeading(place, () => {
         const single = e8.variable("org-fast-tag-selection-single-key");
         e8.letBind({ "org-fast-tag-selection-single-key": single === "expert" ? true : (single ?? null) }, () => e8.callInteractively("org-set-tags-command"));
       });
-  } else if (key === "DEADLINE") action = () => atHeading(h, () => e8.callInteractively("org-deadline"));
-  else if (key === "SCHEDULED") action = () => atHeading(h, () => e8.callInteractively("org-schedule"));
+  } else if (key === "DEADLINE") action = () => atHeading(place, () => e8.callInteractively("org-deadline"));
+  else if (key === "SCHEDULED") action = () => atHeading(place, () => e8.callInteractively("org-schedule"));
   else {
-    const allowed = atHeading(h, () => propertyAllowedValues(key!));
+    const allowed = atHeading(place, () => propertyAllowedValues(key!));
     const value = String(columnProperty("org-columns-value") ?? "");
     const nval = (allowed === undefined
       ? e8.readString("Edit: ", { initial: value })
       : e8.completingRead("Value: ", allowed.values, { requireMatch: allowed.restricted })
     ).trim();
-    if (nval !== value) action = () => atHeading(h, () => entryPutHere(key!, nval));
+    if (nval !== value) action = () => atHeading(place, () => entryPutHere(key!, nval));
   }
   if (action === undefined) return;
   afterEdit(s, action, col);
@@ -754,9 +797,9 @@ function nextAllowedValue(previous = false, nth?: number): void {
   const col = textColumn();
   const key = columnProperty("org-columns-key") as string | undefined;
   const value = String(columnProperty("org-columns-value") ?? "");
-  const h = headingHere();
+  const { place } = rowHere();
   const spec = s.compiled[col];
-  let all = atHeading(h, () => propertyAllowedValues(key ?? ""))?.values
+  let all = atHeading(place, () => propertyAllowedValues(key ?? ""))?.values
     ?? (spec?.op !== undefined && ["X", "X/", "X%"].includes(spec.op) ? (e8.variable("org-columns-checkbox-allowed-values") as string[]) : undefined)
     ?? allowedDates(value);
   if (previous && all) all = [...all].reverse();
@@ -772,7 +815,7 @@ function nextAllowedValue(previous = false, nth?: number): void {
     if (l === 1) e8.signal("error", "Only one allowed value for this property");
     next = all![all!.indexOf(value) + 1] ?? all![0];
   } else next = all![0];
-  afterEdit(s, () => atHeading(h, () => entryPutHere(key!, next)), col);
+  afterEdit(s, () => atHeading(place, () => entryPutHere(key!, next)), col);
 }
 
 /** The day before, the day itself and the day after the timestamp S, in its form, as org-colview-construct-allowed-dates. */
@@ -839,11 +882,18 @@ cmd(
   (global) => columns(global !== null && global !== undefined),
   [{ name: "global", kind: "prefix" }],
 );
-cmd("org-columns-quit", "Leave column view.", () => {
+/** Leaves column view, as org-columns-quit: in the agenda, saying it is not made again. */
+function quitColumns(): void {
   const s = state();
   removeOverlays(s);
-  s.fmt = "";
-});
+  if (!inAgenda()) s.fmt = "";
+  else {
+    agendaColumnsActive.delete(e8.currentBuffer().id);
+    e8.message("Modification not yet reflected in Agenda buffer, use \u2018r\u2019 to refresh");
+  }
+}
+
+cmd("org-columns-quit", "Leave column view.", quitColumns);
 cmd("org-columns-redo", "Draw the columns again, summarizing their values afresh.", () => redo(true));
 cmd("org-columns-edit-value", "Edit the value of the column at point: TODO, priority, tags and dates with their own commands, others asked for.", () => editValue());
 cmd("org-columns-todo", "Change the TODO state of the row at point.", () => editValue("TODO"));
@@ -869,23 +919,27 @@ cmd("org-columns-edit-allowed", "Edit the allowed values of the column at point'
   const s = state();
   const key = columnProperty("org-columns-key") as string | undefined;
   if (key === undefined) e8.userError("No column to edit at point");
-  const h = headingHere();
-  const all = headings();
-  const i = headingIndex(all, h.line)!;
+  const { place, h } = rowHere();
   const name = `${key}_ALL`;
-  let from: number | undefined;
-  for (let j = i, level = all[i].level + 1; j >= 0; j--) {
-    if (all[j].level >= level) continue;
-    level = all[j].level;
-    if (entryGet(all[j].line, name) !== undefined) {
-      from = all[j].start;
-      break;
+  // Where the allowed values are set, the heading itself or one above, else the top level's, in the entry's buffer.
+  atHeading(place, () => {
+    const all = headings();
+    const i = headingIndex(all, h.line)!;
+    let from: number | undefined;
+    for (let j = i, level = all[i].level + 1; j >= 0; j--) {
+      if (all[j].level >= level) continue;
+      level = all[j].level;
+      if (entryGet(all[j].line, name) !== undefined) {
+        from = all[j].start;
+        break;
+      }
     }
-  }
-  const current = from === undefined ? undefined : entryGet(e8.lineOf(from), name);
-  const value = e8.readString("Allowed: ", { initial: current });
-  const at = from ?? (s.topLevel ? e8.markerPosition(s.topLevel) : undefined) ?? h.start;
-  e8.letBind({ "inhibit-read-only": true }, () => e8.saveExcursion(() => (e8.gotoChar(at), entryPutHere(name, value))));
+    const current = from === undefined ? undefined : entryGet(e8.lineOf(from), name);
+    const value = e8.readString("Allowed: ", { initial: current });
+    const top = !inAgenda() && s.topLevel ? e8.markerPosition(s.topLevel) : undefined;
+    const at = from ?? top ?? h.start;
+    e8.letBind({ "inhibit-read-only": true }, () => e8.saveExcursion(() => (e8.gotoChar(at), entryPutHere(name, value))));
+  });
 });
 cmd(
   "org-columns-widen",
@@ -1037,3 +1091,411 @@ for (let n = 0; n <= 9; n++) {
   e8.defineCommand({ name, doc: n === 0 ? "Set the column at point to its last allowed value." : `Set the column at point to allowed value number ${n}.`, run: () => nextAllowedValue(false, n) });
   e8.bindKey(String(n), name as e8.CommandName, columnsMap);
 }
+
+// Column view in the agenda, as org-agenda-columns: each line's entry a
+// row of its properties, the days' lines rows of their summaries.
+
+for (const [name, value, doc] of [
+  ["org-columns-default-format-for-agenda", null, "The columns the agenda's column view shows, instead of those of the first entry's file."],
+  ["org-overriding-columns-format", null, "Columns that override every other format, for a custom agenda command's settings."],
+  ["org-local-columns-format", null, "The overriding format a custom command gave the agenda, kept in its buffer."],
+  ["org-agenda-columns-show-summaries", true, "Whether the agenda's column view shows each day's summaries on its line."],
+  ["org-agenda-columns-compute-summary-properties", true, "Whether the agenda's column view summarizes the properties in the files first, as column view there would."],
+  ["org-agenda-columns-add-appointments-to-effort-sum", false, "Whether an appointment's duration counts as its effort in the agenda's column view."],
+  ["org-agenda-view-columns-initially", false, "Whether the agenda starts in column view."],
+  ["org-columns-dblock-formatter", "org-columns-dblock-write-default", "The function writing a columnview dynamic block's table: given where, the table and the parameters."],
+] as const) {
+  e8.defineVariable({ name, value: value as unknown as e8.Value, doc });
+}
+
+/** Where an entry is: its buffer and its heading's start. */
+type Place = { buffer: string; start: number };
+
+/** Each agenda line's kind and its entry, from the agenda, as org-hd-marker and org-date-line say. */
+function agendaColumnLines(): [string, string | null, number | null][] {
+  return e8.funcall("org--agenda-column-lines") as [string, string | null, number | null][];
+}
+
+/** The heading at a place, in its buffer. */
+function headingAt(p: Place): Heading | undefined {
+  return e8.withCurrentBuffer(p.buffer, () => e8.saveRestriction(() => (e8.widen(), headings().find((h) => h.start === p.start))));
+}
+
+/** Whether the agenda's column view is on, as org-agenda-columns-active. */
+const agendaColumnsActive = new Set<number>();
+
+/** The format the agenda's columns take, as org-agenda-columns picks it. */
+function agendaFormat(s: ColumnsState, lines: [string, string | null, number | null][], line: number): string {
+  for (const name of ["org-overriding-columns-format", "org-local-columns-format", "org-columns-default-format-for-agenda"]) {
+    const v = e8.variable(name);
+    if (typeof v === "string") return v;
+  }
+  const fromEntry = (buffer: string, pos: number): string =>
+    e8.withCurrentBuffer(buffer, () =>
+      e8.saveRestriction(() => {
+        e8.widen();
+        const all = headings();
+        const i = headingIndex(all, e8.lineOf(pos));
+        return (i === undefined ? undefined : inheritedColumns(all, i)?.value) ?? bufferColumnsFormat();
+      }),
+    );
+  const here = lines[line];
+  if (here && here[0] === "entry") return fromEntry(here[1]!, here[2]!);
+  if (s.fmt !== "") return s.fmt;
+  const first = lines.find((l) => l[0] === "entry");
+  if (first) return fromEntry(first[1]!, first[2]!);
+  return String(e8.variable("org-columns-default-format") ?? "");
+}
+
+/** Summarizes the agenda's columns in the files its entries are in, as org-agenda-colview-compute, with each file's own columns' operators. */
+function agendaColviewCompute(fmt: Spec[], buffers: string[]): void {
+  for (const buffer of buffers) {
+    e8.withCurrentBuffer(buffer, () =>
+      e8.saveRestriction(() =>
+        e8.saveExcursion(() => {
+          e8.widen();
+          e8.withSilentModifications(() => e8.removeTextProperty(e8.pointMin(), e8.pointMax(), "org-summaries"));
+          e8.gotoChar(e8.pointMin());
+          const own = state();
+          getFormat(own);
+          gotoTopLevel(own);
+          for (const spec of fmt) {
+            if (spec.property === "CLOCKSUM") clockSum();
+            else if (spec.property === "CLOCKSUM_T") {
+              const [start, end] = clockSpecialRange("today");
+              clockSum(start, end, undefined, ":org-clock-minutes-today");
+            } else if (spec.op !== undefined && own.compiled.find((c) => c.property === spec.property)?.op === spec.op) {
+              let main = true;
+              for (const c of own.compiled) {
+                if (c.property !== spec.property) continue;
+                computeSpec(own, c, main);
+                main = false;
+              }
+            }
+          }
+        }),
+      ),
+    );
+  }
+}
+
+/** Turns column view on in the agenda, or draws it again, as org-agenda-columns. */
+function agendaColumns(): void {
+  const s = state();
+  removeOverlays(s);
+  if (s.begin) e8.deleteMarker(s.begin);
+  s.begin = e8.makeMarker(e8.point());
+  const lines = agendaColumnLines();
+  const fmt = agendaFormat(s, lines, e8.lineOf(e8.point()));
+  s.fmt = fmt;
+  s.compiled = compileFormat(fmt);
+  const entries = lines.flatMap((l, line) => (l[0] === "entry" ? [{ line, place: { buffer: l[1]!, start: l[2]! } }] : []));
+  if (truthy(e8.variable("org-agenda-columns-compute-summary-properties") ?? null)) {
+    agendaColviewCompute(s.compiled, [...new Set(entries.map((e) => e.place.buffer))]);
+  }
+  const getters = new Map<string, (h: Heading, name: string) => string | undefined>();
+  const cache: { line: number; cols: [Spec, string, string][] }[] = [];
+  for (const { line, place } of entries) {
+    const cols = e8.withCurrentBuffer(place.buffer, () =>
+      e8.saveRestriction(() => {
+        e8.widen();
+        const h = headings().find((x) => x.start === place.start);
+        if (h === undefined) return undefined;
+        if (!getters.has(place.buffer)) getters.set(place.buffer, selectiveGetter(true));
+        return collectValues(s, h, getters.get(place.buffer)!, true);
+      }),
+    );
+    if (cols) cache.push({ line, cols });
+  }
+  if (cache.length === 0) return;
+  s.maxWidths = s.compiled.map((spec, k) => {
+    if (spec.width !== undefined) return spec.width;
+    let width = [...spec.title].length;
+    for (const { cols } of cache) width = Math.max(width, [...cols[k][2]].length);
+    return width;
+  });
+  displayTitle(s);
+  if (truthy(e8.variable("flyspell-mode") ?? null)) {
+    s.flyspell = true;
+    e8.callWithPrefix(0, "flyspell-mode");
+  }
+  e8.saveExcursion(() => {
+    for (const { line, cols } of cache) {
+      e8.gotoChar(e8.lineStart(line));
+      displayHere(s, cols);
+    }
+  });
+  agendaColumnsActive.add(e8.currentBuffer().id);
+  if (truthy(e8.variable("org-agenda-columns-show-summaries") ?? null)) agendaSummarize(s, lines, cache);
+}
+
+/**
+ * Shows each day's summaries on its line, and the view's on its header,
+ * as org-agenda-colview-summarize: each line taking the entries below it
+ * that a line further down did not, CLOCKSUM summed as times.
+ */
+function agendaSummarize(s: ColumnsState, lines: [string, string | null, number | null][], cache: { line: number; cols: [Spec, string, string][] }[]): void {
+  const fmt = s.compiled.map((spec) => (spec.property === "CLOCKSUM" || spec.property === "CLOCKSUM_T" ? { ...spec, op: ":", printf: undefined } : spec));
+  if (!fmt.some((spec) => spec.op !== undefined)) return;
+  let rest = cache;
+  e8.saveExcursion(() => {
+    for (let line = lines.length - 1; line >= 0; line--) {
+      if (lines[line][0] !== "date" && lines[line][0] !== "structure") continue;
+      const entries = rest.filter((c) => c.line > line);
+      rest = rest.filter((c) => c.line <= line);
+      if (entries.length === 0) continue;
+      const date = e8.lineText(line);
+      const cols = fmt.map((spec, k): [Spec, string, string] => {
+        if (spec.property === "ITEM") return [s.compiled[k], date, date];
+        if (spec.op === undefined) return [s.compiled[k], "", ""];
+        // A clock column's values only if its own spec is the {:} Org looks them up by.
+        const own = s.compiled[k];
+        const found = own.op === spec.op && own.printf === spec.printf;
+        const values = found ? entries.map((c) => c.cols[k][1]).filter((v) => /\S/.test(v)) : [];
+        const final = values.length > 0 ? operator(spec.op).summarize(values, spec.printf) : "";
+        return [s.compiled[k], final, final];
+      });
+      e8.gotoChar(e8.lineStart(line));
+      displayHere(s, cols, true);
+    }
+  });
+}
+
+e8.defineCommand({
+  name: "org-agenda-columns",
+  doc: "Show the agenda's entries as rows of their properties, the columns of the first entry's file or org-columns-default-format-for-agenda, each day's summaries on its line.",
+  run: () => {
+    if (e8.variable("major-mode") !== "org-agenda-mode") e8.userError("Not in an Org agenda buffer");
+    agendaColumns();
+  },
+});
+
+// Column view goes before the agenda is made again, and comes back after, as org-agenda-redo has it.
+e8.adviceAdd("org-agenda-redo", "around", (orig: (...args: unknown[]) => unknown, ...args: unknown[]) => {
+  const active = agendaColumnsActive.has(e8.currentBuffer().id);
+  if (active) quitColumns();
+  const r = orig(...args);
+  if (active && e8.variable("major-mode") === "org-agenda-mode") agendaColumns();
+  return r;
+});
+
+// The agenda's column view from the start, as org-agenda-finalize turns it on with org-agenda-view-columns-initially.
+e8.addHook("org-agenda-finalize-hook", () => {
+  // The overriding format kept in the buffer, as org-agenda-finalize sets org-local-columns-format; a new view starts without it, as org-agenda-mode kills local variables.
+  const overriding = e8.variable("org-overriding-columns-format");
+  e8.makeLocalVariable("org-local-columns-format");
+  e8.setVariable("org-local-columns-format", typeof overriding === "string" ? overriding : null);
+  if (truthy(e8.variable("org-agenda-view-columns-initially") ?? null)) agendaColumns();
+});
+
+/** Leaves the agenda's column view without a word, as org-agenda-prepare resets it for a new view. */
+e8.defun("org--agenda-columns-reset", () => {
+  if (!agendaColumnsActive.has(e8.currentBuffer().id)) return null;
+  removeOverlays(state());
+  agendaColumnsActive.delete(e8.currentBuffer().id);
+  return null;
+});
+
+/** Whether the agenda's column view is on in the current buffer, as org-agenda-columns-active. */
+e8.defun("org--agenda-columns-active-p", () => agendaColumnsActive.has(e8.currentBuffer().id));
+
+// The columnview dynamic block, as org-dblock-write:columnview.
+
+/** A row of a captured view: its heading's level and its columns' texts; or a rule. */
+type Row = { level: number; cells: string[] } | "hline";
+
+/**
+ * The column view of the buffer, or of the subtree point is in with
+ * LOCAL, as a table: the titles, a rule, and a row for each heading
+ * MATCH picks, no deeper than MAXLEVEL, as org-columns--capture-view.
+ */
+function captureView(maxlevel: number | undefined, match: string | undefined, skipEmpty: boolean, excludeTags: string[], format: string | undefined, local: boolean): { titles: string[]; rows: Row[]; compiled: Spec[] } {
+  columns(!local, format);
+  const s = state();
+  // A subtree's needs a heading at the top level, as org-map-entries' tree scope goes back to one from there, column view left on.
+  if (local) {
+    const top = s.topLevel ? (e8.markerPosition(s.topLevel) ?? 0) : 0;
+    if (headingIndex(headings(), e8.lineOf(top)) === undefined) e8.userError(`Before first headline at position ${e8.lineStart(e8.lineOf(top)) + 1} in buffer ${e8.bufferName()}`);
+  }
+  const compiled = [...s.compiled];
+  const rows: Row[] = [];
+  e8.saveExcursion(() => {
+    e8.gotoChar(s.topLevel ? (e8.markerPosition(s.topLevel) ?? 0) : 0);
+    const hasItem = compiled.some((c) => c.property === "ITEM");
+    const spec = match !== undefined ? `${match}${maxlevel !== undefined ? `+LEVEL<=${maxlevel}` : ""}` : maxlevel !== undefined ? `LEVEL<=${maxlevel}` : undefined;
+    const matcher = spec === undefined ? true : makeTagsMatcher(spec);
+    const visit = (h: Heading) => {
+      const bol = h.start;
+      if (!e8.overlaysAt(bol).some((o) => e8.overlayGet(o, "org-columns-key") !== undefined && e8.overlayGet(o, "org-columns-key") !== null)) return;
+      const cells: string[] = [];
+      for (let i = 0; i < compiled.length; i++) {
+        const ov = e8.overlaysAt(bol + i).find((o) => e8.overlayGet(o, "org-columns-key") !== undefined && e8.overlayGet(o, "org-columns-key") !== null);
+        const key = ov === undefined ? undefined : e8.overlayGet(ov, "org-columns-key");
+        cells.push(ov === undefined ? "" : String(e8.overlayGet(ov, key === "ITEM" ? "org-columns-value" : "org-columns-value-modified") ?? ""));
+      }
+      if (skipEmpty) {
+        const left = [...new Set(cells.filter((c) => c !== ""))];
+        if (left.length === 0 || (hasItem && left.length === 1)) return;
+      }
+      if (excludeTags.length > 0 && allTagsAt(h).some((t) => excludeTags.includes(t))) return;
+      rows.push({ level: reducedLevel(h.level), cells });
+    };
+    const run = () => scanTags(visit, matcher, matcher === true ? false : matcher.todoOnly, skipper());
+    if (local) {
+      const all = headings();
+      const i = headingIndex(all, e8.lineOf(e8.point()));
+      e8.saveRestriction(() => {
+        if (i !== undefined) e8.narrowToRegion(all[i].start, Math.min(e8.pointMax(), subtreeEnd(all, i) + 1));
+        run();
+      });
+    } else run();
+  });
+  e8.call("org-columns-quit");
+  return { titles: compiled.map((c) => c.title), rows: [...rows], compiled };
+}
+
+/** A heading's tags, inherited ones too, as org-get-tags. */
+function allTagsAt(h: Heading): string[] {
+  const all = e8.saveRestriction(() => (e8.widen(), headings()));
+  const i = headingIndex(all, h.line);
+  return i === undefined ? h.tags : allTagsOf(all)[i];
+}
+
+/** A heading's text fit for a table, as org-columns--clean-item: no footnotes, inline code, targets or statistics cookies, and | as \vert{}. */
+function cleanItem(item: string): string {
+  // Each object with the blanks after it, as org-element-extract takes its post-blank.
+  return item
+    .replace(/\[fn:[^\]]*\][ \t]*/g, "")
+    .replace(/(?<![\p{L}\p{N}_])call_[^ \t\n()[\]]+(?:\[[^\]\n]*\])?\([^)\n]*\)(?:\[[^\]\n]*\])?[ \t]*/gu, "")
+    .replace(/(?<![\p{L}\p{N}_])src_[^ \t\n[{]+(?:\[[^\]\n]*\])?\{[^}\n]*\}[ \t]*/gu, "")
+    .replace(/<<<?[^<>\n]+>>>?[ \t]*/g, "")
+    .replace(/\[[0-9]*(?:%|\/[0-9]*)\][ \t]*/g, "")
+    .replace(/\|/g, "\\vert");
+}
+
+
+/** A parameter of a dynamic block's plist. */
+function param(params: e8.Value[], key: string): e8.Value {
+  return plistGet(params, key);
+}
+
+/** Writes the table of a columnview block, as org-columns-dblock-write-default. */
+function dblockWriteDefault(ipos: number, table: { titles: string[]; rows: Row[]; compiled: Spec[] } | undefined, params: e8.Value[]): void {
+  if (!table) return;
+  const link = truthy(param(params, ":link"));
+  const hlines = param(params, ":hlines");
+  const indent = truthy(param(params, ":indent"));
+  const itemIndex = table.compiled.findIndex((c) => c.property === "ITEM");
+  const out: (string[] | "hline")[] = [table.titles, "hline"];
+  for (const row of table.rows) {
+    if (row === "hline") continue;
+    if (out[out.length - 1] !== "hline" && (hlines === true || (typeof hlines === "number" && row.level <= hlines))) out.push("hline");
+    const cells = [...row.cells];
+    if (itemIndex >= 0) {
+      const raw = cells[itemIndex];
+      const cleaned = cleanItem(raw);
+      const file = e8.bufferFileName();
+      const search = linkHeadingSearchString(raw);
+      const item = link ? linkMakeString(file === undefined ? search : `file:${file}::${search}`, cleaned) : cleaned;
+      cells[itemIndex] = indent && row.level > 1 ? `\\_${" ".repeat(2 * (row.level - 1))}${item}` : item;
+    }
+    out.push(cells);
+  }
+  let rows = out;
+  if (truthy(param(params, ":vlines"))) {
+    rows = [...rows.map((r) => (r === "hline" ? r : ["", ...r])), ["/", ...table.compiled.map(() => "<>")]];
+  }
+  const widths = table.compiled.map((c) => c.width);
+  if (widths.some((w) => w !== undefined)) rows = [widths.map((w) => (w === undefined ? "" : `<${w}>`)), ...rows];
+  e8.gotoChar(ipos);
+  const content = String(param(params, ":content") ?? "").split("\n").filter((l) => l !== "");
+  // The affiliated keywords before the table, as the block had them.
+  while (content.length > 0 && /^[ \t]*#\+/.test(content[0])) e8.insert(`${content.shift()!.trimStart()}\n`);
+  let recalc = false;
+  e8.saveExcursion(() => {
+    e8.insert(rows.map((r) => (r === "hline" ? "|-|" : `|${r.join("|")}|`)).join("\n"));
+    for (const line of content) {
+      if (/^[ \t]*#\+TBLFM:/i.test(line)) {
+        e8.insert(`\n${line.trimStart()}`);
+        recalc = true;
+      }
+    }
+  });
+  if (recalc) e8.callWithPrefix([16], "org-table-recalculate");
+  e8.call("org-table-align");
+}
+
+e8.defun("org-columns-dblock-write-default", (ipos: number, table: unknown, params: e8.Value[]) => {
+  dblockWriteDefault(ipos, table as Parameters<typeof dblockWriteDefault>[1], params);
+  return null;
+});
+
+e8.defun("org-dblock-write:columnview", (params: e8.Value[]) => {
+  const id = param(params, ":id");
+  const idName = typeof id === "symbol" ? e8.symbolName(id) : id;
+  let viewFile: string | undefined;
+  let viewPos: number | undefined;
+  if (idName === "global") {
+    // The whole buffer.
+  } else if (idName === "local" || idName === null || idName === undefined || idName === false) viewPos = e8.point();
+  else {
+    const text = String(idName);
+    const file = /^file:(.*)$/.exec(text);
+    if (file) {
+      viewFile = file[1];
+      if (!e8.fileExistsP(viewFile)) e8.userError(`No such file: ${JSON.stringify(text)}`);
+    } else if ((viewPos = findEntryWithId(text)) !== undefined) {
+      // In this buffer, as org-find-entry-with-id finds it first.
+    } else {
+      const found = e8.funcall("org-id-find", text) as [string, number] | null | undefined;
+      if (!Array.isArray(found)) e8.userError(`Cannot find entry with :ID: ${text}`);
+      [viewFile, viewPos] = found;
+      if (viewFile !== undefined && e8.bufferFileName() !== undefined && e8.fileTruename(viewFile) === e8.fileTruename(e8.bufferFileName()!)) viewFile = undefined;
+    }
+  }
+  const maxlevel = param(params, ":maxlevel");
+  const match = param(params, ":match");
+  const exclude = param(params, ":exclude-tags");
+  const format = param(params, ":format");
+  const buffer = viewFile === undefined ? e8.bufferName() : e8.findFileNoselect(viewFile);
+  const table = e8.withCurrentBuffer(buffer, () =>
+    e8.saveRestriction(() =>
+      e8.saveExcursion(() => {
+        e8.widen();
+        if (viewPos !== undefined) e8.gotoChar(viewPos);
+        return captureView(
+          typeof maxlevel === "number" ? maxlevel : undefined,
+          typeof match === "string" ? match : undefined,
+          truthy(param(params, ":skip-empty-rows")),
+          Array.isArray(exclude) ? exclude.map(String) : [],
+          typeof format === "string" ? format : undefined,
+          viewPos !== undefined,
+        );
+      }),
+    ),
+  );
+  const formatter = param(params, ":formatter") ?? e8.variable("org-columns-dblock-formatter");
+  const pos = e8.point();
+  if (formatter !== null && formatter !== undefined && formatter !== false && formatter !== "org-columns-dblock-write-default") {
+    e8.funcall(formatter as string, pos, table as unknown as e8.Value, params);
+  } else dblockWriteDefault(pos, table, params);
+  return null;
+});
+
+e8.defineCommand({
+  name: "org-columns-insert-dblock",
+  doc: "Insert a dynamic block capturing a column view as a table: of the subtree (local), the buffer (global), or the entry with an ID.",
+  run: () => {
+    const id = e8.completingRead("Capture columns (local, global, entry with :ID: property) [local]: ", ["global", "local", ...(e8.funcall("org--property-values", "ID") as string[])]);
+    createDblock([
+      e8.intern(":name"),
+      "columnview",
+      e8.intern(":hlines"),
+      1,
+      e8.intern(":id"),
+      id === "global" ? e8.intern("global") : id === "" || id === "local" ? e8.intern("local") : id,
+    ]);
+    updateDblock();
+  },
+});
+dynamicBlockDefine("columnview", "org-columns-insert-dblock");

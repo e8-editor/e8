@@ -5335,6 +5335,12 @@ declare global {
        */
       "org-agenda-clockreport-mode": [];
       /**
+       * Show the agenda's entries as rows of their properties, the columns of the first entry's file or org-columns-default-format-for-agenda, each day's summaries on its line.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-agenda-columns": [];
+      /**
        * Set the tags of the entry the agenda line at point shows, as : does.
        *
        * Defined in packages/org-agenda.ts.
@@ -6279,6 +6285,12 @@ declare global {
        * Defined in packages/org-colview.ts.
        */
       "org-columns-edit-value": [];
+      /**
+       * Insert a dynamic block capturing a column view as a table: of the subtree (local), the buffer (global), or the entry with an ID.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-insert-dblock": [];
       /**
        * Move to the row below, in the same column.
        *
@@ -14700,6 +14712,24 @@ declare global {
        */
       "org-agenda-clockreport-parameter-plist": Value;
       /**
+       * Whether an appointment's duration counts as its effort in the agenda's column view.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-agenda-columns-add-appointments-to-effort-sum": Value;
+      /**
+       * Whether the agenda's column view summarizes the properties in the files first, as column view there would.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-agenda-columns-compute-summary-properties": Value;
+      /**
+       * Whether the agenda's column view shows each day's summaries on its line.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-agenda-columns-show-summaries": Value;
+      /**
        * Whether a block agenda leaves out the separators between its blocks and the day agenda's header.
        *
        * Defined in packages/org-agenda.ts.
@@ -15057,6 +15087,12 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-use-time-grid": Value;
+      /**
+       * Whether the agenda starts in column view.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-agenda-view-columns-initially": Value;
       /**
        * The days of the week that are the weekend, 0 for Sunday to 6 for Saturday, which C-u B S passes over.
        *
@@ -15458,11 +15494,23 @@ declare global {
        */
       "org-columns-checkbox-allowed-values": Value;
       /**
+       * The function writing a columnview dynamic block's table: given where, the table and the parameters.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-dblock-formatter": Value;
+      /**
        * The columns column view shows where no COLUMNS property or #+COLUMNS: line says otherwise.
        *
        * Defined in packages/org-colview.ts.
        */
       "org-columns-default-format": Value;
+      /**
+       * The columns the agenda's column view shows, instead of those of the first entry's file.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-default-format-for-agenda": Value;
       /**
        * What ends a value too wide for its column.
        *
@@ -16050,6 +16098,12 @@ declare global {
        */
       "org-list-two-spaces-after-bullet-regexp": Value;
       /**
+       * The overriding format a custom command gave the agenda, kept in its buffer.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-local-columns-format": Value;
+      /**
        * What marking a heading done records: false for nothing, "time" for a CLOSED: timestamp under it.
        *
        * Defined in packages/org.ts.
@@ -16161,6 +16215,12 @@ declare global {
        * Defined in packages/org-refile.ts.
        */
       "org-outline-path-complete-in-steps": Value;
+      /**
+       * Columns that override every other format, for a custom agenda command's settings.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-overriding-columns-format": Value;
       /**
        * What may end an ordered item's number or letter: t for either . or ), or the character ?. or ?) for that one alone.
        *
@@ -20604,6 +20664,10 @@ declare global {
        * Run just after filtering with org-agenda-filter.
        */
       "org-agenda-filter-hook": Value;
+      /**
+       * Functions run in the agenda's buffer once a view is made.
+       */
+      "org-agenda-finalize-hook": Value;
       /**
        * Run after entering Org-Agenda mode, after the hooks of the modes it is built on.
        */
