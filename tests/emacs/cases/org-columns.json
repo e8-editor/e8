@@ -1,0 +1,2199 @@
+[
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-buffer",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-subtree",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c",
+  "point": 55
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-global",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-u C-c C-x C-c",
+  "point": 132
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-quit",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c q"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-summaries",
+  "text": "* Budget\n:PROPERTIES:\n:COLUMNS: %20ITEM %Cost{+;%.2f} %Done{X} %Hours{:} %Est{est+} %N{max} %M{mean} %S{X/}\n:END:\n** Food\n:PROPERTIES:\n:Cost: 12.5\n:Done: [X]\n:Hours: 1:30\n:Est: 2-4\n:N: 3\n:M: 2\n:S: [X]\n:END:\n** Rent\n:PROPERTIES:\n:Cost: 100\n:Done: [ ]\n:Hours: 2:15\n:Est: 1-3\n:N: 7\n:M: 5\n:S: [ ]\n:END:\n*** Deposit\n:PROPERTIES:\n:Cost: 50\n:Hours: 0:45\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 3
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-default-format",
+  "text": "* TODO One :a:\n** Two\n",
+  "keys": "C-c C-x C-c"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-show-value",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c C-n v",
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-next-allowed",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c C-n C-n C-n C-n C-n C-n C-n C-f C-f C-f n"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-todo-next",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c C-n C-n C-n C-n C-n C-n C-n C-f n"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-priority-prev",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c C-n C-f C-f p"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-digit",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c C-n C-n C-n C-n C-n C-n C-n C-f C-f C-f 4"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-edit-effort",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c C-n C-n C-n C-n C-n C-n C-n C-f C-f C-f e",
+  "answers": [
+   "2:00"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-edit-computed",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c C-n C-f C-f C-f e"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-widen",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c C-n C-f >"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-narrow",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c C-n < <"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-move-right",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c C-n C-f M-<right>"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-move-left-first",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c C-n M-<left>"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-delete",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c C-n C-f C-f S-M-<left>",
+  "answers": [
+   "y"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-new",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c C-n S-M-<right>",
+  "answers": [
+   "Owner",
+   "Who",
+   "",
+   "",
+   ""
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-checkbox-toggle",
+  "text": "* Budget\n:PROPERTIES:\n:COLUMNS: %20ITEM %Cost{+;%.2f} %Done{X} %Hours{:} %Est{est+} %N{max} %M{mean} %S{X/}\n:END:\n** Food\n:PROPERTIES:\n:Cost: 12.5\n:Done: [X]\n:Hours: 1:30\n:Est: 2-4\n:N: 3\n:M: 2\n:S: [X]\n:END:\n** Rent\n:PROPERTIES:\n:Cost: 100\n:Done: [ ]\n:Hours: 2:15\n:Est: 1-3\n:N: 7\n:M: 5\n:S: [ ]\n:END:\n*** Deposit\n:PROPERTIES:\n:Cost: 50\n:Hours: 0:45\n:END:\n",
+  "keys": "C-c C-x C-c C-c C-c",
+  "point": 116
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-typing-read-only",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c C-n x"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-redo",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c g"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-item-edit",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c C-n C-n C-n C-n C-n C-n C-n e",
+  "answers": [
+   "Write the report"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-hide-leading-stars",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c",
+  "vars": {
+   "org-hide-leading-stars": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-timestamps",
+  "text": "#+COLUMNS: %ITEM %SCHEDULED %DEADLINE\n* A\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-10-30 Fri 10:00>\n",
+  "keys": "C-c C-x C-c"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-scheduled-later",
+  "text": "#+COLUMNS: %ITEM %SCHEDULED\n* A\nSCHEDULED: <2026-10-28 Wed>\n",
+  "keys": "C-c C-x C-c C-n C-n C-f n"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-allowed-dates",
+  "text": "#+COLUMNS: %ITEM %When\n* A\n:PROPERTIES:\n:When: <2026-10-28 Wed>\n:END:\n",
+  "keys": "C-c C-x C-c C-n C-n C-f n"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-no-allowed",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c C-n C-f C-f C-f C-f n"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-ellipses",
+  "text": "#+COLUMNS: %5ITEM %TODO\n* TODO A long heading here\n",
+  "keys": "C-c C-x C-c"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-property-format",
+  "text": "* A\n:PROPERTIES:\n:COLUMNS: %ITEM %X{+;%5.1f}\n:END:\n** B\n:PROPERTIES:\n:X: 2\n:END:\n** C\n:PROPERTIES:\n:X: 3.5\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-clocksum",
+  "text": "#+COLUMNS: %ITEM %CLOCKSUM %CLOCKSUM_T\n* A\n** B\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 09:00]--[2026-10-27 Tue 10:30] =>  1:30\nCLOCK: [2026-10-28 Wed 09:00]--[2026-10-28 Wed 09:20] =>  0:20\n:END:\n** C\n:LOGBOOK:\nCLOCK: [2026-10-20 Tue 09:00]--[2026-10-21 Wed 10:00] => 25:00\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "today": "2026-10-28"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-inherited-property",
+  "text": "* A\n:PROPERTIES:\n:COLUMNS: %ITEM %Owner\n:END:\n** B\n:PROPERTIES:\n:Owner: me\n:END:\n*** C\n* D\n",
+  "keys": "C-c C-x C-c",
+  "point": 88
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-link-item",
+  "text": "#+COLUMNS: %ITEM\n* See [[https://example.com][the site]] now\n",
+  "keys": "C-c C-x C-c"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-move-row-down",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c C-n M-<down>"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-move-row-up",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c C-n C-n C-n C-n C-n C-n C-n C-n C-n C-n C-n C-n C-n M-<up>"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-edit-allowed",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c C-n C-n C-n C-n C-n C-n C-n C-f C-f C-f a",
+  "answers": [
+   "0:15 0:45"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-edit-attributes",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c C-n C-f C-f s",
+  "answers": [
+   "PRIORITY",
+   "Pri",
+   "5",
+   "",
+   ""
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-max-min-mean",
+  "text": "#+COLUMNS: %ITEM %A{max} %B{min} %C{mean;%.1f} %D{:max} %E{:min} %F{:mean} %G{X%}\n* T\n** a\n:PROPERTIES:\n:A: 3\n:B: 4\n:C: 1\n:D: 1:00\n:E: 2:00\n:F: 0:10\n:G: [X]\n:END:\n** b\n:PROPERTIES:\n:A: 9\n:B: 2\n:C: 4\n:D: 0:30\n:E: 3:00\n:F: 0:21\n:G: [ ]\n:END:\n",
+  "keys": "C-c C-x C-c"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-sum-days",
+  "text": "#+COLUMNS: %ITEM %T{:}\n* T\n** a\n:PROPERTIES:\n:T: 1d 3h\n:END:\n** b\n:PROPERTIES:\n:T: 20:00\n:END:\n",
+  "keys": "C-c C-x C-c"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-sum-ints",
+  "text": "#+COLUMNS: %ITEM %N{+}\n* T\n** a\n:PROPERTIES:\n:N: 2\n:END:\n** b\n:PROPERTIES:\n:N: 3\n:END:\n",
+  "keys": "C-c C-x C-c"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-sum-floats",
+  "text": "#+COLUMNS: %ITEM %N{+}\n* T\n** a\n:PROPERTIES:\n:N: 2.5\n:END:\n** b\n:PROPERTIES:\n:N: 3\n:END:\n",
+  "keys": "C-c C-x C-c"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-currency",
+  "text": "#+COLUMNS: %ITEM %N{$}\n* T\n** a\n:PROPERTIES:\n:N: 2.5\n:END:\n** b\n:PROPERTIES:\n:N: 3\n:END:\n",
+  "keys": "C-c C-x C-c"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-checkbox-cycle",
+  "text": "#+COLUMNS: %ITEM %Done{X}\n* T\n** a\n:PROPERTIES:\n:Done: [ ]\n:END:\n",
+  "keys": "C-c C-x C-c C-n C-n C-f n"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-tags-wide",
+  "text": "#+COLUMNS: %ITEM %TAGS %ALLTAGS\n#+FILETAGS: :f:\n* A :x:\n** B :y:\n",
+  "keys": "C-c C-x C-c"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-category",
+  "text": "#+COLUMNS: %ITEM %CATEGORY %FILE\n* A\n:PROPERTIES:\n:CATEGORY: work\n:END:\n** B\n",
+  "keys": "C-c C-x C-c"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-quit-key",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c C-n q"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-redo-r",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c C-n r"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-content",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c C-n c"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-move-left",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c C-n C-f C-f M-<left>"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-move-right-last",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c C-n C-f C-f C-f C-f M-<right>"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "columns-done-blocks",
+  "text": "#+COLUMNS: %ITEM %TODO %BLOCKED\n* TODO A\n** TODO B\n",
+  "keys": "C-c C-x C-c",
+  "globals": {
+   "org-enforce-todo-dependencies": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-fmt-width-title",
+  "text": "#+COLUMNS: %10ITEM(Task) %5Cost(Price){+} %Owner\n* A\n:PROPERTIES:\n:Cost: 3\n:Owner: me\n:END:\n** B\n:PROPERTIES:\n:Cost: 4\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-fmt-printf",
+  "text": "#+COLUMNS: %ITEM %Cost{+;%.1f}\n* A\n** B\n:PROPERTIES:\n:Cost: 3\n:END:\n** C\n:PROPERTIES:\n:Cost: 4.25\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-fmt-unknown-op",
+  "text": "#+COLUMNS: %ITEM %Cost{foo}\n* A\n** B\n:PROPERTIES:\n:Cost: 3\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-fmt-mixed-case",
+  "text": "#+columns: %ITEM %cost{+} %Owner\n* A\n** B\n:PROPERTIES:\n:COST: 3\n:owner: x\n:END:\n** C\n:PROPERTIES:\n:cost: 4\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-fmt-inherited",
+  "text": "* A\n:PROPERTIES:\n:COLUMNS: %ITEM %X{+}\n:END:\n** B\n:PROPERTIES:\n:X: 1\n:END:\n*** C\n:PROPERTIES:\n:X: 2\n:END:\n* D\n:PROPERTIES:\n:X: 9\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 77
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-fmt-keyword-in-block",
+  "text": "#+begin_example\n#+COLUMNS: %ITEM %X\n#+end_example\n* A\n:PROPERTIES:\n:X: 1\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-fmt-before-first-heading",
+  "text": "Intro\n* A\n:PROPERTIES:\n:X: 1\n:END:\n** B\n* C\n",
+  "keys": "C-c C-x C-c",
+  "point": 0,
+  "globals": {
+   "org-columns-default-format": "%ITEM %X"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-fmt-top-drawer",
+  "text": ":PROPERTIES:\n:COLUMNS: %ITEM %X{+}\n:END:\n* A\n:PROPERTIES:\n:X: 1\n:END:\n* B\n:PROPERTIES:\n:X: 2\n:END:\n** B1\n:PROPERTIES:\n:X: 5\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 99
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-fmt-width-zero",
+  "text": "#+COLUMNS: %0ITEM %3X\n* A\n:PROPERTIES:\n:X: 12345\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-fmt-title-spaces",
+  "text": "#+COLUMNS: %ITEM(My Task) %X(Long title here)\n* A\n:PROPERTIES:\n:X: 1\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-fmt-wide-chars",
+  "text": "#+COLUMNS: %10ITEM %4X\n* \u65e5\u672c\n:PROPERTIES:\n:X: \u6f22\u5b57\u30c6\u30b9\u30c8\n:END:\n* ab\n:PROPERTIES:\n:X: \u00e9\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-fmt-wide-auto",
+  "text": "#+COLUMNS: %ITEM %X\n* \u65e5\u672c\u8a9e\u306e\u898b\u51fa\u3057\n:PROPERTIES:\n:X: \u6f22\u5b57\n:END:\n* ab\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-fmt-ellipses-unicode",
+  "text": "#+COLUMNS: %8ITEM %3X\n* A long heading here\n:PROPERTIES:\n:X: abcdef\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0,
+  "globals": {
+   "org-columns-ellipses": "\u2026"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-fmt-ellipses-wider",
+  "text": "#+COLUMNS: %8ITEM %1X\n* A long heading here\n:PROPERTIES:\n:X: abcdef\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-fmt-link-heading",
+  "text": "#+COLUMNS: %ITEM %X\n* See [[https://x.org][the site]] now\n* Plain [[file:a.org]]\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-fmt-hide-stars",
+  "text": "#+COLUMNS: %ITEM %TODO\n* A\n** TODO B\n*** C\n",
+  "keys": "C-c C-x C-c",
+  "point": 0,
+  "globals": {
+   "org-hide-leading-stars": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-fmt-comment-archive",
+  "text": "#+COLUMNS: %ITEM %X{+}\n* A\n** COMMENT B\n:PROPERTIES:\n:X: 1\n:END:\n** C :ARCHIVE:\n:PROPERTIES:\n:X: 2\n:END:\n** D\n:PROPERTIES:\n:X: 4\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-fmt-inline-task",
+  "text": "#+COLUMNS: %ITEM %X{+}\n* A\n*************** Inline\n:PROPERTIES:\n:X: 2\n:END:\n** B\n:PROPERTIES:\n:X: 3\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-fmt-empty-heading",
+  "text": "#+COLUMNS: %ITEM %X\n* \n* B\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-fmt-short-lines",
+  "text": "#+COLUMNS: %ITEM %X %Y %Z %W\n* A\n*\n* B\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-fmt-folded-overview",
+  "text": "#+COLUMNS: %ITEM %TODO %X\n* TODO A\nbody\n** B\nbody b\n* C\nbody c\n",
+  "keys": "<backtab> C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-fmt-content-key",
+  "text": "#+COLUMNS: %ITEM %TODO %X\n* TODO A\nbody\n** B\nbody b\n* C\nbody c\n",
+  "keys": "C-c C-x C-c c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-fmt-overview-key",
+  "text": "#+COLUMNS: %ITEM %TODO %X\n* TODO A\nbody\n** B\nbody b\n* C\nbody c\n",
+  "keys": "C-c C-x C-c o",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-fmt-narrowed",
+  "text": "#+COLUMNS: %ITEM %X\n* A\n:PROPERTIES:\n:X: 1\n:END:\n** B\n* C\n",
+  "keys": "C-x n s C-u C-c C-x C-c",
+  "point": 20
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-fmt-twice",
+  "text": "#+COLUMNS: %ITEM %X\n* A\n:PROPERTIES:\n:X: 1\n:END:\n** B\n* C\n",
+  "keys": "C-c C-x C-c C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-fmt-no-headings",
+  "text": "Just text.\nNo headings.\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-fmt-alltags-subtree",
+  "text": "#+COLUMNS: %ITEM %ALLTAGS %CATEGORY %X\n#+CATEGORY: cat\n* A :a:\n** B :b:\n:PROPERTIES:\n:X: 1\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 63
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-fmt-two-keywords",
+  "text": "#+COLUMNS: %ITEM %X\n#+COLUMNS: %ITEM %Y\n* A\n:PROPERTIES:\n:X: 1\n:Y: 2\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-sum-ints",
+  "text": "#+COLUMNS: %ITEM %N{+}\n* Top\n** C0\n:PROPERTIES:\n:N: 1\n:END:\n** C1\n:PROPERTIES:\n:N: 2\n:END:\n** C2\n:PROPERTIES:\n:N: 3\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-sum-word-with-e",
+  "text": "#+COLUMNS: %ITEM %N{+}\n* Top\n** C0\n:PROPERTIES:\n:N: 3\n:END:\n** C1\n:PROPERTIES:\n:N: seven\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-sum-floats",
+  "text": "#+COLUMNS: %ITEM %N{+}\n* Top\n** C0\n:PROPERTIES:\n:N: 0.1\n:END:\n** C1\n:PROPERTIES:\n:N: 0.2\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-sum-int-dot",
+  "text": "#+COLUMNS: %ITEM %N{+}\n* Top\n** C0\n:PROPERTIES:\n:N: 1.\n:END:\n** C1\n:PROPERTIES:\n:N: 2\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-max-int-float",
+  "text": "#+COLUMNS: %ITEM %N{max}\n* Top\n** C0\n:PROPERTIES:\n:N: 9\n:END:\n** C1\n:PROPERTIES:\n:N: 7.5\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-min-int-float",
+  "text": "#+COLUMNS: %ITEM %N{min}\n* Top\n** C0\n:PROPERTIES:\n:N: 2\n:END:\n** C1\n:PROPERTIES:\n:N: 7.5\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-mean-ints",
+  "text": "#+COLUMNS: %ITEM %N{mean}\n* Top\n** C0\n:PROPERTIES:\n:N: 2\n:END:\n** C1\n:PROPERTIES:\n:N: 2\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-mean-half",
+  "text": "#+COLUMNS: %ITEM %N{mean}\n* Top\n** C0\n:PROPERTIES:\n:N: 1\n:END:\n** C1\n:PROPERTIES:\n:N: 2\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-xpct-eighth",
+  "text": "#+COLUMNS: %ITEM %D{X%}\n* Top\n** C0\n:PROPERTIES:\n:D: [X]\n:END:\n** C1\n:PROPERTIES:\n:D: [ ]\n:END:\n** C2\n:PROPERTIES:\n:D: [ ]\n:END:\n** C3\n:PROPERTIES:\n:D: [ ]\n:END:\n** C4\n:PROPERTIES:\n:D: [ ]\n:END:\n** C5\n:PROPERTIES:\n:D: [ ]\n:END:\n** C6\n:PROPERTIES:\n:D: [ ]\n:END:\n** C7\n:PROPERTIES:\n:D: [ ]\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-xpct-five-eighths",
+  "text": "#+COLUMNS: %ITEM %D{X%}\n* Top\n** C0\n:PROPERTIES:\n:D: [X]\n:END:\n** C1\n:PROPERTIES:\n:D: [X]\n:END:\n** C2\n:PROPERTIES:\n:D: [X]\n:END:\n** C3\n:PROPERTIES:\n:D: [X]\n:END:\n** C4\n:PROPERTIES:\n:D: [X]\n:END:\n** C5\n:PROPERTIES:\n:D: [ ]\n:END:\n** C6\n:PROPERTIES:\n:D: [ ]\n:END:\n** C7\n:PROPERTIES:\n:D: [ ]\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-xcount",
+  "text": "#+COLUMNS: %ITEM %D{X/}\n* Top\n** C0\n:PROPERTIES:\n:D: [X]\n:END:\n** C1\n:PROPERTIES:\n:D: [ ]\n:END:\n** C2\n** C3\n:PROPERTIES:\n:D: [X]\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-xbox-mixed",
+  "text": "#+COLUMNS: %ITEM %D{X}\n* Top\n** C0\n:PROPERTIES:\n:D: [X]\n:END:\n** C1\n:PROPERTIES:\n:D: [ ]\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-xbox-none",
+  "text": "#+COLUMNS: %ITEM %D{X}\n* Top\n** C0\n:PROPERTIES:\n:D: [ ]\n:END:\n** C1\n:PROPERTIES:\n:D: [ ]\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-currency",
+  "text": "#+COLUMNS: %ITEM %N{$}\n* Top\n** C0\n:PROPERTIES:\n:N: 1.005\n:END:\n** C1\n:PROPERTIES:\n:N: 2\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-times-sum",
+  "text": "#+COLUMNS: %ITEM %T{:}\n* Top\n** C0\n:PROPERTIES:\n:T: 1:30\n:END:\n** C1\n:PROPERTIES:\n:T: 0:45\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-times-mean",
+  "text": "#+COLUMNS: %ITEM %T{:mean}\n* Top\n** C0\n:PROPERTIES:\n:T: 0:10\n:END:\n** C1\n:PROPERTIES:\n:T: 0:15\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-times-days",
+  "text": "#+COLUMNS: %ITEM %T{:}\n* Top\n** C0\n:PROPERTIES:\n:T: 1d 2:00\n:END:\n** C1\n:PROPERTIES:\n:T: 3:00\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-times-hms",
+  "text": "#+COLUMNS: %ITEM %T{:}\n* Top\n** C0\n:PROPERTIES:\n:T: 1:00:30\n:END:\n** C1\n:PROPERTIES:\n:T: 0:00:45\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-times-max",
+  "text": "#+COLUMNS: %ITEM %T{:max}\n* Top\n** C0\n:PROPERTIES:\n:T: 1h\n:END:\n** C1\n:PROPERTIES:\n:T: 0:45\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-times-min",
+  "text": "#+COLUMNS: %ITEM %T{:min}\n* Top\n** C0\n:PROPERTIES:\n:T: 2d\n:END:\n** C1\n:PROPERTIES:\n:T: 30min\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-times-big",
+  "text": "#+COLUMNS: %ITEM %T{:}\n* Top\n** C0\n:PROPERTIES:\n:T: 20:00\n:END:\n** C1\n:PROPERTIES:\n:T: 10:00\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-est-half",
+  "text": "#+COLUMNS: %ITEM %E{est+}\n* Top\n** C0\n:PROPERTIES:\n:E: 2.5\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-est-pair",
+  "text": "#+COLUMNS: %ITEM %E{est+}\n* Top\n** C0\n:PROPERTIES:\n:E: 1-2\n:END:\n** C1\n:PROPERTIES:\n:E: 1-2\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-est-malformed",
+  "text": "#+COLUMNS: %ITEM %E{est+}\n* Top\n** C0\n:PROPERTIES:\n:E: 5-\n:END:\n** C1\n:PROPERTIES:\n:E: 3\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-est-half-up",
+  "text": "#+COLUMNS: %ITEM %E{est+}\n* Top\n** C0\n:PROPERTIES:\n:E: 3.5\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-age-durations",
+  "text": "#+COLUMNS: %ITEM %A{@max}\n* Top\n** C0\n:PROPERTIES:\n:A: 2h\n:END:\n** C1\n:PROPERTIES:\n:A: 1d 3h\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-age-min",
+  "text": "#+COLUMNS: %ITEM %A{@min}\n* Top\n** C0\n:PROPERTIES:\n:A: 2h\n:END:\n** C1\n:PROPERTIES:\n:A: 1d 3h\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-age-mean",
+  "text": "#+COLUMNS: %ITEM %A{@mean}\n* Top\n** C0\n:PROPERTIES:\n:A: 2h\n:END:\n** C1\n:PROPERTIES:\n:A: 1d 3h\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-sum-blank-values",
+  "text": "#+COLUMNS: %ITEM %N{+}\n* Top\n** C0\n:PROPERTIES:\n:N:   \n:END:\n** C1\n:PROPERTIES:\n:N: 4\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-sum-update-parent",
+  "text": "#+COLUMNS: %ITEM %N{+}\n* Top\n:PROPERTIES:\n:N: 99\n:END:\n** A\n:PROPERTIES:\n:N: 1\n:END:\n** B\n:PROPERTIES:\n:N: 2\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-sum-update-empty",
+  "text": "#+COLUMNS: %ITEM %N{+}\n* Top\n:PROPERTIES:\n:N:\n:END:\n** A\n:PROPERTIES:\n:N: 1\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-sum-two-specs",
+  "text": "#+COLUMNS: %ITEM %N{+} %N{max}\n* Top\n:PROPERTIES:\n:N: 0\n:END:\n** A\n:PROPERTIES:\n:N: 1\n:END:\n** B\n:PROPERTIES:\n:N: 5\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-sum-levels",
+  "text": "#+COLUMNS: %ITEM %N{+}\n* A\n*** Deep\n:PROPERTIES:\n:N: 4\n:END:\n** B\n:PROPERTIES:\n:N: 1\n:END:\n*** B1\n:PROPERTIES:\n:N: 2\n:END:\n*** B2\n:PROPERTIES:\n:N: 3\n:END:\n* Z\n:PROPERTIES:\n:N: 7\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-sum-subtree-only",
+  "text": "#+COLUMNS: %ITEM %N{+}\n* A\n*** Deep\n:PROPERTIES:\n:N: 4\n:END:\n** B\n:PROPERTIES:\n:N: 1\n:END:\n*** B1\n:PROPERTIES:\n:N: 2\n:END:\n*** B2\n:PROPERTIES:\n:N: 3\n:END:\n* Z\n:PROPERTIES:\n:N: 7\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 91
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-sum-global-first-heading",
+  "text": "* A\n:PROPERTIES:\n:COLUMNS: %ITEM %N{+}\n:END:\n** A1\n:PROPERTIES:\n:N: 2\n:END:\n* B\n** B1\n:PROPERTIES:\n:N: 3\n:END:\n",
+  "keys": "C-u C-c C-x C-c",
+  "point": 30
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-printf-leaves",
+  "text": "#+COLUMNS: %ITEM %C(C){+;%5.2f}\n* A\n** B\n:PROPERTIES:\n:C: 3\n:END:\n** C\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-special-with-op",
+  "text": "#+COLUMNS: %ITEM %TODO{+} %TAGS{X}\n* TODO A :x:\n** TODO B\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-clocksum",
+  "text": "#+COLUMNS: %ITEM %CLOCKSUM %CLOCKSUM_T\n* A\n** B\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 10:00]--[2026-11-03 Tue 11:30] =>  1:30\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:20] =>  0:20\n:END:\n** C\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-04 Wed 08:05] =>  0:05\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0,
+  "today": "2026-11-04"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-sum-after-edit-child",
+  "text": "#+COLUMNS: %ITEM %N{+}\n* A\n** B\n:PROPERTIES:\n:N: 2\n:END:\n** C\n:PROPERTIES:\n:N: 3\n:END:\n",
+  "keys": "C-c C-x C-c e",
+  "point": 28,
+  "answers": [
+   "10"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-edit-ordinary",
+  "text": "#+COLUMNS: %ITEM %Owner\n* A\n:PROPERTIES:\n:Owner: me\n:END:\n",
+  "keys": "C-c C-x C-c e",
+  "point": 25,
+  "answers": [
+   "  you  "
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-edit-new-prop",
+  "text": "#+COLUMNS: %ITEM %Owner\n* A\nbody\n* B\n",
+  "keys": "C-c C-x C-c e",
+  "point": 25,
+  "answers": [
+   "x"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-edit-new-prop-folded",
+  "text": "#+COLUMNS: %ITEM %Owner\n* A\n* B\n",
+  "keys": "C-c C-x C-c e",
+  "point": 25,
+  "answers": [
+   "x"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-edit-allowed",
+  "text": "#+COLUMNS: %ITEM %Owner\n* A\n:PROPERTIES:\n:Owner_ALL: ann bob\n:END:\n** B\n",
+  "keys": "C-c C-x C-c e",
+  "point": 68,
+  "answers": [
+   "bob"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-edit-allowed-etc",
+  "text": "#+COLUMNS: %ITEM %Owner\n* A\n:PROPERTIES:\n:Owner_ALL: ann bob :ETC\n:END:\n** B\n",
+  "keys": "C-c C-x C-c e",
+  "point": 73,
+  "answers": [
+   "carl"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-edit-item-trim",
+  "text": "#+COLUMNS: %ITEM %X\n* TODO Old title\n* B\n",
+  "keys": "C-c C-x C-c e",
+  "point": 20,
+  "answers": [
+   "  New title  "
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-edit-item-same",
+  "text": "#+COLUMNS: %ITEM %X\n* Old title\n* B\n",
+  "keys": "C-c C-x C-c e",
+  "point": 20,
+  "answers": [
+   "Old title"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-edit-item-empty",
+  "text": "#+COLUMNS: %ITEM %X\n* Old\n* B\n",
+  "keys": "C-c C-x C-c e",
+  "point": 20,
+  "answers": [
+   ""
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-edit-todo",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c e",
+  "point": 133
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-edit-priority",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c e",
+  "point": 134,
+  "answers": [
+   "C"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-edit-scheduled",
+  "text": "#+COLUMNS: %ITEM %SCHEDULED\n* A\n* B\n",
+  "keys": "C-c C-x C-c e",
+  "point": 29,
+  "answers": [
+   "2026-11-30"
+  ],
+  "today": "2026-11-04"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-edit-clocksum",
+  "text": "#+COLUMNS: %ITEM %CLOCKSUM\n* A\n",
+  "keys": "C-c C-x C-c e",
+  "point": 28
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-prev-todo",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c p",
+  "point": 133
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-next-priority-default",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c n",
+  "point": 134
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-next-tags",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c n",
+  "point": 136
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-next-effort",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c n",
+  "point": 135
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-digit-2",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c 2",
+  "point": 135
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-digit-0",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c 0",
+  "point": 135
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-digit-9",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c 9",
+  "point": 135
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-next-noallowed",
+  "text": "#+COLUMNS: %ITEM %Owner\n* A\n:PROPERTIES:\n:Owner: me\n:END:\n",
+  "keys": "C-c C-x C-c n",
+  "point": 25
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-next-item",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c n",
+  "point": 132
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-next-checkbox",
+  "text": "#+COLUMNS: %ITEM %D{X}\n* Top\n** C0\n:PROPERTIES:\n:D: [ ]\n:END:\n** C1\n:PROPERTIES:\n:D: [X]\n:END:\n",
+  "keys": "C-c C-x C-c n",
+  "point": 30
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-cc-checkbox",
+  "text": "#+COLUMNS: %ITEM %D{X}\n* A\n:PROPERTIES:\n:D: [ ]\n:END:\n* B\n",
+  "keys": "C-c C-x C-c C-c C-c",
+  "point": 24
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-cc-quit",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c C-c C-c",
+  "point": 132
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-next-date-prop",
+  "text": "#+COLUMNS: %ITEM %TS\n* A\n:PROPERTIES:\n:TS: <2026-11-04 Wed>\n:END:\n",
+  "keys": "C-c C-x C-c n",
+  "point": 22
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-next-summary",
+  "text": "#+COLUMNS: %ITEM %D{X}\n* Top\n** C0\n:PROPERTIES:\n:D: [ ]\n:END:\n** C1\n:PROPERTIES:\n:D: [X]\n:END:\n",
+  "keys": "C-c C-x C-c n",
+  "point": 24
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-show-value",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c v",
+  "point": 135,
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-show-value-item",
+  "text": "#+COLUMNS: %ITEM %X\n* See [[https://x.org][x]]\n",
+  "keys": "C-c C-x C-c v",
+  "point": 20,
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-edit-allowed-values-new",
+  "text": "#+COLUMNS: %ITEM %Owner\n* A\n** B\n",
+  "keys": "C-c C-x C-c a",
+  "point": 29,
+  "answers": [
+   "x y"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-edit-allowed-values-inherited",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c a",
+  "point": 135,
+  "answers": [
+   "0:05 0:10"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-attributes",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c s",
+  "point": 135,
+  "answers": [
+   "Effort",
+   "Eff",
+   "8",
+   ":max",
+   ""
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-new-empty-title",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c S-M-<right>",
+  "point": 133,
+  "answers": [
+   "owner",
+   "",
+   "",
+   "",
+   ""
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-new-sum",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c S-M-<right>",
+  "point": 136,
+  "answers": [
+   "N",
+   "Num",
+   "4",
+   "+",
+   "%d"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-widen-summary",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c >",
+  "point": 56
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-narrow-summary",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c <",
+  "point": 56
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-widen-property",
+  "text": "* Top\n:PROPERTIES:\n:COLUMNS: %ITEM %N{+}\n:END:\n** A\n:PROPERTIES:\n:N: 1\n:END:\n",
+  "keys": "C-c C-x C-c >",
+  "point": 48
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-widen-summary-prop",
+  "text": "* Top\n:PROPERTIES:\n:COLUMNS: %ITEM %N{+}\n:END:\n** A\n:PROPERTIES:\n:N: 1\n:END:\n",
+  "keys": "C-c C-x C-c > e",
+  "point": 1,
+  "answers": [
+   "5"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-widen-default",
+  "text": "* A\n** B\n",
+  "keys": "C-c C-x C-c >",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-widen-default-intro",
+  "text": "Intro\n#+TITLE: x\n* A\n** B\n",
+  "keys": "C-c C-x C-c C-u 3 >",
+  "point": 17
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-move-right-last",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c M-<right>",
+  "point": 136
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-move-left",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c M-<left>",
+  "point": 134
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-move-right-summary",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c M-<right>",
+  "point": 55
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-delete-no",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c S-M-<left>",
+  "point": 133,
+  "answers": [
+   "n"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-delete-last",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c S-M-<left>",
+  "point": 136,
+  "answers": [
+   "y"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-row-up-first",
+  "text": "#+COLUMNS: %ITEM %N{+}\n* Top\n** A\n:PROPERTIES:\n:N: 1\n:END:\n** B\n:PROPERTIES:\n:N: 5\n:END:\n** C\n",
+  "keys": "C-c C-x C-c M-<up>",
+  "point": 30
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-redo-after-quit-edit",
+  "text": "#+COLUMNS: %ITEM %N{+}\n* Top\n** A\n:PROPERTIES:\n:N: 1\n:END:\n** B\n:PROPERTIES:\n:N: 5\n:END:\n** C\n",
+  "keys": "C-c C-x C-c q C-e x C-c C-x C-c",
+  "point": 89
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-quit-type",
+  "text": "#+COLUMNS: %ITEM %N{+}\n* Top\n** A\n:PROPERTIES:\n:N: 1\n:END:\n** B\n:PROPERTIES:\n:N: 5\n:END:\n** C\n",
+  "keys": "C-c C-x C-c q x",
+  "point": 89
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-redo-g",
+  "text": "#+COLUMNS: %ITEM %N{+}\n* Top\n** A\n:PROPERTIES:\n:N: 1\n:END:\n** B\n:PROPERTIES:\n:N: 5\n:END:\n** C\n",
+  "keys": "C-c C-x C-c g",
+  "point": 89
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-down-up",
+  "text": "#+COLUMNS: %ITEM %N{+}\n* Top\n** A\n:PROPERTIES:\n:N: 1\n:END:\n** B\n:PROPERTIES:\n:N: 5\n:END:\n** C\n",
+  "keys": "C-c C-x C-c <down> <down> <up>",
+  "point": 24
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-open-link-item",
+  "text": "#+COLUMNS: %ITEM %X\n* [[*Other]]\n* Other\n",
+  "keys": "C-c C-x C-c C-c C-o",
+  "point": 20
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-typing-body",
+  "text": "#+COLUMNS: %ITEM %X\n* A\nvisible body\n* B\n",
+  "keys": "C-c C-x C-c C-n C-e x",
+  "point": 20
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-k-kill-line-heading-end",
+  "text": "#+COLUMNS: %ITEM %X\n* A\nvisible body\n* B\n",
+  "keys": "C-c C-x C-c C-e C-k",
+  "point": 20
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-undo-after-edit",
+  "text": "#+COLUMNS: %ITEM %X\n* A\n* B\n",
+  "keys": "C-c C-x C-c e C-/",
+  "point": 21,
+  "answers": [
+   "v"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-short-lines-quit",
+  "text": "#+COLUMNS: %ITEM %X %Y %Z %W\n* A\n* B\n",
+  "keys": "C-c C-x C-c q",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-one-column",
+  "text": "#+COLUMNS: %ITEM\n* A\n** Bee\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-specials",
+  "text": "#+COLUMNS: %ITEM %TIMESTAMP %TIMESTAMP_IA %CLOSED %BLOCKED %FILE %CATEGORY\n* DONE A\nCLOSED: [2026-11-01 Sun 10:00]\n<2026-11-05 Thu> [2026-11-06 Fri]\n* TODO B\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-literal-nil",
+  "text": "#+COLUMNS: %ITEM %X %Y\n* A\n:PROPERTIES:\n:X: nil\n:Y+: two\n:Y: one\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-spaces-value",
+  "text": "#+COLUMNS: %ITEM %X{+}\n* A\n** B\n:PROPERTIES:\n:X:    4   \n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-todo-custom-next",
+  "text": "#+COLUMNS: %ITEM %TODO\n#+TODO: A B | C\n* A x\n* B\n",
+  "keys": "C-c C-x C-c n n n",
+  "point": 40
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-todo-to-empty",
+  "text": "#+COLUMNS: %ITEM %TODO\n* DONE x\n* B\n",
+  "keys": "C-c C-x C-c n",
+  "point": 24
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-priority-wrap",
+  "text": "#+COLUMNS: %ITEM %PRIORITY\n* [#C] x\n* B\n",
+  "keys": "C-c C-x C-c n",
+  "point": 28
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-priority-prev",
+  "text": "#+COLUMNS: %ITEM %PRIORITY\n* [#A] x\n* B\n",
+  "keys": "C-c C-x C-c p",
+  "point": 28
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-widen-twice",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c > >",
+  "point": 133
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-widen-count",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c C-u 4 <",
+  "point": 133
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-attr-item",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c s",
+  "point": 132,
+  "answers": [
+   "ITEM",
+   "Task",
+   "",
+   "",
+   ""
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-new-at-0",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c S-M-<right>",
+  "point": 132,
+  "answers": [
+   "Owner",
+   "Who",
+   "6",
+   "",
+   ""
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-delete-summary",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c S-M-<left>",
+  "point": 135,
+  "answers": [
+   "y"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-delete-then-move",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c S-M-<left> M-<right>",
+  "point": 134,
+  "answers": [
+   "y"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-row-down-last",
+  "text": "#+COLUMNS: %ITEM %N{+}\n* Top\n** A\n:PROPERTIES:\n:N: 1\n:END:\n** B\n:PROPERTIES:\n:N: 5\n:END:\n",
+  "keys": "C-c C-x C-c M-<down>",
+  "point": 60
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-xpct-next-parent",
+  "text": "#+COLUMNS: %ITEM %D{X%}\n* Top\n** A\n:PROPERTIES:\n:D: [X]\n:END:\n** B\n:PROPERTIES:\n:D: [ ]\n:END:\n",
+  "keys": "C-c C-x C-c n",
+  "point": 25
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-xpct-toggle-child",
+  "text": "#+COLUMNS: %ITEM %D{X%}\n* Top\n** A\n:PROPERTIES:\n:D: [X]\n:END:\n** B\n:PROPERTIES:\n:D: [ ]\n:END:\n",
+  "keys": "C-c C-x C-c C-c C-c",
+  "point": 63
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-global-from-subtree",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-u C-c C-x C-c",
+  "point": 187
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-switch-subtree",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c q",
+  "point": 245
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-other-subtree",
+  "text": "#+COLUMNS: %25ITEM %TODO %3PRIORITY %Effort{:} %TAGS\n* TODO [#A] Project :work:\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00 2:00\n:END:\n** TODO Write report\n:PROPERTIES:\n:Effort: 1:00\n:END:\n** DONE Call Ann :phone:\n:PROPERTIES:\n:Effort: 0:30\n:END:\n* Other\nSome text.\n",
+  "keys": "C-c C-x C-c",
+  "point": 245
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-body-typing-g",
+  "text": "#+COLUMNS: %ITEM %X\n* A\nbody a\n* B\n",
+  "keys": "C-c C-x C-c C-n C-e x g",
+  "point": 20
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-num-printf-leaf-empty",
+  "text": "#+COLUMNS: %ITEM %N{max;%.1f}\n* A\n** B\n:PROPERTIES:\n:N: 2\n:END:\n** C\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-sum-printf-d",
+  "text": "#+COLUMNS: %ITEM %N{+;%d}\n* A\n** B\n:PROPERTIES:\n:N: 2.7\n:END:\n** C\n:PROPERTIES:\n:N: 1\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-mean-printf",
+  "text": "#+COLUMNS: %ITEM %N{mean;%.2f}\n* A\n** B\n:PROPERTIES:\n:N: 1\n:END:\n** C\n:PROPERTIES:\n:N: 2\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-time-mixed-units",
+  "text": "#+COLUMNS: %ITEM %T{:}\n* A\n** B\n:PROPERTIES:\n:T: 1h 30min\n:END:\n** C\n:PROPERTIES:\n:T: 0:15\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-time-invalid",
+  "text": "#+COLUMNS: %ITEM %T{:}\n* A\n** B\n:PROPERTIES:\n:T: soon\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-xcount-nested",
+  "text": "#+COLUMNS: %ITEM %D{X/}\n* A\n** B\n*** B1\n:PROPERTIES:\n:D: [X]\n:END:\n** C\n:PROPERTIES:\n:D: [ ]\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-hours-sum-zero",
+  "text": "#+COLUMNS: %ITEM %T{:}\n* A\n** B\n:PROPERTIES:\n:T: 0:00\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-est-sum-int",
+  "text": "#+COLUMNS: %ITEM %E{est+}\n* A\n** B\n:PROPERTIES:\n:E: 2-4\n:END:\n** C\n:PROPERTIES:\n:E: 3\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-x-dollar-format",
+  "text": "#+COLUMNS: %ITEM %N{$}\n* A\n** B\n:PROPERTIES:\n:N: 2.345\n:END:\n** C\n:PROPERTIES:\n:N: 1.115\n:END:\n",
+  "keys": "C-c C-x C-c",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-y-todo-done-log-folded",
+  "text": "#+COLUMNS: %ITEM %TODO\n* TODO A\n* B\n",
+  "keys": "C-c C-x C-c n",
+  "point": 24,
+  "globals": {
+   "org-log-done": "'time"
+  },
+  "today": "2026-11-04"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-y-digit-todo",
+  "text": "#+COLUMNS: %ITEM %TODO\n* A\n* B\n",
+  "keys": "C-c C-x C-c 1",
+  "point": 24
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-y-allowed-global",
+  "text": "#+PROPERTY: Owner_ALL ann bob\n#+COLUMNS: %ITEM %Owner\n* A\n** B\n",
+  "keys": "C-c C-x C-c a",
+  "point": 59,
+  "answers": [
+   "ann bob carl"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-y-allowed-global-next",
+  "text": "#+PROPERTY: Owner_ALL ann bob\n#+COLUMNS: %ITEM %Owner\n* A\n** B\n",
+  "keys": "C-c C-x C-c n",
+  "point": 59
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-y-allowed-top",
+  "text": "#+COLUMNS: %ITEM %Owner\nIntro\n* A\n** B\n",
+  "keys": "C-c C-x C-c a",
+  "point": 0,
+  "answers": [
+   "x y"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-y-edit-leaf-sum-updates-parent-prop",
+  "text": "#+COLUMNS: %ITEM %X{+}\n* A\n:PROPERTIES:\n:X: 0\n:END:\n** B\n:PROPERTIES:\n:X: 2\n:END:\n",
+  "keys": "C-c C-x C-c e",
+  "point": 53,
+  "answers": [
+   "9"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "displayed": true,
+  "name": "review-y-quit-then-edit-heading",
+  "text": "#+COLUMNS: %ITEM %X{+}\n* A\n** B\n:PROPERTIES:\n:X: 2\n:END:\n** C\n:PROPERTIES:\n:X: 3\n:END:\n",
+  "keys": "C-c C-x C-c q C-e x",
+  "point": 27
+ }
+]

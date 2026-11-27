@@ -75,3 +75,10 @@ org-edit-special/export-html  # E8 has no html-mode, so the export block's langu
 org-agenda-views/custom-tags-tree  # Org marks the buffer modified
 org-agenda-views/custom-todo-tree  # Org marks the buffer modified
 org-agenda-views/custom-occur-tree  # Org marks the buffer modified
+
+# In column view, Org aligns a heading's tags after C-c , by the column its
+# overlays' display strings put the text at; E8 aligns them by the text.
+org-columns/columns-priority-prev  # tags aligned by the displayed column
+# Emacs's read-only error prints the property's string with the faces
+# substitute-command-keys gave it; E8 prints the string.
+org-columns/columns-typing-read-only  # the string's properties in the error

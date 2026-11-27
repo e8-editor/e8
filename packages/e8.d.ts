@@ -6182,6 +6182,210 @@ declare global {
        */
       "org-clone-subtree-with-time-shift": [n: number, shift: string];
       /**
+       * Show the headings of the subtree point is in as a table of their properties, the columns COLUMNS, #+COLUMNS: or org-columns-default-format say; before the first heading or with C-u, of the whole buffer.
+       *
+       * @param global raw prefix argument
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns": [global?: PrefixArg | boolean];
+      /**
+       * Set the column at point to its last allowed value.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-allowed-value-0": [];
+      /**
+       * Set the column at point to allowed value number 1.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-allowed-value-1": [];
+      /**
+       * Set the column at point to allowed value number 2.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-allowed-value-2": [];
+      /**
+       * Set the column at point to allowed value number 3.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-allowed-value-3": [];
+      /**
+       * Set the column at point to allowed value number 4.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-allowed-value-4": [];
+      /**
+       * Set the column at point to allowed value number 5.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-allowed-value-5": [];
+      /**
+       * Set the column at point to allowed value number 6.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-allowed-value-6": [];
+      /**
+       * Set the column at point to allowed value number 7.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-allowed-value-7": [];
+      /**
+       * Set the column at point to allowed value number 8.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-allowed-value-8": [];
+      /**
+       * Set the column at point to allowed value number 9.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-allowed-value-9": [];
+      /**
+       * Show the headings, as CONTENTS does, in column view.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-content": [];
+      /**
+       * Remove the column at point.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-delete": [];
+      /**
+       * Edit the allowed values of the column at point's property.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-edit-allowed": [];
+      /**
+       * Edit the property, title, width, summary and format of the column at point.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-edit-attributes": [];
+      /**
+       * Edit the value of the column at point: TODO, priority, tags and dates with their own commands, others asked for.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-edit-value": [];
+      /**
+       * Move to the row below, in the same column.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-move-down": [];
+      /**
+       * Swap the column at point with the one to its left.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-move-left": [];
+      /**
+       * Swap the column at point with the one to its right.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-move-right": [];
+      /**
+       * Move the row at point down, its subtree with it.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-move-row-down": [];
+      /**
+       * Move the row at point up, its subtree with it.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-move-row-up": [];
+      /**
+       * Move to the row above, in the same column.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-move-up": [];
+      /**
+       * Make the column at point narrower.
+       *
+       * @param arg prefix count
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-narrow": [arg?: number];
+      /**
+       * Add a column left of the one at point, its property, title, width, summary and format asked for.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-new": [];
+      /**
+       * Set the column at point to the next of its allowed values.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-next-allowed-value": [];
+      /**
+       * Open the link in the column at point.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-open-link": [];
+      /**
+       * Set the column at point to the previous of its allowed values.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-previous-allowed-value": [];
+      /**
+       * Leave column view.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-quit": [];
+      /**
+       * Draw the columns again, summarizing their values afresh.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-redo": [];
+      /**
+       * Show the whole value of the column at point.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-show-value": [];
+      /**
+       * Change the TODO state of the row at point.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-todo": [];
+      /**
+       * Toggle the checkbox at point, or leave column view.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-toggle-or-columns-quit": [];
+      /**
+       * Make the column at point wider.
+       *
+       * @param arg prefix count
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-widen": [arg?: number];
+      /**
        * M-; in Org: on a heading, make it a comment or take that away, as org-toggle-comment; elsewhere as comment-dwim.
        *
        * Defined in packages/org.ts.
@@ -15248,6 +15452,40 @@ declare global {
        */
       "org-clone-delete-id": Value;
       /**
+       * The values a column summarized with X, X/ or X% cycles through.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-checkbox-allowed-values": Value;
+      /**
+       * The columns column view shows where no COLUMNS property or #+COLUMNS: line says otherwise.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-default-format": Value;
+      /**
+       * What ends a value too wide for its column.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-ellipses": Value;
+      /**
+       * Keymap org-columns-map.
+       */
+      "org-columns-map": Value;
+      /**
+       * A function given a column's title and a value, returning the text to show for it, or nil for the value as it is.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-modify-value-for-display-function": Value;
+      /**
+       * Summary operators of your own, as [operator, function] or [operator, function, collect]: the function given the values and the printf format, the collect function the property, giving its value at a heading.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-columns-summary-types": Value;
+      /**
        * Whether C-c C-c asks before running a source block: true asks, false runs it, and a function of the block's language and code decides.
        *
        * Defined in packages/ob-core.ts.
@@ -19158,6 +19396,18 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-code": FaceAttributes;
+      /**
+       * The values of column view.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-column": FaceAttributes;
+      /**
+       * The titles of column view's columns.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-column-title": FaceAttributes;
       /**
        * Timestamps.
        *
