@@ -96,6 +96,7 @@ mod org_clock_persist;
 mod org_clock_rest;
 mod org_clocktable;
 mod org_columns;
+mod org_timestamps;
 mod org_inline_images;
 mod org_capture_targets;
 mod org_cycle_hook;

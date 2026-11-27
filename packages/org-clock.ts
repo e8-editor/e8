@@ -46,6 +46,7 @@ import {
   reducedLevel,
   tableSortLines,
   today,
+  orgCurrentTime,
   updateDblock,
 } from "org";
 import { findBufferVisiting } from "files";
@@ -119,6 +120,17 @@ let timer: number | undefined;
 /** Now, or the day tests fix at noon, as an Org time. */
 function now(): DateTime {
   return today(true);
+}
+
+e8.defineVariable({
+  name: "org-clock-rounding-minutes",
+  doc: "Round the times clocking in and out take to this many minutes, a clock-in time to one not after now; 0 does not round.",
+  value: 0,
+});
+
+/** The time a clock starts or stops, rounded to org-clock-rounding-minutes, with PAST not after now, as org-current-time is called for them. */
+function clockTime(past: boolean): DateTime {
+  return orgCurrentTime(e8.variable("org-clock-rounding-minutes") ?? null, past);
 }
 
 /** An Org time as milliseconds, to count minutes between, in E8's zone as Emacs's encode-time. */
@@ -658,10 +670,10 @@ function clockInHere(selected?: number, startTime?: DateTime, leftover?: DateTim
   const continuing = truthy(e8.variable("org-clock-continuously") ?? null) ? outTime : undefined;
   // From when a resolved clock stopped, if the user says so, as org-clock-in offers org-clock-leftover-time.
   const fromLeftover = open === undefined && continuing === undefined && leftover !== undefined &&
-    e8.yOrNP(`You stopped another clock ${Math.floor((millis(now()) - millis(leftover)) / 60000)} mins ago; start this one from then? `)
+    e8.yOrNP(`You stopped another clock ${Math.floor((millis(clockTime(true)) - millis(leftover)) / 60000)} mins ago; start this one from then? `)
     ? leftover
     : undefined;
-  const start = open?.start ?? continuing ?? fromLeftover ?? startTime ?? now();
+  const start = open?.start ?? continuing ?? fromLeftover ?? startTime ?? clockTime(true);
   const stamp = open?.stamp ?? `[${formatTimestamp(start, true)}]`;
   e8.saveExcursion(() => {
     e8.saveRestriction(() => {
@@ -753,7 +765,7 @@ export function clockOut(failQuietly = false, askState = false, atTime?: DateTim
     ? e8.withCurrentBuffer(buffer, () => e8.completingRead("Switch to state: ", allKeywords(), { requireMatch: true, initial: "DONE" }))
     : (e8.variable("org-clock-out-switch-to-state") ?? null);
   // At AT-TIME, as a resolved clock is stopped then.
-  const end = atTime ?? now();
+  const end = atTime ?? clockTime(false);
   outTime = end;
   // No idle checks without a clock, as org-clock-out cancels org-clock-idle-timer.
   if (idleTimer !== undefined && atTime === undefined) {
@@ -977,7 +989,7 @@ e8.defineCommand({
     if (Array.isArray(arg) && arg[0] === 4) return clockIn(arg);
     const n = Array.isArray(arg) ? arg[0] : undefined;
     // From the last clock-out with C-u C-u or org-clock-continuously, as org-clock-in-last.
-    const start = truthy(e8.variable("org-clock-continuously") ?? null) || n === 16 ? (outTime ?? now()) : now();
+    const start = truthy(e8.variable("org-clock-continuously") ?? null) || n === 16 ? (outTime ?? clockTime(true)) : clockTime(true);
     const head = history[0];
     const buffer = head === undefined ? undefined : e8.markerBuffer(head);
     if (head === undefined || buffer === undefined) {
