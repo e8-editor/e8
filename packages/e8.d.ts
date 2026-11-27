@@ -5949,6 +5949,42 @@ declare global {
        */
       "org-archive-to-archive-sibling": [];
       /**
+       * Assume region has Org syntax, and convert it to plain ASCII.
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-ascii-convert-region-to-ascii": [];
+      /**
+       * Assume region has Org syntax, and convert it to UTF-8.
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-ascii-convert-region-to-utf8": [];
+      /**
+       * Export current buffer to a text buffer.
+       *
+       * @param async raw prefix argument
+       * @param subtreep raw prefix argument
+       * @param visible-only raw prefix argument
+       * @param body-only raw prefix argument
+       * @param ext-plist raw prefix argument
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-ascii-export-as-ascii": [async?: PrefixArg | boolean, subtreep?: PrefixArg | boolean, visibleOnly?: PrefixArg | boolean, bodyOnly?: PrefixArg | boolean, extPlist?: PrefixArg | boolean];
+      /**
+       * Export current buffer to a text file.
+       *
+       * @param async raw prefix argument
+       * @param subtreep raw prefix argument
+       * @param visible-only raw prefix argument
+       * @param body-only raw prefix argument
+       * @param ext-plist raw prefix argument
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-ascii-export-to-ascii": [async?: PrefixArg | boolean, subtreep?: PrefixArg | boolean, visibleOnly?: PrefixArg | boolean, bodyOnly?: PrefixArg | boolean, extPlist?: PrefixArg | boolean];
+      /**
        * Break the line past fill-column as Auto Fill does, but only where Org fills: never in a heading, a table, a keyword or a block.
        *
        * Defined in packages/org.ts.
@@ -6729,6 +6765,23 @@ declare global {
        */
       "org-end-of-line": [n?: number];
       /**
+       * Export dispatcher for Org mode.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-export-dispatch": [arg?: PrefixArg | boolean];
+      /**
+       * Insert all export keywords with default values at beginning of line.
+       *
+       * @param backend text
+       * @param subtreep text
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-export-insert-default-template": [backend: string, subtreep: string];
+      /**
        * Fill element at point, when applicable.
        *
        * This function only applies to comment blocks, comments, example blocks and paragraphs. Also, as a special case, re-align table when point is at one. With a prefix argument, justify as well. With the region active, fill each of the elements in it.
@@ -6892,6 +6945,36 @@ declare global {
        * Defined in packages/org-goto.ts.
        */
       "org-goto-right": [];
+      /**
+       * Assume the current region has Org syntax, and convert it to HTML.
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-html-convert-region-to-html": [];
+      /**
+       * Export current buffer to an HTML buffer.
+       *
+       * @param async raw prefix argument
+       * @param subtreep raw prefix argument
+       * @param visible-only raw prefix argument
+       * @param body-only raw prefix argument
+       * @param ext-plist raw prefix argument
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-html-export-as-html": [async?: PrefixArg | boolean, subtreep?: PrefixArg | boolean, visibleOnly?: PrefixArg | boolean, bodyOnly?: PrefixArg | boolean, extPlist?: PrefixArg | boolean];
+      /**
+       * Export current buffer to an HTML file.
+       *
+       * @param async raw prefix argument
+       * @param subtreep raw prefix argument
+       * @param visible-only raw prefix argument
+       * @param body-only raw prefix argument
+       * @param ext-plist raw prefix argument
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-html-export-to-html": [async?: PrefixArg | boolean, subtreep?: PrefixArg | boolean, visibleOnly?: PrefixArg | boolean, bodyOnly?: PrefixArg | boolean, extPlist?: PrefixArg | boolean];
       /**
        * Copy the ID of the entry at point to the kill ring. Create an ID if necessary.
        *
@@ -7120,6 +7203,36 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-match-sparse-tree": [todoOnly?: PrefixArg | boolean];
+      /**
+       * Assume the current region has Org syntax, and convert it to Markdown.
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-md-convert-region-to-md": [];
+      /**
+       * Export current buffer to a Markdown buffer.
+       *
+       * @param async raw prefix argument
+       * @param subtreep raw prefix argument
+       * @param visible-only raw prefix argument
+       * @param body-only raw prefix argument
+       * @param ext-plist raw prefix argument
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-md-export-as-markdown": [async?: PrefixArg | boolean, subtreep?: PrefixArg | boolean, visibleOnly?: PrefixArg | boolean, bodyOnly?: PrefixArg | boolean, extPlist?: PrefixArg | boolean];
+      /**
+       * Export current buffer to a Markdown file.
+       *
+       * @param async raw prefix argument
+       * @param subtreep raw prefix argument
+       * @param visible-only raw prefix argument
+       * @param body-only raw prefix argument
+       * @param ext-plist raw prefix argument
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-md-export-to-markdown": [async?: PrefixArg | boolean, subtreep?: PrefixArg | boolean, visibleOnly?: PrefixArg | boolean, bodyOnly?: PrefixArg | boolean, extPlist?: PrefixArg | boolean];
       /**
        * M-RET in Org: insert a heading at the level of the one point is under, or an item in a list.
        *
@@ -15804,6 +15917,18 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-enforce-todo-dependencies": Value;
+      /**
+       * Entities of your own, each a list of its name, LaTeX, whether that LaTeX is math, HTML, ASCII, Latin-1 and UTF-8, looked up before Org's own.
+       *
+       * Defined in packages/org-entities.ts.
+       */
+      "org-entities-user": Value;
+      /**
+       * The export backends the dispatcher offers, loaded with it: ascii, html and md.
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-export-backends": Value;
       /**
        * The hour before which a time counts as the day before, for clock ranges.
        *

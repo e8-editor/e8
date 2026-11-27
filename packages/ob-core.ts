@@ -301,7 +301,7 @@ const RESULTS = /^[ \t]*#\+results(?:\[[^\]\n]*\])?:[ \t]*(.*?)[ \t]*$/i;
  * finds it, or undefined: a named block's anywhere by its name, else the
  * unnamed one just after the block.
  */
-function resultsLine(block: Block): number | undefined {
+export function resultsLine(block: Block): number | undefined {
   if (block.name !== undefined) {
     for (let k = 0; k < e8.lineCount(); k++) {
       const m = RESULTS.exec(e8.lineText(k));
@@ -323,7 +323,7 @@ const HEADING = /^\*+[ \t]/;
  * that does not close before the next heading is no result, so nothing is
  * taken.
  */
-function resultEnd(line: number): number {
+export function resultEnd(line: number): number {
   let k = line + 1;
   const text = (n: number) => (n < e8.lineCount() ? e8.lineText(n) : "");
   const begin = /^[ \t]*#\+begin_(\S+)/i.exec(text(k));

@@ -1,0 +1,150 @@
+[
+ {
+  "name": "basic",
+  "text": "#+TITLE: A Title\n#+AUTHOR: A. Writer\n#+DATE: 2026-11-27\n\nSome intro text with *bold*, /italic/, _underline_, +strike+, =verbatim= and ~code~.\n\n* First heading\nParagraph one in the first heading,\nspanning two lines.\n\nParagraph two.\n** A subheading\nText under it.\n* Second heading\nMore text.\n"
+ },
+ {
+  "name": "lists",
+  "text": "#+OPTIONS: toc:nil author:nil\n* Lists\n- one\n- two\n  - nested a\n  - nested b\n- three\n\n1. first\n2. second\n   continued here\n3. third\n\n- [ ] open task\n- [X] done task\n- [-] partial\n\n- term :: its description\n- another term :: another description\n  with a second line\n"
+ },
+ {
+  "name": "tables",
+  "text": "| a | b |\n|---+---|\n| =x= | *y* [[l]] |\n|   |   |\n| c\n\n  +-----+---+\n  | el  | x |\n  +-----+---+\n\n+---+\njust text\n"
+ },
+ {
+  "name": "blocks",
+  "text": "#+OPTIONS: toc:nil author:nil\n* Blocks\n#+BEGIN_SRC python\ndef f(x):\n    return x + 1\n#+END_SRC\n\n#+BEGIN_EXAMPLE\n  example text\n    indented\n#+END_EXAMPLE\n\n#+BEGIN_QUOTE\nA quotation that runs on for a little while, long enough to need filling when it is exported to plain text.\n#+END_QUOTE\n\n#+BEGIN_CENTER\nCentred text\n#+END_CENTER\n\n#+BEGIN_VERSE\n  Roses are red,\n    violets are blue.\n#+END_VERSE\n\n: fixed width line\n: another one\n\n-----\n\n#+BEGIN_note\nA special block.\n#+END_note\n\n#+BEGIN_COMMENT\nNot exported.\n#+END_COMMENT\n# a comment line\nAfter the comment.\n"
+ },
+ {
+  "name": "footnotes",
+  "text": "#+OPTIONS: toc:nil author:nil\n* Notes\nText with a footnote[fn:1] and another[fn:named].\nAn inline one[fn:: Inline definition.] too.\nAgain the first[fn:1].\n\n[fn:1] The first footnote.\n\n[fn:named] The named footnote,\nwith two lines.\n"
+ },
+ {
+  "name": "links",
+  "text": "#+OPTIONS: toc:nil author:nil\n* Links\nSee [[https://example.com][Example]] and https://plain.example.org/path.\nA bare [[https://example.com/bare]] link.\nA file [[file:notes.org][notes]] and [[file:image.png]].\nGo to [[*Target heading]] or [[#custom][custom]] or <<here>>a target, see [[here]].\n* Target heading\n:PROPERTIES:\n:CUSTOM_ID: custom\n:END:\nArrived.\n"
+ },
+ {
+  "name": "todo",
+  "text": "#+OPTIONS: toc:nil author:nil\n* TODO [#A] Write the report                                  :work:urgent:\nSCHEDULED: <2026-11-28 Sat> DEADLINE: <2026-11-30 Mon>\nBody of the task.\n* DONE Finished thing                                         :home:\nCLOSED: [2026-11-26 Thu 10:00]\n* Plain heading\n:PROPERTIES:\n:EFFORT:   1:00\n:END:\n:LOGBOOK:\n- Note taken on [2026-11-20 Fri 09:00]\n:END:\nText with <2026-12-01 Tue> and [2026-12-02 Wed 14:00].\n"
+ },
+ {
+  "name": "misc",
+  "text": "#+OPTIONS: toc:nil author:nil\n* Misc\nEntities: \\alpha, \\to, \\nbsp{}x, \\copy and \\mdash.\nSub and super: H_2O and x^2 and a_{ij}.\nSpecial strings: a -- b --- c ... and \\-shy.\nA line\\\\\nbreak here.\nStatistics [2/3] and [66%].\nQuotes \"double\" and 'single'.\n"
+ },
+ {
+  "name": "numbering",
+  "text": "#+TITLE: Numbered\n#+OPTIONS: toc:2 num:t H:2 author:nil\n* One\n** One point one\n*** Deep heading\nDeep text.\n**** Deeper\nDeeper text.\n** One point two\n* Two\n"
+ },
+ {
+  "name": "options",
+  "text": "#+TITLE: Options\n#+OPTIONS: toc:nil num:nil todo:nil tags:nil pri:nil ^:nil author:nil date:nil\n* TODO [#B] Heading with stuff :tag:\na_b and c^d stay.\n* COMMENT A commented heading\nHidden.\n* Kept heading\n* Not exported :noexport:\nGone.\n"
+ },
+ {
+  "name": "macros",
+  "text": "#+TITLE: Macro Title\n#+AUTHOR: Someone\n#+MACRO: greet Hello, $1!\n#+OPTIONS: toc:nil\nThe title is {{{title}}} by {{{author}}}.\n{{{greet(World)}}}\n"
+ },
+ {
+  "name": "select",
+  "text": "#+OPTIONS: toc:nil author:nil\n#+SELECT_TAGS: pick\n* Left out\n* Chosen :pick:\n** Under chosen\nText.\n* Also out\n"
+ },
+ {
+  "name": "preamble",
+  "text": "Text before any heading.\n\n#+begin_src emacs-lisp :exports none\n(+ 1 2)\n#+end_src\n\n* Heading\n#+NAME: tbl\n| 1 | 2 |\n"
+ },
+ {
+  "name": "wrapping",
+  "text": "#+OPTIONS: toc:nil author:nil\n* A heading that is rather long, long enough that it has to be wrapped when exported to plain text\nA paragraph that is long enough to be filled by the ASCII backend, which fills paragraphs to its text width of seventy-two columns, with words that run on and on.\n- An item whose text is also long enough to wrap onto a second line when it is exported to ASCII.\n"
+ },
+ {
+  "name": "nested-lists",
+  "text": "- a\n  - b\n\n    still b\n\n  - c\n- d\n\n  d's paragraph\n1. [@3] three\n2. four\n   - [ ] box\n   - [X] boxed :: with a tag\na) not a list without alpha\n\n\n- after two blanks\n"
+ },
+ {
+  "name": "affiliated",
+  "text": "#+NAME: tbl\n#+CAPTION[Short]: A *long* caption\n#+CAPTION: Second caption\n#+ATTR_HTML: :width 10\n#+ATTR_HTML: :class x\n#+ATTR_LATEX: :float t\n| a | b |\n|---+---|\n| 1 | 2 |\n#+TBLFM: $2=$1*2\n\n#+RESULTS[abc123]: name\n: output\n\n#+HEADER: :var x=1\n#+HEADERS: :var y=2\n#+begin_src sh :exports both\necho $x\n#+end_src\n\n#+NAME: lonely\n#+CAPTION: left alone\n\nPara.\n"
+ },
+ {
+  "name": "footnote-section",
+  "text": "* Text\nA note[fn:a] and inline[fn:b: with *bold* and /it/] and anon[fn:: anonymous].\n* Footnotes\n[fn:a] Definition a.\nContinued.\n\n\n[fn:c] Third, after blanks.\n* After\n"
+ },
+ {
+  "name": "links-markup",
+  "text": "[[https://example.com][A *bold* and /italic/ description]]\n[[file:a.org::*Heading][file with search]] [[file+sys:/tmp/x]] [[./rel.org]] [[/abs/path]]\n[[(ref)]] [[#cid]] [[fuzzy target]] <https://angle.example/x y>\nmailto:me@example.com doi:10.1000/182 [[id:abc-123][by id]]\n[[https://ex.com/\\[x\\]]] a\\\\b\n"
+ },
+ {
+  "name": "subsup",
+  "text": "a_b a^b a_{b c} a^{b {c}} a_(x) a^* x^-1 a_1.5, b_c. _start ^start\na_b_c x__y foo^bar^baz H_2O^+ 10^{-3} t_{}\n"
+ },
+ {
+  "name": "emphasis",
+  "text": "*bold* /it/ _under_ +strike+ =verb= ~code~\n*not bold * * also not* a*b*c (*paren*) \"*quote*\" -*dash*-\n*multi\nline* /a/b/ =x=y= ~a~b~ *bold /nested/ _deep_*\n**double** *a* *b*, *c*. *d*! {*brace*}\n"
+ },
+ {
+  "name": "timestamps",
+  "text": "<2026-11-27 Fri> [2026-11-27 Fri 10:00] <2026-11-27 Fri 10:00-12:30>\n<2026-11-27 Fri>--<2026-11-29 Sun> [2026-11-27 Fri 08:00]--[2026-11-28 Sat 09:00]\n<2026-11-27 Fri +1w> <2026-11-27 Fri .+2d -3d> <2026-11-27 Fri ++1m/2m --2d>\n<%%(diary-float t 4 2)> <%%(org-calendar-holiday) 10:00-11:00> <2026-11-27>\n* TODO Task\nSCHEDULED: <2026-11-28 Sat 09:00 +1d> DEADLINE: <2026-11-30 Mon -2d> CLOSED: [2026-11-26 Thu 10:00]\nCLOCK: [2026-11-26 Thu 09:00]--[2026-11-26 Thu 10:30] =>  1:30\nCLOCK: [2026-11-27 Fri 09:00]\n"
+ },
+ {
+  "name": "drawers",
+  "text": "* Heading :tag:sub:\n:PROPERTIES:\n:CUSTOM_ID: here\n:Prop+: one\n:Prop+: two\n:EMPTY:\n:END:\n:LOGBOOK:\n- State \"DONE\" from \"TODO\" [2026-11-26 Thu 10:00]\n:END:\n:MYDRAWER:\nInside *drawer*.\n:END:\n:NOTEND:\ntext\n** COMMENT Commented :ARCHIVE:\n** [#B] Priority\n*** DONE Done one\n"
+ },
+ {
+  "name": "comments",
+  "text": "# A comment\n# continued\n#+begin_comment\nblock comment\n#+end_comment\n#not a comment\n # indented comment\n#+KEYWORD: value\n#+TITLE: The *title*\n#+begin_example -n -r -l \"(ref:%s)\"\n,* escaped\n,#+not keyword\nline (ref:x)\n#+end_example\n#+begin_export html\n<b>x</b>\n#+end_export\n#+begin_center\ncentred\n#+end_center\n#+begin_verse\n  Verse /line/\n     indented\n#+end_verse\n#+begin_src\nno language\n#+end_src\n#+BEGIN_SRC emacs-lisp -n 10 -i :tangle yes\n(message \"hi\")\n#+END_SRC\n#+begin_unfinished\nno end\n"
+ },
+ {
+  "name": "non-ascii",
+  "text": "* Rubrik på svenska — med 🙂 emoji\nText med åäö och 𝔘𝔫𝔦𝔠𝔬𝔡𝔢 *fet 🙂* och /kursiv/.\n- Punkt 🙂 [[https://exempel.se][länk 🙂]]\n| 🙂 | ä |\n[fn:1] Fotnot med 𝔘.\n"
+ },
+ {
+  "name": "misc-objects",
+  "text": "\\alpha \\alpha{} \\Alphax \\sup2 \\frac12 \\_   two \\there4 \\notanentity\n$x$ $$y$$ \\(a\\) \\[b\\] \\frac{1}{2} $not$money $5 and $6$.\n@@html:<b>@@ {{{macro(a, b\\, c)}}} {{{empty}}} {{{nil()}}}\n<<target>> <<<radio>>> radio again [50%] [1/3] [/] [%]\nsrc_python[:var x=1]{x+1} call_fn(3)[:results raw] call_noargs[:h 1]\n[cite:@key] [cite/t:see @a p. 1; @b] line end\\\\\nnext\n\\begin{equation}\nx = 1\n\\end{equation}\n-----\n%%(diary-anniversary 1 1 2000)\n#+CALL: fn[:h 1](x=2) :results raw\n#+BEGIN: clocktable :scope file\ndynamic\n#+END:\n"
+ },
+ {
+  "name": "headlines",
+  "text": "Preamble line.\n* Top\n** TODO [#A] COMMENT Sub :t1:\n*** DONE Third\n* Footnotes\n*Not heading\n***** Deep\n*\n* TODO\n"
+ },
+ {
+  "name": "blank-lines",
+  "text": "\n\n* H\n\n\nPara after blanks.\n\n\n\n** Sub\n- item\n\n\n- item two\n"
+ },
+ {
+  "name": "planning-only",
+  "text": "* Task\nDEADLINE: <2026-01-01 Thu>\n:PROPERTIES:\n:A: 1\n:END:\nBody.\n"
+ },
+ {
+  "name": "top-properties",
+  "text": "# comment\n:PROPERTIES:\n:CATEGORY: cat\n:ID: top\n:END:\n#+TITLE: x\nBody.\n"
+ },
+ {
+  "name": "items-with-blocks",
+  "text": "- item\n  #+begin_src sh\n  - not an item\n  #+end_src\n  :DRAWER:\n  - not either\n  :END:\n- second\n  * not a heading inside\n"
+ },
+ {
+  "name": "inline-footnotes-nested",
+  "text": "Text[fn:x: outer [fn:y: inner] done] end.\n[fn:x] dupe\n"
+ },
+ {
+  "name": "headline-edges",
+  "text": "* :onlytag:\n* Title with trailing spaces   :a:b:\n* TODO\n* DONE [#C] COMMENT x\n* Entity \\alpha and =verb= in title :t:\n**** Skipped levels\n* COMMENTED not a comment\n* [#A]\n"
+ },
+ {
+  "name": "keywords",
+  "text": "#+TITLE:\n#+OPTIONS: toc:nil H:2 ^:{}\n#+AUTHOR:   Someone   Else\n#+DESCRIPTION: a: b: c\n#+begin: not dynamic\n#+ATTR_HTML: :alt x\ntext after attr\n#+CAPTION: orphan at end"
+ },
+ {
+  "name": "links-more",
+  "text": "[[file:x.org::#id][custom]] [[file:x.org::*Head]] [[elisp:(message \"x\")]] [[shell:ls -l]]\nhttps://example.com. and (https://example.com/a_(b)) <mailto:a@b.c> file:/tmp/a.txt::5\n[[https://ex.com][[desc with brackets]]] [[nolink\n[[*Heading with *bold*]] [[/abs/file.png]] [[~/home.org]] [[FILE:caps.org]]\n"
+ },
+ {
+  "name": "tables-more",
+  "text": "| <5> | /x/ | [[https://a.b][l]] |\n|-----+-----+--------------------|\n| <2026-01-01 Thu> | \\alpha | x^2 |\n|-\n| a | b\n#+TBLFM: @2$1=1\n#+TBLFM: $3=2\n"
+ },
+ {
+  "name": "src-more",
+  "text": "#+begin_src c -n -r -l \"(r:%s)\" :results output\nint main() { return 0; } (r:main)\n#+end_src\nsrc_c{int a = {1};} src_sh[:results raw]{echo {}} x\n#+begin_src\n#+end_src\n#+begin_example\n#+end_example\n#+begin_quote\n#+end_quote\n"
+ },
+ {
+  "name": "lists-alpha",
+  "text": "a. not an item\nb) neither\n- [@b] counter letter\n- [@start:4] start counter\n- [ ]\n-\n+ plus list\n* star at col 0 is a heading\n  * star item\n"
+ }
+]
