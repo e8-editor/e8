@@ -11826,20 +11826,33 @@ export function durationFromMinutes(minutes: number): string {
 
 /** A property's value at heading H, as org-entry-get with inheritance `selective` reads it, special ones worked out. */
 export function entryGetSelective(h: Heading, name: string): string | undefined {
-  const all = headings();
-  const i = headingIndex(all, h.line);
-  if (name === "CATEGORY") return i === undefined ? category() : matchContexts(all)(i).category();
-  return i === undefined ? undefined : matchProperty(matchContexts(all)(i), name);
+  return selectiveGetter()(h, name);
+}
+
+/**
+ * Reads properties at the buffer's headings as org-entry-get with
+ * inheritance `selective` does, the whole buffer's headings looked at once
+ * for all of them, ancestors outside a narrowing included; with
+ * `literalNil`, "nil" is a value, as org-entry-get's LITERAL-NIL has it.
+ */
+export function selectiveGetter(literalNil = false): (h: Heading, name: string) => string | undefined {
+  const all = e8.saveRestriction(() => (e8.widen(), headings()));
+  const contexts = matchContexts(all);
+  return (h, name) => {
+    const i = headingIndex(all, h.line);
+    if (name === "CATEGORY") return i === undefined ? category() : contexts(i).category();
+    return i === undefined ? undefined : matchProperty(contexts(i), name, literalNil);
+  };
 }
 
 /** A property's value for a match, as org-entry-get with inheritance `selective` reads it. */
-function matchProperty(ctx: MatchContext, name: string): string | undefined {
+function matchProperty(ctx: MatchContext, name: string, literalNil = false): string | undefined {
   if (SPECIAL_PROPERTIES.includes(name)) return specialProperty(ctx, name);
   if (propertyInheritP(name)) {
     const value = entryGetInherited(ctx.h, name, false);
-    return value === "nil" ? undefined : value;
+    return value === "nil" && !literalNil ? undefined : value;
   }
-  return entryGet(ctx.h.line, name);
+  return entryGet(ctx.h.line, name, literalNil);
 }
 
 /**

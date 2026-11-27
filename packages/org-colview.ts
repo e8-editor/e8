@@ -6,11 +6,11 @@
 
 import {
   type Heading,
+  selectiveGetter,
   allKeywords,
   bufferPropertyKeys,
   durationToMinutes,
   openLink,
-  entryGetSelective,
   headingIndex,
   headings,
   propertyAllowedValues,
@@ -43,7 +43,8 @@ for (const [name, value, doc] of [
 type Spec = { property: string; title: string; width?: number; op?: string; printf?: string };
 
 /** A key telling specs apart, for the summaries kept on headings. */
-const specKey = (s: Spec): string => JSON.stringify([s.property, s.title, s.width ?? null, s.op ?? null, s.printf ?? null]);
+// Not the width, which < and > change in place, as Org's spec, the summaries' key, is changed there.
+const specKey = (s: Spec): string => JSON.stringify([s.property, s.title, s.op ?? null, s.printf ?? null]);
 
 /** Column view's state in a buffer, as org-colview's buffer-local variables. */
 type ColumnsState = {
@@ -56,6 +57,8 @@ type ColumnsState = {
   topLevel: e8.Marker | undefined;
   previousHeader: e8.Value | undefined;
   previousTruncate: e8.Value | undefined;
+  /** Whether flyspell-mode was on, to turn on again, as org-columns-flyspell-was-active. */
+  flyspell?: boolean;
 };
 
 /** Each buffer's column view, by buffer id. */
@@ -63,6 +66,16 @@ const states = new Map<number, ColumnsState>();
 
 function state(): ColumnsState {
   const id = e8.currentBuffer().id;
+  // The killed buffers' states forgotten, their markers freed.
+  if (!states.has(id)) {
+    const live = new Set(e8.bufferList().map((b) => e8.getBuffer(b)?.id));
+    for (const [other, st] of states) {
+      if (live.has(other)) continue;
+      if (st.begin) e8.deleteMarker(st.begin);
+      if (st.topLevel) e8.deleteMarker(st.topLevel);
+      states.delete(other);
+    }
+  }
   let s = states.get(id);
   if (!s) {
     s = { overlays: [], global: false, fmt: "", compiled: [], maxWidths: [], begin: undefined, topLevel: undefined, previousHeader: undefined, previousTruncate: undefined };
@@ -144,15 +157,42 @@ function hmmOnly(times: string[]): "h:mm" | "h:mm:ss" | undefined {
 
 /** A number in a string as Emacs's string-to-number reads it: its leading number, or 0. */
 function stringToNumber(s: string): number {
-  const m = /^[ \t\n]*([-+]?(?:[0-9]+\.?[0-9]*(?:e[-+]?[0-9]+)?|\.[0-9]+(?:e[-+]?[0-9]+)?))/i.exec(s);
-  return m ? Number(m[1]) : 0;
+  return readNumber(s).n;
+}
+
+/** A number as Emacs's string-to-number reads it, and whether it is a float: "1." and "seven" are integers, "1.5" and "1e3" floats. */
+function readNumber(s: string): { n: number; float: boolean } {
+  const m = /^[ \t\n]*([-+]?)([0-9]*)(\.[0-9]*)?(e[-+]?[0-9]+)?/i.exec(s)!;
+  const digits = m[2];
+  const fraction = m[3] !== undefined && m[3].length > 1;
+  const exponent = m[4] !== undefined && (digits !== "" || fraction);
+  if (digits === "" && !fraction) return { n: 0, float: false };
+  const text = `${m[1]}${digits || "0"}${fraction ? m[3] : ""}${exponent ? m[4] : ""}`;
+  return { n: Number(text), float: fraction || exponent };
 }
 
 /** A number formatted with PRINTF, as format does, or as %s prints it: integers as integers, floats with a point. */
-function formatNumber(printf: string | undefined, n: number, float = false): string {
-  if (printf !== undefined) return e8.format(printf, n);
-  if (Number.isInteger(n) && !float) return String(n);
-  return Number.isInteger(n) ? `${n}.0` : String(n);
+function formatNumber(printf: string | undefined, x: { n: number; float: boolean }): string {
+  if (printf !== undefined) return e8.format(printf, x.n);
+  if (!x.float) return String(x.n);
+  return Number.isInteger(x.n) ? `${x.n}.0` : String(x.n);
+}
+
+/** Numbers added as Emacs's + adds them, a float if any is. */
+function sum(values: string[]): { n: number; float: boolean } {
+  const xs = values.map(readNumber);
+  return { n: xs.reduce((a, x) => a + x.n, 0), float: xs.some((x) => x.float) };
+}
+
+/** The greatest or least of numbers, the one that wins as it is, as Emacs's max and min give it. */
+function extreme(values: string[], greatest: boolean): { n: number; float: boolean } {
+  return values.map(readNumber).reduce((a, x) => ((greatest ? x.n > a.n : x.n < a.n) ? x : a));
+}
+
+/** A float rounded to the nearest integer, halves to even, as Emacs's round. */
+function roundEven(x: number): number {
+  const r = Math.round(x);
+  return Math.abs(x % 1) === 0.5 && r % 2 !== 0 ? r - 1 : r;
 }
 
 /** Minutes since a timestamp, or in a duration, as org-columns--age-to-minutes. */
@@ -172,17 +212,17 @@ function ageToMinutes(s: string): number {
 
 /** The summary of VALUES an operator gives, as org-columns-summary-types-default's functions. */
 const SUMMARIES: Record<string, (values: string[], printf?: string) => string> = {
-  "+": (v, p) => formatNumber(p, v.map(stringToNumber).reduce((a, b) => a + b, 0), v.some((x) => /[.e]/i.test(x))),
+  "+": (v, p) => formatNumber(p, sum(v)),
   $: (v) => e8.format("%.2f", v.map(stringToNumber).reduce((a, b) => a + b, 0)),
   X: (v) => {
     const done = v.filter((b) => b === "[X]").length;
     return done === v.length ? "[X]" : done > 0 ? "[-]" : "[ ]";
   },
   "X/": (v) => `[${v.filter((b) => b === "[X]" || /\[([1-9])\/\1\]/.test(b)).length}/${v.length}]`,
-  "X%": (v) => `[${Math.round((100 * v.filter((b) => b === "[X]" || b === "[100%]").length) / v.length)}%]`,
-  max: (v, p) => formatNumber(p, Math.max(...v.map(stringToNumber)), v.some((x) => /[.e]/i.test(x))),
-  min: (v, p) => formatNumber(p, Math.min(...v.map(stringToNumber)), v.some((x) => /[.e]/i.test(x))),
-  mean: (v, p) => formatNumber(p, v.map(stringToNumber).reduce((a, b) => a + b, 0) / v.length, true),
+  "X%": (v) => `[${roundEven((100 * v.filter((b) => b === "[X]" || b === "[100%]").length) / v.length)}%]`,
+  max: (v, p) => formatNumber(p, extreme(v, true)),
+  min: (v, p) => formatNumber(p, extreme(v, false)),
+  mean: (v, p) => formatNumber(p, { n: sum(v).n / v.length, float: true }),
   ":": (v) => fromMinutes(v.map(durationToMinutes).reduce((a, b) => a + b, 0), hmmOnly(v)),
   ":max": (v) => fromMinutes(Math.max(...v.map(durationToMinutes)), hmmOnly(v)),
   ":min": (v) => fromMinutes(Math.min(...v.map(durationToMinutes)), hmmOnly(v)),
@@ -194,7 +234,8 @@ const SUMMARIES: Record<string, (values: string[], printf?: string) => string> =
     let mean = 0;
     let variance = 0;
     for (const e of v) {
-      const parts = e.split("-").filter((x) => x !== "").map(stringToNumber);
+      // An empty half as 0, as split-string keeps it.
+      const parts = e.split("-").map(stringToNumber);
       if (parts.length === 2) {
         const [low, high] = parts;
         const m = (low + high) / 2;
@@ -264,8 +305,9 @@ function computeSpec(s: ColumnsState, spec: Spec, update: boolean): void {
       const value = collect ? e8.saveExcursion(() => (e8.gotoChar(h.start), collect(property))) : entryGet(h.line, property);
       const valueSet = value !== undefined && /\S/.test(value);
       if (level < lastLevel) {
+        // Each level's values newest first, as Org pushes them.
         const values: string[] = [];
-        for (let l = level + 1; l <= lmax; l++) values.push(...lvals[l]);
+        for (let l = level + 1; l <= lmax; l++) for (let k = lvals[l].length - 1; k >= 0; k--) values.push(lvals[l][k]);
         const summary = values.length > 0 ? summarize(values, spec.printf) : undefined;
         if (summary !== undefined && summary !== "") {
           const list = summariesAt(h.start).filter(([key]) => key !== specKey(spec));
@@ -275,9 +317,9 @@ function computeSpec(s: ColumnsState, spec: Spec, update: boolean): void {
           // A property the heading has, even empty, takes the summary, as the first column of it says.
           if (update && value !== undefined && value !== trimmed) e8.saveExcursion(() => (e8.gotoChar(h.start), entryPutHere(property, trimmed)));
         }
-        if ((summary !== undefined && summary !== "") || valueSet) lvals[level].unshift(summary !== undefined && summary !== "" ? summary : value!);
+        if ((summary !== undefined && summary !== "") || valueSet) lvals[level].push(summary !== undefined && summary !== "" ? summary : value!);
         for (let l = level + 1; l <= lmax; l++) lvals[l] = [];
-      } else if (valueSet) lvals[level].unshift(value!);
+      } else if (valueSet) lvals[level].push(value!);
     }
   });
 }
@@ -295,7 +337,8 @@ function computeAll(s: ColumnsState): void {
 /** A value as its column shows it, as org-columns--displayed-value: ITEM with its stars, dates as inactive, numbers by printf. */
 function displayedValue(spec: Spec, value: string, h: Heading): string {
   const modify = e8.variable("org-columns-modify-value-for-display-function");
-  if (modify !== null && modify !== undefined && modify !== false) {
+  // Only a function, as Org checks functionp.
+  if (typeof modify === "function" || (typeof modify === "string" && e8.fboundp(modify))) {
     const r = e8.funcall(modify as string, spec.title, value);
     if (typeof r === "string") return r;
   }
@@ -309,10 +352,10 @@ function displayedValue(spec: Spec, value: string, h: Heading): string {
 }
 
 /** Each column's spec, value and the value shown at heading H, as org-columns--collect-values. */
-function collectValues(s: ColumnsState, h: Heading): [Spec, string, string][] {
+function collectValues(s: ColumnsState, h: Heading, get: (h: Heading, name: string) => string | undefined): [Spec, string, string][] {
   const summaries = summariesAt(h.start);
   return s.compiled.map((spec) => {
-    const v = summaries.find(([key]) => key === specKey(spec))?.[1] ?? entryGetSelective(h, spec.property) ?? "";
+    const v = summaries.find(([key]) => key === specKey(spec))?.[1] ?? get(h, spec.property) ?? "";
     return [spec, v, displayedValue(spec, v, h)];
   });
 }
@@ -335,8 +378,13 @@ function addEllipses(string: string, width: number): string {
 
 /** A value padded and cut to WIDTH, then " | " or " |" after it, as the format "%-W.Ws | " makes it. */
 function cell(value: string, width: number, last: boolean): string {
-  const cutValue = [...value].slice(0, width).join("");
-  return cutValue + " ".repeat(Math.max(0, width - [...cutValue].length)) + (last ? " |" : " | ");
+  // In columns, as format counts its width and precision.
+  let cutValue = "";
+  for (const ch of value) {
+    if (e8.stringWidth(cutValue + ch) > width) break;
+    cutValue += ch;
+  }
+  return cutValue + " ".repeat(Math.max(0, width - e8.stringWidth(cutValue))) + (last ? " |" : " | ");
 }
 
 /** The face a value is shown in, as org-columns--overlay-text gives TODO, PRIORITY and TAGS theirs. */
@@ -431,6 +479,30 @@ function removeOverlays(s: ColumnsState): void {
     e8.setVariable("truncate-lines", s.previousTruncate);
     s.previousTruncate = undefined;
   }
+  if (s.flyspell) {
+    s.flyspell = false;
+    e8.callWithPrefix(1, "flyspell-mode");
+  }
+}
+
+/**
+ * Where the rows go on from past a COMMENT or archived subtree, as
+ * org-scan-tags's org-agenda-skip passes over them, as
+ * org-agenda-skip-comment-trees and org-agenda-skip-archived-trees say.
+ */
+function skipper(): (h: Heading) => number | undefined {
+  const tag = String(e8.variable("org-archive-tag") ?? "ARCHIVE");
+  const archived = e8.variable("org-agenda-skip-archived-trees") ?? true;
+  const comments = e8.variable("org-agenda-skip-comment-trees") ?? true;
+  return (h) => {
+    const skip = (truthy(comments) && /^COMMENT(?:[ \t]|$)/.test(h.title)) || (truthy(archived) && h.tags.includes(tag));
+    if (!skip) return undefined;
+    const all = headings();
+    const i = headingIndex(all, h.line)!;
+    let j = i + 1;
+    while (j < all.length && all[j].level > h.level) j++;
+    return all[j]?.start ?? e8.pointMax();
+  };
 }
 
 /** The columns format here, as org-columns-get-format: given, a COLUMNS property inherited, a #+COLUMNS: line, or the default. */
@@ -442,8 +514,20 @@ function getFormat(s: ColumnsState, given?: string): string {
   if (fmt === undefined) {
     e8.saveRestriction(() => {
       e8.widen();
+      // A keyword's, not a line in a block, as Org checks the element.
+      let block: string | undefined;
       for (let l = 0; l < e8.lineCount() && fmt === undefined; l++) {
-        const m = /^[ \t]*#\+COLUMNS: (.+)$/i.exec(e8.lineText(l));
+        const text = e8.lineText(l);
+        if (block !== undefined) {
+          if (new RegExp(`^[ \\t]*#\\+end_${block}[ \\t]*$`, "i").test(text)) block = undefined;
+          continue;
+        }
+        const b = /^[ \t]*#\+begin_(\S+)/i.exec(text);
+        if (b) {
+          block = b[1].replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+          continue;
+        }
+        const m = /^[ \t]*#\+COLUMNS: (.+)$/i.exec(text);
         if (m) fmt = m[1].trim();
       }
     });
@@ -498,17 +582,36 @@ export function columns(global: boolean, fmtString?: string): void {
         const [start, end] = clockSpecialRange("today");
         clockSum(start, end, undefined, ":org-clock-minutes-today");
       }
-      const cache = scanTags((h) => [e8.makeMarker(h.start), collectValues(s, h)] as const, true, false);
-      if (cache.length === 0) return;
-      s.maxWidths = s.compiled.map((spec, k) => spec.width ?? Math.max([...spec.title].length, ...cache.map(([, cols]) => [...cols[k][2]].length)));
-      displayTitle(s);
-      if (s.previousTruncate === undefined) s.previousTruncate = e8.variable("truncate-lines") ?? null;
-      e8.makeLocalVariable("truncate-lines");
-      e8.setVariable("truncate-lines", true);
-      for (const [marker, cols] of cache) {
-        e8.gotoChar(e8.markerPosition(marker) ?? 0);
-        e8.deleteMarker(marker);
-        displayHere(s, cols);
+      const get = selectiveGetter(true);
+      const skip = skipper();
+      const cache: (readonly [e8.Marker, [Spec, string, string][]])[] = [];
+      try {
+        scanTags((h) => cache.push([e8.makeMarker(h.start), collectValues(s, h, get)] as const), true, false, skip);
+        if (cache.length === 0) return;
+        s.maxWidths = s.compiled.map((spec, k) => {
+          if (spec.width !== undefined) return spec.width;
+          // In characters, as org-columns--set-widths takes length, though cells are padded in columns.
+          let width = [...spec.title].length;
+          for (const [, cols] of cache) width = Math.max(width, [...cols[k][2]].length);
+          return width;
+        });
+        displayTitle(s);
+        // Spelling not checked meanwhile, as Org turns flyspell-mode off.
+        if (truthy(e8.variable("flyspell-mode") ?? null)) {
+          s.flyspell = true;
+          e8.callWithPrefix(0, "flyspell-mode");
+        }
+        if (!truthy(e8.variable("global-visual-line-mode") ?? null)) {
+          if (s.previousTruncate === undefined) s.previousTruncate = e8.variable("truncate-lines") ?? null;
+          e8.makeLocalVariable("truncate-lines");
+          e8.setVariable("truncate-lines", true);
+        }
+        for (const [marker, cols] of cache) {
+          e8.gotoChar(e8.markerPosition(marker) ?? 0);
+          displayHere(s, cols);
+        }
+      } finally {
+        for (const [marker] of cache) e8.deleteMarker(marker);
       }
     });
   });
@@ -566,20 +669,30 @@ function checkComputed(s: ColumnsState): void {
   }
 }
 
-/** Runs F with the line made writable, then draws the columns again and summarizes KEY again, as org-columns-edit-value does. */
-function afterEdit(s: ColumnsState, key: string, f: () => void, col: number): void {
+/** Runs F with the line made writable, then draws the columns again, summarizing again, as org-columns-edit-value does. */
+function afterEdit(s: ColumnsState, f: () => void, col: number): void {
   const line = e8.lineOf(e8.point());
   e8.withSilentModifications(() =>
     e8.letBind({ "inhibit-read-only": true }, () => e8.removeTextProperty(Math.max(e8.pointMin(), e8.lineStart(line) - 1), e8.lineEnd(line), "read-only")),
   );
-  e8.letBind({ "inhibit-read-only": true }, f);
+  // The entry folded again after, if a heading follows its line, as org-columns--call keeps headings' visibility.
+  const bol = e8.lineStart(line);
+  const hide = e8.lineEnd(line) !== e8.pointMax() && /^\*+ /.test(e8.lineText(line + 1));
+  e8.letBind({ "inhibit-read-only": true }, () => {
+    try {
+      f();
+    } finally {
+      if (hide) e8.saveExcursion(() => (e8.gotoChar(bol), e8.call("outline-hide-entry")));
+    }
+  });
   redo(true);
-  void key;
   e8.gotoChar(Math.min(e8.lineStart(e8.lineOf(e8.point())) + col, e8.lineEnd(e8.lineOf(e8.point()))));
 }
 
-/** Replaces the title of the heading at point, its keyword, priority and tags kept, as org-edit-headline. */
-function editHeadline(title: string): void {
+/** Replaces the title of the heading at point, trimmed, its keyword, priority and tags kept and aligned, as org-edit-headline; nothing for the same title. */
+function editHeadline(title: string, old: string): void {
+  title = title.trim();
+  if (title === old) return;
   const line = e8.lineOf(e8.point());
   const text = e8.lineText(line);
   const keywords = allKeywords().map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
@@ -590,6 +703,7 @@ function editHeadline(title: string): void {
   e8.deleteRegion(start, Math.max(start, end));
   e8.gotoChar(start);
   e8.insert(title);
+  e8.call("org-align-tags");
 }
 
 /** Runs F at the heading of point's line, as org-with-point-at its marker. */
@@ -609,7 +723,7 @@ function editValue(key?: string): void {
   if (key === undefined) e8.userError("No column to edit at point");
   let action: (() => void) | undefined;
   if (key === "CLOCKSUM") e8.userError("This special column cannot be edited");
-  else if (key === "ITEM") action = () => atHeading(h, () => editHeadline(e8.readString("Edit: ", { initial: h.title })));
+  else if (key === "ITEM") action = () => atHeading(h, () => editHeadline(e8.readString("Edit: ", { initial: h.title }), h.title));
   else if (key === "TODO") action = () => atHeading(h, () => e8.callInteractively("org-todo"));
   else if (key === "PRIORITY") action = () => atHeading(h, () => e8.callInteractively("org-priority"));
   else if (key === "TAGS") {
@@ -630,7 +744,7 @@ function editValue(key?: string): void {
     if (nval !== value) action = () => atHeading(h, () => entryPutHere(key!, nval));
   }
   if (action === undefined) return;
-  afterEdit(s, key, action, col);
+  afterEdit(s, action, col);
 }
 
 /** The next or previous of the allowed values, or the Nth, for the column at point, as org-columns-next-allowed-value. */
@@ -658,7 +772,7 @@ function nextAllowedValue(previous = false, nth?: number): void {
     if (l === 1) e8.signal("error", "Only one allowed value for this property");
     next = all![all!.indexOf(value) + 1] ?? all![0];
   } else next = all![0];
-  afterEdit(s, key ?? "", () => atHeading(h, () => entryPutHere(key!, next)), col);
+  afterEdit(s, () => atHeading(h, () => entryPutHere(key!, next)), col);
 }
 
 /** The day before, the day itself and the day after the timestamp S, in its form, as org-colview-construct-allowed-dates. */
@@ -700,13 +814,17 @@ function storeFormat(s: ColumnsState): void {
             return;
           }
         }
+
         // None: one before the first heading.
         const first = headings()[0];
         e8.gotoChar(first ? first.start : e8.pointMax());
         e8.insertBeforeMarkers(`#+COLUMNS: ${fmt}\n`);
+      });
+      // The buffer's format, as Org sets it when the format goes to the buffer.
+      if (!(i !== undefined && all[i].start === top && entryGet(all[i].line, "COLUMNS") !== undefined)) {
         e8.makeLocalVariable("org-columns-default-format");
         e8.setVariable("org-columns-default-format", fmt);
-      });
+      }
     }),
   );
 }
@@ -739,10 +857,12 @@ cmd("org-columns-toggle-or-columns-quit", "Toggle the checkbox at point, or leav
 cmd("org-columns-open-link", "Open the link in the column at point.", () => {
   // The first link in the value, as org-link-open-from-string opens it.
   const value = String(columnProperty("org-columns-value") ?? "");
-  const m = /\[\[((?:[^\][\\]|\\.)+)\](?:\[([^\]]*)\])?\]/.exec(value);
+  // At the value's start, as org-link-open-from-string parses it.
+  const m = /^\[\[((?:[^\][\\]|\\.)+)\](?:\[([^\]]*)\])?\]/.exec(value);
+  const plain = /^[a-zA-Z][a-zA-Z0-9+.-]*:[^ \t\n()<>]+/.exec(value);
   if (m) openLink({ start: 0, end: 0, path: linkUnescape(m[1]), description: m[2], kind: "bracket" });
-  else if (/\S/.test(value)) openLink({ start: 0, end: 0, path: value.trim(), kind: "plain" });
-  else e8.userError("No link found");
+  else if (plain) openLink({ start: 0, end: 0, path: plain[0], kind: "plain" });
+  else e8.userError(`No valid link in ${JSON.stringify(value)}`);
 });
 cmd("org-columns-content", "Show the headings, as CONTENTS does, in column view.", () => e8.call("org-content"));
 cmd("org-columns-edit-allowed", "Edit the allowed values of the column at point's property.", () => {
@@ -833,7 +953,8 @@ function readSpec(spec?: Spec): Spec {
   return {
     // As typed, as org-columns-new keeps it.
     property,
-    title: title === "" ? property : title,
+    // An empty title kept, as Org stores it as %NAME().
+    title,
     width: /\S/.test(w) ? stringToNumber(w) : undefined,
     op: /\S/.test(op) ? op : undefined,
     printf: /\S/.test(printf) ? printf : undefined,
