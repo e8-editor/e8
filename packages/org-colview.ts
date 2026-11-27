@@ -21,7 +21,7 @@ import {
   todoFaceOf,
 } from "org";
 import { entryGet, entryPutHere, topGet } from "org-list";
-import { linkDisplayFormat, linkUnescape } from "ol";
+import { linkDisplayFormat, linkHeadingSearchString, linkMakeString, linkUnescape } from "ol";
 import { clockSpecialRange, clockSum } from "org-clock";
 import { truthy } from "subr";
 import { findEntryWithId } from "org-id";
@@ -640,6 +640,8 @@ function redo(recalc = true): void {
     e8.message("Recomputing columns...");
     e8.call("org-agenda-redo");
     if (!agendaColumnsActive.has(e8.currentBuffer().id)) agendaColumns();
+    // At the top, where the buffer's erasing left Org's begin marker, at which it does all this.
+    e8.gotoChar(e8.pointMin());
     e8.message("Recomputing columns...done");
     return;
   }
@@ -1096,6 +1098,7 @@ for (let n = 0; n <= 9; n++) {
 for (const [name, value, doc] of [
   ["org-columns-default-format-for-agenda", null, "The columns the agenda's column view shows, instead of those of the first entry's file."],
   ["org-overriding-columns-format", null, "Columns that override every other format, for a custom agenda command's settings."],
+  ["org-local-columns-format", null, "The overriding format a custom command gave the agenda, kept in its buffer."],
   ["org-agenda-columns-show-summaries", true, "Whether the agenda's column view shows each day's summaries on its line."],
   ["org-agenda-columns-compute-summary-properties", true, "Whether the agenda's column view summarizes the properties in the files first, as column view there would."],
   ["org-agenda-columns-add-appointments-to-effort-sum", false, "Whether an appointment's duration counts as its effort in the agenda's column view."],
@@ -1123,7 +1126,7 @@ const agendaColumnsActive = new Set<number>();
 
 /** The format the agenda's columns take, as org-agenda-columns picks it. */
 function agendaFormat(s: ColumnsState, lines: [string, string | null, number | null][], line: number): string {
-  for (const name of ["org-overriding-columns-format", "org-columns-default-format-for-agenda"]) {
+  for (const name of ["org-overriding-columns-format", "org-local-columns-format", "org-columns-default-format-for-agenda"]) {
     const v = e8.variable(name);
     if (typeof v === "string") return v;
   }
@@ -1245,7 +1248,10 @@ function agendaSummarize(s: ColumnsState, lines: [string, string | null, number 
       const cols = fmt.map((spec, k): [Spec, string, string] => {
         if (spec.property === "ITEM") return [s.compiled[k], date, date];
         if (spec.op === undefined) return [s.compiled[k], "", ""];
-        const values = entries.map((c) => c.cols[k][1]).filter((v) => /\S/.test(v));
+        // A clock column's values only if its own spec is the {:} Org looks them up by.
+        const own = s.compiled[k];
+        const found = own.op === spec.op && own.printf === spec.printf;
+        const values = found ? entries.map((c) => c.cols[k][1]).filter((v) => /\S/.test(v)) : [];
         const final = values.length > 0 ? operator(spec.op).summarize(values, spec.printf) : "";
         return [s.compiled[k], final, final];
       });
@@ -1275,8 +1281,23 @@ e8.adviceAdd("org-agenda-redo", "around", (orig: (...args: unknown[]) => unknown
 
 // The agenda's column view from the start, as org-agenda-finalize turns it on with org-agenda-view-columns-initially.
 e8.addHook("org-agenda-finalize-hook", () => {
+  // The overriding format kept in the buffer, as org-agenda-finalize sets org-local-columns-format; a new view starts without it, as org-agenda-mode kills local variables.
+  const overriding = e8.variable("org-overriding-columns-format");
+  e8.makeLocalVariable("org-local-columns-format");
+  e8.setVariable("org-local-columns-format", typeof overriding === "string" ? overriding : null);
   if (truthy(e8.variable("org-agenda-view-columns-initially") ?? null)) agendaColumns();
 });
+
+/** Leaves the agenda's column view without a word, as org-agenda-prepare resets it for a new view. */
+e8.defun("org--agenda-columns-reset", () => {
+  if (!agendaColumnsActive.has(e8.currentBuffer().id)) return null;
+  removeOverlays(state());
+  agendaColumnsActive.delete(e8.currentBuffer().id);
+  return null;
+});
+
+/** Whether the agenda's column view is on in the current buffer, as org-agenda-columns-active. */
+e8.defun("org--agenda-columns-active-p", () => agendaColumnsActive.has(e8.currentBuffer().id));
 
 // The columnview dynamic block, as org-dblock-write:columnview.
 
@@ -1291,6 +1312,11 @@ type Row = { level: number; cells: string[] } | "hline";
 function captureView(maxlevel: number | undefined, match: string | undefined, skipEmpty: boolean, excludeTags: string[], format: string | undefined, local: boolean): { titles: string[]; rows: Row[]; compiled: Spec[] } {
   columns(!local, format);
   const s = state();
+  // A subtree's needs a heading at the top level, as org-map-entries' tree scope goes back to one from there, column view left on.
+  if (local) {
+    const top = s.topLevel ? (e8.markerPosition(s.topLevel) ?? 0) : 0;
+    if (headingIndex(headings(), e8.lineOf(top)) === undefined) e8.userError(`Before first headline at position ${e8.lineStart(e8.lineOf(top)) + 1} in buffer ${e8.bufferName()}`);
+  }
   const compiled = [...s.compiled];
   const rows: Row[] = [];
   e8.saveExcursion(() => {
@@ -1337,20 +1363,16 @@ function allTagsAt(h: Heading): string[] {
 
 /** A heading's text fit for a table, as org-columns--clean-item: no footnotes, inline code, targets or statistics cookies, and | as \vert{}. */
 function cleanItem(item: string): string {
+  // Each object with the blanks after it, as org-element-extract takes its post-blank.
   return item
-    .replace(/\[fn:[^\]]*\]/g, "")
-    .replace(/(?<![\p{L}\p{N}_])src_[^ \t\n[{]+(?:\[[^\]\n]*\])?\{[^}\n]*\}/gu, "")
-    .replace(/<<<?[^<>\n]+>>>?/g, "")
-    .replace(/\[[0-9]*(?:%|\/[0-9]*)\]/g, "")
-    .replace(/[ \t]+/g, " ")
-    .trim()
-    .replace(/\|/g, "\\vert{}");
+    .replace(/\[fn:[^\]]*\][ \t]*/g, "")
+    .replace(/(?<![\p{L}\p{N}_])call_[^ \t\n()[\]]+(?:\[[^\]\n]*\])?\([^)\n]*\)(?:\[[^\]\n]*\])?[ \t]*/gu, "")
+    .replace(/(?<![\p{L}\p{N}_])src_[^ \t\n[{]+(?:\[[^\]\n]*\])?\{[^}\n]*\}[ \t]*/gu, "")
+    .replace(/<<<?[^<>\n]+>>>?[ \t]*/g, "")
+    .replace(/\[[0-9]*(?:%|\/[0-9]*)\][ \t]*/g, "")
+    .replace(/\|/g, "\\vert");
 }
 
-/** A heading's search string for a link to it, as org-link-heading-search-string: a star and its title without statistics cookies. */
-function headingSearchString(raw: string): string {
-  return `*${raw.replace(/\[[0-9]*(?:%|\/[0-9]*)\][ \t]*/g, "").trim().replace(/[[\]\\]/g, (c) => `\\${c}`)}`;
-}
 
 /** A parameter of a dynamic block's plist. */
 function param(params: e8.Value[], key: string): e8.Value {
@@ -1373,8 +1395,8 @@ function dblockWriteDefault(ipos: number, table: { titles: string[]; rows: Row[]
       const raw = cells[itemIndex];
       const cleaned = cleanItem(raw);
       const file = e8.bufferFileName();
-      const search = headingSearchString(raw);
-      const item = link ? `[[${file === undefined ? search : `file:${file}::${search}`}][${cleaned}]]` : cleaned;
+      const search = linkHeadingSearchString(raw);
+      const item = link ? linkMakeString(file === undefined ? search : `file:${file}::${search}`, cleaned) : cleaned;
       cells[itemIndex] = indent && row.level > 1 ? `\\_${" ".repeat(2 * (row.level - 1))}${item}` : item;
     }
     out.push(cells);
@@ -1388,7 +1410,7 @@ function dblockWriteDefault(ipos: number, table: { titles: string[]; rows: Row[]
   e8.gotoChar(ipos);
   const content = String(param(params, ":content") ?? "").split("\n").filter((l) => l !== "");
   // The affiliated keywords before the table, as the block had them.
-  while (content.length > 0 && /^[ \t]*#\+/.test(content[0]) && !/^[ \t]*#\+TBLFM:/i.test(content[0])) e8.insert(`${content.shift()!.trimStart()}\n`);
+  while (content.length > 0 && /^[ \t]*#\+/.test(content[0])) e8.insert(`${content.shift()!.trimStart()}\n`);
   let recalc = false;
   e8.saveExcursion(() => {
     e8.insert(rows.map((r) => (r === "hline" ? "|-|" : `|${r.join("|")}|`)).join("\n"));

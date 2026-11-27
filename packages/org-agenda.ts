@@ -1121,8 +1121,10 @@ function renderBlocks(blocks: Block[], pointLine: number, keepMarks = false): vo
     // No line marked for bulk action, as org-agenda-mode starts with none; A keeps them, as Org appends without the mode.
     if (keepMarks) removeMarkOverlays();
     else resetBulkMarks();
+    // Out of column view, as org-agenda-prepare resets org-agenda-columns-active, its read-only text erased with the rest.
+    if (e8.fboundp("org--agenda-columns-reset")) e8.funcall("org--agenda-columns-reset");
     e8.setReadOnly(false);
-    eraseBuffer();
+    e8.letBind({ "inhibit-read-only": true }, () => eraseBuffer());
     e8.insert(lines.map((l) => l.text).join("\n") + "\n");
     insertHabitGraphs(lines);
     if (e8.variable("major-mode") !== "org-agenda-mode") e8.call("org-agenda-mode");
@@ -4841,6 +4843,11 @@ e8.defineVariable({
  * its buffer killed.
  */
 function quitAgenda(bury = false): void {
+  // Column view left, not the agenda, as org-agenda--quit does with org-agenda-columns-active.
+  if (truthy(e8.funcall("org--agenda-columns-active-p"))) {
+    e8.call("org-columns-quit");
+    return;
+  }
   const buffer = e8.bufferName();
   const setup = e8.variable("org-agenda-window-setup");
   if (truthy(e8.variable("org-agenda-restore-windows-after-quit") ?? null) && preAgendaWindows !== undefined) {
@@ -4874,6 +4881,8 @@ e8.defineCommand({
   name: "org-agenda-exit",
   doc: "Leave the agenda, killing the Org buffers it visited that were not open, asking to save those that changed.",
   run: () => {
+    // Out of column view first, as org-agenda-exit leaves it.
+    if (truthy(e8.funcall("org--agenda-columns-active-p"))) e8.call("org-columns-quit");
     // As org-release-buffers: saved if the user agrees, then killed.
     for (const visited of agendaNewBuffers) {
       const buffer = visited.name;

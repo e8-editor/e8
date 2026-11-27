@@ -16098,6 +16098,12 @@ declare global {
        */
       "org-list-two-spaces-after-bullet-regexp": Value;
       /**
+       * The overriding format a custom command gave the agenda, kept in its buffer.
+       *
+       * Defined in packages/org-colview.ts.
+       */
+      "org-local-columns-format": Value;
+      /**
        * What marking a heading done records: false for nothing, "time" for a CLOSED: timestamp under it.
        *
        * Defined in packages/org.ts.
