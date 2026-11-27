@@ -19397,6 +19397,18 @@ declare global {
        */
       "org-code": FaceAttributes;
       /**
+       * The values of column view.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-column": FaceAttributes;
+      /**
+       * The titles of column view's columns.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-column-title": FaceAttributes;
+      /**
        * Timestamps.
        *
        * Defined in packages/org.ts.
