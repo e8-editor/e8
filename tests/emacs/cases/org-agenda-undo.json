@@ -180,8 +180,10 @@
    "org-log-done": false
   },
   "name": "undo-tags",
-  "keys": "C-n C-n C-n : x RET C-_",
-  "answers": []
+  "keys": "C-n C-n C-n : C-_",
+  "answers": [
+   "x"
+  ]
  },
  {
   "modes": [
@@ -325,5 +327,3493 @@
   },
   "name": "undo-done-logged",
   "keys": "C-n C-n C-n t C-_"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": "'time"
+  },
+  "name": "review-t-log-time",
+  "keys": "N t C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": "'time"
+  },
+  "name": "review-t-log-time-org",
+  "keys": "N t C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": "'note"
+  },
+  "name": "review-t-log-note",
+  "keys": "N t h i C-c C-c C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": "'note"
+  },
+  "name": "review-t-log-note-org",
+  "keys": "N t h i C-c C-c C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": "'note"
+  },
+  "name": "review-t-log-note-twice",
+  "keys": "N t h i C-c C-c C-_ C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": "'note"
+  },
+  "name": "review-t-log-note-twice-org",
+  "keys": "N t h i C-c C-c C-_ C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Water plants\nSCHEDULED: <2026-10-28 Wed +1d>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": "'time"
+  },
+  "name": "review-t-repeat",
+  "keys": "N t C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Water plants\nSCHEDULED: <2026-10-28 Wed +1d>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": "'time"
+  },
+  "name": "review-t-repeat-org",
+  "keys": "N t C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Water plants\nSCHEDULED: <2026-10-28 Wed +1d>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-t-repeat-nolog",
+  "keys": "N t C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Water plants\nSCHEDULED: <2026-10-28 Wed +1d>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-t-repeat-nolog-org",
+  "keys": "N t C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-t-twice-same",
+  "keys": "N t t C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-t-twice-same-org",
+  "keys": "N t t C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-t-twice-same-two-undos",
+  "keys": "N t t C-_ C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-t-twice-same-two-undos-org",
+  "keys": "N t t C-_ C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-prio-up",
+  "keys": "N + C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-prio-up-org",
+  "keys": "N + C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-prio-down-twice",
+  "keys": "N - - C-_ C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-prio-down-twice-org",
+  "keys": "N - - C-_ C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-prio-remove",
+  "keys": "N , C-_",
+  "visit": "e8-undo.org",
+  "answers": [
+   " "
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-prio-remove-org",
+  "keys": "N , C-_ C-x o",
+  "visit": "e8-undo.org",
+  "answers": [
+   " "
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-tags",
+  "keys": "N : C-_",
+  "visit": "e8-undo.org",
+  "answers": [
+   "x"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-tags-org",
+  "keys": "N : C-_ C-x o",
+  "visit": "e8-undo.org",
+  "answers": [
+   "x"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-tags-two",
+  "keys": "N : N : C-_ C-_",
+  "visit": "e8-undo.org",
+  "answers": [
+   "x",
+   "y"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-tags-two-org",
+  "keys": "N : N : C-_ C-_ C-x o",
+  "visit": "e8-undo.org",
+  "answers": [
+   "x",
+   "y"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-s-right",
+  "keys": "N S-<right> C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-s-right-org",
+  "keys": "N S-<right> C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-s-left-twice",
+  "keys": "N S-<left> S-<left> C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-s-left-twice-org",
+  "keys": "N S-<left> S-<left> C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-cx-right",
+  "keys": "N C-c C-x <right> C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-cx-right-org",
+  "keys": "N C-c C-x <right> C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-cx-left",
+  "keys": "N C-c C-x <left> C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-cx-left-org",
+  "keys": "N C-c C-x <left> C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-schedule",
+  "keys": "N C-c C-s C-_",
+  "visit": "e8-undo.org",
+  "answers": [
+   "2026-11-01"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-schedule-org",
+  "keys": "N C-c C-s C-_ C-x o",
+  "visit": "e8-undo.org",
+  "answers": [
+   "2026-11-01"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-schedule-remove",
+  "keys": "N C-u C-c C-s C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-schedule-remove-org",
+  "keys": "N C-u C-c C-s C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-deadline",
+  "keys": "N C-c C-d C-_",
+  "visit": "e8-undo.org",
+  "answers": [
+   "2026-11-02"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-deadline-org",
+  "keys": "N C-c C-d C-_ C-x o",
+  "visit": "e8-undo.org",
+  "answers": [
+   "2026-11-02"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-date-prompt",
+  "keys": "N > C-_",
+  "visit": "e8-undo.org",
+  "answers": [
+   "2026-11-03"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-date-prompt-org",
+  "keys": "N > C-_ C-x o",
+  "visit": "e8-undo.org",
+  "answers": [
+   "2026-11-03"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-clock-in",
+  "keys": "N I C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-clock-in-org",
+  "keys": "N I C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-clock-in-out",
+  "keys": "N I O C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-clock-in-out-org",
+  "keys": "N I O C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-clock-in-out-two",
+  "keys": "N I O C-_ C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-clock-in-out-two-org",
+  "keys": "N I O C-_ C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-clock-cancel",
+  "keys": "N I X C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-clock-cancel-org",
+  "keys": "N I X C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-effort",
+  "keys": "N e C-_",
+  "visit": "e8-undo.org",
+  "answers": [
+   "1:00"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-effort-org",
+  "keys": "N e C-_ C-x o",
+  "visit": "e8-undo.org",
+  "answers": [
+   "1:00"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-property",
+  "keys": "N C-c C-x p C-_",
+  "visit": "e8-undo.org",
+  "answers": [
+   "Owner",
+   "me"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-property-org",
+  "keys": "N C-c C-x p C-_ C-x o",
+  "visit": "e8-undo.org",
+  "answers": [
+   "Owner",
+   "me"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-note-then-t",
+  "keys": "N t N z h e l l o C-c C-c C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-note-then-t-org",
+  "keys": "N t N z h e l l o C-c C-c C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-kill-two",
+  "keys": "N C-k N C-k C-_ C-_",
+  "visit": "e8-undo.org",
+  "answers": [
+   "y",
+   "y"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-kill-two-org",
+  "keys": "N C-k N C-k C-_ C-_ C-x o",
+  "visit": "e8-undo.org",
+  "answers": [
+   "y",
+   "y"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-bulk-todo",
+  "keys": "N m m B C-_",
+  "visit": "e8-undo.org",
+  "answers": [
+   "t",
+   "DONE"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-bulk-todo-org",
+  "keys": "N m m B C-_ C-x o",
+  "visit": "e8-undo.org",
+  "answers": [
+   "t",
+   "DONE"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-bulk-todo-two",
+  "keys": "N m m B C-_ C-_",
+  "visit": "e8-undo.org",
+  "answers": [
+   "t",
+   "DONE"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-bulk-todo-two-org",
+  "keys": "N m m B C-_ C-_ C-x o",
+  "visit": "e8-undo.org",
+  "answers": [
+   "t",
+   "DONE"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-bulk-tag",
+  "keys": "N m m B C-_",
+  "visit": "e8-undo.org",
+  "answers": [
+   "+",
+   "urgent"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-bulk-tag-org",
+  "keys": "N m m B C-_ C-x o",
+  "visit": "e8-undo.org",
+  "answers": [
+   "+",
+   "urgent"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-bulk-schedule",
+  "keys": "N m m B C-_",
+  "visit": "e8-undo.org",
+  "answers": [
+   "s",
+   "2026-11-02"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-bulk-schedule-org",
+  "keys": "N m m B C-_ C-x o",
+  "visit": "e8-undo.org",
+  "answers": [
+   "s",
+   "2026-11-02"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-refile",
+  "keys": "N C-c C-w C-_",
+  "visit": "e8-undo.org",
+  "answers": [
+   "Plan trip"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-refile-org",
+  "keys": "N C-c C-w C-_ C-x o",
+  "visit": "e8-undo.org",
+  "answers": [
+   "Plan trip"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-refile-then-t",
+  "keys": "N t N C-c C-w C-_",
+  "visit": "e8-undo.org",
+  "answers": [
+   "Plan trip"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-refile-then-t-org",
+  "keys": "N t N C-c C-w C-_ C-x o",
+  "visit": "e8-undo.org",
+  "answers": [
+   "Plan trip"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-after-other",
+  "keys": "N t N + C-_ C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-after-other-org",
+  "keys": "N t N + C-_ C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-undo-move-undo",
+  "keys": "N t N t C-_ N C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-undo-move-undo-org",
+  "keys": "N t N t C-_ N C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-undo-cmd-undo",
+  "keys": "N t C-_ N C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-undo-cmd-undo-org",
+  "keys": "N t C-_ N C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-undo-cmd-undo-two",
+  "keys": "N t N t C-_ C-_ N C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-undo-cmd-undo-two-org",
+  "keys": "N t N t C-_ C-_ N C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-after-g",
+  "keys": "N t g C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-after-g-org",
+  "keys": "N t g C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-after-filter-cat",
+  "keys": "N t < C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-after-filter-cat-org",
+  "keys": "N t < C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-after-filter-re",
+  "keys": "N t = C-_",
+  "visit": "e8-undo.org",
+  "answers": [
+   "Write"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-after-filter-re-org",
+  "keys": "N t = C-_ C-x o",
+  "visit": "e8-undo.org",
+  "answers": [
+   "Write"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-filter-then-t",
+  "keys": "N < N t C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-filter-then-t-org",
+  "keys": "N < N t C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-after-limit",
+  "keys": "N t C-_ C-_ C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-after-limit-org",
+  "keys": "N t C-_ C-_ C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-remote-edit",
+  "keys": "N t C-x o M-> x C-x o C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-remote-edit-org",
+  "keys": "N t C-x o M-> x C-x o C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-remote-edit-before",
+  "keys": "C-x o M-> x C-x o N t C-_ C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-remote-edit-before-org",
+  "keys": "C-x o M-> x C-x o N t C-_ C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-agenda"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false,
+   "org-agenda-custom-commands": [
+    [
+     "x",
+     "",
+     [
+      [
+       "'todo",
+       "TODO"
+      ],
+      [
+       "'tags",
+       "work"
+      ]
+     ]
+    ]
+   ]
+  },
+  "name": "review-block",
+  "keys": "N t C-_",
+  "visit": "e8-undo.org",
+  "answers": [
+   "x"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-agenda"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false,
+   "org-agenda-custom-commands": [
+    [
+     "x",
+     "",
+     [
+      [
+       "'todo",
+       "TODO"
+      ],
+      [
+       "'tags",
+       "work"
+      ]
+     ]
+    ]
+   ]
+  },
+  "name": "review-block-org",
+  "keys": "N t C-_ C-x o",
+  "visit": "e8-undo.org",
+  "answers": [
+   "x"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-agenda"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false,
+   "org-agenda-custom-commands": [
+    [
+     "x",
+     "",
+     [
+      [
+       "'todo",
+       "TODO"
+      ],
+      [
+       "'tags",
+       "work"
+      ]
+     ]
+    ]
+   ]
+  },
+  "name": "review-block-second",
+  "keys": "N N N N t C-_",
+  "visit": "e8-undo.org",
+  "answers": [
+   "x"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-agenda"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false,
+   "org-agenda-custom-commands": [
+    [
+     "x",
+     "",
+     [
+      [
+       "'todo",
+       "TODO"
+      ],
+      [
+       "'tags",
+       "work"
+      ]
+     ]
+    ]
+   ]
+  },
+  "name": "review-block-second-org",
+  "keys": "N N N N t C-_ C-x o",
+  "visit": "e8-undo.org",
+  "answers": [
+   "x"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-agenda"
+  ],
+  "globals": {
+   "org-agenda-sticky": true,
+   "org-log-done": false
+  },
+  "name": "review-sticky",
+  "keys": "N t C-_",
+  "visit": "e8-undo.org",
+  "answers": [
+   "t"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-agenda"
+  ],
+  "globals": {
+   "org-agenda-sticky": true,
+   "org-log-done": false
+  },
+  "name": "review-sticky-org",
+  "keys": "N t C-_ C-x o",
+  "visit": "e8-undo.org",
+  "answers": [
+   "t"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-agenda"
+  ],
+  "globals": {
+   "org-agenda-sticky": true,
+   "org-log-done": false
+  },
+  "name": "review-sticky-other-made",
+  "keys": "N t M-x C-x b C-_",
+  "visit": "e8-undo.org",
+  "answers": [
+   "t",
+   "org-agenda",
+   "a",
+   "*Org Agenda(t)*"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO A\n* TODO B\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-two-files",
+  "keys": "v N t N N t C-_",
+  "answers": [
+   "A"
+  ],
+  "files": {
+   "t.org": "* TODO A\n* TODO B\n",
+   "t.org_archive": "#    -*- mode: org -*-\n\n* TODO Old\n"
+  },
+  "find": "t.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO A\n* TODO B\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-two-files-org",
+  "keys": "v N t N N t C-_ C-x o",
+  "answers": [
+   "A"
+  ],
+  "files": {
+   "t.org": "* TODO A\n* TODO B\n",
+   "t.org_archive": "#    -*- mode: org -*-\n\n* TODO Old\n"
+  },
+  "find": "t.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO A\n* TODO B\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-two-files-both",
+  "keys": "v N t N N t C-_ C-_",
+  "answers": [
+   "A"
+  ],
+  "files": {
+   "t.org": "* TODO A\n* TODO B\n",
+   "t.org_archive": "#    -*- mode: org -*-\n\n* TODO Old\n"
+  },
+  "find": "t.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO A\n* TODO B\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-two-files-both-org",
+  "keys": "v N t N N t C-_ C-_ C-x o",
+  "answers": [
+   "A"
+  ],
+  "files": {
+   "t.org": "* TODO A\n* TODO B\n",
+   "t.org_archive": "#    -*- mode: org -*-\n\n* TODO Old\n"
+  },
+  "find": "t.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO A\n* TODO B\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-two-files-third",
+  "keys": "v N t N N t C-_ C-_ C-_",
+  "answers": [
+   "A"
+  ],
+  "files": {
+   "t.org": "* TODO A\n* TODO B\n",
+   "t.org_archive": "#    -*- mode: org -*-\n\n* TODO Old\n"
+  },
+  "find": "t.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO A\n* TODO B\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-two-files-third-org",
+  "keys": "v N t N N t C-_ C-_ C-_ C-x o",
+  "answers": [
+   "A"
+  ],
+  "files": {
+   "t.org": "* TODO A\n* TODO B\n",
+   "t.org_archive": "#    -*- mode: org -*-\n\n* TODO Old\n"
+  },
+  "find": "t.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "#+ARCHIVE: ::* Archive\n* TODO A\n* TODO B\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-archive",
+  "keys": "N $ C-_",
+  "files": {
+   "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n* TODO B\n"
+  },
+  "find": "t.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "#+ARCHIVE: ::* Archive\n* TODO A\n* TODO B\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-archive-org",
+  "keys": "N $ C-_ C-x o",
+  "files": {
+   "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n* TODO B\n"
+  },
+  "find": "t.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO A\n* TODO B\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-archive-file",
+  "keys": "N $ C-_",
+  "files": {
+   "t.org": "* TODO A\n* TODO B\n"
+  },
+  "find": "t.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO A\n* TODO B\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-archive-file-org",
+  "keys": "N $ C-_ C-x o",
+  "files": {
+   "t.org": "* TODO A\n* TODO B\n"
+  },
+  "find": "t.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-archive-tag",
+  "keys": "N C-c C-x a C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-archive-tag-org",
+  "keys": "N C-c C-x a C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-mx-todo",
+  "keys": "N M-x C-_",
+  "visit": "e8-undo.org",
+  "answers": [
+   "org-agenda-todo"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-mx-todo-org",
+  "keys": "N M-x C-_ C-x o",
+  "visit": "e8-undo.org",
+  "answers": [
+   "org-agenda-todo"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-mx-undo-twice",
+  "keys": "N t N t M-x M-x",
+  "visit": "e8-undo.org",
+  "answers": [
+   "org-agenda-undo",
+   "org-agenda-undo"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-mx-undo-twice-org",
+  "keys": "N t N t M-x M-x C-x o",
+  "visit": "e8-undo.org",
+  "answers": [
+   "org-agenda-undo",
+   "org-agenda-undo"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-mx-undo-then-key",
+  "keys": "N t N t M-x C-_",
+  "visit": "e8-undo.org",
+  "answers": [
+   "org-agenda-undo"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-mx-undo-then-key-org",
+  "keys": "N t N t M-x C-_ C-x o",
+  "visit": "e8-undo.org",
+  "answers": [
+   "org-agenda-undo"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": "'time",
+   "org-log-into-drawer": true
+  },
+  "name": "review-log-drawer",
+  "keys": "N t C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": "'time",
+   "org-log-into-drawer": true
+  },
+  "name": "review-log-drawer-org",
+  "keys": "N t C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-archive-sibling",
+  "keys": "N C-c C-x A C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-archive-sibling-org",
+  "keys": "N C-c C-x A C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "#+ARCHIVE: ::* Archive\n* TODO A\n* TODO B\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-archive-cxs",
+  "keys": "N C-c C-x C-s C-_",
+  "files": {
+   "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n* TODO B\n"
+  },
+  "find": "t.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "#+ARCHIVE: ::* Archive\n* TODO A\n* TODO B\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-archive-cxs-org",
+  "keys": "N C-c C-x C-s C-_ C-x o",
+  "files": {
+   "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n* TODO B\n"
+  },
+  "find": "t.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-prio-s-up",
+  "keys": "N S-<up> C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-prio-s-up-org",
+  "keys": "N S-<up> C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-prio-set-remove",
+  "keys": "N , N , C-_ C-_",
+  "visit": "e8-undo.org",
+  "answers": [
+   "A",
+   " "
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-prio-set-remove-org",
+  "keys": "N , N , C-_ C-_ C-x o",
+  "visit": "e8-undo.org",
+  "answers": [
+   "A",
+   " "
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-t-three-undos",
+  "keys": "N t N t N t C-_ C-_ C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-t-three-undos-org",
+  "keys": "N t N t N t C-_ C-_ C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-after-f",
+  "keys": "N t f C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-after-f-org",
+  "keys": "N t f C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-after-l",
+  "keys": "N t l C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-after-l-org",
+  "keys": "N t l C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-day-t",
+  "keys": "N t C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-day-t-org",
+  "keys": "N t C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-day-t-two",
+  "keys": "N t N t C-_ C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-day-t-two-org",
+  "keys": "N t N t C-_ C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-agenda"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-after-append",
+  "keys": "N t A C-_",
+  "visit": "e8-undo.org",
+  "answers": [
+   "t",
+   "a"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-agenda"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-after-append-org",
+  "keys": "N t A C-_ C-x o",
+  "visit": "e8-undo.org",
+  "answers": [
+   "t",
+   "a"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-after-entry-text",
+  "keys": "N t E C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-after-entry-text-org",
+  "keys": "N t E C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-t-then-note-two",
+  "keys": "N t N z h e l l o C-c C-c C-_ C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-t-then-note-two-org",
+  "keys": "N t N z h e l l o C-c C-c C-_ C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-effort-cx",
+  "keys": "N C-c C-x e C-_",
+  "visit": "e8-undo.org",
+  "answers": [
+   "2:00"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-effort-cx-org",
+  "keys": "N C-c C-x e C-_ C-x o",
+  "visit": "e8-undo.org",
+  "answers": [
+   "2:00"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-clock-in-other-out",
+  "keys": "N I N O C-_ C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-clock-in-other-out-org",
+  "keys": "N I N O C-_ C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-clock-in-two",
+  "keys": "N I N I C-_ C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-clock-in-two-org",
+  "keys": "N I N I C-_ C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO A\nSCHEDULED: <2026-10-28 Wed>\n* TODO B\n",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-two-files-sright",
+  "keys": "v N S-<right> N N S-<right> C-_ C-_",
+  "answers": [
+   "A"
+  ],
+  "files": {
+   "t.org": "* TODO A\nSCHEDULED: <2026-10-28 Wed>\n* TODO B\n",
+   "t.org_archive": "#    -*- mode: org -*-\n\n* TODO Old\nSCHEDULED: <2026-10-28 Wed>\n"
+  },
+  "find": "t.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO A\nSCHEDULED: <2026-10-28 Wed>\n* TODO B\n",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-two-files-sright-org",
+  "keys": "v N S-<right> N N S-<right> C-_ C-_ C-x o",
+  "answers": [
+   "A"
+  ],
+  "files": {
+   "t.org": "* TODO A\nSCHEDULED: <2026-10-28 Wed>\n* TODO B\n",
+   "t.org_archive": "#    -*- mode: org -*-\n\n* TODO Old\nSCHEDULED: <2026-10-28 Wed>\n"
+  },
+  "find": "t.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-undo-boundary-two-cmds-remote",
+  "keys": "N t C-x o C-x o N t C-_ C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-undo-boundary-two-cmds-remote-org",
+  "keys": "N t C-x o C-x o N t C-_ C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-cu-undo",
+  "keys": "N t C-u C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-cu-undo-org",
+  "keys": "N t C-u C-_ C-x o",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-tags-view"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-tags-view-t",
+  "keys": "N t C-_",
+  "visit": "e8-undo.org",
+  "answers": [
+   "work"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-tags-view"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-tags-view-t-org",
+  "keys": "N t C-_ C-x o",
+  "visit": "e8-undo.org",
+  "answers": [
+   "work"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-undo-point-org-window",
+  "keys": "N t N t C-_ C-_",
+  "visit": "e8-undo.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-search-view"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-search-view-t",
+  "keys": "N t C-_",
+  "visit": "e8-undo.org",
+  "answers": [
+   "Ann"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :home:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-search-view"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "review-search-view-t-org",
+  "keys": "N t C-_ C-x o",
+  "visit": "e8-undo.org",
+  "answers": [
+   "Ann"
+  ]
  }
 ]
