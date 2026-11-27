@@ -1121,6 +1121,8 @@ function renderBlocks(blocks: Block[], pointLine: number, keepMarks = false): vo
     // No line marked for bulk action, as org-agenda-mode starts with none; A keeps them, as Org appends without the mode.
     if (keepMarks) removeMarkOverlays();
     else resetBulkMarks();
+    // Nothing to undo in a new or remade agenda, as org-agenda-mode and org-agenda-redo forget it.
+    if (!keepMarks) resetAgendaUndo();
     // Out of column view, as org-agenda-prepare resets org-agenda-columns-active, its read-only text erased with the rest.
     if (e8.fboundp("org--agenda-columns-reset")) e8.funcall("org--agenda-columns-reset");
     e8.setReadOnly(false);
@@ -6161,3 +6163,85 @@ e8.defun("org--agenda-column-lines", () =>
   }),
 );
 e8.defineHook("org-agenda-finalize-hook", "Functions run in the agenda's buffer once a view is made.");
+
+// Undo in the agenda, as org-agenda-undo: what each agenda command changed
+// in the Org files, and in the agenda, taken back a command at a time, as
+// org-with-remote-undo records it.
+
+e8.defineVariable({ name: "org-agenda-allow-remote-undo", value: true, doc: "Whether undo in the agenda takes back the changes its commands made in the Org files." });
+
+/** A command's changes, newest first: its name, the agenda's line it ran on, and the buffers it changed, the remote one named, as org-agenda-undo-list. */
+type UndoEntry = { cmd: string; line: number; buffers: string[]; remote: string };
+let undoList: UndoEntry[] = [];
+/** The entries still to undo in this run of undo, as org-agenda-pending-undo-list. */
+let pendingUndo: UndoEntry[] = [];
+/** Where undo has got to in each buffer this run, an index into its undo steps, as pending-undo-list after undo-start. */
+let undoStartedIn = new Map<string, number>();
+/** The buffers an agenda command may change and how far each had changed before it, taken as it starts. */
+let undoSnapshot: { line: number; ticks: Map<string, number> } | undefined;
+
+/** The buffers an agenda command may change: the agenda and its lines' entries' buffers. */
+function undoBuffers(): string[] {
+  const out = new Set<string>([agendaBuffer]);
+  for (const item of agendaLines) if (item && e8.getBuffer(item.buffer)) out.add(item.buffer);
+  return [...out].filter((b) => e8.getBuffer(b) !== undefined);
+}
+
+e8.addHook("pre-command-hook", () => {
+  undoSnapshot = undefined;
+  if (e8.variable("major-mode") !== "org-agenda-mode") return;
+  const command = e8.thisCommand() ?? "";
+  if (command === "org-agenda-undo") return;
+  undoSnapshot = { line: e8.lineOf(e8.point()), ticks: new Map(undoBuffers().map((b) => [b, e8.bufferCharsModifiedTick(b)])) };
+});
+
+e8.addHook("post-command-hook", () => {
+  const snapshot = undoSnapshot;
+  undoSnapshot = undefined;
+  if (snapshot === undefined || !truthy(e8.variable("org-agenda-allow-remote-undo") ?? null)) return;
+  const changed = [...snapshot.ticks].filter(([b, tick]) => e8.getBuffer(b) !== undefined && e8.bufferCharsModifiedTick(b) !== tick).map(([b]) => b);
+  if (changed.length === 0) return;
+  // A boundary after each, so the next command's changes are a step of their own, as Org's undo-boundary.
+  for (const b of changed) e8.withCurrentBuffer(b, () => e8.undoBoundary());
+  const remote = changed.find((b) => b !== agendaBuffer);
+  if (remote === undefined) return;
+  undoList.unshift({ cmd: e8.thisCommand() ?? "", line: snapshot.line, buffers: changed, remote });
+});
+
+/** Forgets what the agenda's commands did, as a new or remade agenda sets org-agenda-undo-list to nil. */
+function resetAgendaUndo(): void {
+  undoList = [];
+  pendingUndo = [];
+}
+
+e8.defineCommand({
+  name: "org-agenda-undo",
+  doc: "Take back what the last agenda command changed in the Org files, and in the agenda; again, the one before.",
+  run: () => {
+    if (!truthy(e8.variable("org-agenda-allow-remote-undo") ?? null)) {
+      e8.userError("Check the variable ‘org-agenda-allow-remote-undo’ to activate remote undo");
+    }
+    // A new run of undo unless the last command was undo too, as undo-start begins one.
+    if (e8.thisCommand() !== e8.lastCommand()) {
+      undoStartedIn = new Map();
+      pendingUndo = [...undoList];
+    }
+    const entry = pendingUndo.shift();
+    if (entry === undefined) e8.userError("No further undo information");
+    for (const b of entry.buffers) {
+      if (!e8.getBuffer(b)) continue;
+      e8.withCurrentBuffer(b, () =>
+        e8.letBind({ "inhibit-read-only": true }, () => {
+          // Each buffer's next step back, from where this run started, as undo-more 1.
+          const at = undoStartedIn.get(b) ?? e8.undoHistory().length;
+          if (at <= 0) return;
+          e8.undoStep(at - 1);
+          undoStartedIn.set(b, at - 1);
+        }),
+      );
+    }
+    e8.gotoChar(e8.lineStart(Math.min(entry.line, e8.lineCount() - 1)));
+    e8.message(`‘${entry.cmd}’ undone (buffer ${entry.remote})`);
+  },
+});
+e8.remapCommand("org-agenda-mode-map", "undo", "org-agenda-undo");

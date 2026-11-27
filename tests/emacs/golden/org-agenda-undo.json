@@ -1,0 +1,788 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "undo-todo",
+      "input": {
+        "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+        "point": 0,
+        "keys": "C-n C-n C-n t C-_",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-undo.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-sticky": false,
+          "org-log-done": false
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-undo:    TODO Write report                                          :work:\n  e8-undo:    TODO Call Ann\n  e8-undo:    TODO Plan trip\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-undo:    TODO Write report                                          :work:\n  e8-undo:    TODO Call Ann\n  e8-undo:    TODO Plan trip\n",
+      "point": 186,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 186,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "‘org-agenda-todo’ undone (buffer *e8-oracle*)"
+    },
+    {
+      "name": "undo-todo-slash",
+      "input": {
+        "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+        "point": 0,
+        "keys": "C-n C-n C-n t C-/",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-undo.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-sticky": false,
+          "org-log-done": false
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-undo:    TODO Write report                                          :work:\n  e8-undo:    TODO Call Ann\n  e8-undo:    TODO Plan trip\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-undo:    TODO Write report                                          :work:\n  e8-undo:    TODO Call Ann\n  e8-undo:    TODO Plan trip\n",
+      "point": 186,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 186,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "‘org-agenda-todo’ undone (buffer *e8-oracle*)"
+    },
+    {
+      "name": "undo-todo-x-u",
+      "input": {
+        "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+        "point": 0,
+        "keys": "C-n C-n C-n t C-x u",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-undo.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-sticky": false,
+          "org-log-done": false
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-undo:    TODO Write report                                          :work:\n  e8-undo:    TODO Call Ann\n  e8-undo:    TODO Plan trip\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-undo:    TODO Write report                                          :work:\n  e8-undo:    TODO Call Ann\n  e8-undo:    TODO Plan trip\n",
+      "point": 186,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 186,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "‘org-agenda-todo’ undone (buffer *e8-oracle*)"
+    },
+    {
+      "name": "undo-two",
+      "input": {
+        "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+        "point": 0,
+        "keys": "C-n C-n C-n t C-n t C-_ C-_",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-undo.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-sticky": false,
+          "org-log-done": false
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-undo:    TODO Write report                                          :work:\n  e8-undo:    TODO Call Ann\n  e8-undo:    TODO Plan trip\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-undo:    TODO Write report                                          :work:\n  e8-undo:    TODO Call Ann\n  e8-undo:    TODO Plan trip\n",
+      "point": 186,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 186,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "‘org-agenda-todo’ undone (buffer *e8-oracle*) [2 times]"
+    },
+    {
+      "name": "undo-two-one",
+      "input": {
+        "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+        "point": 0,
+        "keys": "C-n C-n C-n t C-n t C-_",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-undo.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-sticky": false,
+          "org-log-done": false
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-undo:    TODO Write report                                          :work:\n  e8-undo:    DONE Call Ann\n  e8-undo:    TODO Plan trip\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-undo:    TODO Write report                                          :work:\n  e8-undo:    DONE Call Ann\n  e8-undo:    TODO Plan trip\n",
+      "point": 214,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 214,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "‘org-agenda-todo’ undone (buffer *e8-oracle*)"
+    },
+    {
+      "name": "undo-too-many",
+      "input": {
+        "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+        "point": 0,
+        "keys": "C-n C-n C-n t C-_ C-_",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-undo.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-sticky": false,
+          "org-log-done": false
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-undo:    TODO Write report                                          :work:\n  e8-undo:    TODO Call Ann\n  e8-undo:    TODO Plan trip\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-undo:    TODO Write report                                          :work:\n  e8-undo:    TODO Call Ann\n  e8-undo:    TODO Plan trip\n",
+      "point": 186,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "No further undo information",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 186,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "‘org-agenda-todo’ undone (buffer *e8-oracle*)"
+    },
+    {
+      "name": "undo-nothing",
+      "input": {
+        "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+        "point": 0,
+        "keys": "C-_",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-undo.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-sticky": false,
+          "org-log-done": false
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-undo:    TODO Write report                                          :work:\n  e8-undo:    TODO Call Ann\n  e8-undo:    TODO Plan trip\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-undo:    TODO Write report                                          :work:\n  e8-undo:    TODO Call Ann\n  e8-undo:    TODO Plan trip\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "No further undo information",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "undo-priority",
+      "input": {
+        "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+        "point": 0,
+        "keys": "C-n C-n C-n , C-_",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-undo.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "A"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-sticky": false,
+          "org-log-done": false
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-undo:    TODO Write report                                          :work:\n  e8-undo:    TODO Call Ann\n  e8-undo:    TODO Plan trip\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-undo:    TODO Write report                                          :work:\n  e8-undo:    TODO Call Ann\n  e8-undo:    TODO Plan trip\n",
+      "point": 186,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 186,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "‘org-agenda-priority’ undone (buffer *e8-oracle*)"
+    },
+    {
+      "name": "undo-tags",
+      "input": {
+        "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+        "point": 0,
+        "keys": "C-n C-n C-n : x RET C-_",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-undo.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-sticky": false,
+          "org-log-done": false
+        }
+      },
+      "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+      "visible": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Minibuffer read in batch",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": "Undo"
+    },
+    {
+      "name": "undo-schedule",
+      "input": {
+        "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+        "point": 0,
+        "keys": "C-n C-n C-n S-<right> C-_",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-undo.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-sticky": false,
+          "org-log-done": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-undo:    Scheduled:  TODO Write report                              :work:\n  e8-undo:    Scheduled:  TODO Call Ann\n  e8-undo:    In   2 d.:  TODO Plan trip\nThursday   29 October 2026\nFriday     30 October 2026\n  e8-undo:    Deadline:   TODO Plan trip\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-undo:    Scheduled:  TODO Write report                              :work:\n  e8-undo:    Scheduled:  TODO Call Ann\n  e8-undo:    In   2 d.:  TODO Plan trip\nThursday   29 October 2026\nFriday     30 October 2026\n  e8-undo:    Deadline:   TODO Plan trip\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 224,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 224,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": "‘org-agenda-do-date-later’ undone (buffer *e8-oracle*)"
+    },
+    {
+      "name": "undo-after-redo",
+      "input": {
+        "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+        "point": 0,
+        "keys": "C-n C-n C-n t r C-_",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-undo.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-sticky": false,
+          "org-log-done": false
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-undo:    TODO Write report                                          :work:\n  e8-undo:    TODO Plan trip\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-undo:    TODO Write report                                          :work:\n  e8-undo:    TODO Plan trip\n",
+      "point": 186,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "No further undo information",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 186,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "undo-after-move",
+      "input": {
+        "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+        "point": 0,
+        "keys": "C-n C-n C-n t C-n C-_",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-undo.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-sticky": false,
+          "org-log-done": false
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-undo:    TODO Write report                                          :work:\n  e8-undo:    TODO Call Ann\n  e8-undo:    TODO Plan trip\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-undo:    TODO Write report                                          :work:\n  e8-undo:    TODO Call Ann\n  e8-undo:    TODO Plan trip\n",
+      "point": 186,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 186,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "‘org-agenda-todo’ undone (buffer *e8-oracle*)"
+    },
+    {
+      "name": "undo-break-run",
+      "input": {
+        "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+        "point": 0,
+        "keys": "C-n C-n C-n t C-n t C-_ C-n C-_",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-undo.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-sticky": false,
+          "org-log-done": false
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-undo:    TODO Write report                                          :work:\n  e8-undo:    DONE Call Ann\n  e8-undo:    DONE Plan trip\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-undo:    TODO Write report                                          :work:\n  e8-undo:    DONE Call Ann\n  e8-undo:    DONE Plan trip\n",
+      "point": 214,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 214,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "‘org-agenda-undo’ undone (buffer *e8-oracle*)"
+    },
+    {
+      "name": "undo-kill",
+      "input": {
+        "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+        "point": 0,
+        "keys": "C-n C-n C-n C-k C-_",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-undo.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "y"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-sticky": false,
+          "org-log-done": false
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-undo:    TODO Write report                                          :work:\n  e8-undo:    TODO Call Ann\n  e8-undo:    TODO Plan trip\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-undo:    TODO Write report                                          :work:\n  e8-undo:    TODO Call Ann\n  e8-undo:    TODO Plan trip\n",
+      "point": 186,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 186,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "‘org-agenda-kill’ undone (buffer *e8-oracle*)"
+    },
+    {
+      "name": "undo-not-allowed",
+      "input": {
+        "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+        "point": 0,
+        "keys": "C-n C-n C-n t C-_",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-undo.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-sticky": false,
+          "org-log-done": false,
+          "org-agenda-allow-remote-undo": false
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-undo:    TODO Write report                                          :work:\n  e8-undo:    DONE Call Ann\n  e8-undo:    TODO Plan trip\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-undo:    TODO Write report                                          :work:\n  e8-undo:    DONE Call Ann\n  e8-undo:    TODO Plan trip\n",
+      "point": 186,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Check the variable ‘org-agenda-allow-remote-undo’ to activate remote undo",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 186,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "undo-done-logged",
+      "input": {
+        "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+        "point": 0,
+        "keys": "C-n C-n C-n t C-_",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-undo.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-sticky": false,
+          "org-log-done": "'time"
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-undo:    TODO Write report                                          :work:\n  e8-undo:    TODO Call Ann\n  e8-undo:    TODO Plan trip\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-undo:    TODO Write report                                          :work:\n  e8-undo:    TODO Call Ann\n  e8-undo:    TODO Plan trip\n",
+      "point": 186,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 186,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "‘org-agenda-todo’ undone (buffer *e8-oracle*)"
+    }
+  ]
+}

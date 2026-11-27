@@ -1,0 +1,329 @@
+[
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-undo.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "undo-todo",
+  "keys": "C-n C-n C-n t C-_"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-undo.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "undo-todo-slash",
+  "keys": "C-n C-n C-n t C-/"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-undo.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "undo-todo-x-u",
+  "keys": "C-n C-n C-n t C-x u"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-undo.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "undo-two",
+  "keys": "C-n C-n C-n t C-n t C-_ C-_"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-undo.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "undo-two-one",
+  "keys": "C-n C-n C-n t C-n t C-_"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-undo.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "undo-too-many",
+  "keys": "C-n C-n C-n t C-_ C-_"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-undo.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "undo-nothing",
+  "keys": "C-_"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-undo.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "undo-priority",
+  "keys": "C-n C-n C-n , C-_",
+  "answers": [
+   "A"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-undo.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "undo-tags",
+  "keys": "C-n C-n C-n : x RET C-_",
+  "answers": []
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-undo.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "undo-schedule",
+  "keys": "C-n C-n C-n S-<right> C-_"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-undo.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "undo-after-redo",
+  "keys": "C-n C-n C-n t r C-_"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-undo.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "undo-after-move",
+  "keys": "C-n C-n C-n t C-n C-_"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-undo.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "undo-break-run",
+  "keys": "C-n C-n C-n t C-n t C-_ C-n C-_"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-undo.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false
+  },
+  "name": "undo-kill",
+  "keys": "C-n C-n C-n C-k C-_",
+  "answers": [
+   "y"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-undo.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": false,
+   "org-agenda-allow-remote-undo": false
+  },
+  "name": "undo-not-allowed",
+  "keys": "C-n C-n C-n t C-_"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-undo.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "text": "* TODO Write report :work:\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann\nSCHEDULED: <2026-10-28 Wed>\n* TODO Plan trip\nDEADLINE: <2026-10-30 Fri>\n",
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-agenda-sticky": false,
+   "org-log-done": "'time"
+  },
+  "name": "undo-done-logged",
+  "keys": "C-n C-n C-n t C-_"
+ }
+]
