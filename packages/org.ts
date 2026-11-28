@@ -8616,6 +8616,8 @@ function openAtPoint_(): void {
     openLink(link);
     return;
   }
+  // On a citation, what org-cite-follow-processor does, as org-cite-follow (oc.ts).
+  if (e8.funcall("org-cite--follow-at-point", e8.prefixArg()) === true) return;
   // On a footnote reference, or a definition's label, its footnote, as Org's footnote context.
   const footnote = e8.funcall("org-footnote--open-context");
   if (footnote === "reference" || footnote === "definition") {

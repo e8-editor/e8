@@ -51,6 +51,8 @@ const AUTOLOADS: [string, string, string, e8.Param[]][] = [
   ["org-icalendar-export-to-ics", "ox-icalendar", "Export current buffer to an iCalendar file.", EXPORT_PARAMS],
   ["org-icalendar-export-agenda-files", "ox-icalendar", "Export all agenda files to iCalendar files.", [{ name: "async", kind: "prefix" }]],
   ["org-icalendar-combine-agenda-files", "ox-icalendar", "Combine all agenda files into a single iCalendar file.", [{ name: "async", kind: "prefix" }]],
+  // Org Cite's command, which loads oc.ts.
+  ["org-cite-insert", "oc", "Insert a citation at point, as org-cite-insert-processor does; with a prefix argument, its style too.", [{ name: "arg", kind: "prefix" }]],
 ];
 
 /** The functions projects name to publish their files, loading the backend that defines each when it is first called. */
@@ -95,6 +97,33 @@ for (const [name, feature, doc, params] of AUTOLOADS) {
 }
 
 e8.defineKey("org-mode-map", "C-c C-e", "org-export-dispatch" as any);
+e8.defineKey("org-mode-map", "C-c C-x @", "org-cite-insert" as any);
+
+// Citations, which Org activates and follows through oc.el. oc.ts loads
+// only for text that may hold one: "[cite" within a few lines.
+
+/** Whether the text from a few lines before START to END may hold a citation. */
+function mayHoldCitation(start: number, end: number): boolean {
+  const from = e8.lineStart(Math.max(0, e8.lineOf(start) - 3));
+  const to = e8.lineEnd(e8.lineOf(Math.min(Math.max(end - 1, start), e8.pointMax())));
+  return e8.bufferText(from, Math.max(from, to)).includes("[cite");
+}
+
+/** Activates the citations jit-lock fontifies, as Org's font-lock calls org-cite-activate. */
+function activateCitations(start: number, end: number): void {
+  if (!e8.derivedModeP("org-mode") || !mayHoldCitation(start, end)) return;
+  e8.require("oc");
+  e8.funcall("org-cite-activate", start, end);
+}
+
+e8.addHook("org-mode-hook", () => e8.addHook("jit-lock-functions", activateCitations, { local: true, append: true }));
+
+// Called by org-open-at-point off a link: follows the citation at point, if there is one, and says whether there was.
+e8.defun("org-cite--follow-at-point", (arg?: e8.PrefixArg) => {
+  if (!mayHoldCitation(e8.point(), e8.point() + 1)) return false;
+  e8.require("oc");
+  return e8.funcall("org-cite--follow-at-point", arg ?? null);
+});
 
 e8.defineVariable({
   name: "org-export-backends",

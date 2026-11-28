@@ -1,0 +1,441 @@
+[
+ {
+  "name": "styles-ascii",
+  "text": "#+title: Citations\n#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nPlain [cite:@knuth84] and two [cite:@lamport94;@org].\nWith affixes [cite:see @knuth84 p. 3;also @lamport94b].\nGlobal affixes [cite:Compare ;@knuth84;@lamport94; for more].\nStyles: [cite/author:@knuth84], [cite/a/c:@lamport94], [cite/noauthor:@knuth84],\n[cite/na/b:@org], [cite/text:@lamport94b], [cite/t/b:@org], [cite/nocite:@lamport94]\nand [cite/numeric:@knuth84;@org;@lamport94] and [cite//b:@knuth84] and [cite/caps:@org].\nMissing [cite:@nobody].\n\n* References\n#+print_bibliography:\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "call": [
+   "org-ascii-export-as-ascii"
+  ],
+  "keys": "",
+  "files": {
+   "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+  },
+  "find": "doc.org",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com",
+   "org-ascii-charset": "'ascii"
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "styles-md",
+  "text": "#+title: Citations\n#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nPlain [cite:@knuth84] and two [cite:@lamport94;@org].\nWith affixes [cite:see @knuth84 p. 3;also @lamport94b].\nGlobal affixes [cite:Compare ;@knuth84;@lamport94; for more].\nStyles: [cite/author:@knuth84], [cite/a/c:@lamport94], [cite/noauthor:@knuth84],\n[cite/na/b:@org], [cite/text:@lamport94b], [cite/t/b:@org], [cite/nocite:@lamport94]\nand [cite/numeric:@knuth84;@org;@lamport94] and [cite//b:@knuth84] and [cite/caps:@org].\nMissing [cite:@nobody].\n\n* References\n#+print_bibliography:\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "call": [
+   "org-md-export-as-markdown"
+  ],
+  "keys": "",
+  "files": {
+   "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+  },
+  "find": "doc.org",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com"
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "styles-html",
+  "text": "#+title: Citations\n#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nPlain [cite:@knuth84] and two [cite:@lamport94;@org].\nWith affixes [cite:see @knuth84 p. 3;also @lamport94b].\nGlobal affixes [cite:Compare ;@knuth84;@lamport94; for more].\nStyles: [cite/author:@knuth84], [cite/a/c:@lamport94], [cite/noauthor:@knuth84],\n[cite/na/b:@org], [cite/text:@lamport94b], [cite/t/b:@org], [cite/nocite:@lamport94]\nand [cite/numeric:@knuth84;@org;@lamport94] and [cite//b:@knuth84] and [cite/caps:@org].\nMissing [cite:@nobody].\n\n* References\n#+print_bibliography:\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "call": [
+   "org-html-export-as-html"
+  ],
+  "keys": "",
+  "files": {
+   "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+  },
+  "find": "doc.org",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com",
+   "org-html-postamble": false,
+   "org-export-timestamp-file": false
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "styles-org",
+  "text": "#+title: Citations\n#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nPlain [cite:@knuth84] and two [cite:@lamport94;@org].\nWith affixes [cite:see @knuth84 p. 3;also @lamport94b].\nGlobal affixes [cite:Compare ;@knuth84;@lamport94; for more].\nStyles: [cite/author:@knuth84], [cite/a/c:@lamport94], [cite/noauthor:@knuth84],\n[cite/na/b:@org], [cite/text:@lamport94b], [cite/t/b:@org], [cite/nocite:@lamport94]\nand [cite/numeric:@knuth84;@org;@lamport94] and [cite//b:@knuth84] and [cite/caps:@org].\nMissing [cite:@nobody].\n\n* References\n#+print_bibliography:\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "call": [
+   "org-org-export-as-org"
+  ],
+  "keys": "",
+  "files": {
+   "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+  },
+  "find": "doc.org",
+  "globals": {
+   "org-export-timestamp-file": false,
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com"
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "numeric-ascii",
+  "text": "#+cite_export: basic numeric numeric\n#+title: Citations\n#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nPlain [cite:@knuth84] and two [cite:@lamport94;@org].\nWith affixes [cite:see @knuth84 p. 3;also @lamport94b].\nGlobal affixes [cite:Compare ;@knuth84;@lamport94; for more].\nStyles: [cite/author:@knuth84], [cite/a/c:@lamport94], [cite/noauthor:@knuth84],\n[cite/na/b:@org], [cite/text:@lamport94b], [cite/t/b:@org], [cite/nocite:@lamport94]\nand [cite/numeric:@knuth84;@org;@lamport94] and [cite//b:@knuth84] and [cite/caps:@org].\nMissing [cite:@nobody].\n\n* References\n#+print_bibliography:\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "call": [
+   "org-ascii-export-as-ascii"
+  ],
+  "keys": "",
+  "files": {
+   "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+  },
+  "find": "doc.org",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com",
+   "org-ascii-charset": "'ascii"
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "numeric-bibliography-md",
+  "text": "#+cite_export: basic numeric\n#+title: Citations\n#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nPlain [cite:@knuth84] and two [cite:@lamport94;@org].\nWith affixes [cite:see @knuth84 p. 3;also @lamport94b].\nGlobal affixes [cite:Compare ;@knuth84;@lamport94; for more].\nStyles: [cite/author:@knuth84], [cite/a/c:@lamport94], [cite/noauthor:@knuth84],\n[cite/na/b:@org], [cite/text:@lamport94b], [cite/t/b:@org], [cite/nocite:@lamport94]\nand [cite/numeric:@knuth84;@org;@lamport94] and [cite//b:@knuth84] and [cite/caps:@org].\nMissing [cite:@nobody].\n\n* References\n#+print_bibliography:\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "call": [
+   "org-md-export-as-markdown"
+  ],
+  "keys": "",
+  "files": {
+   "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+  },
+  "find": "doc.org",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com"
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "text-style-ascii",
+  "text": "#+cite_export: basic author-year \"text\"\n#+title: Citations\n#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nPlain [cite:@knuth84] and two [cite:@lamport94;@org].\nWith affixes [cite:see @knuth84 p. 3;also @lamport94b].\nGlobal affixes [cite:Compare ;@knuth84;@lamport94; for more].\nStyles: [cite/author:@knuth84], [cite/a/c:@lamport94], [cite/noauthor:@knuth84],\n[cite/na/b:@org], [cite/text:@lamport94b], [cite/t/b:@org], [cite/nocite:@lamport94]\nand [cite/numeric:@knuth84;@org;@lamport94] and [cite//b:@knuth84] and [cite/caps:@org].\nMissing [cite:@nobody].\n\n* References\n#+print_bibliography:\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "call": [
+   "org-ascii-export-as-ascii"
+  ],
+  "keys": "",
+  "files": {
+   "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+  },
+  "find": "doc.org",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com",
+   "org-ascii-charset": "'ascii"
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "notes-en-us-ascii",
+  "text": "#+options: toc:nil author:nil date:nil\n#+language: en-us\n#+bibliography: refs.bib\n\nHe said \"it works\" [cite/note:@knuth84].\nThen \"a quote.\" [cite/ft:@org] More text [cite/note:@lamport94], and on.\nDone [cite/note:@lamport94b].\nA footnote[fn:1] here, \"inner\"[cite/note:@org], last.\n\n[fn:1] With a citation [cite:@org] inside.\n\n* References\n#+print_bibliography:\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "call": [
+   "org-ascii-export-as-ascii"
+  ],
+  "keys": "",
+  "files": {
+   "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+  },
+  "find": "doc.org",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com",
+   "org-ascii-charset": "'ascii"
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "notes-fr-ascii",
+  "text": "#+options: toc:nil author:nil date:nil\n#+language: fr\n#+bibliography: refs.bib\n\nHe said \"it works\" [cite/note:@knuth84].\nThen \"a quote.\" [cite/ft:@org] More text [cite/note:@lamport94], and on.\nDone [cite/note:@lamport94b].\nA footnote[fn:1] here, \"inner\"[cite/note:@org], last.\n\n[fn:1] With a citation [cite:@org] inside.\n\n* References\n#+print_bibliography:\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "call": [
+   "org-ascii-export-as-ascii"
+  ],
+  "keys": "",
+  "files": {
+   "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+  },
+  "find": "doc.org",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com",
+   "org-ascii-charset": "'ascii"
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "notes-en-md",
+  "text": "#+options: toc:nil author:nil date:nil\n#+language: en\n#+bibliography: refs.bib\n\nHe said \"it works\" [cite/note:@knuth84].\nThen \"a quote.\" [cite/ft:@org] More text [cite/note:@lamport94], and on.\nDone [cite/note:@lamport94b].\nA footnote[fn:1] here, \"inner\"[cite/note:@org], last.\n\n[fn:1] With a citation [cite:@org] inside.\n\n* References\n#+print_bibliography:\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "call": [
+   "org-md-export-as-markdown"
+  ],
+  "keys": "",
+  "files": {
+   "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+  },
+  "find": "doc.org",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com"
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "footnotes-cited-order-md",
+  "text": "#+options: toc:nil author:nil date:nil\n#+cite_export: basic numeric numeric\n#+bibliography: refs.bib\n\nFirst a footnote[fn:a], then [cite:@knuth84] and [cite:@org;@lamport94;@lamport94b].\nInline[fn:: Inline [cite:@lamport94b].] too.\n\n[fn:a] It cites [cite:@lamport94].\n\n#+print_bibliography:\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "call": [
+   "org-md-export-as-markdown"
+  ],
+  "keys": "",
+  "files": {
+   "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+  },
+  "find": "doc.org",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com",
+   "org-cite-basic-sorting-field": false
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "footnotes-html",
+  "text": "#+options: toc:nil author:nil date:nil\n#+cite_export: basic numeric numeric\n#+bibliography: refs.bib\n\nFirst a footnote[fn:a], then [cite:@knuth84] and [cite:@org;@lamport94;@lamport94b].\nInline[fn:: Inline [cite:@lamport94b].] too.\n\n[fn:a] It cites [cite:@lamport94].\n\n#+print_bibliography:\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "call": [
+   "org-html-export-as-html"
+  ],
+  "keys": "",
+  "files": {
+   "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+  },
+  "find": "doc.org",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com",
+   "org-html-postamble": false,
+   "org-export-timestamp-file": false
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "csl-json-html",
+  "text": "#+title: From CSL-JSON\n#+options: toc:nil author:nil date:nil\n#+bibliography: refs.json\n\nSee [cite:@dominik10], [cite/t:@stallman;@anon] and [cite/na:@stallman].\n\n#+print_bibliography:\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "call": [
+   "org-html-export-as-html"
+  ],
+  "keys": "",
+  "files": {
+   "refs.json": "[\n  {\n    \"id\": \"dominik10\",\n    \"type\": \"book\",\n    \"author\": [\n      {\n        \"family\": \"Dominik\",\n        \"given\": \"Carsten\"\n      }\n    ],\n    \"title\": \"The Org Mode 7 Reference Manual\",\n    \"publisher\": \"Network Theory\",\n    \"issued\": {\n      \"date-parts\": [\n        [\n          2010,\n          6\n        ]\n      ]\n    }\n  },\n  {\n    \"id\": \"stallman\",\n    \"type\": \"article-journal\",\n    \"author\": [\n      {\n        \"family\": \"Stallman\",\n        \"given\": \"Richard\"\n      },\n      {\n        \"family\": \"Doe\",\n        \"given\": \"Jane\"\n      }\n    ],\n    \"title\": \"EMACS: The Extensible Editor\",\n    \"container-title\": \"Journal of Editors\",\n    \"journal\": \"Journal of Editors\",\n    \"issued\": {\n      \"raw\": \"Spring 1981\"\n    }\n  },\n  {\n    \"id\": \"anon\",\n    \"type\": \"webpage\",\n    \"editor\": [\n      {\n        \"family\": \"Webmaster\",\n        \"given\": \"The\"\n      }\n    ],\n    \"title\": \"A Page\",\n    \"issued\": {\n      \"literal\": \"2020-02-02\"\n    }\n  }\n]"
+  },
+  "find": "doc.org",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com",
+   "org-html-postamble": false,
+   "org-export-timestamp-file": false
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "csl-json-ascii",
+  "text": "#+title: From CSL-JSON\n#+options: toc:nil author:nil date:nil\n#+bibliography: refs.json\n\nSee [cite:@dominik10], [cite/t:@stallman;@anon] and [cite/na:@stallman].\n\n#+print_bibliography:\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "call": [
+   "org-ascii-export-as-ascii"
+  ],
+  "keys": "",
+  "files": {
+   "refs.json": "[\n  {\n    \"id\": \"dominik10\",\n    \"type\": \"book\",\n    \"author\": [\n      {\n        \"family\": \"Dominik\",\n        \"given\": \"Carsten\"\n      }\n    ],\n    \"title\": \"The Org Mode 7 Reference Manual\",\n    \"publisher\": \"Network Theory\",\n    \"issued\": {\n      \"date-parts\": [\n        [\n          2010,\n          6\n        ]\n      ]\n    }\n  },\n  {\n    \"id\": \"stallman\",\n    \"type\": \"article-journal\",\n    \"author\": [\n      {\n        \"family\": \"Stallman\",\n        \"given\": \"Richard\"\n      },\n      {\n        \"family\": \"Doe\",\n        \"given\": \"Jane\"\n      }\n    ],\n    \"title\": \"EMACS: The Extensible Editor\",\n    \"container-title\": \"Journal of Editors\",\n    \"journal\": \"Journal of Editors\",\n    \"issued\": {\n      \"raw\": \"Spring 1981\"\n    }\n  },\n  {\n    \"id\": \"anon\",\n    \"type\": \"webpage\",\n    \"editor\": [\n      {\n        \"family\": \"Webmaster\",\n        \"given\": \"The\"\n      }\n    ],\n    \"title\": \"A Page\",\n    \"issued\": {\n      \"literal\": \"2020-02-02\"\n    }\n  }\n]"
+  },
+  "find": "doc.org",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com",
+   "org-ascii-charset": "'ascii"
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "no-processors-ascii",
+  "text": "#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nText [cite:@knuth84] and more [cite/t:@org].\n\n#+print_bibliography:\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "call": [
+   "org-ascii-export-as-ascii"
+  ],
+  "keys": "",
+  "files": {
+   "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+  },
+  "find": "doc.org",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com",
+   "org-ascii-charset": "'ascii",
+   "org-cite-export-processors": false
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "processor-per-backend-md",
+  "text": "#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nText [cite:@knuth84] and more [cite/t:@org].\n\n#+print_bibliography:\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "call": [
+   "org-md-export-as-markdown"
+  ],
+  "keys": "",
+  "files": {
+   "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+  },
+  "find": "doc.org",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com",
+   "org-cite-export-processors": [
+    [
+     "'md",
+     "'basic",
+     "numeric",
+     "numeric"
+    ],
+    [
+     true,
+     "'basic"
+    ]
+   ]
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "processor-per-backend-ascii",
+  "text": "#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nText [cite:@knuth84] and more [cite/t:@org].\n\n#+print_bibliography:\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "call": [
+   "org-ascii-export-as-ascii"
+  ],
+  "keys": "",
+  "files": {
+   "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+  },
+  "find": "doc.org",
+  "globals": {
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com",
+   "org-ascii-charset": "'ascii",
+   "org-cite-export-processors": [
+    [
+     "'md",
+     "'basic",
+     "numeric",
+     "numeric"
+    ],
+    [
+     true,
+     "'basic"
+    ]
+   ]
+  },
+  "today": "2026-11-27"
+ },
+ {
+  "name": "org-with-processors",
+  "text": "#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nText [cite:@knuth84] and more [cite/t:@org].\n\n#+print_bibliography:\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "call": [
+   "org-org-export-as-org"
+  ],
+  "keys": "",
+  "files": {
+   "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+  },
+  "find": "doc.org",
+  "globals": {
+   "org-export-timestamp-file": false,
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com",
+   "org-org-with-cite-processors": true
+  },
+  "today": "2026-11-27"
+ }
+]
