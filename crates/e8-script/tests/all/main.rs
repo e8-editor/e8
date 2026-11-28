@@ -14,6 +14,7 @@ mod ansi_color;
 mod autorevert;
 mod awaiting;
 mod babel;
+mod ob_shell;
 mod batch;
 mod blocking;
 mod bookmark;

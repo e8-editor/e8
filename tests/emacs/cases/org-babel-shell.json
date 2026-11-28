@@ -1,0 +1,1602 @@
+[
+ {
+  "name": "default-scalar-output",
+  "text": "#+begin_src sh\necho hello\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "default-output-read-as-table",
+  "text": "#+begin_src sh\nseq 3\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "default-tab-separated-table",
+  "text": "#+begin_src sh\nprintf 'a\\tb\\n1\\t2.0\\n'\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "results-output",
+  "text": "#+begin_src sh :results output\nseq 3\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "results-value-exit-code",
+  "text": "#+begin_src sh :results value\nfalse\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "results-value-after-exit",
+  "text": "#+begin_src sh :results value\nexit 3\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "results-table",
+  "text": "#+begin_src sh :results table\nprintf 'a b\\nc d\\n'\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "results-list",
+  "text": "#+begin_src sh :results list\nprintf 'one\\ntwo\\n'\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "results-scalar",
+  "text": "#+begin_src sh :results scalar\nseq 2\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "results-verbatim",
+  "text": "#+begin_src sh :results verbatim\nprintf 'x\\n'\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "results-raw-table",
+  "text": "#+begin_src sh :results raw\nprintf '| a | b |\\n'\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "results-raw-heading",
+  "text": "#+begin_src sh :results raw output\necho '* Not a heading'\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "results-drawer",
+  "text": "#+begin_src sh :results drawer\necho drawn\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "results-html",
+  "text": "#+begin_src sh :results html output\necho '<b>x</b>'\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "results-code",
+  "text": "#+begin_src sh :results code output\necho 'echo hi'\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "results-org",
+  "text": "#+begin_src sh :results org output\necho '- item'\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "wrap-example",
+  "text": "#+begin_src sh :results output :wrap example\necho wrapped\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "wrap-quote",
+  "text": "#+begin_src sh :results output :wrap quote\necho quoted\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "results-silent",
+  "text": "#+begin_src sh :results output silent\necho quiet\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  },
+  "message": true
+ },
+ {
+  "name": "results-none",
+  "text": "#+begin_src sh :results output none\necho nothing\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "results-discard",
+  "text": "#+begin_src sh :results discard\necho gone\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "results-append",
+  "text": "#+begin_src sh :results output append\necho again\n#+end_src\n\n#+RESULTS:\n: before\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "results-prepend",
+  "text": "#+begin_src sh :results output prepend\necho first\n#+end_src\n\n#+RESULTS:\n: before\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "results-replace",
+  "text": "#+begin_src sh :results output\necho new\n#+end_src\n\n#+RESULTS:\n: old\n: lines\n\nAfter.\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "long-output-example-block",
+  "text": "#+begin_src sh :results output\nseq 12\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "example-escapes-headings",
+  "text": "#+begin_src sh :results output\nseq 9; echo '* star'; echo '#+begin'\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "stderr-left-out",
+  "text": "#+begin_src sh :results output\necho out; echo err >&2\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "output-defaults-to-value",
+  "text": "#+begin_src sh\necho hello\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false,
+   "org-babel-shell-results-defaults-to-output": false
+  }
+ },
+ {
+  "name": "named-block-results",
+  "text": "#+name: hello\n#+begin_src sh :results output\necho named\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "indented-in-item",
+  "text": "- item\n  #+begin_src sh :results output\n  printf 'a\\nb\\n'\n  #+end_src\n",
+  "point": 9,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "property-header-args",
+  "text": "#+PROPERTY: header-args:sh :results output\n\n#+begin_src sh\nseq 2\n#+end_src\n",
+  "point": 44,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "eval-no",
+  "text": "#+begin_src sh :eval no\necho never\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  },
+  "message": true
+ },
+ {
+  "name": "bash-block",
+  "text": "#+begin_src bash :results output\necho \"$BASH_VERSION\" | cut -c1 | tr -d '\\n' | wc -c | tr -d ' '\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "shell-block",
+  "text": "#+begin_src shell :results output\necho from shell\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false,
+   "shell-file-name": "sh"
+  }
+ },
+ {
+  "name": "point-inside-block",
+  "text": "#+begin_src sh :results output\necho inside\n#+end_src\n",
+  "point": 31,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "var-table-tab-separated",
+  "text": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :var t=tbl :var n=5 :results output\necho \"$t\"\necho $n\n#+end_src\n",
+  "point": 33,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "var-several-in-one",
+  "text": "#+begin_src sh :var a=1 b=\"two words\" :results output\necho \"$a/$b\"\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "var-string-quoted",
+  "text": "#+begin_src sh :var s=\"it's\" :results output\necho \"$s\"\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "var-list",
+  "text": "#+name: lst\n- one\n- [ ] two\n  continued\n  - sub\n- three\n\n#+begin_src sh :var l=lst :results output\necho \"$l\"\n#+end_src\n",
+  "point": 57,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "var-table-colnames-dropped",
+  "text": "#+name: tbl2\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n\n#+begin_src sh :var t=tbl2 :results output\necho \"$t\"\n#+end_src\n",
+  "point": 54,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "var-table-hlines-yes",
+  "text": "#+name: tbl2\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n\n#+begin_src sh :var t=tbl2 :hlines yes :colnames no :results output\necho \"$t\"\n#+end_src\n",
+  "point": 54,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "var-table-colnames-no",
+  "text": "#+name: tbl2\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n\n#+begin_src sh :var t=tbl2 :colnames no :results output\necho \"$t\"\n#+end_src\n",
+  "point": 54,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "var-table-colnames-yes",
+  "text": "#+name: tbl2\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n\n#+begin_src sh :var t=tbl2 :colnames yes\necho \"$t\"\n#+end_src\n",
+  "point": 54,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "var-table-separator",
+  "text": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :var t=tbl :separator , :results output\necho \"$t\"\n#+end_src\n",
+  "point": 33,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "var-index-cell",
+  "text": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :var x=tbl[1,0] :results output\necho \"$x\"\n#+end_src\n",
+  "point": 33,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "var-index-column",
+  "text": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :var x=tbl[,1] :results output\necho \"$x\"\n#+end_src\n",
+  "point": 33,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "var-quoted-list",
+  "text": "#+begin_src sh :var x='(1 2 3) :results output\necho \"$x\"\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "var-bash-array",
+  "text": "#+name: lst\n- one\n- [ ] two\n  continued\n  - sub\n- three\n\n#+begin_src bash :var l=lst :results output\necho \"${l[2]}\"\n#+end_src\n",
+  "point": 57,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "var-bash-assoc",
+  "text": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src bash :var t=tbl :results output\necho \"${t[y]}\"\n#+end_src\n",
+  "point": 33,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "var-from-block",
+  "text": "#+name: two\n#+begin_src sh :results output\necho 2\n#+end_src\n\n#+begin_src sh :var n=two :results output\necho \"n=$n\"\n#+end_src\n",
+  "point": 61,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "var-from-block-with-args",
+  "text": "#+name: sq\n#+begin_src sh :var x=0\necho $((x * x))\n#+end_src\n\n#+begin_src sh :var n=sq(x=7) :results output\necho \"n=$n\"\n#+end_src\n",
+  "point": 62,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "var-from-call",
+  "text": "#+name: sq\n#+begin_src sh :var x=0\necho $((x * x))\n#+end_src\n\n#+name: c9\n#+CALL: sq(x=3)\n\n#+begin_src sh :var n=c9 :results output\necho \"n=$n\"\n#+end_src\n",
+  "point": 90,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "var-from-example",
+  "text": "#+name: ex\n#+begin_example\n  two\n  lines\n#+end_example\n\n#+begin_src sh :var e=ex :results output\necho \"$e\"\n#+end_src\n",
+  "point": 56,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "var-from-fixed-width",
+  "text": "#+name: fw\n: 42\n\n#+begin_src sh :var f=fw :results output\necho \"$f\"\n#+end_src\n",
+  "point": 17,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "var-table-rownames-kept",
+  "text": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :var t=tbl :rownames yes\necho \"$t\" | awk '{print $1 * 10}'\n#+end_src\n",
+  "point": 33,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "dir",
+  "text": "#+begin_src sh :dir / :results output\npwd\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "var-missing-reference",
+  "text": "#+begin_src sh :var x=nowhere :results output\necho \"$x\"\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "stdin-table",
+  "text": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :stdin tbl :results output\ncat\n#+end_src\n",
+  "point": 33,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "cmdline",
+  "text": "#+begin_src sh :cmdline a b :results output\necho \"$@\"\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "cmdline-and-stdin",
+  "text": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :stdin tbl :cmdline -n :results output\ncat \"$1\"\n#+end_src\n",
+  "point": 33,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "shebang",
+  "text": "#+begin_src sh :results output :shebang \"#!/bin/sh\"\necho shebang\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "shebang-padline-no",
+  "text": "#+begin_src sh :results output :shebang \"#!/bin/sh\" :padline no\necho $0 | sed 's/.*sh-script-.*/script/'\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "prologue-epilogue",
+  "text": "#+begin_src sh :prologue \"echo pro\" :epilogue \"echo epi\" :results output\necho body\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "call-line",
+  "text": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\n#+CALL: greet(who=\"there\")\n",
+  "point": 88,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "call-line-named",
+  "text": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\n#+name: c1\n#+CALL: greet(who=\"named\")\n",
+  "point": 99,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "call-line-on-name",
+  "text": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\n#+name: c1\n#+CALL: greet(who=\"named\")\n",
+  "point": 88,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "call-line-positional",
+  "text": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\n#+CALL: greet(\"positional\")\n",
+  "point": 88,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "call-line-headers",
+  "text": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\n#+CALL: greet[:results output](who=\"inside\") :results output\n",
+  "point": 88,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "call-line-replaces",
+  "text": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\n#+CALL: greet()\n\n#+RESULTS:\n: stale\n",
+  "point": 88,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "call-line-unknown",
+  "text": "#+CALL: nosuch()\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "call-line-to-call",
+  "text": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\n#+name: c2\n#+CALL: greet(who=\"deep\")\n\n#+CALL: c2()\n",
+  "point": 126,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "inline-src",
+  "text": "Inline src_sh{echo inline} here.\n",
+  "point": 7,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "inline-src-replaces",
+  "text": "Again src_sh{echo one} {{{results(=old=)}}} there.\n",
+  "point": 6,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "inline-src-value",
+  "text": "Value src_sh[:results value]{true} done.\n",
+  "point": 6,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "inline-src-list-error",
+  "text": "List src_sh{seq 3} done.\n",
+  "point": 5,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "inline-src-raw",
+  "text": "Raw src_sh[:results raw output]{printf '*b*'} done.\n",
+  "point": 4,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "inline-src-nothing",
+  "text": "Nothing src_sh{true} done.\n",
+  "point": 8,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "inline-src-in-heading",
+  "text": "* Head src_sh{echo h}\n",
+  "point": 7,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "inline-call",
+  "text": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\nCall call_greet(who=\"x\") here.\n",
+  "point": 93,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "inline-call-headers",
+  "text": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\nCall call_greet[:results output](who=\"y\")[:results raw] here.\n",
+  "point": 93,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "export-ascii-inline-and-calls",
+  "text": "#+OPTIONS: toc:nil author:nil title:nil timestamp:nil\n* Shell\nInline src_sh{echo inline} and src_sh[:exports code]{echo code} and call_greet(who=\"x\") here.\n\n#+name: greet\n#+begin_src sh :var who=\"world\" :results output :exports both\necho \"hi $who\"\n#+end_src\n\n#+CALL: greet(who=\"there\")\n\n#+CALL: greet[:results output]() :exports none\n\n#+begin_src sh :exports results\nseq 2\n#+end_src\n\n#+name: noexp\n#+begin_src sh :exports none\necho never\n#+end_src\n\nValue src_sh[:results value]{true} done.\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false,
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com",
+   "org-ascii-charset": "'ascii"
+  },
+  "call": [
+   "org-ascii-export-as-ascii"
+  ],
+  "today": "2026-11-27 10:00"
+ },
+ {
+  "name": "export-org-inline-and-calls",
+  "text": "#+OPTIONS: toc:nil author:nil title:nil timestamp:nil\n* Shell\nInline src_sh{echo inline} and src_sh[:exports code]{echo code} and call_greet(who=\"x\") here.\n\n#+name: greet\n#+begin_src sh :var who=\"world\" :results output :exports both\necho \"hi $who\"\n#+end_src\n\n#+CALL: greet(who=\"there\")\n\n#+CALL: greet[:results output]() :exports none\n\n#+begin_src sh :exports results\nseq 2\n#+end_src\n\n#+name: noexp\n#+begin_src sh :exports none\necho never\n#+end_src\n\nValue src_sh[:results value]{true} done.\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false,
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com",
+   "org-ascii-charset": "'ascii"
+  },
+  "call": [
+   "org-org-export-as-org"
+  ],
+  "today": "2026-11-27 10:00"
+ },
+ {
+  "name": "export-call-to-unexported-block",
+  "text": "#+OPTIONS: toc:nil author:nil title:nil timestamp:nil\n#+name: hidden\n#+begin_src sh :var n=1 :exports none\necho \"n is $n\"\n#+end_src\n\n#+CALL: hidden(n=4)\n\nText call_hidden(n=5) too.\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false,
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com",
+   "org-ascii-charset": "'ascii"
+  },
+  "call": [
+   "org-org-export-as-org"
+  ],
+  "today": "2026-11-27 10:00"
+ },
+ {
+  "name": "export-inline-both-and-none",
+  "text": "#+OPTIONS: toc:nil author:nil title:nil timestamp:nil\nBoth src_sh[:exports both]{echo b} and none src_sh[:exports none]{echo n} end.\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false,
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com",
+   "org-ascii-charset": "'ascii"
+  },
+  "call": [
+   "org-org-export-as-org"
+  ],
+  "today": "2026-11-27 10:00"
+ },
+ {
+  "name": "export-archived-not-run",
+  "text": "#+OPTIONS: toc:nil author:nil title:nil timestamp:nil arch:t\n* Kept\nsrc_sh{echo kept}\n* Old :ARCHIVE:\nsrc_sh{echo old}\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false,
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com",
+   "org-ascii-charset": "'ascii"
+  },
+  "call": [
+   "org-org-export-as-org"
+  ],
+  "today": "2026-11-27 10:00"
+ },
+ {
+  "name": "export-block-var-table",
+  "text": "#+OPTIONS: toc:nil author:nil title:nil timestamp:nil\n#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :var t=tbl :exports results\necho \"$t\" | cut -f2\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false,
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com",
+   "org-ascii-charset": "'ascii"
+  },
+  "call": [
+   "org-ascii-export-as-ascii"
+  ],
+  "today": "2026-11-27 10:00"
+ }
+]

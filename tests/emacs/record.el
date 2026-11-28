@@ -439,6 +439,10 @@ answers come, and then from its answers, as save-some-buffers' do."
 its `globals' bound for the case, before the modes start."
   (let ((globals (alist-get 'globals case)))
     (prog1 (cl-progv (mapcar #'car globals) (mapcar (lambda (g) (e8-oracle--value (cdr g))) globals)
+             ;; Babel's languages load as customizing them loads them, which binding does not.
+             (when (assq 'org-babel-load-languages globals)
+               (require 'org)
+               (org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages))
              (e8-oracle--run-1 case))
       ;; A case that brought Org's parser up to date with its globals or
       ;; its buffer's own values, as org-list-allow-alphabetical, from
