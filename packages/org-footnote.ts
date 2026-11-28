@@ -8,7 +8,8 @@
 // definition to the bracket closing its own.
 
 import { headings, isHeadingLine, markRingPush, parseHeading, preserveLocalVariables } from "org";
-import { AFFILIATED, elementAt, FOOTNOTE_LABEL } from "org-element";
+import { AFFILIATED, elementAt, FOOTNOTE_LABEL, objectAt, objectRegion, withAffiliated } from "org-element";
+import type { Node } from "org-element-ast";
 import { showContext } from "org-fold";
 import { endOfMetaData } from "org-list";
 import { lineAt, lineStartOrEnd } from "org-macs";
@@ -82,144 +83,47 @@ export interface Definition {
   contentsEnd?: number;
 }
 
-/** The text between two positions and a way back from an index in it to a position. */
-function textFrom(from: number, to: number): { text: string; pos: (i: number) => number } {
-  const text = e8.bufferText(from, to);
-  return { text, pos: (i: number) => from + charCount(text.slice(0, i)) };
-}
+/** Kinds of object a caller may look up through to the reference holding them, as C-c C-c's and C-c C-o's lineages do. */
+type Through = "markup" | "link" | "timestamp";
 
-/** Whether a position is inside a link, or inside code or verbatim text, on its line, where no reference can be. */
-function inLinkOrCode(line: number, pos: number): boolean {
-  const text = e8.lineText(line);
-  const at = pos - e8.lineStart(line);
-  const inside = (start: number, stop: number) => at > charCount(text.slice(0, start)) && at < charCount(text.slice(0, stop));
-  for (const m of allMatches(/\[\[(?:[^[\]]|\\.)+\](?:\[[^\n]*?\])?\]/g, text)) {
-    if (inside(m.index ?? 0, (m.index ?? 0) + m[0].length)) return true;
-  }
-  for (const m of allMatches(/(^|[\s({'"-])([=~])(\S|\S.*?\S)\2(?=[\s.,;:!?'")}\[-]|$)/g, text)) {
-    if (inside((m.index ?? 0) + m[1].length, (m.index ?? 0) + m[0].length)) return true;
-  }
-  return false;
+const MARKUP = ["bold", "italic", "underline", "strike-through", "code", "verbatim"];
+
+/** A footnote-reference object as a Reference. */
+function asReference(n: Node): Reference {
+  const end: number = n.p.end;
+  return {
+    label: n.p.label,
+    begin: n.p.begin,
+    end: end - (n.p["post-blank"] ?? 0),
+    objectEnd: end,
+    inline: n.p.type === "inline" ? { begin: n.p["contents-begin"], end: n.p["contents-end"] } : undefined,
+  };
 }
 
 /**
- * The kind of object of its own a position is in inside an inline
- * definition, emphasis, a link or a timestamp, where Org's context is that
- * object rather than the footnote.
- */
-function innerObject(line: number, pos: number): "markup" | "link" | "timestamp" | undefined {
-  const text = e8.lineText(line);
-  const at = pos - e8.lineStart(line);
-  const within = (start: number, stop: number) => at >= charCount(text.slice(0, start)) && at < charCount(text.slice(0, stop));
-  const res: ["markup" | "link" | "timestamp", RegExp][] = [
-    ["link", /()\[\[(?:[^[\]]|\\.)+\](?:\[[^\n]*?\])?\]/g],
-    ["timestamp", /()[[<]\d{4}-\d{2}-\d{2}[^\]>\n]*[\]>]/g],
-    ["markup", /(^|[\s({'"-])([*/_+=~])(\S|\S.*?\S)\2(?=[\s.,;:!?'")}\[\]-]|$)/g],
-  ];
-  for (const [kind, re] of res) {
-    for (const m of allMatches(re, text)) {
-      if (within((m.index ?? 0) + m[1].length, (m.index ?? 0) + m[0].length)) return kind;
-    }
-  }
-  return undefined;
-}
-
-/** Where a heading's title ends, before its tags, for objects on its line. */
-function titleBounds(line: number): [number, number] | undefined {
-  const h = parseHeading(line);
-  if (!h) return undefined;
-  return [h.titleAt, h.tagsAt ?? h.end];
-}
-
-/**
- * Where objects, footnote references among them, can be at a position, and
- * how far they go, as Org's parser reads objects only in some elements'
- * text: a paragraph's, a heading's title, a table's cells and a verse
- * block's; and not inside a link or a code or verbatim object.
- */
-function objectsLimit(pos: number): number | undefined {
-  const line = lineAt(pos);
-  const text = e8.lineText(line);
-  let limit: number | undefined;
-  if (isHeadingLine(text)) {
-    const t = titleBounds(line);
-    if (!t || pos < t[0] || pos >= t[1]) return undefined;
-    limit = t[1];
-  } else {
-    let e = elementAt(pos);
-    while (e && e.type !== "paragraph" && e.type !== "table" && e.type !== "verse-block" && e.type !== "item") e = e.parent;
-    // A table.el table's text holds no objects.
-    if (!e || (e.type === "table" && e.tableType === "table.el")) return undefined;
-    // An item's bullet and checkbox hold no objects.
-    if (e.type === "item" && pos - e8.lineStart(line) < charCount(/^[ \t]*\S+(?:[ \t]+\[[ X-]\])?[ \t]*/.exec(text)?.[0] ?? "")) return undefined;
-    // In a cell: after the row's first bar and before its last.
-    const before = text.slice(0, Math.max(0, pos - e8.lineStart(line)));
-    if (e.type === "table" && (/^[ \t]*\|-/.test(text) || !before.includes("|") || !text.slice(before.length).includes("|"))) return undefined;
-    limit = e.type === "item" || e.type === "table" ? e8.lineEnd(line) : (e.contentsEnd ?? e.end);
-  }
-  return inLinkOrCode(line, pos) ? undefined : limit;
-}
-
-/**
- * The reference starting at a position, as Org's parser reads one: the
- * text from [fn: to the bracket closing it, counting brackets in an inline
- * definition, within what holds objects there.
+ * The reference starting at a position, as Org's parser reads one, in
+ * what holds objects there: none at a definition's label, in a link, in
+ * code or verbatim text, or in an element that holds no objects.
  */
 function referenceStartingAt(s: number): Reference | undefined {
-  const line = lineAt(s);
-  const limit = objectsLimit(s);
-  if (limit === undefined) return undefined;
-  const { text, pos } = textFrom(s, Math.max(s, limit));
-  const m = new RegExp(`^\\[fn:(?:(${LABEL})?:|(${LABEL})\\])`, "u").exec(text);
-  if (!m) return undefined;
-  let end: number;
-  let inline: Reference["inline"];
-  if (m[2] !== undefined) {
-    // A definition's label at a line's start is no reference.
-    if (s === e8.lineStart(line)) return undefined;
-    end = pos(m[0].length);
-  } else {
-    let depth = 0;
-    let close = -1;
-    for (let i = 0; i < text.length; i++) {
-      if (text[i] === "[") depth++;
-      else if (text[i] === "]" && --depth === 0) {
-        close = i;
-        break;
-      }
-    }
-    if (close < 0) return undefined;
-    end = pos(close + 1);
-    inline = { begin: pos(m[0].length), end: pos(close) };
-  }
-  const after = /^[ \t]*/.exec(e8.bufferText(end, Math.min(e8.pointMax(), end + 200)))![0];
-  return { label: m[2] ?? m[1], begin: s, end, objectEnd: end + charCount(after), inline };
+  for (let n = objectAt(s); n; n = n.parent) if (n.type === "footnote-reference" && n.p.begin === s) return asReference(n);
+  return undefined;
 }
 
 /**
- * The innermost reference whose object holds a position, its spaces after
- * it included, as org-element-context finds one.
+ * The reference around a position, its spaces after it included, as
+ * org-element-context finds it: on an object of its own in an inline
+ * definition, none, unless the caller looks up through that kind of
+ * object.
  */
-function referenceObjectAt(p: number, through: ("markup" | "link" | "timestamp")[] = []): Reference | undefined {
-  const line = lineAt(p);
-  const head = isHeadingLine(e8.lineText(line));
-  let e = head ? undefined : elementAt(p);
-  while (e && e.type !== "paragraph" && e.type !== "table" && e.type !== "verse-block" && e.type !== "item") e = e.parent;
-  const from = head || !e ? e8.lineStart(line) : e.type === "table" || e.type === "item" ? e8.lineStart(line) : (e.contentsBegin ?? e.begin);
-  const { text, pos } = textFrom(from, Math.min(e8.pointMax(), p + 4));
-  for (let i = text.lastIndexOf("[fn:"); i >= 0; i = i === 0 ? -1 : text.lastIndexOf("[fn:", i - 1)) {
-    const r = referenceStartingAt(pos(i));
-    // Just after one with no space after it counts too, as org-element-context finds the object ending there.
-    if (!r || r.begin > p || p > r.objectEnd || (p === r.objectEnd && r.objectEnd !== r.end)) continue;
-    // Not on an object of its own in an inline definition, unless the
-    // caller looks up through it, as C-c C-c's and C-c C-o's lineages do.
-    if (r.inline && p >= r.inline.begin && p < r.inline.end) {
-      const inner = innerObject(lineAt(p), p);
-      if (inner !== undefined && !through.includes(inner)) return undefined;
-    }
-    return r;
+function referenceObjectAt(p: number, through: Through[] = []): Reference | undefined {
+  let n = objectAt(p);
+  while (n && n.type !== "footnote-reference") {
+    const kind: Through | undefined = MARKUP.includes(n.type) ? "markup" : n.type === "link" ? "link" : n.type === "timestamp" ? "timestamp" : undefined;
+    if (!kind || !through.includes(kind)) return undefined;
+    n = n.parent;
   }
-  return undefined;
+  return n ? asReference(n) : undefined;
 }
 
 /**
@@ -548,9 +452,10 @@ function allowReference(p = e8.point()): boolean {
   const text = e8.lineText(line);
   if (isHeadingLine(text)) {
     if (/^\*+ END[ \t]*$/i.test(text)) return false;
-    const t = titleBounds(line);
     const h = parseHeading(line);
-    return t !== undefined && h !== undefined && h.title !== "" && p >= t[0] && (h.tagsAt === undefined || p < h.tagsAt) && !inLinkOrCode(line, p);
+    if (h === undefined || h.title === "" || p < h.titleAt || (h.tagsAt !== undefined && p >= h.tagsAt)) return false;
+    const o = objectAt(p);
+    return !o || objectAllows(o, p);
   }
   if (/^[ \t]*$/.test(text)) {
     // Blank lines at the top, or after an element, but not inside one, as a block's.
@@ -559,7 +464,37 @@ function allowReference(p = e8.point()): boolean {
   }
   const def = definitionLabelAt(p);
   if (def) return /^\s/.test(e8.bufferText(p, Math.min(e8.pointMax(), p + 1)));
-  return objectsLimit(p) !== undefined;
+  // None in an element's affiliated keywords, as #+CAPTION:.
+  const owner = withAffiliated(elementAt(p));
+  if (owner?.postAffiliated !== undefined && p < owner.postAffiliated) return false;
+  const region = objectRegion(p);
+  if (!region) return false;
+  const o = objectAt(p);
+  // Plain text in an item's tag is the item to Org's context, which refuses it.
+  if (!o) return region.type !== "item";
+  return objectAllows(o, p);
+}
+
+/**
+ * Whether a reference can go at a position whose context is an object, as
+ * org-footnote--allow-reference-p says: right after it or on the blanks
+ * after it, at its start, inside a container's contents but not a
+ * link's, and in a table cell up to its contents' end.
+ */
+function objectAllows(o: Node, p: number): boolean {
+  // On the blanks after it, or right after it.
+  let q: number = o.p.end;
+  while (q > e8.pointMin() && /[ \r\t\n]/.test(e8.bufferText(q - 1, q))) q--;
+  if (p >= q) return true;
+  if (p === o.p.begin) return true;
+  if (o.type === "link") return false;
+  if (o.type === "table-cell") {
+    let b = p;
+    while (b > e8.pointMin() && /[ \t]/.test(e8.bufferText(b - 1, b))) b--;
+    return b <= (o.p["contents-end"] ?? o.p.end);
+  }
+  const cb = o.p["contents-begin"];
+  return cb !== undefined && p >= cb && p <= o.p["contents-end"];
 }
 
 /** Renumbers and sorts footnotes as org-footnote-auto-adjust says, as org-footnote-auto-adjust-maybe. */
