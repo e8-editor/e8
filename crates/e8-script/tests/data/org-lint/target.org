@@ -1,0 +1,6 @@
+* COMMENT Heading A
+Text.
+#+begin_src emacs-lisp
+(foo) (ref:coderef)
+#+end_src
+* Heading B

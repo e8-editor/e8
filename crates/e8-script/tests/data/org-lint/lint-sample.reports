@@ -1,0 +1,77 @@
+2|low|Unknown OPTIONS item "foo"|unknown-options-item
+4|nil|Spurious CATEGORY keyword.  Set :CATEGORY: property instead|deprecated-category-setup
+5|low|Non-existent setup file "nonexistent-setup.org"|non-existent-setupfile-parameter
+6|low|Non-existent file argument in INCLUDE keyword|wrong-include-link-parameter
+7|low|Obsolete markup "html" in INCLUDE keyword.  Use "export html" instead|obsolete-include-markup
+7|low|Invalid search part "*Nowhere" in INCLUDE keyword|wrong-include-link-parameter
+8|low|Unused placeholders in macro "twice"|invalid-macro-argument-and-template
+9|low|Missing template in macro "%s"|invalid-macro-argument-and-template
+10|nil|Unknown header argument ":wrongarg"|wrong-header-argument
+11|low|Deprecated syntax for "session".  Use header-args instead|deprecated-header-syntax
+12|nil|Non-existent bibliography "nonexistent.bib"|non-existent-bibliography
+13|nil|Unknown cite export processor unknownproc|invalid-cite-export-declaration
+13|low|Independent keyword CITE_EXPORT may be confused with affiliated keywords below|combining-keywords-with-affiliated
+14|nil|Obsolete affiliated keyword: "DATA".  Use "NAME" instead|obsolete-affiliated-keywords
+16|low|Possible missing colon in keyword "keyword"|invalid-keyword-syntax
+18|low|Possibly misplaced heading line|misplaced-heading
+20|nil|Duplicate CUSTOM_ID property "same"|duplicate-custom-id
+21|nil|IDs should not include "::": "abc::def"|invalid-id-property
+23|nil|Invalid effort duration format: "twelve"|invalid-effort-property
+24|nil|Special property "TODO" found in a properties drawer|special-property-in-properties-drawer
+25|low|Potentially misspelled global export option "TITLE".  Consider "EXPORT_TITLE".|misspelled-export-option
+26|low|Potentially misspelled nilexport option "HTML_DOCTYPE" in html export backend.  Consider "EXPORT_HTML_DOCTYPE".|misspelled-export-option
+27|low|Deprecated syntax for "results".  Use :header-args: instead|deprecated-header-syntax
+30|low|Different repeaters in SCHEDULED and DEADLINE timestamps.|mismatched-planning-repeaters
+32|nil|Duplicate CUSTOM_ID property "same"|duplicate-custom-id
+34|nil|Missing definition for footnote [missing]|undefined-footnote-reference
+35|nil|Unknown custom ID "nowhere"|invalid-custom-id-link
+35|nil|Unknown fuzzy location "No such heading"|invalid-fuzzy-link
+36|low|Link to non-existent local file "no-such-file.org"|link-to-local-file
+36|low|Trailing ']' after link end|trailing-bracket-after-link
+36|low|No closing ']' matches '[' in link description: desc [x|unclosed-brackets-in-link-description
+37|nil|Unknown fuzzy location "coderef:nope"|invalid-fuzzy-link
+37|nil|Deprecated "file+sys" link type|file-application
+37|low|Link to non-existent local file "x.org"|link-to-local-file
+37|low|Link escaped with obsolete percent-encoding syntax|percent-encoding-link-escape
+37|nil|Unknown fuzzy location "a%20b"|invalid-fuzzy-link
+38|low|Undefined macro "undefined"|invalid-macro-argument-and-template
+38|low|Missing arguments in macro "twice"|invalid-macro-argument-and-template
+38|low|Spurious argument in macro "keyword": b|invalid-macro-argument-and-template
+38|low|Missing argument in macro "title"|invalid-macro-argument-and-template
+39|low|$ symbol potentially matching LaTeX fragment boundary.  Consider using \dollar entity.|LaTeX-$
+40|nil|Duplicate target <<target>>|duplicate-target
+40|nil|Duplicate target <<target>>|duplicate-target
+41|low|Misplaced planning info line|misplaced-planning-info
+42|low|Possible incomplete drawer ":LOGBOOK:"|incomplete-drawer
+44|low|Possible indented diary-sexp|indented-diary-sexp
+45|nil|Missing language in source block|missing-language-in-src-block
+48|low|Unknown source block language: 'nosuchlang'|suspicious-language-in-src-block
+51|low|Empty value in header argument ":exports"|empty-header-argument
+51|low|Unknown value "nil" for header ":exports"|wrong-header-value
+51|low|Unknown value "nonsense" for header ":results"|wrong-header-value
+51|nil|Unknown header argument ":foo"|wrong-header-argument
+54|nil|Missing backend in export block|missing-backend-in-export-block
+57|low|Deprecated syntax for export block.  Use "BEGIN_EXPORT HTML" instead|deprecated-export-blocks
+60|low|Possible incomplete block "#+BEGIN_CENTER"|invalid-block
+62|low|Invalid block closing line "#+END_SRC trailing"|invalid-block
+63|low|Empty value in header argument "bad"|empty-header-argument
+63|nil|Missing colon in header argument "bad"|wrong-header-argument
+63|nil|Invalid syntax in babel call block|invalid-babel-call-block
+64|nil|Missing colon in header argument "[:results"|wrong-header-argument
+64|nil|Babel call's end header must not be wrapped within brackets|invalid-babel-call-block
+65|nil|Duplicate NAME "same-name"|duplicate-name
+67|nil|Duplicate NAME "same-name"|duplicate-name
+69|high|"yes" not a supported value for #+ATTR_ORG keyword attribute ":center".|invalid-image-alignment
+69|high|"middle" not a supported value for #+ATTR_ORG keyword attribute ":align".|invalid-image-alignment
+70|low|Link to non-existent local file "img.png"|link-to-local-file
+71|low|Beamer frame name may cause error when exporting.  Consider customizing `org-beamer-frame-environment'.|beamer-frame
+73|nil|Bullet counter "3. " is not the same with item position 2.  Consider adding manual [@3] counter.|item-number
+74|nil|Tags contain a spurious colon|spurious-colons
+75|low|Deprecated QUOTE section|quote-section
+77|high|Inactive timestamp in DEADLINE will not appear in agenda.|planning-inactive
+78|low|Possibly incomplete citation markup|incomplete-citation
+79|nil|Extraneous elements in footnote section are not exported|extraneous-element-in-footnote-section
+81|nil|Duplicate footnote definition "1"|duplicate-footnote-definition
+82|nil|Duplicate footnote definition "1"|duplicate-footnote-definition
+83|nil|No reference for footnote definition [unused]|unreferenced-footnote-definition
+84|nil|Possibly missing "PRINT_BIBLIOGRAPHY" keyword|missing-print-bibliography

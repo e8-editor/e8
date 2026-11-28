@@ -1,0 +1,37 @@
+#+INCLUDE: "target.org::/Heading/"
+#+INCLUDE: "target.org::(coderef)"
+#+INCLUDE: "target.org::(nope)"
+#+INCLUDE: "target.org::*Heading A"
+#+INCLUDE: "target.org::*Heading C"
+#+PROPERTY: HEADER-ARGS :wrong2 2
+#+PROPERTY: Header-args+ :wrong3 3
+#+PROPERTY: Results silent
+#+MACRO: real $1
+#+SETUPFILE: setup.org
+
+* Heading
+#+BEGIN_EXAMPLE
+#+MACRO: fake $1
+#+END_EXAMPLE
+Macros {{{real(a)}}}, {{{fromsetup}}} and {{{fake(b)}}}.
+#+ATTR_ORG: :ALIGN middle :Center yes
+[[file:target.org]]
+#+BEGIN_SRC emacs-lisp :results 1.0 :exports 1e3 :file-mode 1. :cache "raw\a"
+(+ 1 2)
+#+END_SRC
+#+BEGIN_SRC emacs-lisp :results x[a [b] :exports]
+(+ 1 2)
+#+END_SRC
+#+BEGIN_SRC C
+int x;
+#+END_SRC
+#+BEGIN_SRC go
+x := 1
+#+END_SRC
+#+BEGIN_SRC ditaa
++--+
+#+END_SRC
+* Another
+* Last
+[cite:@key]
+#+PRINT_BIBLIOGRAPHY:

@@ -1,0 +1,16 @@
+1|low|Invalid search part "/Heading/" in INCLUDE keyword|wrong-include-link-parameter
+3|low|Invalid search part "(nope)" in INCLUDE keyword|wrong-include-link-parameter
+5|low|Invalid search part "*Heading C" in INCLUDE keyword|wrong-include-link-parameter
+6|nil|Unknown header argument ":wrong2"|wrong-header-argument
+7|nil|Unknown header argument ":wrong3"|wrong-header-argument
+8|low|Deprecated syntax for "Results".  Use header-args instead|deprecated-header-syntax
+16|low|Undefined macro "fake"|invalid-macro-argument-and-template
+17|high|"yes" not a supported value for #+ATTR_ORG keyword attribute ":center".|invalid-image-alignment
+17|high|"middle" not a supported value for #+ATTR_ORG keyword attribute ":align".|invalid-image-alignment
+19|low|Unknown value "raw" for header ":cache"|wrong-header-value
+19|low|Unknown value "1000.0" for header ":exports"|wrong-header-value
+19|low|Unknown value "1.0" for header ":results"|wrong-header-value
+22|low|Empty value in header argument ":exports]"|empty-header-argument
+22|low|Unknown value "[b]" for header ":results"|wrong-header-value
+22|low|Unknown value "x[a" for header ":results"|wrong-header-value
+22|nil|Unknown header argument ":exports]"|wrong-header-argument

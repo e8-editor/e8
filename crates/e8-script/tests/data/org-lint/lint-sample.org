@@ -1,0 +1,83 @@
+#+TITLE: Lint sample
+#+OPTIONS: toc:nil foo:bar H
+#+CATEGORY: one
+#+CATEGORY: two
+#+SETUPFILE: "nonexistent-setup.org"
+#+INCLUDE: "nonexistent-include.org"
+#+INCLUDE: "lint-sample.org::*Nowhere" html
+#+MACRO: twice $1 $1 $3
+#+MACRO: lonely
+#+PROPERTY: header-args :wrongarg yes
+#+PROPERTY: session foo
+#+BIBLIOGRAPHY: nonexistent.bib
+#+CITE_EXPORT: unknownproc
+#+DATA: obsolete
+#+NAME: orphan
+#+keyword without colon
+
+* Heading** Oops heading
+:PROPERTIES:
+:CUSTOM_ID: same
+:ID: abc::def
+:Effort: 1 bogus
+:EFFORT: twelve
+:TODO: special
+:TITLE: misspelled option
+:HTML_DOCTYPE: html5
+:results: silent
+:END:
+* Second
+SCHEDULED: <2026-11-01 Sun +1w> DEADLINE: <2026-11-02 Mon +2d>
+:PROPERTIES:
+:CUSTOM_ID: same
+:END:
+Text with [fn:missing] and [fn:1].
+A link [[#nowhere]] and [[*No such heading]] and [[id:no-such-id]].
+A link [[file:no-such-file.org][file]]] and [[https://example.com][desc [x]].
+A [[coderef:nope]] coderef and a [[file+sys:x.org]] link and [[a%20b]].
+Macros: {{{undefined(1)}}} {{{twice(a)}}} {{{keyword(a,b)}}} {{{title}}}.
+$x$ math and $.5 dollars, and <2026-11-0 Mon> a bad stamp.
+<<target>> and <<target>> again.
+SCHEDULED: <2026-11-03 Tue>
+:LOGBOOK:
+not closed
+  %%(diary-float t 4 2)
+#+BEGIN_SRC
+no language
+#+END_SRC
+#+BEGIN_SRC nosuchlang
+code
+#+END_SRC
+#+BEGIN_SRC emacs-lisp :foo bar :results nonsense :exports
+(+ 1 2)
+#+END_SRC
+#+BEGIN_EXPORT
+missing backend
+#+END_EXPORT
+#+BEGIN_HTML
+old style
+#+END_HTML
+#+BEGIN_CENTER
+not closed
+#+END_SRC trailing
+#+CALL: [bad]
+#+CALL: f() [:results silent]
+#+NAME: same-name
+| a |
+#+NAME: same-name
+| b |
+#+ATTR_ORG: :align middle :center yes
+[[file:img.png]]
+\begin{orgframe}
+1. one
+3. three
+* Third :a::b:
+* QUOTE old quote
+* Fourth
+DEADLINE: [2026-11-01 Sun]
+[cite:@key] and [cite:@incomplete
+* Footnotes
+Extraneous text.
+[fn:1] Defined.
+[fn:1] Defined twice.
+[fn:unused] Never referenced.
