@@ -39,6 +39,7 @@ const AUTOLOADS: [string, string, string, e8.Param[]][] = [
   ["org-html-export-as-html", "ox-html", "Export current buffer to an HTML buffer.", EXPORT_PARAMS],
   ["org-html-export-to-html", "ox-html", "Export current buffer to an HTML file.", EXPORT_PARAMS],
   ["org-html-convert-region-to-html", "ox-html", "Assume the current region has Org syntax, and convert it to HTML.", []],
+  ["org-html-htmlize-generate-css", "ox-html", "Create the CSS for all font definitions in the current Emacs session.", []],
   ["org-md-export-as-markdown", "ox-md", "Export current buffer to a Markdown buffer.", EXPORT_PARAMS],
   ["org-md-export-to-markdown", "ox-md", "Export current buffer to a Markdown file.", EXPORT_PARAMS],
   ["org-md-convert-region-to-md", "ox-md", "Assume the current region has Org syntax, and convert it to Markdown.", []],
@@ -51,6 +52,11 @@ const AUTOLOADS: [string, string, string, e8.Param[]][] = [
   ["org-icalendar-export-to-ics", "ox-icalendar", "Export current buffer to an iCalendar file.", EXPORT_PARAMS],
   ["org-icalendar-export-agenda-files", "ox-icalendar", "Export all agenda files to iCalendar files.", [{ name: "async", kind: "prefix" }]],
   ["org-icalendar-combine-agenda-files", "ox-icalendar", "Combine all agenda files into a single iCalendar file.", [{ name: "async", kind: "prefix" }]],
+  // Org Crypt's commands, which load org-crypt.ts and EasyPG's epg.ts.
+  ["org-encrypt-entry", "org-crypt", "Encrypt the content of the current headline.", []],
+  ["org-encrypt-entries", "org-crypt", "Encrypt all top-level entries in the current buffer.", []],
+  ["org-decrypt-entry", "org-crypt", "Decrypt the content of the current headline.", []],
+  ["org-decrypt-entries", "org-crypt", "Decrypt all entries in the current buffer.", []],
 ];
 
 /** The functions projects name to publish their files, loading the backend that defines each when it is first called. */
@@ -62,6 +68,8 @@ const PUBLISHING_FUNCTIONS: [string, string][] = [
   ["org-md-publish-to-md", "ox-md"],
   ["org-org-publish-to-org", "ox-org"],
   ["org-publish-attachment", "ox-publish"],
+  // Not a publishing function, but autoloaded the same way, as a config calls it.
+  ["org-crypt-use-before-save-magic", "org-crypt"],
 ];
 
 for (const [name, feature] of PUBLISHING_FUNCTIONS)

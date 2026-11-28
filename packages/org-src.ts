@@ -22,9 +22,12 @@ import { expectedIndent, openLink } from "org";
 import { commentOrUncommentRegion } from "newcomment";
 
 const defvar = (name: string, value: e8.Value, doc: string) => e8.defineVariable({ name, value, doc });
+// Org 9.7's, the shells last, as org-src--get-known-shells takes them from sh-ancestor-alist.
 defvar("org-src-lang-modes", [
-  ["C", "c"], ["C++", "c++"], ["cpp", "c++"], ["elisp", "emacs-lisp"], ["shell", "sh"], ["bash", "sh"], ["sh", "sh"],
-  ["calc", "fundamental"], ["dot", "fundamental"], ["sqlite", "sql"], ["toml", "conf-toml"],
+  ["C", "c"], ["C++", "c++"], ["asymptote", "asy"], ["beamer", "latex"], ["calc", "fundamental"], ["cpp", "c++"], ["ditaa", "artist"],
+  ["desktop", "conf-desktop"], ["dot", "fundamental"], ["elisp", "emacs-lisp"], ["ocaml", "tuareg"], ["screen", "shell-script"],
+  ["sqlite", "sql"], ["toml", "conf-toml"], ["shell", "sh"],
+  ...["ash", "sh", "bash", "jsh", "bash2", "dash", "dtksh", "ksh", "es", "rc", "itcsh", "tcsh", "jcsh", "csh", "ksh88", "oash", "pdksh", "mksh", "posix", "wksh", "wsh", "zsh", "rpm"].map((shell) => [shell, "sh"]),
 ], "The major modes of source blocks' languages, as [language, mode] lists, the mode without -mode; others are LANGUAGE-mode.");
 defvar("org-src-window-setup", "reorganize-frame", "Where C-c ' shows a block's text: reorganize-frame, current-window, other-window, split-window-below or split-window-right.");
 defvar("org-src-tab-acts-natively", true, "Whether TAB in a source block indents its line as the language's mode would.");

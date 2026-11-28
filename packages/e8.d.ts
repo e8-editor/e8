@@ -6591,6 +6591,18 @@ declare global {
        */
       "org-deadline": [date: string];
       /**
+       * Decrypt all entries in the current buffer.
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-decrypt-entries": [];
+      /**
+       * Decrypt the content of the current headline.
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-decrypt-entry": [];
+      /**
        * Delete the character before point, as delete-backward-char does, keeping a table's field as wide as it was.
        *
        * Defined in packages/org.ts.
@@ -6756,6 +6768,18 @@ declare global {
        * Defined in packages/org-element.ts.
        */
       "org-element-update-syntax": [];
+      /**
+       * Encrypt all top-level entries in the current buffer.
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-encrypt-entries": [];
+      /**
+       * Encrypt the content of the current headline.
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-encrypt-entry": [];
       /**
        * Move to the end of the line, staying on a folded heading's line rather than going past its hidden text; with org-special-ctrl-a/e, on a heading with tags first to before them. With a prefix argument, move N - 1 lines first.
        *
@@ -6975,6 +6999,12 @@ declare global {
        * Defined in packages/org-loaddefs.ts.
        */
       "org-html-export-to-html": [async?: PrefixArg | boolean, subtreep?: PrefixArg | boolean, visibleOnly?: PrefixArg | boolean, bodyOnly?: PrefixArg | boolean, extPlist?: PrefixArg | boolean];
+      /**
+       * Create the CSS for all font definitions in the current Emacs session.
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-html-htmlize-generate-css": [];
       /**
        * Combine all agenda files into a single iCalendar file.
        *
@@ -20486,6 +20516,10 @@ declare global {
        */
       "auto-revert-tail-mode-on-hook": Value;
       /**
+       * Run in the current buffer before auto-saving the buffers that changed.
+       */
+      "auto-save-hook": Value;
+      /**
        * Run after entering Bash mode, after the hooks of the modes it is built on.
        */
       "bash-ts-mode-hook": Value;
@@ -22667,6 +22701,14 @@ declare global {
     function listFonts(spec: Font, max?: number): Font[];
     /** A colour's red, green and blue from 0 to 65535, as color-values, or undefined if it is no colour. */
     function colorValues(color: string): [number, number, number] | undefined;
+    /**
+     * A colour as E8 draws it, its red, green, blue and alpha from 0 to
+     * 255: one of E8's palette names ("accent-ink", "faint"), as the
+     * frame's background has it, a name Emacs knows, or a spec, "#rrggbbaa"
+     * with alpha too; undefined if it is no colour. E8's own, as Emacs's
+     * colours have neither palette nor alpha: htmlize writes faces with it.
+     */
+    function colorRgba(color: string): [number, number, number, number] | undefined;
     /** The values of a colour spec ("#rgb", "rgb:R/G/B", "rgbi:R/G/B"), not a name, as color-values-from-color-spec. */
     function colorValuesFromColorSpec(spec: string): [number, number, number] | undefined;
     /** The names of the colours Emacs knows, as defined-colors. */

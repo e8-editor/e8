@@ -8,6 +8,9 @@
 import { ALL_OBJECTS, type Datum, type Node, adoptElements, create, insertBefore, lineage, map, putProperty, replace, typeOf } from "org-element-ast";
 import { interpretData, interpretNode, normalizeString, parseBuffer } from "org-element";
 import { EXPORT_PARAMS } from "org-loaddefs";
+import { findBufferVisiting } from "files";
+import { htmlizeBuffer } from "htmlize";
+import { charCount } from "subr";
 import {
   type Backend,
   type Info,
@@ -38,7 +41,7 @@ import {
 e8.defineVariable({
   name: "org-org-htmlized-css-url",
   value: null,
-  doc: "URL of the CSS for htmlized Org sources, as Org's; E8 does not htmlize, so publishing with :htmlized-source makes no HTML.",
+  doc: "URL pointing to the CSS defining colors for htmlized Org sources, which publishing with :htmlized-source links to in place of the style sheet htmlize writes; nil keeps htmlize's.",
 });
 e8.defineVariable({ name: "org-org-with-special-rows", value: true, doc: "Non-nil means export special table rows." });
 e8.defineVariable({ name: "org-org-with-cite-processors", value: false, doc: "Non-nil means use citation processors when exporting citations." });
@@ -396,8 +399,57 @@ e8.defun("org-list-to-generic", (list: any[], params?: ListParams) => listToGene
 e8.defun("org-list-to-org", (list: any[], params?: ListParams) => listToOrg(list, params));
 e8.defun("org-list-to-subtree", (list: any[], startLevel?: number, params?: ListParams) => listToSubtree(list, startLevel, params));
 
-/** Publish an Org file as Org, as org-org-publish-to-org; nil, as Org's returns, for the after-publishing hook. :htmlized-source makes no HTML, as E8 has no htmlize. */
+/** A project's property, from its plist of :keyword and value. */
+function plistValue(plist: e8.Value[], key: string): any {
+  for (let i = 0; i + 1 < plist.length; i += 2) if (plist[i] === key || (typeof plist[i] === "symbol" && e8.symbolName(plist[i] as symbol) === key)) return plist[i + 1];
+  return undefined;
+}
+
+/**
+ * The Org file, fontified and unfolded, as HTML in htmlize's css output,
+ * written to PUB-DIR as the file's name with the HTML extension, as
+ * org-org-publish-to-org does for :htmlized-source.
+ */
+function publishHtmlizedSource(plist: e8.Value[], filename: string, pubDir: string): void {
+  e8.require("ox-html");
+  const projectExt = plistValue(plist, ":html-extension");
+  const htmlExt = "." + (nonNil(projectExt) ? String(projectExt) : nonNil(varValue("org-html-extension")) ? String(varValue("org-html-extension")) : "html");
+  const html = e8.letBind({ "org-inhibit-startup": true, "htmlize-output-type": e8.intern("css") }, () => {
+    const existing = findBufferVisiting(filename);
+    const buffer = existing ?? e8.findFileNoselect(filename);
+    try {
+      return e8.withCurrentBuffer(buffer, () => {
+        e8.call("font-lock-ensure");
+        e8.call("org-show-all" as e8.CommandName);
+        return htmlizeBuffer();
+      });
+    } finally {
+      if (!existing && e8.getBuffer(buffer)) e8.call("kill-buffer", buffer);
+    }
+  });
+  try {
+    e8.withCurrentBuffer(html, () => {
+      const url = varValue("org-org-htmlized-css-url");
+      if (nonNil(url)) {
+        const text = e8.bufferText();
+        const m = /<style type="text\/css">[\s\S]*?\n[ \t]*<\/style>.*/.exec(text);
+        if (m) {
+          const start = charCount(text.slice(0, m.index));
+          e8.deleteRegion(start, start + charCount(m[0]));
+          e8.gotoChar(start);
+          e8.insert(`<link rel="stylesheet" type="text/css" href="${url}">`);
+        }
+      }
+      e8.writeRegion(null, null, pubDir + e8.fileNameNondirectory(filename) + htmlExt, { quiet: true });
+    });
+  } finally {
+    e8.call("kill-buffer", html);
+  }
+}
+
+/** Publish an Org file as Org, as org-org-publish-to-org, and with :htmlized-source as HTML beside it; nil, as Org's returns, for the after-publishing hook. */
 e8.defun("org-org-publish-to-org", (plist: e8.Value[], filename: string, pubDir: string) => {
   e8.funcall("org-publish-org-to", "org", filename, ".org", plist, pubDir);
+  if (nonNil(plistValue(plist, ":htmlized-source"))) publishHtmlizedSource(plist, filename, pubDir);
   return null;
 });

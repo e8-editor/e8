@@ -560,6 +560,8 @@ pub fn run(case: &Case) -> State {
         let source = format!("e8.require({})", serde_json::to_string(feature).expect("a name"));
         scripting.eval_expression(&mut ed, &source).unwrap_or_else(|e| panic!("{}: requiring {feature}: {e}", case.name));
     }
+    // HTML source blocks uncoloured, as batch Emacs without htmlize writes them and record.el binds it.
+    ed.set_variable("org-html-htmlize-output-type", e8_core::Value::Bool(false));
     // Default values before the modes start, as record.el binds them.
     for (name, value) in &case.globals {
         ed.set_default(name, case_value(case, name, value));

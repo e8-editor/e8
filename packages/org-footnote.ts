@@ -453,7 +453,9 @@ function allowReference(p = e8.point()): boolean {
   if (isHeadingLine(text)) {
     if (/^\*+ END[ \t]*$/i.test(text)) return false;
     const h = parseHeading(line);
-    return h !== undefined && h.title !== "" && p >= h.titleAt && (h.tagsAt === undefined || p < h.tagsAt) && !inLinkOrCode(p);
+    if (h === undefined || h.title === "" || p < h.titleAt || (h.tagsAt !== undefined && p >= h.tagsAt)) return false;
+    const o = objectAt(p);
+    return !o || objectAllows(o, p);
   }
   if (/^[ \t]*$/.test(text)) {
     // Blank lines at the top, or after an element, but not inside one, as a block's.
@@ -465,16 +467,34 @@ function allowReference(p = e8.point()): boolean {
   // None in an element's affiliated keywords, as #+CAPTION:.
   const owner = withAffiliated(elementAt(p));
   if (owner?.postAffiliated !== undefined && p < owner.postAffiliated) return false;
-  return objectRegion(p) !== undefined && !inLinkOrCode(p);
+  const region = objectRegion(p);
+  if (!region) return false;
+  const o = objectAt(p);
+  // Plain text in an item's tag is the item to Org's context, which refuses it.
+  if (!o) return region.type !== "item";
+  return objectAllows(o, p);
 }
 
-/** Whether a position is inside a link, or inside code or verbatim text, where no reference can be, as the parser reads them. */
-function inLinkOrCode(p: number): boolean {
-  for (let o = objectAt(p); o; o = o.parent) {
-    if (!["link", "code", "verbatim"].includes(o.type)) continue;
-    if (p > o.p.begin && p < o.p.end - (o.p["post-blank"] ?? 0)) return true;
+/**
+ * Whether a reference can go at a position whose context is an object, as
+ * org-footnote--allow-reference-p says: right after it or on the blanks
+ * after it, at its start, inside a container's contents but not a
+ * link's, and in a table cell up to its contents' end.
+ */
+function objectAllows(o: Node, p: number): boolean {
+  // On the blanks after it, or right after it.
+  let q: number = o.p.end;
+  while (q > e8.pointMin() && /[ \r\t\n]/.test(e8.bufferText(q - 1, q))) q--;
+  if (p >= q) return true;
+  if (p === o.p.begin) return true;
+  if (o.type === "link") return false;
+  if (o.type === "table-cell") {
+    let b = p;
+    while (b > e8.pointMin() && /[ \t]/.test(e8.bufferText(b - 1, b))) b--;
+    return b <= (o.p["contents-end"] ?? o.p.end);
   }
-  return false;
+  const cb = o.p["contents-begin"];
+  return cb !== undefined && p >= cb && p <= o.p["contents-end"];
 }
 
 /** Renumbers and sorts footnotes as org-footnote-auto-adjust says, as org-footnote-auto-adjust-maybe. */

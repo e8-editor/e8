@@ -588,7 +588,7 @@ export function objectRegion(pos: number): { from: number; to: number; type: str
     } else if (e.type === "item") {
       // Only in its tag, on its first line.
       if (line !== lineAt(e.begin)) return undefined;
-      const m = /^([ \t]*(?:[-+*]|[0-9]+[.)]|[A-Za-z][.)])(?:[ \t]+\[@(?:[0-9]+|[A-Za-z])\])?(?:[ \t]+\[[ X-]\])?[ \t]+)(.*?)[ \t]+::(?:[ \t]|$)/.exec(e8.lineText(line));
+      const m = /^([ \t]*(?:[-+*]|(?:[0-9]+|[A-Za-z])[.)])(?:[ \t]+|$)(?:\[@(?:start:)?(?:[0-9]+|[A-Za-z])\][ \t]*)?(?:\[[ X-]\](?:[ \t]+|$))?)(.*)[ \t]+::(?:[ \t]+|$)/.exec(e8.lineText(line));
       if (!m) return undefined;
       from = e8.lineStart(line) + charCount(m[1]);
       to = from + charCount(m[2]);
@@ -599,6 +599,8 @@ export function objectRegion(pos: number): { from: number; to: number; type: str
       from = h.titleAt;
       to = h.titleAt + charCount(h.title);
       if (h.title.startsWith("COMMENT")) from += 7;
+      // Before the title, on the stars, the keyword or the priority, the context is the heading.
+      if (pos < from) return undefined;
       if (from >= to) return undefined;
     } else if (e.type === "paragraph" || e.type === "table-row" || e.type === "verse-block") {
       if (e.type === "paragraph") [from, to] = [e.contentsBegin ?? e.begin, lineStartOrEnd(lineAt(endBeforeBlank(e)) + 1)];

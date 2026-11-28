@@ -238,7 +238,9 @@ fn the_parse_matches_emacs() {
 #[test]
 fn the_object_at_a_position_is_org_element_contexts() {
     let (mut ed, s) = setup();
-    let cases: &[(&str, usize, Option<(&str, i64, i64, Option<&str>)>)] = &[
+    // The text, the position, and the object: its type, begin, end and parent, if any.
+    type Want = Option<(&'static str, i64, i64, Option<&'static str>)>;
+    let cases: &[(&str, usize, Want)] = &[
         ("Text with [[https://a.b][a link]] and [fn:1] here.\n", 27, Some(("link", 10, 34, None))),
         ("Text with [[https://a.b][a link]] and [fn:1] here.\n", 38, Some(("footnote-reference", 38, 45, None))),
         ("Text with [[https://a.b][a link]] and [fn:1] here.\n", 46, None),
