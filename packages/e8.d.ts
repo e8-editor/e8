@@ -21462,6 +21462,10 @@ declare global {
        */
       "org-cycle-tab-first-hook": Value;
       /**
+       * Functions Org's fontification calls first, from the start of the text it styles, with where that ends, as org-inlinetask does. A heading keeps the faces they give it, and its keyword's, tags' and links' faces go over them.
+       */
+      "org-font-lock-hook": Value;
+      /**
        * Run after Org-Indent mode is turned on or off.
        */
       "org-indent-mode-hook": Value;

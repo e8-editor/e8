@@ -111,7 +111,9 @@ import {
   dropMarker,
   edDelete,
   edInsert,
+  inlinetaskStars,
   invisibleHere,
+  limitedStars,
   lineAt,
   lineStartOrEnd,
   marker,
@@ -1387,6 +1389,78 @@ export function headingsAsRead(): Heading[] {
   });
 }
 
+/** The last list limitedHeadings made, and for which buffer, change and accessible portion. */
+let limitedCache: { buffer: number; tick: number; keywords: string; min: number; max: number; stars: number; headings: Heading[] } | undefined;
+
+/**
+ * The headings as the commands that leave inline tasks out see them, as
+ * org-with-limited-levels has Org's: with org-inlinetask loaded, those of
+ * fewer stars than org-inlinetask-min-level; `all` itself without it.
+ * `all` is the current buffer's headings, as headings() or headingsAsRead()
+ * give them; the list is made once for each change to the buffer and its
+ * accessible portion, as headingsAsRead() gives a new view of the same
+ * headings each time.
+ */
+export function limitedHeadings(all: Heading[] = headings()): Heading[] {
+  const stars = limitedStars();
+  if (stars === Infinity) return all;
+  const buffer = e8.currentBuffer().id;
+  const tick = e8.bufferCharsModifiedTick();
+  const keywords = allKeywords().join(" ");
+  const [min, max] = [e8.pointMin(), e8.pointMax()];
+  const c = limitedCache;
+  if (c?.buffer === buffer && c.tick === tick && c.keywords === keywords && c.min === min && c.max === max && c.stars === stars) return c.headings;
+  const found: Heading[] = [];
+  for (let k = 0; k < all.length; k++) if (all[k].level <= stars) found.push(all[k]);
+  limitedCache = { buffer, tick, keywords, min, max, stars, headings: found };
+  return found;
+}
+
+/** The Emacs regexp of a heading line the commands that leave inline tasks out stop at, as org-get-limited-outline-regexp with bol. */
+export function limitedOutlineRegexp(): string {
+  const stars = limitedStars();
+  return stars === Infinity ? "^\\*+ " : `^\\*\\{1,${Math.max(stars, 0)}\\} `;
+}
+
+/** Whether point is in an inline task, with org-inlinetask loaded, as (and (featurep 'org-inlinetask) (org-inlinetask-in-task-p)). */
+export function inInlinetask(): boolean {
+  return inlinetaskStars() !== undefined && truthy(e8.funcall("org-inlinetask-in-task-p") ?? null);
+}
+
+/** Whether a heading is an inline task's END line, with org-inlinetask loaded, as org-inlinetask-end-p. */
+export function isInlinetaskEnd(h: Heading): boolean {
+  return isInlinetask(h) && /^\*+[ \t]+END[ \t]*$/i.test(e8.lineText(h.line));
+}
+
+/** Whether a heading is an inline task's line, with org-inlinetask loaded. */
+export function isInlinetask(h: Heading): boolean {
+  const stars = inlinetaskStars();
+  return stars !== undefined && h.level >= stars;
+}
+
+/**
+ * With org-inlinetask, the heading org-back-to-heading finds from point,
+ * given heading i of `all`, the nearest above point: the inline task point
+ * is in, from its heading to its END line, else the nearest heading above
+ * that is not an inline task's, as Org's parse has inline tasks inside the
+ * entry they are in. Without it, i.
+ */
+export function inlinetaskOrHeading(all: Heading[], i: number | undefined): number | undefined {
+  if (i === undefined || !isInlinetask(all[i])) return i;
+  if (truthy(e8.funcall("org-inlinetask-in-task-p") ?? null)) {
+    const line = e8.saveExcursion(() => {
+      e8.funcall("org-inlinetask-goto-beginning");
+      return lineAt();
+    });
+    const k = headingIndex(all, line);
+    if (k !== undefined && all[k].line === line) return k;
+  }
+  const stars = limitedStars();
+  let k = i;
+  while (k >= 0 && all[k].level > stars) k--;
+  return k < 0 ? undefined : k;
+}
+
 /** The heading whose entry a line is in: the nearest heading at or above it. */
 export function headingIndex(all: Heading[], line: number): number | undefined {
   // By halving, as the headings are in order.
@@ -1407,7 +1481,7 @@ export function headingIndex(all: Heading[], line: number): number | undefined {
  */
 function backToHeading(move = false): [Heading[], number] {
   const all = headings();
-  const i = headingIndex(all, lineAt());
+  const i = inlinetaskOrHeading(all, headingIndex(all, lineAt()));
   if (i === undefined) {
     const bol = e8.lineStart(lineAt());
     if (move) e8.gotoChar(bol);
@@ -1463,11 +1537,15 @@ function visibleHeadingIndex(all: Heading[], line: number): number | undefined {
   return i;
 }
 
-/** The heading on point's line, if it is a heading line. */
-function headingHere(): [Heading[], number] | undefined {
+/**
+ * The heading on point's line, if it is a heading line; with `limited`,
+ * not an inline task's, as org-at-heading-p inside org-with-limited-levels.
+ */
+function headingHere(limited = false): [Heading[], number] | undefined {
   if (!isHeadingLine(e8.lineText(lineAt()))) return undefined;
   const all = headings();
   const i = headingIndex(all, lineAt());
+  if (i !== undefined && limited && all[i].level > limitedStars()) return undefined;
   return i === undefined ? undefined : [all, i];
 }
 
@@ -2083,9 +2161,10 @@ function hideSubtreeHere(): void {
  * below it, and the first child however deep, as org-fold-show-children.
  */
 function showChildrenHere(level: number): void {
-  const found = headingAbove();
-  if (!found) return;
-  const { all, i } = found;
+  // Inline tasks are no children, with org-inlinetask, as Org's skips them.
+  const all = limitedHeadings();
+  const i = headingIndex(all, lineAt());
+  if (i === undefined || all[i].start < e8.pointMin()) return;
   const parent = all[i];
   const maxLevel = validLevel(parent.level, level);
   const end = subtreeEndHere(all, i);
@@ -2154,7 +2233,8 @@ e8.defineCommand({
     } else {
       // The subtree folded, then its headings shown, as org-fold-hide-subtree and org-fold-show-branches.
       e8.call("outline-hide-subtree");
-      e8.call("outline-show-branches");
+      // org-fold-show-branches, as org-fold-show-children 1000, which leaves inline tasks out.
+      e8.saveExcursion(() => showChildrenHere(1000));
     }
   },
 });
@@ -2170,7 +2250,9 @@ const HAS_COOKIE = /\[(\d*\/\d*|\d*%)\]/;
 export function updateCheckboxCount(): void {
   const saved = marker(e8.point());
   try {
-    const all = headings();
+    const raw = headings();
+    // Inline tasks are no headings to it, with org-inlinetask, as Org's with limited levels.
+    const all = limitedHeadings(raw);
     const p = e8.point();
     // From the heading before point, as outline-previous-heading finds it:
     // searching back, so a heading's own stars must end before point.
@@ -2178,26 +2260,46 @@ export function updateCheckboxCount(): void {
     const [min, max] = [e8.pointMin(), e8.pointMax()];
     const previousHeading = (pos: number) => Math.max(min, all.filter((h) => h.start + h.level + 1 <= pos).at(-1)?.start ?? 0);
     const nextHeading = (pos: number) => Math.min(max, all.find((h) => h.start > pos)?.start ?? max);
-    const start = previousHeading(p);
-    const end = nextHeading(p);
+    // In an inline task, from its heading to the next heading line, its END line, as Org's within-inlinetask.
+    const inTask = inInlinetask();
+    const start = inTask ? raw[inlinetaskOrHeading(raw, headingIndex(raw, lineAt())) as number].start : previousHeading(p);
+    const end = inTask ? Math.min(max, raw.find((h) => h.start > p)?.start ?? max) : nextHeading(p);
     const cookies: { start: number; end: number; percent: boolean; count: [number, number] }[] = [];
+    const task = inlinetaskStars() === undefined ? undefined : new RegExp(`^\\*{${inlinetaskStars()},}[ \\t]+`);
+    // The boxes of the lists from `from` to `to`: Org's parser reads a list
+    // up to an inline task's line, and one inside a task as a list of its
+    // own, so the text is counted in pieces between tasks' lines.
     const countIn = (from: number, to: number, item: number | undefined): [number, number] => {
       let on = 0;
       let total = 0;
+      let pieceEnd = to;
       for (let l = lineAt(from); l < e8.lineCount() && e8.lineStart(l) < to; l++) {
         if (e8.lineStart(l) < from) continue;
+        if (item === undefined && task !== undefined && e8.lineStart(l) >= pieceEnd) pieceEnd = to;
+        if (item === undefined && task?.test(e8.lineText(l))) continue;
         if (!/^[ \t]*(?:[-+*]|(?:\d+|[A-Za-z])[.)])[ \t]+(?:\[@(?:start:)?(?:\d+|[A-Za-z])\][ \t]*)?\[[- X]\]/.test(e8.lineText(l))) continue;
         if (!itemLine(l)) continue;
+        // Where this piece ends: at the next task's line.
+        if (item === undefined && task !== undefined) {
+          let k = l + 1;
+          while (k < e8.lineCount() && e8.lineStart(k) < to && !task.test(e8.lineText(k))) k++;
+          pieceEnd = Math.min(to, lineStartOrEnd(k));
+        }
         const s = listStruct(l);
-        const items = item !== undefined ? children(item, parentsAlist(s)) : allItems(s[0].pos, prevsAlist(s));
+        const inPiece = (pos: number): boolean => item !== undefined || (pos >= e8.lineStart(l) && pos < pieceEnd) || pos === e8.lineStart(l);
+        const items = (item !== undefined ? children(item, parentsAlist(s)) : allItems(s[0].pos, prevsAlist(s))).filter(inPiece);
         for (const e of items) {
           const box = getItem(s, e).checkbox;
           if (box === undefined) continue;
           total++;
           if (box === "[X]") on++;
         }
-        l = lineAt(Math.min(bottomPoint(s), to)) - 1;
-        if (bottomPoint(s) >= to) break;
+        // On past the list, never back, as the list may end before this line within a task.
+        // A list in an inline task ends at the newline before its END line, so on from the line after.
+        const bottom = Math.min(bottomPoint(s), item === undefined ? pieceEnd : to);
+        const after = e8.lineStart(lineAt(bottom)) === bottom ? lineAt(bottom) : lineAt(bottom) + 1;
+        l = Math.max(l, after - 1);
+        if (bottom >= to) break;
       }
       return [on, total];
     };
@@ -2208,7 +2310,13 @@ export function updateCheckboxCount(): void {
         if (cs < start || cs >= end || cs + charCount(m[0]) > max) continue;
         const container = inItem(l);
         let count: [number, number];
-        if (container !== undefined && !isHeadingLine(text)) {
+        if (task?.test(text) && !/^\*+[ \t]+END[ \t]*$/i.test(text)) {
+          // On an inline task's line, its boxes, between it and its END line.
+          let k = l + 1;
+          while (k < e8.lineCount() && !isHeadingLine(e8.lineText(k))) k++;
+          const ends = k < e8.lineCount() && /^\*+[ \t]+END[ \t]*$/i.test(e8.lineText(k));
+          count = ends ? countIn(lineStartOrEnd(l + 1), e8.lineStart(k), undefined) : [0, 0];
+        } else if (container !== undefined && !isHeadingLine(text)) {
           const s = listStruct(lineAt(container));
           count = countIn(container, getItem(s, container).end, container);
         } else {
@@ -2485,9 +2593,16 @@ export function levelFace(level: number): string {
 }
 
 function fontifyHeading(h: Heading, text: string): void {
-  e8.putTextProperty(h.start, h.end, "face", levelFace(h.level));
+  // The leading stars, the last with the space after it, and the rest, each
+  // given its face only if org-font-lock-hook left it none, as Org's
+  // keyword for headings does without overriding.
+  const lead = h.start + h.level - 1;
+  const bare = (a: number, b: number): boolean => b > a && e8.textPropertyNotAll(a, b, "face", null) === undefined;
+  const level = levelFace(h.level);
   // All but the last star, as org-get-level-face gives them org-hide.
-  if (h.level > 1 && e8.variable("org-hide-leading-stars") === true) e8.putTextProperty(h.start, h.start + h.level - 1, "face", "org-hide");
+  if (bare(h.start, lead)) e8.putTextProperty(h.start, lead, "face", h.level > 1 && e8.variable("org-hide-leading-stars") === true ? "org-hide" : level);
+  if (bare(lead, Math.min(lead + 2, h.end))) e8.putTextProperty(lead, Math.min(lead + 2, h.end), "face", level);
+  if (bare(lead + 2, h.end)) e8.putTextProperty(lead + 2, h.end, "face", level);
   if (h.todo !== undefined && h.todoAt !== undefined) {
     const done = isDone(h.todo);
     if (done && e8.variable("org-fontify-done-headline") === true) face(h.todoAt, h.end, "org-headline-done");
@@ -2652,6 +2767,12 @@ function fontify(start: number, end: number): void {
   // As org-unfontify-region, the bindings fontifying put, as on citations' keys.
   e8.removeTextProperty(from, end, "keymap");
   e8.removeTextProperty(from, end, "mouse-face");
+  // First, what libraries add, as Org's font-lock keywords start with org-font-lock-hook.
+  if (truthy(e8.variable("org-font-lock-hook") ?? null))
+    e8.saveExcursion(() => {
+      e8.gotoChar(from);
+      e8.runHooks("org-font-lock-hook", Math.max(end, from + 1));
+    });
   const keywords = allKeywords();
   let block = enclosingBlock(first);
   let firstLine = first;
@@ -2766,6 +2887,11 @@ function fontify(start: number, end: number): void {
   }
   fontifyLinksAcrossLines(from, Math.min(Math.max(end, from + 1), e8.bufferSize()));
 }
+
+e8.defineHook(
+  "org-font-lock-hook",
+  "Functions Org's fontification calls first, from the start of the text it styles, with where that ends, as org-inlinetask does. A heading keeps the faces they give it, and its keyword's, tags' and links' faces go over them.",
+);
 
 /**
  * Styles the bracket links between two positions that hold a newline,
@@ -3100,7 +3226,7 @@ const GREATER_ELEMENTS = ["center-block", "drawer", "dynamic-block", "footnote-d
  */
 export function adaptColumn(line: number): number {
   if (!truthy(e8.variable("org-adapt-indentation"))) return 0;
-  const all = headings();
+  const all = limitedHeadings(); // As org-current-level: an inline task's is the heading's it is in.
   const i = headingIndex(all, line);
   return i === undefined ? 0 : all[i].level + 1;
 }
@@ -3159,12 +3285,12 @@ function expectedIndentWide(el: Elem | undefined, contentsp: boolean, line: numb
     if (type === "section") return expectedIndentWide(el?.parent, true, line);
     if (type === "footnote-definition" || type === "diary-sexp") return 0;
     // One past the stars with org-adapt-indentation, else the margin.
-    if (type === undefined || type === "headline") return adaptColumn(line);
+    if (type === undefined || type === "headline" || type === "inlinetask") return adaptColumn(line);
     if (type === "item" || type === "plain-list") return listBodyColumn((el as Elem).begin);
     // From its first affiliated keyword, as Org's element begins there.
     return indentOf(affiliatedBegin((el as Elem).begin));
   }
-  if (!el || type === "headline" || type === "org-data") return isBlank(e8.lineText(line)) ? expectedIndentWide(el, true, line) : 0;
+  if (!el || type === "headline" || type === "inlinetask" || type === "org-data") return isBlank(e8.lineText(line)) ? expectedIndentWide(el, true, line) : 0;
   if (type === "footnote-definition" || type === "diary-sexp") return 0;
   const bol = e8.lineStart(line);
   const start = el.begin;
@@ -3177,8 +3303,9 @@ function expectedIndentWide(el: Elem | undefined, contentsp: boolean, line: numb
       for (let parent = previous; parent && parent.end <= from; parent = parent.parent) previous = parent;
       if (!previous || previous.type === "org-data") return 0;
       if (previous.end > from) return expectedIndentWide(previous, true, line);
-      if (previous.type === "footnote-definition") {
-        from = affiliatedBegin(previous.begin);
+      // Inline tasks too, as Org ignores them there.
+      if (previous.type === "footnote-definition" || previous.type === "inlinetask") {
+        from = previous.type === "inlinetask" ? previous.begin : affiliatedBegin(previous.begin);
         continue;
       }
       // With headline-data, what follows the heading's data starts at the margin.
@@ -3535,12 +3662,13 @@ function orgCycle(arg: e8.PrefixArg): void {
   {
     if (e8.runHookWithArgsUntilSuccess("org-cycle-tab-first-hook")) return;
     if (cycleLevel() || cycleItemIndentation()) return;
-    // Headings deeper than org-cycle-max-level are text to TAB, 2N-1 stars with odd levels only.
+    // Headings deeper than org-cycle-max-level are text to TAB, 2N-1 stars
+    // with odd levels only; without it, inline tasks are, with org-inlinetask.
     const maxLevel = e8.variable("org-cycle-max-level") ?? null;
     if (truthy(maxLevel) && !(typeof maxLevel === "number" && Number.isInteger(maxLevel) && maxLevel >= 1)) {
       e8.userError("\u2018org-cycle-max-level\u2019 must be a positive integer");
     }
-    const nstars = typeof maxLevel === "number" ? (e8.variable("org-odd-levels-only") === true ? 2 * maxLevel - 1 : maxLevel) : Infinity;
+    const nstars = typeof maxLevel === "number" ? (e8.variable("org-odd-levels-only") === true ? 2 * maxLevel - 1 : maxLevel) : limitedStars();
     if (Array.isArray(arg) && arg[0] === 4) {
       globalCycle();
       return;
@@ -3580,6 +3708,15 @@ function orgCycle(arg: e8.PrefixArg): void {
       });
       return;
     }
+    // On an inline task, its text folded or shown, as org-inlinetask-toggle-visibility.
+    if (
+      inlinetaskStars() !== undefined &&
+      truthy(e8.funcall("org-inlinetask-at-task-p") ?? null) &&
+      (e8.point() === e8.lineStart(lineAt()) || e8.variable("org-cycle-emulate-tab") !== "exc-hl-bol")
+    ) {
+      e8.funcall("org-inlinetask-toggle-visibility");
+      return;
+    }
     const line = lineAt();
     const text = e8.lineText(line);
     if ((DRAWER.test(text) && !/^[ \t]*:END:/i.test(text)) || BLOCK_BEGIN.test(text) || DBLOCK_BEGIN.test(text)) {
@@ -3613,8 +3750,10 @@ function orgCycle(arg: e8.PrefixArg): void {
     const here = headingHere();
     if (here && here[0][here[1]].level <= nstars && cycles) {
       // On a hidden heading, the one cycled is the nearest that shows above,
-      // as org-back-to-heading finds it.
-      const [all, at] = here;
+      // as org-back-to-heading finds it; among the headings that are not
+      // inline tasks, with org-inlinetask, as Org cycles with limited levels.
+      const all = limitedHeadings();
+      const at = headingIndex(all, lineAt()) as number;
       let i = at;
       while (i > 0 && e8.invisibleAt(all[i].start)) i--;
       cycleHeading(all, i, at);
@@ -3730,7 +3869,8 @@ function cycleItem(line: number): void {
   const eol = endOfHidden(line);
   const again = e8.lastCommand() === e8.thisCommand();
   const status = e8.variable("org-cycle-subtree-status");
-  const all = headings();
+  // The heading after the item, as outline-next-heading with limited levels.
+  const all = limitedHeadings();
   const inSection = headingIndex(all, line) !== undefined;
   const showFollowing = (): void => {
     const next = all.find((h) => h.start > eos);
@@ -3777,6 +3917,8 @@ export function cycleLevel(): boolean {
   const line = lineAt();
   const h = parseHeading(line);
   if (!h || !/^[ \t]*$/.test(e8.bufferText(e8.point(), h.end))) return false;
+  // Not an inline task's, with org-inlinetask.
+  if (inInlinetask()) return false;
   const rest = e8.lineText(line).slice(h.level);
   const keywords = allKeywords().map((k) => escapeRegExp(k)).join("|");
   const m = new RegExp(`^(?: +(?:${keywords}))?(?: +(.*?))?[ \t]*$`).exec(rest);
@@ -4179,7 +4321,7 @@ function visible(h: Heading): boolean {
  * Without enough headings, point goes to the end, or to the start going back.
  */
 function nextVisibleHeading(arg: number): void {
-  const regexp = "^\\*+ ";
+  const regexp = limitedOutlineRegexp();
   const searchFails = (found: number | undefined, to: number): boolean => {
     if (found === undefined) e8.gotoChar(to);
     return found === undefined;
@@ -4233,7 +4375,9 @@ function sibling(all: Heading[], i: number, by: number): number | undefined {
  */
 function forwardHeadingSameLevel(arg: number): void {
   const backward = arg < 0;
-  const all = headings();
+  // Inline tasks are deeper than any heading it counts, so it passes them,
+  // its level that of the heading the task is in, as org-current-level.
+  const all = limitedHeadings();
   const current = visibleHeadingIndex(all, lineAt());
   if (current === undefined) {
     if (backward) e8.gotoChar(0);
@@ -4242,9 +4386,22 @@ function forwardHeadingSameLevel(arg: number): void {
   }
   const { level } = all[current];
   let result = backward ? all[current].start : all[current].end;
+  let first = current + (backward ? -1 : 1);
+  // From inside an inline task, from the task's line, where org-back-to-heading
+  // goes: going back, the heading the task is in is the first found.
+  if (inInlinetask()) {
+    const task = e8.saveExcursion(() => {
+      e8.funcall("org-inlinetask-goto-beginning");
+      return lineAt();
+    });
+    if (task > all[current].line) {
+      result = backward ? e8.lineStart(task) : e8.lineEnd(task);
+      if (backward) first = current;
+    }
+  }
   let count = Math.abs(arg);
   const step = backward ? -1 : 1;
-  for (let k = current + step; k >= 0 && k < all.length; k += step) {
+  for (let k = first; k >= 0 && k < all.length; k += step) {
     const h = all[k];
     if (count === 0) break;
     if (h.level < level) break;
@@ -4307,15 +4464,17 @@ const markSubtree = e8.defineCommand({
   params: [{ name: "up", kind: "prefix" }],
   run: (up: e8.PrefixArg) => {
     const line = lineAt();
-    if (parseHeading(line)) e8.gotoChar(e8.lineStart(line));
-    else if (headingIndex(headings(), line) === undefined) e8.userError("Not in a subtree");
+    // With limited levels, as Org: an inline task's line is no heading to it.
+    const here = parseHeading(line);
+    if (here && here.level <= limitedStars()) e8.gotoChar(e8.lineStart(line));
+    else if (headingIndex(limitedHeadings(), line) === undefined) e8.userError("Not in a subtree");
     else e8.call("org-previous-visible-heading");
     if (up !== null && up !== undefined) {
       // As Org's (> up 0), which a raw C-u, a list, fails.
       if (typeof up !== "number") e8.signal("wrong-type-argument", `Wrong type argument: number-or-marker-p, (${Array.isArray(up) ? up[0] : String(up)})`, [e8.intern("number-or-marker-p"), up]);
       // Up that many levels, as org-up-heading-safe climbs, while there is a heading above.
       for (let n = up as number; n > 0; n--) {
-        const all = headings();
+        const all = limitedHeadings();
         const i = headingIndex(all, lineAt());
         if (i === undefined) break;
         let j = i - 1;
@@ -4349,7 +4508,7 @@ export function blankBeforeHeading(parent: boolean): boolean {
   // As org-blank-before-new-entry's heading entry says, auto by default.
   const setting = blankBeforeNewEntry("heading");
   if (setting !== "auto") return setting !== null && setting !== false;
-  const all = headings();
+  const all = limitedHeadings();
   let i = headingIndex(all, lineAt());
   if (i === undefined) {
     // Before the first heading, the next one counts.
@@ -4421,12 +4580,12 @@ function insertHeading(arg: e8.PrefixArg, invisibleOk = false): void {
 function insertHeadingOnly(arg: e8.PrefixArg, invisibleOk = false): void {
   const parentEnd = Array.isArray(arg) && arg[0] === 16;
   const blank = blankBeforeHeading(parentEnd);
-  const all = headings();
+  const all = limitedHeadings();
   const current = headingIndex(all, lineAt());
   // As org-current-level, from the whole buffer, so a heading above a narrowing counts.
   const level = e8.saveRestriction(() => {
     e8.widen();
-    const wide = headings();
+    const wide = limitedHeadings();
     const i = headingIndex(wide, lineAt());
     return i === undefined ? undefined : wide[i].level;
   });
@@ -4448,7 +4607,7 @@ function insertHeadingOnly(arg: e8.PrefixArg, invisibleOk = false): void {
       // heading's end, or the narrowing's.
       const end = e8.saveRestriction(() => {
         e8.widen();
-        const wide = headings();
+        const wide = limitedHeadings();
         let i = headingIndex(wide, lineAt()) as number;
         if (parentEnd) i = ancestors(wide, i)[0] ?? i;
         return subtreeRegion(wide, i)[1];
@@ -4473,7 +4632,7 @@ function insertHeadingOnly(arg: e8.PrefixArg, invisibleOk = false): void {
     }
     // At the end of a file with no final newline, the heading gets a line of its own.
     if (!atBol()) e8.insert("\n");
-    if (blank && headingIndex(headings(), lineAt(e8.point() - 1)) === undefined) {
+    if (blank && headingIndex(limitedHeadings(), lineAt(e8.point() - 1)) === undefined) {
       e8.insert("\n");
       e8.gotoChar(e8.point() - 1);
     }
@@ -4693,7 +4852,7 @@ function changeLevel(h: Heading, by: number, oddLevels = true): void {
  * line past the margin or make it a heading; blank lines, headings and
  * blocks whose indentation is kept are left as they are.
  */
-function fixupIndentation(headingLine: number, diff: number): void {
+export function fixupIndentation(headingLine: number, diff: number): void {
   // In the whole buffer, as org-with-wide-buffer, so a narrowing's end is not the entry's.
   e8.saveRestriction(() => {
     e8.widen();
@@ -4704,7 +4863,24 @@ function fixupIndentation(headingLine: number, diff: number): void {
 function fixupIndentationWide(headingLine: number, diff: number): void {
   const all = headings();
   const i = headingIndex(all, headingLine)!;
-  const endLine = i + 1 < all.length ? all[i + 1].line : e8.lineCount();
+  // To the next heading that is not an inline task, or for an inline task
+  // to its end, as Org's with limited levels; within a command that works
+  // with limited levels, an inline task's lines are text to shift.
+  let endLine: number;
+  if (isInlinetask(all[i])) {
+    const end = e8.saveExcursion(() => {
+      e8.gotoChar(all[i].start);
+      return Number(e8.funcall("org-inlinetask-goto-end"));
+    });
+    endLine = end >= e8.bufferSize() && e8.lineStart(lineAt(end)) !== end ? e8.lineCount() : lineAt(end);
+  } else {
+    const next = limitedHeadings(all).find((h) => h.start > all[i].start);
+    endLine = next ? next.line : e8.lineCount();
+  }
+  const skipped = (text: string): boolean => {
+    const m = /^(\*+) /.exec(text);
+    return m !== null && (!withLimitedLevels || m[1].length <= limitedStars());
+  };
   let l = headingLine + 1;
   if (l < endLine && PLANNING.test(e8.lineText(l))) indentLine(l++);
   if (l < endLine && /^[ \t]*:PROPERTIES:[ \t]*$/i.test(e8.lineText(l))) {
@@ -4739,7 +4915,7 @@ function fixupIndentationWide(headingLine: number, diff: number): void {
         continue;
       }
     }
-    if (/^[ \t]*$/.test(text) || isHeadingLine(text)) continue;
+    if (/^[ \t]*$/.test(text) || skipped(text)) continue;
     lines.push(k);
     if (/^[ \t]*#\+BEGIN_(EXAMPLE|SRC)/i.test(text)) {
       const block = elementAt(e8.lineStart(k));
@@ -4756,7 +4932,7 @@ function fixupIndentationWide(headingLine: number, diff: number): void {
       const text = e8.lineText(k);
       const ind = textIndentation(text);
       const rest = text.replace(/^[ \t]*/, "");
-      if (ind < -diff || (ind === -diff && (/^\*+ /.test(rest) || FOOTNOTE_DEFINITION.test(rest)))) return;
+      if (ind < -diff || (ind === -diff && (skipped(rest) || FOOTNOTE_DEFINITION.test(rest)))) return;
     }
   }
   for (const k of lines) indentLineTo(k, textIndentation(e8.lineText(k)) + diff);
@@ -4780,7 +4956,9 @@ function fixPositionAfterPromote(): void {
  * line after fn ran, as org-map-tree and org-map-region go with
  * outline-next-heading: lines a hook adds on the way are passed over.
  */
-function mapHeadingsFrom(first: number, more: (h: Heading) => boolean, fn: (h: Heading) => void, firstAfterStars = false): void {
+function mapHeadingsFrom(first: number, more: (h: Heading) => boolean, fn: (h: Heading) => void, firstAfterStars = false, limited = false): void {
+  // With limited levels, inline tasks' lines are passed over, as outline-next-heading inside org-with-limited-levels.
+  const stars = limited ? limitedStars() : Infinity;
   // After the first one's stars when org-map-region's search found it there, so a line a hook puts before it is passed over.
   const firstHeading = parseHeading(lineAt(first));
   const at = marker(firstAfterStars && firstHeading !== undefined ? firstHeading.start + firstHeading.level + 1 : first);
@@ -4791,7 +4969,7 @@ function mapHeadingsFrom(first: number, more: (h: Heading) => boolean, fn: (h: H
       fn(h);
       let next: Heading | undefined;
       for (let l = lineAt(at.pos) + 1; l < e8.lineCount() && e8.lineStart(l) < e8.pointMax(); l++) {
-        if (isHeadingLine(e8.lineText(l))) {
+        if (isHeadingLine(e8.lineText(l)) && /^\*+/.exec(e8.lineText(l))![0].length <= stars) {
           next = parseHeading(l);
           break;
         }
@@ -4814,11 +4992,30 @@ export function shiftHeadings(beg: number, end: number, shift: number): void {
   const endMark = marker(end);
   try {
     for (let left = shift; left !== 0; left += left > 0 ? -1 : 1) {
-      const first = headings().find((x) => x.start >= beg && x.start < endMark.pos);
-      if (first !== undefined) mapHeadingsFrom(first.start, (h) => h.start < endMark.pos, (h) => changeLevel(h, left > 0 ? 1 : -1, false), true);
+      // Not inline tasks, with org-inlinetask, as Org shifts them with limited levels.
+      const first = limitedHeadings().find((x) => x.start >= beg && x.start < endMark.pos);
+      if (first !== undefined) limitedLevels(() => mapHeadingsFrom(first.start, (h) => h.start < endMark.pos, (h) => changeLevel(h, left > 0 ? 1 : -1, false), true, true));
     }
   } finally {
     dropMarker(endMark);
+  }
+}
+
+/**
+ * Whether a command working with limited levels is running, as Org's
+ * org-with-limited-levels binds org-outline-regexp: subtrees' promotion
+ * and pasting, where an inline task's lines are text to the indentation's
+ * fix-up.
+ */
+let withLimitedLevels = false;
+
+function limitedLevels<T>(body: () => T): T {
+  const outer = withLimitedLevels;
+  withLimitedLevels = true;
+  try {
+    return body();
+  } finally {
+    withLimitedLevels = outer;
   }
 }
 
@@ -4829,7 +5026,7 @@ function changeSubtreeLevel(by: number): void {
   if (by < 0 && inside.some((h) => h.level === 1)) e8.userError("Cannot promote to level 0.  UNDO to recover if necessary");
   // Top down, as org-map-tree goes: the headings below the first deeper than it was.
   const top = all[i].level;
-  mapHeadingsFrom(all[i].start, (h) => h.level > top, (h) => changeLevel(h, by));
+  limitedLevels(() => mapHeadingsFrom(all[i].start, (h) => h.level > top, (h) => changeLevel(h, by), false, true));
   fixPositionAfterPromote();
 }
 
@@ -4867,11 +5064,12 @@ function regionStartsAtItem(): boolean {
   return itemLine(lineAt(Math.min(mark, e8.point())));
 }
 
-/** Whether the active region begins on a heading's line, as org-metaleft and org-metaright check. */
+/** Whether the active region begins on a heading's line, not an inline task's, as org-metaleft and org-metaright check with limited levels. */
 function regionStartsAtHeading(): boolean {
   if (!orgRegionActive()) return false;
   const mark = e8.mark() ?? e8.point();
-  return parseHeading(lineAt(Math.min(mark, e8.point()))) !== undefined;
+  const h = parseHeading(lineAt(Math.min(mark, e8.point())));
+  return h !== undefined && h.level <= limitedStars();
 }
 
 e8.defineCommand({
@@ -5139,7 +5337,19 @@ keepMarkersThroughMoves(() => [noteSetup?.heading, noteSetup?.at, pendingNote?.h
  * heading that shows.
  */
 function subtreeToCopy(n: number, visible: boolean): [number, number, boolean] {
-  const [all, found] = backToHeading(true);
+  let [all, found] = backToHeading(true);
+  // An inline task is no subtree: the heading it is in is taken, as org-up-element goes.
+  if (isInlinetask(all[found])) {
+    const stars = limitedStars();
+    let k = found;
+    while (k >= 0 && all[k].level > stars) k--;
+    // From the task's start, where org-back-to-heading left point.
+    if (k < 0) {
+      e8.gotoChar(all[found].start);
+      e8.userError("No surrounding element");
+    }
+    found = k;
+  }
   let i = found;
   for (const a of [found, ...ancestors(all, found)]) {
     i = a;
@@ -5147,7 +5357,11 @@ function subtreeToCopy(n: number, visible: boolean): [number, number, boolean] {
   }
   let j = i;
   for (let k = 1; k < n; k++) j = sibling(all, j, 1) ?? j;
-  return [all[i].start, subtreeRegion(all, j)[1], e8.invisibleAt(all[i].end)];
+  let end = subtreeRegion(all, j)[1];
+  // An inline task's END line there goes with it, as Org takes it to its end.
+  const stars = inlinetaskStars();
+  if (stars !== undefined && end < e8.pointMax() && new RegExp(`^\\*{${stars},}[ \\t]+END[ \\t]*$`, "i").test(e8.lineText(lineAt(end)))) end = e8.lineEnd(lineAt(end));
+  return [all[i].start, end, e8.invisibleAt(all[i].end)];
 }
 
 /**
@@ -5191,10 +5405,12 @@ e8.defineCommand({
 
 /** Whether text is one or more subtrees: it starts with a heading and none after is higher, as org-kill-is-subtree-p says. */
 export function killIsSubtree(text: string): boolean {
+  // Inline tasks' lines are not headings to it, with org-inlinetask.
+  const limit = limitedStars();
   const first = /^(?:[ \t\n\r]*?\n)?(\*+) /.exec(text);
-  if (!first) return false;
+  if (!first || first[1].length > limit) return false;
   const level = first[1].length;
-  return allMatches(/^(\*+) /gm, text).every((m) => m[1].length >= level);
+  return allMatches(/^(\*+) /gm, text).every((m) => m[1].length >= level || m[1].length > limit);
 }
 
 /** The level of the heading on point's line, or 0 if it is not one. */
@@ -5214,7 +5430,9 @@ export function pasteSubtree(level: e8.PrefixArg, forYank = false, interactive =
   const txt = e8.currentKill();
   if (!killIsSubtree(txt)) throw new Error("The kill is not a (set of) tree(s).  Use \u2018C-y\u2019 to yank anyway");
   const visible = !e8.invisibleAt(e8.point());
-  const old = /^(\*+) /m.exec(txt)?.[1].length ?? -1;
+  // The first heading's level, not an inline task's, as Org reads it with limited levels.
+  const limit = limitedStars();
+  const old = allMatches(/^(\*+) /gm, txt).find((m) => m[1].length <= limit)?.[1].length ?? -1;
   const c4 = Array.isArray(level) && level[0] === 4;
   const c16 = Array.isArray(level) && level[0] === 16;
   const line = lineAt();
@@ -5228,7 +5446,7 @@ export function pasteSubtree(level: e8.PrefixArg, forYank = false, interactive =
     // In the whole buffer, as org-back-to-heading finds a heading outside a narrowing.
     indicator = e8.saveRestriction(() => {
       e8.widen();
-      return [...headings()].reverse().find((h) => h.line <= line)?.level ?? 0;
+      return [...limitedHeadings()].reverse().find((h) => h.line <= line)?.level ?? 0;
     });
     force = indicator;
   } else if (c4) {
@@ -5236,12 +5454,12 @@ export function pasteSubtree(level: e8.PrefixArg, forYank = false, interactive =
     force = e8.saveRestriction(() => {
       // In the whole buffer, as org-back-to-heading finds a heading outside a narrowing.
       e8.widen();
-      return [...headings()].reverse().find((h) => h.line <= line)?.level ?? 0;
+      return [...limitedHeadings()].reverse().find((h) => h.line <= line)?.level ?? 0;
     });
   }
   else if (typeof level === "number") force = level;
   else if (!c16 && atBol && /^\*+ /.test(text)) force = levelHere();
-  const all = headings();
+  const all = limitedHeadings();
   const shown = all.filter(visible_);
   const prev = parseHeading(line) ? levelHere() : (shown.filter((h) => h.line < line).at(-1)?.level ?? 1);
   const next = shown.find((h) => h.line > line)?.level ?? 1;
@@ -5251,10 +5469,10 @@ export function pasteSubtree(level: e8.PrefixArg, forYank = false, interactive =
   const here = lineAt();
   if (!(e8.point() === e8.lineStart(here) && parseHeading(here) && !c4 && !c16)) {
     if (c4) {
-      const i = headingIndex(headings(), here);
-      if (i !== undefined) e8.gotoChar(subtreeEnd(headings(), i));
+      const i = headingIndex(limitedHeadings(), here);
+      if (i !== undefined) e8.gotoChar(subtreeEnd(limitedHeadings(), i));
     }
-    const after = headings().filter(visible_).find((h) => h.line > lineAt());
+    const after = limitedHeadings().filter(visible_).find((h) => h.line > lineAt());
     e8.gotoChar(after ? after.start : e8.bufferSize());
     if (e8.point() !== e8.lineStart(lineAt())) e8.insert("\n");
   }
@@ -7033,8 +7251,9 @@ const setTagsCommand = e8.defineCommand({
 /** Reads tags for the heading point is under and sets them, as one call of org-set-tags-command does. */
 function setTagsHere(fast: e8.Value | undefined): void {
   const all = headings();
-  const i = headingIndex(all, lineAt());
-  if (i === undefined) e8.userError("Setting file tags is not supported yet");
+  const i = inlinetaskOrHeading(all, headingIndex(all, lineAt()));
+  // Before the first heading that is not an inline task, even in one, as org-before-first-heading-p.
+  if (i === undefined || headingIndex(limitedHeadings(all), lineAt()) === undefined) e8.userError("Setting file tags is not supported yet");
   const h = all[i!];
   const localTable0 = currentTagAlist();
   const localTable = localTable0.length > 0 ? localTable0 : bufferTags();
@@ -8204,7 +8423,7 @@ function plan(keyword: string, input: string | (() => string), fromCode = false)
 /** The KEYWORD date anywhere in the entry at point, as org-add-planning-info looks for its default time up to the next heading. */
 function entryPlanDate(keyword: string): string | undefined {
   const all = headings();
-  const i = headingIndex(all, lineAt());
+  const i = inlinetaskOrHeading(all, headingIndex(all, lineAt()));
   if (i === undefined) return undefined;
   const end = i + 1 < all.length ? all[i + 1].start : e8.pointMax();
   return new RegExp(`${keyword}: *(<[^>\n]+>)`).exec(e8.bufferText(all[i].start, end))?.[1];
@@ -8287,7 +8506,7 @@ function planEach(keyword: string, input: string): void {
 function readPlanDate(keyword: string, check = true): string {
   if (check && doublePrefix()) {
     const all = headings();
-    const i = headingIndex(all, lineAt());
+    const i = inlinetaskOrHeading(all, headingIndex(all, lineAt()));
     const lines = i === undefined ? [] : [all[i].line, all[i].line + 1].filter((l) => l < e8.lineCount());
     if (i !== undefined && !lines.some((l) => new RegExp(`\\b${keyword}: *<`).test(e8.lineText(l))))
       e8.userError(keyword === "DEADLINE" ? "No deadline information to update" : "No scheduled information to update");
@@ -9179,7 +9398,10 @@ function sortEntries(withCase: boolean, sortingType?: string): void {
   let end: number;
   let what: string;
   const all0 = headings();
-  const here = headingIndex(all0, lineAt());
+  // In an inline task, from the task to the end of the subtree it is in, as org-back-to-heading and org-end-of-subtree find them.
+  const here = inlinetaskOrHeading(all0, headingIndex(all0, lineAt()));
+  let around = here;
+  while (around !== undefined && around > 0 && all0[around].level > limitedStars()) around--;
   if (orgRegionActive()) {
     const rb = Math.min(e8.point(), e8.mark()!);
     const re = Math.max(e8.point(), e8.mark()!);
@@ -9191,7 +9413,7 @@ function sortEntries(withCase: boolean, sortingType?: string): void {
     e8.gotoChar(start);
   } else if (here !== undefined) {
     start = all0[here].start;
-    e8.gotoChar(subtreeRegion(all0, here)[1]);
+    e8.gotoChar(subtreeRegion(all0, around!)[1]);
     if (e8.point() !== e8.lineStart(lineAt())) e8.insert("\n");
     // Back over blank lines, then the line after them, as org-back-over-empty-lines with forward-line.
     let back = e8.point();
@@ -9765,10 +9987,11 @@ const metaLeft = e8.defineCommand({
   doc: "M-<left> in Org: promote a heading, outdent an item, move a table column left, or move back a word.",
   run: () => {
     if (atTableP()) e8.call("org-table-move-column-left");
-    else if (regionStartsAtHeading() || headingHere()) {
+    else if (regionStartsAtHeading() || headingHere(true)) {
       if (hiddenBelow("headlines")) hiddenTreeError();
       e8.call("org-do-promote");
-    } else if (itemHere() || regionStartsAtItem()) {
+    } else if (headingHere()) e8.call("org-inlinetask-promote" as e8.CommandName);
+    else if (itemHere() || regionStartsAtItem()) {
       if (hiddenBelow("items")) hiddenTreeError();
       e8.call("org-outdent-item");
     }
@@ -9783,10 +10006,11 @@ const metaRight = e8.defineCommand({
     if (atTableP()) e8.call("org-table-move-column-right");
     else if (DRAWER_RE.test(e8.lineText(lineAt()))) e8.call("org-indent-drawer");
     else if (atBlock()) e8.call("org-indent-block");
-    else if (regionStartsAtHeading() || headingHere()) {
+    else if (regionStartsAtHeading() || headingHere(true)) {
       if (hiddenBelow("headlines")) hiddenTreeError();
       e8.call("org-do-demote");
-    } else if (itemHere() || regionStartsAtItem()) {
+    } else if (headingHere()) e8.call("org-inlinetask-demote" as e8.CommandName);
+    else if (itemHere() || regionStartsAtItem()) {
       if (hiddenBelow("items")) hiddenTreeError();
       e8.call("org-indent-item");
     }
@@ -9912,6 +10136,7 @@ const metaUp = e8.defineCommand({
     babelSessionHook("load");
     if (metaRegion(true)) return;
     if (atTableP()) e8.call("org-table-move-row-up");
+    else if (inInlinetask()) e8.call("org-drag-element-backward");
     else if (headingHere()) e8.call("org-move-subtree-up");
     else if (itemHere()) e8.call("org-move-item-up");
     else e8.call("org-drag-element-backward");
@@ -9925,6 +10150,7 @@ const metaDown = e8.defineCommand({
     babelSessionHook("pop");
     if (metaRegion(false)) return;
     if (atTableP()) e8.call("org-table-move-row-down");
+    else if (inInlinetask()) e8.call("org-drag-element-forward");
     else if (headingHere()) e8.call("org-move-subtree-down");
     else if (itemHere()) e8.call("org-move-item-down");
     else e8.call("org-drag-element-forward");
@@ -11132,11 +11358,17 @@ function orgToggleHeading(nstars: e8.PrefixArg): void {
     const l = lineAt(p);
     p = l + 1 < e8.lineCount() ? e8.lineStart(l + 1) : e8.bufferSize();
   };
+  // Inline tasks' lines are text to it, with org-inlinetask, as Org works with limited levels.
+  const stars = limitedStars();
+  const headingLine = (line: number): boolean => {
+    const h = parseHeading(line);
+    return h !== undefined && h.level <= stars;
+  };
   try {
-    if (parseHeading(lineAt(beg))) {
+    if (headingLine(lineAt(beg))) {
       while (p < end.pos) {
         const m = /^\*+ /.exec(e8.lineText(lineAt(p)));
-        if (parseHeading(lineAt(p)) && m) {
+        if (headingLine(lineAt(p)) && m) {
           edReplace(p, p + m[0].length, "");
           toggled = true;
         }
@@ -11156,19 +11388,19 @@ function orgToggleHeading(nstars: e8.PrefixArg): void {
       // org-current-level finds it above a narrowing too.
       const level = e8.saveRestriction(() => {
         e8.widen();
-        const all = headings();
+        const all = limitedHeadings();
         const i = headingIndex(all, lineAt(beg));
         return i === undefined ? 0 : all[i].level;
       });
       const count = typeof nstars === "number" ? nstars : level;
-      const stars = "*".repeat(count);
-      const add = nstars != null ? "" : stars === "" ? "*" : e8.variable("org-odd-levels-only") === true ? "**" : "*";
-      const rpl = `${stars}${add} `;
+      const lead = "*".repeat(count);
+      const add = nstars != null ? "" : lead === "" ? "*" : e8.variable("org-odd-levels-only") === true ? "**" : "*";
+      const rpl = `${lead}${add} `;
       const limit = Array.isArray(nstars) && nstars[0] === 4 ? marker(e8.lineEnd(lineAt(beg))) : end;
       while (p < limit.pos) {
         const line = lineAt(p);
         const m = /^([ \t]*)(\S)/.exec(e8.lineText(line));
-        if (!parseHeading(line) && !itemLine(line) && !commentLine(line) && m) {
+        if (!headingLine(line) && !itemLine(line) && !commentLine(line) && m) {
           edReplace(p, p + charCount(m[0]), rpl + m[2]);
           toggled = true;
         }
@@ -11248,7 +11480,7 @@ function listToSubtree(pos: number, limit: number): number {
   // As org-current-level, from the whole buffer, so a heading above a narrowing counts, its level reduced as org-reduced-level does.
   const level = e8.saveRestriction(() => {
     e8.widen();
-    const wide = headings();
+    const wide = limitedHeadings();
     const above = headingIndex(wide, lineAt(pos));
     return above === undefined ? 1 : reducedLevel(wide[above].level) + 1;
   });
@@ -11509,10 +11741,14 @@ e8.defineCommand({
   run: (n: number, given: string) => {
     if (!Number.isInteger(n) || n < 0) e8.userError(`Invalid number of replications ${n}`);
     const all = headings();
-    const i = headingIndex(all, lineAt());
+    // In an inline task, from the task to the end of the subtree it is in, as
+    // org-back-to-heading and org-end-of-subtree find them.
+    const i = inlinetaskOrHeading(all, headingIndex(all, lineAt()));
     if (i === undefined) e8.userError("No subtree to clone");
     const beg = all[i!].start;
-    const endOfTree = subtreeRegion(all, i!)[1];
+    let up = i!;
+    while (up > 0 && all[up].level > limitedStars()) up--;
+    const endOfTree = subtreeRegion(all, up)[1];
     const prefix = e8.prefixArg();
     const plainCU = Array.isArray(prefix) && prefix[0] === 4;
     const hasTimestamp = /[[<]\d{4}-\d{2}-\d{2}(?: [^\]>\n]*?)?[\]>]/.test(e8.bufferText(beg, endOfTree));
@@ -12794,6 +13030,8 @@ export function scanTags<T>(
     for (let i = 0; i < all.length; i++) {
       const h = all[i];
       if (h.start < min || h.start >= max || h.start < skipUntil) continue;
+      // An inline task's END line is no entry, as Org's parser has none there.
+      if (isInlinetaskEnd(h)) continue;
       const at = i;
       const ctx: MatchContext = { todo: h.todo, tags: tags[i], level: h.level, h, category: () => (cats ??= e8.saveRestriction(() => (e8.widen(), categories(all))))[at] };
       if (todoOnly && (h.todo === undefined || !keywords.includes(h.todo))) continue;
@@ -13279,7 +13517,7 @@ function allowedAtPoint(property: string): { values: string[]; restricted: boole
     return values.includes(":ETC") ? { values: values.filter((v) => v !== ":ETC"), restricted: false } : { values, restricted: true };
   }
   const all = headings();
-  const i = headingIndex(all, lineAt());
+  const i = inlinetaskOrHeading(all, headingIndex(all, lineAt()));
   const allowed = allowedValues(i === undefined ? undefined : all[i], property);
   return allowed.values.length === 0 ? undefined : allowed;
 }
@@ -13287,7 +13525,7 @@ function allowedAtPoint(property: string): { values: string[]; restricted: boole
 /** The entry's own value of PROPERTY at point, as org-entry-get without inheritance: the category and special properties worked out, their names in any case. */
 function currentPropertyValue(property: string): string | undefined {
   const all = headings();
-  const i = headingIndex(all, lineAt());
+  const i = inlinetaskOrHeading(all, headingIndex(all, lineAt()));
   const upper = property.toUpperCase();
   if (upper === "CATEGORY") return i === undefined ? category() : matchContexts(all)(i).category();
   if (SPECIAL_PROPERTIES.includes(upper)) return i === undefined ? undefined : entryGetAt(matchContexts(all)(i), upper, false);
@@ -13868,16 +14106,17 @@ function contentsEndOf(e: Elem): number | undefined {
 /** Moves to the next element at the same level, as org-forward-element. */
 function orgForwardElement(): void {
   if (e8.point() >= e8.pointMax()) e8.userError("Cannot move further down");
-  if (isHeadingLine(e8.lineText(lineAt()))) {
+  // An inline task is an element, with org-inlinetask, as Org asks with limited levels.
+  if (headingHere(true)) {
     // Past the subtree of the heading that shows, as org-end-of-subtree
     // goes back to a visible one, to the next heading, or the end if that
     // is on a heading's line.
     const origin = e8.point();
-    const all = headings();
+    const all = limitedHeadings();
     const i = visibleHeadingIndex(all, lineAt());
     const next = i === undefined ? undefined : nextSameOrHigher(all, i);
     e8.gotoChar(next === undefined ? e8.pointMax() : Math.min(next.start, e8.pointMax()));
-    if (!isHeadingLine(e8.lineText(lineAt()))) {
+    if (!headingHere(true)) {
       e8.gotoChar(origin);
       e8.userError("Cannot move further down");
     }
@@ -13897,12 +14136,12 @@ function orgForwardElement(): void {
 /** Moves to the previous element at the same level, or the start of this one, as org-backward-element. */
 function orgBackwardElement(): void {
   if (e8.point() <= e8.pointMin()) e8.userError("Cannot move further up");
-  if (isHeadingLine(e8.lineText(lineAt()))) {
+  if (headingHere(true)) {
     // The heading before at this level, or the parent heading.
     const origin = e8.point();
     forwardHeadingSameLevel(-1);
     if (e8.point() === origin) {
-      const all = headings();
+      const all = limitedHeadings();
       const i = all.findIndex((h) => h.line === lineAt());
       const parent = i < 0 ? undefined : [...all.slice(0, i)].reverse().find((h) => h.level < all[i].level);
       if (parent === undefined) {

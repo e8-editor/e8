@@ -7,9 +7,11 @@ import {
   type Heading,
   headingIndex,
   headings,
+  inlinetaskOrHeading,
   isBlank,
   isHeadingLine,
   keywordLines,
+  limitedHeadings,
   nextSameOrHigher,
   subtreeEnd,
   validLevel,
@@ -253,7 +255,11 @@ export function cycleHeading(all: Heading[], i: number, at = i): void {
   const h = all[i];
   const eoh = h.end;
   const eos = subtreeEnd(all, i);
-  const hasChildren = all[i + 1] !== undefined && all[i + 1].level > h.level;
+  // Any heading after it deeper than it, an inline task's too, as
+  // outline-next-heading finds it, though `all` leaves inline tasks out.
+  const raw = headings();
+  const after = raw[firstHeadingFrom(raw, h.start + 1)];
+  const hasChildren = after !== undefined && after.level > h.level;
   const eol = endOfHidden(h.line);
   const again = e8.lastCommand() === e8.thisCommand();
   const status = e8.variable("org-cycle-subtree-status");
@@ -754,14 +760,20 @@ function showSiblings(all: Heading[], i: number): void {
  */
 export function showSetVisibility(detail: string | null): void {
   const pos = e8.point();
-  const all = headings();
+  const raw = headings();
+  const r = headingAtOrBefore(raw, pos);
+  const atHeading = r !== undefined && raw[r].line === lineAt(pos);
+  // The rest leaves inline tasks out, as Org does it with limited levels.
+  const all = limitedHeadings(raw);
   const i = headingAtOrBefore(all, pos);
-  const atHeading = i !== undefined && all[i].line === lineAt(pos);
-  if (atHeading && detail !== "local") showHeadingLine(all[i]);
+  if (atHeading && detail !== "local") showHeadingLine(raw[r]);
   else {
-    // org-fold-show-entry: from the end of the line before the heading, or the buffer's start, to the next heading.
-    if (i === undefined) flag(e8.pointMin(), all.find((h) => h.start > pos)?.start ?? e8.pointMax(), false);
-    else showEntry(all, i);
+    // org-fold-show-entry: from the end of the line before the heading, or
+    // the buffer's start, to the next heading; from an inline task point is
+    // in, with org-inlinetask, to the next heading that is not one.
+    const k = inlinetaskOrHeading(raw, r);
+    if (k === undefined) flag(e8.pointMin(), all.find((h) => h.start > pos)?.start ?? e8.pointMax(), false);
+    else flag(Math.max(0, raw[k].start - 1), all.find((h) => h.start > raw[k].start)?.start ?? e8.pointMax(), false);
     // A fold of a drawer or block point is in opens too.
     if (e8.invisibleAt(pos)) {
       for (const id of e8.overlaysAt(pos)) {

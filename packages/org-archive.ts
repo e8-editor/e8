@@ -15,6 +15,7 @@ import {
   formatTimestamp,
   type Heading,
   headingIndex,
+  inlinetaskOrHeading,
   headings,
   isDone,
   keywordLines,
@@ -75,7 +76,7 @@ function subtreeKill(cut: boolean): void {
 /** The heading the entry at point starts at, as org-back-to-heading, or the error before the first. */
 function headingHere(): [Heading[], number] {
   const all = headings();
-  const i = headingIndex(all, lineAt());
+  const i = inlinetaskOrHeading(all, headingIndex(all, lineAt()));
   if (i === undefined) e8.userError(`Before first headline at position ${e8.lineStart(lineAt()) + 1} in buffer ${e8.bufferName()}`);
   return [all, i!];
 }
@@ -362,6 +363,8 @@ export function archiveSubtree(): void {
   e8.gotoChar(e8.markerPosition(origin) ?? h0.start);
   e8.deleteMarker(origin);
   subtreeKill(true);
+  // An inline task's END line left behind goes too, with org-inlinetask.
+  if (e8.fboundp("org-inlinetask-remove-END-maybe")) e8.funcall("org-inlinetask-remove-END-maybe");
   // Nothing more to move, as org-archive-subtree clears org-markers-to-move after its cut.
   clearMarkersToMove();
   // The statistics of the heading above point's count it gone, as org-up-heading-safe and org-update-statistics-cookies.

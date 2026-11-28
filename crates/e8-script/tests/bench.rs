@@ -42,6 +42,10 @@ impl Bench {
     fn new() -> Bench {
         let mut ed = Editor::new();
         let scripting = Scripting::new(&mut ed).unwrap();
+        // A library loaded first, as a config's require, with E8_BENCH_REQUIRE=org-inlinetask.
+        if let Some(feature) = std::env::var("E8_BENCH_REQUIRE").ok().filter(|f| !f.is_empty()) {
+            scripting.eval_expression(&mut ed, &format!("e8.require({})", serde_json::to_string(&feature).unwrap())).unwrap();
+        }
         let w = ed.selected_window();
         ed.set_window_size(w, COLS, ROWS);
         Bench { ed, _scripting: scripting, results: Vec::new() }
