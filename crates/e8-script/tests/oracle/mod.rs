@@ -476,6 +476,10 @@ pub fn oracle_dir() -> PathBuf {
 
 /// Runs a case through E8 the way record.el runs it through Emacs.
 pub fn run(case: &Case) -> State {
+    // The coding systems preferred are the thread's, which an earlier case
+    // on this worker may have changed with prefer-coding-system; record.el
+    // resets them before each case, as each starts afresh.
+    e8_core::coding::reset_priority();
     let mut ed = Editor::new();
     let scripting = Scripting::new(&mut ed).expect("scripting starts");
     // As in Emacs, deleting deletes, which also keeps cases out of the trash.
