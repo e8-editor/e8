@@ -829,7 +829,12 @@ function linkToLocalFile(ast: Node): Report[] {
     const path = String(property("path", l));
     let file = path;
     if (type === "attachment") {
-      // Through org-attach-expand where org-attach is there.
+      // Through org-attach-expand, loading org-attach as org-lint requires it; left alone where there is none.
+      try {
+        e8.require("org-attach");
+      } catch {
+        return undefined;
+      }
       if (!e8.fboundp("org-attach-expand")) return undefined;
       file = e8.saveExcursion(() => (e8.gotoChar(begin(l)), String(e8.funcall("org-attach-expand", path))));
     }
