@@ -39,6 +39,7 @@ const AUTOLOADS: [string, string, string, e8.Param[]][] = [
   ["org-html-export-as-html", "ox-html", "Export current buffer to an HTML buffer.", EXPORT_PARAMS],
   ["org-html-export-to-html", "ox-html", "Export current buffer to an HTML file.", EXPORT_PARAMS],
   ["org-html-convert-region-to-html", "ox-html", "Assume the current region has Org syntax, and convert it to HTML.", []],
+  ["org-html-htmlize-generate-css", "ox-html", "Create the CSS for all font definitions in the current Emacs session.", []],
   ["org-md-export-as-markdown", "ox-md", "Export current buffer to a Markdown buffer.", EXPORT_PARAMS],
   ["org-md-export-to-markdown", "ox-md", "Export current buffer to a Markdown file.", EXPORT_PARAMS],
   ["org-md-convert-region-to-md", "ox-md", "Assume the current region has Org syntax, and convert it to Markdown.", []],
@@ -51,6 +52,13 @@ const AUTOLOADS: [string, string, string, e8.Param[]][] = [
   ["org-icalendar-export-to-ics", "ox-icalendar", "Export current buffer to an iCalendar file.", EXPORT_PARAMS],
   ["org-icalendar-export-agenda-files", "ox-icalendar", "Export all agenda files to iCalendar files.", [{ name: "async", kind: "prefix" }]],
   ["org-icalendar-combine-agenda-files", "ox-icalendar", "Combine all agenda files into a single iCalendar file.", [{ name: "async", kind: "prefix" }]],
+  // Org Crypt's commands, which load org-crypt.ts and EasyPG's epg.ts.
+  ["org-encrypt-entry", "org-crypt", "Encrypt the content of the current headline.", []],
+  ["org-encrypt-entries", "org-crypt", "Encrypt all top-level entries in the current buffer.", []],
+  ["org-decrypt-entry", "org-crypt", "Decrypt the content of the current headline.", []],
+  ["org-decrypt-entries", "org-crypt", "Decrypt all entries in the current buffer.", []],
+  // Org Cite's command, which loads oc.ts.
+  ["org-cite-insert", "oc", "Insert a citation at point, as org-cite-insert-processor does; with a prefix argument, its style too.", [{ name: "arg", kind: "prefix" }]],
 ];
 
 /** The functions projects name to publish their files, loading the backend that defines each when it is first called. */
@@ -62,6 +70,8 @@ const PUBLISHING_FUNCTIONS: [string, string][] = [
   ["org-md-publish-to-md", "ox-md"],
   ["org-org-publish-to-org", "ox-org"],
   ["org-publish-attachment", "ox-publish"],
+  // Not a publishing function, but autoloaded the same way, as a config calls it.
+  ["org-crypt-use-before-save-magic", "org-crypt"],
 ];
 
 for (const [name, feature] of PUBLISHING_FUNCTIONS)
@@ -95,6 +105,33 @@ for (const [name, feature, doc, params] of AUTOLOADS) {
 }
 
 e8.defineKey("org-mode-map", "C-c C-e", "org-export-dispatch" as any);
+e8.defineKey("org-mode-map", "C-c C-x @", "org-cite-insert" as any);
+
+// Citations, which Org activates and follows through oc.el. oc.ts loads
+// only for text that may hold one: "[cite" within a few lines.
+
+/** Whether the text from a few lines before START to END may hold a citation. */
+function mayHoldCitation(start: number, end: number): boolean {
+  const from = e8.lineStart(Math.max(0, e8.lineOf(start) - 3));
+  const to = e8.lineEnd(e8.lineOf(Math.min(Math.max(end - 1, start), e8.pointMax())));
+  return e8.bufferText(from, Math.max(from, to)).includes("[cite");
+}
+
+/** Activates the citations jit-lock fontifies, as Org's font-lock calls org-cite-activate. */
+function activateCitations(start: number, end: number): void {
+  if (!e8.derivedModeP("org-mode") || !mayHoldCitation(start, end)) return;
+  e8.require("oc");
+  e8.funcall("org-cite-activate", start, end);
+}
+
+e8.addHook("org-mode-hook", () => e8.addHook("jit-lock-functions", activateCitations, { local: true, append: true }));
+
+// Called by org-open-at-point off a link: follows the citation at point, if there is one, and says whether there was.
+e8.defun("org-cite--follow-at-point", (arg?: e8.PrefixArg) => {
+  if (!mayHoldCitation(e8.point(), e8.point() + 1)) return false;
+  e8.require("oc");
+  return e8.funcall("org-cite--follow-at-point", arg ?? null);
+});
 
 e8.defineVariable({
   name: "org-export-backends",

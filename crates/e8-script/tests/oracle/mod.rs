@@ -548,6 +548,8 @@ pub fn run(case: &Case) -> State {
     }
     // Export references numbered from 1, as record.el numbers Org's.
     ed.set_variable("e8--export-sequential-references", e8_core::Value::Bool(true));
+    // HTML source blocks uncoloured, as batch Emacs without htmlize writes them and record.el binds it.
+    ed.set_variable("org-html-htmlize-output-type", e8_core::Value::Bool(false));
     // Default values before the modes start, as record.el binds them.
     for (name, value) in &case.globals {
         ed.set_default(name, case_value(case, name, value));

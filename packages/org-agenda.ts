@@ -1646,7 +1646,7 @@ function todoList(arg: TodoArg = null): void {
  * while org-agenda-skip-archived-trees is on, and those in a COMMENT
  * subtree while org-agenda-skip-comment-trees is.
  */
-function skippedHeadings(all: Heading[]): boolean[] {
+export function skippedHeadings(all: Heading[]): boolean[] {
   // A heading is archived by the ARCHIVE tag itself, as org-element's :archivedp has it; a file by org-archive-tag among its FILETAGS.
   const tag = String(e8.variable("org-archive-tag") ?? "ARCHIVE");
   const archived = truthy(e8.variable("org-agenda-skip-archived-trees") ?? null) && archivesMode === null;
@@ -2267,7 +2267,7 @@ function withSettings<T>(settings: Settings, f: () => T): T {
  * function's name is called, and a list calls its first element with the
  * rest, each quoted one as its value.
  */
-function skipTo(pos: number, names = ["org-agenda-skip-function-global", "org-agenda-skip-function"]): number | undefined {
+export function skipTo(pos: number, names = ["org-agenda-skip-function-global", "org-agenda-skip-function"]): number | undefined {
   for (const name of names) {
     const form = e8.variable(name) ?? null;
     if (form === null || form === false || (Array.isArray(form) && form.length === 0)) continue;

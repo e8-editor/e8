@@ -552,3 +552,19 @@ fn find_file_read_only_visits_read_only() {
     let bound = s.eval_expression(&mut ed, r#"JSON.stringify(["C-x C-r", "C-x 4 r", "C-x 5 r"].map((k) => e8.lookupKey("global-map", k)))"#).unwrap();
     assert_eq!(bound, r#""[\"find-file-read-only\",\"find-file-read-only-other-window\",\"find-file-read-only-other-frame\"]""#);
 }
+
+/// auto-save-hook runs as Emacs's safe_run_hooks runs it: an error in one
+/// function is said, naming the hook and the function, and the rest still
+/// run, as in Emacs 30.
+#[test]
+fn an_error_in_auto_save_hook_is_said_and_the_rest_run() {
+    let (mut ed, s) = setup();
+    s.eval_expression(
+        &mut ed,
+        "e8.defun('my-failing', () => e8.signal('error', 'boom')), e8.defun('my-ok', () => e8.setDefault('ok-ran', true)), e8.addHook('auto-save-hook', 'my-ok'), e8.addHook('auto-save-hook', 'my-failing')",
+    )
+    .unwrap();
+    ed.call("do-auto-save", vec![]).unwrap();
+    assert!(ed.messages().iter().any(|m| m == "Error in auto-save-hook (my-failing): (error \"boom\")"), "{:?}", ed.messages());
+    assert_eq!(s.eval_expression(&mut ed, "e8.variable('ok-ran')").unwrap(), "true");
+}

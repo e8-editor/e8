@@ -179,6 +179,10 @@ is set, as its oracle sets it."
     new))
 (advice-add 'org-export-new-reference :override #'e8-oracle--new-reference)
 
+;; HTML source blocks uncoloured, whether or not htmlize is installed, as
+;; E8's oracle sets it: colours are each editor's own faces.
+(setq org-html-htmlize-output-type nil)
+
 (defvar e8-oracle--today nil
   "The day a case fixes, as calendar-absolute-from-gregorian counts it.")
 
@@ -489,6 +493,14 @@ its `globals' bound for the case, before the modes start."
       (setq org-markers-to-move nil)
       (set-marker org-clock-default-task nil)
       (set-marker org-clock-interrupted-task nil))
+    ;; Nor the bibliographies oc-basic read for an earlier case: their
+    ;; strings keep the parse tree an export put them in, and a later
+    ;; export inserting next to one fails ("No location found to insert
+    ;; node"), as the files of different cases share their names.
+    (when (featurep 'oc-basic)
+      (setq org-cite-basic--bibliography-cache nil
+            org-cite-basic--file-id-cache nil)
+      (clrhash org-cite-basic--completion-cache))
     ;; Nor a running or paused timer, relative or countdown, nor its
     ;; display, as org-timer-stop leaves them, without its message.
     (when (featurep 'org-timer)
