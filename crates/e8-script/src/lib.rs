@@ -243,9 +243,11 @@ const PACKAGES: &[(&str, &str)] = &[
 /// not preloaded and that loading turns on.
 const LIBRARY: &[(&str, &str)] = &[
     ("packages/ediff.ts", include_str!("../../../packages/ediff.ts")),
+    ("packages/epg.ts", include_str!("../../../packages/epg.ts")),
     ("packages/ert.ts", include_str!("../../../packages/ert.ts")),
     ("packages/htmlize.ts", include_str!("../../../packages/htmlize.ts")),
     ("packages/ob-exp.ts", include_str!("../../../packages/ob-exp.ts")),
+    ("packages/org-crypt.ts", include_str!("../../../packages/org-crypt.ts")),
     ("packages/org-macro.ts", include_str!("../../../packages/org-macro.ts")),
     ("packages/org-tempo.ts", include_str!("../../../packages/org-tempo.ts")),
     ("packages/ox.ts", include_str!("../../../packages/ox.ts")),

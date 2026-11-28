@@ -96,6 +96,7 @@ mod org_clock_persist;
 mod org_clock_rest;
 mod org_clocktable;
 mod org_columns;
+mod org_crypt;
 mod org_element_parse;
 mod org_export;
 mod htmlize;

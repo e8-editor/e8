@@ -763,6 +763,32 @@ impl Editor {
         self.run_hook_with_args(hook, &[])
     }
 
+    /// Runs a hook's functions as Emacs's `safe_run_hooks` does, with
+    /// `inhibit-quit` bound: an error in one is said, as "Error in HOOK
+    /// (FUNCTION): ERROR", and the rest still run.
+    pub fn safe_run_hooks(&mut self, hook: &str) {
+        let binding = self.specbind("inhibit-quit", Value::Bool(true));
+        for f in self.hook_functions_in(self.buffer(), hook) {
+            if let Err(e) = f.call(self, &[]) {
+                // A function by its name, as Emacs prints a symbol.
+                let function = match f.name() {
+                    Some(name) => name.to_string(),
+                    None => crate::lread::prin1_to_string(&Value::Function(f.clone()), false),
+                };
+                // The error as Emacs prints it: its symbol and data, or its message.
+                let mut error = vec![Value::Symbol(e.symbol().to_string())];
+                if e.data().is_empty() {
+                    error.push(Value::Str(e.message().to_string()));
+                } else {
+                    error.extend(e.data().iter().cloned());
+                }
+                let error = crate::lread::prin1_to_string(&Value::List(error), false);
+                self.message(format!("Error in {hook} ({function}): {error}"));
+            }
+        }
+        self.unbind(binding);
+    }
+
     /// Whether a hook has any functions for the current buffer.
     pub(crate) fn hook_has_functions(&self, hook: &str) -> bool {
         let hook: &str = &self.base_variable(hook);
@@ -1465,6 +1491,7 @@ pub(crate) fn install(ed: &mut Editor) {
         ("emacs-startup-hook", "Run after after-init-hook, once E8 has started and loaded init.ts."),
         ("before-save-hook", "Run before saving a buffer to its file."),
         ("after-save-hook", "Run after saving a buffer to its file."),
+        ("auto-save-hook", "Run in the current buffer before auto-saving the buffers that changed."),
         ("change-major-mode-hook", "Run before a major mode clears the buffer's own variables."),
         ("after-change-major-mode-hook", "Run after a major mode and its hooks have run."),
         ("after-set-visited-file-name-hook", "Run after set-visited-file-name changes the file a buffer visits."),
