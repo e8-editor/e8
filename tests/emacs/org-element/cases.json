@@ -146,5 +146,17 @@
  {
   "name": "lists-alpha",
   "text": "a. not an item\nb) neither\n- [@b] counter letter\n- [@start:4] start counter\n- [ ]\n-\n+ plus list\n* star at col 0 is a heading\n  * star item\n"
+ },
+ {
+  "name": "footnote-labels",
+  "text": "Para[fn:1] and [fn:é·2] and [fn:x:inline *def*].\n\n[FN:1] Upper case label.\n\n[fn:é·2] Label of letters and a middle dot.\n"
+ },
+ {
+  "name": "dblock-unterminated",
+  "text": "#+BEGIN: clocktable\nNo end.\n\n#+BEGIN: other :x 1\ninside\n#+END:\n"
+ },
+ {
+  "name": "trailing-blank-line",
+  "text": "* H\nDEADLINE: <2026-11-01 Sun>\nText.\n  "
  }
 ]

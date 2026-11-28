@@ -1,7 +1,9 @@
-// Elements, after org-element.el: enough of the parse to drag paragraphs,
-// lists, tables and drawers past each other with M-<up> and M-<down>; and,
-// at the end, the full parse of org-element-parse-buffer, every element and
-// object, as Org's exporter reads a document.
+// Org's parser, after org-element.el: the full parse of
+// org-element-parse-buffer, every element and object, as Org's exporter
+// reads a document, and, from it, what the editing commands ask:
+// org-element-at-point's element, the full parser reading the entry it is
+// in into a tree kept through edits (elementAt), and org-element-context's
+// object (objectAt).
 
 import {
   allKeywords,
@@ -15,29 +17,22 @@ import {
   isHeadingLine,
   linkTypeEntries,
   moveSubtree,
+  parseHeading,
   subtreeRegion,
 } from "org";
 import { ancestors, flag, FOLD_SPECS, withoutFoldChecks } from "org-fold";
 import {
-  type Alist,
   cycleItemIndentation,
   cycleListBullet,
   DRAWER_RE,
-  getItem,
   indentItemCommand,
   separatesParagraph,
-  itemEndBeforeBlank,
-  itemLineByText,
   listSyntaxKey,
-  itemParts,
-  listStruct,
   moveItemDown,
   moveItemUp,
   nextListItem,
   parentsAlist,
   previousItem,
-  prevsAlist,
-  type Struct,
   structAtItem,
   writeStruct,
   bulletString,
@@ -86,15 +81,6 @@ function elem(type: string, begin: number, end: number, parent: Elem, contentsBe
   return e;
 }
 
-/** Extends an element's end over the blank lines after it, up to a limit, as its post-blank. */
-function postBlank(e: Elem, limit: number): void {
-  let l = lineAt(e.end);
-  while (e.end < limit && e.end === lineStartOrEnd(l) && l < e8.lineCount() && isBlank(e8.lineText(l))) {
-    e.end = Math.min(limit, lineStartOrEnd(l + 1));
-    l++;
-  }
-}
-
 /** The line after a drawer opening at line, before limit, that closes it, if any. */
 export function drawerEnd(line: number, limit: number): number | undefined {
   for (let l = line + 1; l < e8.lineCount() && e8.lineStart(l) < limit; l++) {
@@ -115,20 +101,6 @@ function blockAt(line: number, limit: number): { type: string; close: number } |
       const known = ["center", "quote", "comment", "example", "export", "src", "verse"];
       return { type: known.includes(name) ? `${name}-block` : "special-block", close: l };
     }
-    if (isHeadingLine(e8.lineText(l))) return undefined;
-  }
-  return undefined;
-}
-
-/**
- * The line that closes a dynamic block a line opens, as
- * org-element-dynamic-block-parser finds it: `#+BEGIN:` and a name, then
- * `#+END:` on a line of its own before limit and the next heading.
- */
-function dynamicBlockEnd(line: number, limit: number): number | undefined {
-  if (!/^[ \t]*#\+BEGIN:[ \t]*[\p{L}\p{N}]/iu.test(e8.lineText(line))) return undefined;
-  for (let l = line + 1; l < e8.lineCount() && e8.lineStart(l) < limit; l++) {
-    if (/^[ \t]*#\+END:?[ \t]*$/i.test(e8.lineText(l))) return l;
     if (isHeadingLine(e8.lineText(l))) return undefined;
   }
   return undefined;
@@ -198,47 +170,6 @@ export const FOOTNOTE_LABEL = "(?:(?![\\u00AA\\u00BA\\u00BC-\\u00BE])[-_$%'\\p{L
  */
 export const FOOTNOTE_DEFINITION = new RegExp(`^\\[fn:(${FOOTNOTE_LABEL})\\]`, "iu");
 
-/**
- * Where a footnote definition whose label starts line ends, and its
- * contents, as org-element-footnote-definition-parser finds them before
- * limit: at the next heading, at the next definition, before any
- * affiliated keywords above it, or after two blank lines, the blank lines
- * its own. Its contents start after the label, on its line, or on the
- * first line after it that is not blank, and end before its blank lines.
- */
-export function footnoteDefinitionParts(line: number, limit: number): { end: number; contentsBegin?: number; contentsEnd?: number } {
-  let end = limit;
-  for (let l = line + 1; l < e8.lineCount() && e8.lineStart(l) < limit; l++) {
-    const t = e8.lineText(l);
-    if (isHeadingLine(t)) {
-      end = e8.lineStart(l);
-      break;
-    }
-    if (FOOTNOTE_DEFINITION.test(t)) {
-      let k = l - 1;
-      while (k > line && AFFILIATED.test(e8.lineText(k))) k--;
-      end = lineStartOrEnd(k + 1);
-      break;
-    }
-    // Two blank lines, each ending in a newline, as ^([ \t]*\n){2,} needs.
-    if (isBlank(t) && l + 2 < e8.lineCount() && e8.lineStart(l + 1) < limit && isBlank(e8.lineText(l + 1))) {
-      let k = l;
-      while (k < e8.lineCount() && e8.lineStart(k) < limit && isBlank(e8.lineText(k))) k++;
-      end = k >= e8.lineCount() || e8.lineStart(k) >= limit ? limit : e8.lineStart(k);
-      break;
-    }
-  }
-  const label = FOOTNOTE_DEFINITION.exec(e8.lineText(line))![0];
-  const afterLabel = e8.lineStart(line) + charCount(label);
-  const blank = /^[ \r\t\n]*/.exec(e8.bufferText(afterLabel, Math.max(afterLabel, end)))![0];
-  let contentsBegin: number | undefined = afterLabel + charCount(blank);
-  if (contentsBegin >= end) return { end };
-  if (lineAt(contentsBegin) !== line) contentsBegin = e8.lineStart(lineAt(contentsBegin));
-  let q = end;
-  while (q > 0 && /[ \r\t\n]/.test(e8.bufferText(q - 1, q))) q--;
-  return { end, contentsBegin, contentsEnd: lineStartOrEnd(lineAt(q) + 1) };
-}
-
 /** A comment line, as org-element reads one: a hash, then a space or nothing. */
 const COMMENT_LINE = /^[ \t]*#(?: |$)/;
 
@@ -247,31 +178,6 @@ const FIXED_WIDTH = /^[ \t]*:(?: |$)/;
 
 /** A table.el table's rule, as Org's parser recognises one: + and runs of - between +, alone on its line. */
 const TABLE_EL_RULE = /^[ \t]*\+(?:-+\+)+[ \t]*$/;
-
-/**
- * Where a table.el table a line starts ends, as Org's parser finds one,
- * if it is one: a full rule, then lines starting with + or |, up to a line
- * that does not, the last of them a full rule too, all before limit.
- * Its end is the line it stops at.
- */
-export function tableElEnd(line: number, limit: number): number | undefined {
-  if (!TABLE_EL_RULE.test(e8.lineText(line))) return undefined;
-  if (lineStartOrEnd(line + 1) >= limit) return undefined;
-  const nonTable = /^[ \t]*(?:$|[^+| \t])/;
-  let l = line + 1;
-  while (l < e8.lineCount() && e8.lineStart(l) < limit && !nonTable.test(e8.lineText(l))) l++;
-  const stopped = l < e8.lineCount() && e8.lineStart(l) < limit;
-  // A pseudo-table of a single rule, the next line not part of it.
-  if (stopped && l === line + 1) return undefined;
-  // Its last line a full rule: the one before where it stopped, or before the end.
-  let last = l - 1;
-  if (!stopped && last >= e8.lineCount()) last = e8.lineCount() - 1;
-  if (!TABLE_EL_RULE.test(e8.lineText(last))) return undefined;
-  return lineStartOrEnd(l);
-}
-
-/** Blocks whose contents are elements, which org-element parses inside them. */
-const GREATER_BLOCKS = ["center-block", "quote-block", "special-block"];
 
 /** Whether a line starts an element, so a paragraph before it ends. */
 export function startsElement(line: number, limit: number): boolean {
@@ -295,167 +201,6 @@ export function startsElement(line: number, limit: number): boolean {
     blockAt(line, limit) !== undefined ||
     latexEnvironmentEnd(line, limit) !== undefined
   );
-}
-
-/** Parses the elements between from and to into parent, as org-element--parse-elements does. */
-function parseElements(
-  parent: Elem,
-  from: number,
-  to: number,
-  afterHeadline: boolean,
-  list?: [Struct, Alist, Alist],
-  firstSection = false,
-): void {
-  let p = from;
-  let previous: string | undefined;
-  // Whether the first section began with a comment, after which a property drawer may come, as Org's top-comment mode has it.
-  let topComment = false;
-  while (p < to) {
-    const line = lineAt(p);
-    const text = e8.bufferText(p, e8.lineEnd(line));
-    const next = lineStartOrEnd(line + 1);
-    let e: Elem;
-    // Planning right after the heading, as Org's parser wants the line before to be the heading's.
-    const afterHeading = line > 0 && e8.lineText(line - 1).startsWith("*");
-    if (afterHeadline && previous === undefined && afterHeading && PLANNING.test(text)) {
-      e = elem("planning", p, Math.min(next, to), parent);
-    } else if (
-      (afterHeadline || firstSection) &&
-      // Right after the heading, or the planning line with no blank line between, as Org's parser has it; in the first
-      // section, at its start after blank lines only, or right after the comment it starts with, as its top-comment mode.
-      ((afterHeadline && previous === undefined && afterHeading) ||
-        (afterHeadline && previous === "planning" && line > 0 && !isBlank(e8.lineText(line - 1))) ||
-        (firstSection && previous === undefined && isBlank(e8.bufferText(0, p))) ||
-        (firstSection && topComment && previous === "comment" && line > 0 && !isBlank(e8.lineText(line - 1)))) &&
-      /^[ \t]*:PROPERTIES:[ \t]*$/i.test(text) &&
-      drawerEnd(line, to) !== undefined &&
-      // As org-property-drawer-re has it, every line inside is a property.
-      Array.from({ length: (drawerEnd(line, to) as number) - line - 1 }, (_, k) => e8.lineText(line + 1 + k)).every((l) =>
-        /^[ \t]*:\S+:(?:[ \t].*)?[ \t]*$/.test(l),
-      )
-    ) {
-      const close = drawerEnd(line, to) as number;
-      e = elem("property-drawer", p, Math.min(lineStartOrEnd(close + 1), to), parent, lineStartOrEnd(line + 1));
-      e.contentsEnd = e8.lineStart(close);
-      for (let l = line + 1; l < close; l++) elem("node-property", e8.lineStart(l), e8.lineStart(l + 1), e);
-    } else if (p === e8.lineStart(line) && !/^[ \t]*\|/.test(text) && tableElEnd(line, to) !== undefined) {
-      // A table.el table: no rows, its text Org's :value; its formula lines after it, as an Org table's.
-      const close = tableElEnd(line, to) as number;
-      let formulas = lineAt(close);
-      while (close < to && formulas < e8.lineCount() && e8.lineStart(formulas) < to && /^[ \t]*#\+TBLFM: +/i.test(e8.lineText(formulas))) formulas++;
-      e = elem("table", p, close >= to ? to : Math.min(lineStartOrEnd(formulas), to), parent);
-      e.tableType = "table.el";
-    } else if (p === e8.lineStart(line) && /^[ \t]*\|/.test(text)) {
-      // Anchored at the line's start, as Org's is: an item's text that starts with a bar is no table.
-      let last = line;
-      while (last + 1 < e8.lineCount() && lineStartOrEnd(last + 1) < to && /^[ \t]*\|/.test(e8.lineText(last + 1))) last++;
-      // Its formula lines belong to it, after its rows, as Org's table parser takes them.
-      let formulas = last;
-      while (formulas + 1 < e8.lineCount() && lineStartOrEnd(formulas + 1) < to && /^[ \t]*#\+TBLFM: +/i.test(e8.lineText(formulas + 1))) formulas++;
-      e = elem("table", p, Math.min(lineStartOrEnd(formulas + 1), to), parent, p);
-      e.tableType = "org";
-      e.contentsEnd = Math.min(lineStartOrEnd(last + 1), to);
-      for (let l = line; l <= last; l++) elem("table-row", e8.lineStart(l), Math.min(lineStartOrEnd(l + 1), to), e);
-    } else if (p === e8.lineStart(line) && itemLineByText(line)) {
-      const [struct, prevs, parents] = list ?? (() => {
-        // Bounded by what holds the list, as org-element--list-struct is, not
-        // by the drawer org-list-context may take a line for.
-        const s = listStruct(line, { up: from, down: to });
-        return [s, prevsAlist(s), parentsAlist(s)] as [Struct, Alist, Alist];
-      })();
-      // As org-element-plain-list-parser does, the list goes on through the
-      // items that follow at the same indentation.
-      const items = [p];
-      for (let next = struct.find((e) => e.pos === getItem(struct, p).end); next && next.ind === getItem(struct, p).ind; ) {
-        items.push(next.pos);
-        const after = next.end;
-        next = struct.find((e) => e.pos === after);
-      }
-      const end = Math.min(getItem(struct, items[items.length - 1]).end, to);
-      e = elem("plain-list", p, end, parent, p);
-      e.contentsEnd = end;
-      for (const pos of items) {
-        const it = getItem(struct, pos);
-        const parts = itemParts(lineAt(pos));
-        const cb = parts && parts.matchEnd < e8.lineEnd(lineAt(pos)) ? parts.matchEnd : undefined;
-        const item = elem("item", pos, Math.min(it.end, to), e, cb);
-        const contentsEnd = Math.min(itemEndBeforeBlank(struct, pos) + 1, item.end, e8.bufferSize());
-        item.contentsEnd = contentsEnd;
-        const start = cb ?? lineStartOrEnd(lineAt(pos) + 1);
-        if (start < contentsEnd) parseElements(item, start, contentsEnd, false, [struct, prevs, parents]);
-      }
-    } else if (p === e8.lineStart(line) && latexEnvironmentEnd(line, to) !== undefined) {
-      // Its text, raw, with no elements or objects in it.
-      const close = latexEnvironmentEnd(line, to) as number;
-      e = elem("latex-environment", p, Math.min(lineStartOrEnd(close + 1), to), parent);
-    } else if (p === e8.lineStart(line) && DRAWER_RE.test(text) && drawerEnd(line, to) !== undefined) {
-      const close = drawerEnd(line, to) as number;
-      e = elem("drawer", p, Math.min(lineStartOrEnd(close + 1), to), parent, lineStartOrEnd(line + 1));
-      e.contentsEnd = e8.lineStart(close);
-      if (close > line + 1) parseElements(e, e.contentsBegin as number, e.contentsEnd, false);
-      else e.contentsBegin = undefined;
-    } else if (p === e8.lineStart(line) && blockAt(line, to) !== undefined) {
-      const block = blockAt(line, to) as { type: string; close: number };
-      const greater = GREATER_BLOCKS.includes(block.type) || block.type === "verse-block";
-      const inside = block.close > line + 1;
-      e = elem(block.type, p, Math.min(lineStartOrEnd(block.close + 1), to), parent, greater && inside ? lineStartOrEnd(line + 1) : undefined);
-      if (greater && inside) e.contentsEnd = e8.lineStart(block.close);
-      if (GREATER_BLOCKS.includes(block.type) && inside) parseElements(e, e.contentsBegin as number, e.contentsEnd as number, false);
-    } else if (p === e8.lineStart(line) && dynamicBlockEnd(line, to) !== undefined) {
-      // A greater element, as a clock table's table is parsed inside it.
-      const close = dynamicBlockEnd(line, to) as number;
-      const inside = close > line + 1;
-      e = elem("dynamic-block", p, Math.min(lineStartOrEnd(close + 1), to), parent, inside ? lineStartOrEnd(line + 1) : undefined);
-      if (inside) {
-        e.contentsEnd = e8.lineStart(close);
-        parseElements(e, e.contentsBegin as number, e.contentsEnd, false);
-      }
-    } else if (p === e8.lineStart(line) && FOOTNOTE_DEFINITION.test(text)) {
-      // A greater element, its contents from after the label, which may be on its line.
-      const parts = footnoteDefinitionParts(line, to);
-      e = elem("footnote-definition", p, parts.end, parent, parts.contentsBegin);
-      if (parts.contentsBegin !== undefined) {
-        e.contentsEnd = parts.contentsEnd;
-        parseElements(e, parts.contentsBegin, parts.contentsEnd as number, false);
-      }
-    } else if (p === e8.lineStart(line) && /^[ \t]*-{5,}[ \t]*$/.test(text)) {
-      e = elem("horizontal-rule", p, Math.min(next, to), parent);
-    } else if (p === e8.lineStart(line) && CLOCK_LINE.test(text)) {
-      e = elem("clock", p, Math.min(next, to), parent);
-    } else if (p === e8.lineStart(line) && /^%%\(/.test(text)) {
-      e = elem("diary-sexp", p, Math.min(next, to), parent);
-    } else if (p === e8.lineStart(line) && COMMENT_LINE.test(text)) {
-      let last = line;
-      while (last + 1 < e8.lineCount() && lineStartOrEnd(last + 1) < to && COMMENT_LINE.test(e8.lineText(last + 1))) last++;
-      e = elem("comment", p, Math.min(lineStartOrEnd(last + 1), to), parent);
-    } else if (p === e8.lineStart(line) && FIXED_WIDTH.test(text)) {
-      let last = line;
-      while (last + 1 < e8.lineCount() && lineStartOrEnd(last + 1) < to && FIXED_WIDTH.test(e8.lineText(last + 1))) last++;
-      e = elem("fixed-width", p, Math.min(lineStartOrEnd(last + 1), to), parent);
-    } else if (p === e8.lineStart(line) && /^[ \t]*#\+\S*:/.test(text)) {
-      e = elem("keyword", p, Math.min(next, to), parent);
-    } else {
-      let last = line;
-      while (last + 1 < e8.lineCount() && lineStartOrEnd(last + 1) < to && !startsElement(last + 1, to)) last++;
-      e = elem("paragraph", p, Math.min(lineStartOrEnd(last + 1), to), parent, p);
-    }
-    postBlank(e, to);
-    if (e.type === "planning") {
-      // Org's planning parser skips the blank lines after it, then goes back to
-      // the start of the line it stopped on: a last line of only spaces, with
-      // no newline, belongs to no element.
-      const ls = e8.lineStart(lineAt(e.end));
-      if (e.end === e8.bufferSize() && ls < e.end && isBlank(e8.bufferText(ls, e.end))) {
-        e.end = ls;
-        previous = e.type;
-        break;
-      }
-    }
-    topComment = firstSection && previous === undefined && p === from && e.type === "comment";
-    previous = e.type;
-    if (e.end <= p) break;
-    p = e.end;
-  }
 }
 
 /**
@@ -663,7 +408,7 @@ function parseBranch(all: Heading[], branch: number | undefined): Elem {
     const sec = elem("section", p, to, parent, p);
     sec.contentsEnd = to;
     // Before the first heading, a property drawer may start the buffer.
-    parseElements(sec, p, to, afterHeadline, undefined, parent.type === "org-data");
+    sectionElements(sec, p, to, afterHeadline);
   };
   if (branch === undefined) {
     section(root, 0, all[0]?.start ?? e8.bufferSize(), false);
@@ -679,6 +424,214 @@ function parseBranch(all: Heading[], branch: number | undefined): Elem {
     parent = e;
   }
   return root;
+}
+
+/**
+ * A section's elements, read by the full parser, the one Org's
+ * org-element-parse-buffer is, as the editing parse holds them: from
+ * `from` to `to`, after a headline or before the first one. Only that
+ * text is read, with the line before it, which says whether a planning
+ * line or a property drawer may start it, so the parse costs what the
+ * entry does.
+ */
+function sectionElements(sec: Elem, from: number, to: number, afterHeadline: boolean): void {
+  const base = afterHeadline ? e8.lineStart(Math.max(0, lineAt(from) - 1)) : 0;
+  const text = e8.bufferSubstringNoProperties(base, to);
+  const acc = withText(
+    text,
+    () => {
+      const acc = node("section", { begin: 0, end: text.length });
+      parseElementsInto(indexOf_(text, base, from), text.length, afterHeadline ? "planning" : "top-comment", undefined, "element", acc);
+      convertPositions(acc, positionsOf(text, base));
+      return acc;
+    },
+    elementSettings,
+  );
+  toElems(acc.contents, sec);
+}
+
+/**
+ * The full parse's elements as the editing parse holds them: an element's
+ * affiliated keywords, as #+NAME:, as keyword elements of their own before
+ * it, which withAffiliated puts back together, and a #+CALL: line as a
+ * keyword, as the editing commands read them.
+ */
+function toElems(nodes: Datum[], parent: Elem): void {
+  for (const d of nodes) {
+    if (typeof d === "string" || isObject(d)) continue;
+    const n = d as Node;
+    const begin: number = n.p.begin;
+    const pa: number = n.p["post-affiliated"] ?? begin;
+    // A last line of only blanks, with no newline, which the full parse
+    // makes a paragraph, is no element to org-element-at-point.
+    if (n.type === "paragraph" && n.p.end === e8.bufferSize() && !/\S/.test(e8.bufferText(begin, n.p.end))) continue;
+    for (let q = begin; q < pa; ) {
+      const next = Math.min(lineStartOrEnd(lineAt(q) + 1), pa);
+      elem("keyword", q, next, parent);
+      if (next <= q) break;
+      q = next;
+    }
+    const e = elem(n.type === "babel-call" ? "keyword" : n.type, pa, n.p.end, parent, n.p["contents-begin"]);
+    // A paragraph's contents end is left out, as the editing commands take
+    // its end, and a table row's contents, its cells, are no elements; an
+    // empty property drawer's contents are the empty text inside it.
+    if (n.type === "table-row") e.contentsBegin = undefined;
+    else if (n.p["contents-end"] !== undefined && n.type !== "paragraph") e.contentsEnd = n.p["contents-end"];
+    if (n.type === "property-drawer" && e.contentsBegin === undefined) e.contentsBegin = e.contentsEnd = lineStartOrEnd(lineAt(pa) + 1);
+    if (n.type === "table") e.tableType = n.p.type === "table.el" ? "table.el" : "org";
+    toElems(n.contents, e);
+  }
+}
+
+/** Keywords whose values hold objects, as org-element-parsed-keywords. */
+const PARSED_KEYWORDS = ["CAPTION"];
+
+/**
+ * The innermost object around a position, as org-element-context finds
+ * it: in the element there, only where it holds objects (a paragraph's
+ * contents, a table row's cells, a verse block's, a heading's title, an
+ * item's tag, a parsed affiliated keyword's value), and, right after an
+ * object with no space after it, that object if no other starts there.
+ * Undefined where Org's context is the element itself. Positions are the
+ * buffer's; each object's parent is the object it is in, the outermost's
+ * none.
+ */
+export function objectAt(pos: number): Node | undefined {
+  return e8.saveRestriction(() => {
+    e8.widen();
+    const region = objectRegion(pos);
+    if (!region) return undefined;
+    const { from, to, type } = region;
+    const text = e8.bufferSubstringNoProperties(from, to);
+    return withText(
+      text,
+      () => {
+        const at = indexOf_(text, from, pos);
+        let restrict = restriction(type);
+        let parent: Node | undefined;
+        let last: Node | undefined;
+        let q = 0;
+        let result: Node | undefined;
+        for (;;) {
+          const next = objectLex(q - OFF, restrict);
+          if (next) next.parent = parent;
+          if (!next || next.p.begin > at) {
+            result = last ?? parent;
+            break;
+          }
+          const end: number = next.p.end;
+          const cb: number | undefined = next.p["contents-begin"];
+          const ce: number | undefined = next.p["contents-end"];
+          const max = OFF + S.length;
+          if (end <= at && max !== end) {
+            q = end;
+            if (end === at && !/[ \t]/.test(S[end - OFF - 1] ?? "")) last = next;
+          } else if (cb !== undefined && ce !== undefined && at >= cb && (at < ce || (at === ce && (max === at || !/[ \t]/.test(S[at - OFF - 1] ?? ""))))) {
+            S = S.slice(cb - OFF, ce - OFF);
+            OFF = cb;
+            sliced.clear();
+            q = cb;
+            parent = next;
+            last = undefined;
+            restrict = restriction(next.type);
+          } else {
+            result = next;
+            break;
+          }
+        }
+        if (result) {
+          const toBuffer = positionsOf(text, from);
+          for (let n: Node | undefined = result; n; n = n.parent) convertPositions({ ...n, contents: [] } as Node, toBuffer);
+        }
+        return result;
+      },
+      bufferSettings,
+    );
+  });
+}
+
+/**
+ * Where objects can be around a position, as org-element-context narrows
+ * to them, and the type whose restriction says which: a paragraph's
+ * contents, a table row's cells, a verse block's, a heading's title, an
+ * item's tag, a parsed affiliated keyword's value; undefined elsewhere.
+ * The buffer is taken whole.
+ */
+export function objectRegion(pos: number): { from: number; to: number; type: string } | undefined {
+  return e8.saveRestriction(() => {
+    e8.widen();
+    const found = elementAt(pos);
+    if (!found) return undefined;
+    const e = withAffiliated(found)!;
+    const line = lineAt(pos);
+    let from: number;
+    let to: number;
+    let type = e.type;
+    if (e.postAffiliated !== undefined && pos < e.postAffiliated) {
+      // On an affiliated keyword: its value, or a dual value in brackets, if it holds objects.
+      const text = e8.lineText(line);
+      const m = /^[ \t]*#\+((?:CAPTION|RESULTS)(?:\[(.*)\])?|[A-Z_]+[^:]*):[ \t]*/i.exec(text);
+      if (!m) return undefined;
+      const name = m[1].replace(/\[.*$/, "").toUpperCase();
+      if (!PARSED_KEYWORDS.includes(name)) return undefined;
+      const ls = e8.lineStart(line);
+      const valueAt = ls + charCount(m[0]);
+      if (valueAt <= pos) [from, to] = [valueAt, e8.lineEnd(line)];
+      else if (m[2] !== undefined) {
+        const dual = ls + charCount(m[0].slice(0, m[0].indexOf("[") + 1));
+        if (!(pos >= dual && pos < dual + charCount(m[2]))) return undefined;
+        [from, to] = [dual, dual + charCount(m[2])];
+      } else return undefined;
+      type = "keyword";
+    } else if (e.type === "item") {
+      // Only in its tag, on its first line.
+      if (line !== lineAt(e.begin)) return undefined;
+      const m = /^([ \t]*(?:[-+*]|(?:[0-9]+|[A-Za-z])[.)])(?:[ \t]+|$)(?:\[@(?:start:)?(?:[0-9]+|[A-Za-z])\][ \t]*)?(?:\[[ X-]\](?:[ \t]+|$))?)(.*)[ \t]+::(?:[ \t]+|$)/.exec(e8.lineText(line));
+      if (!m) return undefined;
+      from = e8.lineStart(line) + charCount(m[1]);
+      to = from + charCount(m[2]);
+      if (!(pos >= from && pos < to)) return undefined;
+    } else if (e.type === "headline") {
+      const h = parseHeading(lineAt(e.begin));
+      if (!h || !h.title) return undefined;
+      from = h.titleAt;
+      to = h.titleAt + charCount(h.title);
+      if (h.title.startsWith("COMMENT")) from += 7;
+      // Before the title, on the stars, the keyword or the priority, the context is the heading.
+      if (pos < from) return undefined;
+      if (from >= to) return undefined;
+    } else if (e.type === "paragraph" || e.type === "table-row" || e.type === "verse-block") {
+      if (e.type === "paragraph") [from, to] = [e.contentsBegin ?? e.begin, lineStartOrEnd(lineAt(endBeforeBlank(e)) + 1)];
+      else if (e.type === "verse-block") {
+        if (e.contentsBegin === undefined) return undefined;
+        [from, to] = [e.contentsBegin, e.contentsEnd!];
+      } else {
+        // A standard row's cells, from after its first bar to its last non-blank character; a rule has none.
+        const text = e8.lineText(lineAt(e.begin));
+        if (/^[ \t]*\|-/.test(text)) return undefined;
+        from = e8.lineStart(lineAt(e.begin)) + charCount(text.slice(0, text.indexOf("|") + 1));
+        to = e8.lineStart(lineAt(e.begin)) + charCount(text.replace(/[ \t]+$/, ""));
+      }
+      if (!(pos >= from && (pos < to || (pos === to && pos === e8.bufferSize())))) return undefined;
+    } else return undefined;
+    return { from, to, type };
+  });
+}
+
+/** The settings an element parse needs, made again only when they change: radio targets are objects, so no text is read for them. */
+let lastElementSettings: { key: string; settings: ParseSettings } | undefined;
+function elementSettings(): ParseSettings {
+  const key = [
+    allKeywords().join(" "),
+    linkTypeEntries().length,
+    String(e8.variable("org-plain-list-ordered-item-terminator")),
+    String(e8.variable("org-list-allow-alphabetical")),
+    String(e8.defaultValue("org-plain-list-ordered-item-terminator")),
+    String(e8.defaultValue("org-list-allow-alphabetical")),
+    String(e8.variable("org-odd-levels-only")),
+  ].join("\0");
+  if (lastElementSettings?.key !== key) lastElementSettings = { key, settings: settings("") };
+  return lastElementSettings.settings;
 }
 
 /**
@@ -1193,7 +1146,7 @@ function settings(text: string): ParseSettings {
   const gterm = gtv === 41 || gtv === ")" ? "\\)" : gtv === 46 || gtv === "." ? "\\." : "[.)]";
   const galpha = on(e8.defaultValue("org-list-allow-alphabetical")) ? "|[A-Za-z]" : "";
   const separate = new RegExp(
-    "^(?:\\*+ |\\[fn:[-_\\p{L}\\p{N}]+\\]|%%\\(|[ \\t]*(?:$|\\||\\+(?:-+\\+)+[ \\t]*$" +
+    `^(?:\\*+ |\\[fn:${FOOTNOTE_LABEL}\\]|%%` + "\\(|[ \\t]*(?:$|\\||\\+(?:-+\\+)+[ \\t]*$" +
       `|#(?: |$|\\+(?:BEGIN_${NOT_SPACE}+|${NOT_SPACE}+(?:\\[[^\\n]*\\])?:[ \\t]*))` +
       "|:(?: |$|[-_\\p{L}\\p{N}]+:[ \\t]*$)|-{5,}[ \\t]*$|\\\\begin\\{([A-Za-z0-9*]+)\\}" +
       `|${CLOCK_RE_SOURCE}|(?:[-+*]|(?:[0-9]+${galpha})${gterm})(?:[ \\t]|$)))`,
@@ -1234,7 +1187,7 @@ const RX = {
   propertyDrawer: `^[ \\t]*:PROPERTIES:[ \\t]*\\n(?:[ \\t]*:${NOT_SPACE}+:(?:[ \\t][^\\n]*)?[ \\t]*\\n)*?[ \\t]*:END:[ \\t]*$`,
   property: `^([ \\t]*)(:(${NOT_SPACE}+):)(?:()$|[ \\t]+([^\\n]*?))([ \\t]*)$`,
   latexBegin: "^[ \\t]*\\\\begin\\{([A-Za-z0-9*]+)\\}",
-  footnoteDefinition: "^\\[fn:([-_\\p{L}\\p{N}]+)\\]",
+  footnoteDefinition: `^\\[fn:(${FOOTNOTE_LABEL})\\]`,
   fullItem:
     "^[ \\t]*((?:[-+*]|(?:[0-9]+|[A-Za-z])[.)])(?:[ \\t]+|$))(?:\\[@(?:start:)?([0-9]+|[A-Za-z])\\][ \\t]*)?(?:(\\[[ X-]\\])(?:[ \\t]+|$))?(?:([^\\n]*)([ \\t]+::(?:[ \\t]+|$)))?",
   affiliated:
@@ -1243,7 +1196,7 @@ const RX = {
   target: "<<([^<>\\n \\t]|[^<>\\n \\t][^<>\\n]*[^<>\\n \\t])>>",
   radioTarget: "<<<([^<>\\n \\t]|[^<>\\n \\t][^<>\\n]*[^<>\\n \\t])>>>",
   linkBracket: "\\[\\[((?:[^\\]\\[\\\\]|\\\\(?:\\\\\\\\)*[\\]\\[]|\\\\+[^\\]\\[])+)\\](?:\\[([\\s\\S]+?)\\])?\\]",
-  footnote: "\\[fn:(?:([-_\\p{L}\\p{N}]+)?(:)|([-_\\p{L}\\p{N}]+)\\])",
+  footnote: `\\[fn:(?:(${FOOTNOTE_LABEL})?(:)|(${FOOTNOTE_LABEL})\\])`,
   substring:
     `(${NOT_SPACE})([_^])((?:\\{([^{}]*?|(?:[^{}]*?\\{[^{}]*?\\})+[^{}]*?|(?:[^{}]*?\\{(?:[^{}]*?\\{[^{}]*?\\})+[^{}]*?\\})+[^{}]*?)\\})` +
     "|(?:\\(([^()]*?|(?:[^()]*?\\([^()]*?\\))+[^()]*?|(?:[^()]*?\\((?:[^()]*?\\([^()]*?\\))+[^()]*?\\))+[^()]*?)\\))|(?:\\*|[+-]?[\\p{L}\\p{N}.,\\\\]*[\\p{L}\\p{N}]))",
@@ -1354,10 +1307,10 @@ function dynamicBlockParser(p: number, limit: number, aff: Affiliated): Node {
 }
 
 function footnoteDefinitionParser(p: number, limit: number, aff: Affiliated): Node {
-  const label = la(re(RX.footnoteDefinition, "ymu"), p)![1];
+  const label = la(re(RX.footnoteDefinition, "ymui"), p)![1];
   const begin = aff.begin;
   let end: number;
-  const sep = search(re(`^\\*+ |${RX.footnoteDefinition}|^(?:[ \\t]*\\n){2,}`, "gmu"), lep(p), limit);
+  const sep = search(re(`^\\*+ |${RX.footnoteDefinition}|^(?:[ \\t]*\\n){2,}`, "gmui"), lep(p), limit);
   if (!sep) end = limit;
   else if (S[sep.index] === "[") {
     let q = prevLine(sep.index + sep[0].length);
@@ -2195,7 +2148,7 @@ function currentElement(p: number, limit: number, granularity: string | undefine
     if (m[2] !== undefined) return babelCallParser(p, limit, aff);
     return keywordParser(p, limit, aff);
   }
-  if (la(re(RX.footnoteDefinition, "ymu"), p)) return footnoteDefinitionParser(p, limit, aff);
+  if (la(re(RX.footnoteDefinition, "ymui"), p)) return footnoteDefinitionParser(p, limit, aff);
   if (la(re("[ \\t]*-----+[ \\t]*$", "ym"), p)) return horizontalRuleParser(p, limit, aff);
   if (la(re("%%\\(", "y"), p)) return diarySexpParser(p, limit, aff);
   if (la(re("[ \\t]*\\|", "y"), p) || tableElHere(p, limit)) return tableParser(p, limit, aff);
