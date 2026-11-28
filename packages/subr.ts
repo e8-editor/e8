@@ -570,13 +570,22 @@ e8.defineMinorMode({
  * `confirm`, reads it twice and starts over until both agree.
  */
 export async function readPasswd(prompt: string, confirm = false, def?: string): Promise<string> {
+  return readPasswdSync(prompt, confirm, def);
+}
+
+/**
+ * As readPasswd, giving the password itself rather than a promise of it,
+ * for code that does not await, such as epg.ts answering gpg's request
+ * for a passphrase, as Emacs's read-passwd returns its answer.
+ */
+export function readPasswdSync(prompt: string, confirm = false, def?: string): string {
   if (confirm) {
     for (;;) {
-      const first = await readPasswd(prompt, false, def);
-      const second = await readPasswd("Confirm password: ", false, def);
+      const first = readPasswdSync(prompt, false, def);
+      const second = readPasswdSync("Confirm password: ", false, def);
       if (first === second) return first;
       e8.message("Password not repeated accurately; please start over");
-      await e8.sitFor(1);
+      e8.sitFor(1);
     }
   }
   const setup = () => {
@@ -589,7 +598,7 @@ export async function readPasswd(prompt: string, confirm = false, def?: string):
   };
   e8.addHook("minibuffer-setup-hook", setup);
   try {
-    return await e8.letBind({ "enable-recursive-minibuffers": true }, () => e8.readString(prompt, { default: def, history: "t" }));
+    return e8.letBind({ "enable-recursive-minibuffers": true }, () => e8.readString(prompt, { default: def, history: "t" }));
   } finally {
     e8.removeHook("minibuffer-setup-hook", setup);
   }

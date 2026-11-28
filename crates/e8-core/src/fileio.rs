@@ -615,6 +615,10 @@ impl Editor {
     /// auto-saved, as Emacs's `do-auto-save`, and says so unless `quiet`.
     /// Returns whether anything was written.
     pub fn do_auto_save(&mut self, quiet: bool) -> bool {
+        // auto-save-hook first, in the current buffer, as Emacs runs it.
+        if let Err(e) = self.run_hooks("auto-save-hook") {
+            self.message(format!("Error in auto-save-hook: {e}"));
+        }
         let mut saved = false;
         let mut failed = None;
         for b in &mut self.buffers {
