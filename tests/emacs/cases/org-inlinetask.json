@@ -1181,6 +1181,476 @@
   "keys": "S-<tab> S-<tab> C-s B o d y RET"
  },
  {
+  "name": "inlinetask-review-checkbox-in-a-task",
+  "text": "* H\n*************** TODO T [%]\n- [ ] a\n- [X] b\n*************** END\n",
+  "point": 31,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c"
+ },
+ {
+  "name": "inlinetask-review-checkbox-fraction-in-a-task",
+  "text": "* H\n*************** TODO T [/]\n- [ ] a\n- [X] b\n*************** END\n",
+  "point": 31,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c"
+ },
+ {
+  "name": "inlinetask-review-cookie-on-the-task",
+  "text": "* H\n*************** TODO T [%]\n- [ ] a\n- [X] b\n*************** END\n",
+  "point": 28,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c"
+ },
+ {
+  "name": "inlinetask-review-refile-from-a-task",
+  "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+  "point": 23,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-w",
+  "answers": [
+   "Heading B"
+  ],
+  "visit": "e8-oracle-refile.org"
+ },
+ {
+  "name": "inlinetask-review-refile-from-a-task-body",
+  "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+  "point": 57,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-w",
+  "answers": [
+   "Heading B"
+  ],
+  "visit": "e8-oracle-refile.org"
+ },
+ {
+  "name": "inlinetask-review-list-indent-item",
+  "text": "* H\n- one\n- two\n*************** TODO In item\nbody\n*************** END\n- three\n",
+  "point": 10,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "M-<right>"
+ },
+ {
+  "name": "inlinetask-review-list-indent-tree",
+  "text": "* H\n- one\n- two\n*************** TODO In item\nbody\n*************** END\n- three\n",
+  "point": 10,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "M-S-<right>"
+ },
+ {
+  "name": "inlinetask-review-list-indent-and-outdent-tree",
+  "text": "* H\n- one\n- two\n*************** TODO In item\nbody\n*************** END\n- three\n",
+  "point": 10,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "M-S-<right> M-S-<left>"
+ },
+ {
+  "name": "inlinetask-review-list-indent-region",
+  "text": "* H\n- one\n- two\n*************** TODO In item\nbody\n*************** END\n- three\n",
+  "point": 10,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-SPC C-n C-n C-n C-n M-<right>"
+ },
+ {
+  "name": "inlinetask-review-list-bullets",
+  "text": "* H\n- one\n- two\n*************** TODO In item\nbody\n*************** END\n- three\n",
+  "point": 4,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c - C-c -"
+ },
+ {
+  "name": "inlinetask-review-cookies-around-a-task",
+  "text": "* H [/]\n- [X] h1\n*************** TODO T [/]\n- [X] a\n- [ ] b\n*************** END\n",
+  "point": 5,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c"
+ },
+ {
+  "name": "inlinetask-review-cookies-after-a-task",
+  "text": "* H [/]\n- [X] h1\n*************** TODO T [/]\n- [X] a\n- [ ] b\n*************** END\n- [ ] c\n",
+  "point": 80,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c"
+ },
+ {
+  "name": "inlinetask-review-clone-in-a-task",
+  "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+  "point": 57,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-x c",
+  "answers": [
+   "1"
+  ]
+ },
+ {
+  "name": "inlinetask-review-tags-view",
+  "text": "* Heading A :proj:\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+  "point": 0,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "",
+  "call": [
+   "org-tags-view"
+  ],
+  "answers": [
+   "proj"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-11-27",
+  "agenda_files": true,
+  "windows": true,
+  "globals": {
+   "org-agenda-use-time-grid": false
+  }
+ },
+ {
+  "name": "inlinetask-review-tags-view-level",
+  "text": "* Heading A :proj:\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+  "point": 0,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "",
+  "call": [
+   "org-tags-view"
+  ],
+  "answers": [
+   "LEVEL>1"
+  ],
+  "visit": "e8-agenda.org",
+  "today": "2026-11-27",
+  "agenda_files": true,
+  "windows": true,
+  "globals": {
+   "org-agenda-use-time-grid": false
+  }
+ },
+ {
+  "name": "inlinetask-review-columns",
+  "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+  "point": 0,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-x C-c",
+  "displayed": true
+ },
+ {
+  "name": "inlinetask-review-show-children",
+  "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+  "point": 0,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "S-<tab> C-c TAB"
+ },
+ {
+  "name": "inlinetask-review-show-branches",
+  "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+  "point": 0,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "S-<tab> C-c C-k"
+ },
+ {
+  "name": "inlinetask-review-mark-subtree-on-a-task",
+  "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+  "point": 23,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c @"
+ },
+ {
+  "name": "inlinetask-review-toggle-heading-on-a-task",
+  "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+  "point": 23,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c *"
+ },
+ {
+  "name": "inlinetask-review-toggle-heading-on-an-item-in-a-task",
+  "text": "* H\n*************** TODO T\n- a\n*************** END\n",
+  "point": 27,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c *"
+ },
+ {
+  "name": "inlinetask-review-adapt-demote",
+  "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+  "point": 0,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "M-<right>",
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "inlinetask-review-adapt-demote-and-promote",
+  "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+  "point": 0,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "M-<right> M-<left>",
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "inlinetask-review-adapt-tab-in-a-task",
+  "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+  "point": 57,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "TAB",
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "inlinetask-review-adapt-tab-after-a-task",
+  "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+  "point": 87,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "TAB",
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "inlinetask-review-adapt-indent-buffer",
+  "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+  "point": 0,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-x h C-M-\\",
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "inlinetask-review-adapt-demote-subtree",
+  "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+  "point": 0,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "M-S-<right>",
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "inlinetask-review-tags-before-the-first-heading",
+  "text": "*************** TODO First\nbody\n*************** END\n* H\n",
+  "point": 27,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-q",
+  "answers": [
+   "x"
+  ]
+ },
+ {
+  "name": "inlinetask-review-property-before-the-first-heading",
+  "text": "*************** TODO First\nbody\n*************** END\n* H\n",
+  "point": 27,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-x p",
+  "answers": [
+   "OWNER",
+   "me"
+  ]
+ },
+ {
+  "name": "inlinetask-review-copy-subtree-before-the-first-heading",
+  "text": "*************** TODO First\nbody\n*************** END\n* H\n",
+  "point": 27,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-x M-w"
+ },
+ {
+  "name": "inlinetask-review-sort-in-a-task-body",
+  "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+  "point": 57,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c ^",
+  "answers": [
+   "a"
+  ]
+ },
+ {
+  "name": "inlinetask-review-agenda-archive",
+  "text": "#+ARCHIVE: ::* Archive\n* TODO A\n*************** TODO Task\nbody\n*************** END\n** TODO A1\n* TODO B\n",
+  "point": 0,
+  "require": [
+   "org-inlinetask"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "n n $",
+  "call": [
+   "org-todo-list"
+  ],
+  "files": {
+   "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n*************** TODO Task\nbody\n*************** END\n** TODO A1\n* TODO B\n"
+  },
+  "find": "t.org",
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "message": true,
+  "vars": {
+   "org-archive-save-context-info": [
+    "'todo",
+    "'category",
+    "'olpath",
+    "'itags",
+    "'ltags"
+   ]
+  }
+ },
+ {
   "name": "inlinetask-export-ascii",
   "text": "#+OPTIONS: toc:nil author:nil\n* Heading\nText before.\n*************** TODO A one-line task\nBetween the tasks.\n*************** DONE [#A] A task with a body :work:\nThe task's *body*.\n- an item\n*************** END\nText after.\n",
   "point": 0,

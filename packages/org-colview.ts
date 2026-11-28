@@ -25,7 +25,8 @@ import { linkDisplayFormat, linkHeadingSearchString, linkMakeString, linkUnescap
 import { clockSpecialRange, clockSum } from "org-clock";
 import { truthy } from "subr";
 import { findEntryWithId } from "org-id";
-import { allTagsOf, createDblock, dynamicBlockDefine, makeTagsMatcher, plistGet, updateDblock } from "org";
+import { limitedStars } from "org-macs";
+import { allTagsOf, isInlinetask, createDblock, dynamicBlockDefine, makeTagsMatcher, plistGet, updateDblock } from "org";
 
 for (const [name, value, doc] of [
   ["org-columns-default-format", "%25ITEM %TODO %3PRIORITY %TAGS", "The columns column view shows where no COLUMNS property or #+COLUMNS: line says otherwise."],
@@ -347,7 +348,15 @@ function displayedValue(spec: Spec, value: string, h: Heading, noStar = false): 
   if (spec.property === "ITEM") {
     if (noStar) return linkDisplayFormat(value);
     const lead = truthy(e8.variable("org-hide-leading-stars") ?? null) ? " " : "*";
-    return `${lead.repeat(h.level - 1)}* ${linkDisplayFormat(value)}`;
+    // As org-current-level: an inline task's is the heading's it is in.
+    let level = h.level;
+    if (isInlinetask(h)) {
+      const all = headings();
+      let k = headingIndex(all, h.line) ?? -1;
+      while (k >= 0 && all[k].level > limitedStars()) k--;
+      level = k < 0 ? 1 : all[k].level;
+    }
+    return `${lead.repeat(Math.max(0, level - 1))}* ${linkDisplayFormat(value)}`;
   }
   if (["DEADLINE", "SCHEDULED", "TIMESTAMP"].includes(spec.property)) return value.replace(/<([0-9]{4}-[0-9]{2}-[0-9]{2}(?: [^>\n]*?)?)>/g, "[$1]");
   if (spec.printf === undefined) return value;

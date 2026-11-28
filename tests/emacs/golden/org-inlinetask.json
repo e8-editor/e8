@@ -2329,6 +2329,913 @@
       "error": null
     },
     {
+      "name": "inlinetask-review-checkbox-in-a-task",
+      "input": {
+        "text": "* H\n*************** TODO T [%]\n- [ ] a\n- [X] b\n*************** END\n",
+        "point": 31,
+        "keys": "C-c C-c",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* H\n*************** TODO T [100%]\n- [X] a\n- [X] b\n*************** END\n",
+      "visible": "* H\n*************** TODO T [100%]\n- [X] a\n- [X] b\n*************** END\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-review-checkbox-fraction-in-a-task",
+      "input": {
+        "text": "* H\n*************** TODO T [/]\n- [ ] a\n- [X] b\n*************** END\n",
+        "point": 31,
+        "keys": "C-c C-c",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* H\n*************** TODO T [2/2]\n- [X] a\n- [X] b\n*************** END\n",
+      "visible": "* H\n*************** TODO T [2/2]\n- [X] a\n- [X] b\n*************** END\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-review-cookie-on-the-task",
+      "input": {
+        "text": "* H\n*************** TODO T [%]\n- [ ] a\n- [X] b\n*************** END\n",
+        "point": 28,
+        "keys": "C-c C-c",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* H\n*************** TODO T [50%]\n- [ ] a\n- [X] b\n*************** END\n",
+      "visible": "* H\n*************** TODO T [50%]\n- [ ] a\n- [X] b\n*************** END\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-review-refile-from-a-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+        "point": 23,
+        "keys": "C-c C-w",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-refile.org",
+        "answers": [
+          "Heading B"
+        ]
+      },
+      "text": "* Heading A\nSome text.\n* Heading B\nB text.\n** Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n*** Child\nChild text.\n",
+      "visible": "* Heading A\nSome text.\n* Heading B\nB text.\n** Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n*** Child\nChild text.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-review-refile-from-a-task-body",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+        "point": 57,
+        "keys": "C-c C-w",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-refile.org",
+        "answers": [
+          "Heading B"
+        ]
+      },
+      "text": "* Heading A\nSome text.\n* Heading B\nB text.\n** Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n*** Child\nChild text.\n",
+      "visible": "* Heading A\nSome text.\n* Heading B\nB text.\n** Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n*** Child\nChild text.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-review-list-indent-item",
+      "input": {
+        "text": "* H\n- one\n- two\n*************** TODO In item\nbody\n*************** END\n- three\n",
+        "point": 10,
+        "keys": "M-<right>",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* H\n- one\n  - two\n*************** TODO In item\nbody\n*************** END\n- three\n",
+      "visible": "* H\n- one\n  - two\n*************** TODO In item\nbody\n*************** END\n- three\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-review-list-indent-tree",
+      "input": {
+        "text": "* H\n- one\n- two\n*************** TODO In item\nbody\n*************** END\n- three\n",
+        "point": 10,
+        "keys": "M-S-<right>",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* H\n- one\n  - two\n*************** TODO In item\nbody\n*************** END\n- three\n",
+      "visible": "* H\n- one\n  - two\n*************** TODO In item\nbody\n*************** END\n- three\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-review-list-indent-and-outdent-tree",
+      "input": {
+        "text": "* H\n- one\n- two\n*************** TODO In item\nbody\n*************** END\n- three\n",
+        "point": 10,
+        "keys": "M-S-<right> M-S-<left>",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* H\n- one\n- two\n*************** TODO In item\nbody\n*************** END\n- three\n",
+      "visible": "* H\n- one\n- two\n*************** TODO In item\nbody\n*************** END\n- three\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-review-list-indent-region",
+      "input": {
+        "text": "* H\n- one\n- two\n*************** TODO In item\nbody\n*************** END\n- three\n",
+        "point": 10,
+        "keys": "C-SPC C-n C-n C-n C-n M-<right>",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* H\n- one\n  - two\n*************** TODO In item\nbody\n*************** END\n- three\n",
+      "visible": "* H\n- one\n  - two\n*************** TODO In item\nbody\n*************** END\n- three\n",
+      "point": 72,
+      "mark": 10,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-review-list-bullets",
+      "input": {
+        "text": "* H\n- one\n- two\n*************** TODO In item\nbody\n*************** END\n- three\n",
+        "point": 4,
+        "keys": "C-c - C-c -",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* H\n1. one\n2. two\n*************** TODO In item\nbody\n*************** END\n3. three\n",
+      "visible": "* H\n1. one\n2. two\n*************** TODO In item\nbody\n*************** END\n3. three\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-review-cookies-around-a-task",
+      "input": {
+        "text": "* H [/]\n- [X] h1\n*************** TODO T [/]\n- [X] a\n- [ ] b\n*************** END\n",
+        "point": 5,
+        "keys": "C-c C-c",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* H [2/3]\n- [X] h1\n*************** TODO T [1/2]\n- [X] a\n- [ ] b\n*************** END\n",
+      "visible": "* H [2/3]\n- [X] h1\n*************** TODO T [1/2]\n- [X] a\n- [ ] b\n*************** END\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-review-cookies-after-a-task",
+      "input": {
+        "text": "* H [/]\n- [X] h1\n*************** TODO T [/]\n- [X] a\n- [ ] b\n*************** END\n- [ ] c\n",
+        "point": 80,
+        "keys": "C-c C-c",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* H [3/4]\n- [X] h1\n*************** TODO T [1/2]\n- [X] a\n- [ ] b\n*************** END\n- [X] c\n",
+      "visible": "* H [3/4]\n- [X] h1\n*************** TODO T [1/2]\n- [X] a\n- [ ] b\n*************** END\n- [X] c\n",
+      "point": 84,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-review-clone-in-a-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+        "point": 57,
+        "keys": "C-c C-x c",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1"
+        ]
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-review-tags-view",
+      "input": {
+        "text": "* Heading A :proj:\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+        "point": 0,
+        "keys": "",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-tags-view"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-11-27",
+        "agenda_files": true,
+        "answers": [
+          "proj"
+        ],
+        "globals": {
+          "org-agenda-use-time-grid": false
+        }
+      },
+      "text": "Headlines with TAGS match: proj\nPress ‘C-u r’ to search again\n  e8-agenda:  Heading A                                                  :proj:\n  e8-agenda:  TODO Task one                                           :proj::x:\n  e8-agenda:  Child                                                     :proj::\n",
+      "visible": "Headlines with TAGS match: proj\nPress ‘C-u r’ to search again\n  e8-agenda:  Heading A                                                  :proj:\n  e8-agenda:  TODO Task one                                           :proj::x:\n  e8-agenda:  Child                                                     :proj::\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "inlinetask-review-tags-view-level",
+      "input": {
+        "text": "* Heading A :proj:\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+        "point": 0,
+        "keys": "",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-tags-view"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-11-27",
+        "agenda_files": true,
+        "answers": [
+          "LEVEL>1"
+        ],
+        "globals": {
+          "org-agenda-use-time-grid": false
+        }
+      },
+      "text": "Headlines with TAGS match: LEVEL>1\nPress ‘C-u r’ to search again\n  e8-agenda:  TODO Task one                                           :proj::x:\n  e8-agenda:  Child                                                     :proj::\n",
+      "visible": "Headlines with TAGS match: LEVEL>1\nPress ‘C-u r’ to search again\n  e8-agenda:  TODO Task one                                           :proj::x:\n  e8-agenda:  Child                                                     :proj::\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "inlinetask-review-columns",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+        "point": 0,
+        "keys": "C-c C-x C-c",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+      "visible": "* He\nSome text.\n****\nBody one.\n*************** END\nMore text.\n** C\nChild text.\n* Heading B\nB text.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "displayed": "* Heading A               |      | B   |      |\nSome text.\n* Task one                | TODO | B   | :x:  |\nBody one.\n*************** END\nMore text.\n** Child                  |      | B   |      |\nChild text.\n* Heading B\nB text.\n"
+    },
+    {
+      "name": "inlinetask-review-show-children",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+        "point": 0,
+        "keys": "S-<tab> C-c TAB",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+      "visible": "* Heading A\n** Child\n* Heading B",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-review-show-branches",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+        "point": 0,
+        "keys": "S-<tab> C-c C-k",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+      "visible": "* Heading A\n** Child\n* Heading B",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-review-mark-subtree-on-a-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+        "point": 23,
+        "keys": "C-c @",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+      "point": 0,
+      "mark": 119,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-review-toggle-heading-on-a-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+        "point": 23,
+        "keys": "C-c *",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n** *************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+      "visible": "* Heading A\nSome text.\n** *************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-review-toggle-heading-on-an-item-in-a-task",
+      "input": {
+        "text": "* H\n*************** TODO T\n- a\n*************** END\n",
+        "point": 27,
+        "keys": "C-c *",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* H\n*************** TODO T\n** a\n\n*************** END\n",
+      "visible": "* H\n*************** TODO T\n** a\n\n*************** END\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-review-adapt-demote",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+        "point": 0,
+        "keys": "M-<right>",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "** Heading A\n Some text.\n*************** TODO Task one :x:\n Body one.\n*************** END\n More text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+      "visible": "** Heading A\n Some text.\n*************** TODO Task one :x:\n Body one.\n*************** END\n More text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-review-adapt-demote-and-promote",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+        "point": 0,
+        "keys": "M-<right> M-<left>",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-review-adapt-tab-in-a-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+        "point": 57,
+        "keys": "TAB",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\n  Body one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO Task one :x:\n  Body one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+      "point": 59,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-review-adapt-tab-after-a-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+        "point": 87,
+        "keys": "TAB",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+      "point": 87,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-review-adapt-indent-buffer",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+        "point": 0,
+        "keys": "C-x h C-M-\\",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* Heading A\n  Some text.\n*************** TODO Task one :x:\n  Body one.\n*************** END\n  More text.\n** Child\n   Child text.\n* Heading B\n  B text.\n",
+      "visible": "* Heading A\n  Some text.\n*************** TODO Task one :x:\n  Body one.\n*************** END\n  More text.\n** Child\n   Child text.\n* Heading B\n  B text.\n",
+      "point": 0,
+      "mark": 150,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-review-adapt-demote-subtree",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+        "point": 0,
+        "keys": "M-S-<right>",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "** Heading A\n Some text.\n *************** TODO Task one :x:\n Body one.\n *************** END\n More text.\n*** Child\n Child text.\n* Heading B\nB text.\n",
+      "visible": "** Heading A\n Some text.\n *************** TODO Task one :x:\n Body one.\n *************** END\n More text.\n*** Child\n Child text.\n* Heading B\nB text.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-review-tags-before-the-first-heading",
+      "input": {
+        "text": "*************** TODO First\nbody\n*************** END\n* H\n",
+        "point": 27,
+        "keys": "C-c C-q",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "x"
+        ]
+      },
+      "text": "*************** TODO First\nbody\n*************** END\n* H\n",
+      "visible": "*************** TODO First\nbody\n*************** END\n* H\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Setting file tags is not supported yet"
+    },
+    {
+      "name": "inlinetask-review-property-before-the-first-heading",
+      "input": {
+        "text": "*************** TODO First\nbody\n*************** END\n* H\n",
+        "point": 27,
+        "keys": "C-c C-x p",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "OWNER",
+          "me"
+        ]
+      },
+      "text": ":PROPERTIES:\n:OWNER:    me\n:END:\n*************** TODO First\nbody\n*************** END\n* H\n",
+      "visible": ":PROPERTIES:\n*************** TODO First\nbody\n*************** END\n* H\n",
+      "point": 60,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-review-copy-subtree-before-the-first-heading",
+      "input": {
+        "text": "*************** TODO First\nbody\n*************** END\n* H\n",
+        "point": 27,
+        "keys": "C-c C-x M-w",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "*************** TODO First\nbody\n*************** END\n* H\n",
+      "visible": "*************** TODO First\nbody\n*************** END\n* H\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No surrounding element"
+    },
+    {
+      "name": "inlinetask-review-sort-in-a-task-body",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+        "point": 57,
+        "keys": "C-c ^",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO Task one :x:\nBody one.\n*************** END\nMore text.\n** Child\nChild text.\n* Heading B\nB text.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-review-agenda-archive",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* TODO A\n*************** TODO Task\nbody\n*************** END\n** TODO A1\n* TODO B\n",
+        "point": 0,
+        "keys": "n n $",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "files": {
+          "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n*************** TODO Task\nbody\n*************** END\n** TODO A1\n* TODO B\n"
+        },
+        "find": "t.org",
+        "message": true,
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  t:          TODO B\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  t:          TODO B\n",
+      "point": 106,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* TODO A\n*************** TODO Task\nbody\n*************** END\n** TODO A1\n",
+        "* TODO A\n*************** TODO Task\nbody\n*************** END\n** TODO A1\n"
+      ],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "t.org",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 106,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "files": {
+        "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n*************** TODO Task\nbody\n*************** END\n** TODO A1\n* TODO B\n"
+      },
+      "message": "Subtree archived under heading: * Archive"
+    },
+    {
       "name": "inlinetask-export-ascii",
       "input": {
         "text": "#+OPTIONS: toc:nil author:nil\n* Heading\nText before.\n*************** TODO A one-line task\nBetween the tasks.\n*************** DONE [#A] A task with a body :work:\nThe task's *body*.\n- an item\n*************** END\nText after.\n",

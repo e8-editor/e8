@@ -983,7 +983,9 @@ export function applyStruct(struct: Struct, old: Struct): void {
     let l = lineAt(q);
     while (e8.lineStart(l) > beg || (e8.lineStart(l) === beg && !ITEM_RE.test(e8.lineText(l)))) {
       const text = e8.lineText(l);
-      if (/^[ \t]*\S/.test(text)) indentLineTo(l, textIndentation(text) + delta);
+      // An inline task is passed over, from its END line to its heading, with org-inlinetask.
+      if (taskLine(text)) l = taskStart(l);
+      else if (/^[ \t]*\S/.test(text)) indentLineTo(l, textIndentation(text) + delta);
       if (l === 0) break;
       l--;
     }
@@ -1917,6 +1919,8 @@ const SPECIAL_PROPERTIES = [
 export function entryHeading(): Heading | undefined {
   const all = headings();
   const i = inlinetaskOrHeading(all, headingIndex(all, lineAt()));
+  // Before the first heading that is not an inline task, the file's, even in a task, as org-before-first-heading-p.
+  if (i !== undefined && headingIndex(limitedHeadings(all), lineAt()) === undefined) return undefined;
   return i === undefined ? undefined : all[i];
 }
 
