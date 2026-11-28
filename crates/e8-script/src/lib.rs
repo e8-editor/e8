@@ -244,6 +244,7 @@ const PACKAGES: &[(&str, &str)] = &[
 const LIBRARY: &[(&str, &str)] = &[
     ("packages/ediff.ts", include_str!("../../../packages/ediff.ts")),
     ("packages/ert.ts", include_str!("../../../packages/ert.ts")),
+    ("packages/htmlize.ts", include_str!("../../../packages/htmlize.ts")),
     ("packages/ob-exp.ts", include_str!("../../../packages/ob-exp.ts")),
     ("packages/oc.ts", include_str!("../../../packages/oc.ts")),
     ("packages/oc-basic.ts", include_str!("../../../packages/oc-basic.ts")),
