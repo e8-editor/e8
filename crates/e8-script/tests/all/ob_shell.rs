@@ -11,6 +11,11 @@ fn org(text: &str) -> (Editor, Scripting) {
     ed.window_buffer_mut().set_text(text);
     ed.call("org-mode", vec![]).unwrap();
     ed.set_variable("org-confirm-babel-evaluate", Value::Bool(false));
+    // The shells sessions start check no mail, whose "You have new mail"
+    // notice would join their output on a machine that has some.
+    scripting
+        .eval_expression(&mut ed, r#"e8.setVariable("process-environment", ["MAILCHECK=-1", ...(e8.variable("process-environment") as string[])])"#)
+        .unwrap();
     ed.window_buffer_mut().set_point(0);
     (ed, scripting)
 }
