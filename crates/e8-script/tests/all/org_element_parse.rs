@@ -220,3 +220,48 @@ fn the_parse_matches_emacs() {
     }
     assert!(failures.is_empty(), "{} of {} cases differ:\n{}", failures.len(), cases.as_array().unwrap().len(), failures.join("\n\n"));
 }
+
+/// The object around a position, as org-element-context gives it: each as
+/// Emacs 30's Org 9.7 gives it at the same place (scratch script
+/// `org-element-context` at each position), its type, begin, end and the
+/// object it is in, or none where Emacs's context is an element.
+#[test]
+fn the_object_at_a_position_is_org_element_contexts() {
+    let (mut ed, s) = setup();
+    let cases: &[(&str, usize, Option<(&str, i64, i64, Option<&str>)>)] = &[
+        ("Text with [[https://a.b][a link]] and [fn:1] here.\n", 27, Some(("link", 10, 34, None))),
+        ("Text with [[https://a.b][a link]] and [fn:1] here.\n", 38, Some(("footnote-reference", 38, 45, None))),
+        ("Text with [[https://a.b][a link]] and [fn:1] here.\n", 46, None),
+        ("*bold [fn:2] text*\n", 7, Some(("footnote-reference", 6, 13, Some("bold")))),
+        ("*bold [fn:2] text*\n", 14, Some(("bold", 0, 18, None))),
+        ("* TODO Title [fn:3] :tag:\n", 14, Some(("footnote-reference", 13, 19, None))),
+        // On the tags, the title's last object, as it ends where the title does.
+        ("* TODO Title [fn:3] :tag:\n", 22, Some(("footnote-reference", 13, 19, None))),
+        ("- tag [fn:4] :: desc\n", 7, Some(("footnote-reference", 6, 12, None))),
+        ("- tag [fn:4] :: desc\n", 18, None),
+        ("#+CAPTION: cap *b*\n| a |\n", 16, Some(("bold", 15, 18, None))),
+        ("#+CAPTION: cap *b*\n| a |\n", 2, None),
+        ("| x [fn:5] |\n", 5, Some(("footnote-reference", 4, 10, Some("table-cell")))),
+        ("| x [fn:5] |\n", 2, Some(("table-cell", 1, 12, None))),
+        ("x =a[fn:6]b= y\n", 5, Some(("verbatim", 2, 13, None))),
+        // Right after an object with no space after it.
+        ("End *b*\n", 7, Some(("bold", 4, 7, None))),
+    ];
+    for (n, (text, pos, want)) in cases.iter().enumerate() {
+        let got = run(
+            &mut ed,
+            &s,
+            &format!(
+                r#"e8.setBuffer(e8.getBufferCreate("ctx-{n}")); e8.insert({}); e8.call("org-mode");
+                   const o = oe.objectAt({pos});
+                   return o ? [o.type, o.p.begin, o.p.end, o.parent ? o.parent.type : null] : null;"#,
+                serde_json::to_string(text).unwrap()
+            ),
+        );
+        let want = match want {
+            None => Value::Null,
+            Some((t, b, e, p)) => serde_json::json!([t, b, e, p]),
+        };
+        assert_eq!(got, want, "{text:?} at {pos}");
+    }
+}
