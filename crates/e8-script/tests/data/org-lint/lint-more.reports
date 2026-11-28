@@ -1,0 +1,19 @@
+1|low|Missing value for option item "toc num"|unknown-options-item
+1|low|Unknown OPTIONS item "toc num"|unknown-options-item
+2|low|Missing name in MACRO keyword|invalid-macro-argument-and-template
+3|low|Missing location argument in INCLUDE keyword|wrong-include-link-parameter
+4|nil|Missing export processor name|invalid-cite-export-declaration
+5|low|Orphaned affiliated keyword: "ATTR_HTML"|orphaned-affiliated-keywords
+7|nil|Invalid cite export processor declaration|invalid-cite-export-declaration
+9|nil|Incorrect contents for PROPERTIES drawer|obsolete-properties-drawer
+15|nil|Unknown header argument ":nosuch"|wrong-header-argument
+18|nil|Incorrect contents for PROPERTIES drawer|obsolete-properties-drawer
+22|low|Possible misleading drawer entry ":INNER:"|incomplete-drawer
+25|nil|Unknown coderef "nolabel"|invalid-coderef-link
+25|low|Spurious arguments in macro "n": c, d|invalid-macro-argument-and-template
+26|low|Forbidden combination in header ":results": value, output|wrong-header-value
+26|low|Forbidden combination in header ":results": raw, drawer|wrong-header-value
+26|low|Unknown value "maybe" for header ":exports"|wrong-header-value
+27|low|Forbidden combination in header ":results": silent, replace|wrong-header-value
+36|high|Links to "shown" will not be valid during export unless the parent source block has :exports results or both|named-result
+40|low|Link to non-existent local file "missing.png"|link-to-local-file

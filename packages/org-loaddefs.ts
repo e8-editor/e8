@@ -1,6 +1,7 @@
 // The entry points of Org's export, preloaded, as org-loaddefs.el
 // autoloads them: the dispatcher on C-c C-e and each backend's export
-// commands. The exporter (ox.ts) and its backends load when one of these
+// commands, and M-x org-lint. The exporter (ox.ts) and its backends, and
+// org-lint.ts, load when one of these
 // is first used; the command of the same name they define then takes the
 // stub's place, and runs with the stub's arguments.
 
@@ -51,6 +52,7 @@ const AUTOLOADS: [string, string, string, e8.Param[]][] = [
   ["org-icalendar-export-to-ics", "ox-icalendar", "Export current buffer to an iCalendar file.", EXPORT_PARAMS],
   ["org-icalendar-export-agenda-files", "ox-icalendar", "Export all agenda files to iCalendar files.", [{ name: "async", kind: "prefix" }]],
   ["org-icalendar-combine-agenda-files", "ox-icalendar", "Combine all agenda files into a single iCalendar file.", [{ name: "async", kind: "prefix" }]],
+  ["org-lint", "org-lint", "Check current Org buffer for syntax mistakes.", [{ name: "arg", kind: "prefix" }]],
 ];
 
 /** The functions projects name to publish their files, loading the backend that defines each when it is first called. */
