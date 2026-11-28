@@ -8,7 +8,8 @@
 
 import { type Node, map } from "org-element-ast";
 import { parseSecondaryString, restriction } from "org-element";
-import { allKeywords, entryGetInherited, headingIndex, headings } from "org";
+import { allKeywords, entryGetInherited, headingIndex, headings, keywordLines } from "org";
+import { regexpQuote } from "subr";
 import { entryGet } from "org-list";
 
 /** A template: text with $1, $2 ... for the arguments, or a function of them. */
@@ -30,8 +31,9 @@ export function findKeywordValue(name: string, collect = false): string | undefi
   let result: string | undefined;
   return e8.saveRestriction(() => {
     e8.widen();
-    for (let l = 0; l < e8.lineCount(); l++) {
-      const m = re.exec(e8.lineText(l));
+    // The lines that start so, found in one pass, as Org's re-search-forward finds them.
+    for (const [, , text] of e8.matchingLines(`^[ \t]*#\\+${regexpQuote(name)}:`, { caseFold: true })) {
+      const m = re.exec(text);
       if (!m) continue;
       if (!collect) return m[1];
       result = `${result ?? ""} ${m[1]}`;
@@ -63,13 +65,12 @@ function collectMacros(): [string, Template][] {
     ["title", findKeywordValue("TITLE", true) ?? ""],
     ["date", findDate()],
   ];
-  e8.saveRestriction(() => {
-    e8.widen();
-    for (let l = 0; l < e8.lineCount(); l++) {
-      const m = /^[ \t]*#\+MACRO:[ \t]*(\S+)[ \t]*(.*?)[ \t]*$/i.exec(e8.lineText(l));
-      if (m) list.unshift([m[1], m[2]]);
-    }
-  });
+  // MACRO keywords as org-collect-keywords finds them: real keywords, not
+  // lines of a block, and those of #+SETUPFILE: files in their places.
+  for (const [, , text] of keywordLines()) {
+    const m = /^[ \t]*#\+MACRO:[ \t]*(\S+)[ \t]*(.*?)[ \t]*$/i.exec(text);
+    if (m) list.unshift([m[1], m[2]]);
+  }
   return list;
 }
 

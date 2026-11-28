@@ -1,5 +1,8 @@
 // The entry points of Org's export, preloaded, as org-loaddefs.el
 // autoloads them: the dispatcher on C-c C-e and each backend's export
+// commands, and M-x org-lint. The exporter (ox.ts) and its backends, and
+// org-lint.ts, load when one of these
+// is first used; the command of the same name they define then takes the
 // commands, and the attachment dispatcher on C-c C-a. The exporter (ox.ts)
 // and its backends, and org-attach.ts, load when one of these is first
 // used; the command or function of the same name they define then takes the
@@ -53,6 +56,7 @@ const AUTOLOADS: [string, string, string, e8.Param[]][] = [
   ["org-icalendar-export-to-ics", "ox-icalendar", "Export current buffer to an iCalendar file.", EXPORT_PARAMS],
   ["org-icalendar-export-agenda-files", "ox-icalendar", "Export all agenda files to iCalendar files.", [{ name: "async", kind: "prefix" }]],
   ["org-icalendar-combine-agenda-files", "ox-icalendar", "Combine all agenda files into a single iCalendar file.", [{ name: "async", kind: "prefix" }]],
+  ["org-lint", "org-lint", "Check current Org buffer for syntax mistakes.", [{ name: "arg", kind: "prefix" }]],
   // Org Crypt's commands, which load org-crypt.ts and EasyPG's epg.ts.
   ["org-encrypt-entry", "org-crypt", "Encrypt the content of the current headline.", []],
   ["org-encrypt-entries", "org-crypt", "Encrypt all top-level entries in the current buffer.", []],

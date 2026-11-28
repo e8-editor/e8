@@ -1,0 +1,89 @@
+[
+  {
+    "name": "org-lint-lists-the-reports",
+    "text": "#+CATEGORY: a\n#+CATEGORY: b\n* H\nSee [fn:x].\n- 1. one\n3. three\n[fn:y] unused\n",
+    "keys": "M-x",
+    "modes": ["org-mode"],
+    "answers": ["org-lint"],
+    "message": true
+  },
+  {
+    "name": "org-lint-a-clean-buffer",
+    "text": "* H\ntext\n",
+    "keys": "M-x",
+    "modes": ["org-mode"],
+    "answers": ["org-lint"]
+  },
+  {
+    "name": "org-lint-outside-org",
+    "text": "* H\n",
+    "keys": "M-x",
+    "answers": ["org-lint"]
+  },
+  {
+    "name": "org-lint-ret-goes-to-the-source",
+    "text": "#+CATEGORY: a\n#+CATEGORY: b\n* H\nSee [fn:x].\n[fn:y] unused\n",
+    "keys": "M-x C-n RET",
+    "modes": ["org-mode"],
+    "answers": ["org-lint"],
+    "windows": true
+  },
+  {
+    "name": "org-lint-tab-shows-the-source",
+    "text": "#+CATEGORY: a\n#+CATEGORY: b\n* H\nSee [fn:x].\n[fn:y] unused\n",
+    "keys": "M-x C-n TAB",
+    "modes": ["org-mode"],
+    "answers": ["org-lint"],
+    "windows": true
+  },
+  {
+    "name": "org-lint-c-j-shows-the-source",
+    "text": "#+CATEGORY: a\n#+CATEGORY: b\n* H\nSee [fn:x].\n[fn:y] unused\n",
+    "keys": "M-x C-n C-n C-j",
+    "modes": ["org-mode"],
+    "answers": ["org-lint"],
+    "windows": true
+  },
+  {
+    "name": "org-lint-h-hides-a-checker",
+    "text": "* H\nSee [fn:x] and [fn:z].\n[fn:y] unused\n#+CATEGORY: a\n#+CATEGORY: b\n",
+    "keys": "M-x h",
+    "modes": ["org-mode"],
+    "answers": ["org-lint"]
+  },
+  {
+    "name": "org-lint-i-ignores-a-checker-then-g",
+    "text": "* H\nSee [fn:x] and [fn:z].\n[fn:y] unused\n#+CATEGORY: a\n#+CATEGORY: b\n",
+    "keys": "M-x C-n C-n i g",
+    "modes": ["org-mode"],
+    "answers": ["org-lint"]
+  },
+  {
+    "name": "org-lint-g-checks-again",
+    "text": "* H\nSee [fn:x] and [fn:z].\n[fn:y] unused\n",
+    "keys": "M-x h g",
+    "modes": ["org-mode"],
+    "answers": ["org-lint"]
+  },
+  {
+    "name": "org-lint-a-category",
+    "text": "#+CATEGORY: a\n#+CATEGORY: b\n* H\nSee [fn:x].\n[fn:y] unused\n",
+    "keys": "C-u M-x",
+    "modes": ["org-mode"],
+    "answers": ["org-lint", "footnote"]
+  },
+  {
+    "name": "org-lint-one-checker",
+    "text": "#+CATEGORY: a\n#+CATEGORY: b\n* H\nSee [fn:x].\n[fn:y] unused\n",
+    "keys": "C-u C-u M-x",
+    "modes": ["org-mode"],
+    "answers": ["org-lint", "deprecated-category-setup"]
+  },
+  {
+    "name": "org-lint-sorts-by-line",
+    "text": "* H\n- 1. a\n3. b\n#+CATEGORY: a\n#+CATEGORY: b\n",
+    "keys": "M-x",
+    "modes": ["org-mode"],
+    "answers": ["org-lint"]
+  }
+]

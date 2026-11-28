@@ -94,6 +94,7 @@ mod org_archive_details;
 mod org_agenda_file_list;
 mod org_attach;
 mod org_clock_mode_line;
+mod org_lint;
 mod org_num;
 mod org_timer;
 mod org_clock_persist;

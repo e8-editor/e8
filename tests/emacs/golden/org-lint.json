@@ -1,0 +1,347 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "org-lint-lists-the-reports",
+      "input": {
+        "text": "#+CATEGORY: a\n#+CATEGORY: b\n* H\nSee [fn:x].\n- 1. one\n3. three\n[fn:y] unused\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-lint"
+        ],
+        "message": true
+      },
+      "text": "     2 nil   Spurious CATEGORY keyword.  Set :CATEGORY: property instead\n     4 nil   Missing definition for footnote [x]\n     6 nil   Bullet counter \"3. \" is not the same with item position 2.  Consider adding manual [@3] counter.\n     7 nil   No reference for footnote definition [y]\n",
+      "visible": "     2 nil   Spurious CATEGORY keyword.  Set :CATEGORY: property instead\n     4 nil   Missing definition for footnote [x]\n     6 nil   Bullet counter \"3. \" is not the same with item position 2.  Consider adding manual [@3] counter.\n     7 nil   No reference for footnote definition [y]\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Org linting process completed"
+    },
+    {
+      "name": "org-lint-a-clean-buffer",
+      "input": {
+        "text": "* H\ntext\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-lint"
+        ]
+      },
+      "text": "",
+      "visible": "",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "org-lint-outside-org",
+      "input": {
+        "text": "* H\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-lint"
+        ]
+      },
+      "text": "* H\n",
+      "visible": "* H\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not in an Org buffer"
+    },
+    {
+      "name": "org-lint-ret-goes-to-the-source",
+      "input": {
+        "text": "#+CATEGORY: a\n#+CATEGORY: b\n* H\nSee [fn:x].\n[fn:y] unused\n",
+        "point": 0,
+        "keys": "M-x C-n RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "answers": [
+          "org-lint"
+        ]
+      },
+      "text": "#+CATEGORY: a\n#+CATEGORY: b\n* H\nSee [fn:x].\n[fn:y] unused\n",
+      "visible": "#+CATEGORY: a\n#+CATEGORY: b\n* H\nSee [fn:x].\n[fn:y] unused\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 36,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Lint*",
+          "point": 73,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        }
+      ]
+    },
+    {
+      "name": "org-lint-tab-shows-the-source",
+      "input": {
+        "text": "#+CATEGORY: a\n#+CATEGORY: b\n* H\nSee [fn:x].\n[fn:y] unused\n",
+        "point": 0,
+        "keys": "M-x C-n TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "answers": [
+          "org-lint"
+        ]
+      },
+      "text": "     2 nil   Spurious CATEGORY keyword.  Set :CATEGORY: property instead\n     4 nil   Missing definition for footnote [x]\n     5 nil   No reference for footnote definition [y]\n",
+      "visible": "     2 nil   Spurious CATEGORY keyword.  Set :CATEGORY: property instead\n     4 nil   Missing definition for footnote [x]\n     5 nil   No reference for footnote definition [y]\n",
+      "point": 73,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 36,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Lint*",
+          "point": 73,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "org-lint-c-j-shows-the-source",
+      "input": {
+        "text": "#+CATEGORY: a\n#+CATEGORY: b\n* H\nSee [fn:x].\n[fn:y] unused\n",
+        "point": 0,
+        "keys": "M-x C-n C-n C-j",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "answers": [
+          "org-lint"
+        ]
+      },
+      "text": "     2 nil   Spurious CATEGORY keyword.  Set :CATEGORY: property instead\n     4 nil   Missing definition for footnote [x]\n     5 nil   No reference for footnote definition [y]\n",
+      "visible": "     2 nil   Spurious CATEGORY keyword.  Set :CATEGORY: property instead\n     4 nil   Missing definition for footnote [x]\n     5 nil   No reference for footnote definition [y]\n",
+      "point": 122,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 44,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Lint*",
+          "point": 122,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "org-lint-h-hides-a-checker",
+      "input": {
+        "text": "* H\nSee [fn:x] and [fn:z].\n[fn:y] unused\n#+CATEGORY: a\n#+CATEGORY: b\n",
+        "point": 0,
+        "keys": "M-x h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-lint"
+        ]
+      },
+      "text": "     3 nil   No reference for footnote definition [y]\n     5 nil   Spurious CATEGORY keyword.  Set :CATEGORY: property instead\n",
+      "visible": "     3 nil   No reference for footnote definition [y]\n     5 nil   Spurious CATEGORY keyword.  Set :CATEGORY: property instead\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "org-lint-i-ignores-a-checker-then-g",
+      "input": {
+        "text": "* H\nSee [fn:x] and [fn:z].\n[fn:y] unused\n#+CATEGORY: a\n#+CATEGORY: b\n",
+        "point": 0,
+        "keys": "M-x C-n C-n i g",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-lint"
+        ]
+      },
+      "text": "     2 nil   Missing definition for footnote [x]\n     2 nil   Missing definition for footnote [z]\n     5 nil   Spurious CATEGORY keyword.  Set :CATEGORY: property instead\n",
+      "visible": "     2 nil   Missing definition for footnote [x]\n     2 nil   Missing definition for footnote [z]\n     5 nil   Spurious CATEGORY keyword.  Set :CATEGORY: property instead\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "org-lint-g-checks-again",
+      "input": {
+        "text": "* H\nSee [fn:x] and [fn:z].\n[fn:y] unused\n",
+        "point": 0,
+        "keys": "M-x h g",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-lint"
+        ]
+      },
+      "text": "     2 nil   Missing definition for footnote [x]\n     2 nil   Missing definition for footnote [z]\n     3 nil   No reference for footnote definition [y]\n",
+      "visible": "     2 nil   Missing definition for footnote [x]\n     2 nil   Missing definition for footnote [z]\n     3 nil   No reference for footnote definition [y]\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "org-lint-a-category",
+      "input": {
+        "text": "#+CATEGORY: a\n#+CATEGORY: b\n* H\nSee [fn:x].\n[fn:y] unused\n",
+        "point": 0,
+        "keys": "C-u M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-lint",
+          "footnote"
+        ]
+      },
+      "text": "     4 nil   Missing definition for footnote [x]\n     5 nil   No reference for footnote definition [y]\n",
+      "visible": "     4 nil   Missing definition for footnote [x]\n     5 nil   No reference for footnote definition [y]\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "org-lint-one-checker",
+      "input": {
+        "text": "#+CATEGORY: a\n#+CATEGORY: b\n* H\nSee [fn:x].\n[fn:y] unused\n",
+        "point": 0,
+        "keys": "C-u C-u M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-lint",
+          "deprecated-category-setup"
+        ]
+      },
+      "text": "     2 nil   Spurious CATEGORY keyword.  Set :CATEGORY: property instead\n",
+      "visible": "     2 nil   Spurious CATEGORY keyword.  Set :CATEGORY: property instead\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "org-lint-sorts-by-line",
+      "input": {
+        "text": "* H\n- 1. a\n3. b\n#+CATEGORY: a\n#+CATEGORY: b\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-lint"
+        ]
+      },
+      "text": "     3 nil   Bullet counter \"3. \" is not the same with item position 2.  Consider adding manual [@3] counter.\n     5 nil   Spurious CATEGORY keyword.  Set :CATEGORY: property instead\n",
+      "visible": "     3 nil   Bullet counter \"3. \" is not the same with item position 2.  Consider adding manual [@3] counter.\n     5 nil   Spurious CATEGORY keyword.  Set :CATEGORY: property instead\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    }
+  ]
+}

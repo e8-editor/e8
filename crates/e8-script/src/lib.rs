@@ -249,6 +249,7 @@ const LIBRARY: &[(&str, &str)] = &[
     ("packages/ert.ts", include_str!("../../../packages/ert.ts")),
     ("packages/htmlize.ts", include_str!("../../../packages/htmlize.ts")),
     ("packages/ob-exp.ts", include_str!("../../../packages/ob-exp.ts")),
+    ("packages/org-lint.ts", include_str!("../../../packages/org-lint.ts")),
     ("packages/org-crypt.ts", include_str!("../../../packages/org-crypt.ts")),
     ("packages/oc.ts", include_str!("../../../packages/oc.ts")),
     ("packages/oc-basic.ts", include_str!("../../../packages/oc-basic.ts")),

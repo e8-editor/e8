@@ -1,0 +1,55 @@
+#+OPTIONS: toc num:
+#+MACRO:
+#+INCLUDE:
+#+CITE_EXPORT:
+#+ATTR_HTML: :width 10
+
+#+CITE_EXPORT: basic "a b" c d
+#+CITE_EXPORT: csl
+:PROPERTIES:
+:FOO: bar
+:END:
+
+* Heading
+:PROPERTIES:
+:header-args:shell: :nosuch 1
+:LATEX_CLASS: article
+:END:
+:PROPERTIES:
+:A: b
+:END:
+:NOTES:
+:INNER:
+text
+:END:
+See [[(nolabel)]] and [[id:known-id]] and {{{n(a,b,c,d)}}}.
+src_emacs-lisp[:results raw drawer value output]{(+ 1 2)} and call_f[:exports maybe]().
+#+BEGIN_SRC emacs-lisp :results silent replace :tangle (concat "x" "y") :var a=1 b :file-mode 493
+(+ 1 2)
+#+END_SRC
+
+#+NAME: res
+#+BEGIN_SRC emacs-lisp
+1
+#+END_SRC
+
+#+NAME: shown
+#+RESULTS: res
+: 1
+
+[[file:missing.png][file:alsomissing.png]]
+#+BEGIN_EXAMPLE
+(ref:here)
+#+END_EXAMPLE
+[[(here)]] works.
+* Second
+:PROPERTIES:
+:ID: known-id
+:END:
+- a
+- b
+  a. one
+  c. three
+- [@5] five
+- six
+- eight

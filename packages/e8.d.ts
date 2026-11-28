@@ -7240,6 +7240,14 @@ declare global {
        */
       "org-kill-note-or-show-branches": [];
       /**
+       * Check current Org buffer for syntax mistakes.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-lint": [arg?: PrefixArg | boolean];
+      /**
        * Make the checkboxes of Org's lists radio buttons: C-c C-c on an item ticks it and unticks the others.
        *
        * Run from a key or M-x, it turns the mode on if it is off and off if it is on. A positive prefix argument turns it on and zero or a negative one turns it off. Called from code without an argument, it turns the mode on.
