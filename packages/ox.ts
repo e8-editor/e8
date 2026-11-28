@@ -57,6 +57,11 @@ import { initializeTemplates, replaceAll as macroReplaceAll } from "org-macro";
 import { processBuffer as babelExpProcessBuffer } from "ob-exp";
 import { DICTIONARY } from "ox-dictionary";
 
+// org-attach puts its expansion of attachment: links on
+// org-export-before-parsing-functions, so it loads with the exporter, as
+// ox.el requires it.
+e8.require("org-attach");
+
 // --- Values ----------------------------------------------------------------
 
 /** Signal an error, as Lisp's error. */

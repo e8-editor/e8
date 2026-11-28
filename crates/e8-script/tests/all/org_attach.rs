@@ -75,7 +75,7 @@ fn a_symbolic_link_is_attached() {
     eval(
         &mut ed,
         &s,
-        &format!(r#"(e8.require("org-attach"), e8.letBind({{ "org-attach-method": e8.intern("lns") }}, () => e8.call("org-attach-attach" as any, {:?}, null)), "")"#, file.to_str().unwrap()),
+        &format!(r#"(e8.require("org-attach"), e8.letBind({{ "org-attach-method": e8.intern("lns") }}, () => e8.call("org-attach-attach" as any, {:?}, null, null)), "")"#, file.to_str().unwrap()),
     );
     let link = std::fs::read_link(dir.path().join("data/ab/cdef/s.txt")).unwrap();
     assert_eq!(without_dir(link.to_str().unwrap(), dir.path()), "DIR/s.txt");
@@ -111,7 +111,7 @@ fn an_entry_without_an_id_gets_one() {
 fn before_the_first_heading_the_file_is_attached_to() {
     let (mut ed, s, dir) = visit(":PROPERTIES:\n:DIR: top\n:END:\nText\n", &[("a.txt", "a\n")]);
     let file = dir.path().join("a.txt");
-    eval(&mut ed, &s, &format!(r#"(e8.require("org-attach"), e8.gotoChar(e8.pointMax()), e8.call("org-attach-attach" as any, {:?}, null), "")"#, file.to_str().unwrap()));
+    eval(&mut ed, &s, &format!(r#"(e8.require("org-attach"), e8.gotoChar(e8.pointMax()), e8.call("org-attach-attach" as any, {:?}, null, null), "")"#, file.to_str().unwrap()));
     assert!(dir.path().join("top/a.txt").exists());
     assert_eq!(eval(&mut ed, &s, "e8.bufferText(e8.pointMin(), e8.pointMax())"), ":PROPERTIES:\n:DIR: top\n:END:\nText\n");
 }
@@ -164,3 +164,89 @@ fn a_url_is_refused() {
     let err = ed.call("org-attach-url", vec![Arg::Str("https://example.com/x".into())]).unwrap_err();
     assert_eq!(err.to_string(), "E8 cannot download attachments yet");
 }
+
+/// Answers each prompt from ANSWERS in turn, as a person types them: a
+/// minibuffer's whole input, or a key read.
+fn answering(ed: &mut Editor, answers: &[&str]) {
+    let mut left: std::collections::VecDeque<String> = answers.iter().map(|a| a.to_string()).collect();
+    ed.set_input_source(move |ed| {
+        let Some(answer) = left.pop_front() else { return false };
+        if ed.minibuffer_depth() > 0 {
+            ed.set_minibuffer_input(&answer);
+            ed.unread_keys(&[e8_core::Key::parse("RET").unwrap()]);
+        } else {
+            ed.unread_keys(&[e8_core::Key::char(answer.chars().next().unwrap())]);
+        }
+        true
+    });
+}
+
+/// s with a relative DIR starts the prompt there, in the file's directory;
+/// answered with a new directory, as a person types it, it sets DIR
+/// relative with org-attach-dir-relative and moves the attachments: Emacs
+/// writes ":DIR:      new/", has new/a.txt and no att.
+#[test]
+fn a_new_directory_takes_the_attachments() {
+    let (mut ed, s, dir) = visit("* Task\n:PROPERTIES:\n:DIR: att\n:END:\n", &[("att/a.txt", "a\n")]);
+    ed.set_variable("org-attach-dir-relative", Value::Bool(true));
+    let new = format!("{}/new/", dir.path().display());
+    answering(&mut ed, &["s", &new, "yes", "yes"]);
+    ed.press("C-c C-a").unwrap();
+    assert_eq!(eval(&mut ed, &s, "e8.bufferText(e8.pointMin(), e8.pointMax())"), "* Task\n:PROPERTIES:\n:DIR:      new/\n:END:\n");
+    assert!(dir.path().join("new/a.txt").exists());
+    assert!(!dir.path().join("att").exists());
+}
+
+/// lns over an attachment there asks, and on yes makes the link: Emacs's points to DIR/a.txt.
+#[test]
+fn a_symbolic_link_replaces_a_file_when_asked() {
+    let (mut ed, s, dir) = visit(TASK, &[("a.txt", "new\n"), ("data/ab/cdef/a.txt", "old\n")]);
+    let file = dir.path().join("a.txt");
+    answering(&mut ed, &["yes"]);
+    eval(
+        &mut ed,
+        &s,
+        &format!(r#"(e8.require("org-attach"), e8.call("org-attach-attach" as any, {:?}, null, "lns"), "")"#, file.to_str().unwrap()),
+    );
+    let link = std::fs::read_link(dir.path().join("data/ab/cdef/a.txt")).unwrap();
+    assert_eq!(without_dir(link.to_str().unwrap(), dir.path()), "DIR/a.txt");
+}
+
+/// METHOD from code, and with org-attach-store-link-p t the file as given
+/// is stored: Emacs stores ("file:a.txt" "a.txt") and moves the file; its
+/// org-attach-file-list then gives ("a.txt"), and org-attach-dir-from-id
+/// "xyzzy" is DIR/data/xy/zzy.
+#[test]
+fn a_method_from_code_and_the_link_as_given() {
+    let (mut ed, s, dir) = visit(TASK, &[("a.txt", "a\n")]);
+    ed.set_variable("org-attach-store-link-p", Value::Bool(true));
+    eval(&mut ed, &s, r#"(e8.require("org-attach"), e8.call("org-attach-attach" as any, "a.txt", null, "mv"), "")"#);
+    assert_eq!(eval(&mut ed, &s, r#"JSON.stringify((e8.variable("org-stored-links") as e8.Value[])[0])"#), r#"["file:a.txt","a.txt"]"#);
+    assert!(!dir.path().join("a.txt").exists());
+    assert_eq!(eval(&mut ed, &s, r#"JSON.stringify(e8.funcall("org-attach-file-list", e8.funcall("org-attach-dir")))"#), r#"["a.txt"]"#);
+    assert_eq!(without_dir(&eval(&mut ed, &s, r#"e8.funcall("org-attach-dir-from-id", "xyzzy")"#), dir.path()), "DIR/data/xy/zzy");
+}
+
+/// Exporting loads org-attach, as ox.el requires it, so attachment: links
+/// become file links though nothing loaded it before.
+#[test]
+fn exporting_loads_org_attach() {
+    let (mut ed, s, dir) = visit(&format!("{TASK}See [[attachment:a.txt][the file]] and [[attachment:b.txt]].\n"), &[("data/ab/cdef/a.txt", "attached\n")]);
+    ed.set_variable("org-export-copy-to-kill-ring", Value::Null);
+    eval(&mut ed, &s, r#"(e8.call("org-md-export-as-markdown" as any), "")"#);
+    let out = without_dir(&eval(&mut ed, &s, "e8.bufferText(e8.pointMin(), e8.pointMax())"), dir.path());
+    assert!(out.contains("See [the file](file://DIR/data/ab/cdef/a.txt) and <file://DIR/data/ab/cdef/b.txt>."), "{out}");
+}
+
+/// org-attach-dired-to-subtree takes FILES from code.
+#[test]
+fn dired_files_from_code_are_attached() {
+    let (mut ed, s, dir) = visit(TASK, &[("a.txt", "a\n")]);
+    let file = dir.path().join("a.txt");
+    eval(&mut ed, &s, r#"(e8.require("org-attach"), "")"#);
+    ed.press("C-x 3").unwrap();
+    ed.call("dired", vec![Arg::Str(dir.path().to_str().unwrap().into())]).unwrap();
+    eval(&mut ed, &s, &format!(r#"(e8.call("org-attach-dired-to-subtree" as any, [{:?}]), "")"#, file.to_str().unwrap()));
+    assert!(dir.path().join("data/ab/cdef/a.txt").exists());
+}
+

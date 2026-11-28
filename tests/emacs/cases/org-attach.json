@@ -335,5 +335,211 @@
     "globals": {
       "org-attach-expert": true
     }
+  },
+  {
+    "name": "org-attach-new-dir-property",
+    "text": "* Task\n",
+    "files": {
+      "a.txt": "hello\n"
+    },
+    "find": "notes.org",
+    "keys": "C-c C-a",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a",
+      "a.txt",
+      "att"
+    ],
+    "globals": {
+      "org-attach-preferred-new-method": "'dir",
+      "org-attach-dir-relative": true
+    }
+  },
+  {
+    "name": "org-attach-new-ask-dir",
+    "text": "* Task\n",
+    "files": {
+      "a.txt": "hello\n"
+    },
+    "find": "notes.org",
+    "keys": "C-c C-a",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a",
+      "a.txt",
+      "2",
+      "att"
+    ],
+    "globals": {
+      "org-attach-preferred-new-method": "'ask",
+      "org-attach-dir-relative": true
+    }
+  },
+  {
+    "name": "org-attach-new-ask-neither",
+    "text": "* Task\n",
+    "files": {
+      "a.txt": "hello\n"
+    },
+    "find": "notes.org",
+    "keys": "C-c C-a",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a",
+      "a.txt",
+      "3"
+    ],
+    "globals": {
+      "org-attach-preferred-new-method": "'ask"
+    }
+  },
+  {
+    "name": "org-attach-new-method-nil",
+    "text": "* Task\n",
+    "files": {
+      "a.txt": "hello\n"
+    },
+    "find": "notes.org",
+    "keys": "C-c C-a",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a",
+      "a.txt"
+    ],
+    "globals": {
+      "org-attach-preferred-new-method": false
+    }
+  },
+  {
+    "name": "org-attach-dir-from-a-keyword-before-the-first-heading",
+    "text": "#+PROPERTY: DIR att\n* Task\n",
+    "files": {
+      "a.txt": "hello\n"
+    },
+    "find": "notes.org",
+    "keys": "C-c C-a",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a",
+      "a.txt"
+    ],
+    "globals": {
+      "org-attach-use-inheritance": true
+    }
+  },
+  {
+    "name": "org-attach-copying-a-directory-already-attached",
+    "text": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n",
+    "files": {
+      "pics/x.txt": "x\n",
+      "data/ab/cdef/pics/y.txt": "y\n"
+    },
+    "find": "notes.org",
+    "keys": "C-c C-a",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "c",
+      "pics"
+    ]
+  },
+  {
+    "name": "org-attach-copying-a-file-already-attached",
+    "text": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n",
+    "files": {
+      "a.txt": "new\n",
+      "data/ab/cdef/a.txt": "old\n"
+    },
+    "find": "notes.org",
+    "keys": "C-c C-a",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "c",
+      "a.txt"
+    ]
+  },
+  {
+    "name": "org-attach-symlink-over-a-file-declined",
+    "text": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n",
+    "files": {
+      "a.txt": "new\n",
+      "data/ab/cdef/a.txt": "old\n"
+    },
+    "find": "notes.org",
+    "keys": "C-c C-a",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "y",
+      "a.txt",
+      "no"
+    ]
+  },
+  {
+    "name": "org-attach-delete-one-without-a-directory",
+    "text": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n",
+    "files": {},
+    "find": "notes.org",
+    "keys": "C-c C-a",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "d"
+    ]
+  },
+  {
+    "name": "org-attach-buffer-over-a-file",
+    "text": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n",
+    "files": {
+      "data/ab/cdef/notes.org": "old\n"
+    },
+    "find": "notes.org",
+    "keys": "C-c C-a",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "b",
+      "notes.org"
+    ]
+  },
+  {
+    "name": "org-attach-open-at-a-heading-without-links",
+    "text": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n",
+    "files": {
+      "data/ab/cdef/a.txt": "a\n"
+    },
+    "find": "notes.org",
+    "keys": "C-u C-c C-o",
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "org-attach-open-at-a-heading-without-links-or-attachments",
+    "text": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n",
+    "files": {},
+    "find": "notes.org",
+    "keys": "C-c C-o",
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
   }
 ]

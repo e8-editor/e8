@@ -740,6 +740,440 @@
         "data/ab/cdef/a.txt": "hello\n",
         "notes.org": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n"
       }
+    },
+    {
+      "name": "org-attach-new-dir-property",
+      "input": {
+        "text": "* Task\n",
+        "point": 0,
+        "keys": "C-c C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a",
+          "a.txt",
+          "att"
+        ],
+        "files": {
+          "a.txt": "hello\n"
+        },
+        "find": "notes.org",
+        "globals": {
+          "org-attach-preferred-new-method": "'dir",
+          "org-attach-dir-relative": true
+        }
+      },
+      "text": "* Task                                                               :ATTACH:\n:PROPERTIES:\n:DIR:      att\n:END:\n",
+      "visible": "* Task                                                               :ATTACH:\n:PROPERTIES:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "hello\n",
+        "att/": "",
+        "att/a.txt": "hello\n",
+        "notes.org": "* Task\n"
+      }
+    },
+    {
+      "name": "org-attach-new-ask-dir",
+      "input": {
+        "text": "* Task\n",
+        "point": 0,
+        "keys": "C-c C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a",
+          "a.txt",
+          "2",
+          "att"
+        ],
+        "files": {
+          "a.txt": "hello\n"
+        },
+        "find": "notes.org",
+        "globals": {
+          "org-attach-preferred-new-method": "'ask",
+          "org-attach-dir-relative": true
+        }
+      },
+      "text": "* Task                                                               :ATTACH:\n:PROPERTIES:\n:DIR:      att\n:END:\n",
+      "visible": "* Task                                                               :ATTACH:\n:PROPERTIES:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "hello\n",
+        "att/": "",
+        "att/a.txt": "hello\n",
+        "notes.org": "* Task\n"
+      }
+    },
+    {
+      "name": "org-attach-new-ask-neither",
+      "input": {
+        "text": "* Task\n",
+        "point": 0,
+        "keys": "C-c C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a",
+          "a.txt",
+          "3"
+        ],
+        "files": {
+          "a.txt": "hello\n"
+        },
+        "find": "notes.org",
+        "globals": {
+          "org-attach-preferred-new-method": "'ask"
+        }
+      },
+      "text": "* Task\n",
+      "visible": "* Task\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No attachment directory is associated with the current node",
+      "files": {
+        "a.txt": "hello\n",
+        "notes.org": "* Task\n"
+      }
+    },
+    {
+      "name": "org-attach-new-method-nil",
+      "input": {
+        "text": "* Task\n",
+        "point": 0,
+        "keys": "C-c C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a",
+          "a.txt"
+        ],
+        "files": {
+          "a.txt": "hello\n"
+        },
+        "find": "notes.org",
+        "globals": {
+          "org-attach-preferred-new-method": false
+        }
+      },
+      "text": "* Task\n",
+      "visible": "* Task\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No existing directory.  DIR or ID property has to be explicitly created",
+      "files": {
+        "a.txt": "hello\n",
+        "notes.org": "* Task\n"
+      }
+    },
+    {
+      "name": "org-attach-dir-from-a-keyword-before-the-first-heading",
+      "input": {
+        "text": "#+PROPERTY: DIR att\n* Task\n",
+        "point": 0,
+        "keys": "C-c C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a",
+          "a.txt"
+        ],
+        "files": {
+          "a.txt": "hello\n"
+        },
+        "find": "notes.org",
+        "globals": {
+          "org-attach-use-inheritance": true
+        }
+      },
+      "text": "#+PROPERTY: DIR att\n* Task\n",
+      "visible": "#+PROPERTY: DIR att\n* Task\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.txt": "hello\n",
+        "att/": "",
+        "att/a.txt": "hello\n",
+        "notes.org": "#+PROPERTY: DIR att\n* Task\n"
+      }
+    },
+    {
+      "name": "org-attach-copying-a-directory-already-attached",
+      "input": {
+        "text": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "c",
+          "pics"
+        ],
+        "files": {
+          "pics/x.txt": "x\n",
+          "data/ab/cdef/pics/y.txt": "y\n"
+        },
+        "find": "notes.org"
+      },
+      "text": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n",
+      "visible": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "File exists: DIR/data/ab/cdef/pics",
+      "files": {
+        "data/": "",
+        "data/ab/": "",
+        "data/ab/cdef/": "",
+        "data/ab/cdef/pics/": "",
+        "data/ab/cdef/pics/y.txt": "y\n",
+        "notes.org": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n",
+        "pics/": "",
+        "pics/x.txt": "x\n"
+      }
+    },
+    {
+      "name": "org-attach-copying-a-file-already-attached",
+      "input": {
+        "text": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "c",
+          "a.txt"
+        ],
+        "files": {
+          "a.txt": "new\n",
+          "data/ab/cdef/a.txt": "old\n"
+        },
+        "find": "notes.org"
+      },
+      "text": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n",
+      "visible": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "File already exists: DIR/data/ab/cdef/a.txt",
+      "files": {
+        "a.txt": "new\n",
+        "data/": "",
+        "data/ab/": "",
+        "data/ab/cdef/": "",
+        "data/ab/cdef/a.txt": "old\n",
+        "notes.org": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n"
+      }
+    },
+    {
+      "name": "org-attach-symlink-over-a-file-declined",
+      "input": {
+        "text": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "y",
+          "a.txt",
+          "no"
+        ],
+        "files": {
+          "a.txt": "new\n",
+          "data/ab/cdef/a.txt": "old\n"
+        },
+        "find": "notes.org"
+      },
+      "text": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n",
+      "visible": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "File already exists: DIR/data/ab/cdef/a.txt",
+      "files": {
+        "a.txt": "new\n",
+        "data/": "",
+        "data/ab/": "",
+        "data/ab/cdef/": "",
+        "data/ab/cdef/a.txt": "old\n",
+        "notes.org": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n"
+      }
+    },
+    {
+      "name": "org-attach-delete-one-without-a-directory",
+      "input": {
+        "text": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "d"
+        ],
+        "find": "notes.org"
+      },
+      "text": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n",
+      "visible": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Wrong type argument: stringp, nil",
+      "files": {
+        "notes.org": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n"
+      }
+    },
+    {
+      "name": "org-attach-buffer-over-a-file",
+      "input": {
+        "text": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "b",
+          "notes.org"
+        ],
+        "files": {
+          "data/ab/cdef/notes.org": "old\n"
+        },
+        "find": "notes.org"
+      },
+      "text": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n",
+      "visible": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "File exists: DIR/data/ab/cdef/notes.org",
+      "files": {
+        "data/": "",
+        "data/ab/": "",
+        "data/ab/cdef/": "",
+        "data/ab/cdef/notes.org": "old\n",
+        "notes.org": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n"
+      }
+    },
+    {
+      "name": "org-attach-open-at-a-heading-without-links",
+      "input": {
+        "text": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n",
+        "point": 0,
+        "keys": "C-u C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "files": {
+          "data/ab/cdef/a.txt": "a\n"
+        },
+        "find": "notes.org",
+        "message": true
+      },
+      "text": "  DIR/data/ab/cdef:\n  .\n  ..\n  a.txt\n",
+      "visible": "  DIR/data/ab/cdef:\n  .\n  ..\n  a.txt\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "data/": "",
+        "data/ab/": "",
+        "data/ab/cdef/": "",
+        "data/ab/cdef/a.txt": "a\n",
+        "notes.org": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n"
+      },
+      "message": "Opening attachment"
+    },
+    {
+      "name": "org-attach-open-at-a-heading-without-links-or-attachments",
+      "input": {
+        "text": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "find": "notes.org",
+        "message": true
+      },
+      "text": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n",
+      "visible": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "notes.org": "* Task\n:PROPERTIES:\n:ID: abcdef\n:END:\n"
+      },
+      "message": "No links"
     }
   ]
 }

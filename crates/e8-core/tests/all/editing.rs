@@ -329,3 +329,26 @@ fn an_undefined_key_takes_the_prefix_argument_with_it() {
     press(&mut ed, "C-k");
     assert_eq!(text(&ed), "\ntwo\nthree\nfour\nfive\n");
 }
+
+/// A relative directory to read a file name in is in the buffer's
+/// default-directory, as read-file-name expands DIR there, not in the
+/// directory E8 was started in.
+#[test]
+fn a_relative_directory_for_a_file_name_is_in_default_directory() {
+    let dir = tempfile::tempdir().unwrap();
+    fs::create_dir(dir.path().join("att")).unwrap();
+    let mut ed = Editor::new();
+    ed.make_local_variable("default-directory");
+    ed.set_variable("default-directory", e8_core::Value::Str(format!("{}/", dir.path().display())));
+    let seen = std::rc::Rc::new(std::cell::RefCell::new(String::new()));
+    let saw = seen.clone();
+    ed.set_input_source(move |ed| {
+        *saw.borrow_mut() = ed.minibuffer_input();
+        ed.handle_key(e8_core::Key::parse("RET").unwrap());
+        true
+    });
+    let mut reading = e8_core::Reading::new("Attachment directory: ", e8_core::ParamKind::File);
+    reading.dir = Some("att".into());
+    ed.read_from_minibuffer(reading).unwrap();
+    assert_eq!(*seen.borrow(), e8_core::abbreviate_dir(&dir.path().join("att")));
+}

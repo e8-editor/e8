@@ -15,12 +15,13 @@
 // Free Software Foundation, either version 3 of the License, or (at your
 // option) any later version.
 
-import { entryGetInherited, headingIndex, headings, linkSetParameters, openLink, propertyInheritP, toggleTag } from "org";
+import { entryGetInherited, globalProperty, headingIndex, headings, linkSetParameters, openLink, propertyInheritP, toggleTag } from "org";
 import { entryDelete, entryGet, entryPutHere, topGet } from "org-list";
 import { lineAt } from "org-macs";
 import { orgIdGet } from "org-id";
 import { linkHere, linkMakeString } from "ol";
 import { eraseBuffer, truthy } from "subr";
+import { markedFiles } from "dired";
 import { fileRelativeName } from "files";
 import { getBufferWindowList, quitWindow } from "window";
 
@@ -103,7 +104,11 @@ function entryGetHere(property: string, inherit: e8.Value | undefined): string |
   const i = headingIndex(all, lineAt());
   const how = name(inherit);
   const inherited = how === "t" || (how === "selective" && propertyInheritP(property));
-  if (i === undefined) return topGet(property);
+  // Before the first heading, the file's drawer, then with inheritance #+PROPERTY: lines and org-global-properties, as org-entry-get-with-inheritance.
+  if (i === undefined) {
+    const value = topGet(property) ?? (inherited ? globalProperty(property) : undefined);
+    return value === "nil" ? undefined : value;
+  }
   return inherited ? entryGetInherited(all[i], property, false) : entryGet(all[i].line, property);
 }
 
@@ -209,7 +214,8 @@ function setDirectory(): string {
   const given = e8.readFileName("Attachment directory: ", { dir: entryGetHere("DIR", null) });
   const attachDirName = e8.expandFileName(given);
   const currentDir = e8.fileNameDirectory(String(e8.variable("default-directory") ?? e8.bufferFileName() ?? "")) ?? "";
-  const relative = fileRelativeName(attachDirName, currentDir);
+  // A directory's name keeps its slash, as file-relative-name keeps it.
+  const relative = fileRelativeName(attachDirName, currentDir) + (given.endsWith("/") && !fileRelativeName(attachDirName, currentDir).endsWith("/") ? "/" : "");
   entryPutHere("DIR", truthy(e8.variable("org-attach-dir-relative")) ? relative : given);
   const fresh = given;
   if (old !== undefined && old !== fresh) {
@@ -263,6 +269,10 @@ function attachTag(off = false): void {
   if (typeof tag !== "string" || headingHere() === undefined) return;
   toggleTag(tag, off ? "off" : "on");
 }
+e8.defun("org-attach-tag", (off?: e8.Value) => attachTag(truthy(off ?? null)));
+e8.defun("org-attach-untag", () => attachTag(true));
+e8.defun("org-attach-check-absolute-path", (dir?: e8.Value) => (checkAbsolutePath(typeof dir === "string" ? dir : undefined), true));
+e8.defun("org-attach-dir-from-id", (id: e8.Value, existing?: e8.Value) => dirFromId(String(id), truthy(existing ?? null)) ?? null);
 
 // ----- Attaching -----
 
@@ -282,25 +292,34 @@ function dwimDirectory(): string {
 /** Attaches FILE to the entry at point by METHOD, org-attach-method's by default, as org-attach-attach; with visitDir, shows the directory. */
 export function attachFile(given: string, visitDir = false, method?: string): void {
   method ??= name(e8.variable("org-attach-method")) ?? "cp";
+  // FILE as given, relative to default-directory, as Org passes it on.
   let file = given;
   if (e8.fileDirectoryP(file)) file = e8.directoryFileName(file);
+  const source = e8.expandFileName(file);
   const basename = e8.fileNameNondirectory(file);
   const dir = attachDir(true)!;
   const attached = e8.expandFileName(basename, dir);
   switch (method) {
     case "mv":
-      e8.renameFile(file, attached);
+      e8.renameFile(source, attached);
       break;
     case "cp":
-      if (e8.fileDirectoryP(file)) e8.copyDirectory(file, attached);
-      else e8.copyFile(file, attached);
+      if (e8.fileDirectoryP(source)) {
+        // As copy-directory with COPY-CONTENTS, which makes the directory and so fails where it is.
+        if (e8.fileExistsP(attached)) e8.signal("file-already-exists", `File exists: ${attached}`, ["File exists", attached]);
+        e8.copyDirectory(source, attached);
+      } else e8.copyFile(source, attached);
       break;
     case "ln":
-      e8.addNameToFile(file, attached);
+      e8.addNameToFile(source, attached);
       break;
     case "lns":
       // As make-symbolic-link with an integer, which asks before replacing a file there.
-      e8.makeSymbolicLink(file, attached, e8.fileExistsP(attached) && e8.yOrNP(`File ${attached} already exists; make it a link anyway? `));
+      if (e8.fileExistsP(attached) || e8.fileSymlinkP(attached) !== undefined) {
+        if (!e8.yesOrNoP(`File ${attached} already exists; make it a link anyway? `))
+          e8.signal("file-already-exists", `File already exists: ${attached}`, ["File already exists", attached]);
+        e8.makeSymbolicLink(file, attached, true);
+      } else e8.makeSymbolicLink(file, attached);
       break;
     case "url":
       e8.userError("E8 cannot download attachments yet");
@@ -326,8 +345,12 @@ const FILE_PARAMS: e8.Param[] = [
 e8.defineCommand({
   name: "org-attach-attach",
   doc: "Attach a file to the current entry, by org-attach-method: copying, moving or linking it into the entry's attachment directory. With a prefix argument, visit the directory.",
-  params: FILE_PARAMS,
-  run: (file: string, visitDir: e8.Value) => attachFile(e8.expandFileName(String(file)), truthy(visitDir)),
+  // METHOD only from code, which passes all three, nil for org-attach-method's, as Org's interactive spec gives nil.
+  params: [...FILE_PARAMS, { name: "method", value: () => "" }],
+  run: (file: string, visitDir: e8.Value, method?: e8.Value) => {
+    const how = typeof method === "string" || typeof method === "symbol" ? name(method) : undefined;
+    attachFile(String(file), truthy(visitDir), how === "" || how === "nil" ? undefined : how);
+  },
 });
 
 for (const [method, how] of [
@@ -357,7 +380,7 @@ e8.defineCommand({
   run: (bufferName: string) => {
     const dir = attachDir(true)!;
     const output = e8.expandFileName(String(bufferName), dir);
-    if (e8.fileExistsP(output)) e8.signal("file-already-exists", "File exists", ["File exists", output]);
+    if (e8.fileExistsP(output)) e8.signal("file-already-exists", `File exists: ${output}`, ["File exists", output]);
     e8.runHooks("org-attach-after-change-hook", dir);
     attachTag();
     const text = e8.withCurrentBuffer(String(bufferName), () => e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax()));
@@ -381,6 +404,10 @@ e8.defineCommand({
 export function fileList(dir: string): string[] {
   return e8.directoryFiles(dir, { match: "[^~]\\'" }).filter((f) => f !== "." && f !== "..");
 }
+e8.defun("org-attach-file-list", (dir: e8.Value) => {
+  if (typeof dir !== "string") e8.signal("wrong-type-argument", "Wrong type argument: stringp, nil", [e8.intern("stringp"), null]);
+  return fileList(dir);
+});
 
 e8.defineCommand({
   name: "org-attach-delete-one",
@@ -388,7 +415,7 @@ e8.defineCommand({
   params: [{ name: "attachment", value: () => "" }],
   run: (given: string) => {
     const dir = attachDir();
-    if (dir === undefined) e8.signal("wrong-type-argument", "Wrong type argument", [e8.intern("stringp"), null]);
+    if (dir === undefined) e8.signal("wrong-type-argument", "Wrong type argument: stringp, nil", [e8.intern("stringp"), null]);
     const files = fileList(dir);
     const chosen = typeof given === "string" && given !== "" ? given : e8.completingRead("Delete attachment: ", files.map((f) => e8.fileNameNondirectory(f)));
     const attachment = e8.expandFileName(chosen, dir);
@@ -443,7 +470,7 @@ e8.defineCommand({
 });
 
 /** Opens one of the entry's attachments, asking which if there are several, as org-attach-open. */
-function attachOpen(): void {
+function attachOpen(_inEmacs: boolean): void {
   const dir = attachDir();
   if (dir === undefined) e8.signal("error", "No attachment directory exist");
   const files = fileList(dir);
@@ -457,13 +484,14 @@ e8.defineCommand({
   name: "org-attach-open",
   doc: "Open an attachment of the current entry, asking which if it has several.",
   params: [{ name: "in-emacs", kind: "prefix" }],
-  run: () => attachOpen(),
+  // IN-EMACS or not, E8 opens it itself, as it opens file links, without org-file-apps.
+  run: (inEmacs: e8.Value) => attachOpen(truthy(inEmacs)),
 });
 
 e8.defineCommand({
   name: "org-attach-open-in-emacs",
   doc: "Open an attachment of the current entry in E8.",
-  run: () => attachOpen(),
+  run: () => attachOpen(true),
 });
 
 e8.defineCommand({
@@ -532,9 +560,11 @@ e8.addHook("org-archive-hook", "org-attach-archive-delete-maybe");
 e8.defineCommand({
   name: "org-attach-dired-to-subtree",
   doc: "Attach the marked files of Dired, or the one at point, to the entry at point in a window showing an Org buffer, by org-attach-method.",
-  run: () => {
-    if (!e8.derivedModeP("dired-mode")) e8.userError("This command must be triggered in a `dired' buffer");
-    const files = e8.funcall("dired-get-marked-files") as string[];
+  // FILES from code, or Dired's marked files, as its interactive spec reads them.
+  params: [{ name: "files", value: () => "" }],
+  run: (given: e8.Value) => {
+    if (!Array.isArray(given) && !e8.derivedModeP("dired-mode")) e8.userError("This command must be triggered in a `dired' buffer");
+    const files = Array.isArray(given) ? given.map(String) : markedFiles(null).files;
     const start = e8.selectedWindow();
     const other = e8.windowList().find((w) => {
       const b = e8.windowBuffer(w);
