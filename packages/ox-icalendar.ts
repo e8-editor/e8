@@ -782,12 +782,7 @@ function checkAgendaFile(file: string): boolean {
   e8.message(`Non-existent agenda file ${e8.abbreviateFileName(file)}.  [R]emove from list or [A]bort?`);
   const r = e8.readCharExclusive().toLowerCase();
   if (r !== "r") e8.userError("Abort");
-  const files = e8.variable("org-agenda-files");
-  if (Array.isArray(files)) {
-    const truename = e8.fileTruename(file);
-    e8.setVariable("org-agenda-files", files.filter((f) => typeof f !== "string" || e8.fileTruename(e8.expandFileName(f)) !== truename));
-  }
-  e8.message(`Removed from Org Agenda list: ${e8.abbreviateFileName(file)}`);
+  e8.call("org-remove-file" as any, file);
   return false;
 }
 

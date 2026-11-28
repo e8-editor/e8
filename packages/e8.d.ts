@@ -5476,6 +5476,14 @@ declare global {
        */
       "org-agenda-exit": [];
       /**
+       * Move or add the current file to the front of the agenda file list. With a prefix argument, to its end. The list is kept in the file org-agenda-files names, if it names one; else in the variable, for the session.
+       *
+       * @param to-end raw prefix argument
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-agenda-file-to-front": [toEnd?: PrefixArg | boolean];
+      /**
        * Filter the agenda by a string of +category, +tag, +<effort and +/regexp/, each with - instead to hide what matches. With C-u, the other way round; with C-u C-u, or a string starting with + and + or -, added to the filters in force; with C-u C-u C-u, hide the tags org-agenda-auto-exclude-function names.
        *
        * @param arg raw prefix argument
@@ -6168,6 +6176,14 @@ declare global {
        */
       "org-check-deadlines": [ndays?: PrefixArg | boolean];
       /**
+       * Insert a citation at point, as org-cite-insert-processor does; with a prefix argument, its style too.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-cite-insert": [arg?: PrefixArg | boolean];
+      /**
        * Cancel the running clock, taking its CLOCK: line away.
        *
        * Defined in packages/org-clock.ts.
@@ -6603,6 +6619,18 @@ declare global {
        */
       "org-deadline": [date: string];
       /**
+       * Decrypt all entries in the current buffer.
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-decrypt-entries": [];
+      /**
+       * Decrypt the content of the current headline.
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-decrypt-entry": [];
+      /**
        * Delete the character before point, as delete-backward-char does, keeping a table's field as wide as it was.
        *
        * Defined in packages/org.ts.
@@ -6768,6 +6796,18 @@ declare global {
        * Defined in packages/org-element.ts.
        */
       "org-element-update-syntax": [];
+      /**
+       * Encrypt all top-level entries in the current buffer.
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-encrypt-entries": [];
+      /**
+       * Encrypt the content of the current headline.
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-encrypt-entry": [];
       /**
        * Move to the end of the line, staying on a folded heading's line rather than going past its hidden text; with org-special-ctrl-a/e, on a heading with tags first to before them. With a prefix argument, move N - 1 lines first.
        *
@@ -6987,6 +7027,12 @@ declare global {
        * Defined in packages/org-loaddefs.ts.
        */
       "org-html-export-to-html": [async?: PrefixArg | boolean, subtreep?: PrefixArg | boolean, visibleOnly?: PrefixArg | boolean, bodyOnly?: PrefixArg | boolean, extPlist?: PrefixArg | boolean];
+      /**
+       * Create the CSS for all font definitions in the current Emacs session.
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-html-htmlize-generate-css": [];
       /**
        * Combine all agenda files into a single iCalendar file.
        *
@@ -7382,6 +7428,14 @@ declare global {
        */
       "org-next-visible-heading": [];
       /**
+       * Dynamic numbering of headlines in an Org buffer.
+       *
+       * Run from a key or M-x, it turns the mode on if it is off and off if it is on. A positive prefix argument turns it on and zero or a negative one turns it off. Called from code without an argument, it turns the mode on.
+       *
+       * Defined in packages/org-num.ts.
+       */
+      "org-num-mode": [];
+      /**
        * Make a compact tree showing the matches of a regexp: the lines matching it and the headings above them, the rest folded. With a prefix argument, the matches of an earlier sparse tree stay. C-c C-c removes the highlights.
        *
        * @param regexp text
@@ -7615,6 +7669,14 @@ declare global {
        * Defined in packages/org-refile.ts.
        */
       "org-refile-reverse": [arg?: PrefixArg | boolean];
+      /**
+       * Remove the current file, or FILE, from the agenda file list, org-agenda-files. The list is kept in the file org-agenda-files names, if it names one; else in the variable, for the session.
+       *
+       * @param file text
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-remove-file": [file: string];
       /**
        * Stop showing images inline.
        *
@@ -8296,6 +8358,68 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-tags-view": [todoOnly?: PrefixArg | boolean];
+      /**
+       * Insert an H:MM:SS string from the timer, starting the timer the first time. With C-u, restart the timer; with C-u C-u, change every timer string in the region by a fixed amount, as to put right a timer started at the wrong moment.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-timer.ts.
+       */
+      "org-timer": [arg?: PrefixArg | boolean];
+      /**
+       * Change every h:mm:ss time in the region by a difference, by default the one that makes the first 0:00:00.
+       *
+       * @param beg region start
+       * @param end region end
+       * @param delta text
+       *
+       * Defined in packages/org-timer.ts.
+       */
+      "org-timer-change-times-in-region": [beg: number, end: number, delta: string];
+      /**
+       * Insert a description item with the timer's value, or a new item in a timer list. A prefix argument restarts the timer.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-timer.ts.
+       */
+      "org-timer-item": [arg?: PrefixArg | boolean];
+      /**
+       * Pause or continue the relative or countdown timer. With a prefix argument, stop it entirely.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-timer.ts.
+       */
+      "org-timer-pause-or-continue": [arg?: PrefixArg | boolean];
+      /**
+       * Ask for a duration in minutes or h:mm:ss and start a countdown, the entry's effort by default. A number as prefix argument is the minutes; C-u takes org-timer-default-timer without asking, C-u C-u also replaces a running countdown, and C-u C-u C-u ignores the effort.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-timer.ts.
+       */
+      "org-timer-set-timer": [arg?: PrefixArg | boolean];
+      /**
+       * Say how long is left before the countdown timer ends.
+       *
+       * Defined in packages/org-timer.ts.
+       */
+      "org-timer-show-remaining-time": [];
+      /**
+       * Set the starting time for the relative timer to now. With a prefix argument, ask for an offset, the timer stamp at point by default; with C-u C-u, shift every timer stamp in the region instead, by default making the first 0:00:00.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-timer.ts.
+       */
+      "org-timer-start": [arg?: PrefixArg | boolean];
+      /**
+       * Stop the relative or countdown timer.
+       *
+       * Defined in packages/org-timer.ts.
+       */
+      "org-timer-stop": [];
       /**
        * Insert an active timestamp, such as <2026-10-28 Wed>, for a date read in the minibuffer; on a timestamp, change it.
        *
@@ -16603,6 +16727,58 @@ declare global {
        */
       "org-note-abort": Value;
       /**
+       * Face to use for numbering; nil for the heading's own. Ignored where org-num-format-function's string has a face of its own.
+       *
+       * Defined in packages/org-num.ts.
+       */
+      "org-num-face": Value;
+      /**
+       * Function used to display numbering: called with a list of numbers, it returns a string, or nil for none. A face on the string overrides org-num-face.
+       *
+       * Defined in packages/org-num.ts.
+       */
+      "org-num-format-function": Value;
+      /**
+       * Level below which headlines are not numbered; nil numbers them all.
+       *
+       * Defined in packages/org-num.ts.
+       */
+      "org-num-max-level": Value;
+      /**
+       * Whether Org-Num mode is on in this buffer. Use the command org-num-mode to change it.
+       *
+       * Defined in packages/org-num.ts.
+       */
+      "org-num-mode": Value;
+      /**
+       * Keymap org-num-mode-map.
+       */
+      "org-num-mode-map": Value;
+      /**
+       * Whether commented subtrees are left unnumbered.
+       *
+       * Defined in packages/org-num.ts.
+       */
+      "org-num-skip-commented": Value;
+      /**
+       * Whether footnote sections are left unnumbered.
+       *
+       * Defined in packages/org-num.ts.
+       */
+      "org-num-skip-footnotes": Value;
+      /**
+       * Tags whose subtrees are left unnumbered, whatever org-use-tag-inheritance says, as ARCHIVE to leave archived subtrees out.
+       *
+       * Defined in packages/org-num.ts.
+       */
+      "org-num-skip-tags": Value;
+      /**
+       * Whether numbering obeys the UNNUMBERED property.
+       *
+       * Defined in packages/org-num.ts.
+       */
+      "org-num-skip-unnumbered": Value;
+      /**
        * Whether org-occur ignores case: true, false, or "smart" to ignore it only when the regexp has no capital letters.
        *
        * Defined in packages/org.ts.
@@ -17154,6 +17330,66 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-tags-match-list-sublevels": Value;
+      /**
+       * Current countdown timer: the timer while a countdown runs, paused while one is paused, and nil otherwise.
+       *
+       * Defined in packages/org-timer.ts.
+       */
+      "org-timer-countdown-timer": Value;
+      /**
+       * Title for the notification displayed when a countdown finishes.
+       *
+       * Defined in packages/org-timer.ts.
+       */
+      "org-timer-countdown-timer-title": Value;
+      /**
+       * The default timer when a timer is set, in minutes or hh:mm:ss format. When 0, the user is asked for a value.
+       *
+       * Defined in packages/org-timer.ts.
+       */
+      "org-timer-default-timer": Value;
+      /**
+       * Where a running timer is displayed: mode-line, frame-title, both, or nil for nowhere.
+       *
+       * Defined in packages/org-timer.ts.
+       */
+      "org-timer-display": Value;
+      /**
+       * The format to insert the time of the timer, with one "%s", which the timer's value replaces.
+       *
+       * Defined in packages/org-timer.ts.
+       */
+      "org-timer-format": Value;
+      /**
+       * What the mode line shows of the running timer.
+       *
+       * Defined in packages/org-timer.ts.
+       */
+      "org-timer-mode-line-string": Value;
+      /**
+       * The timer that updates the timer in the mode line each second.
+       *
+       * Defined in packages/org-timer.ts.
+       */
+      "org-timer-mode-line-timer": Value;
+      /**
+       * Time when the timer was paused, in seconds, or nil.
+       *
+       * Defined in packages/org-timer.ts.
+       */
+      "org-timer-pause-time": Value;
+      /**
+       * Regular expression used to match timer stamps.
+       *
+       * Defined in packages/org-timer.ts.
+       */
+      "org-timer-re": Value;
+      /**
+       * Start time for the running timer, in seconds, or nil.
+       *
+       * Defined in packages/org-timer.ts.
+       */
+      "org-timer-start-time": Value;
       /**
        * Minutes are rounded to the first of these when a time is inserted, and S-<up> and S-<down> change them by the second. A number alone is both. org-time-stamp-rounding-minutes is its old name.
        *
@@ -20498,6 +20734,10 @@ declare global {
        */
       "auto-revert-tail-mode-on-hook": Value;
       /**
+       * Run in the current buffer before auto-saving the buffers that changed.
+       */
+      "auto-save-hook": Value;
+      /**
        * Run after entering Bash mode, after the hooks of the modes it is built on.
        */
       "bash-ts-mode-hook": Value;
@@ -21254,6 +21494,18 @@ declare global {
        */
       "org-mode-hook": Value;
       /**
+       * Run after Org-Num mode is turned on or off.
+       */
+      "org-num-mode-hook": Value;
+      /**
+       * Run after Org-Num mode is turned off.
+       */
+      "org-num-mode-off-hook": Value;
+      /**
+       * Run after Org-Num mode is turned on.
+       */
+      "org-num-mode-on-hook": Value;
+      /**
        * Run after org-occur has made a sparse tree; by default it goes to the first heading, at the window's top.
        */
       "org-occur-hook": Value;
@@ -21329,6 +21581,30 @@ declare global {
        * Run after Org-Table-Follow-Field mode is turned on.
        */
       "org-table-follow-field-mode-on-hook": Value;
+      /**
+       * Hook run after the relative or countdown timer is continued.
+       */
+      "org-timer-continue-hook": Value;
+      /**
+       * Hook run after the countdown timer reaches zero.
+       */
+      "org-timer-done-hook": Value;
+      /**
+       * Hook run before the relative or countdown timer is paused.
+       */
+      "org-timer-pause-hook": Value;
+      /**
+       * Hook run after the countdown timer is set.
+       */
+      "org-timer-set-hook": Value;
+      /**
+       * Hook run after the relative timer is started.
+       */
+      "org-timer-start-hook": Value;
+      /**
+       * Hook run before the relative or countdown timer is stopped.
+       */
+      "org-timer-stop-hook": Value;
       /**
        * Functions run after a TODO state changes, each given the property list org-blocker-hook gets.
        */
@@ -22675,6 +22951,14 @@ declare global {
     function listFonts(spec: Font, max?: number): Font[];
     /** A colour's red, green and blue from 0 to 65535, as color-values, or undefined if it is no colour. */
     function colorValues(color: string): [number, number, number] | undefined;
+    /**
+     * A colour as E8 draws it, its red, green, blue and alpha from 0 to
+     * 255: one of E8's palette names ("accent-ink", "faint"), as the
+     * frame's background has it, a name Emacs knows, or a spec, "#rrggbbaa"
+     * with alpha too; undefined if it is no colour. E8's own, as Emacs's
+     * colours have neither palette nor alpha: htmlize writes faces with it.
+     */
+    function colorRgba(color: string): [number, number, number, number] | undefined;
     /** The values of a colour spec ("#rgb", "rgb:R/G/B", "rgbi:R/G/B"), not a name, as color-values-from-color-spec. */
     function colorValuesFromColorSpec(spec: string): [number, number, number] | undefined;
     /** The names of the colours Emacs knows, as defined-colors. */

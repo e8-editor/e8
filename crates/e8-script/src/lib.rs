@@ -223,6 +223,8 @@ const PACKAGES: &[(&str, &str)] = &[
     ("packages/org-datetree.ts", include_str!("../../../packages/org-datetree.ts")),
     ("packages/org-agenda.ts", include_str!("../../../packages/org-agenda.ts")),
     ("packages/org-clock.ts", include_str!("../../../packages/org-clock.ts")),
+    ("packages/org-timer.ts", include_str!("../../../packages/org-timer.ts")),
+    ("packages/org-num.ts", include_str!("../../../packages/org-num.ts")),
     ("packages/org-capture.ts", include_str!("../../../packages/org-capture.ts")),
     ("packages/org-colview.ts", include_str!("../../../packages/org-colview.ts")),
     ("packages/org-archive.ts", include_str!("../../../packages/org-archive.ts")),
@@ -243,8 +245,13 @@ const PACKAGES: &[(&str, &str)] = &[
 /// not preloaded and that loading turns on.
 const LIBRARY: &[(&str, &str)] = &[
     ("packages/ediff.ts", include_str!("../../../packages/ediff.ts")),
+    ("packages/epg.ts", include_str!("../../../packages/epg.ts")),
     ("packages/ert.ts", include_str!("../../../packages/ert.ts")),
+    ("packages/htmlize.ts", include_str!("../../../packages/htmlize.ts")),
     ("packages/ob-exp.ts", include_str!("../../../packages/ob-exp.ts")),
+    ("packages/org-crypt.ts", include_str!("../../../packages/org-crypt.ts")),
+    ("packages/oc.ts", include_str!("../../../packages/oc.ts")),
+    ("packages/oc-basic.ts", include_str!("../../../packages/oc-basic.ts")),
     ("packages/org-attach.ts", include_str!("../../../packages/org-attach.ts")),
     ("packages/org-macro.ts", include_str!("../../../packages/org-macro.ts")),
     ("packages/org-tempo.ts", include_str!("../../../packages/org-tempo.ts")),

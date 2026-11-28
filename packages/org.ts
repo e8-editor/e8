@@ -2649,6 +2649,9 @@ function fontify(start: number, end: number): void {
   const from = e8.lineStart(first);
   e8.removeTextProperty(from, end, "face");
   e8.removeTextProperty(from, end, "invisible");
+  // As org-unfontify-region, the bindings fontifying put, as on citations' keys.
+  e8.removeTextProperty(from, end, "keymap");
+  e8.removeTextProperty(from, end, "mouse-face");
   const keywords = allKeywords();
   let block = enclosingBlock(first);
   let firstLine = first;
@@ -5554,7 +5557,7 @@ let blockEntryBlocking = "";
 let blockedByCheckboxes = false;
 
 /** A heading's TODO state, priority, title and tags, one space between, as org-get-heading gives them. */
-function headingText(line: number): string {
+export function headingText(line: number): string {
   const h = parseHeading(line);
   if (!h) return e8.lineText(line).replace(/^\*+[ \t]*/, "");
   return [h.todo, h.priority === undefined ? undefined : `[#${h.priority}]`, h.title, h.tags.length > 0 ? `:${h.tags.join(":")}:` : undefined]
@@ -8616,6 +8619,8 @@ function openAtPoint_(): void {
     openLink(link);
     return;
   }
+  // On a citation, what org-cite-follow-processor does, as org-cite-follow (oc.ts).
+  if (e8.funcall("org-cite--follow-at-point", e8.prefixArg()) === true) return;
   // On a footnote reference, or a definition's label, its footnote, as Org's footnote context.
   const footnote = e8.funcall("org-footnote--open-context");
   if (footnote === "reference" || footnote === "definition") {
@@ -10573,7 +10578,9 @@ export function combinePlists(...plists: (e8.Value | undefined)[]): e8.Value[] {
  * each file once.
  */
 export function agendaFiles(): string[] {
-  const files = e8.variable("org-agenda-files");
+  const value = e8.variable("org-agenda-files");
+  // A file's name stands for the list it holds, as org-read-agenda-file-list reads it.
+  const files = typeof value === "string" ? readAgendaFileList().map(([expanded]) => expanded) : value;
   if (!Array.isArray(files)) return [];
   const dir = e8.variable("org-directory");
   const base = typeof dir === "string" ? e8.expandFileName(dir) : undefined;
@@ -10584,6 +10591,89 @@ export function agendaFiles(): string[] {
   // Each once, the first kept, as org-agenda-files's delete-dups.
   return [...new Set(all)];
 }
+
+/**
+ * The files the file org-agenda-files names holds, one a line, each
+ * expanded in org-directory and paired with its name as written, as
+ * org-read-agenda-file-list reads them.
+ */
+function readAgendaFileList(): [string, string][] {
+  const file = e8.variable("org-agenda-files");
+  if (typeof file !== "string") return [];
+  if (e8.fileDirectoryP(file)) e8.signal("error", "`org-agenda-files' cannot be a single directory");
+  const temp = e8.bufferName(e8.getBufferCreate(e8.generateNewBufferName(" *org agenda files*"))) as string;
+  let text: string;
+  try {
+    text = e8.withCurrentBuffer(temp, () => (e8.insertFileContents(file), e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax())));
+  } finally {
+    e8.call("kill-buffer", temp);
+  }
+  const dir = e8.variable("org-directory");
+  const base = typeof dir === "string" ? e8.expandFileName(dir) : undefined;
+  // Split at line ends with the blanks around them, empty names left out, as org-split-string.
+  return text
+    .split(/[ \t\r\n]*?[\r\n][ \t\r\n]*/)
+    .filter((f) => f !== "")
+    .map((f) => [e8.expandFileName(e8.substituteInFileName(f), base), f]);
+}
+
+/**
+ * Sets the agenda file list to LIST and keeps it, as
+ * org-store-new-agenda-file-list: in the file org-agenda-files names,
+ * entries written as they were, or else in the variable. E8 has no
+ * Customize to save the variable with, so a list in the variable lasts the
+ * session; a file holding it keeps it.
+ */
+function storeNewAgendaFileList(list: string[]): void {
+  const file = e8.variable("org-agenda-files");
+  if (typeof file === "string") {
+    // The first way an entry is written, as assoc finds it.
+    const pairs = new Map<string, string>();
+    for (const [expanded, written] of readAgendaFileList()) if (!pairs.has(expanded)) pairs.set(expanded, written);
+    for (let b = e8.getFileBuffer(e8.expandFileName(file)); b !== undefined; b = e8.getFileBuffer(e8.expandFileName(file))) e8.call("kill-buffer", String(b.name));
+    e8.writeRegion(`${list.map((f) => pairs.get(f) ?? f).join("\n")}\n`, null, file, { quiet: true });
+  } else e8.setVariable("org-agenda-files", list);
+}
+
+e8.defineCommand({
+  name: "org-agenda-file-to-front",
+  doc:
+    "Move or add the current file to the front of the agenda file list. With a prefix argument, to its end. " +
+    "The list is kept in the file org-agenda-files names, if it names one; else in the variable, for the session.",
+  params: [{ name: "to-end", kind: "prefix" }],
+  run: (toEnd: e8.Value) => {
+    const fileAlist: [string, string][] = agendaFiles().map((x) => [e8.fileTruename(x), x]);
+    const name = e8.bufferFileName();
+    if (name === undefined) e8.userError("Please save the current buffer to a file");
+    const ctf = e8.fileTruename(name);
+    const had = fileAlist.find(([truename]) => truename === ctf);
+    const x: [string, string] = had ?? [ctf, e8.abbreviateFileName(name)];
+    const rest = fileAlist.filter((e) => e !== x);
+    const list = truthy(toEnd) ? [...rest, x] : [x, ...rest];
+    storeNewAgendaFileList(list.map(([, f]) => f));
+    e8.message(`File ${had ? "moved" : "added"} to ${truthy(toEnd) ? "end" : "front"} of agenda file list`);
+  },
+});
+
+e8.defineCommand({
+  name: "org-remove-file",
+  doc:
+    "Remove the current file, or FILE, from the agenda file list, org-agenda-files. " +
+    "The list is kept in the file org-agenda-files names, if it names one; else in the variable, for the session.",
+  params: [{ name: "file", value: () => "" }],
+  run: (given: string) => {
+    const file = typeof given === "string" && given !== "" ? given : e8.bufferFileName();
+    if (file === undefined) e8.userError("Current buffer does not visit a file");
+    const trueFile = e8.fileTruename(file);
+    const afile = e8.abbreviateFileName(file);
+    const all = agendaFiles();
+    const files = all.filter((x) => e8.fileTruename(x) !== trueFile);
+    if (files.length !== all.length) {
+      storeNewAgendaFileList(files);
+      e8.message(`Removed from Org Agenda list: ${afile}`);
+    } else e8.message(`File was not in list: ${afile} (not removed)`);
+  },
+});
 
 /** Goes to the first dynamic block named NAME and returns where it starts, as org-find-dblock; stays put if there is none. */
 export function findDblock(name: string): number | undefined {
@@ -11499,6 +11589,8 @@ const keys: { [keys: string]: e8.CommandName | e8.DefinedCommand } = {
   "C-c &": "org-mark-ring-goto",
   "C-c C-j": "org-goto",
   "C-c \\": "org-match-sparse-tree",
+  "C-c [": "org-agenda-file-to-front",
+  "C-c ]": "org-remove-file",
   "C-c C-c": ctrlCCtrlC,
   "C-c C-x C-b": "org-toggle-checkbox",
   "C-c C-x C-r": "org-toggle-radio-button",

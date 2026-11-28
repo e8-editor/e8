@@ -1646,7 +1646,7 @@ function todoList(arg: TodoArg = null): void {
  * while org-agenda-skip-archived-trees is on, and those in a COMMENT
  * subtree while org-agenda-skip-comment-trees is.
  */
-function skippedHeadings(all: Heading[]): boolean[] {
+export function skippedHeadings(all: Heading[]): boolean[] {
   // A heading is archived by the ARCHIVE tag itself, as org-element's :archivedp has it; a file by org-archive-tag among its FILETAGS.
   const tag = String(e8.variable("org-archive-tag") ?? "ARCHIVE");
   const archived = truthy(e8.variable("org-agenda-skip-archived-trees") ?? null) && archivesMode === null;
@@ -2267,7 +2267,7 @@ function withSettings<T>(settings: Settings, f: () => T): T {
  * function's name is called, and a list calls its first element with the
  * rest, each quoted one as its value.
  */
-function skipTo(pos: number, names = ["org-agenda-skip-function-global", "org-agenda-skip-function"]): number | undefined {
+export function skipTo(pos: number, names = ["org-agenda-skip-function-global", "org-agenda-skip-function"]): number | undefined {
   for (const name of names) {
     const form = e8.variable(name) ?? null;
     if (form === null || form === false || (Array.isArray(form) && form.length === 0)) continue;
@@ -3146,6 +3146,16 @@ setAgendaEntryHere(() => {
 });
 
 /** The entry the agenda line at point shows, or Org's error if it shows none. */
+/**
+ * The entry the agenda line at point shows: its buffer, its heading and its
+ * effort in minutes when the agenda was made, as org-timer reads the line's
+ * org-hd-marker and effort-minutes properties; undefined on a line with none.
+ */
+export function agendaLineEntry(): { buffer: string; heading: number; effort?: number } | undefined {
+  const item = agendaLines[e8.lineOf(e8.point())];
+  return item && { buffer: item.buffer, heading: headingOf(item), effort: lineEffort(item) };
+}
+
 function agendaItemHere(): AgendaItem {
   const item = agendaLines[e8.lineOf(e8.point())];
   if (!item) e8.userError("Command not allowed in this line");

@@ -1152,7 +1152,7 @@ export function blankBeforeNewEntry(kind: "heading" | "plain-list-item"): e8.Val
  * Inserts an item at pos, before the item there if pos is before its text,
  * as org-list-insert-item does, leaving point at the new item's start.
  */
-function insertItemStruct(pos: number, struct: Struct, prevs: Alist, checkbox: boolean, afterBullet = ""): Struct {
+export function insertItemStruct(pos: number, struct: Struct, prevs: Alist, checkbox: boolean, afterBullet = ""): Struct {
   let item: number | undefined;
   for (const e of struct) {
     if (e.pos > pos) break;
@@ -1462,6 +1462,11 @@ export function cycleListBullet(which?: string): void {
 export function insertListItem(checkbox: boolean): boolean {
   const start = inItem(lineAt());
   if (start === undefined || e8.invisibleAt(start)) return false;
+  // A timer list's item is org-timer-item's, as org-insert-item delegates it.
+  if (e8.fboundp("org-at-item-timer-p") && truthy(e8.funcall("org-at-item-timer-p", start))) {
+    e8.call("org-timer-item" as any);
+    return true;
+  }
   const pos = e8.point();
   let struct = listStruct(lineAt(start));
   const prevs = prevsAlist(struct);
