@@ -20,11 +20,11 @@
 
 import { type Datum, type Node, ALL_ELEMENTS, GREATER_ELEMENTS, contents, lineage, map, mapFirst, parentOf, property, typeOf } from "org-element-ast";
 import { interpretData, parseBuffer, restriction } from "org-element";
+import { parseHeading } from "org";
 import { showSetVisibility } from "org-fold";
 import { findIdFile, updateIdLocations } from "org-id";
 import { currentTemplates, initializeTemplates } from "org-macro";
 import { langMode } from "org-src";
-import { searchInBuffer } from "ol";
 import { type Info, OPTIONS, getPreviousElement, registered, resolveCoderef, resolveFuzzyLink, resolveIdLink, resolveLink } from "ox";
 import {
   type Column,
@@ -96,10 +96,12 @@ interface Shown {
  * position, as org-lint--generate-reports: each with a marker at its
  * position and the line it is on.
  */
-export function generateReports(buffer: string, list: Checker[]): Shown[] {
+export function generateReports(buffer: string | e8.Buffer, list: Checker[]): Shown[] {
   return e8.withCurrentBuffer(buffer, () =>
     e8.saveExcursion(() => {
       e8.gotoChar(e8.pointMin());
+      // org-attach first, as org-lint requires it, so the parse knows attachment: links; where E8 has none, without.
+      e8.conditionCase(() => e8.require("org-attach"), { "file-missing": () => "" });
       const ast = parseBuffer();
       const found: { pos: number; trust: string; message: string; checker: Checker }[] = [];
       for (const c of list) {
@@ -131,7 +133,8 @@ e8.defun("org-lint--generate-reports", (buffer: e8.Value, names?: e8.Value) => {
 });
 
 /** Each report buffer's source, checkers and reports, as org-lint--source-buffer and org-lint--local-checkers. */
-const reportState = new PerBuffer<{ source: string; checkers: Checker[]; reports: Shown[] }>();
+// The source as the buffer itself, so renaming it, as uniquify does, keeps the report's g, RET and TAB working.
+const reportState = new PerBuffer<{ source: e8.Buffer; checkers: Checker[]; reports: Shown[] }>();
 
 const LIST = "*Org Lint*";
 
@@ -192,7 +195,7 @@ e8.defineMajorMode({
 });
 
 /** Shows the reports of CHECKERS on SOURCE in *Org Lint*, as org-lint--display-reports. */
-function displayReports(source: string, list: Checker[]): void {
+function displayReports(source: e8.Buffer, list: Checker[]): void {
   e8.getBufferCreate(LIST);
   e8.withCurrentBuffer(LIST, () => {
     e8.call("org-lint--report-mode" as any);
@@ -212,7 +215,8 @@ e8.defineCommand({
     const report = currentReport();
     const source = reportState.get(e8.currentBuffer())!.source;
     const pos = e8.markerPosition(report.marker) ?? 0;
-    e8.call("switch-to-buffer-other-window", source);
+    if (!e8.bufferLiveP(source)) e8.signal("error", "Selecting deleted buffer");
+    e8.call("switch-to-buffer-other-window", e8.bufferName(source)!);
     if (pos < e8.pointMin() || pos > e8.pointMax()) e8.widen();
     e8.gotoChar(pos);
     showSetVisibility("local");
@@ -287,7 +291,7 @@ e8.defineCommand({
     if (!e8.derivedModeP("org-mode")) e8.userError("Not in an Org buffer");
     e8.message("Org linting process starting...");
     const list = pickCheckers(arg);
-    displayReports(e8.bufferName(), list);
+    displayReports(e8.currentBuffer(), list);
     e8.message("Org linting process completed");
   },
 });
@@ -299,10 +303,38 @@ function elementAtIn(ast: Node, pos: number): Node | undefined {
   let node: Node = ast;
   let found: Node | undefined;
   const size = e8.pointMax();
+  const isElement = (d: Datum | undefined): d is Node => d !== undefined && typeof d !== "string" && ALL_ELEMENTS.includes(d.type);
   for (;;) {
-    const kids = node.contents.filter((d): d is Node => typeof d !== "string" && ALL_ELEMENTS.includes(d.type));
-    let next = kids.find((k) => (property("begin", k) as number) <= pos && pos < (property("end", k) as number));
-    if (!next && pos === size) next = [...kids].reverse().find((k) => property("end", k) === size);
+    // The children are in order and do not overlap: the last starting at or before POS, found by halves.
+    const kids = node.contents;
+    let lo = 0;
+    let hi = kids.length - 1;
+    let at = -1;
+    while (lo <= hi) {
+      const mid = (lo + hi) >> 1;
+      const k = kids[mid];
+      const b = typeof k === "string" ? undefined : (property("begin", k) as number | undefined);
+      if (b === undefined || b <= pos) {
+        at = mid;
+        lo = mid + 1;
+      } else hi = mid - 1;
+    }
+    let next: Node | undefined;
+    for (let i = at; i >= 0 && next === undefined; i--) {
+      const k = kids[i];
+      if (!isElement(k)) continue;
+      if ((property("end", k) as number) > pos) next = k;
+      break;
+    }
+    if (!next && pos === size) {
+      for (let i = kids.length - 1; i >= 0; i--) {
+        const k = kids[i];
+        if (isElement(k) && property("end", k) === size) {
+          next = k;
+          break;
+        }
+      }
+    }
     if (!next) return found;
     found = next.type === "section" ? found : next;
     if (!GREATER_ELEMENTS.includes(next.type) && next.type !== "section") return found;
@@ -453,7 +485,7 @@ function languageHeaderArgs(language: string): [string, Allowed][] | undefined {
 }
 
 /** A header argument as Babel reads it: its name, with its colon, and its value: text, a number, or null for none. */
-type Header = [string, string | number | null];
+type Header = [string, string | LispNumber | null];
 
 /** Splits STRING at a blank followed by a colon, keeping brackets and quotes whole, as org-babel-balanced-split with ((32 9) . 58). */
 function balancedSplit(s: string, split: (past: string | undefined, next: string) => boolean, pair: boolean): string[] {
@@ -474,7 +506,8 @@ function balancedSplit(s: string, split: (past: string | undefined, next: string
       const openings = [c];
       let j = i + 1;
       while (openings.length > 0) {
-        const m = /[\]()[]/.exec(s.slice(j));
+        // As Org searches "[]()]", which an opening bracket does not match.
+        const m = /[\])(]/.exec(s.slice(j));
         if (!m) break;
         j += m.index + 1;
         const ch = s[j - 1];
@@ -517,22 +550,51 @@ const chomp = (s: string): string => s.replace(/[ \f\t\n\r\v]+$/, "");
 /** Whether a value is Lisp Babel would evaluate, as org-babel-read sees it: starting (, ', ` or [, or *this*. */
 const lispValueP = (s: string): boolean => /^[(`'[]/.test(s) || s === "*this*";
 
-/** A value as org-babel-read gives it, without evaluating Lisp: a number, a quoted string's contents, or the text. */
-function babelRead(cell: string): string | number {
+/** A number as Lisp reads it: an integer, or a float, which prints with a point. */
+class LispNumber {
+  readonly value: number;
+  readonly float: boolean;
+  constructor(value: number, float: boolean) {
+    this.value = value;
+    this.float = float;
+  }
+  toString(): string {
+    if (!this.float) return String(this.value);
+    if (Number.isInteger(this.value) && Math.abs(this.value) < 1e16) return `${this.value}.0`;
+    return String(this.value);
+  }
+}
+
+/** A number in Lisp's syntax, as read reads it, or undefined: 1 and 1. are integers, 1.0, .5 and 1e3 floats. */
+function readNumber(t: string): LispNumber | undefined {
+  if (/^[-+]?[0-9]+\.?$/.test(t)) return new LispNumber(parseInt(t, 10), false);
+  if (/^[-+]?(?:[0-9]*\.[0-9]+(?:e[-+]?[0-9]+)?|[0-9]+\.?[0-9]*e[-+]?[0-9]+)$/.test(t)) return new LispNumber(Number(t), true);
+  return undefined;
+}
+
+/** A string's contents as Lisp's read reads its escapes: \a for BEL, \n, octal and hex, a backslash before a newline dropped. */
+function readLispString(body: string): string {
+  const named: Record<string, string> = { a: "\x07", b: "\b", t: "\t", n: "\n", v: "\v", f: "\f", r: "\r", e: "\x1b", s: " ", d: "\x7f" };
+  return body.replace(/\\(?:([0-7]{1,3})|x([0-9a-fA-F]+)|u([0-9a-fA-F]{4})|U([0-9a-fA-F]{8})|(\n)|([^]))/g, (_m, oct, hex, u4, u8, nl, c) => {
+    if (oct !== undefined) return String.fromCodePoint(parseInt(oct, 8));
+    if (hex !== undefined) return String.fromCodePoint(parseInt(hex, 16));
+    if (u4 !== undefined) return String.fromCodePoint(parseInt(u4, 16));
+    if (u8 !== undefined) return String.fromCodePoint(parseInt(u8, 16));
+    if (nl !== undefined) return "";
+    return named[c] ?? c;
+  });
+}
+
+/** A value as org-babel-read gives it, without evaluating Lisp: a number, a quoted string's contents as read reads them, or the text. */
+function babelRead(cell: string): string | LispNumber {
   if (!nw(cell)) return cell;
   const t = cell.trim();
   if (!/\s/.test(t) && /^[0-9e.+ -]+$/.test(cell)) {
-    const n = Number(t);
-    if (/^[-+]?(?:[0-9]+\.?[0-9]*|\.[0-9]+)(?:e[-+]?[0-9]+)?$/.test(t) && Number.isFinite(n)) return n;
+    const n = readNumber(t);
+    if (n !== undefined) return n;
   }
-  const quoted = /^\s*("(?:[^"\\]|\\.)*")\s*$/.exec(cell);
-  if (quoted) {
-    try {
-      return JSON.parse(quoted[1]) as string;
-    } catch {
-      return cell;
-    }
-  }
+  const quoted = /^\s*"((?:[^"\\]|\\[^])*)"\s*$/.exec(cell);
+  if (quoted) return readLispString(quoted[1]);
   return cell;
 }
 
@@ -570,7 +632,7 @@ function joinSplitsNear(ch: string, list: string[]): string[] {
 }
 
 /** A value as Lisp's format "%s" prints it. */
-const princ = (v: string | number | null): string => (v === null ? "nil" : String(v));
+const princ = (v: string | LispNumber | null): string => (v === null ? "nil" : String(v));
 
 // ----- The checkers -----
 
@@ -668,7 +730,7 @@ function deprecatedExportBlocks(ast: Node): Report[] {
 function deprecatedHeaderSyntax(ast: Node): Report[] {
   // DIR is also used for attachments.
   const deprecated = COMMON_HEADER_VALUES.map(([k]) => k).filter((k) => k !== "dir");
-  const re = new RegExp(`^(${deprecated.map((k) => k.replace(/[-]/g, "\\-")).sort((a, b) => b.length - a.length).join("|")})[ \\t]`);
+  const re = new RegExp(`^(${deprecated.map((k) => k.replace(/[-]/g, "\\-")).sort((a, b) => b.length - a.length).join("|")})[ \\t]`, "i");
   return map(ast, ["keyword", "node-property"], (d) => {
     const key = String(property("key", d));
     if (typeOf(d) === "keyword") {
@@ -683,10 +745,124 @@ function deprecatedHeaderSyntax(ast: Node): Report[] {
 const missingLanguageInSrcBlock = (ast: Node): Report[] =>
   map(ast, "src-block", (b) => !property("language", b) && ([postAffiliated(b), "Missing language in source block"] as Report));
 
+/**
+ * The modes Emacs 30 has with Org and org-lint loaded, by which org-lint
+ * there takes a source block's language as known: those fboundp, as
+ * org-lint asks of the language's mode. E8 takes a language as known when
+ * its mode is one of these or one E8 has, or E8 runs it.
+ */
+const EMACS_MODES = new Set(
+  (
+  "*table--cell-describe-mode Buffer-menu-group-by-mode Buffer-menu-mode Info-mode LaTeX-mode TeX-mode " +
+  "abbrev-mode add-minor-mode allout-mode allout-widgets-mode antlr-mode archive-mode array-mode artist-mode " +
+  "asm-mode authinfo-mode auto-composition-mode auto-compression-mode auto-encryption-mode auto-fill-mode " +
+  "auto-image-file-mode auto-insert-mode auto-lower-mode auto-raise-mode auto-revert-mode auto-revert-tail-mode " +
+  "auto-save-mode auto-save-visited-mode autoconf-mode awk-mode bash-ts-mode bat-mode bibtex-mode " +
+  "bibtex-style-mode binary-overwrite-mode blink-cursor-mode bovine-grammar-mode buffer-face-mode " +
+  "bug-reference-mode bug-reference-prog-mode button-mode c++-mode c++-ts-mode c-initialize-cc-mode c-mode " +
+  "c-or-c++-mode c-or-c++-ts-mode c-ts-mode calendar-mode capitalized-words-mode cfengine-auto-mode " +
+  "cfengine2-mode cfengine3-mode change-log-mode checkdoc-minor-mode cl-font-lock-built-in-mode " +
+  "cl-old-struct-compat-mode clean-mode cmake-ts-mode column-number-mode comint-fontify-input-mode comint-mode " +
+  "common-lisp-mode compilation-minor-mode compilation-mode compilation-shell-minor-mode " +
+  "completion-in-region-mode completion-list-mode completion-preview-mode conf-colon-mode conf-desktop-mode " +
+  "conf-javaprop-mode conf-mode conf-ppd-mode conf-space-mode conf-toml-mode conf-unix-mode conf-windows-mode " +
+  "conf-xdefaults-mode context-menu-mode cperl-mode csharp-mode csharp-ts-mode css-mode css-ts-mode cua-mode " +
+  "cua-rectangle-mark-mode cua-selection-mode current-input-mode cursor-face-highlight-mode " +
+  "cursor-intangible-mode cursor-sensor-mode custom-group-of-mode custom-set-minor-mode customize-mode " +
+  "cvs-status-mode cwarn-mode dcl-mode decipher-mode define-derived-mode define-generic-mode " +
+  "define-global-minor-mode define-globalized-minor-mode define-minor-mode delete-selection-mode delphi-mode " +
+  "describe-minor-mode describe-mode desktop-save-mode diary-mode dictionary-mode dictionary-tooltip-mode " +
+  "diff-minor-mode diff-mode dired-mode dirtrack-mode display-battery-mode display-fill-column-indicator-mode " +
+  "display-line-numbers-mode display-time-mode dns-mode doc-view-minor-mode doc-view-mode dockerfile-ts-mode " +
+  "doctex-mode double-mode dsssl-mode dynamic-completion-mode easy-mmode-define-global-mode " +
+  "easy-mmode-define-minor-mode ebrowse-member-mode ebrowse-tree-mode edit-abbrevs-mode editorconfig-conf-mode " +
+  "editorconfig-mode eldoc-mode electric-indent-local-mode electric-indent-mode electric-layout-local-mode " +
+  "electric-layout-mode electric-pair-local-mode electric-pair-mode electric-quote-local-mode electric-quote-mode " +
+  "elide-head-mode elisp-byte-code-mode elixir-ts-mode emacs-authors-mode emacs-lisp-mode emacs-lock-mode " +
+  "emacs-news-mode emacs-news-view-mode enriched-mode epa-global-mail-mode epa-mail-mode erts-mode eshell-mode " +
+  "etags-regen-mode etc-authors-mode eww-mode f90-mode fido-mode fido-vertical-mode file-name-shadow-mode " +
+  "flymake-mode flyspell-mode flyspell-prog-mode follow-mode font-lock-change-mode font-lock-mode " +
+  "font-lock-value-in-major-mode footnote-mode forms-mode fortran-mode frame--current-background-mode " +
+  "frame--current-backround-mode frame-set-background-mode frame-terminal-default-bg-mode fringe-mode " +
+  "fundamental-mode gdb-script-mode generic-mode get-scroll-bar-mode glasses-mode global-auto-composition-mode " +
+  "global-auto-revert-mode global-completion-preview-mode global-cwarn-mode global-dictionary-tooltip-mode " +
+  "global-display-fill-column-indicator-mode global-display-line-numbers-mode global-ede-mode global-eldoc-mode " +
+  "global-font-lock-mode global-goto-address-mode global-hi-lock-mode global-highlight-changes-mode " +
+  "global-hl-line-mode global-prettify-symbols-mode global-reveal-mode global-so-long-mode global-subword-mode " +
+  "global-superword-mode global-tab-line-mode global-visual-line-mode global-visual-wrap-prefix-mode " +
+  "global-whitespace-mode global-whitespace-newline-mode global-window-tool-bar-mode " +
+  "global-word-wrap-whitespace-mode glyphless-display-mode gnus-mailing-list-mode gnus-score-mode go-mod-ts-mode " +
+  "go-ts-mode goto-address-mode goto-address-prog-mode gpm-mouse-mode grep-mode gud-tooltip-mode " +
+  "header-line-indent-mode heex-ts-mode help-mode hexl-mode hi-lock-mode hide-ifdef-mode highlight-changes-mode " +
+  "highlight-changes-visible-mode hl-line-mode horizontal-scroll-bar-mode hs-minor-mode html-mode html-ts-mode " +
+  "icomplete-mode icomplete-vertical-mode icon-mode idl-mode idlwave-mode ido-mode iimage-mode " +
+  "image-dired-minor-mode image-minor-mode image-mode indent-according-to-mode indent-tabs-mode " +
+  "indented-text-mode isearch--describe-regexp-mode isearch--describe-word-mode isearch-describe-mode " +
+  "isearch-fold-quotes-mode isearch-mode ispell-minor-mode iswitchb-mode java-mode java-ts-mode javascript-mode " +
+  "jit-lock-debug-mode jit-lock-mode js-base-mode js-json-mode js-jsx-mode js-mode js-ts-mode json-ts-mode " +
+  "kill-ring-deindent-mode latex-mode ld-script-mode less-css-mode line-number-mode lisp-data-mode " +
+  "lisp-interaction-mode lisp-mode lock-file-mode log-view-mode lost-selection-mode lua-ts-mode m2-mode m4-mode " +
+  "mail-abbrevs-mode mail-mode makefile-automake-mode makefile-bsdmake-mode makefile-gmake-mode " +
+  "makefile-imake-mode makefile-makepp-mode makefile-mode master-mode menu-bar-display-line-numbers-mode " +
+  "menu-bar-mode mercury-mode message-mode messages-buffer-mode metafont-mode metapost-mode mh-folder-mode " +
+  "mhtml-mode midnight-mode minibuffer-depth-indicate-mode minibuffer-electric-default-mode " +
+  "minibuffer-inactive-mode minibuffer-mode minibuffer-regexp-mode mixal-mode modifier-bar-mode modula-2-mode " +
+  "mouse-avoidance-mode mouse-wheel-mode msb-mode next-error-follow-minor-mode normal-erase-is-backspace-mode " +
+  "normal-mode nroff-mode nxml-mode objc-mode occur-edit-mode occur-mode octave-maybe-mode octave-mode " +
+  "opascal-mode org-agenda-archives-mode org-agenda-clockreport-mode org-agenda-entry-text-mode " +
+  "org-agenda-follow-mode org-agenda-log-mode org-agenda-mode org-babel-interpret-file-mode org-beamer-mode " +
+  "org-cdlatex-mode org-check-for-org-mode org-element--next-mode org-export-stack-mode " +
+  "org-fontify-like-in-org-mode org-indent-mode org-lint--report-mode org-list-checkbox-radio-mode org-mode " +
+  "org-num-mode org-run-like-in-org-mode org-src-get-lang-mode org-src-mode org-table-follow-field-mode " +
+  "org-table-header-line-mode orgtbl-mode outline-minor-mode outline-mode overwrite-mode " +
+  "paragraph-indent-minor-mode paragraph-indent-text-mode pascal-mode pending-delete-mode perl-mode php-ts-mode " +
+  "picture-mode pike-mode pixel-scroll-mode pixel-scroll-precision-mode plain-TeX-mode plain-tex-mode " +
+  "plstore-mode pr-toggle-mode pr-txt-mode prettify-symbols-mode process-menu-mode prog-mode prolog-mode ps-mode " +
+  "python-base-mode python-mode python-ts-mode rcirc-track-minor-mode read-extended-command-mode read-only-mode " +
+  "recentf-mode rectangle-mark-mode refill-mode reftex-index-phrases-mode reftex-isearch-minor-mode reftex-mode " +
+  "repeat-mode reveal-mode rmail-mode rng-validate-mode rst-minor-mode rst-mode ruby-base-mode ruby-mode " +
+  "ruby-ts-mode ruler-mode rust-ts-mode save-place-local-mode save-place-mode savehist-mode scheme-mode " +
+  "scroll-all-mode scroll-bar-mode scroll-lock-mode scss-mode semantic-mode server-mode ses-mode set-auto-mode " +
+  "set-binary-mode set-buffer-major-mode set-fringe-mode set-input-interrupt-mode set-input-meta-mode " +
+  "set-input-mode set-scroll-bar-mode sgml-mode sh--redirect-bash-ts-mode sh-base-mode " +
+  "sh-electric-here-document-mode sh-mode shell-script-mode show-paren-local-mode show-paren-mode sieve-mode " +
+  "simula-mode size-indication-mode slitex-mode smerge-mode snmp-mode snmpv2-mode so-long-minor-mode so-long-mode " +
+  "special-mode speedbar-frame-mode sql-mode srecode-template-mode srt-mode strokes-mode subword-mode " +
+  "superword-mode tab-bar-history-mode tab-bar-mode tab-line-mode tab-switcher-mode table-fixed-width-mode " +
+  "tabulated-list-mode tags-table-mode tar-mode tcl-mode temp-buffer-resize-mode tex-mode texinfo-mode text-mode " +
+  "tildify-mode todo-archive-mode todo-filtered-items-mode todo-mode toggle-rot13-mode toggle-viper-mode " +
+  "toml-ts-mode tool-bar-mode tooltip-mode tooltip-show-help-non-mode transient-mark-mode " +
+  "treesit--explorer-tree-mode treesit--read-major-mode treesit-explore-mode treesit-inspect-mode tsx-ts-mode " +
+  "turn-off-follow-mode turn-on-auto-revert-mode turn-on-auto-revert-tail-mode turn-on-eldoc-mode " +
+  "turn-on-follow-mode turn-on-gnus-dired-mode turn-on-gnus-mailing-list-mode turn-on-prettify-symbols-mode " +
+  "turn-on-visual-line-mode type-break-mode typescript-ts-base-mode typescript-ts-mode undelete-frame-mode " +
+  "universal-argument--mode url-handler-mode variable-pitch-mode vc-mode vera-mode verilog-mode vhdl-mode " +
+  "view-mode viper-mode visible-mode visual-line-mode visual-wrap-prefix-mode wdired-change-to-wdired-mode " +
+  "which-function-mode which-key-mode which-key-show-full-major-mode which-key-show-major-mode whitespace-mode " +
+  "whitespace-newline-mode widget-minor-mode windmove-mode window-divider-mode window-tool-bar-mode winner-mode " +
+  "wisent-grammar-mode with-auto-compression-mode word-wrap-whitespace-mode xml-mode xterm-mouse-mode " +
+  "yaml-ts-mode zone-mode "
+  ).split(" ").filter(Boolean),
+);
+
+/** Emacs 30's org-src-lang-modes, the modes of the languages whose mode is not LANGUAGE-mode, for EMACS_MODES. */
+const EMACS_LANG_MODES: Record<string, string> = Object.fromEntries(
+  (
+    "C=c C++=c++ asymptote=asy beamer=latex calc=fundamental cpp=c++ ditaa=artist desktop=conf-desktop dot=fundamental " +
+    "elisp=emacs-lisp ocaml=tuareg screen=shell-script sqlite=sql toml=conf-toml shell=sh ash=sh sh=sh bash=sh jsh=sh " +
+    "bash2=sh dash=sh dtksh=sh ksh=sh es=sh rc=sh itcsh=sh tcsh=sh jcsh=sh csh=sh ksh88=sh oash=sh pdksh=sh mksh=sh " +
+    "posix=sh wksh=sh wsh=sh zsh=sh rpm=sh"
+  )
+    .split(" ")
+    .map((pair) => pair.split("=")),
+);
+
 const suspiciousLanguageInSrcBlock = (ast: Node): Report[] =>
   map(ast, "src-block", (b) => {
     const lang = property("language", b) as string | undefined;
-    if (!lang || e8.fboundp(`org-babel-execute:${lang}`) || e8.fboundp(langMode(lang))) return undefined;
+    if (!lang || e8.fboundp(`org-babel-execute:${lang}`)) return undefined;
+    const mode = langMode(lang);
+    if (EMACS_MODES.has(`${EMACS_LANG_MODES[lang] ?? lang}-mode`) || e8.fboundp(mode)) return undefined;
     return [postAffiliated(b), `Unknown source block language: '${lang}'`] as Report;
   });
 
@@ -830,11 +1006,7 @@ function linkToLocalFile(ast: Node): Report[] {
     let file = path;
     if (type === "attachment") {
       // Through org-attach-expand, loading org-attach as org-lint requires it; left alone where there is none.
-      try {
-        e8.require("org-attach");
-      } catch {
-        return undefined;
-      }
+      // Loaded before the parse, where E8 has it.
       if (!e8.fboundp("org-attach-expand")) return undefined;
       file = e8.saveExcursion(() => (e8.gotoChar(begin(l)), String(e8.funcall("org-attach-expand", path))));
     }
@@ -884,7 +1056,11 @@ function wrongIncludeLinkParameter(ast: Node): Report[] {
 
 /** Finds SEARCH as org-link-search does with org-link-search-must-match-exact-headline: a target or NAME, else a heading of that title. */
 function includeSearch(search: string): boolean {
-  if (/^\/.*\/$/.test(search)) return e8.reSearchForward(search.slice(1, -1), { noerror: true }) !== undefined;
+  // A regexp search makes a sparse tree there, and leaves org-link-search with nothing found.
+  if (/^\/.*\/$/.test(search)) return false;
+  // A code reference, as (ref:NAME) at the end of a line.
+  const coderef = /^\((.*)\)$/.exec(search);
+  if (coderef) return e8.reSearchForward(`(ref:${regexpQuote(coderef[1])})[ \t]*$`, { noerror: true }) !== undefined;
   if (search.startsWith("#")) {
     const id = search.slice(1);
     return e8.reSearchForward(`^[ \t]*:CUSTOM_ID:[ \t]+${regexpQuote(id)}[ \t]*$`, { noerror: true, caseFold: true }) !== undefined;
@@ -894,8 +1070,15 @@ function includeSearch(search: string): boolean {
     e8.gotoChar(e8.pointMin());
     if (e8.reSearchForward(`<<${q}>>\\|^[ \t]*#\\+NAME:[ \t]*${q}[ \t]*$`, { noerror: true, caseFold: true }) !== undefined) return true;
   }
-  searchInBuffer(search.startsWith("*") ? search : `*${search}`);
-  return true;
+  // A heading of that title exactly, a COMMENT keyword before it aside, as org-link-search's exact headline match.
+  const words = (search.startsWith("*") ? search.slice(1) : search).trim().split(/[ \t]+/).join(" ");
+  const comment = String(e8.variable("org-comment-string") ?? "COMMENT");
+  for (const [line] of e8.matchingLines("\\*+ ")) {
+    const title = (parseHeading(line)?.title ?? "").trim();
+    const bare = title === comment ? "" : title.startsWith(`${comment} `) ? title.slice(comment.length + 1) : title;
+    if (bare.trim().split(/[ \t]+/).join(" ") === words) return true;
+  }
+  return false;
 }
 
 function obsoleteIncludeMarkup(ast: Node): Report[] {
@@ -1159,10 +1342,10 @@ function invalidImageAlignment(ast: Node): Report[] {
     const keywordString = Array.isArray(attr) ? (attr[0] as string | undefined) : undefined;
     if (keywordString === undefined) return undefined;
     const reports: Report[] = [];
-    const align = /:align[\s]+(\S+)/.exec(keywordString);
+    const align = /:align[\s]+(\S+)/i.exec(keywordString);
     if (align && !["left", "center", "right"].includes(align[1]))
       reports.unshift([begin(p), `"${align[1]}" not a supported value for #+ATTR_ORG keyword attribute ":align".`]);
-    const center = /:center[\s]+(\S+)/.exec(keywordString);
+    const center = /:center[\s]+(\S+)/i.exec(keywordString);
     if (center && center[1] !== "t") reports.unshift([begin(p), `"${center[1]}" not a supported value for #+ATTR_ORG keyword attribute ":center".`]);
     return reports;
   }).flat();
@@ -1250,7 +1433,7 @@ function wrongHeaderArgument(ast: Node): Report[] {
       case "keyword": {
         if (property("key", d) !== "PROPERTY") break;
         const value = String(property("value", d) ?? "");
-        const m = /^header-args(?::(\S+))?\+ */.exec(value) ?? /^header-args(?::(\S+))? */.exec(value);
+        const m = /^header-args(?::(\S+))?\+ */i.exec(value) ?? /^header-args(?::(\S+))? */i.exec(value);
         if (m) verify(d, m[1], parseHeaderArguments(value.slice(m[0].length)));
         break;
       }
@@ -1299,7 +1482,7 @@ function wrongHeaderValue(ast: Node): Report[] {
       if (!entry || allowed === undefined) continue;
       // A value written as Lisp, which Org evaluates first, is left alone: E8 has no Lisp.
       if (typeof values === "string" && lispValueP(values)) continue;
-      const groups = new Map<(string | number)[], string | number | null>();
+      const groups = new Map<(string | number)[], string | LispNumber | null>();
       for (const v of typeof values === "string" ? values.split(/[ \f\t\n\r\v]+/).filter(Boolean) : [values]) {
         let valid = false;
         let forbidden = false;
@@ -1402,7 +1585,8 @@ const incompleteCitation = (ast: Node): Report[] =>
   map(ast, "plain-text", (text, parent) => {
     if (typeof text !== "string" || !CITATION_PREFIX.test(text)) return undefined;
     const container = parent ?? parentOf(text);
-    return [(property("contents-begin", container) as number | undefined) ?? 0, "Possibly incomplete citation markup"] as Report;
+    // In a heading, whose title has no contents-begin, where Org fails, the heading.
+    return [(property("contents-begin", container) as number | undefined) ?? begin(container as Node), "Possibly incomplete citation markup"] as Report;
   });
 
 function itemNumber(ast: Node): Report[] {

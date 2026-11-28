@@ -8,9 +8,17 @@ use e8_script::Scripting;
 
 /// The reports E8 makes on `text`, visited as `name` in a fresh directory, one `line|trust|message|checker` a line.
 fn reports(name: &str, text: &str) -> String {
+    reports_with(name, text, &[])
+}
+
+/// As [reports], with other files beside it.
+fn reports_with(name: &str, text: &str, others: &[(&str, &str)]) -> String {
     let mut ed = Editor::new();
     let s = Scripting::new(&mut ed).unwrap();
     let dir = tempfile::tempdir().unwrap();
+    for (other, contents) in others {
+        std::fs::write(dir.path().join(other), contents).unwrap();
+    }
     let file = dir.path().join(name);
     std::fs::write(&file, text).unwrap();
     // No ID locations kept from other runs.
@@ -69,4 +77,46 @@ fn a_package_adds_a_checker() {
         .eval_expression(&mut ed, r#"(e8.funcall("org-lint--generate-reports", e8.bufferName(), [e8.intern("todo-left")]) as e8.Value[][]).map((r) => r.join("|")).join("\n")"#)
         .unwrap();
     assert_eq!(out, r#""1|high|A TODO is left|todo-left""#);
+}
+
+/// What the review found: INCLUDE search parts as org-link-search takes
+/// them, header-args and Results without case, ATTR_ORG's attributes
+/// without case, numbers printed as Lisp prints them, a bracket that
+/// does not open a group in a header, a string read as Lisp reads it, and
+/// macros from real keywords and a setup file. Emacs also reports go as an
+/// unknown language, where E8 has a mode for it (go-mode, an alias of
+/// go-ts-mode), so that line is left out of what E8 expects.
+#[test]
+fn the_reviews_reports_as_org_makes_them() {
+    let d = |f: &str| std::fs::read_to_string(format!("{}/tests/data/org-lint/{f}", env!("CARGO_MANIFEST_DIR"))).unwrap();
+    compare(
+        &reports_with("lint-review.org", &d("lint-review.org"), &[("target.org", &d("target.org")), ("setup.org", &d("setup.org"))]),
+        &d("lint-review.reports"),
+    );
+}
+
+/// An incomplete citation in a heading with nothing under it is reported
+/// on the heading's line. Emacs fails there, its title having no
+/// contents-begin.
+#[test]
+fn an_incomplete_citation_in_a_heading_is_on_its_line() {
+    assert_eq!(reports("cite.org", "#+TITLE: x\n\n* Heading [cite:@y\n* Next\n"), "3|low|Possibly incomplete citation markup|incomplete-citation");
+}
+
+/// A file of a few thousand entries, each scheduled, due, with properties
+/// and a logbook, is checked well within the script limit: Emacs took 12 s
+/// of CPU for 10,000 such entries. The bound is generous for QuickJS on a
+/// loaded machine.
+#[test]
+fn a_big_file_is_checked_in_time() {
+    let text: String = (0..2000)
+        .map(|i| format!("* TODO Entry {i}\nSCHEDULED: <2026-11-28 Sat> DEADLINE: <2026-11-30 Mon>\n:PROPERTIES:\n:ID: id-{i}\n:END:\n:LOGBOOK:\n- Note taken on [2026-11-27 Fri 10:00]\n:END:\nSome text {{{{{{macro}}}}}}.\n"))
+        .collect();
+    let started = std::time::Instant::now();
+    let out = reports("big.org", &format!("#+MACRO: macro m\n{text}"));
+    let took = started.elapsed();
+    eprintln!("checking 2000 entries took {took:?}");
+    assert_eq!(out, "");
+    let budget = if std::env::var("CI").is_ok() { 3 } else { 1 };
+    assert!(took < std::time::Duration::from_secs(30 * budget), "took {took:?}");
 }

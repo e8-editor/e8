@@ -1,0 +1,1 @@
+#+MACRO: fromsetup from the setup file
