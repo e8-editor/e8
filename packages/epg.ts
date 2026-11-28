@@ -658,6 +658,28 @@ function send(context: EpgContext, text: string): void {
   if (e8.processStatus(context.process!) === "run") e8.processSendString(context.process!, text);
 }
 
+/**
+ * Sends a passphrase, encoded in epg-passphrase-coding-system with Unix
+ * line ends when it names one, as epg--status-GET_HIDDEN encodes it, else
+ * as the process's other input, in UTF-8.
+ */
+function sendPassphrase(context: EpgContext, text: string): void {
+  const process = context.process!;
+  const setting = v("epg-passphrase-coding-system");
+  const name = typeof setting === "symbol" ? e8.symbolName(setting) : typeof setting === "string" ? setting : undefined;
+  if (name === undefined || !e8.codingSystemP(name)) {
+    send(context, text);
+    return;
+  }
+  const [decoding, encoding] = e8.processCodingSystem(process) ?? ["utf-8-unix", "utf-8-unix"];
+  e8.setProcessCodingSystem(process, decoding, e8.codingSystemChangeEolConversion(name, "unix"));
+  try {
+    send(context, text);
+  } finally {
+    if (e8.processLiveP(process)) e8.setProcessCodingSystem(process, decoding, encoding);
+  }
+}
+
 // Status lines, as epg--status-KEYWORD.
 
 /** Asks the context's callback for a passphrase and sends it, as epg--status-GET_HIDDEN. */
@@ -669,7 +691,7 @@ function getHidden(context: EpgContext, string: string): void {
   e8.conditionCase(
     () => {
       const passphrase = callback(context, state.keyId!, handback);
-      if (passphrase !== undefined && passphrase !== null) send(context, passphrase + "\n");
+      if (passphrase !== undefined && passphrase !== null) sendPassphrase(context, passphrase + "\n");
     },
     {
       quit: () => {
@@ -811,9 +833,9 @@ function checkErrorForDecrypt(context: EpgContext): void {
 /**
  * Decrypts a string and returns the plain text, as epg-decrypt-string.
  * The text comes back decoded as UTF-8, where Emacs's is bytes its caller
- * decodes.
+ * decodes. Undefined if gpg left no output file, as epg-read-output gives nil.
  */
-export function epgDecryptString(context: EpgContext, cipher: string): string {
+export function epgDecryptString(context: EpgContext, cipher: string): string | undefined {
   const input = tempFile("epg-input");
   try {
     e8.letBind({ "coding-system-for-write": "utf-8-unix" }, () => e8.writeRegion(cipher, null, input, { quiet: true }));
@@ -821,7 +843,7 @@ export function epgDecryptString(context: EpgContext, cipher: string): string {
     epgStartDecrypt(context, input);
     epgWaitForCompletion(context);
     checkErrorForDecrypt(context);
-    return readOutput(context) ?? "";
+    return readOutput(context);
   } finally {
     deleteOutputFile(context);
     if (e8.fileExistsP(input)) e8.deleteFile(input);
@@ -854,8 +876,8 @@ export function epgStartEncrypt(context: EpgContext, plain: string | { file: str
   }
 }
 
-/** Encrypts a string to RECIPIENTS, or symmetrically with none, and returns what gpg wrote, as epg-encrypt-string. */
-export function epgEncryptString(context: EpgContext, plain: string, recipients: EpgKey[] | undefined, sign = false, alwaysTrust = false): string {
+/** Encrypts a string to RECIPIENTS, or symmetrically with none, and returns what gpg wrote, as epg-encrypt-string: undefined if it left no output file, as epg-read-output gives nil. */
+export function epgEncryptString(context: EpgContext, plain: string, recipients: EpgKey[] | undefined, sign = false, alwaysTrust = false): string | undefined {
   const input = sign && context.protocol !== "CMS" ? tempFile("epg-input") : undefined;
   try {
     context.outputFile = tempFile("epg-output");
@@ -865,7 +887,7 @@ export function epgEncryptString(context: EpgContext, plain: string, recipients:
     const errors = epgContextResultFor(context, "error") as EpgError[] | undefined;
     if (sign && !epgContextResultFor(context, "sign")) signalEpgError("Sign failed", epgErrorsToString(errors));
     if (errors && errors.length > 0) signalEpgError("Encrypt failed", epgErrorsToString(errors));
-    return readOutput(context) ?? "";
+    return readOutput(context);
   } finally {
     deleteOutputFile(context);
     if (input !== undefined && e8.fileExistsP(input)) e8.deleteFile(input);

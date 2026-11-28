@@ -12,7 +12,14 @@ GET_HIDDEN, as gpg 2.1 and later do; otherwise it asks nothing, as if
 its agent's pinentry had. The passphrase for symmetric text is "secret".
 
 Each run appends its arguments, as a JSON list, to gpg.log beside this
-program, and each passphrase it reads to passphrases.log.
+program, and each passphrase it reads, as bytes, to passphrases.log.
+
+It also says what real gpg says that EasyPG passes over (KEY_CONSIDERED,
+PINENTRY_LAUNCHED, DECRYPTION_KEY, PLAINTEXT_LENGTH); answers text
+encrypted to keys it has none of with NO_SECKEY and DECRYPTION_FAILED;
+refuses an expired key with INV_RECP 0, as gpg 2 does; and, with a file
+named no-output beside it, fails after BEGIN_ENCRYPTION, removing its
+output file.
 """
 
 import base64
@@ -73,11 +80,11 @@ def list_keys():
 
 def read_passphrase():
     status("GET_HIDDEN passphrase.enter")
-    line = sys.stdin.readline()
-    with open(os.path.join(HERE, "passphrases.log"), "a") as log:
+    line = sys.stdin.buffer.readline()
+    with open(os.path.join(HERE, "passphrases.log"), "ab") as log:
         log.write(line)
     status("GOT_IT")
-    return line.rstrip("\n")
+    return line.rstrip(b"\n").decode("utf-8", "replace")
 
 
 def armor(plain, recipients):
@@ -91,20 +98,30 @@ def loopback():
     return option("--pinentry-mode") == "loopback"
 
 
+def ask_passphrase_symmetric():
+    """Asks for a passphrase as gpg does for symmetric text: through E8 with
+    loopback, else through the agent's pinentry, which says it started."""
+    if loopback():
+        status("NEED_PASSPHRASE_SYM 9 3 2")
+        return read_passphrase()
+    status("PINENTRY_LAUNCHED 4242 curses 1.2.1 - xterm - - 501/20 0")
+    return "secret"
+
+
 def encrypt():
     recipients = [ARGS[i + 1] for i, a in enumerate(ARGS) if a == "-r"]
     if "--symmetric" in ARGS:
-        if loopback():
-            status("NEED_PASSPHRASE_SYM 9 3 2")
-            read_passphrase()
+        ask_passphrase_symmetric()
     else:
         for r in recipients:
             key = next((k for k in KEYS if r in (k[0], k[1])), None)
+            if key is not None:
+                status(f"KEY_CONSIDERED {key[4] * 10} 0")
             if key is None:
                 status(f"INV_RECP 1 {r}")
             elif not key[3]:
-                status(f"KEYEXPIRED 1710000000")
-                status(f"INV_RECP 5 {r}")
+                # An expired key, as gpg 2 says of it: unusable, for no reason it gives.
+                status(f"INV_RECP 0 {r}")
             else:
                 continue
             status("FAILURE encrypt 53")
@@ -112,7 +129,14 @@ def encrypt():
             return 2
     status("BEGIN_ENCRYPTION 2 9")
     plain = sys.stdin.buffer.read()
-    with open(option("--output"), "w") as out:
+    output = option("--output")
+    if os.path.exists(os.path.join(HERE, "no-output")):
+        # Failing partway, gpg removes what it had begun to write.
+        os.remove(output)
+        status("FAILURE encrypt 1")
+        sys.stderr.write("gpg: [stdin]: encryption failed: General error\n")
+        return 2
+    with open(output, "w") as out:
         out.write(armor(plain, recipients))
     status("END_ENCRYPTION")
     return 0
@@ -131,28 +155,41 @@ def decrypt():
     b64 = "".join(body[: next(i for i, l in enumerate(body) if l.startswith("-----END"))])
     to = [h[len("Comment: to ") :].split() for h in headers if h.startswith("Comment: to ")]
     if to:
+        held = None
         for r in to[0]:
-            key = next(k for k in KEYS if r in (k[0], k[1]))
-            status(f"ENC_TO {key[1]} 18 0")
-        if loopback():
-            key = next(k for k in KEYS if to[0][0] in (k[0], k[1]))
-            status(f"USERID_HINT {key[1]} {key[2].replace(' ', '%20', 1)}")
-            status(f"NEED_PASSPHRASE {key[1]} {key[0]} 18 0")
-            read_passphrase()
-    elif loopback():
-        status("NEED_PASSPHRASE_SYM 9 3 2")
-        if read_passphrase() != "secret":
-            status("ERROR symkey_decrypt.maybe_error 11_Bad_passphrase")
+            key = next((k for k in KEYS if r in (k[0], k[1])), None)
+            status(f"ENC_TO {key[1] if key else r} 18 0")
+            if key is not None:
+                status(f"KEY_CONSIDERED {key[4] * 10} 0")
+                held = held or key
+        if held is None:
+            # No secret key for any of them, as gpg says.
+            for r in to[0]:
+                status(f"NO_SECKEY {r}")
             status("BEGIN_DECRYPTION")
             status("DECRYPTION_FAILED")
             status("END_DECRYPTION")
-            sys.stderr.write("gpg: decryption failed: Bad session key\n")
+            sys.stderr.write("gpg: decryption failed: No secret key\n")
             return 2
+        if loopback():
+            status(f"USERID_HINT {held[1]} {held[2].replace(' ', '%20', 1)}")
+            status(f"NEED_PASSPHRASE {held[1]} {held[0]} 18 0")
+            read_passphrase()
+        status(f"DECRYPTION_KEY {held[4][::-1] * 10} {held[4] * 10} u")
+    elif ask_passphrase_symmetric() != "secret":
+        status("ERROR symkey_decrypt.maybe_error 11_Bad_passphrase")
+        status("BEGIN_DECRYPTION")
+        status("DECRYPTION_FAILED")
+        status("END_DECRYPTION")
+        sys.stderr.write("gpg: decryption failed: Bad session key\n")
+        return 2
+    plain = base64.b64decode(b64)
     status("BEGIN_DECRYPTION")
     status("DECRYPTION_INFO 2 9 0")
     status("PLAINTEXT 62 0")
+    status(f"PLAINTEXT_LENGTH {len(plain)}")
     with open(option("--output"), "wb") as out:
-        out.write(base64.b64decode(b64))
+        out.write(plain)
     status("DECRYPTION_OKAY")
     status("GOODMDC")
     status("END_DECRYPTION")

@@ -12,9 +12,10 @@
 // Not loaded at startup: its commands are autoloaded from org-loaddefs.ts.
 
 import { epgDecryptString, epgEncryptString, epgListKeys, epgMakeContext, type EpgContext, type EpgKey } from "epg";
-import { firstHeadingFrom, type Heading, headingIndex, headings, makeTagsMatcher, matchContexts, selectiveGetter, subtreeEnd, subtreeRegion } from "org";
+import { entryGetInherited, firstHeadingFrom, type Heading, headings, makeTagsMatcher, matchContexts, propertyInheritP, type TagsMatcher } from "org";
+import { skippedHeadings, skipTo } from "org-agenda";
 import { flag, startupVisibility } from "org-fold";
-import { endOfMetaData } from "org-list";
+import { endOfMetaData, entryGet } from "org-list";
 import { lineAt } from "org-macs";
 
 e8.defineVariable({
@@ -53,12 +54,38 @@ function withWideBuffer<T>(f: () => T): T {
   );
 }
 
+// An entry's heading and subtree are found from its own lines, not from
+// the buffer's index of headings, which an edit makes Org's index catch up
+// on in full: encrypting each entry before a save then took as long as the
+// file times the entries.
+
+/** A heading line as the functions here need it: its line, start and level. */
+function headingOnLine(line: number): Heading {
+  const start = e8.lineStart(line);
+  const level = /^(\*+) /.exec(e8.lineText(line))![1].length;
+  return { line, start, end: e8.lineEnd(line), level, titleAt: start, title: "", tags: [] };
+}
+
+/** The heading at or above a line, as org-back-to-heading with invisible-ok finds it, if there is one. */
+function headingAbove(line = lineAt()): Heading | undefined {
+  for (let l = line; l >= 0; l--) if (/^\*+ /.test(e8.lineText(l))) return headingOnLine(l);
+  return undefined;
+}
+
+/** Where a heading's subtree ends: the start of the next heading at its level or above, or the end of the buffer. */
+function subtreeEndOf(h: Heading): number {
+  for (let l = h.line + 1; l < e8.lineCount(); l++) {
+    const m = /^(\*+) /.exec(e8.lineText(l));
+    if (m && m[1].length <= h.level) return e8.lineStart(l);
+  }
+  return e8.pointMax();
+}
+
 /** The heading point is under, as org-back-to-heading finds it, or Org's error before the first. */
-function backToHeading(): [Heading[], number] {
-  const all = headings();
-  const i = headingIndex(all, lineAt());
-  if (i === undefined) e8.userError(`Before first headline at position ${e8.lineStart(lineAt()) + 1} in buffer ${e8.bufferName()}`);
-  return [all, i];
+function backToHeading(): Heading {
+  const h = headingAbove();
+  if (!h) e8.userError(`Before first headline at position ${e8.lineStart(lineAt()) + 1} in buffer ${e8.bufferName()}`);
+  return h!;
 }
 
 /** The encrypted text between two positions, its indentation taken off, as org-crypt--encrypted-text. */
@@ -74,10 +101,9 @@ function encryptedText(beg: number, end: number): string {
  */
 export function atEncryptedEntryP(): [number, number] | undefined {
   return withWideBuffer(() => {
-    const all = headings();
-    const i = headingIndex(all, lineAt());
-    if (i === undefined) return undefined;
-    const start = endOfMetaData(all[i], "logbook");
+    const h = headingAbove();
+    if (!h) return undefined;
+    const start = endOfMetaData(h, "logbook");
     if (start >= e8.bufferSize() || !/^[ \t]*-----BEGIN PGP MESSAGE-----$/.test(e8.lineText(lineAt(start)))) return undefined;
     for (let l = lineAt(start) + 1; l < e8.lineCount(); l++) {
       const text = e8.lineText(l);
@@ -125,9 +151,9 @@ function checkAutoSave(): void {
 function keyForHeading(context: EpgContext): EpgKey[] | undefined {
   const defaultKey = v("org-crypt-key");
   if (!truthy(defaultKey)) return undefined;
-  const all = headings();
-  const i = headingIndex(all, lineAt());
-  const property = i === undefined ? undefined : selectiveGetter(true)(all[i], "CRYPTKEY");
+  // As org-entry-get with inheritance selective and literal nil.
+  const h = headingAbove();
+  const property = h === undefined ? undefined : propertyInheritP("CRYPTKEY") ? entryGetInherited(h, "CRYPTKEY", false) : entryGet(h.line, "CRYPTKEY", true);
   const name = property === "nil" ? "" : (property ?? (typeof defaultKey === "string" ? defaultKey : ""));
   const keys = epgListKeys(context, name);
   if (keys.length > 0) return keys;
@@ -154,9 +180,10 @@ function propertyAtStart(s: e8.PropertizedString, name: string): e8.Value {
 
 /** Folds the subtree of the heading at a position, as org-fold-subtree. */
 function foldSubtreeAt(pos: number): void {
-  const all = headings();
-  const i = headingIndex(all, lineAt(pos));
-  if (i !== undefined) flag(e8.lineEnd(all[i].line), subtreeEnd(all, i), true);
+  const h = headingAbove(lineAt(pos));
+  if (!h) return;
+  const end = subtreeEndOf(h);
+  flag(h.end, end === e8.pointMax() ? end : end - 1, true);
 }
 
 /** The heading org-previous-visible-heading goes to from a position. */
@@ -185,14 +212,14 @@ export function encryptEntry(): void {
   if (atEncryptedEntryP()) return;
   const context = epgMakeContext(null, true, true);
   withWideBuffer(() => {
-    const [all, i] = backToHeading();
-    const startHeading = all[i].start;
+    const h = backToHeading();
+    const startHeading = h.start;
     e8.gotoChar(startHeading);
     const cryptKey = keyForHeading(context);
     const folded = e8.invisibleAt(startHeading);
-    const beg = endOfMetaData(all[i], "logbook");
+    const beg = endOfMetaData(h, "logbook");
     const foldedHeading = folded ? previousVisibleHeading(beg) : undefined;
-    const end = backOverEmptyLines(Math.min(subtreeRegion(all, i)[1], e8.pointMax()));
+    const end = backOverEmptyLines(subtreeEndOf(h));
     // As delete-and-extract-region, which takes its ends in either order.
     const [from, to] = beg <= end ? [beg, end] : [end, beg];
     const contents = e8.deleteAndExtractRegion(from, to);
@@ -202,8 +229,10 @@ export function encryptEntry(): void {
     const checksum = propertyAtStart(contents, "org-crypt-checksum");
     try {
       // Text and key have to be the same, else it is encrypted again.
-      if (keyValue(cryptKey) === key && checksum === e8.secureHash("sha1", plain)) e8.insert(String(propertyAtStart(contents, "org-crypt-text")));
-      else e8.insert(epgEncryptString(context, plain, cryptKey));
+      const text = keyValue(cryptKey) === key && checksum === e8.secureHash("sha1", plain) ? propertyAtStart(contents, "org-crypt-text") : epgEncryptString(context, plain, cryptKey);
+      // Nothing, as when gpg wrote no output, is (insert nil)'s error.
+      if (typeof text !== "string") e8.signal("wrong-type-argument", "Wrong type argument: char-or-string-p, nil", [e8.intern("char-or-string-p"), null]);
+      e8.insert(text as string);
     } catch (err) {
       // If encryption failed, the entry's contents go back.
       e8.insert(contents);
@@ -224,10 +253,12 @@ export function decryptEntry(): void {
     e8.gotoChar(beg);
     checkAutoSave();
     const foldedHeading = e8.invisibleAt(e8.point()) ? previousVisibleHeading(e8.point()) : undefined;
-    const all = headings();
-    const level = all[headingIndex(all, lineAt())!].level;
+    const level = headingAbove()!.level;
     const encrypted = encryptedText(beg, end);
-    const decrypted = epgDecryptString(context, encrypted);
+    const output = epgDecryptString(context, encrypted);
+    // Nothing, as when gpg wrote no output, is decode-coding-string's error, before anything is changed.
+    if (output === undefined) e8.signal("wrong-type-argument", "Wrong type argument: stringp, nil", [e8.intern("stringp"), null]);
+    const decrypted = output!;
     // From just before point, as the outline property starts at the heading's newline.
     e8.deleteRegion(e8.point() - 1, end);
     const origin = e8.makeMarker(e8.point());
@@ -260,40 +291,108 @@ export function decryptEntry(): void {
     if (foldedHeading !== undefined) foldSubtreeAt(foldedHeading);
   });
 }
+/**
+ * A heading to visit: a marker at its start, which goes past text put in
+ * where it is, as an entry encrypted before it ends there, and its line as
+ * it was, to know it is still there.
+ */
+interface Candidate {
+  marker: e8.Marker;
+  text: string;
+}
+
+/**
+ * The headings from FROM to TO that MATCHER matches and the agenda would
+ * not leave out, as org-agenda-skip does: archived and COMMENT subtrees,
+ * as org-agenda-skip-archived-trees and org-agenda-skip-comment-trees say.
+ */
+function matchingHeadings(matcher: TagsMatcher, from: number, to: number): Candidate[] {
+  const all = e8.saveRestriction(() => (e8.widen(), headings()));
+  const contexts = matchContexts(all);
+  const skipped = skippedHeadings(all);
+  const found: Candidate[] = [];
+  for (let i = firstHeadingFrom(all, from); i < all.length && all[i].start < to; i++) {
+    if (!skipped[i] && matcher.test(contexts(i))) found.push({ marker: e8.makeMarker(all[i].start, { advances: true }), text: e8.lineText(all[i].line) });
+  }
+  return found;
+}
+
+/** Whether a position is the start of a heading line. */
+function headingStart(pos: number): boolean {
+  return pos >= e8.pointMin() && pos < e8.pointMax() && e8.lineStart(e8.lineOf(pos)) === pos && /^\*+ /.test(e8.lineText(e8.lineOf(pos)));
+}
+
+/** Where a queued heading is now, or undefined if it has gone, as a subheading encrypted with its parent goes. */
+function stillThere(c: Candidate): number | undefined {
+  const pos = e8.markerPosition(c.marker)!;
+  return headingStart(pos) && e8.lineText(e8.lineOf(pos)) === c.text ? pos : undefined;
+}
 
 /**
  * Calls `action` at each heading org-crypt-tag-matcher matches, from the
- * top, as org-scan-tags does for org-encrypt-entries: the headings are
- * found again after each call, which changes the text after the heading.
+ * top, as org-scan-tags does for org-encrypt-entries: archived and
+ * COMMENT subtrees are left out, and org-agenda-skip-function-global and
+ * org-agenda-skip-function asked at each heading, as org-agenda-skip
+ * does, and with org-tags-match-list-sublevels nil a match's subheadings.
+ * The headings are found once, and found again only in a subtree that
+ * decrypting has given headings, which are then visited too, as Org's
+ * scan finds them.
  */
 function scanCryptTags(action: () => void): void {
   const matcher = makeTagsMatcher(String(v("org-crypt-tag-matcher") ?? "crypt"));
   const sublevels = truthy(v("org-tags-match-list-sublevels"));
   e8.saveExcursion(() => {
-    let from = e8.pointMin();
-    for (;;) {
-      const all = e8.saveRestriction(() => (e8.widen(), headings()));
-      const contexts = matchContexts(all);
-      let i = firstHeadingFrom(all, from);
-      while (i < all.length && all[i].start < e8.pointMax() && !matcher.test(contexts(i))) i++;
-      if (i >= all.length || all[i].start >= e8.pointMax()) return;
-      const start = e8.makeMarker(all[i].start);
-      e8.gotoChar(all[i].start);
-      try {
-        e8.saveExcursion(action);
-        const at = e8.markerPosition(start)!;
-        if (sublevels) from = at + 1;
-        else {
-          const now = e8.saveRestriction(() => (e8.widen(), headings()));
-          const k = headingIndex(now, lineAt(at));
-          from = k === undefined ? at + 1 : subtreeEnd(now, k);
+    let queue = matchingHeadings(matcher, e8.pointMin(), e8.pointMax());
+    const forget = (c: Candidate) => e8.deleteMarker(c.marker);
+    /** Leaves out the queued headings before a position. */
+    const dropBefore = (to: number) => {
+      while (queue.length > 0 && e8.markerPosition(queue[0].marker)! < to) forget(queue.shift()!);
+    };
+    try {
+      while (queue.length > 0) {
+        const candidate = queue.shift()!;
+        const pos = stillThere(candidate);
+        forget(candidate);
+        if (pos === undefined) continue;
+        const to = skipTo(pos);
+        if (to !== undefined) {
+          dropBefore(to);
+          continue;
         }
-      } finally {
-        e8.deleteMarker(start);
+        const start = e8.makeMarker(pos);
+        e8.gotoChar(pos);
+        try {
+          e8.saveExcursion(action);
+          const at = e8.markerPosition(start)!;
+          const h = headingStart(at) ? headingOnLine(e8.lineOf(at)) : undefined;
+          if (h && !sublevels) dropBefore(subtreeEndOf(h));
+          else if (h) {
+            // Headings the subtree has now that are not queued: decrypted ones.
+            const end = subtreeEndOf(h);
+            const queued = new Set(queue.map((c) => stillThere(c)).filter((p) => p !== undefined));
+            let fresh = false;
+            for (let l = h.line + 1; !fresh && l < e8.lineCount() && e8.lineStart(l) < end; l++) {
+              fresh = /^\*+ /.test(e8.lineText(l)) && !queued.has(e8.lineStart(l));
+            }
+            if (fresh) {
+              const found = matchingHeadings(matcher, at + 1, end).filter((c) => {
+                if (!queued.has(e8.markerPosition(c.marker)!)) return true;
+                forget(c);
+                return false;
+              });
+              queue = [...found, ...queue].sort((a, b) => e8.markerPosition(a.marker)! - e8.markerPosition(b.marker)!);
+            }
+          }
+        } finally {
+          e8.deleteMarker(start);
+        }
       }
+    } finally {
+      for (const c of queue) forget(c);
     }
   });
 }
+
 
 /** Encrypts every entry org-crypt-tag-matcher matches, as org-encrypt-entries. */
 export function encryptEntries(): void {
@@ -326,5 +425,6 @@ e8.defun("org-at-encrypted-entry-p", () => {
   return found ? [found[0], found[1]] : null;
 });
 
-// Decrypted when org-fold-reveal shows it, as org-crypt adds to its hook.
+// On org-fold-reveal-start-hook, as org-crypt puts it there, for org-fold-reveal (C-c C-r) to decrypt
+// the entry it shows; E8 has no org-fold-reveal yet, so nothing runs the hook.
 e8.addHook("org-fold-reveal-start-hook", "org-decrypt-entry");

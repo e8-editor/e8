@@ -240,7 +240,9 @@ fn keys_come_from_org_crypt_key_and_the_cryptkey_property() {
     assert_eq!(encryptions, ["--encrypt -r 0123456789ABCDEF", "--encrypt -r ABCDABCDABCDABCD", "--symmetric"]);
     assert!(t.ed.messages().iter().any(|m| m == "No crypt key set, using symmetric encryption."));
     assert!(t.text().starts_with("* A :crypt:\n-----BEGIN PGP MESSAGE-----\nComment: to 0123456789ABCDEF\n\nYQo=\n"), "{}", t.text());
-    // Decrypting reads the keys again, for the text to remember.
+    // Decrypting reads the keys again, for the text to remember. gpg's
+    // KEY_CONSIDERED, DECRYPTION_KEY and PLAINTEXT_LENGTH lines, which
+    // EasyPG has no use for, are passed over.
     t.clear_log();
     t.ed.call("org-decrypt-entries", vec![]).unwrap();
     assert_eq!(t.text(), "* A :crypt:\na\n* B :crypt:\n:PROPERTIES:\n:CRYPTKEY: bob\n:END:\nb\n* C :crypt:\n:PROPERTIES:\n:CRYPTKEY: nil\n:END:\nc\n");
@@ -262,14 +264,112 @@ fn keys_come_from_org_crypt_key_and_the_cryptkey_property() {
 }
 
 /// When gpg refuses a key, the entry's text goes back, and the error is
-/// epg's, as error-message-string words it.
+/// epg's, as error-message-string words it: an expired key, which gpg 2
+/// reports with no reason (INV_RECP 0), is unusable, and gpg's ending
+/// before it began to encrypt is the "Exit".
 #[test]
 fn a_failed_encryption_puts_the_text_back() {
     let text = "* Old :crypt:\n:PROPERTIES:\n:CRYPTKEY: expired\n:END:\nkept\n";
     let Some(mut t) = crypt(text) else { return };
     let err = t.ed.call("org-encrypt-entries", vec![]).unwrap_err().to_string();
-    assert_eq!(err, "GPG error: \"Encrypt failed\", \"Unusable public key: EEEEEEEEEEEEEEEE (key expired); Exit\"");
+    assert_eq!(err, "GPG error: \"Encrypt failed\", \"Unusable public key: EEEEEEEEEEEEEEEE; Exit\"");
     assert_eq!(t.text(), text);
+}
+
+/// gpg failing with no error to report and no output file leaves epg
+/// nothing to give, and org-crypt's (insert nil) fails inside its
+/// condition-case: the text goes back, as in Emacs.
+#[test]
+fn no_output_from_gpg_puts_the_text_back() {
+    let text = "* S :crypt:\nkept\n";
+    let Some(mut t) = crypt(text) else { return };
+    t.set("org-crypt-key", Value::Null);
+    std::fs::write(t.dir.path().join("no-output"), "").unwrap();
+    let err = t.ed.call("org-encrypt-entry", vec![]).unwrap_err().to_string();
+    assert_eq!(err, "Wrong type argument: char-or-string-p, nil");
+    assert_eq!(t.text(), text);
+}
+
+/// Text encrypted to a key gpg has no secret key for fails to decrypt
+/// with epg's error naming the key, and stays encrypted.
+#[test]
+fn text_for_a_key_not_held_is_not_decrypted() {
+    let text = "* S :crypt:\n-----BEGIN PGP MESSAGE-----\nComment: to 9999999999999999\n\neAo=\n-----END PGP MESSAGE-----\n";
+    let Some(mut t) = crypt(text) else { return };
+    let err = t.ed.call("org-decrypt-entry", vec![]).unwrap_err().to_string();
+    assert_eq!(err, "GPG error: \"Decryption failed\", \"No secret key: 9999999999999999\"");
+    assert_eq!(t.text(), text);
+}
+
+/// org-encrypt-entries leaves out what org-scan-tags's org-agenda-skip
+/// does: COMMENT and archived subtrees, a whole file with ARCHIVE among
+/// its FILETAGS, and what org-agenda-skip-function says to skip; with
+/// org-agenda-skip-archived-trees and org-agenda-skip-comment-trees off,
+/// they are encrypted. As Emacs does.
+#[test]
+fn skipped_subtrees_are_not_encrypted() {
+    let text = "* COMMENT Draft :crypt:\nsecret\n* Old :crypt:ARCHIVE:\nold\n** Under :crypt:\nunder\n* Kept :crypt:\nkept\n* Skipped by function :crypt:\nfn\n* After :crypt:\nafter\n";
+    let Some(mut t) = crypt(text) else { return };
+    t.set("org-crypt-key", Value::Null);
+    // As a function returning (save-excursion (org-end-of-subtree t)) at the heading to skip.
+    t.eval(
+        "e8.defun('skip-by-function', () => /Skipped by function/.test(e8.lineText(e8.lineOf(e8.point()))) ? e8.lineEnd(e8.lineOf(e8.point()) + 1) : null)",
+    );
+    t.set("org-agenda-skip-function", Value::Str("skip-by-function".into()));
+    t.ed.call("org-encrypt-entries", vec![]).unwrap();
+    assert_eq!(
+        t.text(),
+        "* COMMENT Draft :crypt:\nsecret\n* Old :crypt:ARCHIVE:\nold\n** Under :crypt:\nunder\n* Kept :crypt:\n-----BEGIN PGP MESSAGE-----\n\na2VwdAo=\n-----END PGP MESSAGE-----\n* Skipped by function :crypt:\nfn\n* After :crypt:\n-----BEGIN PGP MESSAGE-----\n\nYWZ0ZXIK\n-----END PGP MESSAGE-----\n"
+    );
+    let Some(mut t) = crypt("#+FILETAGS: :ARCHIVE:\n* A :crypt:\na\n") else { return };
+    t.set("org-crypt-key", Value::Null);
+    t.ed.call("org-encrypt-entries", vec![]).unwrap();
+    assert_eq!(t.text(), "#+FILETAGS: :ARCHIVE:\n* A :crypt:\na\n");
+    let Some(mut t) = crypt("* COMMENT Draft :crypt:\nsecret\n* Old :crypt:ARCHIVE:\nold\n") else { return };
+    t.set("org-crypt-key", Value::Null);
+    t.set("org-agenda-skip-archived-trees", Value::Null);
+    t.set("org-agenda-skip-comment-trees", Value::Null);
+    t.ed.call("org-encrypt-entries", vec![]).unwrap();
+    assert_eq!(
+        t.text(),
+        "* COMMENT Draft :crypt:\n-----BEGIN PGP MESSAGE-----\n\nc2VjcmV0Cg==\n-----END PGP MESSAGE-----\n* Old :crypt:ARCHIVE:\n-----BEGIN PGP MESSAGE-----\n\nb2xkCg==\n-----END PGP MESSAGE-----\n"
+    );
+}
+
+/// A subheading encrypted on its own inside its encrypted parent is
+/// decrypted too, once decrypting the parent shows it, as Org's scan
+/// finds it.
+#[test]
+fn an_encrypted_subheading_shown_by_decrypting_is_decrypted() {
+    let text = "* Up :crypt:\nup\n** Down :crypt:\ndown\n* Next\n";
+    let Some(mut t) = crypt(text) else { return };
+    t.set("org-crypt-key", Value::Null);
+    t.goto_line(3);
+    t.ed.call("org-encrypt-entry", vec![]).unwrap();
+    t.goto_line(1);
+    t.ed.call("org-encrypt-entry", vec![]).unwrap();
+    assert_eq!(
+        t.text(),
+        "* Up :crypt:\n-----BEGIN PGP MESSAGE-----\n\ndXAKKiogRG93biA6Y3J5cHQ6Ci0tLS0tQkVHSU4gUEdQIE1FU1NBR0UtLS0tLQoK\nWkc5M2Jnbz0KLS0tLS1FTkQgUEdQIE1FU1NBR0UtLS0tLQo=\n-----END PGP MESSAGE-----\n* Next\n"
+    );
+    t.ed.call("org-decrypt-entries", vec![]).unwrap();
+    assert_eq!(t.text(), text);
+}
+
+/// With epg-passphrase-coding-system, the passphrase goes to gpg in that
+/// coding, as epg encodes it; else in UTF-8.
+#[test]
+fn the_passphrase_is_encoded_as_epg_passphrase_coding_system_says() {
+    let Some(mut t) = crypt("* S :crypt:\na\n* T :crypt:\nb\n") else { return };
+    t.set("org-crypt-key", Value::Null);
+    t.set("epg-pinentry-mode", Value::Symbol("loopback".into()));
+    t.ed.press("M-x o r g - e n c r y p t - e n t r y RET s é RET s é RET").unwrap();
+    t.set("epg-passphrase-coding-system", Value::Symbol("latin-1".into()));
+    t.goto_line(6);
+    t.ed.press("M-x o r g - e n c r y p t - e n t r y RET s é RET s é RET").unwrap();
+    assert!(t.text().ends_with("* T :crypt:\n-----BEGIN PGP MESSAGE-----\n\nYgo=\n-----END PGP MESSAGE-----\n"), "{}", t.text());
+    let log = std::fs::read(t.dir.path().join("passphrases.log")).unwrap();
+    assert_eq!(log, b"s\xc3\xa9\ns\xe9\n");
 }
 
 /// Text decrypted with headings at the entry's level or above is put
