@@ -91,6 +91,7 @@ mod org_tab_emulation;
 mod fill_comments;
 mod org_odd_levels;
 mod org_archive_details;
+mod org_attach;
 mod org_clock_mode_line;
 mod org_clock_persist;
 mod org_clock_rest;
