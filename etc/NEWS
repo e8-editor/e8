@@ -8,6 +8,66 @@ A package that is a repository of its own keeps its news in a NEWS file
 of the same form, which 'C-h P' shows under its description.
 
 
+* Changes in E8 0.5.24
+
+** Shell source blocks run.
+'C-c C-c' on a 'sh', 'bash', 'zsh' or other shell block runs it and
+inserts its results, as Org's Babel does: ':results' output or value,
+as a table, list, verbatim, raw, drawer or file link, ':var' from
+tables, lists and other blocks, ':stdin', ':cmdline', ':shebang',
+':dir', and ':session' in a shell buffer of its own.  '#+CALL:' lines
+and inline 'src_sh{...}' and 'call_name()' run too, and on export
+blocks, calls and inline blocks run as ':exports' says.  While the
+agent acts, every block asks before it runs.
+
+** Coloured source code in HTML export.
+Source blocks are exported in the colours E8 shows them in, as Org's
+htmlize gives them, with 'org-html-htmlize-output-type' 'inline-css'
+or 'css' and 'M-x org-html-htmlize-generate-css'.  'M-x
+htmlize-buffer' and its kin make any buffer HTML.  Publishing's
+':htmlized-source' writes the Org source coloured beside it.
+
+** Org's citations.
+'[cite:@key]' citations: 'C-c C-x @' inserts and edits them,
+completing keys from the bibliography; 'C-c C-o' follows them to their
+entry; export writes them and '#+print_bibliography:' in author-year
+or numeric style, from BibTeX, biblatex or CSL-JSON files named by
+'#+bibliography:'.
+
+** Encrypted Org entries.
+Entries tagged 'crypt' are encrypted with GnuPG when the file is saved
+('org-crypt-use-before-save-magic' in a config), and 'M-x
+org-decrypt-entry' shows them again, as Org's org-crypt does.
+
+** Org attachments.
+'C-c C-a' attaches files to an entry, by copy, move or link, in a
+directory of its own named by its ID or 'DIR' property, and opens,
+syncs and deletes them; 'attachment:' links follow, export and show
+as inline images.
+
+** M-x org-lint.
+It checks an Org file for the mistakes Org's lint finds, from broken
+links and duplicate IDs to misplaced planning lines and bad header
+arguments, in a report whose lines lead to them.
+
+** Timers, numbered headings and the agenda file list.
+'C-c C-x 0' starts a relative timer and 'C-c C-x .' inserts it; 'C-c
+C-x ;' counts down, and the agenda's ';' does from an entry's effort.
+'M-x org-num-mode' shows each heading's number.  'C-c [' and 'C-c ]'
+add the file to 'org-agenda-files' or take it out.
+
+** Inline tasks.
+With 'e8.require("org-inlinetask")' in a config, as Org's
+(require 'org-inlinetask), headings of 15 stars are tasks inside an
+entry, ending at their END line: 'C-c C-x t' inserts one, TAB folds
+it, and Org's commands treat them as Org does.
+
+** One Org parser.
+Org's editing commands now read the document with the same parser
+export does, three to five times faster in large files, and footnote
+commands find references as Org's parser does.
+
+
 * Changes in E8 0.5.23
 
 ** Org publishing.
