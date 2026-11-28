@@ -1,0 +1,624 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "org-num-numbers-headings",
+      "input": {
+        "text": "* A\n** B\n** C\ntext\n* D\n*** E\n** F\n",
+        "point": 0,
+        "keys": "C-f",
+        "modes": [
+          "org-mode",
+          "org-num-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "* A\n** B\n** C\ntext\n* D\n*** E\n** F\n",
+      "visible": "* A\n** B\n** C\ntext\n* D\n*** E\n** F\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "displayed": "* 1 A\n** 1.1 B\n** 1.2 C\ntext\n* 2 D\n*** 2.0.1 E\n** 2.1 F\n"
+    },
+    {
+      "name": "org-num-starts-below-the-top-level",
+      "input": {
+        "text": "** A\n* B\n** C\n",
+        "point": 0,
+        "keys": "C-f",
+        "modes": [
+          "org-mode",
+          "org-num-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "** A\n* B\n** C\n",
+      "visible": "** A\n* B\n** C\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "displayed": "** 0.1 A\n* 1 B\n** 1.1 C\n"
+    },
+    {
+      "name": "org-num-new-heading-at-the-end",
+      "input": {
+        "text": "* A\n** B\n",
+        "point": 0,
+        "keys": "M-> * * SPC N",
+        "modes": [
+          "org-mode",
+          "org-num-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "* A\n** B\n** N",
+      "visible": "* A\n** B\n** N",
+      "point": 13,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "* 1 A\n** 1.1 B\n** 1.2 N"
+    },
+    {
+      "name": "org-num-new-heading-in-the-middle",
+      "input": {
+        "text": "* A\n* B\n",
+        "point": 0,
+        "keys": "C-e RET * SPC N",
+        "modes": [
+          "org-mode",
+          "org-num-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "* A\n* N\n* B\n",
+      "visible": "* A\n* N\n* B\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "* 1 A\n* 2 N\n* 3 B\n"
+    },
+    {
+      "name": "org-num-meta-return",
+      "input": {
+        "text": "* A\n* B\n",
+        "point": 0,
+        "keys": "C-e M-RET N",
+        "modes": [
+          "org-mode",
+          "org-num-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "* A\n* N\n* B\n",
+      "visible": "* A\n* N\n* B\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "* 1 A\n* 2 N\n* 3 B\n"
+    },
+    {
+      "name": "org-num-demote",
+      "input": {
+        "text": "* A\n* B\n* C\n",
+        "point": 0,
+        "keys": "C-n M-<right>",
+        "modes": [
+          "org-mode",
+          "org-num-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "* A\n** B\n* C\n",
+      "visible": "* A\n** B\n* C\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "* 1 A\n** 1.1 B\n* 2 C\n"
+    },
+    {
+      "name": "org-num-demote-subtree",
+      "input": {
+        "text": "* A\n* B\n** B1\n* C\n",
+        "point": 0,
+        "keys": "C-n M-S-<right>",
+        "modes": [
+          "org-mode",
+          "org-num-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "* A\n** B\n*** B1\n* C\n",
+      "visible": "* A\n** B\n*** B1\n* C\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "* 1 A\n** 1.1 B\n*** 1.1.1 B1\n* 2 C\n"
+    },
+    {
+      "name": "org-num-move-subtree-down",
+      "input": {
+        "text": "* A\n** A1\n* B\n",
+        "point": 0,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode",
+          "org-num-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "* B\n* A\n** A1\n",
+      "visible": "* B\n* A\n** A1\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "* 1 B\n* 2 A\n** 2.1 A1\n"
+    },
+    {
+      "name": "org-num-kill-a-heading-line",
+      "input": {
+        "text": "* A\n* B\n* C\n",
+        "point": 0,
+        "keys": "C-n C-k C-k",
+        "modes": [
+          "org-mode",
+          "org-num-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "* A\n* C\n",
+      "visible": "* A\n* C\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* B\n"
+      ],
+      "modified": true,
+      "error": null,
+      "displayed": "* 1 A\n* 2 C\n"
+    },
+    {
+      "name": "org-num-kill-and-yank-headings",
+      "input": {
+        "text": "* A\n* B\n",
+        "point": 0,
+        "keys": "C-k C-k M-> C-y",
+        "modes": [
+          "org-mode",
+          "org-num-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "* B\n* A\n",
+      "visible": "* B\n* A\n",
+      "point": 8,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [
+        "* A\n"
+      ],
+      "modified": true,
+      "error": null,
+      "displayed": "* 1 B\n* 2 A\n"
+    },
+    {
+      "name": "org-num-join-a-heading-to-the-line-before",
+      "input": {
+        "text": "* A\nfoo\n* B\n* C\n",
+        "point": 0,
+        "keys": "C-n C-e C-d",
+        "modes": [
+          "org-mode",
+          "org-num-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "* A\nfoo* B\n* C\n",
+      "visible": "* A\nfoo* B\n* C\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "* 1 A\nfoo* B\n* 2 C\n"
+    },
+    {
+      "name": "org-num-break-the-stars",
+      "input": {
+        "text": "* A\n* B\n* C\n",
+        "point": 0,
+        "keys": "C-n C-f C-d",
+        "modes": [
+          "org-mode",
+          "org-num-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "* A\n*B\n* C\n",
+      "visible": "* A\n*B\n* C\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "* 1 A\n*B\n* 2 C\n"
+    },
+    {
+      "name": "org-num-yank-several-headings",
+      "input": {
+        "text": "* A\n** A1\n* B\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-n C-w M-> C-y",
+        "modes": [
+          "org-mode",
+          "org-num-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "* B\n* A\n** A1\n",
+      "visible": "* B\n* A\n",
+      "point": 14,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [
+        "* A\n** A1\n"
+      ],
+      "modified": true,
+      "error": null,
+      "displayed": "* 1 B\n* 2 A2.1 \n"
+    },
+    {
+      "name": "org-num-undo",
+      "input": {
+        "text": "* A\n* B\n",
+        "point": 0,
+        "keys": "C-n C-k C-k C-/",
+        "modes": [
+          "org-mode",
+          "org-num-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true
+      },
+      "text": "* A\n\n",
+      "visible": "* A\n\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* B\n"
+      ],
+      "modified": true,
+      "error": null,
+      "displayed": "* 1 A\n\n"
+    },
+    {
+      "name": "org-num-skips-commented",
+      "input": {
+        "text": "* A\n* COMMENT B\n** B1\n* C\n",
+        "point": 0,
+        "keys": "C-f",
+        "modes": [
+          "org-mode",
+          "org-num-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true,
+        "globals": {
+          "org-num-skip-commented": true
+        }
+      },
+      "text": "* A\n* COMMENT B\n** B1\n* C\n",
+      "visible": "* A\n* COMMENT B\n** B1\n* C\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "displayed": "* 1 A\n* COMMENT B\n** B1\n* 2 C\n"
+    },
+    {
+      "name": "org-num-typing-comment-skips",
+      "input": {
+        "text": "* A\n* B\n** B1\n* C\n",
+        "point": 0,
+        "keys": "C-n C-f C-f C O M M E N T SPC",
+        "modes": [
+          "org-mode",
+          "org-num-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true,
+        "globals": {
+          "org-num-skip-commented": true
+        }
+      },
+      "text": "* A\n* COMMENT B\n** B1\n* C\n",
+      "visible": "* A\n* COMMENT B\n** B1\n* C\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "* 1 A\n* COMMENT B\n** B1\n* 2 C\n"
+    },
+    {
+      "name": "org-num-skips-tags",
+      "input": {
+        "text": "* A\n* B :ARCHIVE:\n** B1\n* C :x:\n",
+        "point": 0,
+        "keys": "C-f",
+        "modes": [
+          "org-mode",
+          "org-num-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true,
+        "globals": {
+          "org-num-skip-tags": [
+            "ARCHIVE"
+          ]
+        }
+      },
+      "text": "* A\n* B :ARCHIVE:\n** B1\n* C :x:\n",
+      "visible": "* A\n* B :ARCHIVE:\n** B1\n* C :x:\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "displayed": "* 1 A\n* B :ARCHIVE:\n** B1\n* 2 C :x:\n"
+    },
+    {
+      "name": "org-num-adding-a-tag-skips",
+      "input": {
+        "text": "* A\n* B\n** B1\n* C\n",
+        "point": 0,
+        "keys": "C-n C-e SPC : n o : C-n",
+        "modes": [
+          "org-mode",
+          "org-num-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true,
+        "globals": {
+          "org-num-skip-tags": [
+            "no"
+          ]
+        }
+      },
+      "text": "* A\n* B :no:\n** B1\n* C\n",
+      "visible": "* A\n* B :no:\n** B1\n* C\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "* 1 A\n* B :no:\n** B1\n* 2 C\n"
+    },
+    {
+      "name": "org-num-skips-footnotes",
+      "input": {
+        "text": "* A\n* Footnotes\n* C\n",
+        "point": 0,
+        "keys": "C-f",
+        "modes": [
+          "org-mode",
+          "org-num-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true,
+        "globals": {
+          "org-num-skip-footnotes": true
+        }
+      },
+      "text": "* A\n* Footnotes\n* C\n",
+      "visible": "* A\n* Footnotes\n* C\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "displayed": "* 1 A\n* Footnotes\n* 2 C\n"
+    },
+    {
+      "name": "org-num-skips-unnumbered",
+      "input": {
+        "text": "* A\n* B\n:PROPERTIES:\n:UNNUMBERED: t\n:END:\n** B1\n* C\n:PROPERTIES:\n:UNNUMBERED: nil\n:END:\n* D\n",
+        "point": 0,
+        "keys": "C-f",
+        "modes": [
+          "org-mode",
+          "org-num-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true,
+        "globals": {
+          "org-num-skip-unnumbered": true
+        }
+      },
+      "text": "* A\n* B\n:PROPERTIES:\n:UNNUMBERED: t\n:END:\n** B1\n* C\n:PROPERTIES:\n:UNNUMBERED: nil\n:END:\n* D\n",
+      "visible": "* A\n* B\n:PROPERTIES:\n:UNNUMBERED: t\n:END:\n** B1\n* C\n:PROPERTIES:\n:UNNUMBERED: nil\n:END:\n* D\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "displayed": "* 1 A\n* B\n:PROPERTIES:\n:UNNUMBERED: t\n:END:\n** B1\n* 2 C\n:PROPERTIES:\n:UNNUMBERED: nil\n:END:\n* 3 D\n"
+    },
+    {
+      "name": "org-num-max-level",
+      "input": {
+        "text": "* A\n** B\n*** C\n** D\n* E\n",
+        "point": 0,
+        "keys": "C-f",
+        "modes": [
+          "org-mode",
+          "org-num-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true,
+        "globals": {
+          "org-num-max-level": 2
+        }
+      },
+      "text": "* A\n** B\n*** C\n** D\n* E\n",
+      "visible": "* A\n** B\n*** C\n** D\n* E\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "displayed": "* 1 A\n** 1.1 B\n*** C\n** 1.2 D\n* 2 E\n"
+    },
+    {
+      "name": "org-num-max-level-demote-below",
+      "input": {
+        "text": "* A\n** B\n** D\n",
+        "point": 0,
+        "keys": "C-n C-n M-<right>",
+        "modes": [
+          "org-mode",
+          "org-num-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true,
+        "globals": {
+          "org-num-max-level": 2
+        }
+      },
+      "text": "* A\n** B\n*** D\n",
+      "visible": "* A\n** B\n*** D\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "displayed": "* 1 A\n** 1.1 B\n*** D\n"
+    },
+    {
+      "name": "org-num-odd-levels-only",
+      "input": {
+        "text": "* A\n*** B\n*** C\n***** D\n* E\n",
+        "point": 0,
+        "keys": "C-f",
+        "modes": [
+          "org-mode",
+          "org-num-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true,
+        "globals": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* A\n*** B\n*** C\n***** D\n* E\n",
+      "visible": "* A\n*** B\n*** C\n***** D\n* E\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "displayed": "* 1 A\n*** 1.1 B\n*** 1.2 C\n***** 1.2.1 D\n* 2 E\n"
+    },
+    {
+      "name": "org-num-format-function",
+      "input": {
+        "text": "* A\n** B\n",
+        "point": 0,
+        "keys": "C-f",
+        "modes": [
+          "org-mode",
+          "org-num-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "displayed": true,
+        "globals": {
+          "org-num-format-function": "'org-num-default-format"
+        }
+      },
+      "text": "* A\n** B\n",
+      "visible": "* A\n** B\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "displayed": "* 1 A\n** 1.1 B\n"
+    }
+  ]
+}

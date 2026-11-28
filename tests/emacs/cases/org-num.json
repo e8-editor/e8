@@ -1,0 +1,180 @@
+[
+  {
+    "name": "org-num-numbers-headings",
+    "text": "* A\n** B\n** C\ntext\n* D\n*** E\n** F\n",
+    "keys": "C-f",
+    "modes": ["org-mode", "org-num-mode"],
+    "displayed": true
+  },
+  {
+    "name": "org-num-starts-below-the-top-level",
+    "text": "** A\n* B\n** C\n",
+    "keys": "C-f",
+    "modes": ["org-mode", "org-num-mode"],
+    "displayed": true
+  },
+  {
+    "name": "org-num-new-heading-at-the-end",
+    "text": "* A\n** B\n",
+    "keys": "M-> * * SPC N",
+    "modes": ["org-mode", "org-num-mode"],
+    "displayed": true
+  },
+  {
+    "name": "org-num-new-heading-in-the-middle",
+    "text": "* A\n* B\n",
+    "keys": "C-e RET * SPC N",
+    "modes": ["org-mode", "org-num-mode"],
+    "displayed": true
+  },
+  {
+    "name": "org-num-meta-return",
+    "text": "* A\n* B\n",
+    "keys": "C-e M-RET N",
+    "modes": ["org-mode", "org-num-mode"],
+    "displayed": true
+  },
+  {
+    "name": "org-num-demote",
+    "text": "* A\n* B\n* C\n",
+    "keys": "C-n M-<right>",
+    "modes": ["org-mode", "org-num-mode"],
+    "displayed": true
+  },
+  {
+    "name": "org-num-demote-subtree",
+    "text": "* A\n* B\n** B1\n* C\n",
+    "keys": "C-n M-S-<right>",
+    "modes": ["org-mode", "org-num-mode"],
+    "displayed": true
+  },
+  {
+    "name": "org-num-move-subtree-down",
+    "text": "* A\n** A1\n* B\n",
+    "keys": "M-<down>",
+    "modes": ["org-mode", "org-num-mode"],
+    "displayed": true
+  },
+  {
+    "name": "org-num-kill-a-heading-line",
+    "text": "* A\n* B\n* C\n",
+    "keys": "C-n C-k C-k",
+    "modes": ["org-mode", "org-num-mode"],
+    "displayed": true
+  },
+  {
+    "name": "org-num-kill-and-yank-headings",
+    "text": "* A\n* B\n",
+    "keys": "C-k C-k M-> C-y",
+    "modes": ["org-mode", "org-num-mode"],
+    "displayed": true
+  },
+  {
+    "name": "org-num-join-a-heading-to-the-line-before",
+    "text": "* A\nfoo\n* B\n* C\n",
+    "keys": "C-n C-e C-d",
+    "modes": ["org-mode", "org-num-mode"],
+    "displayed": true
+  },
+  {
+    "name": "org-num-break-the-stars",
+    "text": "* A\n* B\n* C\n",
+    "keys": "C-n C-f C-d",
+    "modes": ["org-mode", "org-num-mode"],
+    "displayed": true
+  },
+  {
+    "name": "org-num-yank-several-headings",
+    "text": "* A\n** A1\n* B\n",
+    "keys": "C-SPC C-n C-n C-w M-> C-y",
+    "modes": ["org-mode", "org-num-mode"],
+    "displayed": true
+  },
+  {
+    "name": "org-num-undo",
+    "text": "* A\n* B\n",
+    "keys": "C-n C-k C-k C-/",
+    "modes": ["org-mode", "org-num-mode"],
+    "displayed": true
+  },
+  {
+    "name": "org-num-skips-commented",
+    "text": "* A\n* COMMENT B\n** B1\n* C\n",
+    "keys": "C-f",
+    "modes": ["org-mode", "org-num-mode"],
+    "globals": {"org-num-skip-commented": true},
+    "displayed": true
+  },
+  {
+    "name": "org-num-typing-comment-skips",
+    "text": "* A\n* B\n** B1\n* C\n",
+    "keys": "C-n C-f C-f C O M M E N T SPC",
+    "modes": ["org-mode", "org-num-mode"],
+    "globals": {"org-num-skip-commented": true},
+    "displayed": true
+  },
+  {
+    "name": "org-num-skips-tags",
+    "text": "* A\n* B :ARCHIVE:\n** B1\n* C :x:\n",
+    "keys": "C-f",
+    "modes": ["org-mode", "org-num-mode"],
+    "globals": {"org-num-skip-tags": ["ARCHIVE"]},
+    "displayed": true
+  },
+  {
+    "name": "org-num-adding-a-tag-skips",
+    "text": "* A\n* B\n** B1\n* C\n",
+    "keys": "C-n C-e SPC : n o : C-n",
+    "modes": ["org-mode", "org-num-mode"],
+    "globals": {"org-num-skip-tags": ["no"]},
+    "displayed": true
+  },
+  {
+    "name": "org-num-skips-footnotes",
+    "text": "* A\n* Footnotes\n* C\n",
+    "keys": "C-f",
+    "modes": ["org-mode", "org-num-mode"],
+    "globals": {"org-num-skip-footnotes": true},
+    "displayed": true
+  },
+  {
+    "name": "org-num-skips-unnumbered",
+    "text": "* A\n* B\n:PROPERTIES:\n:UNNUMBERED: t\n:END:\n** B1\n* C\n:PROPERTIES:\n:UNNUMBERED: nil\n:END:\n* D\n",
+    "keys": "C-f",
+    "modes": ["org-mode", "org-num-mode"],
+    "globals": {"org-num-skip-unnumbered": true},
+    "displayed": true
+  },
+  {
+    "name": "org-num-max-level",
+    "text": "* A\n** B\n*** C\n** D\n* E\n",
+    "keys": "C-f",
+    "modes": ["org-mode", "org-num-mode"],
+    "globals": {"org-num-max-level": 2},
+    "displayed": true
+  },
+  {
+    "name": "org-num-max-level-demote-below",
+    "text": "* A\n** B\n** D\n",
+    "keys": "C-n C-n M-<right>",
+    "modes": ["org-mode", "org-num-mode"],
+    "globals": {"org-num-max-level": 2},
+    "displayed": true
+  },
+  {
+    "name": "org-num-odd-levels-only",
+    "text": "* A\n*** B\n*** C\n***** D\n* E\n",
+    "keys": "C-f",
+    "modes": ["org-mode", "org-num-mode"],
+    "globals": {"org-odd-levels-only": true},
+    "displayed": true
+  },
+  {
+    "name": "org-num-format-function",
+    "text": "* A\n** B\n",
+    "keys": "C-f",
+    "modes": ["org-mode", "org-num-mode"],
+    "globals": {"org-num-format-function": "'org-num-default-format"},
+    "displayed": true
+  }
+]

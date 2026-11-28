@@ -1,0 +1,628 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "org-timer-starts-and-inserts",
+      "input": {
+        "text": "* Notes\n",
+        "point": 0,
+        "keys": "M-> C-c C-x .",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Notes\n0:00:00 ",
+      "visible": "* Notes\n0:00:00 ",
+      "point": 16,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-timer-item-starts-a-list",
+      "input": {
+        "text": "* Notes\n",
+        "point": 0,
+        "keys": "M-> C-c C-x - a b c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Notes\n- 0:00:00 :: abc",
+      "visible": "* Notes\n- 0:00:00 :: abc",
+      "point": 24,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-timer-item-indents-under-the-heading",
+      "input": {
+        "text": "* Notes\n",
+        "point": 0,
+        "keys": "M-> C-c C-x - a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* Notes\n  - 0:00:00 :: a",
+      "visible": "* Notes\n  - 0:00:00 :: a",
+      "point": 24,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-timer-item-in-a-timer-list",
+      "input": {
+        "text": "* Notes\n- 0:00:05 :: first\n",
+        "point": 0,
+        "keys": "M-> C-p C-e C-c C-x - x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Notes\n- 0:00:05 :: first\n- 0:00:00 :: x\n",
+      "visible": "* Notes\n- 0:00:05 :: first\n- 0:00:00 :: x\n",
+      "point": 41,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-timer-item-before-an-item",
+      "input": {
+        "text": "- 0:00:05 :: first\n- 0:00:09 :: second\n",
+        "point": 0,
+        "keys": "M-< C-c C-x - x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- 0:00:00 :: x\n- 0:00:05 :: first\n- 0:00:09 :: second\n",
+      "visible": "- 0:00:00 :: x\n- 0:00:05 :: first\n- 0:00:09 :: second\n",
+      "point": 14,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-timer-meta-return-in-a-timer-list",
+      "input": {
+        "text": "- 0:01:00 :: first\n",
+        "point": 0,
+        "keys": "C-e M-RET y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- 0:01:00 :: first\n- 0:00:00 :: y\n",
+      "visible": "- 0:01:00 :: first\n- 0:00:00 :: y\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-timer-item-in-another-list",
+      "input": {
+        "text": "- plain item\n",
+        "point": 0,
+        "keys": "C-e C-c C-x -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- plain item\n",
+      "visible": "- plain item\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "This is not a timer list"
+    },
+    {
+      "name": "org-timer-start-with-an-offset",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-u C-c C-x 0 C-c C-x .",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1:30"
+        ]
+      },
+      "text": "0:01:30 ",
+      "visible": "0:01:30 ",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-timer-start-with-an-hour-offset",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-u C-c C-x 0 C-c C-x .",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2:03:04"
+        ]
+      },
+      "text": "2:03:04 ",
+      "visible": "2:03:04 ",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-timer-start-offset-from-the-stamp-at-point",
+      "input": {
+        "text": "0:10:00 here",
+        "point": 3,
+        "keys": "C-u C-c C-x 0 C-e C-c C-x .",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          ""
+        ]
+      },
+      "text": "0:10:00 here0:10:00 ",
+      "visible": "0:10:00 here0:10:00 ",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-timer-start-with-a-numeric-offset",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-u 7 5 C-c C-x 0 C-c C-x .",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "0:01:15 ",
+      "visible": "0:01:15 ",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-timer-restart-with-c-u",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-u C-c C-x 0 C-c C-x . RET C-u C-c C-x .",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "5:00"
+        ]
+      },
+      "text": "0:05:00\n0:00:00 ",
+      "visible": "0:05:00\n0:00:00 ",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-timer-pause",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-c C-x . C-c C-x ,",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "0:00:00 ",
+      "visible": "0:00:00 ",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Timer paused at 0:00:00 "
+    },
+    {
+      "name": "org-timer-pause-and-continue",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-u C-c C-x 0 C-c C-x , C-c C-x , C-c C-x .",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "0:42"
+        ],
+        "message": true
+      },
+      "text": "0:00:42 ",
+      "visible": "0:00:42 ",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Timer continues at 0:00:42 "
+    },
+    {
+      "name": "org-timer-paused-value",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-u C-c C-x 0 C-c C-x , C-c C-x .",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3:00"
+        ]
+      },
+      "text": "0:03:00 ",
+      "visible": "0:03:00 ",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-timer-stop",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-c C-x . C-c C-x _",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "0:00:00 ",
+      "visible": "0:00:00 ",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Timer stopped"
+    },
+    {
+      "name": "org-timer-stop-with-a-prefix",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-c C-x . C-u C-c C-x , C-c C-x .",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "0:00:00 0:00:00 ",
+      "visible": "0:00:00 0:00:00 ",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-timer-stop-when-none-runs",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-c C-x _",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "",
+      "visible": "",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No timer running"
+    },
+    {
+      "name": "org-timer-pause-when-none-runs",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-c C-x ,",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "",
+      "visible": "",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No timer is running"
+    },
+    {
+      "name": "org-timer-countdown-blocks-the-relative-timer",
+      "input": {
+        "text": "* Task\n",
+        "point": 0,
+        "keys": "C-c C-x ; C-c C-x 0",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "5"
+        ]
+      },
+      "text": "* Task\n",
+      "visible": "* Task\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Countdown timer is running.  Cancel first"
+    },
+    {
+      "name": "org-timer-relative-timer-blocks-a-countdown",
+      "input": {
+        "text": "* Task\n",
+        "point": 0,
+        "keys": "C-c C-x . C-c C-x ;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "0:00:00 * Task\n",
+      "visible": "0:00:00 * Task\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Relative timer is running.  Stop first"
+    },
+    {
+      "name": "org-timer-countdown-takes-the-effort",
+      "input": {
+        "text": "* Task\n:PROPERTIES:\n:Effort: 0:25\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x ; C-c C-x 0 x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "x* Task\n:PROPERTIES:\n:Effort: 0:25\n:END:\n",
+      "visible": "x* Task\n:PROPERTIES:\n:Effort: 0:25\n:END:\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Countdown timer is running.  Cancel first"
+    },
+    {
+      "name": "org-timer-countdown-ignores-the-effort-with-three-c-u",
+      "input": {
+        "text": "* Task\n:PROPERTIES:\n:Effort: 0:25\n:END:\n",
+        "point": 0,
+        "keys": "C-u C-u C-u C-c C-x ; x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2"
+        ]
+      },
+      "text": "x* Task\n:PROPERTIES:\n:Effort: 0:25\n:END:\n",
+      "visible": "x* Task\n:PROPERTIES:\n:Effort: 0:25\n:END:\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-timer-countdown-replace-declined",
+      "input": {
+        "text": "* Task\n",
+        "point": 0,
+        "keys": "C-c C-x ; C-c C-x ;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "5",
+          "3",
+          "n"
+        ],
+        "message": true
+      },
+      "text": "* Task\n",
+      "visible": "* Task\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "No timer set"
+    },
+    {
+      "name": "org-timer-countdown-stop",
+      "input": {
+        "text": "* Task\n",
+        "point": 0,
+        "keys": "C-c C-x ; C-c C-x _",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "5"
+        ],
+        "message": true
+      },
+      "text": "* Task\n",
+      "visible": "* Task\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Timer stopped"
+    },
+    {
+      "name": "org-timer-countdown-pause-and-stop",
+      "input": {
+        "text": "* Task\n",
+        "point": 0,
+        "keys": "C-c C-x ; C-c C-x , C-c C-x _",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1:00:00"
+        ],
+        "message": true
+      },
+      "text": "* Task\n",
+      "visible": "* Task\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Timer stopped"
+    },
+    {
+      "name": "org-timer-countdown-nothing-shows-what-is-left",
+      "input": {
+        "text": "* Task\n",
+        "point": 0,
+        "keys": "C-c C-x ;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          ""
+        ],
+        "message": true
+      },
+      "text": "* Task\n",
+      "visible": "* Task\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "No timer set"
+    }
+  ]
+}

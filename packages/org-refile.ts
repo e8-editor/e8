@@ -4,7 +4,7 @@
 // org-refile-use-outline-path, its outline path, a level at a time.
 
 import { bookmarkSet, jumpTo } from "bookmark";
-import { addLogNote, alignTags, copySubtree, type Heading, headings, killIsSubtree, parseHeading, pasteSubtree, saveMarkersInRegion, subtreeRegion, validLevel } from "org";
+import { addLogNote, agendaFiles, alignTags, copySubtree, type Heading, headings, killIsSubtree, parseHeading, pasteSubtree, saveMarkersInRegion, subtreeRegion, validLevel } from "org";
 import { ancestors, showHeadingLine } from "org-fold";
 import { entryHeading } from "org-list";
 import { edDelete, lineAt, orgRegionActive } from "org-macs";
@@ -99,11 +99,8 @@ function specMatcher(kind: string, value: e8.Value): (h: Heading, text: string) 
 /** The files an entry names, as org-refile-get-targets reads them: buffers or file names. */
 function entryFiles(files: e8.Value, defaultBuffer: string): string[] {
   if (files === null || files === undefined || files === false) return [defaultBuffer];
-  if (files === "org-agenda-files") {
-    const agenda = e8.variable("org-agenda-files");
-    const dir = e8.variable("org-directory");
-    return (Array.isArray(agenda) ? agenda : []).map((f) => e8.findFileNoselect(e8.expandFileName(String(f), typeof dir === "string" ? dir : undefined)));
-  }
+  // As (org-agenda-files) lists them: directories' Org files, or the list a file holds.
+  if (files === "org-agenda-files") return agendaFiles().map((f) => e8.findFileNoselect(f));
   const list = Array.isArray(files) ? files.map(String) : [String(files)];
   return list.map((f) => e8.findFileNoselect(e8.expandFileName(f)));
 }

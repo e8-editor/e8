@@ -1,0 +1,74 @@
+[
+  {
+    "name": "org-remove-file-removes-the-current-file",
+    "text": "",
+    "files": {"a.org": "* A\n"},
+    "find": "a.org",
+    "keys": "C-c ]",
+    "modes": ["org-mode"],
+    "agenda_files": true,
+    "message": true
+  },
+  {
+    "name": "org-remove-file-twice",
+    "text": "",
+    "files": {"a.org": "* A\n"},
+    "find": "a.org",
+    "keys": "C-c ] C-c ]",
+    "modes": ["org-mode"],
+    "agenda_files": true,
+    "message": true
+  },
+  {
+    "name": "org-agenda-file-to-front-moves-it",
+    "text": "",
+    "files": {"a.org": "* A\n"},
+    "find": "a.org",
+    "keys": "C-c [",
+    "modes": ["org-mode"],
+    "agenda_files": true,
+    "message": true
+  },
+  {
+    "name": "org-agenda-file-to-front-adds-it-back",
+    "text": "",
+    "files": {"a.org": "* A\n"},
+    "find": "a.org",
+    "keys": "C-c ] C-c [",
+    "modes": ["org-mode"],
+    "agenda_files": true,
+    "message": true
+  },
+  {
+    "name": "org-agenda-file-to-front-to-the-end",
+    "text": "",
+    "files": {"a.org": "* A\n"},
+    "find": "a.org",
+    "keys": "C-c ] C-u C-c [",
+    "modes": ["org-mode"],
+    "agenda_files": true,
+    "message": true
+  },
+  {
+    "name": "org-agenda-file-to-front-then-remove",
+    "text": "",
+    "files": {"a.org": "* A\n"},
+    "find": "a.org",
+    "keys": "C-c ] C-c [ C-c ]",
+    "modes": ["org-mode"],
+    "agenda_files": true,
+    "message": true
+  },
+  {
+    "name": "org-remove-file-without-a-file",
+    "text": "* A\n",
+    "keys": "C-c ]",
+    "modes": ["org-mode"]
+  },
+  {
+    "name": "org-agenda-file-to-front-without-a-file",
+    "text": "* A\n",
+    "keys": "C-c [",
+    "modes": ["org-mode"]
+  }
+]

@@ -1,0 +1,267 @@
+[
+  {
+    "name": "org-timer-starts-and-inserts",
+    "text": "* Notes\n",
+    "keys": "M-> C-c C-x .",
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "org-timer-item-starts-a-list",
+    "text": "* Notes\n",
+    "keys": "M-> C-c C-x - a b c",
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "org-timer-item-indents-under-the-heading",
+    "text": "* Notes\n",
+    "keys": "M-> C-c C-x - a",
+    "modes": [
+      "org-mode"
+    ],
+    "vars": {
+      "org-adapt-indentation": true
+    }
+  },
+  {
+    "name": "org-timer-item-in-a-timer-list",
+    "text": "* Notes\n- 0:00:05 :: first\n",
+    "keys": "M-> C-p C-e C-c C-x - x",
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "org-timer-item-before-an-item",
+    "text": "- 0:00:05 :: first\n- 0:00:09 :: second\n",
+    "keys": "M-< C-c C-x - x",
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "org-timer-meta-return-in-a-timer-list",
+    "text": "- 0:01:00 :: first\n",
+    "keys": "C-e M-RET y",
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "org-timer-item-in-another-list",
+    "text": "- plain item\n",
+    "keys": "C-e C-c C-x -",
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "org-timer-start-with-an-offset",
+    "text": "",
+    "keys": "C-u C-c C-x 0 C-c C-x .",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "1:30"
+    ]
+  },
+  {
+    "name": "org-timer-start-with-an-hour-offset",
+    "text": "",
+    "keys": "C-u C-c C-x 0 C-c C-x .",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "2:03:04"
+    ]
+  },
+  {
+    "name": "org-timer-start-offset-from-the-stamp-at-point",
+    "text": "0:10:00 here",
+    "point": 3,
+    "keys": "C-u C-c C-x 0 C-e C-c C-x .",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      ""
+    ]
+  },
+  {
+    "name": "org-timer-start-with-a-numeric-offset",
+    "text": "",
+    "keys": "C-u 7 5 C-c C-x 0 C-c C-x .",
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "org-timer-restart-with-c-u",
+    "text": "",
+    "keys": "C-u C-c C-x 0 C-c C-x . RET C-u C-c C-x .",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "5:00"
+    ]
+  },
+  {
+    "name": "org-timer-pause",
+    "text": "",
+    "keys": "C-c C-x . C-c C-x ,",
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "org-timer-pause-and-continue",
+    "text": "",
+    "keys": "C-u C-c C-x 0 C-c C-x , C-c C-x , C-c C-x .",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "0:42"
+    ],
+    "message": true
+  },
+  {
+    "name": "org-timer-paused-value",
+    "text": "",
+    "keys": "C-u C-c C-x 0 C-c C-x , C-c C-x .",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "3:00"
+    ]
+  },
+  {
+    "name": "org-timer-stop",
+    "text": "",
+    "keys": "C-c C-x . C-c C-x _",
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "org-timer-stop-with-a-prefix",
+    "text": "",
+    "keys": "C-c C-x . C-u C-c C-x , C-c C-x .",
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "org-timer-stop-when-none-runs",
+    "text": "",
+    "keys": "C-c C-x _",
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "org-timer-pause-when-none-runs",
+    "text": "",
+    "keys": "C-c C-x ,",
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "org-timer-countdown-blocks-the-relative-timer",
+    "text": "* Task\n",
+    "keys": "C-c C-x ; C-c C-x 0",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "5"
+    ]
+  },
+  {
+    "name": "org-timer-relative-timer-blocks-a-countdown",
+    "text": "* Task\n",
+    "keys": "C-c C-x . C-c C-x ;",
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "org-timer-countdown-takes-the-effort",
+    "text": "* Task\n:PROPERTIES:\n:Effort: 0:25\n:END:\n",
+    "keys": "C-c C-x ; C-c C-x 0 x",
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "org-timer-countdown-ignores-the-effort-with-three-c-u",
+    "text": "* Task\n:PROPERTIES:\n:Effort: 0:25\n:END:\n",
+    "keys": "C-u C-u C-u C-c C-x ; x",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "2"
+    ]
+  },
+  {
+    "name": "org-timer-countdown-replace-declined",
+    "text": "* Task\n",
+    "keys": "C-c C-x ; C-c C-x ;",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "5",
+      "3",
+      "n"
+    ],
+    "message": true
+  },
+  {
+    "name": "org-timer-countdown-stop",
+    "text": "* Task\n",
+    "keys": "C-c C-x ; C-c C-x _",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "5"
+    ],
+    "message": true
+  },
+  {
+    "name": "org-timer-countdown-pause-and-stop",
+    "text": "* Task\n",
+    "keys": "C-c C-x ; C-c C-x , C-c C-x _",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "1:00:00"
+    ],
+    "message": true
+  },
+  {
+    "name": "org-timer-countdown-nothing-shows-what-is-left",
+    "text": "* Task\n",
+    "keys": "C-c C-x ;",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      ""
+    ],
+    "message": true
+  }
+]
