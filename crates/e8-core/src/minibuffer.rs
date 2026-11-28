@@ -329,7 +329,8 @@ impl Editor {
         let input = match (reading.initial, reading.kind) {
             (Some(initial), _) => initial,
             (None, ParamKind::File) => match &reading.dir {
-                Some(dir) => abbreviate_dir(&expand_file_name(dir)),
+                // A relative directory is in default-directory, as read-file-name expands DIR there.
+                Some(dir) => abbreviate_dir(&crate::files::expand_file_name_in(dir, &self.default_directory())),
                 None => abbreviate_dir(&self.default_directory()),
             },
             (None, _) => String::new(),

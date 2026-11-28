@@ -824,7 +824,7 @@ const GLOBAL_PROPERTIES_FIXED: [string, string][] = [
  * Org's fixed ones, the first that has it, as
  * org--property-global-or-keyword-value with literal nil finds it.
  */
-function globalProperty(property: string): string | undefined {
+export function globalProperty(property: string): string | undefined {
   const keyword = keywordProperty(property);
   if (keyword !== undefined) return keyword;
   const key = property.toLowerCase();
@@ -8660,6 +8660,15 @@ function openAtPoint_(): void {
   const { links, last } = linksIn(h.start, end);
   if (links.length === 0) {
     e8.message("No links");
+    // On a heading, its attachment directory, if it has one, as org-open-at-point reveals it, loading org-attach.
+    if (lineAt() === h.line) {
+      e8.require("org-attach");
+      if (truthy(e8.funcall("org-attach-dir") ?? null)) {
+        e8.message("Opening attachment");
+        const arg = e8.prefixArg();
+        e8.callInteractively((Array.isArray(arg) && arg[0] === 4 ? "org-attach-reveal-in-emacs" : "org-attach-reveal") as any);
+      }
+    }
     return;
   }
   if (links.length > 1) throw new Error("E8 cannot choose between an entry's links yet");
@@ -11854,6 +11863,13 @@ function optionName(v: e8.Value | undefined): string | undefined {
   return typeof v === "symbol" ? e8.symbolName(v) : typeof v === "string" ? v : undefined;
 }
 
+/** The file an attachment: link at POS names, as org-attach-expand finds it from there, or undefined where that fails, as Org ignores its errors. */
+function attachmentFile(path: string, pos: number): string | undefined {
+  e8.require("org-attach");
+  // Errors left out, as Org's ignore-errors does, but not a quit.
+  return e8.conditionCase(() => e8.saveExcursion(() => (e8.gotoChar(pos), String(e8.funcall("org-attach-expand", path)))), { error: () => undefined });
+}
+
 /** The inline image overlays between BEG and END, as org--inline-image-overlays. */
 function inlineImageOverlays(beg = e8.pointMin(), end = e8.pointMax()): number[] {
   return e8.overlaysIn(beg, end).filter((o) => truthy(e8.overlayGet(o, "org-image-overlay") ?? null));
@@ -12048,9 +12064,10 @@ export function displayInlineImages(includeLinked = false, refresh = false, beg 
           if (d) [linkType, path] = [(d[1] ?? d[3]).toLowerCase(), d[2] ?? d[4]];
         }
         if (path === undefined || !IMAGE_FILE.test(path)) continue;
-        // Attachments need org-attach, which E8 has not got.
-        if (linkType === "attachment") continue;
-        const file = e8.substituteInFileName(e8.expandFileName(path));
+        // An attachment in the entry's attachment directory, through org-attach, which loads for it, as Org requires it.
+        const expanded = linkType === "attachment" ? attachmentFile(path, start) : e8.expandFileName(path);
+        if (expanded === undefined) continue;
+        const file = e8.substituteInFileName(expanded);
         if (!e8.fileExistsP(file)) continue;
         // One shown there already stays, where Org would show it twice.
         if (inlineImageOverlays(start, start + 1).some((o) => e8.overlayStart(o) === start)) continue;

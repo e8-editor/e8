@@ -5993,6 +5993,18 @@ declare global {
        */
       "org-ascii-export-to-ascii": [async?: PrefixArg | boolean, subtreep?: PrefixArg | boolean, visibleOnly?: PrefixArg | boolean, bodyOnly?: PrefixArg | boolean, extPlist?: PrefixArg | boolean];
       /**
+       * The dispatcher for attachment commands.
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-attach": [];
+      /**
+       * Attach the files marked in Dired to the subtree in the other window.
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-attach-dired-to-subtree": [];
+      /**
        * Break the line past fill-column as Auto Fill does, but only where Org fills: never in a heading, a table, a keyword or a block.
        *
        * Defined in packages/org.ts.

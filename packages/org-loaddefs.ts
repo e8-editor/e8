@@ -1,7 +1,8 @@
 // The entry points of Org's export, preloaded, as org-loaddefs.el
 // autoloads them: the dispatcher on C-c C-e and each backend's export
-// commands. The exporter (ox.ts) and its backends load when one of these
-// is first used; the command of the same name they define then takes the
+// commands, and the attachment dispatcher on C-c C-a. The exporter (ox.ts)
+// and its backends, and org-attach.ts, load when one of these is first
+// used; the command or function of the same name they define then takes the
 // stub's place, and runs with the stub's arguments.
 
 /** The parameters an export command takes, none of them asked for: async, subtree, visible only, body only and extra options. */
@@ -59,9 +60,11 @@ const AUTOLOADS: [string, string, string, e8.Param[]][] = [
   ["org-decrypt-entries", "org-crypt", "Decrypt all entries in the current buffer.", []],
   // Org Cite's command, which loads oc.ts.
   ["org-cite-insert", "oc", "Insert a citation at point, as org-cite-insert-processor does; with a prefix argument, its style too.", [{ name: "arg", kind: "prefix" }]],
+  ["org-attach", "org-attach", "The dispatcher for attachment commands.", []],
+  ["org-attach-dired-to-subtree", "org-attach", "Attach the files marked in Dired to the subtree in the other window.", []],
 ];
 
-/** The functions projects name to publish their files, loading the backend that defines each when it is first called. */
+/** The functions projects name to publish their files, and org-attach-dir, loading the library that defines each when it is first called. */
 const PUBLISHING_FUNCTIONS: [string, string][] = [
   ["org-html-publish-to-html", "ox-html"],
   ["org-ascii-publish-to-ascii", "ox-ascii"],
@@ -72,6 +75,7 @@ const PUBLISHING_FUNCTIONS: [string, string][] = [
   ["org-publish-attachment", "ox-publish"],
   // Not a publishing function, but autoloaded the same way, as a config calls it.
   ["org-crypt-use-before-save-magic", "org-crypt"],
+  ["org-attach-dir", "org-attach"],
 ];
 
 for (const [name, feature] of PUBLISHING_FUNCTIONS)
@@ -132,6 +136,7 @@ e8.defun("org-cite--follow-at-point", (arg?: e8.PrefixArg) => {
   e8.require("oc");
   return e8.funcall("org-cite--follow-at-point", arg ?? null);
 });
+e8.defineKey("org-mode-map", "C-c C-a", "org-attach" as any);
 
 e8.defineVariable({
   name: "org-export-backends",

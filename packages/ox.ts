@@ -58,6 +58,11 @@ import { processBuffer as babelExpProcessBuffer } from "ob-exp";
 import { DICTIONARY } from "ox-dictionary";
 import { finalizeExport as citeFinalizeExport, processBibliography as citeProcessBibliography, processCitations as citeProcessCitations, setExportFunctions as setCiteExportFunctions, storeBibliography as citeStoreBibliography, storeExportProcessor as citeStoreExportProcessor } from "oc";
 
+// org-attach puts its expansion of attachment: links on
+// org-export-before-parsing-functions, so it loads with the exporter, as
+// ox.el requires it.
+e8.require("org-attach");
+
 // --- Values ----------------------------------------------------------------
 
 /** Signal an error, as Lisp's error. */

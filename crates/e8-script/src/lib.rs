@@ -252,6 +252,7 @@ const LIBRARY: &[(&str, &str)] = &[
     ("packages/org-crypt.ts", include_str!("../../../packages/org-crypt.ts")),
     ("packages/oc.ts", include_str!("../../../packages/oc.ts")),
     ("packages/oc-basic.ts", include_str!("../../../packages/oc-basic.ts")),
+    ("packages/org-attach.ts", include_str!("../../../packages/org-attach.ts")),
     ("packages/org-macro.ts", include_str!("../../../packages/org-macro.ts")),
     ("packages/org-tempo.ts", include_str!("../../../packages/org-tempo.ts")),
     ("packages/ox.ts", include_str!("../../../packages/ox.ts")),

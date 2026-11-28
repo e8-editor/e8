@@ -92,6 +92,7 @@ mod fill_comments;
 mod org_odd_levels;
 mod org_archive_details;
 mod org_agenda_file_list;
+mod org_attach;
 mod org_clock_mode_line;
 mod org_num;
 mod org_timer;

@@ -312,23 +312,37 @@ struct Answering {
     answers: std::collections::VecDeque<String>,
     error: Option<String>,
     quit_for_answers: bool,
+    /// A prompt answered from the input source whose RET waits until its
+    /// answer's keys are read, as the prompt it was typed into and its
+    /// depth: a prompt that ends on its first character needs none.
+    pending_ret: Option<(Option<String>, usize)>,
 }
 
 /// Gives a key read the answer's first character, as record.el's read-char
 /// does: a control character, as "\r" or "\u0003", as its key, RET or C-c.
-fn answer_char(ed: &mut Editor, answer: &str) {
-    match answer.chars().next() {
-        Some('\r') => ed.handle_key(Key::parse("RET").expect("RET parses")),
-        Some('\t') => ed.handle_key(Key::parse("TAB").expect("TAB parses")),
-        Some('\u{1b}') => ed.handle_key(Key::parse("ESC").expect("ESC parses")),
+///
+/// From the editor's input source, `queued`, the key is read next rather
+/// than handled here, so a command it lets go on that asks again reads its
+/// answer from the case too, as a wait inside the source could not call it
+/// again; between keys, with no wait running, it is handled at once.
+fn answer_char(ed: &mut Editor, answer: &str, queued: bool) {
+    let key = match answer.chars().next() {
+        Some('\r') => Key::parse("RET").expect("RET parses"),
+        Some('\t') => Key::parse("TAB").expect("TAB parses"),
+        Some('\u{1b}') => Key::parse("ESC").expect("ESC parses"),
         Some(c) if (c as u32) < 32 => {
             // C-@ for 0, C-a to C-z, then C-[ to C-_, as the ASCII control characters are.
             let base = if (1..=26).contains(&(c as u32)) { 96 } else { 64 };
             let letter = char::from_u32(c as u32 + base).expect("a character");
-            ed.handle_key(Key::parse(&format!("C-{letter}")).expect("a control key parses"));
+            Key::parse(&format!("C-{letter}")).expect("a control key parses")
         }
-        Some(c) => ed.type_text(&c.to_string()),
-        None => {}
+        Some(c) => Key::char(c),
+        None => return,
+    };
+    if queued {
+        ed.unread_keys(&[key]);
+    } else {
+        ed.handle_key(key);
     }
 }
 
@@ -336,7 +350,14 @@ fn answer_char(ed: &mut Editor, answer: &str) {
 /// the case's next answer, as record.el does; with none left, reading the
 /// minibuffer is an error, as batch Emacs would read it from standard
 /// input. Returns whether there was something to answer.
-fn answer_once(ed: &mut Editor, answering: &std::rc::Rc<std::cell::RefCell<Answering>>) -> bool {
+fn answer_once(ed: &mut Editor, answering: &std::rc::Rc<std::cell::RefCell<Answering>>, queued: bool) -> bool {
+    if queued && let Some((asked, depth)) = answering.borrow_mut().pending_ret.take()
+        && ed.minibuffer_depth() == depth
+        && ed.prompt().map(str::to_string) == asked
+    {
+        ed.unread_keys(&[Key::parse("RET").expect("RET parses")]);
+        return true;
+    }
     let left = answering.borrow().answers.len();
     // A key read partway through a command, as zap-to-char's character,
     // takes an answer too while there are any, as record.el gives
@@ -362,7 +383,7 @@ fn answer_once(ed: &mut Editor, answering: &std::rc::Rc<std::cell::RefCell<Answe
     };
     if ed.prompt().is_none() {
         let answer = answering.borrow_mut().answers.pop_front().expect("checked above");
-        answer_char(ed, &answer);
+        answer_char(ed, &answer, queued);
         note(ed);
         return true;
     }
@@ -380,7 +401,7 @@ fn answer_once(ed: &mut Editor, answering: &std::rc::Rc<std::cell::RefCell<Answe
     // A question read by a key takes the answer's first character, as
     // record.el's read-char does; others take it typed and RET.
     if ed.prompt_reads_char() {
-        answer_char(ed, &answer);
+        answer_char(ed, &answer, queued);
     } else {
         // record.el's answers replace what a prompt starts with; a
         // relative file name stays in the directory it shows.
@@ -394,10 +415,21 @@ fn answer_once(ed: &mut Editor, answering: &std::rc::Rc<std::cell::RefCell<Answe
         }
         let asked = ed.prompt().map(str::to_string);
         let depth = ed.minibuffer_depth();
-        ed.type_text(&answer);
-        // A prompt that ends on its first character, as read-char-from-minibuffer's, needs no RET.
-        if ed.minibuffer_depth() == depth && ed.prompt().map(str::to_string) == asked {
-            ed.handle_key(Key::parse("RET").expect("RET parses"));
+        if queued {
+            // From the input source, inside a wait a command opened, the
+            // answer is read next as keys, which reach the prompt and let
+            // the command go on to ask again, as typing here, into the
+            // command's buffer, would not; its RET follows once they are
+            // read, if the prompt is still open.
+            let keys: Vec<Key> = answer.chars().map(Key::char).collect();
+            ed.unread_keys(&keys);
+            answering.borrow_mut().pending_ret = Some((asked, depth));
+        } else {
+            ed.type_text(&answer);
+            // A prompt that ends on its first character, as read-char-from-minibuffer's, needs no RET.
+            if ed.minibuffer_depth() == depth && ed.prompt().map(str::to_string) == asked {
+                ed.handle_key(Key::parse("RET").expect("RET parses"));
+            }
         }
     }
     note(ed);
@@ -596,10 +628,11 @@ pub fn run(case: &Case) -> State {
         answers: case.answers.iter().cloned().collect(),
         error: None,
         quit_for_answers: false,
+        pending_ret: None,
     }));
     let source = answering.clone();
-    ed.set_input_source(move |ed| answer_once(ed, &source));
-    let answer_prompts = |ed: &mut Editor| while answer_once(ed, &answering) {};
+    ed.set_input_source(move |ed| answer_once(ed, &source, true));
+    let answer_prompts = |ed: &mut Editor| while answer_once(ed, &answering, false) {};
     // The messages from here on, as record.el starts each case's.
     ed.clear_messages();
     if let Some((name, args)) = case.call.split_first() {
