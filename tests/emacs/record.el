@@ -178,6 +178,10 @@ is set, as its oracle sets it."
     new))
 (advice-add 'org-export-new-reference :override #'e8-oracle--new-reference)
 
+;; HTML source blocks uncoloured, whether or not htmlize is installed, as
+;; E8's oracle sets it: colours are each editor's own faces.
+(setq org-html-htmlize-output-type nil)
+
 (defvar e8-oracle--today nil
   "The day a case fixes, as calendar-absolute-from-gregorian counts it.")
 

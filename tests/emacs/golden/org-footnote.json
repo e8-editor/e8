@@ -4432,6 +4432,205 @@
       "modified": true,
       "error": null,
       "message": null
+    },
+    {
+      "name": "rv2-heading-bol",
+      "input": {
+        "text": "* [fn:1] Title\n\n[fn:1] Def.\n",
+        "point": 0,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "n"
+        ],
+        "message": true
+      },
+      "text": "* [fn:1] Title\n\n* Footnotes\n\n[fn:1] Def.\n",
+      "visible": "* [fn:1] Title\n\n* Footnotes\n\n[fn:1] Def.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv2-heading-keyword",
+      "input": {
+        "text": "* TODO [#A] [fn:3] t\n\n[fn:3] D.\n",
+        "point": 3,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "n"
+        ],
+        "message": true
+      },
+      "text": "* TODO [#A] [fn:1] t\n\n* Footnotes\n\n[fn:1] D.\n",
+      "visible": "* TODO [#A] [fn:1] t\n\n* Footnotes\n\n[fn:1] D.\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv2-item-tag-double-colon",
+      "input": {
+        "text": "- a :: [fn:1] :: c\n\n[fn:1] Def.\n",
+        "point": 8,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- a :: [fn:1] :: c\n\n[fn:1] Def.\n",
+      "visible": "- a :: [fn:1] :: c\n\n[fn:1] Def.\n",
+      "point": 26,
+      "mark": 8,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv2-item-counter-tag",
+      "input": {
+        "text": "- [@start:3] a [fn:2] :: b\n\n[fn:2] Def.\n",
+        "point": 16,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- [@start:3] a [fn:2] :: b\n\n[fn:2] Def.\n",
+      "visible": "- [@start:3] a [fn:2] :: b\n\n[fn:2] Def.\n",
+      "point": 34,
+      "mark": 16,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv2-in-timestamp",
+      "input": {
+        "text": "See <2024-01-01 Mon> here.\n",
+        "point": 10,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "n"
+        ],
+        "message": true
+      },
+      "text": "See <2024-01-01 Mon> here.\n\n* Footnotes\n",
+      "visible": "See <2024-01-01 Mon> here.\n\n* Footnotes\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv2-in-macro",
+      "input": {
+        "text": "A {{{mac}}} b\n",
+        "point": 5,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "n"
+        ],
+        "message": true
+      },
+      "text": "A {{{mac}}} b\n\n* Footnotes\n",
+      "visible": "A {{{mac}}} b\n\n* Footnotes\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv2-emphasis-in-link",
+      "input": {
+        "text": "[[https://x.y][desc *b*]] x\n",
+        "point": 21,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "[[https://x.y][desc *[fn:1]b*]] x\n\n* Footnotes\n\n[fn:1] \n",
+      "visible": "desc *[fn:1]b* x\n\n* Footnotes\n\n[fn:1] \n",
+      "point": 54,
+      "mark": 27,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv2-item-tag-plain",
+      "input": {
+        "text": "- tag <2024-01-01 Mon> :: d\n",
+        "point": 3,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "n"
+        ],
+        "message": true
+      },
+      "text": "- tag <2024-01-01 Mon> :: d\n\n* Footnotes\n",
+      "visible": "- tag <2024-01-01 Mon> :: d\n\n* Footnotes\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
     }
   ]
 }

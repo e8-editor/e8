@@ -7000,6 +7000,12 @@ declare global {
        */
       "org-html-export-to-html": [async?: PrefixArg | boolean, subtreep?: PrefixArg | boolean, visibleOnly?: PrefixArg | boolean, bodyOnly?: PrefixArg | boolean, extPlist?: PrefixArg | boolean];
       /**
+       * Create the CSS for all font definitions in the current Emacs session.
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-html-htmlize-generate-css": [];
+      /**
        * Combine all agenda files into a single iCalendar file.
        *
        * @param async raw prefix argument
@@ -22691,6 +22697,14 @@ declare global {
     function listFonts(spec: Font, max?: number): Font[];
     /** A colour's red, green and blue from 0 to 65535, as color-values, or undefined if it is no colour. */
     function colorValues(color: string): [number, number, number] | undefined;
+    /**
+     * A colour as E8 draws it, its red, green, blue and alpha from 0 to
+     * 255: one of E8's palette names ("accent-ink", "faint"), as the
+     * frame's background has it, a name Emacs knows, or a spec, "#rrggbbaa"
+     * with alpha too; undefined if it is no colour. E8's own, as Emacs's
+     * colours have neither palette nor alpha: htmlize writes faces with it.
+     */
+    function colorRgba(color: string): [number, number, number, number] | undefined;
     /** The values of a colour spec ("#rgb", "rgb:R/G/B", "rgbi:R/G/B"), not a name, as color-values-from-color-spec. */
     function colorValuesFromColorSpec(spec: string): [number, number, number] | undefined;
     /** The names of the colours Emacs knows, as defined-colors. */

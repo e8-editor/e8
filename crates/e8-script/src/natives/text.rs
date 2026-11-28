@@ -1062,6 +1062,16 @@ natives! {
         Ok(e8_core::color_values(&spec).map(|v| v.map(u32::from).to_vec()))
     }
 
+    /// A colour as E8 draws it, its red, green, blue and alpha from 0 to
+    /// 255: one of E8's palette names ("accent-ink", "faint"), as the
+    /// frame's background has it, a name Emacs knows, or a spec, "#rrggbbaa"
+    /// with alpha too; undefined if it is no colour. E8's own, as Emacs's
+    /// colours have neither palette nor alpha: htmlize writes faces with it.
+    #[ts = "(color: string): [number, number, number, number] | undefined"]
+    pub fn colorRgba(ed, spec: String) -> Option<Vec<u32>> {
+        Ok(e8_core::Color::parse(&spec, ed.dark_background()).map(|c| vec![c.r.into(), c.g.into(), c.b.into(), c.a.into()]))
+    }
+
     /// The values of a colour spec ("#rgb", "rgb:R/G/B", "rgbi:R/G/B"), not a name, as color-values-from-color-spec.
     #[ts = "(spec: string): [number, number, number] | undefined"]
     pub fn colorValuesFromColorSpec(ed, spec: String) -> Option<Vec<u32>> {
