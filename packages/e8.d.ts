@@ -6599,6 +6599,18 @@ declare global {
        */
       "org-deadline": [date: string];
       /**
+       * Decrypt all entries in the current buffer.
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-decrypt-entries": [];
+      /**
+       * Decrypt the content of the current headline.
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-decrypt-entry": [];
+      /**
        * Delete the character before point, as delete-backward-char does, keeping a table's field as wide as it was.
        *
        * Defined in packages/org.ts.
@@ -6764,6 +6776,18 @@ declare global {
        * Defined in packages/org-element.ts.
        */
       "org-element-update-syntax": [];
+      /**
+       * Encrypt all top-level entries in the current buffer.
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-encrypt-entries": [];
+      /**
+       * Encrypt the content of the current headline.
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-encrypt-entry": [];
       /**
        * Move to the end of the line, staying on a folded heading's line rather than going past its hidden text; with org-special-ctrl-a/e, on a heading with tags first to before them. With a prefix argument, move N - 1 lines first.
        *
@@ -20499,6 +20523,10 @@ declare global {
        * Run after Auto-Revert-Tail mode is turned on.
        */
       "auto-revert-tail-mode-on-hook": Value;
+      /**
+       * Run in the current buffer before auto-saving the buffers that changed.
+       */
+      "auto-save-hook": Value;
       /**
        * Run after entering Bash mode, after the hooks of the modes it is built on.
        */

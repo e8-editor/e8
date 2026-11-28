@@ -52,6 +52,11 @@ const AUTOLOADS: [string, string, string, e8.Param[]][] = [
   ["org-icalendar-export-to-ics", "ox-icalendar", "Export current buffer to an iCalendar file.", EXPORT_PARAMS],
   ["org-icalendar-export-agenda-files", "ox-icalendar", "Export all agenda files to iCalendar files.", [{ name: "async", kind: "prefix" }]],
   ["org-icalendar-combine-agenda-files", "ox-icalendar", "Combine all agenda files into a single iCalendar file.", [{ name: "async", kind: "prefix" }]],
+  // Org Crypt's commands, which load org-crypt.ts and EasyPG's epg.ts.
+  ["org-encrypt-entry", "org-crypt", "Encrypt the content of the current headline.", []],
+  ["org-encrypt-entries", "org-crypt", "Encrypt all top-level entries in the current buffer.", []],
+  ["org-decrypt-entry", "org-crypt", "Decrypt the content of the current headline.", []],
+  ["org-decrypt-entries", "org-crypt", "Decrypt all entries in the current buffer.", []],
   // Org Cite's command, which loads oc.ts.
   ["org-cite-insert", "oc", "Insert a citation at point, as org-cite-insert-processor does; with a prefix argument, its style too.", [{ name: "arg", kind: "prefix" }]],
 ];
@@ -65,6 +70,8 @@ const PUBLISHING_FUNCTIONS: [string, string][] = [
   ["org-md-publish-to-md", "ox-md"],
   ["org-org-publish-to-org", "ox-org"],
   ["org-publish-attachment", "ox-publish"],
+  // Not a publishing function, but autoloaded the same way, as a config calls it.
+  ["org-crypt-use-before-save-magic", "org-crypt"],
 ];
 
 for (const [name, feature] of PUBLISHING_FUNCTIONS)
