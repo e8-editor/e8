@@ -23,7 +23,7 @@ import {
   getReferences,
   insideFootnoteP,
   keyBoundaries,
-  keyNumber,
+  listKeys,
   listBibliographyFiles,
   makeInsertProcessor,
   makeParagraph,
@@ -84,9 +84,44 @@ function parseJson(text: string): Map<string, Entry> {
   return entries;
 }
 
-const MONTHS: Record<string, string> = {
-  jan: "January", feb: "February", mar: "March", apr: "April", may: "May", jun: "June",
-  jul: "July", aug: "August", sep: "September", oct: "October", nov: "November", dec: "December",
+/** BibTeX's predefined strings, the months and the journals, as bibtex-predefined-strings. */
+const PREDEFINED_STRINGS: [string, string][] = [
+  ["jan", "January"], ["feb", "February"], ["mar", "March"], ["apr", "April"], ["may", "May"], ["jun", "June"],
+  ["jul", "July"], ["aug", "August"], ["sep", "September"], ["oct", "October"], ["nov", "November"], ["dec", "December"],
+  ["acmcs", "ACM Computing Surveys"],
+  ["acta", "Acta Informatica"],
+  ["cacm", "Communications of the ACM"],
+  ["ibmjrd", "IBM Journal of Research and Development"],
+  ["ibmsj", "IBM Systems Journal"],
+  ["ieeese", "IEEE Transactions on Software Engineering"],
+  ["ieeetc", "IEEE Transactions on Computers"],
+  ["ieeetcad", "IEEE Transactions on Computer-Aided Design of Integrated Circuits"],
+  ["ipl", "Information Processing Letters"],
+  ["jacm", "Journal of the ACM"],
+  ["jcss", "Journal of Computer and System Sciences"],
+  ["scp", "Science of Computer Programming"],
+  ["sicomp", "SIAM Journal on Computing"],
+  ["tcs", "Theoretical Computer Science"],
+  ["tocs", "ACM Transactions on Computer Systems"],
+  ["tods", "ACM Transactions on Database Systems"],
+  ["tog", "ACM Transactions on Graphics"],
+  ["toms", "ACM Transactions on Mathematical Software"],
+  ["toois", "ACM Transactions on Office Information Systems"],
+  ["toplas", "ACM Transactions on Programming Languages and Systems"],
+];
+
+/** The entry types of each dialect, as bibtex-BibTeX-entry-alist and bibtex-biblatex-entry-alist name them. */
+const ENTRY_TYPES: Record<"BibTeX" | "biblatex", string[]> = {
+  BibTeX: [
+    "Article", "InProceedings", "Conference", "InCollection", "InBook", "Proceedings", "Book", "Booklet", "PhdThesis",
+    "MastersThesis", "TechReport", "Manual", "Unpublished", "Misc",
+  ],
+  biblatex: [
+    "Article", "Book", "MVBook", "InBook", "BookInBook", "SuppBook", "Booklet", "Collection", "MVCollection",
+    "InCollection", "SuppCollection", "Dataset", "Manual", "Misc", "Online", "Patent", "Periodical", "SuppPeriodical",
+    "Proceedings", "MVProceedings", "InProceedings", "Conference", "Reference", "MVReference", "InReference", "Report",
+    "Software", "Thesis", "PhdThesis", "MastersThesis", "TechReport", "Unpublished",
+  ],
 };
 
 class BibError extends Error {}
@@ -95,11 +130,14 @@ class BibError extends Error {}
  * A BibTeX file's entries, by key, each with its type, key and fields,
  * names in lower case and values with their delimiters taken off, macros
  * expanded and runs of blanks made one space, as
- * org-cite-basic--parse-bibtex reads them through bibtex.el.
+ * org-cite-basic--parse-bibtex reads them through bibtex.el in DIALECT:
+ * only entries of the dialect's types, each starting a line; the strings
+ * BibTeX predefines, then the file's @string definitions, all read first,
+ * the first definition of a name winning.
  */
-function parseBibtex(text: string): Map<string, Entry> {
+function parseBibtex(text: string, dialect: "BibTeX" | "biblatex"): Map<string, Entry> {
   const entries = new Map<string, Entry>();
-  const strings = new Map<string, string>(Object.entries(MONTHS));
+  const strings = new Map<string, string>(PREDEFINED_STRINGS);
   let i = 0;
   const fail = (): never => {
     throw new BibError(`at ${i}`);
@@ -118,10 +156,12 @@ function parseBibtex(text: string): Map<string, Entry> {
     return fail();
   };
   const quoted = (): string => {
+    // At '"': to the next one outside braces and not escaped.
     let depth = 0;
     const start = ++i;
     for (; i < text.length; i++) {
-      if (text[i] === "{") depth++;
+      if (text[i] === "\\") i++;
+      else if (text[i] === "{") depth++;
       else if (text[i] === "}") depth--;
       else if (text[i] === '"' && depth === 0) return text.slice(start, i++);
     }
@@ -134,57 +174,42 @@ function parseBibtex(text: string): Map<string, Entry> {
       if (text[i] === "{") out += braced();
       else if (text[i] === '"') out += quoted();
       else {
-        const m = /^[^\s,#{}"()=]+/.exec(text.slice(i));
+        const m = /^[^\s,#{}"()=]+/.exec(text.slice(i, i + 256));
         if (!m) fail();
         i += m![0].length;
-        out += /^\d+$/.test(m![0]) ? m![0] : (strings.get(m![0].toLowerCase()) ?? m![0]);
+        out += strings.get(m![0].toLowerCase()) ?? m![0];
       }
       skipSpace();
       if (text[i] !== "#") return out;
       i++;
     }
   };
-  for (;;) {
-    const at = text.indexOf("@", i);
-    if (at < 0) break;
-    i = at + 1;
-    const typeMatch = /^[ \t]*([A-Za-z][\w-]*)[ \t\n]*([{(])/.exec(text.slice(i));
-    if (!typeMatch) continue;
-    const type = typeMatch[1];
-    const close = typeMatch[2] === "{" ? "}" : ")";
-    i += typeMatch[0].length;
-    const kind = type.toLowerCase();
-    if (kind === "comment") {
-      i -= 1;
-      if (close === "}") braced();
-      continue;
-    }
-    if (kind === "preamble") {
-      value();
-      skipSpace();
-      if (text[i] !== close) fail();
-      i++;
-      continue;
-    }
-    if (kind === "string") {
-      skipSpace();
-      const name = /^[^\s=,{}]+/.exec(text.slice(i));
-      if (!name) fail();
-      i += name![0].length;
-      skipSpace();
-      if (text[i] !== "=") fail();
-      i++;
-      strings.set(name![0].toLowerCase(), value());
-      skipSpace();
-      if (text[i] !== close) fail();
-      i++;
-      continue;
-    }
+  // The strings, from the whole file first.
+  const stringHead = /^[ \t]*@[ \t]*string[ \t]*([{(])/gim;
+  for (let m = stringHead.exec(text); m !== null; m = stringHead.exec(text)) {
+    i = m.index + m[0].length;
+    const close = m[1] === "{" ? "}" : ")";
     skipSpace();
-    const keyMatch = /^[^\s,]*/.exec(text.slice(i))!;
-    const key = keyMatch[0];
+    const name = /^[^\s=,{}]+/.exec(text.slice(i, i + 256));
+    if (!name) fail();
+    i += name![0].length;
+    skipSpace();
+    if (text[i] !== "=") fail();
+    i++;
+    const expansion = value();
+    skipSpace();
+    if (text[i] !== close) fail();
+    if (!strings.has(name![0].toLowerCase())) strings.set(name![0].toLowerCase(), expansion);
+    stringHead.lastIndex = i + 1;
+  }
+  // The entries, each starting a line, as bibtex-map-entries finds them.
+  const head = new RegExp(`^[ \\t]*@[ \\t]*(${ENTRY_TYPES[dialect].join("|")})[ \\t]*([{(])[ \\t\\n]*`, "gim");
+  for (let m = head.exec(text); m !== null; m = head.exec(text)) {
+    const type = m[1];
+    const close = m[2] === "{" ? "}" : ")";
+    i = m.index + m[0].length;
+    const key = /^[^\s,]*/.exec(text.slice(i, i + 1024))![0];
     i += key.length;
-    skipSpace();
     const entry: Entry = [["type", type], ["id", key]];
     for (;;) {
       skipSpace();
@@ -199,7 +224,7 @@ function parseBibtex(text: string): Map<string, Entry> {
         i++;
         break;
       }
-      const field = /^[^\s=,{}"#()]+/.exec(text.slice(i));
+      const field = /^[^\s=,{}"#()]+/.exec(text.slice(i, i + 256));
       if (!field) fail();
       i += field![0].length;
       skipSpace();
@@ -209,6 +234,8 @@ function parseBibtex(text: string): Map<string, Entry> {
     }
     if (entries.has(key)) fail();
     entries.set(key, entry);
+    // On from the end of the entry.
+    head.lastIndex = i;
   }
   return entries;
 }
@@ -235,7 +262,8 @@ export function parseBibliography(info?: Info): [string, Map<string, Entry>][] {
         const text = readFile(file);
         const extension = /\.([^./]+)$/.exec(file)?.[1];
         if (extension === "json") entries = parseJson(text);
-        else if (extension === "bib" || extension === "bibtex") entries = parseBibtex(text);
+        else if (extension === "bib") entries = parseBibtex(text, "biblatex");
+        else if (extension === "bibtex") entries = parseBibtex(text, "BibTeX");
         // Org's user-error for an unknown extension, and a malformed file, are caught, and the file passed over.
         else continue;
       } catch (e) {
@@ -266,7 +294,10 @@ function readFile(file: string): string {
 
 /** A cited key's number, by the sorting field, as org-cite-basic--key-number. */
 function basicKeyNumber(key: string, info: Info): number | undefined {
-  return keyNumber(key, info, fieldLessP(symbolString(v("org-cite-basic-sorting-field")), info));
+  // The keys sorted once for the export, where org-cite-key-number sorts them for each reference.
+  const sorted: string[] = (info["cite-basic/sorted-keys"] ??= sortKeys(listKeys(info), info));
+  const i = sorted.indexOf(key);
+  return i < 0 ? undefined : i + 1;
 }
 
 /** Every key of the bibliography, as org-cite-basic--all-keys. */
@@ -418,27 +449,53 @@ function closeKeys(key: string, keys: string[]): string[] {
   return keys.filter((k) => e8.stringDistance(k, key) <= max);
 }
 
+/**
+ * The keymaps keys get, one for each of what mouse-1 does there, shared,
+ * where Org makes a keymap and a command for each key: a substitute's
+ * key keeps its place and suggestions in the org-cite-basic--suggestions
+ * property, which the command reads where the mouse was clicked.
+ */
+const KEYMAPS = new Map<string, e8.Keymap>();
+
+/** A keymap binding mouse-1 to a command. */
+function keymapFor(command: string): e8.Keymap {
+  let km = KEYMAPS.get(command);
+  if (!km) {
+    km = e8.makeSparseKeymap();
+    e8.defineKey(km, "<mouse-1>", command as any);
+    KEYMAPS.set(command, km);
+  }
+  return km;
+}
+
+e8.defineCommand({
+  name: "org-cite-basic--substitute-key",
+  doc: "Replace the unknown citation key clicked on with a suggestion, as Org's mouse-1 on such a key does.",
+  run: () => {
+    // Where the mouse was clicked, or point when run from a key or code.
+    const at = e8.conditionCase(
+      () => e8.saveExcursion(() => (e8.call("mouse-set-point"), e8.point())),
+      { error: () => e8.point() },
+    );
+    const found = e8.getTextProperty(at, "org-cite-basic--suggestions");
+    if (!Array.isArray(found)) return;
+    const [beg, end, ...choices] = found as [number, number, ...string[]];
+    e8.saveExcursion(() => {
+      e8.deleteRegion(beg, end);
+      e8.gotoChar(beg);
+      e8.insert("@" + (choices.length === 1 ? choices[0] : e8.completingRead("Did you mean: ", choices, { requireMatch: true })));
+    });
+  },
+});
+
 /** Puts a keymap on a key: C-c C-o's on a known one, else replacing it with a suggestion or inserting, as org-cite-basic--set-keymap. */
 function setKeymap(beg: number, end: number, suggestions: string[] | "all" | undefined): void {
-  const km = e8.makeSparseKeymap();
-  let command: string;
-  if (suggestions === undefined) command = "org-open-at-point";
-  else if (suggestions === "all") command = "org-cite-insert";
+  if (suggestions === undefined) e8.putTextProperty(beg, end, "keymap", keymapFor("org-open-at-point"));
+  else if (suggestions === "all") e8.putTextProperty(beg, end, "keymap", keymapFor("org-cite-insert"));
   else {
-    const choices = suggestions;
-    command = e8.defineCommand({
-      name: `org-cite-basic--substitute-${beg}`,
-      doc: "Replace the citation key with a suggestion.",
-      run: () =>
-        e8.saveExcursion(() => {
-          e8.deleteRegion(beg, end);
-          e8.gotoChar(beg);
-          e8.insert("@" + (choices.length === 1 ? choices[0] : e8.completingRead("Did you mean: ", choices, { requireMatch: true })));
-        }),
-    }) as unknown as string;
+    e8.putTextProperty(beg, end, "org-cite-basic--suggestions", [beg, end, ...suggestions]);
+    e8.putTextProperty(beg, end, "keymap", keymapFor("org-cite-basic--substitute-key"));
   }
-  e8.defineKey(km, "<mouse-1>", command as any);
-  e8.putTextProperty(beg, end, "keymap", km);
 }
 
 /**
@@ -613,7 +670,7 @@ function goto(datum: Node): void {
   e8.gotoChar(e8.pointMin());
   const quoted = key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   if (/\.json$/.test(file)) {
-    const at = e8.reSearchForward(`"id":[[ \t]]*"${emacsQuote(key)}"`);
+    const at = e8.reSearchForward(`"id":[][ \t]*"${emacsQuote(key)}"`, { noerror: true });
     if (at !== undefined) {
       const text = e8.bufferText(e8.pointMin(), e8.point());
       e8.gotoChar(text.lastIndexOf("{"));
@@ -655,6 +712,12 @@ function toWidth(s: string, width: number): string {
 function keyCompletionTable(): Map<string, string> | undefined {
   const entries = parseBibliography();
   if (entries.length === 0) return undefined;
+  // Made again only when the bibliography has changed, as org-cite-basic--completion-cache is.
+  const same =
+    completionCache !== undefined &&
+    completionCache.entries.length === entries.length &&
+    completionCache.entries.every(([f, m], i) => entries[i][0] === f && entries[i][1] === m);
+  if (same) return completionCache!.table;
   const table = new Map<string, string>();
   const column = Number(v("org-cite-basic-author-column-end") ?? 25);
   const sep = String(v("org-cite-basic-column-separator") ?? "  ");
@@ -671,8 +734,13 @@ function keyCompletionTable(): Map<string, string> | undefined {
       String(getField("title", entry, undefined, true) ?? "");
     table.set(completion, key);
   }
-  return table.size > 0 ? table : undefined;
+  if (table.size === 0) return undefined;
+  completionCache = { entries, table };
+  return table;
 }
+
+/** The last key completion table, and the bibliography it was made from. */
+let completionCache: { entries: [string, Map<string, Entry>][]; table: Map<string, string> } | undefined;
 
 /** A key read with completion, or keys until an empty answer with MULTIPLE, as org-cite-basic--complete-key. */
 function completeKey(multiple: boolean): string | string[] | undefined {

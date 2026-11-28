@@ -194,3 +194,100 @@ fn citations_are_fontified_with_their_entries() {
     assert_eq!(face(&mut t, 0), "undefined");
     let _ = &t.dir;
 }
+
+/// Where C-c C-x @ may put a citation, as org-cite--allowed-p judges
+/// Org's context there: a caret in each text marks point, and each
+/// expected text, or refusal, is what Emacs did.
+#[test]
+fn citations_are_inserted_where_org_allows_them() {
+    let refused = "Cannot insert a citation here";
+    let cases: &[(&str, &str)] = &[
+        ("#+begin_quote\nSome ^text\n#+end_quote\n", "#+begin_quote\nSome [cite:@knuth84]text\n#+end_quote\n"),
+        ("#+begin_center\nSome ^text\n#+end_center\n", "#+begin_center\nSome [cite:@knuth84]text\n#+end_center\n"),
+        ("#+begin_note\nSome ^text\n#+end_note\n", "#+begin_note\nSome [cite:@knuth84]text\n#+end_note\n"),
+        ("[fn:1] See ^also\n", "[fn:1] See [cite:@knuth84]also\n"),
+        ("Some =ver^bat= here\n", refused),
+        ("# a ^comment\n", refused),
+        ("#+begin_example\nSome ^text\n#+end_example\n", refused),
+        ("Text *bo^ld* here.\n", "Text *bo[cite:@knuth84]ld* here.\n"),
+        ("| a | b^c |\n", "| a | b[cite:@knuth84]c |\n"),
+        ("- [ ] ^item\n", "- [ ] [cite:@knuth84]item\n"),
+        ("#+caption: A ^caption\n| x |\n", "#+caption: A [cite:@knuth84]caption\n| x |\n"),
+        ("#+name: a^name\n| x |\n", refused),
+    ];
+    for (marked, expected) in cases {
+        let at = marked.find('^').unwrap();
+        let text = marked.replacen('^', "", 1);
+        let mut t = cite(&text);
+        t.goto(text[..at].chars().count());
+        if *expected == refused {
+            t.ed.press("C-c C-x @").unwrap();
+        } else {
+            t.ed.press(&format!("C-c C-x @ {} TAB RET RET", typed("Knuth"))).unwrap();
+        }
+        if *expected == refused {
+            assert_eq!(t.ed.messages().last().map(String::as_str), Some(refused), "{marked:?}");
+            assert_eq!(t.text(), text, "{marked:?}");
+        } else {
+            assert_eq!(t.text(), *expected, "{marked:?}");
+        }
+    }
+}
+
+/// C-c C-o on a citation in an example block finds no link, as in Emacs:
+/// the block holds no objects.
+#[test]
+fn a_citation_in_an_example_block_is_not_followed() {
+    let mut t = cite("#+begin_example\nSee [cite:@knuth84].\n#+end_example\n");
+    t.goto(23);
+    t.ed.press("C-c C-o").unwrap();
+    assert_eq!(t.ed.messages().last().map(String::as_str), Some("No link found"));
+    assert_eq!(t.ed.window_buffer().name, "doc.org");
+}
+
+/// A #+SETUPFILE in another directory names its bibliography relative to
+/// itself, which the document then finds, as Emacs rewrites the name.
+#[test]
+fn a_setup_files_bibliography_is_found_relative_to_it() {
+    let mut t = cite("");
+    std::fs::create_dir(t.dir.path().join("sub")).unwrap();
+    std::fs::write(t.dir.path().join("sub/setup.org"), "#+bibliography: own.bib\n").unwrap();
+    std::fs::write(t.dir.path().join("sub/own.bib"), "@book{own,\n  author = {Own, A},\n  title = {Own},\n  year = 2020\n}\n").unwrap();
+    let path = t.dir.path().join("setup-doc.org");
+    std::fs::write(&path, "#+SETUPFILE: sub/setup.org\n#+options: toc:nil author:nil date:nil\n\nSee [cite:@own].\n").unwrap();
+    t.ed.call("find-file", vec![Arg::Str(path.display().to_string())]).unwrap();
+    t.eval("e8.setDefault('org-export-copy-to-kill-ring', false)");
+    t.eval("e8.call('org-ascii-export-as-ascii', null, null, null, true)");
+    let b = t.ed.window_buffer();
+    assert_eq!(b.slice(0..b.len()), "See (Own, A, 2020).\n");
+}
+
+/// An unknown key's mouse-1 replaces it with the one suggestion close to
+/// it, through one command and keymaps shared by every key, where Org
+/// makes a keymap and a command for each.
+#[test]
+fn an_unknown_key_is_replaced_by_its_suggestion() {
+    let mut t = cite("See [cite:@knuth48].\n");
+    t.ed.redisplay();
+    let key = HEADER.len() + 12;
+    assert_eq!(
+        t.eval(&format!("JSON.stringify(e8.getTextProperty({key}, 'org-cite-basic--suggestions'))")),
+        format!("\"[{},{},\\\"knuth84\\\"]\"", HEADER.len() + 10, HEADER.len() + 18)
+    );
+    t.eval(&format!("e8.gotoChar({key})"));
+    t.eval("e8.call('org-cite-basic--substitute-key')");
+    assert_eq!(t.text(), "See [cite:@knuth84].\n");
+}
+
+/// A CSL-JSON item written compactly, "id":"key", is found too, as
+/// Emacs's search allows any blanks after the colon, or none.
+#[test]
+fn following_finds_a_compact_json_item() {
+    let mut t = cite("#+bibliography: compact.json\nSee [cite:@b].\n");
+    let compact = "[{\"id\":\"a\",\"title\":\"A\"},{\"id\":\"b\",\"title\":\"B\"}]\n";
+    std::fs::write(t.dir.path().join("compact.json"), compact).unwrap();
+    t.goto(39);
+    t.ed.press("C-c C-o").unwrap();
+    assert_eq!(t.ed.window_buffer().name, "compact.json");
+    assert_eq!(t.ed.window_buffer().point(), compact.find("{\"id\":\"b\"").unwrap());
+}

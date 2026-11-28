@@ -39,8 +39,9 @@ import {
   adoptElements,
   SECONDARY_VALUES,
 } from "org-element-ast";
-import { normalizeString, parseBuffer, parseSecondaryString, restriction } from "org-element";
-import { keywordLines } from "org";
+import { elementAt, normalizeString, objectAt, parseBuffer, parseSecondaryString, restriction, withAffiliated } from "org-element";
+import { keywordLines, parseHeading } from "org";
+import { fileRelativeName } from "files";
 
 type Info = { [key: string]: any };
 
@@ -96,6 +97,8 @@ export const symbolString = (x: unknown): string | undefined =>
   typeof x === "symbol" ? e8.symbolName(x) : typeof x === "string" ? x : x === true ? "t" : undefined;
 /** A string with something besides blanks, else undefined, as org-string-nw-p. */
 const nw = (s: unknown): string | undefined => (typeof s === "string" && /[^ \t\n\r]/.test(s) ? s : undefined);
+/** A string without the blanks at its ends, as org-trim. */
+const orgTrim = (s: string): string => s.replace(/[ \t\n\r]+$/, "").replace(/^[ \t\n\r]+/, "");
 /** A string, unless it is "nil", as org-not-nil. */
 const notNil = (s: string | undefined): string | undefined => (s === "nil" ? undefined : s);
 
@@ -288,7 +291,7 @@ function insertAtSplit(slot: Slot, citation: Node, n: number, regexp: RegExp): v
   const split = groupStart(m, n);
   const first = s.slice(0, split);
   // Trailing white spaces are taken off, as they are before the citation.
-  const last = s.slice(split).replace(/[ \t\n]+$/, "");
+  const last = s.slice(split).replace(/[\t\p{Zs}\n]+$/u, "");
   let at = slot.index + 1;
   if (nw(first)) {
     slot.list.splice(slot.index, 0, first);
@@ -368,23 +371,76 @@ function stripQuotes(s: string): string {
   return /^".*"$/s.test(s) ? s.slice(1, -1) : s;
 }
 
-/** The bibliography files the buffer names, then org-cite-global-bibliography's, as org-cite-list-bibliography-files. */
-export function listBibliographyFiles(): string[] {
-  const files: string[] = [];
-  for (const [, , text] of keywordLines()) {
-    const m = /^#\+BIBLIOGRAPHY:[ \t]*(.*?)[ \t]*$/i.exec(text);
-    if (m) files.push(stripQuotes(m[1]));
+/** A setup file's #+BIBLIOGRAPHY: values, each with the directory it is in, those of the setup files it names in their place. */
+function setupFileBibliographies(value: string, dir: string, seen: string[]): [string, string][] {
+  const file = e8.expandFileName(stripQuotes(value.trim()), dir);
+  if (seen.includes(file) || !e8.fileReadableP(file)) return [];
+  const name = e8.generateNewBufferName(" *temp*");
+  e8.getBufferCreate(name);
+  let text: string;
+  try {
+    text = e8.withCurrentBuffer(name, () => (e8.insertFileContents(file), e8.bufferText()));
+  } finally {
+    e8.call("kill-buffer", name);
   }
+  const here = e8.fileNameDirectory(file) ?? dir;
+  const out: [string, string][] = [];
+  for (const line of text.split("\n")) {
+    const m = /^[ \t]*#\+(BIBLIOGRAPHY|SETUPFILE):[ \t]*(.*?)[ \t]*$/i.exec(line);
+    if (!m) continue;
+    if (m[1].toUpperCase() === "BIBLIOGRAPHY") out.push([m[2], here]);
+    else out.push(...setupFileBibliographies(m[2], here, [...seen, file]));
+  }
+  return out;
+}
+
+/**
+ * The bibliography files the buffer names, then org-cite-global-bibliography's,
+ * as org-cite-list-bibliography-files: one a #+SETUPFILE in another
+ * directory names relative to it, made relative to the buffer's.
+ */
+export function listBibliographyFiles(): string[] {
+  const dir = String(e8.variable("default-directory") ?? "");
+  const pairs: [string, string][] = [];
+  for (const [line, , text] of keywordLines()) {
+    // A setup file's lines, which keywordLines gives without their directory, are read here.
+    if (line < 0) continue;
+    const m = /^#\+(BIBLIOGRAPHY|SETUPFILE):[ \t]*(.*?)[ \t]*$/i.exec(text);
+    if (!m) continue;
+    if (m[1].toUpperCase() === "BIBLIOGRAPHY") pairs.push([m[2], dir]);
+    else pairs.push(...setupFileBibliographies(m[2], dir, []));
+  }
+  const files = pairs.map(([value, d]) => {
+    const f = stripQuotes(value);
+    if (e8.fileNameAbsoluteP(f) || e8.expandFileName(d) === e8.expandFileName(dir)) return f;
+    return fileRelativeName(e8.expandFileName(f, d), dir);
+  });
   const global = v("org-cite-global-bibliography");
   if (Array.isArray(global)) for (const f of global) if (typeof f === "string") files.push(f);
   return [...new Set(files)];
 }
 
-/** A citation's references, or their keys, as org-cite-get-references. */
+/**
+ * A citation's references, or their keys, as org-cite-get-references: a
+ * citation found at point, whose references are not parsed, has them
+ * read from the buffer between its contents' ends.
+ */
 export function getReferences(citation: Node): Node[];
 export function getReferences(citation: Node, keysOnly: true): string[];
 export function getReferences(citation: Node, keysOnly = false): Node[] | string[] {
-  const refs = contents(citation).filter((c): c is Node => typeof c !== "string" && c.type === "citation-reference");
+  let refs = contents(citation).filter((c): c is Node => typeof c !== "string" && c.type === "citation-reference");
+  const [cb, ce] = [contentsBegin(citation), contentsEnd(citation)];
+  if (contents(citation).length === 0 && cb !== undefined && ce !== undefined) {
+    refs = parseSecondaryString(e8.bufferText(cb, ce), ["citation-reference"]).filter((c): c is Node => typeof c !== "string");
+    for (const ref of refs) {
+      map(ref, true, (x) => {
+        if (typeof x !== "string") for (const key of ["begin", "end", "contents-begin", "contents-end"]) if (typeof x.p[key] === "number") x.p[key] += cb;
+        return undefined;
+      });
+      ref.parent = citation;
+    }
+    citation.contents = refs;
+  }
   return keysOnly ? refs.map((r) => String(property("key", r))) : refs;
 }
 
@@ -509,18 +565,14 @@ function objectContainer(pos: number): [number, number] {
 }
 
 /**
- * The citation or citation reference at a position, as org-element-context
- * finds one: the reference whose text holds it, else the citation, with
- * the blanks after it.
+ * The citation or citation reference at a position, if Org's context
+ * there, as org-element-context finds it, is one: not in an example or
+ * source block, or other text with no objects; a reference's parent its
+ * citation.
  */
 export function citationContext(pos = e8.point()): Node | undefined {
-  const [start, end] = objectContainer(pos);
-  for (const cite of citationsIn(start, end)) {
-    if (pos < beginOf(cite)! || pos >= endOf(cite)!) continue;
-    for (const ref of getReferences(cite)) if (pos >= beginOf(ref)! && pos < endOf(ref)!) return ref;
-    return cite;
-  }
-  return undefined;
+  const context = objectAt(pos);
+  return context?.type === "citation" || context?.type === "citation-reference" ? context : undefined;
 }
 
 // Tools only available during export
@@ -691,8 +743,9 @@ export function adjustNote(citation: Node, info: Info, givenRule?: string[], giv
   let rule: (string | undefined)[] = givenRule ?? getNoteRule(info);
   const marks = givenPunct ?? (((v("org-cite-punctuation-marks") as string[] | null) ?? []) as string[]);
   const punctRe = regexpOpt(marks);
-  const previousPunctRe = new RegExp(`(?:([ \\t\\n]*(?:${punctRe})))?(?:[ \\t\\n]*("))?([ \\t\\n]+)?$`);
-  const nextPunctRe = new RegExp(`^([ \\t\\n]*(?:${punctRe}))`);
+  // Blanks as Emacs's [[:blank:]] has them, Unicode's spaces and the tab, and newlines.
+  const previousPunctRe = new RegExp(`(?:([\\t\\p{Zs}\\n]*(?:${punctRe})))?(?:[\\t\\p{Zs}\\n]*("))?([\\t\\p{Zs}\\n]+)?$`, "u");
+  const nextPunctRe = new RegExp(`^([\\t\\p{Zs}\\n]*(?:${punctRe}))`, "u");
   const nextAt = nextSlot(citation, info);
   const next = nextAt?.list[nextAt.index];
   let finalPunct = typeof next === "string" ? nextPunctRe.exec(next)?.[1] : undefined;
@@ -951,7 +1004,7 @@ export function processCitations(info: Info): void {
       const at = previousSlot(cite, info);
       const previous = at?.list[at.index];
       if (nw(previous) && (previous as string).endsWith('"')) setPreviousPostBlank(cite, 1, info);
-      if (typeof replacement === "string") insertBefore(rawString(replacement.trim() + " ".repeat(blanks)), cite);
+      if (typeof replacement === "string") insertBefore(rawString(orgTrim(replacement) + " ".repeat(blanks)), cite);
       else if (!Array.isArray(replacement)) {
         setNodePostBlank(replacement, blanks);
         insertBefore(replacement, cite);
@@ -1014,41 +1067,66 @@ export function follow(datum: Node, arg: e8.PrefixArg): void {
 
 // Inserting citations
 
-/** Whether a citation can be inserted at point, as org-cite--allowed-p judges Org's context there. */
+/** The keywords whose values Org parses, as org-element-parsed-keywords. */
+const PARSED_KEYWORDS = ["CAPTION"];
+
+/**
+ * Whether a citation can be inserted at point, as org-cite--allowed-p
+ * judges Org's context there: the object at point, as org-element-context
+ * finds it, else the element.
+ */
 function allowedP(): boolean {
   const pos = e8.point();
+  const object = objectAt(pos);
+  const found = elementAt(pos);
+  const element = found ? withAffiliated(found) : undefined;
   const bol = e8.lineStart(e8.lineOf(pos));
-  const line = e8.lineText(e8.lineOf(pos));
-  const before = e8.bufferText(bol, pos);
-  // Keywords: only parsed ones, as CAPTION.
-  if (/^[ \t]*#\+/.test(line)) return /^[ \t]*#\+(?:CAPTION):.*$/i.test(before);
-  // On a heading: after the stars, state and priority, before the tags.
-  const heading = /^(\*+ )(?:(\S+) )?(?:\[#.\] )?(.*?)([ \t]+:[\p{L}\p{N}_@#%:]+:)?[ \t]*$/u.exec(line);
-  if (heading && /^\*+ /.test(line)) {
+  const type = object?.type ?? element?.type;
+  // On an affiliated keyword: only in a parsed keyword's value.
+  if (!object && element?.postAffiliated !== undefined && pos < element.postAffiliated) {
+    return new RegExp(`^[ \\t]*#\\+(?:${PARSED_KEYWORDS.join("|")}):.*$`, "i").test(e8.bufferText(bol, pos));
+  }
+  // Paragraphs and blank lines at the top of the document.
+  if (type === undefined || type === "paragraph") return true;
+  // A verse block's contents.
+  if (!object && type === "verse-block") return pos >= (element!.contentsBegin ?? Infinity) && pos < (element!.contentsEnd ?? -Infinity);
+  // On a heading or inline task, its title, or the blank lines below it.
+  if (!object && (type === "headline" || type === "inlinetask")) {
+    const line = e8.lineText(e8.lineOf(pos));
+    if (!/^\*+ /.test(line)) return true;
     if (/^\*+ END[ \t]*$/i.test(line)) return false;
-    const titleStart = bol + heading[1].length;
-    const tagsStart = heading[4] !== undefined ? bol + line.length - heading[4].length - (line.length - line.trimEnd().length) : undefined;
-    return pos >= titleStart && (tagsStart === undefined || pos < tagsStart);
+    const h = parseHeading(e8.lineOf(pos));
+    if (!h) return false;
+    const from = h.title !== "" ? h.titleAt : h.priorityAt !== undefined ? h.priorityAt + 4 : h.todoAt !== undefined ? h.todoAt + h.todo!.length : h.start + h.level + 1;
+    return pos >= from && (h.tagsAt === undefined || pos < h.tagsAt);
   }
-  // Blocks and the like whose text is not Org's: not inside, except verse blocks.
-  for (let l = e8.lineOf(pos); l >= 0; l--) {
-    const t = e8.lineText(l);
-    const m = /^[ \t]*#\+(begin|end)_(\S+)/i.exec(t);
-    if (!m) continue;
-    if (m[1].toLowerCase() === "end") break;
-    return m[2].toLowerCase() === "verse" && l !== e8.lineOf(pos);
+  // White space after an object, or blank lines after an element.
+  const contextEnd = object ? endOf(object)! : element!.end;
+  let back = contextEnd;
+  while (back > e8.pointMin() && /[ \r\t\n]/.test(e8.bufferText(back - 1, back))) back--;
+  const after = object ? back : e8.lineOf(back) + 1 < e8.lineCount() ? e8.lineStart(e8.lineOf(back) + 1) : e8.pointMax();
+  if (pos >= after) return true;
+  // Right after a footnote definition's label.
+  if (!object && type === "footnote-definition") return /^\s/.test(e8.bufferText(pos, Math.min(pos + 1, e8.pointMax())));
+  // At the start of an item, after its bullet and checkbox.
+  if (!object && type === "item") {
+    const line = e8.lineText(e8.lineOf(element!.begin));
+    const indentation = /^[ \t]*/.exec(line)![0].replace(/\t/g, "        ").length;
+    const checkbox = /^[ \t]*(?:[-+*]|(?:[0-9]+|[A-Za-z])[.)])(?:[ \t]+\[@(?:start:)?(?:[0-9]+|[A-Za-z])\])?[ \t]+\[[ X-]\]/.test(line);
+    return pos > element!.begin + indentation + (checkbox ? 5 : 1);
   }
-  // A list item: after its bullet and checkbox.
-  const item = /^([ \t]*)([-+*]|\d+[.)]|[A-Za-z][.)])([ \t]+\[[ X-]\])?(?=[ \t]|$)/.exec(line);
-  if (item && !(item[2] === "*" && item[1] === "")) return pos > bol + item[1].length + (item[3] ? 5 : 1);
-  // A footnote definition: after its label.
-  const fn = /^\[fn:[^\]]+\]/.exec(line);
-  if (fn) return pos >= bol + fn[0].length && /^[ \t\n]/.test(e8.bufferText(pos, Math.min(pos + 1, e8.pointMax())) || "\n");
-  // Tables: in a cell.
-  if (/^[ \t]*\|/.test(line)) return pos > bol + line.indexOf("|");
-  // Fixed-width lines, drawers and property lines take no citations.
-  if (/^[ \t]*(?::(?: |$)|:\S+:)/.test(line)) return false;
-  return true;
+  // Other elements.
+  if (!object) return false;
+  // Just before an object.
+  if (pos === beginOf(object)) return true;
+  if (type === "link") return false;
+  if (type === "table-cell") {
+    let p = pos;
+    while (p > e8.pointMin() && /[ \t]/.test(e8.bufferText(p - 1, p))) p--;
+    return contentsEnd(object) !== undefined && p <= contentsEnd(object)!;
+  }
+  const [cb, ce] = [contentsBegin(object), contentsEnd(object)];
+  return cb !== undefined && ce !== undefined && pos >= cb && pos <= ce;
 }
 
 /** Inserts STRING and a semicolon before a reference, as org-cite--insert-string-before. */
