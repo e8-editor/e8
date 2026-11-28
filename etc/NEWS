@@ -8,6 +8,36 @@ A package that is a repository of its own keeps its news in a NEWS file
 of the same form, which 'C-h P' shows under its description.
 
 
+* Changes in E8 0.5.23
+
+** Org publishing.
+'M-x org-publish' and the export dispatcher's 'P' publish the
+projects of 'org-publish-project-alist' as Org 9.7 does: a directory
+of Org files published to HTML, plain text, Markdown or Org, or copied
+as they are, with a sitemap (':auto-sitemap'), a concept index from
+'#+INDEX:' (':makeindex'), links between the project's files to the
+headings they name, and meta-projects of ':components'.  Files
+unchanged since they were last published are skipped; 'C-u' or the
+dispatcher's 'C-f' publishes them all.  A project is written as Org's,
+a list of its name and then keys and values:
+["site", ":base-directory", "~/org", ":publishing-directory", "~/www"].
+
+** Org export to Org.
+'C-c C-e O' exports a buffer as Org, with the export's options, macros
+and '#+INCLUDE:' applied, and 'org-org-publish-to-org' publishes Org
+files that way.
+
+** iCalendar export.
+'C-c C-e c f' exports a buffer's deadlines, scheduled entries and
+timestamps as events, and its tasks as to-dos, to a '.ics' file that
+calendar programs read; 'c a' exports each agenda file and 'c c'
+combines them all in 'org-icalendar-combined-agenda-file'.  Writing the
+agenda to a '.ics' file ('C-x C-w') exports the entries it shows.
+Repeaters, alarms, categories, time zones and IDs carry over, as
+'org-icalendar-use-deadline', '-use-scheduled', '-include-todo' and
+the other options say.  Diary sexps make no events, as E8 has no Lisp.
+
+
 * Changes in E8 0.5.22
 
 ** Org export.
