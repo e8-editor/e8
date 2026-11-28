@@ -425,23 +425,28 @@ e8.defineCommand({
   run: async (arg: e8.PrefixArg) => {
     const buffer =
       arg === null ? "*shell*" : (await e8.readString("Shell buffer: ", { default: e8.generateNewBufferName("*shell*") })) || "*shell*";
-    const running = e8.getBufferProcess(buffer);
-    if (running === undefined || !e8.processLiveP(running)) {
-      const program = String(e8.variable("explicit-shell-file-name") ?? e8.getenv("ESHELL") ?? e8.variable("shell-file-name") ?? "/bin/sh");
-      const name = program.replace(/.*\//, "");
-      const explicit = e8.variable(`explicit-${name}-args`);
-      const args = Array.isArray(explicit) ? explicit.map(String) : ["-i"];
-      const startfile = [`~/.emacs_${name}`, `~/.emacs.d/init_${name}.sh`].map((f) => e8.expandFileName(f)).find((f) => e8.fileExistsP(f));
-      e8.getBufferCreate(buffer);
-      e8.withCurrentBuffer(buffer, () => {
-        e8.setVariable("shell--start-prog", name);
-        if (e8.variable("major-mode") !== "shell-mode") e8.call("shell-mode");
-      });
-      makeComintInBuffer("shell", buffer, program, startfile, ...args);
-    }
-    e8.call("switch-to-buffer", buffer);
+    startShell(buffer);
   },
 });
+
+/** Runs the shell in BUFFER unless it runs there already, and goes to it, as (shell BUFFER) does from Lisp. */
+export function startShell(buffer: string): void {
+  const running = e8.getBufferProcess(buffer);
+  if (running === undefined || !e8.processLiveP(running)) {
+    const program = String(e8.variable("explicit-shell-file-name") ?? e8.getenv("ESHELL") ?? e8.variable("shell-file-name") ?? "/bin/sh");
+    const name = program.replace(/.*\//, "");
+    const explicit = e8.variable(`explicit-${name}-args`);
+    const args = Array.isArray(explicit) ? explicit.map(String) : ["-i"];
+    const startfile = [`~/.emacs_${name}`, `~/.emacs.d/init_${name}.sh`].map((f) => e8.expandFileName(f)).find((f) => e8.fileExistsP(f));
+    e8.getBufferCreate(buffer);
+    e8.withCurrentBuffer(buffer, () => {
+      e8.setVariable("shell--start-prog", name);
+      if (e8.variable("major-mode") !== "shell-mode") e8.call("shell-mode");
+    });
+    makeComintInBuffer("shell", buffer, program, startfile, ...args);
+  }
+  e8.call("switch-to-buffer", buffer);
+}
 
 // Shell commands in the background, as simple.el's async-shell-command:
 // on a terminal, through comint's filter, in *Async Shell Command*.

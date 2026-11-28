@@ -233,6 +233,7 @@ const PACKAGES: &[(&str, &str)] = &[
     ("packages/org-src.ts", include_str!("../../../packages/org-src.ts")),
     ("packages/ob-core.ts", include_str!("../../../packages/ob-core.ts")),
     ("packages/ob-tangle.ts", include_str!("../../../packages/ob-tangle.ts")),
+    ("packages/ob-shell.ts", include_str!("../../../packages/ob-shell.ts")),
     // Org export's entry commands, which load ox.ts and its backends, as Emacs autoloads them.
     ("packages/org-loaddefs.ts", include_str!("../../../packages/org-loaddefs.ts")),
     // Preloaded for its commands, which Emacs autoloads.

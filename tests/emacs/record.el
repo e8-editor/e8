@@ -450,6 +450,10 @@ its `globals' bound for the case, before the modes start."
     (mapc #'require features)
     (prog1 (unwind-protect
                (cl-progv (mapcar #'car globals) (mapcar (lambda (g) (e8-oracle--value (cdr g))) globals)
+                 ;; Babel's languages load as customizing them loads them, which binding does not.
+                 (when (assq 'org-babel-load-languages globals)
+                   (require 'org)
+                   (org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages))
                  (e8-oracle--run-1 case))
              (dolist (f (reverse features))
                (when (featurep f)
@@ -552,10 +556,12 @@ its `globals' bound for the case, before the modes start."
       (setq org-stored-links nil org-link--insert-history nil))
     ;; A fresh set of buffers, as E8 starts each case with: only the
     ;; ones Emacs needs, whose names start with a space, and its own.
-    (dolist (b (buffer-list))
-      (unless (or (string-prefix-p " " (buffer-name b))
-                  (member (buffer-name b) '("*scratch*" "*Messages*")))
-        (kill-buffer b)))
+    ;; A shell an earlier case left running, as a Babel session, goes without asking.
+    (let ((kill-buffer-query-functions nil))
+      (dolist (b (buffer-list))
+        (unless (or (string-prefix-p " " (buffer-name b))
+                    (member (buffer-name b) '("*scratch*" "*Messages*")))
+          (kill-buffer b))))
     ;; In the same order whatever earlier cases did, as E8 lists them:
     ;; the case's buffer, then *Messages*, then *scratch*.
     (bury-buffer "*Messages*")

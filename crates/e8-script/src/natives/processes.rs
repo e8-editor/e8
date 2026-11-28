@@ -449,6 +449,15 @@ natives! {
         Ok(matches!(value, EditorValue::Process(_)))
     }
 
+    /// Ask, while an agent acts, the user's approval of an effect outside
+    /// the editor's buffers, as "run in the shell of *shell*: make", as
+    /// starting a program asks it: an error until the user allows it, and
+    /// nothing for the user's own commands. For code that sends a program
+    /// input that runs, as a Babel session's code.
+    pub fn checkPermission(ed, effect: String) {
+        ed.check_permission(&effect)
+    }
+
     /// Write to a process's input, encoded in its coding, as process-send-string.
     pub fn processSendString(ed, process: Proc, text: String) {
         let name = process.listed_name(ed)?;
@@ -484,12 +493,13 @@ natives! {
     /// the filters meanwhile, and timers run, but keys wait. Whether output came.
     #[ts = "(process?: ProcessLike, seconds?: number): boolean"]
     pub fn acceptProcessOutput(ed, process: Option<Proc>, seconds: Option<f64>) -> bool {
+        // The time the program takes is not the script's.
         match process {
             Some(p) => {
                 let id = p.id(ed)?;
-                ed.wait_for_process_output_id(Some(id), seconds)
+                waiting(|| ed.wait_for_process_output_id(Some(id), seconds))
             }
-            None => ed.wait_for_process_output_id(None, seconds),
+            None => waiting(|| ed.wait_for_process_output_id(None, seconds)),
         }
     }
 
@@ -643,7 +653,7 @@ natives! {
         }
         let delete = del.is_some_and(|d| d.is_true());
         let display = display_and_args.0.first().is_some_and(EditorValue::is_true);
-        let result = ed.call_process_region(input, delete, &command, &destination, display)?;
+        let result = waiting(|| ed.call_process_region(input, delete, &command, &destination, display))?;
         Ok((!result.is_nil()).then_some(result))
     }
 
@@ -1003,12 +1013,13 @@ natives! {
             command.push(text.to_string());
         }
         let display = display_and_args.0.first().is_some_and(EditorValue::is_true);
-        let result = ed.call_process_file(&command, infile.as_deref(), &destination, display)?;
+        // The time the program takes is not the script's.
+        let result = waiting(|| ed.call_process_file(&command, infile.as_deref(), &destination, display))?;
         Ok((!result.is_nil()).then_some(result))
     }
 
     fn callProcess(ed, command: Vec<String>, directory: Option<String>, input: Option<String>) -> Record {
-        let (code, output) = ed.call_process(&command, directory.as_deref(), input.as_deref())?;
+        let (code, output) = waiting(|| ed.call_process(&command, directory.as_deref(), input.as_deref()))?;
         Ok(Record::new().with("exit", code).with("output", output))
     }
 }

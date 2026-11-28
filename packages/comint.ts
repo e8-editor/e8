@@ -35,6 +35,7 @@ for (const [name, doc, value, local] of [
   ],
   ["comint-prompt-regexp", "An Emacs regexp matching the prompt, used when comint-use-prompt-regexp is true; it should start with ^.", "^", true],
   ["comint-last-output-start", "Where the program's last output starts, a marker.", null, true],
+  ["comint-input-filter", "A function of the input that says whether it goes into the input history; nil keeps all but blank input, as comint-nonblank-p.", null, true],
   [
     "comint-dynamic-complete-functions",
     "The functions comint-completion-at-point asks in turn what to complete at point, as completion-at-point-functions.",
@@ -265,7 +266,8 @@ export function outputFilter(process: e8.ProcessLike, text: string): void {
 
 /** Adds an input to the history unless it is only spaces, or the same as the last with comint-input-ignoredups. */
 function addToHistory(input: string): void {
-  if (/^\s*$/.test(input)) return;
+  const filter = e8.variable("comint-input-filter");
+  if (nil(filter) ? /^\s*$/.test(input) : nil(e8.funcall(filter as string, input))) return;
   const s = state();
   if (!nil(e8.variable("comint-input-ignoredups")) && s.ring[0] === input) return;
   s.ring.unshift(input);
