@@ -17,6 +17,10 @@ pub struct Case {
     pub keys: String,
     #[serde(default, skip_serializing_if = "is_zero")]
     pub point: usize,
+    /// Libraries to load first, as a config's require, such as
+    /// org-inlinetask; record.el unloads them after the case.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub require: Vec<String>,
     /// Modes to turn on before typing the keys.
     #[serde(default)]
     pub modes: Vec<String>,
@@ -109,6 +113,8 @@ pub struct Input {
     pub point: usize,
     pub keys: String,
     #[serde(default)]
+    pub require: Vec<String>,
+    #[serde(default)]
     pub modes: Vec<String>,
     #[serde(default)]
     pub call: Vec<String>,
@@ -154,6 +160,7 @@ impl Input {
             text: case.text.clone(),
             point: case.point,
             keys: case.keys.clone(),
+            require: case.require.clone(),
             modes: case.modes.clone(),
             call: case.call.clone(),
             platform: case.platform.clone(),
@@ -584,6 +591,11 @@ pub fn run(case: &Case) -> State {
     }
     // Export references numbered from 1, as record.el numbers Org's.
     ed.set_variable("e8--export-sequential-references", e8_core::Value::Bool(true));
+    // The libraries the case loads, before its globals, as record.el loads them.
+    for feature in &case.require {
+        let source = format!("e8.require({})", serde_json::to_string(feature).expect("a name"));
+        scripting.eval_expression(&mut ed, &source).unwrap_or_else(|e| panic!("{}: requiring {feature}: {e}", case.name));
+    }
     // HTML source blocks uncoloured, as batch Emacs without htmlize writes them and record.el binds it.
     ed.set_variable("org-html-htmlize-output-type", e8_core::Value::Bool(false));
     // Default values before the modes start, as record.el binds them.

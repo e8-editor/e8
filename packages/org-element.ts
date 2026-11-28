@@ -15,6 +15,7 @@ import {
   isBlank,
   isDone,
   isHeadingLine,
+  limitedHeadings,
   linkTypeEntries,
   moveSubtree,
   parseHeading,
@@ -37,7 +38,7 @@ import {
   writeStruct,
   bulletString,
 } from "org-list";
-import { lineAt, lineStartOrEnd } from "org-macs";
+import { inlinetaskStars, limitedStars, lineAt, lineStartOrEnd } from "org-macs";
 import { allMatches, charCount, escapeRegExp } from "subr";
 import { ALL_OBJECTS, type Datum, GREATER_ELEMENTS, isObject, type Node, RECURSIVE_OBJECTS } from "org-element-ast";
 import { entityGet } from "org-entities";
@@ -372,9 +373,10 @@ function parseFor(pos: number): Elem {
 }
 
 function parseWide(pos: number): Elem {
-  const all = headingsAsRead();
+  // Inline tasks, with org-inlinetask, are elements of the section they are in.
+  const all = limitedHeadings(headingsAsRead());
   const branch = headingIndex(all, lineAt(pos));
-  const key = `${e8.bufferName()}\n${allKeywords().join(" ")}\n${branch ?? -1}\n${listSyntaxKey()}`;
+  const key = `${e8.bufferName()}\n${allKeywords().join(" ")}\n${branch ?? -1}\n${listSyntaxKey()}\n${inlinetaskStars()}`;
   const tick = e8.bufferCharsModifiedTick();
   const [min, max] = [e8.pointMin(), e8.pointMax()];
   if (parseCache?.key === key && parseCache.tick !== tick && parseShifts && parseCache.shifted <= parseShifts.changes.length) {
@@ -629,6 +631,7 @@ function elementSettings(): ParseSettings {
     String(e8.defaultValue("org-plain-list-ordered-item-terminator")),
     String(e8.defaultValue("org-list-allow-alphabetical")),
     String(e8.variable("org-odd-levels-only")),
+    String(inlinetaskStars()),
   ].join("\0");
   if (lastElementSettings?.key !== key) lastElementSettings = { key, settings: settings("") };
   return lastElementSettings.settings;
@@ -957,6 +960,10 @@ interface ParseSettings {
   todoRe?: RegExp;
   done: Set<string>;
   odd: boolean;
+  /** The fewest stars an inline task has, with org-inlinetask loaded. */
+  inlinetask?: number;
+  /** The most stars a heading that ends a section has, as org-get-limited-outline-regexp: Infinity without org-inlinetask. */
+  limited: number;
   footnoteSection?: string;
   typesSource: string;
   plainRe: RegExp;
@@ -1163,6 +1170,8 @@ function settings(text: string): ParseSettings {
     todoRe,
     done,
     odd: on(e8.variable("org-odd-levels-only")),
+    inlinetask: inlinetaskStars(),
+    limited: limitedStars(),
     footnoteSection: typeof fs === "string" ? fs : undefined,
     typesSource: types,
     plainRe: new RegExp(plain, "yiu"),
@@ -1399,7 +1408,30 @@ function headlineParser(p: number, raw: boolean): Node {
   const end = next ? next.index : S.length;
   let cb: number | undefined = skipF(nextLine(p), BLANK_NL, end);
   cb = cb === end ? undefined : lbp(cb);
-  // The title, as org-element--headline-parse-title.
+  const n = node("headline", {
+    begin,
+    end,
+    "pre-blank": cb === undefined ? 0 : countLines(begin, cb) - 1,
+    "contents-begin": cb,
+    "contents-end": cb === undefined ? undefined : end,
+    "true-level": trueLevel,
+  });
+  headlineTitle(n, raw);
+  n.p["post-blank"] = cb !== undefined ? 0 : countLines(begin, end) - 1;
+  n.p["post-affiliated"] = begin;
+  Object.assign(n.p, timeProperties(begin));
+  const np = nodeProperties(begin, false);
+  if (np) Object.assign(n.p, np);
+  return n;
+}
+
+/**
+ * A headline's or an inline task's title and what its line says, as
+ * org-element--headline-parse-title puts them on the node.
+ */
+function headlineTitle(n: Node, raw: boolean): void {
+  const begin: number = n.p.begin;
+  const trueLevel = skipF(begin, "*") - begin;
   let q = skipF(begin + trueLevel, " \t");
   let todo: string | undefined;
   if (P.todoRe) {
@@ -1432,30 +1464,49 @@ function headlineParser(p: number, raw: boolean): Node {
   }
   const rawValue = trim(S.slice(titleStart, titleEnd));
   const props: { [name: string]: any } = {
-    begin,
-    end,
-    "pre-blank": cb === undefined ? 0 : countLines(begin, cb) - 1,
-    "contents-begin": cb,
-    "contents-end": cb === undefined ? undefined : end,
-    "true-level": trueLevel,
     "raw-value": rawValue,
     level: reducedLevel(trueLevel),
     priority,
     tags,
     "todo-keyword": todo,
     "todo-type": todo === undefined ? undefined : P.done.has(todo) ? "done" : "todo",
-    "post-blank": cb !== undefined ? 0 : countLines(begin, end) - 1,
     "footnote-section-p": P.footnoteSection !== undefined && P.footnoteSection === rawValue,
     archivedp: tags?.includes("ARCHIVE") ?? false,
     commentedp: commented,
-    "post-affiliated": begin,
   };
-  const n = node("headline", props);
-  n.p.title = raw ? rawValue : parseObjects(skipF(titleStart, " \t"), skipB(titleEnd, " \t"), undefined, restriction("headline"), n);
+  for (const k of Object.keys(props)) if (props[k] !== undefined && props[k] !== null && props[k] !== false) n.p[k] = props[k];
+  n.p.title = raw ? rawValue : parseObjects(skipF(titleStart, " \t"), skipB(titleEnd, " \t"), undefined, restriction(n.type), n);
   if (Array.isArray(n.p.title) && n.p.title.length === 0) delete n.p.title;
-  Object.assign(n.p, timeProperties(begin));
-  const np = nodeProperties(begin, false);
-  if (np) Object.assign(n.p, np);
+}
+
+/**
+ * An inline task, as org-element-inlinetask-parser: its heading line, and
+ * up to an END line of stars before limit, if there is one, what it holds;
+ * its planning and properties only then.
+ */
+function inlinetaskParser(p: number, limit: number, raw: boolean): Node {
+  const begin = p;
+  const next = search(re("^\\*+ ", "gm"), nextLine(p), limit);
+  const taskEnd = next && la(re("[ \\t]*END[ \\t]*$", "yim"), next.index + next[0].length) ? next.index : undefined;
+  const cb = taskEnd === undefined ? undefined : lbp(skipF(nextLine(begin), " \t\n"));
+  const ce = cb === undefined ? undefined : taskEnd;
+  const after = skipF(nextLine(taskEnd ?? begin), BLANK_NL, limit);
+  const end = after >= S.length ? after : lbp(after);
+  const n = node("inlinetask", {
+    begin,
+    end,
+    "pre-blank": cb === undefined ? 0 : countLines(begin, cb) - 1,
+    "contents-begin": cb,
+    "contents-end": ce,
+  });
+  headlineTitle(n, raw);
+  n.p["post-blank"] = countLines(taskEnd ?? begin, end) - 1;
+  n.p["post-affiliated"] = begin;
+  if (taskEnd !== undefined) {
+    Object.assign(n.p, timeProperties(begin));
+    const np = nodeProperties(begin, false);
+    if (np) Object.assign(n.p, np);
+  }
   return n;
 }
 
@@ -1630,8 +1681,14 @@ function propertyDrawerParser(p: number, limit: number): Node {
   });
 }
 
+/** The headings that end a section, as org-get-limited-outline-regexp with bol: not inline tasks. */
+function limitedHeadingRe(): RegExp {
+  if (P.limited === Infinity) return re("^\\*+ ", "gm");
+  return P.limited < 1 ? re("(?!)", "gm") : re(`^\\*{1,${P.limited}} `, "gm");
+}
+
 function sectionParser(p: number): Node {
-  const m = search(re("^\\*+ ", "gm"), p);
+  const m = search(limitedHeadingRe(), p);
   const end = m ? m.index : S.length;
   return node("section", { begin: p, end, "contents-begin": p, "contents-end": end, "post-blank": 0, "post-affiliated": p });
 }
@@ -2101,7 +2158,10 @@ function currentElement(p: number, limit: number, granularity: string | undefine
   if (mode === "item") return itemParser(p, limit, structure!, raw);
   if (mode === "table-row") return tableRowParser(p);
   if (mode === "node-property") return nodePropertyParser(p);
-  if (la(re("^\\*+ ", "ym"), p)) return headlineParser(p, raw);
+  // A heading line, an inline task's when org-inlinetask is loaded and it
+  // has enough stars, which is parsed further down, as Org's at-task?.
+  const atTask = la(re("^\\*+ ", "ym"), p) !== null;
+  if (atTask && (P.inlinetask === undefined || skipF(p, "*") - p < P.inlinetask)) return headlineParser(p, raw);
   if (mode === "section" || mode === "first-section") return sectionParser(p);
   if (la(re(RX.comment, "ym"), p)) return commentParser(p, limit);
   const prevStar = S[prevLine(p)] === "*";
@@ -2115,6 +2175,7 @@ function currentElement(p: number, limit: number, granularity: string | undefine
   if (drawerHere && la(re(RX.propertyDrawer, "yim"), p)) return propertyDrawerParser(p, limit);
   if (!bolp(p)) return paragraphParser(p, limit, { begin: p });
   if (la(re(RX.clockLine, "yim"), p)) return clockParser(p, limit);
+  if (atTask) return inlinetaskParser(p, limit, raw);
   const collected = collectAffiliated(p, limit, granularity === undefined || granularity === "object");
   const aff = collected.aff;
   p = collected.p;
@@ -2216,7 +2277,7 @@ let invisible: ((p: number) => number | undefined) | undefined;
 function parseElementsInto(beg: number, end: number, mode: Mode, structure: StructItem[] | undefined, granularity: string | undefined, acc: Node): void {
   let p = beg;
   if (granularity === "headline" && !la(re("^\\*+ ", "ym"), p)) {
-    const m = search(re("^\\*+ ", "gm"), bolp(p) && p < S.length ? p + 1 : p);
+    const m = search(limitedHeadingRe(), bolp(p) && p < S.length ? p + 1 : p);
     p = m ? m.index : S.length;
   }
   const elements: Node[] = [];
@@ -2993,6 +3054,7 @@ function bufferSettings(): ParseSettings {
     String(e8.variable("org-plain-list-ordered-item-terminator")),
     String(e8.variable("org-list-allow-alphabetical")),
     String(e8.variable("org-odd-levels-only")),
+    String(inlinetaskStars()),
   ].join("\0");
   if (lastSettings?.key !== key) lastSettings = { key, settings: settings(e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax())) };
   return lastSettings.settings;

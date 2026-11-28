@@ -7,7 +7,7 @@ import { bookmarkSet, jumpTo } from "bookmark";
 import { addLogNote, agendaFiles, alignTags, copySubtree, type Heading, headings, killIsSubtree, parseHeading, pasteSubtree, saveMarkersInRegion, subtreeRegion, validLevel } from "org";
 import { ancestors, showHeadingLine } from "org-fold";
 import { entryHeading } from "org-list";
-import { edDelete, lineAt, orgRegionActive } from "org-macs";
+import { edDelete, limitedStars, lineAt, orgRegionActive } from "org-macs";
 import { truthy } from "subr";
 
 const defvar = (name: string, value: e8.Value, doc: string) => e8.defineVariable({ name, value, doc });
@@ -562,13 +562,19 @@ export function refile(arg: e8.PrefixArg | null, defaultBuffer?: string, rfloc?:
     if (regionp) edDelete(back, Math.min(back + (end - start), e8.pointMax()));
     else {
       // The subtree point is in, from its heading, as org-back-to-heading and org-end-of-subtree find it.
+      // In an inline task, from the task to the end of the subtree it is in,
+      // as org-end-of-subtree goes to the end of the headline around it.
       const h = subtreeHeading();
       const all = headings();
-      const [s, e] = subtreeRegion(all, all.findIndex((x) => x.start === h.start));
+      let k = all.findIndex((x) => x.start === h.start);
+      while (k > 0 && all[k].level > limitedStars()) k--;
+      const [s, e] = [h.start, subtreeRegion(all, k)[1]];
       edDelete(s, e);
       e8.gotoChar(s);
     }
   }
+  // An inline task's END line left behind goes too, with org-inlinetask.
+  if (e8.fboundp("org-inlinetask-remove-END-maybe")) e8.funcall("org-inlinetask-remove-END-maybe");
   const file = t.file ?? e8.withCurrentBuffer(t.buffer, () => e8.bufferFileName() ?? t.buffer);
   e8.message(`${actionmsg} to "${name}" in file ${file}: done`);
 }

@@ -105,13 +105,19 @@
        (cases (json-read-file (expand-file-name "cases.json" e8-dump--dir)))
        (out nil))
   (dolist (case cases)
-    (with-temp-buffer
-      (insert (alist-get "text" case nil nil #'equal))
-      (org-mode)
-      (push `((name . ,(alist-get "name" case nil nil #'equal))
-              (tree . ,(e8-dump--node (org-element-parse-buffer)))
-              (interpreted . ,(org-element-interpret-data (org-element-parse-buffer))))
-            out)))
+    ;; The libraries a case loads first, as org-inlinetask, unloaded after it.
+    (let ((features (mapcar #'intern (alist-get "require" case nil nil #'equal))))
+      (mapc #'require features)
+      (unwind-protect
+          (with-temp-buffer
+            (insert (alist-get "text" case nil nil #'equal))
+            (org-mode)
+            (push `((name . ,(alist-get "name" case nil nil #'equal))
+                    (tree . ,(e8-dump--node (org-element-parse-buffer)))
+                    (interpreted . ,(org-element-interpret-data (org-element-parse-buffer))))
+                  out))
+        (dolist (f (reverse features))
+          (when (featurep f) (unload-feature f t))))))
   (let ((coding-system-for-write 'utf-8)
         (json-encoding-pretty-print nil))
     (with-temp-file (expand-file-name "golden.json" e8-dump--dir)

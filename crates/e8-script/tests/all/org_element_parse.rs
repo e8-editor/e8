@@ -210,7 +210,17 @@ fn the_parse_matches_emacs() {
         let name = case["name"].as_str().unwrap();
         let text = case["text"].as_str().unwrap();
         let want = golden.iter().find(|g| g["name"] == name).unwrap_or_else(|| panic!("{name}: not recorded; run emacs -Q --batch -l tests/emacs/org-element/dump.el"));
-        let (tree, interpreted) = parse(&mut ed, &s, n, text);
+        // A case that loads libraries, as org-inlinetask, in an editor of its own, as dump.el unloads them after it.
+        let required: Vec<&str> = case["require"].as_array().map(|r| r.iter().filter_map(|f| f.as_str()).collect()).unwrap_or_default();
+        let (tree, interpreted) = if required.is_empty() {
+            parse(&mut ed, &s, n, text)
+        } else {
+            let (mut ed, s) = setup();
+            for feature in required {
+                s.eval_expression(&mut ed, &format!("e8.require({})", serde_json::to_string(feature).unwrap())).unwrap();
+            }
+            parse(&mut ed, &s, n, text)
+        };
         if let Some(d) = first_difference("", &tree, &want["tree"]) {
             failures.push(format!("{name}: tree differs at {d}"));
         }

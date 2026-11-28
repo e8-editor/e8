@@ -8,9 +8,11 @@ import {
   allKeywords,
   type Heading,
   headingIndex,
+  inlinetaskOrHeading,
   headings,
   isBlank,
   isHeadingLine,
+  limitedHeadings,
   moveToColumn,
   parseHeading,
   setTodo,
@@ -22,6 +24,7 @@ import {
   dropMarker,
   edDelete,
   edInsert,
+  inlinetaskStars,
   lastingMarker,
   lineAt,
   lineStartOrEnd,
@@ -292,7 +295,8 @@ export function indentLineTo(line: number, col: number): void {
  */
 function listContext(line: number): { up: number; down: number; type?: string } {
   const pos = e8.lineStart(line);
-  const all = headings();
+  // Between headings that are not inline tasks, as Org's with limited levels.
+  const all = limitedHeadings();
   const h = headingIndex(all, line);
   // Within the narrowing, as org-list-context bounds the list by point-min and point-max.
   let up = h === undefined ? e8.pointMin() : all[h].start;
@@ -348,6 +352,27 @@ function listContext(line: number): { up: number; down: number; type?: string } 
       }
     }
   }
+  // Inside an inline task, with org-inlinetask: between its heading and its END line.
+  const stars = inlinetaskStars();
+  if (stars !== undefined && !/^\*/.test(text)) {
+    const task = new RegExp(`^\\*{${stars},}[ \\t]+`);
+    const end = new RegExp(`^\\*{${stars},}[ \\t]+END[ \\t]*$`, "i");
+    let beg: number | undefined;
+    for (let l = line - 1; l >= 0 && e8.lineStart(l) >= up; l--) {
+      if (task.test(e8.lineText(l))) {
+        beg = l;
+        break;
+      }
+    }
+    if (beg !== undefined && !end.test(e8.lineText(beg))) {
+      for (let l = beg + 1; l < e8.lineCount() && e8.lineEnd(l) <= down; l++) {
+        if (end.test(e8.lineText(l))) {
+          if (l > line) [up, down, type] = [e8.lineStart(beg + 1), e8.lineStart(l) - 1, "inlinetask"];
+          break;
+        }
+      }
+    }
+  }
   return { up, down, type };
 }
 
@@ -378,12 +403,37 @@ export function itemLine(line: number): boolean {
   return e?.type === "plain-list" || e?.type === "item";
 }
 
+/** Whether a line is an inline task's heading or END line, with org-inlinetask, as org-inlinetask-outline-regexp matches it. */
+function taskLine(text: string): boolean {
+  const stars = inlinetaskStars();
+  return stars !== undefined && new RegExp(`^\\*{${stars},}[ \\t]+`).test(text);
+}
+
+/** The line the inline task on `line` starts on, as org-inlinetask-goto-beginning goes. */
+function taskStart(line: number): number {
+  return e8.saveExcursion(() => {
+    e8.gotoChar(e8.lineStart(line));
+    e8.funcall("org-inlinetask-goto-beginning");
+    return lineAt();
+  });
+}
+
+/** The line after the inline task on `line`, as org-inlinetask-goto-end goes. */
+function taskEnd(line: number): number {
+  return e8.saveExcursion(() => {
+    e8.gotoChar(e8.lineStart(line));
+    const end = Number(e8.funcall("org-inlinetask-goto-end"));
+    return end >= e8.bufferSize() && e8.lineStart(lineAt(end)) !== end ? e8.lineCount() : lineAt(end);
+  });
+}
+
 /** The start of the item a line is in, if any, as org-in-item-p finds it. */
 export function inItem(line: number): number | undefined {
   const ctx = listContext(line);
   if (ctx.type === "invalid") return undefined;
   if (ITEM_RE.test(e8.lineText(line))) return e8.lineStart(line);
-  let indRef = isBlank(e8.lineText(line)) ? 10000 : textIndentation(e8.lineText(line));
+  // Indentation means nothing on a blank line or an inline task's.
+  let indRef = isBlank(e8.lineText(line)) || taskLine(e8.lineText(line)) ? 10000 : textIndentation(e8.lineText(line));
   let l = line;
   // Between the two blank lines that end a list, start from the first.
   if (l > 0 && atListEnd(l - 1)) l -= 2;
@@ -410,6 +460,10 @@ export function inItem(line: number): number | undefined {
         l = k;
         continue;
       }
+    }
+    if (taskLine(text)) {
+      l = taskStart(l) - 1;
+      continue;
     }
     if (isBlank(text)) {
       l--;
@@ -534,6 +588,10 @@ export function listStruct(line: number, ctx: { up: number; down: number; type?:
         continue;
       }
     }
+    if (taskLine(text)) {
+      l = taskStart(l) - 1;
+      continue;
+    }
     if (isBlank(text)) {
       l--;
       continue;
@@ -570,6 +628,11 @@ export function listStruct(line: number, ctx: { up: number; down: number; type?:
       itmLst2.unshift(readItem(l, ind));
       endLst2.unshift([ind, pos]);
       l++;
+      continue;
+    }
+    // Inline tasks are passed over, with org-inlinetask.
+    if (taskLine(text)) {
+      l = taskEnd(l);
       continue;
     }
     if (isBlank(text)) {
@@ -920,7 +983,9 @@ export function applyStruct(struct: Struct, old: Struct): void {
     let l = lineAt(q);
     while (e8.lineStart(l) > beg || (e8.lineStart(l) === beg && !ITEM_RE.test(e8.lineText(l)))) {
       const text = e8.lineText(l);
-      if (/^[ \t]*\S/.test(text)) indentLineTo(l, textIndentation(text) + delta);
+      // An inline task is passed over, from its END line to its heading, with org-inlinetask.
+      if (taskLine(text)) l = taskStart(l);
+      else if (/^[ \t]*\S/.test(text)) indentLineTo(l, textIndentation(text) + delta);
       if (l === 0) break;
       l--;
     }
@@ -1858,7 +1923,9 @@ const SPECIAL_PROPERTIES = [
 /** The heading whose entry point is in, as org-back-to-heading with invisible-ok finds it. */
 export function entryHeading(): Heading | undefined {
   const all = headings();
-  const i = headingIndex(all, lineAt());
+  const i = inlinetaskOrHeading(all, headingIndex(all, lineAt()));
+  // Before the first heading that is not an inline task, the file's, even in a task, as org-before-first-heading-p.
+  if (i !== undefined && headingIndex(limitedHeadings(all), lineAt()) === undefined) return undefined;
   return i === undefined ? undefined : all[i];
 }
 

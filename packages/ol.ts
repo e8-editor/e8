@@ -5,7 +5,7 @@
 import { filenameAt } from "dired";
 import { fileRelativeName } from "files";
 import { browseUrl } from "browse-url";
-import { ANGLE_LINK, at, COOKIE, entryEnd, type Heading, headingIndex, headings, LINK, linkSetParameters, linkTypeEntries, PLAIN_LINK, plistGet } from "org";
+import { ANGLE_LINK, at, COOKIE, entryEnd, type Heading, headingIndex, headings, inlinetaskOrHeading, LINK, linkSetParameters, linkTypeEntries, PLAIN_LINK, plistGet } from "org";
 import { AFFILIATED, elementAt } from "org-element";
 import { flag, folded } from "org-fold";
 import { entryGet } from "org-list";
@@ -273,7 +273,7 @@ export function linkPreciseTarget(): [string, string | null, number] | undefined
   } else if (e8.derivedModeP("org-mode")) {
     const named = elementName(e8.point());
     const all = headings();
-    const i = headingIndex(all, lineAt());
+    const i = inlinetaskOrHeading(all, headingIndex(all, lineAt()));
     if (named) result = [named.name, named.name, named.begin];
     else if (i === undefined) result = [normalizeString(lineString(), true), null, e8.lineStart(lineAt())];
     else {
@@ -450,7 +450,7 @@ export function storeLink(arg: e8.Value | undefined, interactive: boolean): e8.V
     // In Org, a human-readable link by CUSTOM_ID too.
     if (baseFileName() !== undefined && e8.derivedModeP("org-mode")) {
       const all = headings();
-      const i = headingIndex(all, lineAt());
+      const i = inlinetaskOrHeading(all, headingIndex(all, lineAt()));
       if (i !== undefined && entryGet(all[i].line, "CUSTOM_ID") !== undefined) {
         const [l, d] = fileLinkToHere();
         const first = storedLinks()[0];
