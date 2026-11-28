@@ -10,7 +10,7 @@ import { ALL_ELEMENTS, ALL_OBJECTS, type Datum, type Node, ancestor, contents as
 import { interpretData, normalizeString } from "org-element";
 import { EXPORT_PARAMS } from "org-loaddefs";
 import { browseUrl } from "browse-url";
-import { htmlizeRegion } from "htmlize";
+import { htmlizeRegion, placesText } from "htmlize";
 import { langMode } from "org-src";
 import { eraseBuffer } from "subr";
 import { fileRelativeName as publishFileRelativeName, plistGet, publishOrgTo, resolveExternalLink as publishResolveExternalLink } from "ox-publish";
@@ -530,11 +530,7 @@ export function htmlizeRegionForPaste(start: number, end: number, fontified = fa
   return e8.letBind(bindings, () => {
     const html = htmlizeRegion(start, end, { fontified });
     try {
-      return e8.withCurrentBuffer(html, () => {
-        const places = e8.variable("htmlize-buffer-places") as e8.Value[];
-        const at = (place: string) => Number(places[places.findIndex((p) => typeof p === "symbol" && e8.symbolName(p) === place) + 1]);
-        return e8.bufferSubstringNoProperties(at("content-start"), at("content-end"));
-      });
+      return placesText(html, "content-start", "content-end");
     } finally {
       e8.call("kill-buffer", html);
     }
@@ -568,7 +564,10 @@ export function fontifyCode(code: string | undefined, lang?: string): string | u
         // No face on the newlines, so that no span goes on to the next line.
         let p = e8.pointMin();
         for (const ch of code) {
-          if (ch === "\n") e8.putTextProperty(p, p + 1, "face", null);
+          if (ch === "\n") {
+            e8.putTextProperty(p, p + 1, "face", null);
+            e8.putTextProperty(p, p + 1, "font-lock-face", null);
+          }
           p++;
         }
         e8.setBufferModified(false);

@@ -20492,10 +20492,6 @@ declare global {
        */
       "auto-revert-tail-mode-on-hook": Value;
       /**
-       * Run in the current buffer before auto-saving the buffers that changed.
-       */
-      "auto-save-hook": Value;
-      /**
        * Run after entering Bash mode, after the hooks of the modes it is built on.
        */
       "bash-ts-mode-hook": Value;

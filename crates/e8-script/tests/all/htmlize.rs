@@ -43,15 +43,20 @@ impl Session {
         ))
     }
 
-    /// A face's foreground as htmlize writes it: the colour E8 draws, as #rrggbb, laid over the default background if translucent.
+    /// A face's foreground as htmlize writes it by default: the colour E8 draws on a light background, as #rrggbb, laid over the default background if translucent.
     fn color(&mut self, face: &str) -> String {
+        self.color_on(face, "light")
+    }
+
+    /// A face's foreground as htmlize writes it on a background, "light" or "dark".
+    fn color_on(&mut self, face: &str, background: &str) -> String {
         self.string(&format!(
-            r##"(() => {{
+            r##"e8.letBind({{ "frame-background-mode": {background:?} }}, () => {{
               const hex = (bs: number[]) => "#" + bs.map((v) => Math.round(v).toString(16).padStart(2, "0")).join("");
               const [r, g, b, a] = e8.colorRgba(String(e8.faceAttribute({face:?}, ":foreground", true)))!;
               const bg = e8.colorRgba("bg")!;
               return hex([r, g, b].map((c, i) => (c * a + bg[i] * (255 - a)) / 255));
-            }})()"##
+            }})"##
         ))
     }
 }
@@ -195,4 +200,89 @@ fn a_projects_htmlized_css_url_is_linked_from_html_with_css_classes() {
     s.ed.set_variable("org-html-htmlize-output-type", Value::Str("inline-css".into()));
     s.eval(r#"(e8.call("org-publish", "p", true), 0)"#);
     assert!(!std::fs::read_to_string(root.join("out/a.html")).unwrap().contains("code.css"));
+}
+
+// --- From the review ---------------------------------------------------------------
+
+#[test]
+fn a_region_keeps_the_context_of_the_buffer_around_it() {
+    // const, b and 1 are inside a comment that starts before the region.
+    let mut s = session("/* a\nconst b = 1; */\nlet z;\n", "typescript-ts-mode");
+    let comment = s.color("font-lock-comment-face");
+    let html = s.string(r#"(e8.require("htmlize"), e8.funcall("htmlize-region-for-paste", 5, 19) as string)"#);
+    assert_eq!(html, format!("<pre>\n<span style=\"color: {comment}; font-style: italic;\">const b = 1; *</span></pre>"));
+    // Org's goes through the same, with its own output type.
+    s.ed.set_variable("org-html-htmlize-output-type", Value::Str("css".into()));
+    let html = s.string(r#"(e8.require("ox-html"), e8.funcall("org-html-htmlize-region-for-paste", 5, 19) as string)"#);
+    assert_eq!(html, "<pre>\n<span class=\"org-comment\">const b = 1; *</span></pre>");
+}
+
+#[test]
+fn colours_are_the_light_backgrounds_unless_htmlize_background_mode_says_otherwise() {
+    // Headless E8 has a dark background, but a page, and Org's style sheet, are light.
+    let mut s = session(BLOCK, "org-mode");
+    let (light, dark) = (s.color_on("font-lock-keyword-face", "light"), s.color_on("font-lock-keyword-face", "dark"));
+    assert_ne!(light, dark);
+    assert!(s.export(true, "null").contains(&format!(r#"<span style="color: {light};">const</span>"#)));
+    s.ed.set_variable("htmlize-background-mode", Value::Bool(false));
+    assert!(s.export(true, "null").contains(&format!(r#"<span style="color: {dark};">const</span>"#)));
+    s.ed.set_variable("htmlize-background-mode", Value::Str("dark".into()));
+    s.ed.set_variable("frame-background-mode", Value::Str("light".into()));
+    assert!(s.export(true, "null").contains(&format!(r#"<span style="color: {dark};">const</span>"#)));
+}
+
+#[test]
+fn text_with_no_face_takes_its_font_lock_face() {
+    let mut s = session("ls\nout\n", "fundamental-mode");
+    let name = s.name.clone();
+    let html = s.string(&format!(
+        r#"(e8.require("htmlize"), e8.withCurrentBuffer({name:?}, () => {{ e8.putTextProperty(3, 6, "font-lock-face", "font-lock-keyword-face"); e8.putTextProperty(0, 2, "face", "bold"); e8.putTextProperty(0, 2, "font-lock-face", "italic"); e8.call("htmlize-buffer"); }}), e8.withCurrentBuffer("*html*", () => e8.bufferText()))"#
+    ));
+    // face wins over font-lock-face where both are.
+    assert!(html.contains("<pre>\n<span class=\"bold\">ls</span>\n<span class=\"keyword\">out</span>\n</pre>"), "{html}");
+}
+
+#[test]
+fn anonymous_faces_of_different_heights_are_different_classes() {
+    let mut s = session("ab\n", "fundamental-mode");
+    let name = s.name.clone();
+    let html = s.string(&format!(
+        r#"(e8.require("htmlize"), e8.withCurrentBuffer({name:?}, () => {{ e8.putTextProperty(0, 1, "face", [":height", {{ factor: 2 }}]); e8.putTextProperty(1, 2, "face", [":height", {{ factor: 3 }}]); e8.call("htmlize-buffer"); }}), e8.withCurrentBuffer("*html*", () => e8.bufferText()))"#
+    ));
+    assert!(html.contains("      .custom {\n        /* (:height 2.0) */\n        font-size: 200%;\n      }\n"), "{html}");
+    assert!(html.contains("      .custom-1 {\n        /* (:height 3.0) */\n        font-size: 300%;\n      }\n"), "{html}");
+    assert!(html.contains("<pre>\n<span class=\"custom\">a</span><span class=\"custom-1\">b</span>\n</pre>"), "{html}");
+}
+
+#[test]
+fn htmlize_buffer_takes_only_the_accessible_text() {
+    let mut s = session("let a;\nlet b;\n", "typescript-ts-mode");
+    let name = s.name.clone();
+    let html = s.string(&format!(
+        r#"(e8.require("htmlize"), e8.withCurrentBuffer({name:?}, () => {{ e8.narrowToRegion(7, 14); e8.call("htmlize-buffer"); }}), e8.withCurrentBuffer("*html*", () => e8.bufferText()))"#
+    ));
+    assert!(html.contains("<pre>\n<span class=\"keyword\">let</span> <span class=\"variable-name\">b</span>;\n</pre>"), "{html}");
+    // The buffer stays narrowed.
+    assert_eq!(s.eval(&format!("e8.withCurrentBuffer({name:?}, () => e8.pointMin())")), serde_json::json!(7));
+}
+
+#[test]
+fn region_for_paste_runs_the_html_buffers_hook() {
+    let mut s = session("x\n", "fundamental-mode");
+    let ran = s.eval(r#"(e8.require("htmlize"), e8.setDefault("e8-test-ran", false), e8.addHook("htmlize-after-hook", () => e8.setDefault("e8-test-ran", e8.bufferName())), e8.funcall("htmlize-region-for-paste", 0, 1), e8.defaultValue("e8-test-ran"))"#);
+    assert_eq!(ran, serde_json::json!("*html*"));
+    // The buffer is gone afterwards.
+    assert_eq!(s.eval(r#"e8.getBuffer("*html*") === undefined"#), serde_json::json!(true));
+}
+
+#[test]
+fn shell_blocks_are_in_sh_mode_as_org_maps_them() {
+    let mut s = session("#+begin_src zsh\nif true; then x=1; fi\n#+end_src\n", "org-mode");
+    let modes = s.eval(r#"["zsh", "ksh", "csh", "dash", "fish", "bash"].map((l) => ((e8.variable("org-src-lang-modes") as e8.Value[][]).find((e) => e[0] === l) ?? [l, null])[1])"#);
+    // fish is a shell Babel knows but sh-ancestor-alist does not, so Org gives it fish-mode.
+    assert_eq!(modes, serde_json::json!(["sh", "sh", "sh", "sh", null, "sh"]));
+    // Its block is fontified in sh-mode, E8's bash-ts-mode, as a bash block is; the test build has no Bash grammar to colour either.
+    let zsh = s.export(true, "null");
+    let mut bash = session("#+begin_src bash\nif true; then x=1; fi\n#+end_src\n", "org-mode");
+    assert_eq!(zsh, bash.export(true, "null").replace("src-bash", "src-zsh"));
 }

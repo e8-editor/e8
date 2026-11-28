@@ -47,6 +47,11 @@ defvar("htmlize-pre-style", null, "Whether the <pre> holding the text gets the d
 defvar("htmlize-ellipsis", "...", "What stands for invisible text that shows as an ellipsis.");
 defvar("htmlize-html-major-mode", null, "The major mode the HTML buffer is put in; nil leaves it in Fundamental mode.");
 defvar(
+  "htmlize-background-mode",
+  S("light"),
+  "The background whose colours faces are written in: light, as a page and Org's style sheet are, or dark; nil takes the frame's, as frame-background-mode says. E8's own: htmlize takes the frame's, which in emacs -Q is light, where E8's is dark without a front end to say.",
+);
+defvar(
   "htmlize-buffer-places",
   null,
   "Where the parts of an HTML buffer htmlize made start and end, as a plist: head-start, head-end, body-start, content-start, content-end and body-end.",
@@ -264,10 +269,27 @@ function faceToFstruct(face: Face): FStruct {
   return fs;
 }
 
+/** The attributes whose values are symbols in Lisp, so printed without quotes. */
+const SYMBOL_VALUED = new Set([":weight", ":slant", ":width", ":inherit"]);
+
+/** A value as Lisp prints it: a factor height as a float, 3.0, strings quoted, symbols and keywords bare. */
+function prin1Value(v: unknown, bare = false): string {
+  if (v === true) return "t";
+  if (v === false || v === null || v === undefined) return "nil";
+  if (typeof v === "symbol") return e8.symbolName(v);
+  if (typeof v === "number") return String(v);
+  if (typeof v === "string") return bare || v.startsWith(":") ? v : `"${v.replace(/[\\"]/g, (c) => `\\${c}`)}"`;
+  if (Array.isArray(v)) return "(" + v.map((x, i) => prin1Value(x, i > 0 && typeof v[i - 1] === "string" && SYMBOL_VALUED.has(v[i - 1] as string))).join(" ") + ")";
+  if (typeof v === "object" && typeof (v as { factor?: unknown }).factor === "number") {
+    const factor = (v as { factor: number }).factor;
+    return Number.isInteger(factor) ? `${factor}.0` : String(factor);
+  }
+  return String(v);
+}
+
 /** A face written as Lisp prints it, for a style sheet's comments and as a key. */
 function prin1(face: Face): string {
-  if (typeof face === "string") return face;
-  return "(" + face.map((v) => (typeof v === "string" && !v.startsWith(":") ? JSON.stringify(v) : nameOf(v))).join(" ") + ")";
+  return typeof face === "string" ? face : prin1Value(face);
 }
 
 /** The faces a face property names, as htmlize-decode-face-prop: names of faces that exist, attribute lists, or lists of these. */
@@ -378,12 +400,17 @@ function defangLocalVariables(html: string): string {
 }
 
 /**
- * The faces tree-sitter gives the text from start to end, read from a
- * copy of it in a buffer of the same mode, as the syntax tree's faces
- * are not text properties: one face or none per character.
+ * The faces tree-sitter gives the text from start to end, one face or
+ * none per character, as the syntax tree's faces are not text
+ * properties. They are read from a copy of the whole buffer, widened, in
+ * a buffer of the same mode, so that text in a region keeps its context,
+ * as font-lock's widening keeps it: a region inside a comment is comment.
  */
 function syntaxFaces(start: number, end: number): (string | undefined)[] {
-  const text = e8.bufferSubstringNoProperties(start, end);
+  const text = e8.saveRestriction(() => {
+    e8.call("widen");
+    return e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax());
+  });
   const mode = String(e8.variable("major-mode"));
   const name = e8.generateNewBufferName(" *htmlize syntax*");
   e8.getBufferCreate(name);
@@ -392,14 +419,13 @@ function syntaxFaces(start: number, end: number): (string | undefined)[] {
       e8.bufferDisableUndo();
       e8.call(mode as e8.CommandName);
       e8.insert(text);
-      const size = e8.pointMax();
-      const faces: (string | undefined)[] = new Array(size).fill(undefined);
+      const faces: (string | undefined)[] = new Array(end - start).fill(undefined);
       if (e8.treesitLanguage() === undefined) return faces;
-      e8.treesitFontLockFontifyRegion(0, size);
-      for (let p = 0; p < size; ) {
-        const next = Math.min(e8.nextSinglePropertyChange(p, "face", size) ?? size, size);
+      e8.treesitFontLockFontifyRegion(start, end);
+      for (let p = start; p < end; ) {
+        const next = Math.min(e8.nextSinglePropertyChange(p, "face", end) ?? end, end);
         const face = e8.getTextProperty(p, "face");
-        if (typeof face === "string") for (let i = p; i < next; i++) faces[i] = face;
+        if (typeof face === "string") for (let i = p; i < next; i++) faces[i - start] = face;
         p = next;
       }
       return faces;
@@ -409,9 +435,15 @@ function syntaxFaces(start: number, end: number): (string | undefined)[] {
   }
 }
 
-/** The faces at a position, as htmlize-faces-at-point: the text's, the most specific last, then the overlays'. */
+/**
+ * The faces at a position, as htmlize-faces-at-point: the text's, the
+ * most specific last, then the overlays'. Text with no face takes its
+ * font-lock-face, as char-property-alias-alist makes it in Emacs and E8
+ * draws it.
+ */
 function facesAt(pos: number, syntax: string | undefined): Face[] {
-  const faces = decodeFaceProp(e8.getTextProperty(pos, "face")).reverse();
+  const own = e8.getTextProperty(pos, "face");
+  const faces = decodeFaceProp(own === undefined ? e8.getTextProperty(pos, "font-lock-face") : own).reverse();
   // The syntax tree's face lies under the text's own, as redisplay draws them.
   if (syntax !== undefined && e8.facep(syntax)) faces.unshift(syntax);
   const overlays = e8
@@ -464,8 +496,15 @@ export interface Htmlized {
  * htmlize-buffer-1 writes it, without making its buffer. With `fontified`,
  * the text's face properties are taken as they are: nothing is fontified,
  * nor tree-sitter's faces read, as Org's export has already put them.
+ * Faces' colours are those for htmlize-background-mode's background.
  */
 export function htmlizeAccessible(options: { fontified?: boolean } = {}): Htmlized {
+  const mode = e8.variable("htmlize-background-mode");
+  if (!nonNil(mode)) return htmlizeAccessible1(options);
+  return e8.letBind({ "frame-background-mode": nameOf(mode) }, () => htmlizeAccessible1(options));
+}
+
+function htmlizeAccessible1(options: { fontified?: boolean }): Htmlized {
   e8.saveExcursion(() => e8.runHooks("htmlize-before-hook"));
   const type = outputType() ?? "css";
   const start = e8.pointMin();
@@ -590,12 +629,21 @@ function htmlBuffer(htmlized: Htmlized): string {
 
 // --- Commands and functions -------------------------------------------------------
 
-/** The current buffer, or another, as HTML in a buffer of its own, as htmlize-buffer; returns its name. */
+/** The accessible part of the current buffer, or another's, as HTML in a buffer of its own, as htmlize-buffer; returns its name. */
 export function htmlizeBuffer(buffer?: e8.BufferLike): string {
-  return e8.withCurrentBuffer(buffer ?? e8.bufferName(), () => e8.saveRestriction(() => {
-    e8.call("widen");
-    return htmlBuffer(htmlizeAccessible());
-  }));
+  return e8.withCurrentBuffer(buffer ?? e8.bufferName(), () => htmlBuffer(htmlizeAccessible()));
+}
+
+/** The text between two of htmlize-buffer-places in an HTML buffer htmlize made, as content-start and content-end. */
+export function placesText(html: string, from: string, to: string): string {
+  return e8.withCurrentBuffer(html, () => {
+    const places = e8.variable("htmlize-buffer-places");
+    const at = (place: string) => {
+      const list = Array.isArray(places) ? places : [];
+      return Number(list[list.findIndex((p) => typeof p === "symbol" && e8.symbolName(p) === place) + 1]);
+    };
+    return e8.bufferSubstringNoProperties(at(from), at(to));
+  });
 }
 
 /** The text from start to end as HTML in a buffer of its own, as htmlize-region; returns its name. */
@@ -609,11 +657,13 @@ export function htmlizeRegion(start: number, end: number, options: { fontified?:
 /** The text from start to end as HTML: its <pre> and what it holds, with inline CSS, as htmlize-region-for-paste. */
 export function htmlizeRegionForPaste(start: number, end: number): string {
   return e8.letBind({ "htmlize-output-type": S("inline-css") }, () => {
-    const { html, places } = e8.saveRestriction(() => {
-      e8.narrowToRegion(Math.min(start, end), Math.max(start, end));
-      return htmlizeAccessible();
-    });
-    return Array.from(html).slice(places["content-start"], places["content-end"]).join("");
+    // Through a buffer of its own, as htmlize's goes through htmlize-region, so its mode and htmlize-after-hook run.
+    const html = htmlizeRegion(start, end);
+    try {
+      return placesText(html, "content-start", "content-end");
+    } finally {
+      e8.call("kill-buffer", html);
+    }
   });
 }
 
