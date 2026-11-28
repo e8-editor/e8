@@ -572,6 +572,8 @@ export function refile(arg: e8.PrefixArg | null, defaultBuffer?: string, rfloc?:
       e8.gotoChar(s);
     }
   }
+  // An inline task's END line left behind goes too, with org-inlinetask.
+  if (e8.fboundp("org-inlinetask-remove-END-maybe")) e8.funcall("org-inlinetask-remove-END-maybe");
   const file = t.file ?? e8.withCurrentBuffer(t.buffer, () => e8.bufferFileName() ?? t.buffer);
   e8.message(`${actionmsg} to "${name}" in file ${file}: done`);
 }

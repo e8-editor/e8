@@ -1,0 +1,2494 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "inlinetask-metadown-drags-the-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 23,
+        "keys": "M-<down>",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\n*************** TODO A small task\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\n*************** TODO A small task\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 125,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-metaup-drags-the-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 57,
+        "keys": "M-<up>",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\n*************** TODO A small task\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\n*************** TODO A small task\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-metadown-drags-a-paragraph-past-a-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 12,
+        "keys": "M-<down>",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\n*************** TODO A small task\nSome text.\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\n*************** TODO A small task\nSome text.\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-metaup-drags-a-paragraph-past-a-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 159,
+        "keys": "M-<up>",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\nMore text of A.\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\nMore text of A.\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\n* Heading B\nText of B.\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-metadown-in-the-task-body",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 121,
+        "keys": "M-<down>",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 121,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot drag element forward"
+    },
+    {
+      "name": "inlinetask-metadown-on-a-heading-moves-the-tasks",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 0,
+        "keys": "M-<down>",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading B\nText of B.\n* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n",
+      "visible": "* Heading B\nText of B.\n* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-shiftmetaright-leaves-tasks",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 0,
+        "keys": "M-S-<right>",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "** Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "** Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-shiftmetaleft-leaves-tasks",
+      "input": {
+        "text": "** Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n** Heading B\nText of B.\n",
+        "point": 0,
+        "keys": "M-S-<left>",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n** Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n** Heading B\nText of B.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-mark-element-on-a-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 57,
+        "keys": "M-h",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 57,
+      "mark": 159,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-forward-element-over-tasks",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 12,
+        "keys": "M-} M-} M-}",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 159,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-backward-element-over-tasks",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 159,
+        "keys": "M-{ M-{",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-without-the-library-is-a-heading",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 23,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** TODO A small task\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** TODO A small task\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 105,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-without-the-library-tab-folds-it",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 57,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-tab-on-a-heading",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 0,
+        "keys": "TAB",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\n* Heading B\nText of B.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-tab-twice-on-a-heading",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 0,
+        "keys": "TAB TAB",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-tab-thrice-on-a-heading",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 0,
+        "keys": "TAB TAB TAB",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-tab-on-a-task-folds-its-body",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 57,
+        "keys": "TAB",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-tab-twice-on-a-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 57,
+        "keys": "TAB TAB",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-tab-on-a-one-line-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 23,
+        "keys": "TAB",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-tab-on-the-end-line",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 139,
+        "keys": "TAB",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 139,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-tab-in-the-task-body",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 121,
+        "keys": "TAB",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 121,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-global-cycle-once",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 0,
+        "keys": "S-<tab>",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\n* Heading B",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-global-cycle-twice",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 0,
+        "keys": "S-<tab> S-<tab>",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\n*************** TODO A small task\n*************** TODO Task with body\n* Heading B",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-global-cycle-thrice",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 0,
+        "keys": "S-<tab> S-<tab> S-<tab>",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-tab-nested-children",
+      "input": {
+        "text": "* Top\nIntro.\n*************** A task\n** Child\nChild text.\n*************** TODO Child task\nInside the task.\n*************** END\nAfter the task.\n** Second child\n* Last\n",
+        "point": 0,
+        "keys": "TAB TAB",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Top\nIntro.\n*************** A task\n** Child\nChild text.\n*************** TODO Child task\nInside the task.\n*************** END\nAfter the task.\n** Second child\n* Last\n",
+      "visible": "* Top\nIntro.\n*************** A task\n** Child\n** Second child\n* Last\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-tab-nested-child",
+      "input": {
+        "text": "* Top\nIntro.\n*************** A task\n** Child\nChild text.\n*************** TODO Child task\nInside the task.\n*************** END\nAfter the task.\n** Second child\n* Last\n",
+        "point": 36,
+        "keys": "TAB TAB",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Top\nIntro.\n*************** A task\n** Child\nChild text.\n*************** TODO Child task\nInside the task.\n*************** END\nAfter the task.\n** Second child\n* Last\n",
+      "visible": "* Top\nIntro.\n*************** A task\n** Child\nChild text.\n*************** TODO Child task\nAfter the task.\n** Second child\n* Last\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-global-cycle-nested",
+      "input": {
+        "text": "* Top\nIntro.\n*************** A task\n** Child\nChild text.\n*************** TODO Child task\nInside the task.\n*************** END\nAfter the task.\n** Second child\n* Last\n",
+        "point": 0,
+        "keys": "S-<tab> S-<tab>",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Top\nIntro.\n*************** A task\n** Child\nChild text.\n*************** TODO Child task\nInside the task.\n*************** END\nAfter the task.\n** Second child\n* Last\n",
+      "visible": "* Top\n*************** A task\n** Child\n*************** TODO Child task\n** Second child\n* Last\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-cycle-max-level-wins",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 0,
+        "keys": "TAB TAB",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-cycle-max-level": 20
+        }
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-insert-task-in-text",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 159,
+        "keys": "C-c C-x t",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\n*************** \n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\n*************** \n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 175,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-insert-task-mid-line",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 163,
+        "keys": "C-c C-x t",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore\n*************** \n*************** END\n text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore\n*************** \n*************** END\n text of A.\n* Heading B\nText of B.\n",
+      "point": 180,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-insert-task-then-type",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 187,
+        "keys": "C-c C-x t N e w",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\n*************** New\n*************** END\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\n*************** New\n*************** END\nText of B.\n",
+      "point": 206,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-insert-task-around-the-region",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 12,
+        "keys": "C-SPC C-n C-n C-c C-x t",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\n*************** \nSome text.\n*************** TODO A small task\n\n*************** END\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\n*************** \nSome text.\n*************** TODO A small task\n\n*************** END\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 28,
+      "mark": 12,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-insert-task-inside-a-task-fails",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 121,
+        "keys": "C-c C-x t",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 121,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot nest inline tasks"
+    },
+    {
+      "name": "inlinetask-insert-task-at-a-task-start",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 57,
+        "keys": "C-c C-x t",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** \n*************** END\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** \n*************** END\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 73,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-insert-task-with-a-default-state",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 159,
+        "keys": "C-c C-x t",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-inlinetask-default-state": "TODO"
+        }
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\n*************** TODO \n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\n*************** TODO \n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 180,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-insert-task-no-state-with-prefix",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 159,
+        "keys": "C-u C-c C-x t",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-inlinetask-default-state": "TODO"
+        }
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\n*************** \n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\n*************** \n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 175,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-insert-task-odd-levels",
+      "input": {
+        "text": "* A\ntext\n",
+        "point": 6,
+        "keys": "C-c C-x t",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* A\nte\n***************************** \n***************************** END\nxt\n",
+      "visible": "* A\nte\n***************************** \n***************************** END\nxt\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-promote-at-minimum-level-fails",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 57,
+        "keys": "M-<left>",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot promote an inline task at minimum level"
+    },
+    {
+      "name": "inlinetask-demote-with-its-end",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 57,
+        "keys": "M-<right>",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n**************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n**************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n**************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n**************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-demote-then-promote",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 57,
+        "keys": "M-<right> M-<right> M-<left>",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n**************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n**************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n**************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n**************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-demote-one-line-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 23,
+        "keys": "M-<right>",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n**************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n**************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-demote-from-the-body",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 121,
+        "keys": "M-<right>",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 125,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-demote-on-the-end-line",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 139,
+        "keys": "M-<right>",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n**************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n**************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n**************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n**************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 140,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-demote-last-task",
+      "input": {
+        "text": "* A\n*************** TODO x\nbody\n*************** END",
+        "point": 4,
+        "keys": "M-<right>",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n**************** TODO x\nbody\n**************** END",
+      "visible": "* A\n**************** TODO x\nbody\n**************** END",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-metaright-in-text",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 159,
+        "keys": "M-<right>",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 163,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-next-visible-heading-skips-tasks",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 0,
+        "keys": "C-c C-n",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 175,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-next-visible-heading-twice",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 0,
+        "keys": "C-c C-n C-c C-n",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 198,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-previous-visible-heading-skips-tasks",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 175,
+        "keys": "C-c C-p",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-previous-visible-heading-from-a-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 121,
+        "keys": "C-c C-p",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-forward-same-level",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 0,
+        "keys": "C-c C-f",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 175,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-forward-same-level-in-a-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 121,
+        "keys": "C-c C-f",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 175,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-forward-same-level-on-a-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 23,
+        "keys": "C-c C-f",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 175,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-backward-same-level-in-a-task",
+      "input": {
+        "text": "* Top\nIntro.\n*************** A task\n** Child\nChild text.\n*************** TODO Child task\nInside the task.\n*************** END\nAfter the task.\n** Second child\n* Last\n",
+        "point": 89,
+        "keys": "C-c C-b",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Top\nIntro.\n*************** A task\n** Child\nChild text.\n*************** TODO Child task\nInside the task.\n*************** END\nAfter the task.\n** Second child\n* Last\n",
+      "visible": "* Top\nIntro.\n*************** A task\n** Child\nChild text.\n*************** TODO Child task\nInside the task.\n*************** END\nAfter the task.\n** Second child\n* Last\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-up-heading-in-a-task",
+      "input": {
+        "text": "* Top\nIntro.\n*************** A task\n** Child\nChild text.\n*************** TODO Child task\nInside the task.\n*************** END\nAfter the task.\n** Second child\n* Last\n",
+        "point": 89,
+        "keys": "C-c C-u",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Top\nIntro.\n*************** A task\n** Child\nChild text.\n*************** TODO Child task\nInside the task.\n*************** END\nAfter the task.\n** Second child\n* Last\n",
+      "visible": "* Top\nIntro.\n*************** A task\n** Child\nChild text.\n*************** TODO Child task\nInside the task.\n*************** END\nAfter the task.\n** Second child\n* Last\n",
+      "point": 36,
+      "mark": 89,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-up-heading-after-a-task",
+      "input": {
+        "text": "* Top\nIntro.\n*************** A task\n** Child\nChild text.\n*************** TODO Child task\nInside the task.\n*************** END\nAfter the task.\n** Second child\n* Last\n",
+        "point": 126,
+        "keys": "C-c C-u",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Top\nIntro.\n*************** A task\n** Child\nChild text.\n*************** TODO Child task\nInside the task.\n*************** END\nAfter the task.\n** Second child\n* Last\n",
+      "visible": "* Top\nIntro.\n*************** A task\n** Child\nChild text.\n*************** TODO Child task\nInside the task.\n*************** END\nAfter the task.\n** Second child\n* Last\n",
+      "point": 36,
+      "mark": 126,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-up-heading-on-a-task",
+      "input": {
+        "text": "* Top\nIntro.\n*************** A task\n** Child\nChild text.\n*************** TODO Child task\nInside the task.\n*************** END\nAfter the task.\n** Second child\n* Last\n",
+        "point": 57,
+        "keys": "C-c C-u",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Top\nIntro.\n*************** A task\n** Child\nChild text.\n*************** TODO Child task\nInside the task.\n*************** END\nAfter the task.\n** Second child\n* Last\n",
+      "visible": "* Top\nIntro.\n*************** A task\n** Child\nChild text.\n*************** TODO Child task\nInside the task.\n*************** END\nAfter the task.\n** Second child\n* Last\n",
+      "point": 36,
+      "mark": 57,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-next-heading-without-the-library",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 0,
+        "keys": "C-c C-n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-todo-on-a-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 57,
+        "keys": "C-c C-t",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** DONE Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** DONE Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-todo-in-a-task-body",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 121,
+        "keys": "C-c C-t",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** DONE Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** DONE Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 121,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-todo-on-a-one-line-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 43,
+        "keys": "C-c C-t",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** DONE A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** DONE A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 44,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-todo-after-a-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 159,
+        "keys": "C-c C-t",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* TODO Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* TODO Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 164,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-todo-on-the-end-line",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 139,
+        "keys": "C-c C-t",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** DONE Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** DONE Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 139,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-todo-logs-done",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 57,
+        "keys": "C-c C-t",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-28 10:00",
+        "globals": {
+          "org-log-done": "'time"
+        }
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** DONE Task with body\nCLOSED: [2026-11-28 Sat 10:00] SCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** DONE Task with body\nCLOSED: [2026-11-28 Sat 10:00] SCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-priority-on-a-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 23,
+        "keys": "C-c ,",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "A"
+        ]
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO [#A] A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO [#A] A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-tags-on-a-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 23,
+        "keys": "C-c C-q",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "work"
+        ]
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task                                      :work:\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task                                      :work:\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-todo-list",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 0,
+        "keys": "",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-11-27",
+        "agenda_files": true
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda:  TODO A small task\n  e8-agenda:  TODO Task with body\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda:  TODO A small task\n  e8-agenda:  TODO Task with body\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "inlinetask-agenda-list",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 0,
+        "keys": "",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-11-27",
+        "agenda_files": true
+      },
+      "text": "Week-agenda (W48):\nMonday     23 November 2026 W48\nTuesday    24 November 2026\nWednesday  25 November 2026\nThursday   26 November 2026\nFriday     27 November 2026\n  e8-agenda:  Scheduled:  TODO Task with body\nSaturday   28 November 2026\nSunday     29 November 2026\n",
+      "visible": "Week-agenda (W48):\nMonday     23 November 2026 W48\nTuesday    24 November 2026\nWednesday  25 November 2026\nThursday   26 November 2026\nFriday     27 November 2026\n  e8-agenda:  Scheduled:  TODO Task with body\nSaturday   28 November 2026\nSunday     29 November 2026\n",
+      "point": 135,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 135,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "inlinetask-agenda-done-from-the-agenda",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 0,
+        "keys": "n t",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-11-27",
+        "agenda_files": true
+      },
+      "text": "Week-agenda (W48):\nMonday     23 November 2026 W48\nTuesday    24 November 2026\nWednesday  25 November 2026\nThursday   26 November 2026\nFriday     27 November 2026\n  e8-agenda:  Scheduled:  DONE Task with body\nSaturday   28 November 2026\nSunday     29 November 2026\n",
+      "visible": "Week-agenda (W48):\nMonday     23 November 2026 W48\nTuesday    24 November 2026\nWednesday  25 November 2026\nThursday   26 November 2026\nFriday     27 November 2026\n  e8-agenda:  Scheduled:  DONE Task with body\nSaturday   28 November 2026\nSunday     29 November 2026\n",
+      "point": 163,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 163,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "inlinetask-clock-in-and-out",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 57,
+        "keys": "C-c C-x C-i C-c C-x C-o",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-27 09:00"
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\n:LOGBOOK:\nCLOCK: [2026-11-27 Fri 09:00]--[2026-11-27 Fri 09:00] =>  0:00\n:END:\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\n:LOGBOOK:\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-clock-in-the-body",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 121,
+        "keys": "C-c C-x C-i C-c C-x C-o",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-27 09:00"
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\n:LOGBOOK:\nCLOCK: [2026-11-27 Fri 09:00]--[2026-11-27 Fri 09:00] =>  0:00\n:END:\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\n:LOGBOOK:\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 200,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-schedule-a-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 23,
+        "keys": "C-c C-s",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-27",
+        "answers": [
+          "2026-12-01"
+        ]
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\nSCHEDULED: <2026-12-01 Tue>\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\nSCHEDULED: <2026-12-01 Tue>\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-set-property-on-a-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 57,
+        "keys": "C-c C-x p",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "OWNER",
+          "me"
+        ]
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\n:PROPERTIES:\n:OWNER:    me\n:END:\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\n:PROPERTIES:\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-heading-after-a-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 159,
+        "keys": "M-RET",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\n* More text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\n* More text of A.\n* Heading B\nText of B.\n",
+      "point": 161,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-schedule-after-a-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 159,
+        "keys": "C-c C-s",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-27",
+        "answers": [
+          "2026-12-01"
+        ]
+      },
+      "text": "* Heading A\nSCHEDULED: <2026-12-01 Tue>\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSCHEDULED: <2026-12-01 Tue>\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 187,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-tags-after-a-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 159,
+        "keys": "C-c C-q",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "work"
+        ]
+      },
+      "text": "* Heading A                                                            :work:\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A                                                            :work:\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 225,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-priority-after-a-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 159,
+        "keys": "C-c ,",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "B"
+        ]
+      },
+      "text": "* [#B] Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* [#B] Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 164,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-property-after-a-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 159,
+        "keys": "C-c C-x p",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "OWNER",
+          "me"
+        ]
+      },
+      "text": "* Heading A\n:PROPERTIES:\n:OWNER:    me\n:END:\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\n:PROPERTIES:\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 192,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-clock-in-after-a-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 159,
+        "keys": "C-c C-x C-i C-c C-x C-o",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-27 09:00"
+      },
+      "text": "* Heading A\n:LOGBOOK:\nCLOCK: [2026-11-27 Fri 09:00]--[2026-11-27 Fri 09:00] =>  0:00\n:END:\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\n:LOGBOOK:\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 238,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-deadline-in-a-task-body",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 121,
+        "keys": "C-c C-d",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-27",
+        "answers": [
+          "2026-12-02"
+        ]
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nDEADLINE: <2026-12-02 Wed> SCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nDEADLINE: <2026-12-02 Wed> SCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 148,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-note-in-a-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 121,
+        "keys": "C-c C-z a C-c C-c",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-27 09:00"
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\n- Note taken on [2026-11-27 Fri 09:00] \\\\\n  a\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\n- Note taken on [2026-11-27 Fri 09:00] \\\\\n  a\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 121,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-narrow-to-subtree-in-a-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 121,
+        "keys": "C-x n s",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 121,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-mark-subtree-in-a-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 121,
+        "keys": "C-c @",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 0,
+      "mark": 175,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-kill-subtree-on-a-heading",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 0,
+        "keys": "C-c C-x C-w",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading B\nText of B.\n",
+      "visible": "* Heading B\nText of B.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-insert-heading-respect-content-in-a-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 121,
+        "keys": "C-<return>",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* \n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* \n* Heading B\nText of B.\n",
+      "point": 177,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-insert-todo-heading-on-a-task",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 43,
+        "keys": "M-S-<return>",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n* TODO \n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\nSome text.\n*************** TODO A small task\n* TODO \n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "point": 64,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-sparse-tree-todo",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 0,
+        "keys": "C-c /",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\n*************** TODO A small task\n*************** TODO Task with body\n* Heading B",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-archive-a-heading",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 23,
+        "keys": "C-c C-x C-s",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* Heading B\nText of B.\n\n* Archive\n\n** Heading A\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* Heading B\nText of B.\n\n* Archive\n\n** Heading A\n:PROPERTIES:\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n",
+        "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-archive-a-task",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 80,
+        "keys": "C-c C-x C-s",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* Heading B\nText of B.\n\n* Archive\n\n** Heading A\n:PROPERTIES:\n:ARCHIVE_TODO: TODO\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:ARCHIVE_OLPATH: Heading A\n:END:\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* Heading B\nText of B.\n\n* Archive\n\n** Heading A\n:PROPERTIES:\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n",
+        "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-list-with-a-task-inside",
+      "input": {
+        "text": "* H\n- one\n*************** TODO in the list\n  more of one\n- two\n",
+        "point": 4,
+        "keys": "M-<down>",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* H\n- two\n- one\n*************** TODO in the list\n  more of one\n",
+      "visible": "* H\n- two\n- one\n*************** TODO in the list\n  more of one\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-list-item-bullet-with-a-task",
+      "input": {
+        "text": "* H\n- one\n*************** TODO in the list\n  more of one\n- two\n",
+        "point": 57,
+        "keys": "C-c -",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* H\n+ one\n*************** TODO in the list\n  more of one\n+ two\n",
+      "visible": "* H\n+ one\n*************** TODO in the list\n  more of one\n+ two\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-fold-and-isearch",
+      "input": {
+        "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+        "point": 0,
+        "keys": "S-<tab> S-<tab> C-s B o d y RET",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading A\nSome text.\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B\nText of B.\n",
+      "visible": "* Heading A\n*************** TODO A small task\n*************** TODO Task with body\nSCHEDULED: <2026-11-27 Fri>\nBody of the task.\n*************** END\nMore text of A.\n* Heading B",
+      "point": 125,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "inlinetask-export-ascii",
+      "input": {
+        "text": "#+OPTIONS: toc:nil author:nil\n* Heading\nText before.\n*************** TODO A one-line task\nBetween the tasks.\n*************** DONE [#A] A task with a body :work:\nThe task's *body*.\n- an item\n*************** END\nText after.\n",
+        "point": 0,
+        "keys": "",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-ascii-export-as-ascii"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "globals": {
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-ascii-charset": "'ascii"
+        }
+      },
+      "text": "1 Heading\n=========\n\n  Text before.\n                                          ______________________________\n                              \n                                          TODO A one-line task\n                                          ______________________________\n  Between the tasks.\n                                          ______________________________\n                              \n                                          DONE A task with a body :work:\n                                          ------------------------------\n                                          The task's *body*.\n                                          - an item\n                                          ______________________________\n  Text after.\n",
+      "visible": "1 Heading\n=========\n\n  Text before.\n                                          ______________________________\n                              \n                                          TODO A one-line task\n                                          ______________________________\n  Between the tasks.\n                                          ______________________________\n                              \n                                          DONE A task with a body :work:\n                                          ------------------------------\n                                          The task's *body*.\n                                          - an item\n                                          ______________________________\n  Text after.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-export-html",
+      "input": {
+        "text": "#+OPTIONS: toc:nil author:nil\n* Heading\nText before.\n*************** TODO A one-line task\nBetween the tasks.\n*************** DONE [#A] A task with a body :work:\nThe task's *body*.\n- an item\n*************** END\nText after.\n",
+        "point": 0,
+        "keys": "",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-html-export-as-html"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "globals": {
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-html-postamble": false,
+          "org-export-timestamp-file": false
+        }
+      },
+      "text": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" xml:lang=\"en\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<title>&lrm;</title>\n<meta name=\"generator\" content=\"Org Mode\" />\n<style type=\"text/css\">\n  #content { max-width: 60em; margin: auto; }\n  .title  { text-align: center;\n             margin-bottom: .2em; }\n  .subtitle { text-align: center;\n              font-size: medium;\n              font-weight: bold;\n              margin-top:0; }\n  .todo   { font-family: monospace; color: red; }\n  .done   { font-family: monospace; color: green; }\n  .priority { font-family: monospace; color: orange; }\n  .tag    { background-color: #eee; font-family: monospace;\n            padding: 2px; font-size: 80%; font-weight: normal; }\n  .timestamp { color: #bebebe; }\n  .timestamp-kwd { color: #5f9ea0; }\n  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }\n  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }\n  .org-center { margin-left: auto; margin-right: auto; text-align: center; }\n  .underline { text-decoration: underline; }\n  #postamble p, #preamble p { font-size: 90%; margin: .2em; }\n  p.verse { margin-left: 3%; }\n  pre {\n    border: 1px solid #e6e6e6;\n    border-radius: 3px;\n    background-color: #f2f2f2;\n    padding: 8pt;\n    font-family: monospace;\n    overflow: auto;\n    margin: 1.2em;\n  }\n  pre.src {\n    position: relative;\n    overflow: auto;\n  }\n  pre.src:before {\n    display: none;\n    position: absolute;\n    top: -8px;\n    right: 12px;\n    padding: 3px;\n    color: #555;\n    background-color: #f2f2f299;\n  }\n  pre.src:hover:before { display: inline; margin-top: 14px;}\n  /* Languages per Org manual */\n  pre.src-asymptote:before { content: 'Asymptote'; }\n  pre.src-awk:before { content: 'Awk'; }\n  pre.src-authinfo::before { content: 'Authinfo'; }\n  pre.src-C:before { content: 'C'; }\n  /* pre.src-C++ doesn't work in CSS */\n  pre.src-clojure:before { content: 'Clojure'; }\n  pre.src-css:before { content: 'CSS'; }\n  pre.src-D:before { content: 'D'; }\n  pre.src-ditaa:before { content: 'ditaa'; }\n  pre.src-dot:before { content: 'Graphviz'; }\n  pre.src-calc:before { content: 'Emacs Calc'; }\n  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }\n  pre.src-fortran:before { content: 'Fortran'; }\n  pre.src-gnuplot:before { content: 'gnuplot'; }\n  pre.src-haskell:before { content: 'Haskell'; }\n  pre.src-hledger:before { content: 'hledger'; }\n  pre.src-java:before { content: 'Java'; }\n  pre.src-js:before { content: 'Javascript'; }\n  pre.src-latex:before { content: 'LaTeX'; }\n  pre.src-ledger:before { content: 'Ledger'; }\n  pre.src-lisp:before { content: 'Lisp'; }\n  pre.src-lilypond:before { content: 'Lilypond'; }\n  pre.src-lua:before { content: 'Lua'; }\n  pre.src-matlab:before { content: 'MATLAB'; }\n  pre.src-mscgen:before { content: 'Mscgen'; }\n  pre.src-ocaml:before { content: 'Objective Caml'; }\n  pre.src-octave:before { content: 'Octave'; }\n  pre.src-org:before { content: 'Org mode'; }\n  pre.src-oz:before { content: 'OZ'; }\n  pre.src-plantuml:before { content: 'Plantuml'; }\n  pre.src-processing:before { content: 'Processing.js'; }\n  pre.src-python:before { content: 'Python'; }\n  pre.src-R:before { content: 'R'; }\n  pre.src-ruby:before { content: 'Ruby'; }\n  pre.src-sass:before { content: 'Sass'; }\n  pre.src-scheme:before { content: 'Scheme'; }\n  pre.src-screen:before { content: 'Gnu Screen'; }\n  pre.src-sed:before { content: 'Sed'; }\n  pre.src-sh:before { content: 'shell'; }\n  pre.src-sql:before { content: 'SQL'; }\n  pre.src-sqlite:before { content: 'SQLite'; }\n  /* additional languages in org.el's org-babel-load-languages alist */\n  pre.src-forth:before { content: 'Forth'; }\n  pre.src-io:before { content: 'IO'; }\n  pre.src-J:before { content: 'J'; }\n  pre.src-makefile:before { content: 'Makefile'; }\n  pre.src-maxima:before { content: 'Maxima'; }\n  pre.src-perl:before { content: 'Perl'; }\n  pre.src-picolisp:before { content: 'Pico Lisp'; }\n  pre.src-scala:before { content: 'Scala'; }\n  pre.src-shell:before { content: 'Shell Script'; }\n  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }\n  /* additional language identifiers per \"defun org-babel-execute\"\n       in ob-*.el */\n  pre.src-cpp:before  { content: 'C++'; }\n  pre.src-abc:before  { content: 'ABC'; }\n  pre.src-coq:before  { content: 'Coq'; }\n  pre.src-groovy:before  { content: 'Groovy'; }\n  /* additional language identifiers from org-babel-shell-names in\n     ob-shell.el: ob-shell is the only babel language using a lambda to put\n     the execution function name together. */\n  pre.src-bash:before  { content: 'bash'; }\n  pre.src-csh:before  { content: 'csh'; }\n  pre.src-ash:before  { content: 'ash'; }\n  pre.src-dash:before  { content: 'dash'; }\n  pre.src-ksh:before  { content: 'ksh'; }\n  pre.src-mksh:before  { content: 'mksh'; }\n  pre.src-posh:before  { content: 'posh'; }\n  /* Additional Emacs modes also supported by the LaTeX listings package */\n  pre.src-ada:before { content: 'Ada'; }\n  pre.src-asm:before { content: 'Assembler'; }\n  pre.src-caml:before { content: 'Caml'; }\n  pre.src-delphi:before { content: 'Delphi'; }\n  pre.src-html:before { content: 'HTML'; }\n  pre.src-idl:before { content: 'IDL'; }\n  pre.src-mercury:before { content: 'Mercury'; }\n  pre.src-metapost:before { content: 'MetaPost'; }\n  pre.src-modula-2:before { content: 'Modula-2'; }\n  pre.src-pascal:before { content: 'Pascal'; }\n  pre.src-ps:before { content: 'PostScript'; }\n  pre.src-prolog:before { content: 'Prolog'; }\n  pre.src-simula:before { content: 'Simula'; }\n  pre.src-tcl:before { content: 'tcl'; }\n  pre.src-tex:before { content: 'TeX'; }\n  pre.src-plain-tex:before { content: 'Plain TeX'; }\n  pre.src-verilog:before { content: 'Verilog'; }\n  pre.src-vhdl:before { content: 'VHDL'; }\n  pre.src-xml:before { content: 'XML'; }\n  pre.src-nxml:before { content: 'XML'; }\n  /* add a generic configuration mode; LaTeX export needs an additional\n     (add-to-list 'org-latex-listings-langs '(conf \" \")) in .emacs */\n  pre.src-conf:before { content: 'Configuration File'; }\n\n  table { border-collapse:collapse; }\n  caption.t-above { caption-side: top; }\n  caption.t-bottom { caption-side: bottom; }\n  td, th { vertical-align:top;  }\n  th.org-right  { text-align: center;  }\n  th.org-left   { text-align: center;   }\n  th.org-center { text-align: center; }\n  td.org-right  { text-align: right;  }\n  td.org-left   { text-align: left;   }\n  td.org-center { text-align: center; }\n  dt { font-weight: bold; }\n  .footpara { display: inline; }\n  .footdef  { margin-bottom: 1em; }\n  .figure { padding: 1em; }\n  .figure p { text-align: center; }\n  .equation-container {\n    display: table;\n    text-align: center;\n    width: 100%;\n  }\n  .equation {\n    vertical-align: middle;\n  }\n  .equation-label {\n    display: table-cell;\n    text-align: right;\n    vertical-align: middle;\n  }\n  .inlinetask {\n    padding: 10px;\n    border: 2px solid gray;\n    margin: 10px;\n    background: #ffffcc;\n  }\n  #org-div-home-and-up\n   { text-align: right; font-size: 70%; white-space: nowrap; }\n  textarea { overflow-x: auto; }\n  .linenr { font-size: smaller }\n  .code-highlighted { background-color: #ffff00; }\n  .org-info-js_info-navigation { border-style: none; }\n  #org-info-js_console-label\n    { font-size: 10px; font-weight: bold; white-space: nowrap; }\n  .org-info-js_search-highlight\n    { background-color: #ffff00; color: #000000; font-weight: bold; }\n  .org-svg { }\n</style>\n</head>\n<body>\n<div id=\"content\" class=\"content\">\n<div id=\"outline-container-org0000001\" class=\"outline-2\">\n<h2 id=\"org0000001\"><span class=\"section-number-2\">1.</span> Heading</h2>\n<div class=\"outline-text-2\" id=\"text-1\">\n<p>\nText before.\n</p>\n<div class=\"inlinetask\">\n<b><span class=\"todo TODO\">TODO</span> A one-line task</b><br />\n</div>\n<p>\nBetween the tasks.\n</p>\n<div class=\"inlinetask\">\n<b><span class=\"done DONE\">DONE</span> A task with a body&#xa0;&#xa0;&#xa0;<span class=\"tag\"><span class=\"work\">work</span></span></b><br />\n<p>\nThe task's <b>body</b>.\n</p>\n<ul class=\"org-ul\">\n<li>an item</li>\n</ul>\n</div>\n<p>\nText after.\n</p>\n</div>\n</div>\n</div>\n</body>\n</html>",
+      "visible": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" xml:lang=\"en\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<title>&lrm;</title>\n<meta name=\"generator\" content=\"Org Mode\" />\n<style type=\"text/css\">\n  #content { max-width: 60em; margin: auto; }\n  .title  { text-align: center;\n             margin-bottom: .2em; }\n  .subtitle { text-align: center;\n              font-size: medium;\n              font-weight: bold;\n              margin-top:0; }\n  .todo   { font-family: monospace; color: red; }\n  .done   { font-family: monospace; color: green; }\n  .priority { font-family: monospace; color: orange; }\n  .tag    { background-color: #eee; font-family: monospace;\n            padding: 2px; font-size: 80%; font-weight: normal; }\n  .timestamp { color: #bebebe; }\n  .timestamp-kwd { color: #5f9ea0; }\n  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }\n  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }\n  .org-center { margin-left: auto; margin-right: auto; text-align: center; }\n  .underline { text-decoration: underline; }\n  #postamble p, #preamble p { font-size: 90%; margin: .2em; }\n  p.verse { margin-left: 3%; }\n  pre {\n    border: 1px solid #e6e6e6;\n    border-radius: 3px;\n    background-color: #f2f2f2;\n    padding: 8pt;\n    font-family: monospace;\n    overflow: auto;\n    margin: 1.2em;\n  }\n  pre.src {\n    position: relative;\n    overflow: auto;\n  }\n  pre.src:before {\n    display: none;\n    position: absolute;\n    top: -8px;\n    right: 12px;\n    padding: 3px;\n    color: #555;\n    background-color: #f2f2f299;\n  }\n  pre.src:hover:before { display: inline; margin-top: 14px;}\n  /* Languages per Org manual */\n  pre.src-asymptote:before { content: 'Asymptote'; }\n  pre.src-awk:before { content: 'Awk'; }\n  pre.src-authinfo::before { content: 'Authinfo'; }\n  pre.src-C:before { content: 'C'; }\n  /* pre.src-C++ doesn't work in CSS */\n  pre.src-clojure:before { content: 'Clojure'; }\n  pre.src-css:before { content: 'CSS'; }\n  pre.src-D:before { content: 'D'; }\n  pre.src-ditaa:before { content: 'ditaa'; }\n  pre.src-dot:before { content: 'Graphviz'; }\n  pre.src-calc:before { content: 'Emacs Calc'; }\n  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }\n  pre.src-fortran:before { content: 'Fortran'; }\n  pre.src-gnuplot:before { content: 'gnuplot'; }\n  pre.src-haskell:before { content: 'Haskell'; }\n  pre.src-hledger:before { content: 'hledger'; }\n  pre.src-java:before { content: 'Java'; }\n  pre.src-js:before { content: 'Javascript'; }\n  pre.src-latex:before { content: 'LaTeX'; }\n  pre.src-ledger:before { content: 'Ledger'; }\n  pre.src-lisp:before { content: 'Lisp'; }\n  pre.src-lilypond:before { content: 'Lilypond'; }\n  pre.src-lua:before { content: 'Lua'; }\n  pre.src-matlab:before { content: 'MATLAB'; }\n  pre.src-mscgen:before { content: 'Mscgen'; }\n  pre.src-ocaml:before { content: 'Objective Caml'; }\n  pre.src-octave:before { content: 'Octave'; }\n  pre.src-org:before { content: 'Org mode'; }\n  pre.src-oz:before { content: 'OZ'; }\n  pre.src-plantuml:before { content: 'Plantuml'; }\n  pre.src-processing:before { content: 'Processing.js'; }\n  pre.src-python:before { content: 'Python'; }\n  pre.src-R:before { content: 'R'; }\n  pre.src-ruby:before { content: 'Ruby'; }\n  pre.src-sass:before { content: 'Sass'; }\n  pre.src-scheme:before { content: 'Scheme'; }\n  pre.src-screen:before { content: 'Gnu Screen'; }\n  pre.src-sed:before { content: 'Sed'; }\n  pre.src-sh:before { content: 'shell'; }\n  pre.src-sql:before { content: 'SQL'; }\n  pre.src-sqlite:before { content: 'SQLite'; }\n  /* additional languages in org.el's org-babel-load-languages alist */\n  pre.src-forth:before { content: 'Forth'; }\n  pre.src-io:before { content: 'IO'; }\n  pre.src-J:before { content: 'J'; }\n  pre.src-makefile:before { content: 'Makefile'; }\n  pre.src-maxima:before { content: 'Maxima'; }\n  pre.src-perl:before { content: 'Perl'; }\n  pre.src-picolisp:before { content: 'Pico Lisp'; }\n  pre.src-scala:before { content: 'Scala'; }\n  pre.src-shell:before { content: 'Shell Script'; }\n  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }\n  /* additional language identifiers per \"defun org-babel-execute\"\n       in ob-*.el */\n  pre.src-cpp:before  { content: 'C++'; }\n  pre.src-abc:before  { content: 'ABC'; }\n  pre.src-coq:before  { content: 'Coq'; }\n  pre.src-groovy:before  { content: 'Groovy'; }\n  /* additional language identifiers from org-babel-shell-names in\n     ob-shell.el: ob-shell is the only babel language using a lambda to put\n     the execution function name together. */\n  pre.src-bash:before  { content: 'bash'; }\n  pre.src-csh:before  { content: 'csh'; }\n  pre.src-ash:before  { content: 'ash'; }\n  pre.src-dash:before  { content: 'dash'; }\n  pre.src-ksh:before  { content: 'ksh'; }\n  pre.src-mksh:before  { content: 'mksh'; }\n  pre.src-posh:before  { content: 'posh'; }\n  /* Additional Emacs modes also supported by the LaTeX listings package */\n  pre.src-ada:before { content: 'Ada'; }\n  pre.src-asm:before { content: 'Assembler'; }\n  pre.src-caml:before { content: 'Caml'; }\n  pre.src-delphi:before { content: 'Delphi'; }\n  pre.src-html:before { content: 'HTML'; }\n  pre.src-idl:before { content: 'IDL'; }\n  pre.src-mercury:before { content: 'Mercury'; }\n  pre.src-metapost:before { content: 'MetaPost'; }\n  pre.src-modula-2:before { content: 'Modula-2'; }\n  pre.src-pascal:before { content: 'Pascal'; }\n  pre.src-ps:before { content: 'PostScript'; }\n  pre.src-prolog:before { content: 'Prolog'; }\n  pre.src-simula:before { content: 'Simula'; }\n  pre.src-tcl:before { content: 'tcl'; }\n  pre.src-tex:before { content: 'TeX'; }\n  pre.src-plain-tex:before { content: 'Plain TeX'; }\n  pre.src-verilog:before { content: 'Verilog'; }\n  pre.src-vhdl:before { content: 'VHDL'; }\n  pre.src-xml:before { content: 'XML'; }\n  pre.src-nxml:before { content: 'XML'; }\n  /* add a generic configuration mode; LaTeX export needs an additional\n     (add-to-list 'org-latex-listings-langs '(conf \" \")) in .emacs */\n  pre.src-conf:before { content: 'Configuration File'; }\n\n  table { border-collapse:collapse; }\n  caption.t-above { caption-side: top; }\n  caption.t-bottom { caption-side: bottom; }\n  td, th { vertical-align:top;  }\n  th.org-right  { text-align: center;  }\n  th.org-left   { text-align: center;   }\n  th.org-center { text-align: center; }\n  td.org-right  { text-align: right;  }\n  td.org-left   { text-align: left;   }\n  td.org-center { text-align: center; }\n  dt { font-weight: bold; }\n  .footpara { display: inline; }\n  .footdef  { margin-bottom: 1em; }\n  .figure { padding: 1em; }\n  .figure p { text-align: center; }\n  .equation-container {\n    display: table;\n    text-align: center;\n    width: 100%;\n  }\n  .equation {\n    vertical-align: middle;\n  }\n  .equation-label {\n    display: table-cell;\n    text-align: right;\n    vertical-align: middle;\n  }\n  .inlinetask {\n    padding: 10px;\n    border: 2px solid gray;\n    margin: 10px;\n    background: #ffffcc;\n  }\n  #org-div-home-and-up\n   { text-align: right; font-size: 70%; white-space: nowrap; }\n  textarea { overflow-x: auto; }\n  .linenr { font-size: smaller }\n  .code-highlighted { background-color: #ffff00; }\n  .org-info-js_info-navigation { border-style: none; }\n  #org-info-js_console-label\n    { font-size: 10px; font-weight: bold; white-space: nowrap; }\n  .org-info-js_search-highlight\n    { background-color: #ffff00; color: #000000; font-weight: bold; }\n  .org-svg { }\n</style>\n</head>\n<body>\n<div id=\"content\" class=\"content\">\n<div id=\"outline-container-org0000001\" class=\"outline-2\">\n<h2 id=\"org0000001\"><span class=\"section-number-2\">1.</span> Heading</h2>\n<div class=\"outline-text-2\" id=\"text-1\">\n<p>\nText before.\n</p>\n<div class=\"inlinetask\">\n<b><span class=\"todo TODO\">TODO</span> A one-line task</b><br />\n</div>\n<p>\nBetween the tasks.\n</p>\n<div class=\"inlinetask\">\n<b><span class=\"done DONE\">DONE</span> A task with a body&#xa0;&#xa0;&#xa0;<span class=\"tag\"><span class=\"work\">work</span></span></b><br />\n<p>\nThe task's <b>body</b>.\n</p>\n<ul class=\"org-ul\">\n<li>an item</li>\n</ul>\n</div>\n<p>\nText after.\n</p>\n</div>\n</div>\n</div>\n</body>\n</html>",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-export-md",
+      "input": {
+        "text": "#+OPTIONS: toc:nil author:nil\n* Heading\nText before.\n*************** TODO A one-line task\nBetween the tasks.\n*************** DONE [#A] A task with a body :work:\nThe task's *body*.\n- an item\n*************** END\nText after.\n",
+        "point": 0,
+        "keys": "",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-md-export-as-markdown"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "globals": {
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com"
+        }
+      },
+      "text": "\n\n# Heading\n\nText before.\n\n<div class=\"inlinetask\">\n<b><span class=\"todo TODO\">TODO</span> A one-line task</b><br />\n</div>\n\nBetween the tasks.\n\n<div class=\"inlinetask\">\n<b><span class=\"done DONE\">DONE</span> A task with a body&#xa0;&#xa0;&#xa0;<span class=\"tag\"><span class=\"work\">work</span></span></b><br />\n<p>\nThe task's <b>body</b>.\n</p>\n\n<ul class=\"org-ul\">\n<li>an item</li>\n</ul>\n</div>\n\nText after.\n\n",
+      "visible": "\n\n# Heading\n\nText before.\n\n<div class=\"inlinetask\">\n<b><span class=\"todo TODO\">TODO</span> A one-line task</b><br />\n</div>\n\nBetween the tasks.\n\n<div class=\"inlinetask\">\n<b><span class=\"done DONE\">DONE</span> A task with a body&#xa0;&#xa0;&#xa0;<span class=\"tag\"><span class=\"work\">work</span></span></b><br />\n<p>\nThe task's <b>body</b>.\n</p>\n\n<ul class=\"org-ul\">\n<li>an item</li>\n</ul>\n</div>\n\nText after.\n\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-export-ascii-no-tasks",
+      "input": {
+        "text": "#+OPTIONS: toc:nil author:nil inline:nil\n* Heading\nText before.\n*************** TODO A one-line task\nBetween the tasks.\n*************** DONE [#A] A task with a body :work:\nThe task's *body*.\n- an item\n*************** END\nText after.\n",
+        "point": 0,
+        "keys": "",
+        "require": [
+          "org-inlinetask"
+        ],
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-ascii-export-as-ascii"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "globals": {
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-ascii-charset": "'ascii"
+        }
+      },
+      "text": "1 Heading\n=========\n\n  Text before.\n  Between the tasks.\n  Text after.\n",
+      "visible": "1 Heading\n=========\n\n  Text before.\n  Between the tasks.\n  Text after.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inlinetask-export-ascii-without-the-library",
+      "input": {
+        "text": "#+OPTIONS: toc:nil author:nil\n* Heading\nText before.\n*************** TODO A one-line task\nBetween the tasks.\n*************** DONE [#A] A task with a body :work:\nThe task's *body*.\n- an item\n*************** END\nText after.\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-ascii-export-as-ascii"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "globals": {
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-ascii-charset": "'ascii"
+        }
+      },
+      "text": "1 Heading\n=========\n\n  Text before.\n\n\n- 1.0.0.0.0.0.0.0.0.0.0.0.0.0.1 TODO A one-line task\n\n  Between the tasks.\n\n\n- 1.0.0.0.0.0.0.0.0.0.0.0.0.0.2 DONE A task with a body :work:\n\n  The task's *body*.\n  - an item\n\n\n- 1.0.0.0.0.0.0.0.0.0.0.0.0.0.3 END\n\n  Text after.\n",
+      "visible": "1 Heading\n=========\n\n  Text before.\n\n\n- 1.0.0.0.0.0.0.0.0.0.0.0.0.0.1 TODO A one-line task\n\n  Between the tasks.\n\n\n- 1.0.0.0.0.0.0.0.0.0.0.0.0.0.2 DONE A task with a body :work:\n\n  The task's *body*.\n  - an item\n\n\n- 1.0.0.0.0.0.0.0.0.0.0.0.0.0.3 END\n\n  Text after.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

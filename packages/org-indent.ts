@@ -13,6 +13,7 @@
 // option) any later version.
 
 import { itemLine, twoSpacesAfter } from "org-list";
+import { limitedStars } from "org-macs";
 import { PerBuffer } from "subr";
 
 const defvar = (name: string, value: e8.Value, doc: string) => e8.defineVariable({ name, value, doc });
@@ -25,18 +26,31 @@ e8.defineFace({ name: "org-indent", doc: "The indentation org-indent-mode shows.
 
 const DEEPEST = 50;
 
-/** The line prefixes of text and headings at each level, as org-indent--compute-prefixes. */
-function computePrefixes(): { text: e8.PropertizedString[]; heading: e8.PropertizedString[] } {
+type Kind = "text" | "heading" | "inlinetask";
+
+/**
+ * The line prefixes of text, headings and inline tasks at each level, as
+ * org-indent--compute-prefixes: an inline task's shows its first star in
+ * the org-warning face with org-inlinetask-show-first-star.
+ */
+function computePrefixes(): Record<Kind, e8.PropertizedString[]> {
   const per = Number(e8.variable("org-indent-indentation-per-level") ?? 2);
   const boundary = String(e8.variable("org-indent-boundary-char") ?? " ").slice(0, 1) || " ";
+  const firstStar = e8.boundp("org-inlinetask-show-first-star") && e8.variable("org-inlinetask-show-first-star") === true;
   const text: e8.PropertizedString[] = [];
   const heading: e8.PropertizedString[] = [];
+  const inlinetask: e8.PropertizedString[] = [];
   for (let n = 0; n < DEEPEST; n++) {
     const indentation = per <= 0 ? 0 : n <= 1 ? 0 : (per - 1) * (n - 1);
-    heading.push(e8.propertize("*".repeat(indentation), { face: "org-indent" }));
+    const stars = "*".repeat(indentation);
+    heading.push(e8.propertize(stars, { face: "org-indent" }));
+    // Org leaves the prefix of a level of one star or none a plain string.
+    if (n <= 1 || per <= 0) inlinetask.push(e8.propertize("", {}));
+    else if (firstStar) inlinetask.push(e8.concat(e8.propertize("*", { face: "org-warning" }), e8.propertize(stars.slice(1), { face: "org-indent" })));
+    else inlinetask.push(e8.propertize(stars, { face: "org-indent" }));
     text.push(e8.propertize(" ".repeat(per <= 0 ? 0 : n + indentation) + (per > 0 && n > 0 ? boundary : ""), { face: "org-indent" }));
   }
-  return { text, heading };
+  return { text, heading, inlinetask };
 }
 
 let prefixes = computePrefixes();
@@ -50,11 +64,12 @@ function itemBodyColumn(text: string): number {
 /** The wrap prefixes made so far, by kind, level and indentation, so each is made once. */
 let wraps = new Map<string, e8.PropertizedString>();
 
-/** Gives a line its prefixes, as org-indent-set-line-properties. */
-function setLineProperties(line: number, level: number, indentation: number, heading: boolean): void {
+/** Gives a line its prefixes, as org-indent-set-line-properties: a heading's, an inline task's or text's. */
+function setLineProperties(line: number, level: number, indentation: number, kind: Kind): void {
   const lvl = Math.min(level, DEEPEST - 1);
-  const prefix = (heading ? prefixes.heading : prefixes.text)[lvl];
-  const key = `${heading ? "h" : "t"}${lvl}:${indentation}`;
+  const prefix = prefixes[kind][lvl];
+  const heading = kind !== "text";
+  const key = `${kind}${lvl}:${indentation}`;
   let wrap = wraps.get(key);
   if (wrap === undefined) {
     wrap = e8.propertize(String(prefix) + (heading ? `${"*".repeat(level)} ` : " ".repeat(indentation)), { face: "org-indent" });
@@ -83,13 +98,20 @@ function indentationOf(text: string): number {
 
 const HEADING = /^(\*+)[ \t]/;
 
-/** The level of the heading a line is under, 0 before the first, as org-current-level. */
+/** The level of the heading a line is under, 0 before the first, as org-current-level: an inline task's is not one. */
 function levelAt(line: number): number {
+  const stars = limitedStars();
   for (let l = line; l >= 0; l--) {
     const m = HEADING.exec(e8.lineText(l));
-    if (m) return m[1].length;
+    if (m && m[1].length <= stars) return m[1].length;
   }
   return 0;
+}
+
+/** Whether a line is a heading's that is not an inline task's, as org-outline-regexp-bol with limited levels matches it. */
+function limitedHeadingLine(text: string): boolean {
+  const m = HEADING.exec(text);
+  return m !== null && m[1].length <= limitedStars();
 }
 
 /**
@@ -104,18 +126,22 @@ export function addProperties(beg: number, end: number, deadline?: number): numb
       const first = e8.lineOf(beg);
       const last = e8.lineOf(Math.min(end, e8.bufferSize()));
       let level = levelAt(first);
+      const limit = limitedStars();
       for (let l = first; l <= last && e8.lineStart(l) < e8.bufferSize(); l++) {
         if (deadline !== undefined && (l - first) % 64 === 63 && Date.now() > deadline) return e8.lineStart(l);
         const text = e8.lineText(l);
         const m = HEADING.exec(text);
-        if (m) {
+        if (m && m[1].length > limit) {
+          // An inline task, with org-inlinetask: its own prefix, the level left as its entry's.
+          setLineProperties(l, m[1].length, 0, "inlinetask");
+        } else if (m) {
           level = m[1].length;
-          setLineProperties(l, level, 0, true);
+          setLineProperties(l, level, 0, "heading");
         // An item where org-at-item-p sees one: by the bullets the setting allows, in a list's context.
         } else if (itemLine(l)) {
-          setLineProperties(l, level, itemBodyColumn(text), false);
+          setLineProperties(l, level, itemBodyColumn(text), "text");
         } else {
-          setLineProperties(l, level, indentationOf(text), false);
+          setLineProperties(l, level, indentationOf(text), "text");
         }
       }
       return undefined;
@@ -166,7 +192,7 @@ function notifyModifiedHeadline(beg: number, end: number): void {
   const last = e8.lineOf(end);
   const m = HEADING.exec(e8.lineText(first));
   modifiedHeadline = (m !== null && beg < e8.lineStart(first) + m[0].length) ||
-    Array.from({ length: last - first }, (_, i) => first + 1 + i).some((l) => HEADING.test(e8.lineText(l)));
+    Array.from({ length: last - first }, (_, i) => first + 1 + i).some((l) => limitedHeadingLine(e8.lineText(l)));
 }
 
 /** Gives the lines a change touched their prefixes again, up to the next heading if it touched one, as org-indent-refresh-maybe. */
@@ -177,10 +203,10 @@ function refreshMaybe(beg: number, end: number): void {
     const first = e8.lineOf(beg);
     const last = e8.lineOf(Math.min(end, e8.bufferSize()));
     let touched = modifiedHeadline;
-    for (let l = first; !touched && l <= last; l++) touched = HEADING.test(e8.lineText(l));
+    for (let l = first; !touched && l <= last; l++) touched = limitedHeadingLine(e8.lineText(l));
     if (touched) {
       let next = last + 1;
-      while (next < e8.lineCount() && !HEADING.test(e8.lineText(next))) next++;
+      while (next < e8.lineCount() && !limitedHeadingLine(e8.lineText(next))) next++;
       modifiedHeadline = false;
       addProperties(beg, next < e8.lineCount() ? e8.lineStart(next) : e8.bufferSize());
     } else {

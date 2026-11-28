@@ -158,5 +158,44 @@
  {
   "name": "trailing-blank-line",
   "text": "* H\nDEADLINE: <2026-11-01 Sun>\nText.\n  "
+ },
+ {
+  "name": "inlinetask-basic",
+  "text": "* Heading\nText.\n*************** TODO [#B] A one-line task :work:\nMore text.\n*************** DONE A task\nDEADLINE: <2026-11-30 Mon> SCHEDULED: <2026-11-27 Fri>\n:PROPERTIES:\n:EFFORT: 1:00\n:END:\nIts *body*.\n- an item\n*************** END\n\nAfter.\n* Next\n",
+  "require": [
+   "org-inlinetask"
+  ]
+ },
+ {
+  "name": "inlinetask-end-forms",
+  "text": "*************** Before any heading\n*************** end\n* H\n*************** Empty\n*************** END   \n*************** Blank lines\n\n\n*************** END\n*************** COMMENT Commented task\n***************** Deeper task\nText\n**************** END\n",
+  "require": [
+   "org-inlinetask"
+  ]
+ },
+ {
+  "name": "inlinetask-at-end",
+  "text": "* H\n*************** Last task\nbody\n*************** END",
+  "require": [
+   "org-inlinetask"
+  ]
+ },
+ {
+  "name": "inlinetask-sections",
+  "text": "* A\n*************** T1\n** B\nb text\n*************** T2\n*************** END\n*** C\n*************** T3\n",
+  "require": [
+   "org-inlinetask"
+  ]
+ },
+ {
+  "name": "inlinetask-in-a-list",
+  "text": "* H\n- item one\n*************** A task in a list\n  still the item?\n- item two\n",
+  "require": [
+   "org-inlinetask"
+  ]
+ },
+ {
+  "name": "inlinetask-unloaded",
+  "text": "* Heading\n*************** TODO A task\nbody\n*************** END\nText.\n"
  }
 ]

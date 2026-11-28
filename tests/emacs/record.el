@@ -437,9 +437,22 @@ answers come, and then from its answers, as save-some-buffers' do."
 (defun e8-oracle--run (case)
   "Type CASE's keys and return the buffer's state afterwards, as an alist,
 its `globals' bound for the case, before the modes start."
-  (let ((globals (alist-get 'globals case)))
-    (prog1 (cl-progv (mapcar #'car globals) (mapcar (lambda (g) (e8-oracle--value (cdr g))) globals)
-             (e8-oracle--run-1 case))
+  (let ((globals (alist-get 'globals case))
+        (features (mapcar #'intern (alist-get 'require case))))
+    ;; The libraries the case loads, as a config's (require 'org-inlinetask),
+    ;; before its globals are bound, and unloaded after it, so no later
+    ;; case sees them.
+    (mapc #'require features)
+    (prog1 (unwind-protect
+               (cl-progv (mapcar #'car globals) (mapcar (lambda (g) (e8-oracle--value (cdr g))) globals)
+                 (e8-oracle--run-1 case))
+             (dolist (f (reverse features))
+               (when (featurep f)
+                 ;; Keys a library binds in a mode's map stay after it is
+                 ;; unloaded, naming a function it took away.
+                 (when (eq f 'org-inlinetask)
+                   (define-key org-mode-map "\C-c\C-xt" nil))
+                 (unload-feature f t))))
       ;; A case that brought Org's parser up to date with its globals or
       ;; its buffer's own values, as org-list-allow-alphabetical, from
       ;; `call' or `modes', leaves it as the defaults have it.
@@ -778,6 +791,7 @@ The whole buffer, even if the case left it narrowed."
   "The current buffer's state after CASE, widened, as an alist."
       `((name . ,(alist-get 'name case))
         (input . ((text . ,text) (point . ,start) (keys . ,keys)
+                  ,@(and (alist-get 'require case) `((require . ,(vconcat (alist-get 'require case)))))
                   (modes . ,(vconcat (alist-get 'modes case)))
                   (call . ,(vconcat (alist-get 'call case)))
                   (platform . ,(alist-get 'platform case))

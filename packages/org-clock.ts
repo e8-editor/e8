@@ -31,6 +31,7 @@ import {
   type Heading,
   headingIndex,
   headings,
+  inlinetaskOrHeading,
   isDone,
   keepMarkerThroughSort,
   keepMarkersThroughMoves,
@@ -153,10 +154,10 @@ function drawerName(h?: Heading): string | undefined {
 
 const CLOCK_LINE = /^[ \t]*CLOCK: \[(\d{4})-(\d\d)-(\d\d) \S+ (\d\d):(\d\d)\](?:--\[[^\]]*\] =>\s+(?:(\d+)d )?(\d+):(\d\d))?[ \t]*$/;
 
-/** The heading point is in, or the error Org gives before the first. */
+/** The heading point is in, an inline task it is in with org-inlinetask, or the error Org gives before the first. */
 function headingHere(): [Heading[], number] {
   const all = headings();
-  const i = headingIndex(all, lineAt());
+  const i = inlinetaskOrHeading(all, headingIndex(all, lineAt()));
   if (i === undefined) e8.userError("Before first headline at position " + (e8.point() + 1) + " in buffer " + e8.bufferName());
   return [all, i];
 }
@@ -189,11 +190,19 @@ function clockedBefore(all: Heading[], i: number): { minutes: number; extra: str
     extra = "showing task time since last repeat.";
     tstart = lr === undefined ? undefined : matcherTime(lr);
   }
-  // The whole subtree's, as org-clock-sum-current-item.
+  // The whole subtree's, as org-clock-sum-current-item; an inline task's
+  // own, from its heading to its END line, with org-inlinetask.
   const minutes = e8.saveExcursion(() =>
     e8.saveRestriction(() => {
       e8.gotoChar(h.start);
-      e8.call("org-narrow-to-subtree");
+      if (e8.fboundp("org-inlinetask-in-task-p") && (truthy(e8.funcall("org-inlinetask-at-task-p") ?? null) || truthy(e8.funcall("org-inlinetask-in-task-p") ?? null))) {
+        const beg = e8.saveExcursion(() => {
+          e8.funcall("org-inlinetask-goto-beginning");
+          return e8.point();
+        });
+        const end = e8.saveExcursion(() => Number(e8.funcall("org-inlinetask-goto-end")));
+        e8.narrowToRegion(beg, end);
+      } else e8.call("org-narrow-to-subtree");
       return clockSum(tstart);
     }),
   );

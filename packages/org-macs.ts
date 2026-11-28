@@ -89,6 +89,32 @@ export function charAt(pos: number): string {
   return pos >= 0 && pos < e8.bufferSize() ? e8.bufferText(pos, pos + 1) : "";
 }
 
+/**
+ * The fewest stars an inline task has, when org-inlinetask is loaded, as
+ * org-inlinetask-outline-regexp counts them: org-inlinetask-min-level, or
+ * 2N-1 with org-odd-levels-only. Undefined without it, as Org's
+ * (featurep 'org-inlinetask) is nil, or with the level nil. Org's core
+ * asks (boundp 'org-inlinetask-min-level) where E8 has no featurep.
+ */
+export function inlinetaskStars(): number | undefined {
+  if (!e8.boundp("org-inlinetask-min-level")) return undefined;
+  const min = e8.variable("org-inlinetask-min-level");
+  if (typeof min !== "number") return undefined;
+  return e8.variable("org-odd-levels-only") === true ? 2 * min - 1 : min;
+}
+
+/**
+ * The most stars a heading has to the commands that leave inline tasks
+ * out, as org-get-limited-outline-regexp counts them: one level less than
+ * org-inlinetask-min-level, 2N-1 stars for it with org-odd-levels-only.
+ * Infinity without org-inlinetask.
+ */
+export function limitedStars(): number {
+  if (inlinetaskStars() === undefined) return Infinity;
+  const limit = (e8.variable("org-inlinetask-min-level") as number) - 1;
+  return e8.variable("org-odd-levels-only") === true ? 2 * limit - 1 : limit;
+}
+
 /** Puts this package's markers in the current buffer where `moved` says, after an edit that moved them its own way. */
 export function placeMarkers(saved: [Marker, number][]): void {
   const here = e8.bufferName();

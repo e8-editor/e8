@@ -2,7 +2,7 @@
 
 These files check E8's full Org parse, `parseBuffer` in `packages/org-element.ts`, against Emacs's `org-element-parse-buffer`, which Org's exporter and much else read documents through.
 
-- `cases.json`: the texts, each `{"name", "text"}`.
+- `cases.json`: the texts, each `{"name", "text"}`, and `"require"`, a list of libraries loaded for that case alone, as `["org-inlinetask"]`, which makes headings of 15 stars inline tasks.
 - `dump.el`: parses each text in an Org mode buffer of batch Emacs and writes `golden.json`.
 - `golden.json`: for each case, the tree Emacs's Org gives and the text `org-element-interpret-data` writes back from it. Committed, so the test runs without Emacs.
 - `crates/e8-script/tests/all/org_element_parse.rs`: parses each text in E8 and compares, naming the first place each case differs.
