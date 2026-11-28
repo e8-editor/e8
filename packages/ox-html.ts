@@ -2,14 +2,17 @@
 // XHTML or HTML5 page, its headings as nested sections, with a table of
 // contents, footnotes, tables, images and MathJax for LaTeX.
 //
-// Source blocks are not fontified: E8 has no htmlize, so their code is
-// written as plain text, as Org writes it without htmlize. LaTeX as images
-// (dvipng and its kin) and the info.js viewer are left out for now.
+// Source blocks are coloured by htmlize.ts in their language's mode, as
+// org-html-htmlize-output-type says. LaTeX as images (dvipng and its kin)
+// and the info.js viewer are left out for now.
 
 import { ALL_ELEMENTS, ALL_OBJECTS, type Datum, type Node, ancestor, contents as contentsOf, map, mapFirst, property, typeOf } from "org-element-ast";
 import { interpretData, normalizeString } from "org-element";
 import { EXPORT_PARAMS } from "org-loaddefs";
 import { browseUrl } from "browse-url";
+import { htmlizeRegion, placesText } from "htmlize";
+import { langMode } from "org-src";
+import { eraseBuffer } from "subr";
 import { fileRelativeName as publishFileRelativeName, plistGet, publishOrgTo, resolveExternalLink as publishResolveExternalLink } from "ox-publish";
 import {
   type Backend,
@@ -348,6 +351,9 @@ function buildHead(info: Info): string {
     (nonNil(info["html-head-include-default-style"]) ? normalizeString(String(varValue("org-html-style-default"))) : "") +
       normalizeString(String(info["html-head"] || "")) +
       normalizeString(String(info["html-head-extra"] || "")) +
+      (nonNil(info["html-htmlized-css-url"]) && varValue("org-html-htmlize-output-type") === "css"
+        ? closeTag("link", format('rel="stylesheet" href="%s" type="text/css"', info["html-htmlized-css-url"]), info)
+        : "") +
       (nonNil(info["html-head-include-scripts"]) ? String(varValue("org-html-scripts")) : ""),
   );
 }
@@ -513,9 +519,67 @@ function tagsHtml(tags: string[] | undefined, info: Info | undefined): string | 
 
 // --- Source code ---------------------------------------------------------------
 
-/** Code as HTML: escaped, as Org writes it without htmlize, which E8 does not have. */
-export function fontifyCode(code: string | undefined, _lang?: string): string | undefined {
-  return code === undefined ? undefined : encodePlainText(code);
+/**
+ * The text from start to end as HTML, as org-html-htmlize-region-for-paste:
+ * the <pre> htmlize makes, in org-html-htmlize-output-type, its classes
+ * prefixed with org-html-htmlize-font-prefix. With `fontified`, as for a
+ * source block, the text's faces are taken as they are.
+ */
+export function htmlizeRegionForPaste(start: number, end: number, fontified = false): string {
+  const bindings = { "htmlize-output-type": e8.variable("org-html-htmlize-output-type") ?? null, "htmlize-css-name-prefix": e8.variable("org-html-htmlize-font-prefix") ?? "" };
+  return e8.letBind(bindings, () => {
+    const html = htmlizeRegion(start, end, { fontified });
+    try {
+      return placesText(html, "content-start", "content-end");
+    } finally {
+      e8.call("kill-buffer", html);
+    }
+  });
+}
+
+/**
+ * Code as HTML, as org-html-fontify-code: coloured by htmlize in its
+ * language's mode, which org-src-lang-modes names, in the faces that mode
+ * gives it; only escaped with no language, no such mode, or
+ * org-html-htmlize-output-type nil.
+ */
+export function fontifyCode(code: string | undefined, lang?: string): string | undefined {
+  if (code === undefined) return undefined;
+  if (!lang || !nonNil(varValue("org-html-htmlize-output-type"))) return encodePlainText(code);
+  const mode = langMode(lang);
+  if (!e8.fboundp(mode)) return encodePlainText(code);
+  const name = e8.generateNewBufferName(" *Org HTML fontify*");
+  e8.getBufferCreate(name);
+  let html: string;
+  try {
+    html = e8.withCurrentBuffer(name, () =>
+      e8.letBind({ "inhibit-read-only": true }, () => {
+        e8.bufferDisableUndo();
+        e8.call(mode as e8.CommandName);
+        e8.insert(code);
+        e8.call("font-lock-ensure");
+        // A tree-sitter mode's faces come from its syntax tree, not properties, until asked for.
+        const end = e8.pointMax();
+        if (e8.treesitLanguage() !== undefined) e8.treesitFontLockFontifyRegion(e8.pointMin(), end);
+        // No face on the newlines, so that no span goes on to the next line.
+        let p = e8.pointMin();
+        for (const ch of code) {
+          if (ch === "\n") {
+            e8.putTextProperty(p, p + 1, "face", null);
+            e8.putTextProperty(p, p + 1, "font-lock-face", null);
+          }
+          p++;
+        }
+        e8.setBufferModified(false);
+        return htmlizeRegionForPaste(e8.pointMin(), end, true);
+      }),
+    );
+  } finally {
+    e8.call("kill-buffer", name);
+  }
+  // Without the enclosing <pre></pre> tags.
+  const beg = /^<pre[^>]*>\n?/.exec(html);
+  return beg && html.endsWith("</pre>") ? html.slice(beg[0].length, html.length - "</pre>".length) : html;
 }
 
 function doFormatCode(code: string, lang?: string, refs: [number, string][] = [], retainLabels = false, numStart?: number, wrapLines = false): string {
@@ -1371,6 +1435,50 @@ e8.defineCommand({
   params: EXPORT_PARAMS,
   run: (a, s, v, b, e) => {
     exportToHtml(a, s, v, b, e);
+  },
+});
+
+e8.defun("org-html-htmlize-region-for-paste", (beg: number, end: number) => htmlizeRegionForPaste(beg, end));
+
+e8.defineCommand({
+  name: "org-html-htmlize-generate-css",
+  doc:
+    "Create the CSS for all font definitions in the current Emacs session.\n\n" +
+    "The *html* buffer then holds a class for each face, its name prefixed with org-html-htmlize-font-prefix, to copy into a style sheet; " +
+    "with org-html-htmlize-output-type css, source blocks are exported with these classes.",
+  run: () => {
+    const old = e8.getBuffer("*html*");
+    if (old) e8.call("kill-buffer", "*html*");
+    const temp = e8.generateNewBufferName(" *Org HTML htmlize CSS*");
+    e8.getBufferCreate(temp);
+    let html: string;
+    try {
+      html = e8.withCurrentBuffer(temp, () =>
+        e8.letBind({ "htmlize-css-name-prefix": e8.variable("org-html-htmlize-font-prefix") ?? "", "htmlize-output-type": e8.intern("css") }, () => {
+          for (const face of e8.faceList()) {
+            const inherit = e8.faceAttribute(face, ":inherit");
+            if (Array.isArray(inherit) && inherit.length > 0) continue;
+            const at = e8.point();
+            e8.insert("1");
+            e8.putTextProperty(at, at + 1, "face", face);
+          }
+          return htmlizeRegion(e8.pointMin(), e8.pointMax(), { fontified: true });
+        }),
+      );
+    } finally {
+      e8.call("kill-buffer", temp);
+    }
+    e8.call("pop-to-buffer-same-window", html);
+    // Only the style sheet, as Org leaves it: from <style to the line after </style>, that line's indentation gone.
+    const text = e8.bufferText();
+    const start = text.indexOf("<style");
+    const close = text.indexOf("</style>", Math.max(start, 0));
+    if (start >= 0 && close >= 0) {
+      const kept = text.slice(start, close + "</style>".length + 1);
+      eraseBuffer();
+      e8.insert(kept.replace(/\n +(<\/style>\n?)$/, "\n$1"));
+    }
+    e8.gotoChar(e8.pointMin());
   },
 });
 

@@ -98,6 +98,7 @@ mod org_clocktable;
 mod org_columns;
 mod org_element_parse;
 mod org_export;
+mod htmlize;
 mod org_publish;
 mod org_link_types;
 mod org_timestamps;
