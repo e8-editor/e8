@@ -56,6 +56,7 @@ import { lineAt, orgFitWindowToBuffer, orgPopToBufferSplit, orgRegionActive } fr
 import { initializeTemplates, replaceAll as macroReplaceAll } from "org-macro";
 import { processBuffer as babelExpProcessBuffer } from "ob-exp";
 import { DICTIONARY } from "ox-dictionary";
+import { finalizeExport as citeFinalizeExport, processBibliography as citeProcessBibliography, processCitations as citeProcessCitations, setExportFunctions as setCiteExportFunctions, storeBibliography as citeStoreBibliography, storeExportProcessor as citeStoreExportProcessor } from "oc";
 
 // --- Values ----------------------------------------------------------------
 
@@ -344,8 +345,8 @@ export const OPTIONS: OptionEntry[] = [
   ["with-timestamps", undefined, "<", "org-export-with-timestamps"],
   ["with-title", undefined, "title", "org-export-with-title"],
   ["with-todo-keywords", undefined, "todo", "org-export-with-todo-keywords"],
-  ["with-cite-processors", undefined, undefined, () => false],
-  ["cite-export", "CITE_EXPORT", undefined, undefined],
+  ["with-cite-processors", undefined, undefined, "org-export-process-citations"],
+  ["cite-export", "CITE_EXPORT", undefined, "org-cite-export-processors"],
 ];
 
 /** The filters every export installs, by property, and the variable holding the user's, as org-export-filters-alist. */
@@ -1167,7 +1168,9 @@ export function exportAs(backendName: string | Backend, subtreep = false, visibl
           const inner = translate["inner-template"];
           const fullBody = applyFilters(info["filter-body"], typeof inner === "function" ? inner(body, info) : body, info);
           const template = translate["template"];
-          const output = typeof template !== "function" || bodyOnly ? fullBody : template(fullBody, info);
+          let output = typeof template !== "function" || bodyOnly ? fullBody : template(fullBody, info);
+          // The citation processor's finalizer.
+          if (nonNil(info["with-cite-processors"])) output = citeFinalizeExport(output, info);
           return applyFilters(info["filter-final-output"], output, info);
         }),
       );
@@ -1193,6 +1196,11 @@ function annotateInfo(backend: Backend, info: Info, subtreep: boolean, visibleOn
   e8.gotoChar(e8.pointMin());
   e8.saveExcursion(() => runHook("org-export-before-parsing-functions", backend.name ?? null));
   info = { ...info, ...getEnvironment(backend, subtreep, extPlist) };
+  // The bibliography and the citation processor, in the communication channel.
+  if (nonNil(info["with-cite-processors"])) {
+    citeStoreBibliography(info);
+    citeStoreExportProcessor(info);
+  }
   for (const entry of [...getAllOptions(backend), ...OPTIONS])
     if (entry[4] === "parse" && Array.isArray(info[entry[0]])) info[entry[0]] = removeUninterpretedData(info[entry[0]], info);
   info = installFilters(info);
@@ -1205,7 +1213,13 @@ function annotateInfo(backend: Backend, info: Info, subtreep: boolean, visibleOn
   removeUninterpretedData(tree, info);
   expandLinks(tree, info);
   tree = applyFilters(info["filter-parse-tree"], tree, info);
-  return collectTreeProperties(tree, info);
+  info = collectTreeProperties(tree, info);
+  // Each citation and #+print_bibliography: keyword replaced with what the processor makes of it.
+  if (nonNil(info["with-cite-processors"])) {
+    citeProcessCitations(info);
+    citeProcessBibliography(info);
+  }
+  return info;
 }
 
 /** Export a string of Org text, as org-export-string-as. */
@@ -3149,3 +3163,6 @@ e8.defineCommand({
     }
   },
 });
+
+// The exporter's functions oc.ts exports citations through.
+setCiteExportFunctions({ data, rawString, derivedBackendP, getPreviousElement, getNextElement });

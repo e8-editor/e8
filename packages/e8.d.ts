@@ -6156,6 +6156,14 @@ declare global {
        */
       "org-check-deadlines": [ndays?: PrefixArg | boolean];
       /**
+       * Insert a citation at point, as org-cite-insert-processor does; with a prefix argument, its style too.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-loaddefs.ts.
+       */
+      "org-cite-insert": [arg?: PrefixArg | boolean];
+      /**
        * Cancel the running clock, taking its CLOCK: line away.
        *
        * Defined in packages/org-clock.ts.
