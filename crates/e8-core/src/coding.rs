@@ -790,6 +790,14 @@ pub fn set_priority(codings: &[Coding]) {
     });
 }
 
+/// Forgets the coding systems preferred, so detection tries E8's own order,
+/// as a fresh Emacs's has it. The preference is kept for the thread, not
+/// the editor, so tests that make many editors on one thread start each
+/// afresh with this, as record.el resets it before each case.
+pub fn reset_priority() {
+    PRIORITY.with(|p| p.borrow_mut().clear());
+}
+
 /// The coding systems in the order detection tries them, as Emacs's
 /// `coding-system-priority-list`: those preferred, then E8's own order.
 pub fn priority_list() -> Vec<Coding> {
