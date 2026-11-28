@@ -1,0 +1,791 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "styles-ascii",
+      "input": {
+        "text": "#+title: Citations\n#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nPlain [cite:@knuth84] and two [cite:@lamport94;@org].\nWith affixes [cite:see @knuth84 p. 3;also @lamport94b].\nGlobal affixes [cite:Compare ;@knuth84;@lamport94; for more].\nStyles: [cite/author:@knuth84], [cite/a/c:@lamport94], [cite/noauthor:@knuth84],\n[cite/na/b:@org], [cite/text:@lamport94b], [cite/t/b:@org], [cite/nocite:@lamport94]\nand [cite/numeric:@knuth84;@org;@lamport94] and [cite//b:@knuth84] and [cite/caps:@org].\nMissing [cite:@nobody].\n\n* References\n#+print_bibliography:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-ascii-export-as-ascii"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "files": {
+          "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+        },
+        "find": "doc.org",
+        "globals": {
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-ascii-charset": "'ascii"
+        }
+      },
+      "text": "                              ___________\n\n                               CITATIONS\n                              ___________\n\n\nPlain (Knuth, Donald E., 1984) and two (Lamport, Leslie and Smith, John,\n1994, Org Team, 2021).  With affixes (see Knuth, Donald E., 1984 p. 3,\nalso Lamport, Leslie and Smith, John, 1994a).  Global affixes (Compare\nKnuth, Donald E., 1984, Lamport, Leslie and Smith, John, 1994 for more).\nStyles: Knuth, Donald E., Lamport, Leslie And Smith, John, (1984), 2021,\nLamport, Leslie and Smith, John (1994a), Org Team 2021, and (1, 2, 4)\nand Knuth, Donald E., 1984 and (Org Team, 2021).  Missing (??, ????).\n\n\n1 References\n============\n\n  Knuth, Donald E. (1984). /The \\TeXbook/, Addison-Wesley.\n\n  Lamport, Leslie and Smith, John (1994). /LaTeX: A Document Preparation\n  System/, Journal of Things.\n\n  Lamport, Leslie and Smith, John (1994a). /More Things/, Free Press.\n\n  Org Team (2021). /The Org Manual/, GNU Project.\n",
+      "visible": "                              ___________\n\n                               CITATIONS\n                              ___________\n\n\nPlain (Knuth, Donald E., 1984) and two (Lamport, Leslie and Smith, John,\n1994, Org Team, 2021).  With affixes (see Knuth, Donald E., 1984 p. 3,\nalso Lamport, Leslie and Smith, John, 1994a).  Global affixes (Compare\nKnuth, Donald E., 1984, Lamport, Leslie and Smith, John, 1994 for more).\nStyles: Knuth, Donald E., Lamport, Leslie And Smith, John, (1984), 2021,\nLamport, Leslie and Smith, John (1994a), Org Team 2021, and (1, 2, 4)\nand Knuth, Donald E., 1984 and (Org Team, 2021).  Missing (??, ????).\n\n\n1 References\n============\n\n  Knuth, Donald E. (1984). /The \\TeXbook/, Addison-Wesley.\n\n  Lamport, Leslie and Smith, John (1994). /LaTeX: A Document Preparation\n  System/, Journal of Things.\n\n  Lamport, Leslie and Smith, John (1994a). /More Things/, Free Press.\n\n  Org Team (2021). /The Org Manual/, GNU Project.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "doc.org": "#+title: Citations\n#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nPlain [cite:@knuth84] and two [cite:@lamport94;@org].\nWith affixes [cite:see @knuth84 p. 3;also @lamport94b].\nGlobal affixes [cite:Compare ;@knuth84;@lamport94; for more].\nStyles: [cite/author:@knuth84], [cite/a/c:@lamport94], [cite/noauthor:@knuth84],\n[cite/na/b:@org], [cite/text:@lamport94b], [cite/t/b:@org], [cite/nocite:@lamport94]\nand [cite/numeric:@knuth84;@org;@lamport94] and [cite//b:@knuth84] and [cite/caps:@org].\nMissing [cite:@nobody].\n\n* References\n#+print_bibliography:\n",
+        "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+      }
+    },
+    {
+      "name": "styles-md",
+      "input": {
+        "text": "#+title: Citations\n#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nPlain [cite:@knuth84] and two [cite:@lamport94;@org].\nWith affixes [cite:see @knuth84 p. 3;also @lamport94b].\nGlobal affixes [cite:Compare ;@knuth84;@lamport94; for more].\nStyles: [cite/author:@knuth84], [cite/a/c:@lamport94], [cite/noauthor:@knuth84],\n[cite/na/b:@org], [cite/text:@lamport94b], [cite/t/b:@org], [cite/nocite:@lamport94]\nand [cite/numeric:@knuth84;@org;@lamport94] and [cite//b:@knuth84] and [cite/caps:@org].\nMissing [cite:@nobody].\n\n* References\n#+print_bibliography:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-md-export-as-markdown"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "files": {
+          "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+        },
+        "find": "doc.org",
+        "globals": {
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com"
+        }
+      },
+      "text": "Plain (Knuth, Donald E., 1984) and two (Lamport, Leslie and Smith, John, 1994, Org Team, 2021).\nWith affixes (see Knuth, Donald E., 1984 p. 3, also Lamport, Leslie and Smith, John, 1994a).\nGlobal affixes (Compare Knuth, Donald E., 1984, Lamport, Leslie and Smith, John, 1994 for more).\nStyles: Knuth, Donald E., Lamport, Leslie And Smith, John, (1984),\n2021, Lamport, Leslie and Smith, John (1994a), Org Team 2021,\nand (1, 2, 4) and Knuth, Donald E., 1984 and (Org Team, 2021).\nMissing (??, ????).\n\n\n# References\n\nKnuth, Donald E. (1984). *The \\TeXbook*, Addison-Wesley.\n\nLamport, Leslie and Smith, John (1994). *LaTeX: A Document Preparation System*, Journal of Things.\n\nLamport, Leslie and Smith, John (1994a). *More Things*, Free Press.\n\nOrg Team (2021). *The Org Manual*, GNU Project.\n\n",
+      "visible": "Plain (Knuth, Donald E., 1984) and two (Lamport, Leslie and Smith, John, 1994, Org Team, 2021).\nWith affixes (see Knuth, Donald E., 1984 p. 3, also Lamport, Leslie and Smith, John, 1994a).\nGlobal affixes (Compare Knuth, Donald E., 1984, Lamport, Leslie and Smith, John, 1994 for more).\nStyles: Knuth, Donald E., Lamport, Leslie And Smith, John, (1984),\n2021, Lamport, Leslie and Smith, John (1994a), Org Team 2021,\nand (1, 2, 4) and Knuth, Donald E., 1984 and (Org Team, 2021).\nMissing (??, ????).\n\n\n# References\n\nKnuth, Donald E. (1984). *The \\TeXbook*, Addison-Wesley.\n\nLamport, Leslie and Smith, John (1994). *LaTeX: A Document Preparation System*, Journal of Things.\n\nLamport, Leslie and Smith, John (1994a). *More Things*, Free Press.\n\nOrg Team (2021). *The Org Manual*, GNU Project.\n\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "doc.org": "#+title: Citations\n#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nPlain [cite:@knuth84] and two [cite:@lamport94;@org].\nWith affixes [cite:see @knuth84 p. 3;also @lamport94b].\nGlobal affixes [cite:Compare ;@knuth84;@lamport94; for more].\nStyles: [cite/author:@knuth84], [cite/a/c:@lamport94], [cite/noauthor:@knuth84],\n[cite/na/b:@org], [cite/text:@lamport94b], [cite/t/b:@org], [cite/nocite:@lamport94]\nand [cite/numeric:@knuth84;@org;@lamport94] and [cite//b:@knuth84] and [cite/caps:@org].\nMissing [cite:@nobody].\n\n* References\n#+print_bibliography:\n",
+        "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+      }
+    },
+    {
+      "name": "styles-html",
+      "input": {
+        "text": "#+title: Citations\n#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nPlain [cite:@knuth84] and two [cite:@lamport94;@org].\nWith affixes [cite:see @knuth84 p. 3;also @lamport94b].\nGlobal affixes [cite:Compare ;@knuth84;@lamport94; for more].\nStyles: [cite/author:@knuth84], [cite/a/c:@lamport94], [cite/noauthor:@knuth84],\n[cite/na/b:@org], [cite/text:@lamport94b], [cite/t/b:@org], [cite/nocite:@lamport94]\nand [cite/numeric:@knuth84;@org;@lamport94] and [cite//b:@knuth84] and [cite/caps:@org].\nMissing [cite:@nobody].\n\n* References\n#+print_bibliography:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-html-export-as-html"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "files": {
+          "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+        },
+        "find": "doc.org",
+        "globals": {
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-html-postamble": false,
+          "org-export-timestamp-file": false
+        }
+      },
+      "text": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" xml:lang=\"en\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<title>Citations</title>\n<meta name=\"generator\" content=\"Org Mode\" />\n<style type=\"text/css\">\n  #content { max-width: 60em; margin: auto; }\n  .title  { text-align: center;\n             margin-bottom: .2em; }\n  .subtitle { text-align: center;\n              font-size: medium;\n              font-weight: bold;\n              margin-top:0; }\n  .todo   { font-family: monospace; color: red; }\n  .done   { font-family: monospace; color: green; }\n  .priority { font-family: monospace; color: orange; }\n  .tag    { background-color: #eee; font-family: monospace;\n            padding: 2px; font-size: 80%; font-weight: normal; }\n  .timestamp { color: #bebebe; }\n  .timestamp-kwd { color: #5f9ea0; }\n  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }\n  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }\n  .org-center { margin-left: auto; margin-right: auto; text-align: center; }\n  .underline { text-decoration: underline; }\n  #postamble p, #preamble p { font-size: 90%; margin: .2em; }\n  p.verse { margin-left: 3%; }\n  pre {\n    border: 1px solid #e6e6e6;\n    border-radius: 3px;\n    background-color: #f2f2f2;\n    padding: 8pt;\n    font-family: monospace;\n    overflow: auto;\n    margin: 1.2em;\n  }\n  pre.src {\n    position: relative;\n    overflow: auto;\n  }\n  pre.src:before {\n    display: none;\n    position: absolute;\n    top: -8px;\n    right: 12px;\n    padding: 3px;\n    color: #555;\n    background-color: #f2f2f299;\n  }\n  pre.src:hover:before { display: inline; margin-top: 14px;}\n  /* Languages per Org manual */\n  pre.src-asymptote:before { content: 'Asymptote'; }\n  pre.src-awk:before { content: 'Awk'; }\n  pre.src-authinfo::before { content: 'Authinfo'; }\n  pre.src-C:before { content: 'C'; }\n  /* pre.src-C++ doesn't work in CSS */\n  pre.src-clojure:before { content: 'Clojure'; }\n  pre.src-css:before { content: 'CSS'; }\n  pre.src-D:before { content: 'D'; }\n  pre.src-ditaa:before { content: 'ditaa'; }\n  pre.src-dot:before { content: 'Graphviz'; }\n  pre.src-calc:before { content: 'Emacs Calc'; }\n  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }\n  pre.src-fortran:before { content: 'Fortran'; }\n  pre.src-gnuplot:before { content: 'gnuplot'; }\n  pre.src-haskell:before { content: 'Haskell'; }\n  pre.src-hledger:before { content: 'hledger'; }\n  pre.src-java:before { content: 'Java'; }\n  pre.src-js:before { content: 'Javascript'; }\n  pre.src-latex:before { content: 'LaTeX'; }\n  pre.src-ledger:before { content: 'Ledger'; }\n  pre.src-lisp:before { content: 'Lisp'; }\n  pre.src-lilypond:before { content: 'Lilypond'; }\n  pre.src-lua:before { content: 'Lua'; }\n  pre.src-matlab:before { content: 'MATLAB'; }\n  pre.src-mscgen:before { content: 'Mscgen'; }\n  pre.src-ocaml:before { content: 'Objective Caml'; }\n  pre.src-octave:before { content: 'Octave'; }\n  pre.src-org:before { content: 'Org mode'; }\n  pre.src-oz:before { content: 'OZ'; }\n  pre.src-plantuml:before { content: 'Plantuml'; }\n  pre.src-processing:before { content: 'Processing.js'; }\n  pre.src-python:before { content: 'Python'; }\n  pre.src-R:before { content: 'R'; }\n  pre.src-ruby:before { content: 'Ruby'; }\n  pre.src-sass:before { content: 'Sass'; }\n  pre.src-scheme:before { content: 'Scheme'; }\n  pre.src-screen:before { content: 'Gnu Screen'; }\n  pre.src-sed:before { content: 'Sed'; }\n  pre.src-sh:before { content: 'shell'; }\n  pre.src-sql:before { content: 'SQL'; }\n  pre.src-sqlite:before { content: 'SQLite'; }\n  /* additional languages in org.el's org-babel-load-languages alist */\n  pre.src-forth:before { content: 'Forth'; }\n  pre.src-io:before { content: 'IO'; }\n  pre.src-J:before { content: 'J'; }\n  pre.src-makefile:before { content: 'Makefile'; }\n  pre.src-maxima:before { content: 'Maxima'; }\n  pre.src-perl:before { content: 'Perl'; }\n  pre.src-picolisp:before { content: 'Pico Lisp'; }\n  pre.src-scala:before { content: 'Scala'; }\n  pre.src-shell:before { content: 'Shell Script'; }\n  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }\n  /* additional language identifiers per \"defun org-babel-execute\"\n       in ob-*.el */\n  pre.src-cpp:before  { content: 'C++'; }\n  pre.src-abc:before  { content: 'ABC'; }\n  pre.src-coq:before  { content: 'Coq'; }\n  pre.src-groovy:before  { content: 'Groovy'; }\n  /* additional language identifiers from org-babel-shell-names in\n     ob-shell.el: ob-shell is the only babel language using a lambda to put\n     the execution function name together. */\n  pre.src-bash:before  { content: 'bash'; }\n  pre.src-csh:before  { content: 'csh'; }\n  pre.src-ash:before  { content: 'ash'; }\n  pre.src-dash:before  { content: 'dash'; }\n  pre.src-ksh:before  { content: 'ksh'; }\n  pre.src-mksh:before  { content: 'mksh'; }\n  pre.src-posh:before  { content: 'posh'; }\n  /* Additional Emacs modes also supported by the LaTeX listings package */\n  pre.src-ada:before { content: 'Ada'; }\n  pre.src-asm:before { content: 'Assembler'; }\n  pre.src-caml:before { content: 'Caml'; }\n  pre.src-delphi:before { content: 'Delphi'; }\n  pre.src-html:before { content: 'HTML'; }\n  pre.src-idl:before { content: 'IDL'; }\n  pre.src-mercury:before { content: 'Mercury'; }\n  pre.src-metapost:before { content: 'MetaPost'; }\n  pre.src-modula-2:before { content: 'Modula-2'; }\n  pre.src-pascal:before { content: 'Pascal'; }\n  pre.src-ps:before { content: 'PostScript'; }\n  pre.src-prolog:before { content: 'Prolog'; }\n  pre.src-simula:before { content: 'Simula'; }\n  pre.src-tcl:before { content: 'tcl'; }\n  pre.src-tex:before { content: 'TeX'; }\n  pre.src-plain-tex:before { content: 'Plain TeX'; }\n  pre.src-verilog:before { content: 'Verilog'; }\n  pre.src-vhdl:before { content: 'VHDL'; }\n  pre.src-xml:before { content: 'XML'; }\n  pre.src-nxml:before { content: 'XML'; }\n  /* add a generic configuration mode; LaTeX export needs an additional\n     (add-to-list 'org-latex-listings-langs '(conf \" \")) in .emacs */\n  pre.src-conf:before { content: 'Configuration File'; }\n\n  table { border-collapse:collapse; }\n  caption.t-above { caption-side: top; }\n  caption.t-bottom { caption-side: bottom; }\n  td, th { vertical-align:top;  }\n  th.org-right  { text-align: center;  }\n  th.org-left   { text-align: center;   }\n  th.org-center { text-align: center; }\n  td.org-right  { text-align: right;  }\n  td.org-left   { text-align: left;   }\n  td.org-center { text-align: center; }\n  dt { font-weight: bold; }\n  .footpara { display: inline; }\n  .footdef  { margin-bottom: 1em; }\n  .figure { padding: 1em; }\n  .figure p { text-align: center; }\n  .equation-container {\n    display: table;\n    text-align: center;\n    width: 100%;\n  }\n  .equation {\n    vertical-align: middle;\n  }\n  .equation-label {\n    display: table-cell;\n    text-align: right;\n    vertical-align: middle;\n  }\n  .inlinetask {\n    padding: 10px;\n    border: 2px solid gray;\n    margin: 10px;\n    background: #ffffcc;\n  }\n  #org-div-home-and-up\n   { text-align: right; font-size: 70%; white-space: nowrap; }\n  textarea { overflow-x: auto; }\n  .linenr { font-size: smaller }\n  .code-highlighted { background-color: #ffff00; }\n  .org-info-js_info-navigation { border-style: none; }\n  #org-info-js_console-label\n    { font-size: 10px; font-weight: bold; white-space: nowrap; }\n  .org-info-js_search-highlight\n    { background-color: #ffff00; color: #000000; font-weight: bold; }\n  .org-svg { }\n</style>\n</head>\n<body>\n<div id=\"content\" class=\"content\">\n<h1 class=\"title\">Citations</h1>\n<p>\nPlain (Knuth, Donald E., 1984) and two (Lamport, Leslie and Smith, John, 1994, Org Team, 2021).\nWith affixes (see Knuth, Donald E., 1984 p. 3, also Lamport, Leslie and Smith, John, 1994a).\nGlobal affixes (Compare Knuth, Donald E., 1984, Lamport, Leslie and Smith, John, 1994 for more).\nStyles: Knuth, Donald E., Lamport, Leslie And Smith, John, (1984),\n2021, Lamport, Leslie and Smith, John (1994a), Org Team 2021,\nand (1, 2, 4) and Knuth, Donald E., 1984 and (Org Team, 2021).\nMissing (??, ????).\n</p>\n<div id=\"outline-container-org0000001\" class=\"outline-2\">\n<h2 id=\"org0000001\"><span class=\"section-number-2\">1.</span> References</h2>\n<div class=\"outline-text-2\" id=\"text-1\">\n<p>\nKnuth, Donald E. (1984). <i>The \\TeXbook</i>, Addison-Wesley.</p>\n\n<p>\nLamport, Leslie and Smith, John (1994). <i>LaTeX: A Document Preparation System</i>, Journal of Things.</p>\n\n<p>\nLamport, Leslie and Smith, John (1994a). <i>More Things</i>, Free Press.</p>\n\n<p>\nOrg Team (2021). <i>The Org Manual</i>, GNU Project.</p>\n</div>\n</div>\n</div>\n</body>\n</html>",
+      "visible": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" xml:lang=\"en\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<title>Citations</title>\n<meta name=\"generator\" content=\"Org Mode\" />\n<style type=\"text/css\">\n  #content { max-width: 60em; margin: auto; }\n  .title  { text-align: center;\n             margin-bottom: .2em; }\n  .subtitle { text-align: center;\n              font-size: medium;\n              font-weight: bold;\n              margin-top:0; }\n  .todo   { font-family: monospace; color: red; }\n  .done   { font-family: monospace; color: green; }\n  .priority { font-family: monospace; color: orange; }\n  .tag    { background-color: #eee; font-family: monospace;\n            padding: 2px; font-size: 80%; font-weight: normal; }\n  .timestamp { color: #bebebe; }\n  .timestamp-kwd { color: #5f9ea0; }\n  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }\n  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }\n  .org-center { margin-left: auto; margin-right: auto; text-align: center; }\n  .underline { text-decoration: underline; }\n  #postamble p, #preamble p { font-size: 90%; margin: .2em; }\n  p.verse { margin-left: 3%; }\n  pre {\n    border: 1px solid #e6e6e6;\n    border-radius: 3px;\n    background-color: #f2f2f2;\n    padding: 8pt;\n    font-family: monospace;\n    overflow: auto;\n    margin: 1.2em;\n  }\n  pre.src {\n    position: relative;\n    overflow: auto;\n  }\n  pre.src:before {\n    display: none;\n    position: absolute;\n    top: -8px;\n    right: 12px;\n    padding: 3px;\n    color: #555;\n    background-color: #f2f2f299;\n  }\n  pre.src:hover:before { display: inline; margin-top: 14px;}\n  /* Languages per Org manual */\n  pre.src-asymptote:before { content: 'Asymptote'; }\n  pre.src-awk:before { content: 'Awk'; }\n  pre.src-authinfo::before { content: 'Authinfo'; }\n  pre.src-C:before { content: 'C'; }\n  /* pre.src-C++ doesn't work in CSS */\n  pre.src-clojure:before { content: 'Clojure'; }\n  pre.src-css:before { content: 'CSS'; }\n  pre.src-D:before { content: 'D'; }\n  pre.src-ditaa:before { content: 'ditaa'; }\n  pre.src-dot:before { content: 'Graphviz'; }\n  pre.src-calc:before { content: 'Emacs Calc'; }\n  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }\n  pre.src-fortran:before { content: 'Fortran'; }\n  pre.src-gnuplot:before { content: 'gnuplot'; }\n  pre.src-haskell:before { content: 'Haskell'; }\n  pre.src-hledger:before { content: 'hledger'; }\n  pre.src-java:before { content: 'Java'; }\n  pre.src-js:before { content: 'Javascript'; }\n  pre.src-latex:before { content: 'LaTeX'; }\n  pre.src-ledger:before { content: 'Ledger'; }\n  pre.src-lisp:before { content: 'Lisp'; }\n  pre.src-lilypond:before { content: 'Lilypond'; }\n  pre.src-lua:before { content: 'Lua'; }\n  pre.src-matlab:before { content: 'MATLAB'; }\n  pre.src-mscgen:before { content: 'Mscgen'; }\n  pre.src-ocaml:before { content: 'Objective Caml'; }\n  pre.src-octave:before { content: 'Octave'; }\n  pre.src-org:before { content: 'Org mode'; }\n  pre.src-oz:before { content: 'OZ'; }\n  pre.src-plantuml:before { content: 'Plantuml'; }\n  pre.src-processing:before { content: 'Processing.js'; }\n  pre.src-python:before { content: 'Python'; }\n  pre.src-R:before { content: 'R'; }\n  pre.src-ruby:before { content: 'Ruby'; }\n  pre.src-sass:before { content: 'Sass'; }\n  pre.src-scheme:before { content: 'Scheme'; }\n  pre.src-screen:before { content: 'Gnu Screen'; }\n  pre.src-sed:before { content: 'Sed'; }\n  pre.src-sh:before { content: 'shell'; }\n  pre.src-sql:before { content: 'SQL'; }\n  pre.src-sqlite:before { content: 'SQLite'; }\n  /* additional languages in org.el's org-babel-load-languages alist */\n  pre.src-forth:before { content: 'Forth'; }\n  pre.src-io:before { content: 'IO'; }\n  pre.src-J:before { content: 'J'; }\n  pre.src-makefile:before { content: 'Makefile'; }\n  pre.src-maxima:before { content: 'Maxima'; }\n  pre.src-perl:before { content: 'Perl'; }\n  pre.src-picolisp:before { content: 'Pico Lisp'; }\n  pre.src-scala:before { content: 'Scala'; }\n  pre.src-shell:before { content: 'Shell Script'; }\n  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }\n  /* additional language identifiers per \"defun org-babel-execute\"\n       in ob-*.el */\n  pre.src-cpp:before  { content: 'C++'; }\n  pre.src-abc:before  { content: 'ABC'; }\n  pre.src-coq:before  { content: 'Coq'; }\n  pre.src-groovy:before  { content: 'Groovy'; }\n  /* additional language identifiers from org-babel-shell-names in\n     ob-shell.el: ob-shell is the only babel language using a lambda to put\n     the execution function name together. */\n  pre.src-bash:before  { content: 'bash'; }\n  pre.src-csh:before  { content: 'csh'; }\n  pre.src-ash:before  { content: 'ash'; }\n  pre.src-dash:before  { content: 'dash'; }\n  pre.src-ksh:before  { content: 'ksh'; }\n  pre.src-mksh:before  { content: 'mksh'; }\n  pre.src-posh:before  { content: 'posh'; }\n  /* Additional Emacs modes also supported by the LaTeX listings package */\n  pre.src-ada:before { content: 'Ada'; }\n  pre.src-asm:before { content: 'Assembler'; }\n  pre.src-caml:before { content: 'Caml'; }\n  pre.src-delphi:before { content: 'Delphi'; }\n  pre.src-html:before { content: 'HTML'; }\n  pre.src-idl:before { content: 'IDL'; }\n  pre.src-mercury:before { content: 'Mercury'; }\n  pre.src-metapost:before { content: 'MetaPost'; }\n  pre.src-modula-2:before { content: 'Modula-2'; }\n  pre.src-pascal:before { content: 'Pascal'; }\n  pre.src-ps:before { content: 'PostScript'; }\n  pre.src-prolog:before { content: 'Prolog'; }\n  pre.src-simula:before { content: 'Simula'; }\n  pre.src-tcl:before { content: 'tcl'; }\n  pre.src-tex:before { content: 'TeX'; }\n  pre.src-plain-tex:before { content: 'Plain TeX'; }\n  pre.src-verilog:before { content: 'Verilog'; }\n  pre.src-vhdl:before { content: 'VHDL'; }\n  pre.src-xml:before { content: 'XML'; }\n  pre.src-nxml:before { content: 'XML'; }\n  /* add a generic configuration mode; LaTeX export needs an additional\n     (add-to-list 'org-latex-listings-langs '(conf \" \")) in .emacs */\n  pre.src-conf:before { content: 'Configuration File'; }\n\n  table { border-collapse:collapse; }\n  caption.t-above { caption-side: top; }\n  caption.t-bottom { caption-side: bottom; }\n  td, th { vertical-align:top;  }\n  th.org-right  { text-align: center;  }\n  th.org-left   { text-align: center;   }\n  th.org-center { text-align: center; }\n  td.org-right  { text-align: right;  }\n  td.org-left   { text-align: left;   }\n  td.org-center { text-align: center; }\n  dt { font-weight: bold; }\n  .footpara { display: inline; }\n  .footdef  { margin-bottom: 1em; }\n  .figure { padding: 1em; }\n  .figure p { text-align: center; }\n  .equation-container {\n    display: table;\n    text-align: center;\n    width: 100%;\n  }\n  .equation {\n    vertical-align: middle;\n  }\n  .equation-label {\n    display: table-cell;\n    text-align: right;\n    vertical-align: middle;\n  }\n  .inlinetask {\n    padding: 10px;\n    border: 2px solid gray;\n    margin: 10px;\n    background: #ffffcc;\n  }\n  #org-div-home-and-up\n   { text-align: right; font-size: 70%; white-space: nowrap; }\n  textarea { overflow-x: auto; }\n  .linenr { font-size: smaller }\n  .code-highlighted { background-color: #ffff00; }\n  .org-info-js_info-navigation { border-style: none; }\n  #org-info-js_console-label\n    { font-size: 10px; font-weight: bold; white-space: nowrap; }\n  .org-info-js_search-highlight\n    { background-color: #ffff00; color: #000000; font-weight: bold; }\n  .org-svg { }\n</style>\n</head>\n<body>\n<div id=\"content\" class=\"content\">\n<h1 class=\"title\">Citations</h1>\n<p>\nPlain (Knuth, Donald E., 1984) and two (Lamport, Leslie and Smith, John, 1994, Org Team, 2021).\nWith affixes (see Knuth, Donald E., 1984 p. 3, also Lamport, Leslie and Smith, John, 1994a).\nGlobal affixes (Compare Knuth, Donald E., 1984, Lamport, Leslie and Smith, John, 1994 for more).\nStyles: Knuth, Donald E., Lamport, Leslie And Smith, John, (1984),\n2021, Lamport, Leslie and Smith, John (1994a), Org Team 2021,\nand (1, 2, 4) and Knuth, Donald E., 1984 and (Org Team, 2021).\nMissing (??, ????).\n</p>\n<div id=\"outline-container-org0000001\" class=\"outline-2\">\n<h2 id=\"org0000001\"><span class=\"section-number-2\">1.</span> References</h2>\n<div class=\"outline-text-2\" id=\"text-1\">\n<p>\nKnuth, Donald E. (1984). <i>The \\TeXbook</i>, Addison-Wesley.</p>\n\n<p>\nLamport, Leslie and Smith, John (1994). <i>LaTeX: A Document Preparation System</i>, Journal of Things.</p>\n\n<p>\nLamport, Leslie and Smith, John (1994a). <i>More Things</i>, Free Press.</p>\n\n<p>\nOrg Team (2021). <i>The Org Manual</i>, GNU Project.</p>\n</div>\n</div>\n</div>\n</body>\n</html>",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "doc.org": "#+title: Citations\n#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nPlain [cite:@knuth84] and two [cite:@lamport94;@org].\nWith affixes [cite:see @knuth84 p. 3;also @lamport94b].\nGlobal affixes [cite:Compare ;@knuth84;@lamport94; for more].\nStyles: [cite/author:@knuth84], [cite/a/c:@lamport94], [cite/noauthor:@knuth84],\n[cite/na/b:@org], [cite/text:@lamport94b], [cite/t/b:@org], [cite/nocite:@lamport94]\nand [cite/numeric:@knuth84;@org;@lamport94] and [cite//b:@knuth84] and [cite/caps:@org].\nMissing [cite:@nobody].\n\n* References\n#+print_bibliography:\n",
+        "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+      }
+    },
+    {
+      "name": "styles-org",
+      "input": {
+        "text": "#+title: Citations\n#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nPlain [cite:@knuth84] and two [cite:@lamport94;@org].\nWith affixes [cite:see @knuth84 p. 3;also @lamport94b].\nGlobal affixes [cite:Compare ;@knuth84;@lamport94; for more].\nStyles: [cite/author:@knuth84], [cite/a/c:@lamport94], [cite/noauthor:@knuth84],\n[cite/na/b:@org], [cite/text:@lamport94b], [cite/t/b:@org], [cite/nocite:@lamport94]\nand [cite/numeric:@knuth84;@org;@lamport94] and [cite//b:@knuth84] and [cite/caps:@org].\nMissing [cite:@nobody].\n\n* References\n#+print_bibliography:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-org-export-as-org"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "files": {
+          "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+        },
+        "find": "doc.org",
+        "globals": {
+          "org-export-timestamp-file": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com"
+        }
+      },
+      "text": "#+options: toc:nil author:nil date:nil\n#+title: Citations\n#+bibliography: refs.bib\n\nPlain [cite:@knuth84] and two [cite:@lamport94;@org].\nWith affixes [cite:see @knuth84 p. 3;also @lamport94b].\nGlobal affixes [cite:Compare ;@knuth84;@lamport94; for more].\nStyles: [cite/author:@knuth84], [cite/a/c:@lamport94], [cite/noauthor:@knuth84],\n[cite/na/b:@org], [cite/text:@lamport94b], [cite/t/b:@org], [cite/nocite:@lamport94]\nand [cite/numeric:@knuth84;@org;@lamport94] and [cite//b:@knuth84] and [cite/caps:@org].\nMissing [cite:@nobody].\n* References\n#+print_bibliography: \n",
+      "visible": "#+options: toc:nil author:nil date:nil\n#+title: Citations\n#+bibliography: refs.bib\n\nPlain [cite:@knuth84] and two [cite:@lamport94;@org].\nWith affixes [cite:see @knuth84 p. 3;also @lamport94b].\nGlobal affixes [cite:Compare ;@knuth84;@lamport94; for more].\nStyles: [cite/author:@knuth84], [cite/a/c:@lamport94], [cite/noauthor:@knuth84],\n[cite/na/b:@org], [cite/text:@lamport94b], [cite/t/b:@org], [cite/nocite:@lamport94]\nand [cite/numeric:@knuth84;@org;@lamport94] and [cite//b:@knuth84] and [cite/caps:@org].\nMissing [cite:@nobody].\n* References\n#+print_bibliography: \n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "doc.org": "#+title: Citations\n#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nPlain [cite:@knuth84] and two [cite:@lamport94;@org].\nWith affixes [cite:see @knuth84 p. 3;also @lamport94b].\nGlobal affixes [cite:Compare ;@knuth84;@lamport94; for more].\nStyles: [cite/author:@knuth84], [cite/a/c:@lamport94], [cite/noauthor:@knuth84],\n[cite/na/b:@org], [cite/text:@lamport94b], [cite/t/b:@org], [cite/nocite:@lamport94]\nand [cite/numeric:@knuth84;@org;@lamport94] and [cite//b:@knuth84] and [cite/caps:@org].\nMissing [cite:@nobody].\n\n* References\n#+print_bibliography:\n",
+        "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+      }
+    },
+    {
+      "name": "numeric-ascii",
+      "input": {
+        "text": "#+cite_export: basic numeric numeric\n#+title: Citations\n#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nPlain [cite:@knuth84] and two [cite:@lamport94;@org].\nWith affixes [cite:see @knuth84 p. 3;also @lamport94b].\nGlobal affixes [cite:Compare ;@knuth84;@lamport94; for more].\nStyles: [cite/author:@knuth84], [cite/a/c:@lamport94], [cite/noauthor:@knuth84],\n[cite/na/b:@org], [cite/text:@lamport94b], [cite/t/b:@org], [cite/nocite:@lamport94]\nand [cite/numeric:@knuth84;@org;@lamport94] and [cite//b:@knuth84] and [cite/caps:@org].\nMissing [cite:@nobody].\n\n* References\n#+print_bibliography:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-ascii-export-as-ascii"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "files": {
+          "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+        },
+        "find": "doc.org",
+        "globals": {
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-ascii-charset": "'ascii"
+        }
+      },
+      "text": "                              ___________\n\n                               CITATIONS\n                              ___________\n\n\nPlain (1) and two (2, 4).  With affixes (1, 3).  Global affixes (Compare\n1, 2 for more).  Styles: Knuth, Donald E., Lamport, Leslie And Smith,\nJohn, (1984), 2021, Lamport, Leslie and Smith, John (1994a), Org Team\n2021, and (1, 2, 4) and (1) and (Org Team, 2021).  Missing (5).\n\n\n1 References\n============\n\n  [1] Knuth, Donald E., /The \\TeXbook/, Addison-Wesley, 1984.\n\n  [2] Lamport, Leslie and Smith, John, /LaTeX: A Document Preparation\n  System/, Journal of Things, 1994.\n\n  [3] Lamport, Leslie and Smith, John, /More Things/, Free Press, 1994.\n\n  [4] Org Team, /The Org Manual/, GNU Project, 2021.\n",
+      "visible": "                              ___________\n\n                               CITATIONS\n                              ___________\n\n\nPlain (1) and two (2, 4).  With affixes (1, 3).  Global affixes (Compare\n1, 2 for more).  Styles: Knuth, Donald E., Lamport, Leslie And Smith,\nJohn, (1984), 2021, Lamport, Leslie and Smith, John (1994a), Org Team\n2021, and (1, 2, 4) and (1) and (Org Team, 2021).  Missing (5).\n\n\n1 References\n============\n\n  [1] Knuth, Donald E., /The \\TeXbook/, Addison-Wesley, 1984.\n\n  [2] Lamport, Leslie and Smith, John, /LaTeX: A Document Preparation\n  System/, Journal of Things, 1994.\n\n  [3] Lamport, Leslie and Smith, John, /More Things/, Free Press, 1994.\n\n  [4] Org Team, /The Org Manual/, GNU Project, 2021.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "doc.org": "#+cite_export: basic numeric numeric\n#+title: Citations\n#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nPlain [cite:@knuth84] and two [cite:@lamport94;@org].\nWith affixes [cite:see @knuth84 p. 3;also @lamport94b].\nGlobal affixes [cite:Compare ;@knuth84;@lamport94; for more].\nStyles: [cite/author:@knuth84], [cite/a/c:@lamport94], [cite/noauthor:@knuth84],\n[cite/na/b:@org], [cite/text:@lamport94b], [cite/t/b:@org], [cite/nocite:@lamport94]\nand [cite/numeric:@knuth84;@org;@lamport94] and [cite//b:@knuth84] and [cite/caps:@org].\nMissing [cite:@nobody].\n\n* References\n#+print_bibliography:\n",
+        "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+      }
+    },
+    {
+      "name": "numeric-bibliography-md",
+      "input": {
+        "text": "#+cite_export: basic numeric\n#+title: Citations\n#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nPlain [cite:@knuth84] and two [cite:@lamport94;@org].\nWith affixes [cite:see @knuth84 p. 3;also @lamport94b].\nGlobal affixes [cite:Compare ;@knuth84;@lamport94; for more].\nStyles: [cite/author:@knuth84], [cite/a/c:@lamport94], [cite/noauthor:@knuth84],\n[cite/na/b:@org], [cite/text:@lamport94b], [cite/t/b:@org], [cite/nocite:@lamport94]\nand [cite/numeric:@knuth84;@org;@lamport94] and [cite//b:@knuth84] and [cite/caps:@org].\nMissing [cite:@nobody].\n\n* References\n#+print_bibliography:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-md-export-as-markdown"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "files": {
+          "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+        },
+        "find": "doc.org",
+        "globals": {
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com"
+        }
+      },
+      "text": "Plain (Knuth, Donald E., 1984) and two (Lamport, Leslie and Smith, John, 1994, Org Team, 2021).\nWith affixes (see Knuth, Donald E., 1984 p. 3, also Lamport, Leslie and Smith, John, 1994a).\nGlobal affixes (Compare Knuth, Donald E., 1984, Lamport, Leslie and Smith, John, 1994 for more).\nStyles: Knuth, Donald E., Lamport, Leslie And Smith, John, (1984),\n2021, Lamport, Leslie and Smith, John (1994a), Org Team 2021,\nand (1, 2, 4) and Knuth, Donald E., 1984 and (Org Team, 2021).\nMissing (??, ????).\n\n\n# References\n\n[1] Knuth, Donald E., *The \\TeXbook*, Addison-Wesley, 1984.\n\n[2] Lamport, Leslie and Smith, John, *LaTeX: A Document Preparation System*, Journal of Things, 1994.\n\n[3] Lamport, Leslie and Smith, John, *More Things*, Free Press, 1994.\n\n[4] Org Team, *The Org Manual*, GNU Project, 2021.\n\n",
+      "visible": "Plain (Knuth, Donald E., 1984) and two (Lamport, Leslie and Smith, John, 1994, Org Team, 2021).\nWith affixes (see Knuth, Donald E., 1984 p. 3, also Lamport, Leslie and Smith, John, 1994a).\nGlobal affixes (Compare Knuth, Donald E., 1984, Lamport, Leslie and Smith, John, 1994 for more).\nStyles: Knuth, Donald E., Lamport, Leslie And Smith, John, (1984),\n2021, Lamport, Leslie and Smith, John (1994a), Org Team 2021,\nand (1, 2, 4) and Knuth, Donald E., 1984 and (Org Team, 2021).\nMissing (??, ????).\n\n\n# References\n\n[1] Knuth, Donald E., *The \\TeXbook*, Addison-Wesley, 1984.\n\n[2] Lamport, Leslie and Smith, John, *LaTeX: A Document Preparation System*, Journal of Things, 1994.\n\n[3] Lamport, Leslie and Smith, John, *More Things*, Free Press, 1994.\n\n[4] Org Team, *The Org Manual*, GNU Project, 2021.\n\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "doc.org": "#+cite_export: basic numeric\n#+title: Citations\n#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nPlain [cite:@knuth84] and two [cite:@lamport94;@org].\nWith affixes [cite:see @knuth84 p. 3;also @lamport94b].\nGlobal affixes [cite:Compare ;@knuth84;@lamport94; for more].\nStyles: [cite/author:@knuth84], [cite/a/c:@lamport94], [cite/noauthor:@knuth84],\n[cite/na/b:@org], [cite/text:@lamport94b], [cite/t/b:@org], [cite/nocite:@lamport94]\nand [cite/numeric:@knuth84;@org;@lamport94] and [cite//b:@knuth84] and [cite/caps:@org].\nMissing [cite:@nobody].\n\n* References\n#+print_bibliography:\n",
+        "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+      }
+    },
+    {
+      "name": "text-style-ascii",
+      "input": {
+        "text": "#+cite_export: basic author-year \"text\"\n#+title: Citations\n#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nPlain [cite:@knuth84] and two [cite:@lamport94;@org].\nWith affixes [cite:see @knuth84 p. 3;also @lamport94b].\nGlobal affixes [cite:Compare ;@knuth84;@lamport94; for more].\nStyles: [cite/author:@knuth84], [cite/a/c:@lamport94], [cite/noauthor:@knuth84],\n[cite/na/b:@org], [cite/text:@lamport94b], [cite/t/b:@org], [cite/nocite:@lamport94]\nand [cite/numeric:@knuth84;@org;@lamport94] and [cite//b:@knuth84] and [cite/caps:@org].\nMissing [cite:@nobody].\n\n* References\n#+print_bibliography:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-ascii-export-as-ascii"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "files": {
+          "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+        },
+        "find": "doc.org",
+        "globals": {
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-ascii-charset": "'ascii"
+        }
+      },
+      "text": "                              ___________\n\n                               CITATIONS\n                              ___________\n\n\nPlain Knuth, Donald E. (1984) and two Lamport, Leslie and Smith, John\n(1994), Org Team (2021).  With affixes see Knuth, Donald E. (1984) p. 3,\nalso Lamport, Leslie and Smith, John (1994a).  Global affixes Compare\nKnuth, Donald E. (1984), Lamport, Leslie and Smith, John (1994) for\nmore.  Styles: Knuth, Donald E., Lamport, Leslie And Smith, John,\n(1984), 2021, Lamport, Leslie and Smith, John (1994a), Org Team 2021,\nand (1, 2, 4) and Knuth, Donald E. 1984 and (Org Team, 2021).  Missing\n?? (????).\n\n\n1 References\n============\n\n  Knuth, Donald E. (1984). /The \\TeXbook/, Addison-Wesley.\n\n  Lamport, Leslie and Smith, John (1994). /LaTeX: A Document Preparation\n  System/, Journal of Things.\n\n  Lamport, Leslie and Smith, John (1994a). /More Things/, Free Press.\n\n  Org Team (2021). /The Org Manual/, GNU Project.\n",
+      "visible": "                              ___________\n\n                               CITATIONS\n                              ___________\n\n\nPlain Knuth, Donald E. (1984) and two Lamport, Leslie and Smith, John\n(1994), Org Team (2021).  With affixes see Knuth, Donald E. (1984) p. 3,\nalso Lamport, Leslie and Smith, John (1994a).  Global affixes Compare\nKnuth, Donald E. (1984), Lamport, Leslie and Smith, John (1994) for\nmore.  Styles: Knuth, Donald E., Lamport, Leslie And Smith, John,\n(1984), 2021, Lamport, Leslie and Smith, John (1994a), Org Team 2021,\nand (1, 2, 4) and Knuth, Donald E. 1984 and (Org Team, 2021).  Missing\n?? (????).\n\n\n1 References\n============\n\n  Knuth, Donald E. (1984). /The \\TeXbook/, Addison-Wesley.\n\n  Lamport, Leslie and Smith, John (1994). /LaTeX: A Document Preparation\n  System/, Journal of Things.\n\n  Lamport, Leslie and Smith, John (1994a). /More Things/, Free Press.\n\n  Org Team (2021). /The Org Manual/, GNU Project.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "doc.org": "#+cite_export: basic author-year \"text\"\n#+title: Citations\n#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nPlain [cite:@knuth84] and two [cite:@lamport94;@org].\nWith affixes [cite:see @knuth84 p. 3;also @lamport94b].\nGlobal affixes [cite:Compare ;@knuth84;@lamport94; for more].\nStyles: [cite/author:@knuth84], [cite/a/c:@lamport94], [cite/noauthor:@knuth84],\n[cite/na/b:@org], [cite/text:@lamport94b], [cite/t/b:@org], [cite/nocite:@lamport94]\nand [cite/numeric:@knuth84;@org;@lamport94] and [cite//b:@knuth84] and [cite/caps:@org].\nMissing [cite:@nobody].\n\n* References\n#+print_bibliography:\n",
+        "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+      }
+    },
+    {
+      "name": "notes-en-us-ascii",
+      "input": {
+        "text": "#+options: toc:nil author:nil date:nil\n#+language: en-us\n#+bibliography: refs.bib\n\nHe said \"it works\" [cite/note:@knuth84].\nThen \"a quote.\" [cite/ft:@org] More text [cite/note:@lamport94], and on.\nDone [cite/note:@lamport94b].\nA footnote[fn:1] here, \"inner\"[cite/note:@org], last.\n\n[fn:1] With a citation [cite:@org] inside.\n\n* References\n#+print_bibliography:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-ascii-export-as-ascii"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "files": {
+          "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+        },
+        "find": "doc.org",
+        "globals": {
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-ascii-charset": "'ascii"
+        }
+      },
+      "text": "He said \"it works.\"[1] Then \"a quote.\"[2] More text,[3] and on.\nDone.[4] A footnote[5] here, \"inner,\"[6] last.\n\n\n1 References\n============\n\n  Knuth, Donald E. (1984). /The \\TeXbook/, Addison-Wesley.\n\n  Lamport, Leslie and Smith, John (1994). /LaTeX: A Document Preparation\n  System/, Journal of Things.\n\n  Lamport, Leslie and Smith, John (1994a). /More Things/, Free Press.\n\n  Org Team (2021). /The Org Manual/, GNU Project.\n\n\n\nFootnotes\n_________\n\n[1] Knuth, Donald E. (1984)\n\n[2] Org Team (2021)\n\n[3] Lamport, Leslie and Smith, John (1994)\n\n[4] Lamport, Leslie and Smith, John (1994a)\n\n[5] With a citation (Org Team, 2021) inside.\n\n[6] Org Team (2021)\n",
+      "visible": "He said \"it works.\"[1] Then \"a quote.\"[2] More text,[3] and on.\nDone.[4] A footnote[5] here, \"inner,\"[6] last.\n\n\n1 References\n============\n\n  Knuth, Donald E. (1984). /The \\TeXbook/, Addison-Wesley.\n\n  Lamport, Leslie and Smith, John (1994). /LaTeX: A Document Preparation\n  System/, Journal of Things.\n\n  Lamport, Leslie and Smith, John (1994a). /More Things/, Free Press.\n\n  Org Team (2021). /The Org Manual/, GNU Project.\n\n\n\nFootnotes\n_________\n\n[1] Knuth, Donald E. (1984)\n\n[2] Org Team (2021)\n\n[3] Lamport, Leslie and Smith, John (1994)\n\n[4] Lamport, Leslie and Smith, John (1994a)\n\n[5] With a citation (Org Team, 2021) inside.\n\n[6] Org Team (2021)\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "doc.org": "#+options: toc:nil author:nil date:nil\n#+language: en-us\n#+bibliography: refs.bib\n\nHe said \"it works\" [cite/note:@knuth84].\nThen \"a quote.\" [cite/ft:@org] More text [cite/note:@lamport94], and on.\nDone [cite/note:@lamport94b].\nA footnote[fn:1] here, \"inner\"[cite/note:@org], last.\n\n[fn:1] With a citation [cite:@org] inside.\n\n* References\n#+print_bibliography:\n",
+        "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+      }
+    },
+    {
+      "name": "notes-fr-ascii",
+      "input": {
+        "text": "#+options: toc:nil author:nil date:nil\n#+language: fr\n#+bibliography: refs.bib\n\nHe said \"it works\" [cite/note:@knuth84].\nThen \"a quote.\" [cite/ft:@org] More text [cite/note:@lamport94], and on.\nDone [cite/note:@lamport94b].\nA footnote[fn:1] here, \"inner\"[cite/note:@org], last.\n\n[fn:1] With a citation [cite:@org] inside.\n\n* References\n#+print_bibliography:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-ascii-export-as-ascii"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "files": {
+          "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+        },
+        "find": "doc.org",
+        "globals": {
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-ascii-charset": "'ascii"
+        }
+      },
+      "text": "He said \"it works\"[1].  Then \"a quote\"[2] .More text[3], and on.\nDone[4].  A footnote[5] here, \"inner[6],\" last.\n\n\n1 References\n============\n\n  Knuth, Donald E. (1984). /The \\TeXbook/, Addison-Wesley.\n\n  Lamport, Leslie and Smith, John (1994). /LaTeX: A Document Preparation\n  System/, Journal of Things.\n\n  Lamport, Leslie and Smith, John (1994a). /More Things/, Free Press.\n\n  Org Team (2021). /The Org Manual/, GNU Project.\n\n\n\nNotes de bas de page\n____________________\n\n[1] Knuth, Donald E. (1984)\n\n[2] Org Team (2021)\n\n[3] Lamport, Leslie and Smith, John (1994)\n\n[4] Lamport, Leslie and Smith, John (1994a)\n\n[5] With a citation (Org Team, 2021) inside.\n\n[6] Org Team (2021)\n",
+      "visible": "He said \"it works\"[1].  Then \"a quote\"[2] .More text[3], and on.\nDone[4].  A footnote[5] here, \"inner[6],\" last.\n\n\n1 References\n============\n\n  Knuth, Donald E. (1984). /The \\TeXbook/, Addison-Wesley.\n\n  Lamport, Leslie and Smith, John (1994). /LaTeX: A Document Preparation\n  System/, Journal of Things.\n\n  Lamport, Leslie and Smith, John (1994a). /More Things/, Free Press.\n\n  Org Team (2021). /The Org Manual/, GNU Project.\n\n\n\nNotes de bas de page\n____________________\n\n[1] Knuth, Donald E. (1984)\n\n[2] Org Team (2021)\n\n[3] Lamport, Leslie and Smith, John (1994)\n\n[4] Lamport, Leslie and Smith, John (1994a)\n\n[5] With a citation (Org Team, 2021) inside.\n\n[6] Org Team (2021)\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "doc.org": "#+options: toc:nil author:nil date:nil\n#+language: fr\n#+bibliography: refs.bib\n\nHe said \"it works\" [cite/note:@knuth84].\nThen \"a quote.\" [cite/ft:@org] More text [cite/note:@lamport94], and on.\nDone [cite/note:@lamport94b].\nA footnote[fn:1] here, \"inner\"[cite/note:@org], last.\n\n[fn:1] With a citation [cite:@org] inside.\n\n* References\n#+print_bibliography:\n",
+        "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+      }
+    },
+    {
+      "name": "notes-en-md",
+      "input": {
+        "text": "#+options: toc:nil author:nil date:nil\n#+language: en\n#+bibliography: refs.bib\n\nHe said \"it works\" [cite/note:@knuth84].\nThen \"a quote.\" [cite/ft:@org] More text [cite/note:@lamport94], and on.\nDone [cite/note:@lamport94b].\nA footnote[fn:1] here, \"inner\"[cite/note:@org], last.\n\n[fn:1] With a citation [cite:@org] inside.\n\n* References\n#+print_bibliography:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-md-export-as-markdown"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "files": {
+          "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+        },
+        "find": "doc.org",
+        "globals": {
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com"
+        }
+      },
+      "text": "He said \"it works\".<sup><a id=\"fnr.1\" class=\"footref\" href=\"#fn.1\" role=\"doc-backlink\">1</a></sup>\nThen \"a quote\" .<sup><a id=\"fnr.2\" class=\"footref\" href=\"#fn.2\" role=\"doc-backlink\">2</a></sup> More text,<sup><a id=\"fnr.3\" class=\"footref\" href=\"#fn.3\" role=\"doc-backlink\">3</a></sup> and on.\nDone.<sup><a id=\"fnr.4\" class=\"footref\" href=\"#fn.4\" role=\"doc-backlink\">4</a></sup>\nA footnote<sup><a id=\"fnr.5\" class=\"footref\" href=\"#fn.5\" role=\"doc-backlink\">5</a></sup> here, \"inner,\"<sup><a id=\"fnr.6\" class=\"footref\" href=\"#fn.6\" role=\"doc-backlink\">6</a></sup> last.\n\n\n# References\n\nKnuth, Donald E. (1984). *The \\TeXbook*, Addison-Wesley.\n\nLamport, Leslie and Smith, John (1994). *LaTeX: A Document Preparation System*, Journal of Things.\n\nLamport, Leslie and Smith, John (1994a). *More Things*, Free Press.\n\nOrg Team (2021). *The Org Manual*, GNU Project.\n\n\n# Footnotes\n\n<sup><a id=\"fn.1\" href=\"#fnr.1\">1</a></sup> Knuth, Donald E. (1984)\n\n<sup><a id=\"fn.2\" href=\"#fnr.2\">2</a></sup> Org Team (2021)\n\n<sup><a id=\"fn.3\" href=\"#fnr.3\">3</a></sup> Lamport, Leslie and Smith, John (1994)\n\n<sup><a id=\"fn.4\" href=\"#fnr.4\">4</a></sup> Lamport, Leslie and Smith, John (1994a)\n\n<sup><a id=\"fn.5\" href=\"#fnr.5\">5</a></sup> With a citation (Org Team, 2021) inside.\n\n<sup><a id=\"fn.6\" href=\"#fnr.6\">6</a></sup> Org Team (2021)\n",
+      "visible": "He said \"it works\".<sup><a id=\"fnr.1\" class=\"footref\" href=\"#fn.1\" role=\"doc-backlink\">1</a></sup>\nThen \"a quote\" .<sup><a id=\"fnr.2\" class=\"footref\" href=\"#fn.2\" role=\"doc-backlink\">2</a></sup> More text,<sup><a id=\"fnr.3\" class=\"footref\" href=\"#fn.3\" role=\"doc-backlink\">3</a></sup> and on.\nDone.<sup><a id=\"fnr.4\" class=\"footref\" href=\"#fn.4\" role=\"doc-backlink\">4</a></sup>\nA footnote<sup><a id=\"fnr.5\" class=\"footref\" href=\"#fn.5\" role=\"doc-backlink\">5</a></sup> here, \"inner,\"<sup><a id=\"fnr.6\" class=\"footref\" href=\"#fn.6\" role=\"doc-backlink\">6</a></sup> last.\n\n\n# References\n\nKnuth, Donald E. (1984). *The \\TeXbook*, Addison-Wesley.\n\nLamport, Leslie and Smith, John (1994). *LaTeX: A Document Preparation System*, Journal of Things.\n\nLamport, Leslie and Smith, John (1994a). *More Things*, Free Press.\n\nOrg Team (2021). *The Org Manual*, GNU Project.\n\n\n# Footnotes\n\n<sup><a id=\"fn.1\" href=\"#fnr.1\">1</a></sup> Knuth, Donald E. (1984)\n\n<sup><a id=\"fn.2\" href=\"#fnr.2\">2</a></sup> Org Team (2021)\n\n<sup><a id=\"fn.3\" href=\"#fnr.3\">3</a></sup> Lamport, Leslie and Smith, John (1994)\n\n<sup><a id=\"fn.4\" href=\"#fnr.4\">4</a></sup> Lamport, Leslie and Smith, John (1994a)\n\n<sup><a id=\"fn.5\" href=\"#fnr.5\">5</a></sup> With a citation (Org Team, 2021) inside.\n\n<sup><a id=\"fn.6\" href=\"#fnr.6\">6</a></sup> Org Team (2021)\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "doc.org": "#+options: toc:nil author:nil date:nil\n#+language: en\n#+bibliography: refs.bib\n\nHe said \"it works\" [cite/note:@knuth84].\nThen \"a quote.\" [cite/ft:@org] More text [cite/note:@lamport94], and on.\nDone [cite/note:@lamport94b].\nA footnote[fn:1] here, \"inner\"[cite/note:@org], last.\n\n[fn:1] With a citation [cite:@org] inside.\n\n* References\n#+print_bibliography:\n",
+        "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+      }
+    },
+    {
+      "name": "footnotes-cited-order-md",
+      "input": {
+        "text": "#+options: toc:nil author:nil date:nil\n#+cite_export: basic numeric numeric\n#+bibliography: refs.bib\n\nFirst a footnote[fn:a], then [cite:@knuth84] and [cite:@org;@lamport94;@lamport94b].\nInline[fn:: Inline [cite:@lamport94b].] too.\n\n[fn:a] It cites [cite:@lamport94].\n\n#+print_bibliography:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-md-export-as-markdown"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "files": {
+          "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+        },
+        "find": "doc.org",
+        "globals": {
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-cite-basic-sorting-field": false
+        }
+      },
+      "text": "First a footnote<sup><a id=\"fnr.a\" class=\"footref\" href=\"#fn.a\" role=\"doc-backlink\">1</a></sup>, then (2) and (1, 3, 4).\nInline<sup><a id=\"fnr.2\" class=\"footref\" href=\"#fn.2\" role=\"doc-backlink\">2</a></sup> too.\n\n\n# Footnotes\n\n<sup><a id=\"fn.1\" href=\"#fnr.1\">1</a></sup> It cites (1).\n\n[1] Lamport, Leslie and Smith, John, *LaTeX: A Document Preparation System*, Journal of Things, 1994.\n\n[2] Knuth, Donald E., *The \\TeXbook*, Addison-Wesley, 1984.\n\n[3] Org Team, *The Org Manual*, GNU Project, 2021.\n\n[4] Lamport, Leslie and Smith, John, *More Things*, Free Press, 1994.\n\n<sup><a id=\"fn.2\" href=\"#fnr.2\">2</a></sup> Inline (4).\n",
+      "visible": "First a footnote<sup><a id=\"fnr.a\" class=\"footref\" href=\"#fn.a\" role=\"doc-backlink\">1</a></sup>, then (2) and (1, 3, 4).\nInline<sup><a id=\"fnr.2\" class=\"footref\" href=\"#fn.2\" role=\"doc-backlink\">2</a></sup> too.\n\n\n# Footnotes\n\n<sup><a id=\"fn.1\" href=\"#fnr.1\">1</a></sup> It cites (1).\n\n[1] Lamport, Leslie and Smith, John, *LaTeX: A Document Preparation System*, Journal of Things, 1994.\n\n[2] Knuth, Donald E., *The \\TeXbook*, Addison-Wesley, 1984.\n\n[3] Org Team, *The Org Manual*, GNU Project, 2021.\n\n[4] Lamport, Leslie and Smith, John, *More Things*, Free Press, 1994.\n\n<sup><a id=\"fn.2\" href=\"#fnr.2\">2</a></sup> Inline (4).\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "doc.org": "#+options: toc:nil author:nil date:nil\n#+cite_export: basic numeric numeric\n#+bibliography: refs.bib\n\nFirst a footnote[fn:a], then [cite:@knuth84] and [cite:@org;@lamport94;@lamport94b].\nInline[fn:: Inline [cite:@lamport94b].] too.\n\n[fn:a] It cites [cite:@lamport94].\n\n#+print_bibliography:\n",
+        "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+      }
+    },
+    {
+      "name": "footnotes-html",
+      "input": {
+        "text": "#+options: toc:nil author:nil date:nil\n#+cite_export: basic numeric numeric\n#+bibliography: refs.bib\n\nFirst a footnote[fn:a], then [cite:@knuth84] and [cite:@org;@lamport94;@lamport94b].\nInline[fn:: Inline [cite:@lamport94b].] too.\n\n[fn:a] It cites [cite:@lamport94].\n\n#+print_bibliography:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-html-export-as-html"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "files": {
+          "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+        },
+        "find": "doc.org",
+        "globals": {
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-html-postamble": false,
+          "org-export-timestamp-file": false
+        }
+      },
+      "text": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" xml:lang=\"en\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<title>&lrm;</title>\n<meta name=\"generator\" content=\"Org Mode\" />\n<style type=\"text/css\">\n  #content { max-width: 60em; margin: auto; }\n  .title  { text-align: center;\n             margin-bottom: .2em; }\n  .subtitle { text-align: center;\n              font-size: medium;\n              font-weight: bold;\n              margin-top:0; }\n  .todo   { font-family: monospace; color: red; }\n  .done   { font-family: monospace; color: green; }\n  .priority { font-family: monospace; color: orange; }\n  .tag    { background-color: #eee; font-family: monospace;\n            padding: 2px; font-size: 80%; font-weight: normal; }\n  .timestamp { color: #bebebe; }\n  .timestamp-kwd { color: #5f9ea0; }\n  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }\n  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }\n  .org-center { margin-left: auto; margin-right: auto; text-align: center; }\n  .underline { text-decoration: underline; }\n  #postamble p, #preamble p { font-size: 90%; margin: .2em; }\n  p.verse { margin-left: 3%; }\n  pre {\n    border: 1px solid #e6e6e6;\n    border-radius: 3px;\n    background-color: #f2f2f2;\n    padding: 8pt;\n    font-family: monospace;\n    overflow: auto;\n    margin: 1.2em;\n  }\n  pre.src {\n    position: relative;\n    overflow: auto;\n  }\n  pre.src:before {\n    display: none;\n    position: absolute;\n    top: -8px;\n    right: 12px;\n    padding: 3px;\n    color: #555;\n    background-color: #f2f2f299;\n  }\n  pre.src:hover:before { display: inline; margin-top: 14px;}\n  /* Languages per Org manual */\n  pre.src-asymptote:before { content: 'Asymptote'; }\n  pre.src-awk:before { content: 'Awk'; }\n  pre.src-authinfo::before { content: 'Authinfo'; }\n  pre.src-C:before { content: 'C'; }\n  /* pre.src-C++ doesn't work in CSS */\n  pre.src-clojure:before { content: 'Clojure'; }\n  pre.src-css:before { content: 'CSS'; }\n  pre.src-D:before { content: 'D'; }\n  pre.src-ditaa:before { content: 'ditaa'; }\n  pre.src-dot:before { content: 'Graphviz'; }\n  pre.src-calc:before { content: 'Emacs Calc'; }\n  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }\n  pre.src-fortran:before { content: 'Fortran'; }\n  pre.src-gnuplot:before { content: 'gnuplot'; }\n  pre.src-haskell:before { content: 'Haskell'; }\n  pre.src-hledger:before { content: 'hledger'; }\n  pre.src-java:before { content: 'Java'; }\n  pre.src-js:before { content: 'Javascript'; }\n  pre.src-latex:before { content: 'LaTeX'; }\n  pre.src-ledger:before { content: 'Ledger'; }\n  pre.src-lisp:before { content: 'Lisp'; }\n  pre.src-lilypond:before { content: 'Lilypond'; }\n  pre.src-lua:before { content: 'Lua'; }\n  pre.src-matlab:before { content: 'MATLAB'; }\n  pre.src-mscgen:before { content: 'Mscgen'; }\n  pre.src-ocaml:before { content: 'Objective Caml'; }\n  pre.src-octave:before { content: 'Octave'; }\n  pre.src-org:before { content: 'Org mode'; }\n  pre.src-oz:before { content: 'OZ'; }\n  pre.src-plantuml:before { content: 'Plantuml'; }\n  pre.src-processing:before { content: 'Processing.js'; }\n  pre.src-python:before { content: 'Python'; }\n  pre.src-R:before { content: 'R'; }\n  pre.src-ruby:before { content: 'Ruby'; }\n  pre.src-sass:before { content: 'Sass'; }\n  pre.src-scheme:before { content: 'Scheme'; }\n  pre.src-screen:before { content: 'Gnu Screen'; }\n  pre.src-sed:before { content: 'Sed'; }\n  pre.src-sh:before { content: 'shell'; }\n  pre.src-sql:before { content: 'SQL'; }\n  pre.src-sqlite:before { content: 'SQLite'; }\n  /* additional languages in org.el's org-babel-load-languages alist */\n  pre.src-forth:before { content: 'Forth'; }\n  pre.src-io:before { content: 'IO'; }\n  pre.src-J:before { content: 'J'; }\n  pre.src-makefile:before { content: 'Makefile'; }\n  pre.src-maxima:before { content: 'Maxima'; }\n  pre.src-perl:before { content: 'Perl'; }\n  pre.src-picolisp:before { content: 'Pico Lisp'; }\n  pre.src-scala:before { content: 'Scala'; }\n  pre.src-shell:before { content: 'Shell Script'; }\n  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }\n  /* additional language identifiers per \"defun org-babel-execute\"\n       in ob-*.el */\n  pre.src-cpp:before  { content: 'C++'; }\n  pre.src-abc:before  { content: 'ABC'; }\n  pre.src-coq:before  { content: 'Coq'; }\n  pre.src-groovy:before  { content: 'Groovy'; }\n  /* additional language identifiers from org-babel-shell-names in\n     ob-shell.el: ob-shell is the only babel language using a lambda to put\n     the execution function name together. */\n  pre.src-bash:before  { content: 'bash'; }\n  pre.src-csh:before  { content: 'csh'; }\n  pre.src-ash:before  { content: 'ash'; }\n  pre.src-dash:before  { content: 'dash'; }\n  pre.src-ksh:before  { content: 'ksh'; }\n  pre.src-mksh:before  { content: 'mksh'; }\n  pre.src-posh:before  { content: 'posh'; }\n  /* Additional Emacs modes also supported by the LaTeX listings package */\n  pre.src-ada:before { content: 'Ada'; }\n  pre.src-asm:before { content: 'Assembler'; }\n  pre.src-caml:before { content: 'Caml'; }\n  pre.src-delphi:before { content: 'Delphi'; }\n  pre.src-html:before { content: 'HTML'; }\n  pre.src-idl:before { content: 'IDL'; }\n  pre.src-mercury:before { content: 'Mercury'; }\n  pre.src-metapost:before { content: 'MetaPost'; }\n  pre.src-modula-2:before { content: 'Modula-2'; }\n  pre.src-pascal:before { content: 'Pascal'; }\n  pre.src-ps:before { content: 'PostScript'; }\n  pre.src-prolog:before { content: 'Prolog'; }\n  pre.src-simula:before { content: 'Simula'; }\n  pre.src-tcl:before { content: 'tcl'; }\n  pre.src-tex:before { content: 'TeX'; }\n  pre.src-plain-tex:before { content: 'Plain TeX'; }\n  pre.src-verilog:before { content: 'Verilog'; }\n  pre.src-vhdl:before { content: 'VHDL'; }\n  pre.src-xml:before { content: 'XML'; }\n  pre.src-nxml:before { content: 'XML'; }\n  /* add a generic configuration mode; LaTeX export needs an additional\n     (add-to-list 'org-latex-listings-langs '(conf \" \")) in .emacs */\n  pre.src-conf:before { content: 'Configuration File'; }\n\n  table { border-collapse:collapse; }\n  caption.t-above { caption-side: top; }\n  caption.t-bottom { caption-side: bottom; }\n  td, th { vertical-align:top;  }\n  th.org-right  { text-align: center;  }\n  th.org-left   { text-align: center;   }\n  th.org-center { text-align: center; }\n  td.org-right  { text-align: right;  }\n  td.org-left   { text-align: left;   }\n  td.org-center { text-align: center; }\n  dt { font-weight: bold; }\n  .footpara { display: inline; }\n  .footdef  { margin-bottom: 1em; }\n  .figure { padding: 1em; }\n  .figure p { text-align: center; }\n  .equation-container {\n    display: table;\n    text-align: center;\n    width: 100%;\n  }\n  .equation {\n    vertical-align: middle;\n  }\n  .equation-label {\n    display: table-cell;\n    text-align: right;\n    vertical-align: middle;\n  }\n  .inlinetask {\n    padding: 10px;\n    border: 2px solid gray;\n    margin: 10px;\n    background: #ffffcc;\n  }\n  #org-div-home-and-up\n   { text-align: right; font-size: 70%; white-space: nowrap; }\n  textarea { overflow-x: auto; }\n  .linenr { font-size: smaller }\n  .code-highlighted { background-color: #ffff00; }\n  .org-info-js_info-navigation { border-style: none; }\n  #org-info-js_console-label\n    { font-size: 10px; font-weight: bold; white-space: nowrap; }\n  .org-info-js_search-highlight\n    { background-color: #ffff00; color: #000000; font-weight: bold; }\n  .org-svg { }\n</style>\n</head>\n<body>\n<div id=\"content\" class=\"content\">\n<p>\nFirst a footnote<sup><a id=\"fnr.a\" class=\"footref\" href=\"#fn.a\" role=\"doc-backlink\">1</a></sup>, then (1) and (2-4).\nInline<sup><a id=\"fnr.2\" class=\"footref\" href=\"#fn.2\" role=\"doc-backlink\">2</a></sup> too.\n</p>\n<div id=\"footnotes\">\n<h2 class=\"footnotes\">Footnotes: </h2>\n<div id=\"text-footnotes\">\n\n<div class=\"footdef\"><sup><a id=\"fn.a\" class=\"footnum\" href=\"#fnr.a\" role=\"doc-backlink\">1</a></sup> <div class=\"footpara\" role=\"doc-footnote\"><p class=\"footpara\">\nIt cites (2).\n</p>\n\n<p>\n[1] Knuth, Donald E., <i>The \\TeXbook</i>, Addison-Wesley, 1984.</p>\n\n<p>\n[2] Lamport, Leslie and Smith, John, <i>LaTeX: A Document Preparation System</i>, Journal of Things, 1994.</p>\n\n<p>\n[3] Lamport, Leslie and Smith, John, <i>More Things</i>, Free Press, 1994.</p>\n\n<p>\n[4] Org Team, <i>The Org Manual</i>, GNU Project, 2021.</p></div></div>\n\n<div class=\"footdef\"><sup><a id=\"fn.2\" class=\"footnum\" href=\"#fnr.2\" role=\"doc-backlink\">2</a></sup> <div class=\"footpara\" role=\"doc-footnote\"><p class=\"footpara\">Inline (3).</p></div></div>\n\n\n</div>\n</div></div>\n</body>\n</html>",
+      "visible": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" xml:lang=\"en\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<title>&lrm;</title>\n<meta name=\"generator\" content=\"Org Mode\" />\n<style type=\"text/css\">\n  #content { max-width: 60em; margin: auto; }\n  .title  { text-align: center;\n             margin-bottom: .2em; }\n  .subtitle { text-align: center;\n              font-size: medium;\n              font-weight: bold;\n              margin-top:0; }\n  .todo   { font-family: monospace; color: red; }\n  .done   { font-family: monospace; color: green; }\n  .priority { font-family: monospace; color: orange; }\n  .tag    { background-color: #eee; font-family: monospace;\n            padding: 2px; font-size: 80%; font-weight: normal; }\n  .timestamp { color: #bebebe; }\n  .timestamp-kwd { color: #5f9ea0; }\n  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }\n  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }\n  .org-center { margin-left: auto; margin-right: auto; text-align: center; }\n  .underline { text-decoration: underline; }\n  #postamble p, #preamble p { font-size: 90%; margin: .2em; }\n  p.verse { margin-left: 3%; }\n  pre {\n    border: 1px solid #e6e6e6;\n    border-radius: 3px;\n    background-color: #f2f2f2;\n    padding: 8pt;\n    font-family: monospace;\n    overflow: auto;\n    margin: 1.2em;\n  }\n  pre.src {\n    position: relative;\n    overflow: auto;\n  }\n  pre.src:before {\n    display: none;\n    position: absolute;\n    top: -8px;\n    right: 12px;\n    padding: 3px;\n    color: #555;\n    background-color: #f2f2f299;\n  }\n  pre.src:hover:before { display: inline; margin-top: 14px;}\n  /* Languages per Org manual */\n  pre.src-asymptote:before { content: 'Asymptote'; }\n  pre.src-awk:before { content: 'Awk'; }\n  pre.src-authinfo::before { content: 'Authinfo'; }\n  pre.src-C:before { content: 'C'; }\n  /* pre.src-C++ doesn't work in CSS */\n  pre.src-clojure:before { content: 'Clojure'; }\n  pre.src-css:before { content: 'CSS'; }\n  pre.src-D:before { content: 'D'; }\n  pre.src-ditaa:before { content: 'ditaa'; }\n  pre.src-dot:before { content: 'Graphviz'; }\n  pre.src-calc:before { content: 'Emacs Calc'; }\n  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }\n  pre.src-fortran:before { content: 'Fortran'; }\n  pre.src-gnuplot:before { content: 'gnuplot'; }\n  pre.src-haskell:before { content: 'Haskell'; }\n  pre.src-hledger:before { content: 'hledger'; }\n  pre.src-java:before { content: 'Java'; }\n  pre.src-js:before { content: 'Javascript'; }\n  pre.src-latex:before { content: 'LaTeX'; }\n  pre.src-ledger:before { content: 'Ledger'; }\n  pre.src-lisp:before { content: 'Lisp'; }\n  pre.src-lilypond:before { content: 'Lilypond'; }\n  pre.src-lua:before { content: 'Lua'; }\n  pre.src-matlab:before { content: 'MATLAB'; }\n  pre.src-mscgen:before { content: 'Mscgen'; }\n  pre.src-ocaml:before { content: 'Objective Caml'; }\n  pre.src-octave:before { content: 'Octave'; }\n  pre.src-org:before { content: 'Org mode'; }\n  pre.src-oz:before { content: 'OZ'; }\n  pre.src-plantuml:before { content: 'Plantuml'; }\n  pre.src-processing:before { content: 'Processing.js'; }\n  pre.src-python:before { content: 'Python'; }\n  pre.src-R:before { content: 'R'; }\n  pre.src-ruby:before { content: 'Ruby'; }\n  pre.src-sass:before { content: 'Sass'; }\n  pre.src-scheme:before { content: 'Scheme'; }\n  pre.src-screen:before { content: 'Gnu Screen'; }\n  pre.src-sed:before { content: 'Sed'; }\n  pre.src-sh:before { content: 'shell'; }\n  pre.src-sql:before { content: 'SQL'; }\n  pre.src-sqlite:before { content: 'SQLite'; }\n  /* additional languages in org.el's org-babel-load-languages alist */\n  pre.src-forth:before { content: 'Forth'; }\n  pre.src-io:before { content: 'IO'; }\n  pre.src-J:before { content: 'J'; }\n  pre.src-makefile:before { content: 'Makefile'; }\n  pre.src-maxima:before { content: 'Maxima'; }\n  pre.src-perl:before { content: 'Perl'; }\n  pre.src-picolisp:before { content: 'Pico Lisp'; }\n  pre.src-scala:before { content: 'Scala'; }\n  pre.src-shell:before { content: 'Shell Script'; }\n  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }\n  /* additional language identifiers per \"defun org-babel-execute\"\n       in ob-*.el */\n  pre.src-cpp:before  { content: 'C++'; }\n  pre.src-abc:before  { content: 'ABC'; }\n  pre.src-coq:before  { content: 'Coq'; }\n  pre.src-groovy:before  { content: 'Groovy'; }\n  /* additional language identifiers from org-babel-shell-names in\n     ob-shell.el: ob-shell is the only babel language using a lambda to put\n     the execution function name together. */\n  pre.src-bash:before  { content: 'bash'; }\n  pre.src-csh:before  { content: 'csh'; }\n  pre.src-ash:before  { content: 'ash'; }\n  pre.src-dash:before  { content: 'dash'; }\n  pre.src-ksh:before  { content: 'ksh'; }\n  pre.src-mksh:before  { content: 'mksh'; }\n  pre.src-posh:before  { content: 'posh'; }\n  /* Additional Emacs modes also supported by the LaTeX listings package */\n  pre.src-ada:before { content: 'Ada'; }\n  pre.src-asm:before { content: 'Assembler'; }\n  pre.src-caml:before { content: 'Caml'; }\n  pre.src-delphi:before { content: 'Delphi'; }\n  pre.src-html:before { content: 'HTML'; }\n  pre.src-idl:before { content: 'IDL'; }\n  pre.src-mercury:before { content: 'Mercury'; }\n  pre.src-metapost:before { content: 'MetaPost'; }\n  pre.src-modula-2:before { content: 'Modula-2'; }\n  pre.src-pascal:before { content: 'Pascal'; }\n  pre.src-ps:before { content: 'PostScript'; }\n  pre.src-prolog:before { content: 'Prolog'; }\n  pre.src-simula:before { content: 'Simula'; }\n  pre.src-tcl:before { content: 'tcl'; }\n  pre.src-tex:before { content: 'TeX'; }\n  pre.src-plain-tex:before { content: 'Plain TeX'; }\n  pre.src-verilog:before { content: 'Verilog'; }\n  pre.src-vhdl:before { content: 'VHDL'; }\n  pre.src-xml:before { content: 'XML'; }\n  pre.src-nxml:before { content: 'XML'; }\n  /* add a generic configuration mode; LaTeX export needs an additional\n     (add-to-list 'org-latex-listings-langs '(conf \" \")) in .emacs */\n  pre.src-conf:before { content: 'Configuration File'; }\n\n  table { border-collapse:collapse; }\n  caption.t-above { caption-side: top; }\n  caption.t-bottom { caption-side: bottom; }\n  td, th { vertical-align:top;  }\n  th.org-right  { text-align: center;  }\n  th.org-left   { text-align: center;   }\n  th.org-center { text-align: center; }\n  td.org-right  { text-align: right;  }\n  td.org-left   { text-align: left;   }\n  td.org-center { text-align: center; }\n  dt { font-weight: bold; }\n  .footpara { display: inline; }\n  .footdef  { margin-bottom: 1em; }\n  .figure { padding: 1em; }\n  .figure p { text-align: center; }\n  .equation-container {\n    display: table;\n    text-align: center;\n    width: 100%;\n  }\n  .equation {\n    vertical-align: middle;\n  }\n  .equation-label {\n    display: table-cell;\n    text-align: right;\n    vertical-align: middle;\n  }\n  .inlinetask {\n    padding: 10px;\n    border: 2px solid gray;\n    margin: 10px;\n    background: #ffffcc;\n  }\n  #org-div-home-and-up\n   { text-align: right; font-size: 70%; white-space: nowrap; }\n  textarea { overflow-x: auto; }\n  .linenr { font-size: smaller }\n  .code-highlighted { background-color: #ffff00; }\n  .org-info-js_info-navigation { border-style: none; }\n  #org-info-js_console-label\n    { font-size: 10px; font-weight: bold; white-space: nowrap; }\n  .org-info-js_search-highlight\n    { background-color: #ffff00; color: #000000; font-weight: bold; }\n  .org-svg { }\n</style>\n</head>\n<body>\n<div id=\"content\" class=\"content\">\n<p>\nFirst a footnote<sup><a id=\"fnr.a\" class=\"footref\" href=\"#fn.a\" role=\"doc-backlink\">1</a></sup>, then (1) and (2-4).\nInline<sup><a id=\"fnr.2\" class=\"footref\" href=\"#fn.2\" role=\"doc-backlink\">2</a></sup> too.\n</p>\n<div id=\"footnotes\">\n<h2 class=\"footnotes\">Footnotes: </h2>\n<div id=\"text-footnotes\">\n\n<div class=\"footdef\"><sup><a id=\"fn.a\" class=\"footnum\" href=\"#fnr.a\" role=\"doc-backlink\">1</a></sup> <div class=\"footpara\" role=\"doc-footnote\"><p class=\"footpara\">\nIt cites (2).\n</p>\n\n<p>\n[1] Knuth, Donald E., <i>The \\TeXbook</i>, Addison-Wesley, 1984.</p>\n\n<p>\n[2] Lamport, Leslie and Smith, John, <i>LaTeX: A Document Preparation System</i>, Journal of Things, 1994.</p>\n\n<p>\n[3] Lamport, Leslie and Smith, John, <i>More Things</i>, Free Press, 1994.</p>\n\n<p>\n[4] Org Team, <i>The Org Manual</i>, GNU Project, 2021.</p></div></div>\n\n<div class=\"footdef\"><sup><a id=\"fn.2\" class=\"footnum\" href=\"#fnr.2\" role=\"doc-backlink\">2</a></sup> <div class=\"footpara\" role=\"doc-footnote\"><p class=\"footpara\">Inline (3).</p></div></div>\n\n\n</div>\n</div></div>\n</body>\n</html>",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "doc.org": "#+options: toc:nil author:nil date:nil\n#+cite_export: basic numeric numeric\n#+bibliography: refs.bib\n\nFirst a footnote[fn:a], then [cite:@knuth84] and [cite:@org;@lamport94;@lamport94b].\nInline[fn:: Inline [cite:@lamport94b].] too.\n\n[fn:a] It cites [cite:@lamport94].\n\n#+print_bibliography:\n",
+        "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+      }
+    },
+    {
+      "name": "csl-json-html",
+      "input": {
+        "text": "#+title: From CSL-JSON\n#+options: toc:nil author:nil date:nil\n#+bibliography: refs.json\n\nSee [cite:@dominik10], [cite/t:@stallman;@anon] and [cite/na:@stallman].\n\n#+print_bibliography:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-html-export-as-html"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "files": {
+          "refs.json": "[\n  {\n    \"id\": \"dominik10\",\n    \"type\": \"book\",\n    \"author\": [\n      {\n        \"family\": \"Dominik\",\n        \"given\": \"Carsten\"\n      }\n    ],\n    \"title\": \"The Org Mode 7 Reference Manual\",\n    \"publisher\": \"Network Theory\",\n    \"issued\": {\n      \"date-parts\": [\n        [\n          2010,\n          6\n        ]\n      ]\n    }\n  },\n  {\n    \"id\": \"stallman\",\n    \"type\": \"article-journal\",\n    \"author\": [\n      {\n        \"family\": \"Stallman\",\n        \"given\": \"Richard\"\n      },\n      {\n        \"family\": \"Doe\",\n        \"given\": \"Jane\"\n      }\n    ],\n    \"title\": \"EMACS: The Extensible Editor\",\n    \"container-title\": \"Journal of Editors\",\n    \"journal\": \"Journal of Editors\",\n    \"issued\": {\n      \"raw\": \"Spring 1981\"\n    }\n  },\n  {\n    \"id\": \"anon\",\n    \"type\": \"webpage\",\n    \"editor\": [\n      {\n        \"family\": \"Webmaster\",\n        \"given\": \"The\"\n      }\n    ],\n    \"title\": \"A Page\",\n    \"issued\": {\n      \"literal\": \"2020-02-02\"\n    }\n  }\n]"
+        },
+        "find": "doc.org",
+        "globals": {
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-html-postamble": false,
+          "org-export-timestamp-file": false
+        }
+      },
+      "text": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" xml:lang=\"en\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<title>From CSL-JSON</title>\n<meta name=\"generator\" content=\"Org Mode\" />\n<style type=\"text/css\">\n  #content { max-width: 60em; margin: auto; }\n  .title  { text-align: center;\n             margin-bottom: .2em; }\n  .subtitle { text-align: center;\n              font-size: medium;\n              font-weight: bold;\n              margin-top:0; }\n  .todo   { font-family: monospace; color: red; }\n  .done   { font-family: monospace; color: green; }\n  .priority { font-family: monospace; color: orange; }\n  .tag    { background-color: #eee; font-family: monospace;\n            padding: 2px; font-size: 80%; font-weight: normal; }\n  .timestamp { color: #bebebe; }\n  .timestamp-kwd { color: #5f9ea0; }\n  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }\n  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }\n  .org-center { margin-left: auto; margin-right: auto; text-align: center; }\n  .underline { text-decoration: underline; }\n  #postamble p, #preamble p { font-size: 90%; margin: .2em; }\n  p.verse { margin-left: 3%; }\n  pre {\n    border: 1px solid #e6e6e6;\n    border-radius: 3px;\n    background-color: #f2f2f2;\n    padding: 8pt;\n    font-family: monospace;\n    overflow: auto;\n    margin: 1.2em;\n  }\n  pre.src {\n    position: relative;\n    overflow: auto;\n  }\n  pre.src:before {\n    display: none;\n    position: absolute;\n    top: -8px;\n    right: 12px;\n    padding: 3px;\n    color: #555;\n    background-color: #f2f2f299;\n  }\n  pre.src:hover:before { display: inline; margin-top: 14px;}\n  /* Languages per Org manual */\n  pre.src-asymptote:before { content: 'Asymptote'; }\n  pre.src-awk:before { content: 'Awk'; }\n  pre.src-authinfo::before { content: 'Authinfo'; }\n  pre.src-C:before { content: 'C'; }\n  /* pre.src-C++ doesn't work in CSS */\n  pre.src-clojure:before { content: 'Clojure'; }\n  pre.src-css:before { content: 'CSS'; }\n  pre.src-D:before { content: 'D'; }\n  pre.src-ditaa:before { content: 'ditaa'; }\n  pre.src-dot:before { content: 'Graphviz'; }\n  pre.src-calc:before { content: 'Emacs Calc'; }\n  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }\n  pre.src-fortran:before { content: 'Fortran'; }\n  pre.src-gnuplot:before { content: 'gnuplot'; }\n  pre.src-haskell:before { content: 'Haskell'; }\n  pre.src-hledger:before { content: 'hledger'; }\n  pre.src-java:before { content: 'Java'; }\n  pre.src-js:before { content: 'Javascript'; }\n  pre.src-latex:before { content: 'LaTeX'; }\n  pre.src-ledger:before { content: 'Ledger'; }\n  pre.src-lisp:before { content: 'Lisp'; }\n  pre.src-lilypond:before { content: 'Lilypond'; }\n  pre.src-lua:before { content: 'Lua'; }\n  pre.src-matlab:before { content: 'MATLAB'; }\n  pre.src-mscgen:before { content: 'Mscgen'; }\n  pre.src-ocaml:before { content: 'Objective Caml'; }\n  pre.src-octave:before { content: 'Octave'; }\n  pre.src-org:before { content: 'Org mode'; }\n  pre.src-oz:before { content: 'OZ'; }\n  pre.src-plantuml:before { content: 'Plantuml'; }\n  pre.src-processing:before { content: 'Processing.js'; }\n  pre.src-python:before { content: 'Python'; }\n  pre.src-R:before { content: 'R'; }\n  pre.src-ruby:before { content: 'Ruby'; }\n  pre.src-sass:before { content: 'Sass'; }\n  pre.src-scheme:before { content: 'Scheme'; }\n  pre.src-screen:before { content: 'Gnu Screen'; }\n  pre.src-sed:before { content: 'Sed'; }\n  pre.src-sh:before { content: 'shell'; }\n  pre.src-sql:before { content: 'SQL'; }\n  pre.src-sqlite:before { content: 'SQLite'; }\n  /* additional languages in org.el's org-babel-load-languages alist */\n  pre.src-forth:before { content: 'Forth'; }\n  pre.src-io:before { content: 'IO'; }\n  pre.src-J:before { content: 'J'; }\n  pre.src-makefile:before { content: 'Makefile'; }\n  pre.src-maxima:before { content: 'Maxima'; }\n  pre.src-perl:before { content: 'Perl'; }\n  pre.src-picolisp:before { content: 'Pico Lisp'; }\n  pre.src-scala:before { content: 'Scala'; }\n  pre.src-shell:before { content: 'Shell Script'; }\n  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }\n  /* additional language identifiers per \"defun org-babel-execute\"\n       in ob-*.el */\n  pre.src-cpp:before  { content: 'C++'; }\n  pre.src-abc:before  { content: 'ABC'; }\n  pre.src-coq:before  { content: 'Coq'; }\n  pre.src-groovy:before  { content: 'Groovy'; }\n  /* additional language identifiers from org-babel-shell-names in\n     ob-shell.el: ob-shell is the only babel language using a lambda to put\n     the execution function name together. */\n  pre.src-bash:before  { content: 'bash'; }\n  pre.src-csh:before  { content: 'csh'; }\n  pre.src-ash:before  { content: 'ash'; }\n  pre.src-dash:before  { content: 'dash'; }\n  pre.src-ksh:before  { content: 'ksh'; }\n  pre.src-mksh:before  { content: 'mksh'; }\n  pre.src-posh:before  { content: 'posh'; }\n  /* Additional Emacs modes also supported by the LaTeX listings package */\n  pre.src-ada:before { content: 'Ada'; }\n  pre.src-asm:before { content: 'Assembler'; }\n  pre.src-caml:before { content: 'Caml'; }\n  pre.src-delphi:before { content: 'Delphi'; }\n  pre.src-html:before { content: 'HTML'; }\n  pre.src-idl:before { content: 'IDL'; }\n  pre.src-mercury:before { content: 'Mercury'; }\n  pre.src-metapost:before { content: 'MetaPost'; }\n  pre.src-modula-2:before { content: 'Modula-2'; }\n  pre.src-pascal:before { content: 'Pascal'; }\n  pre.src-ps:before { content: 'PostScript'; }\n  pre.src-prolog:before { content: 'Prolog'; }\n  pre.src-simula:before { content: 'Simula'; }\n  pre.src-tcl:before { content: 'tcl'; }\n  pre.src-tex:before { content: 'TeX'; }\n  pre.src-plain-tex:before { content: 'Plain TeX'; }\n  pre.src-verilog:before { content: 'Verilog'; }\n  pre.src-vhdl:before { content: 'VHDL'; }\n  pre.src-xml:before { content: 'XML'; }\n  pre.src-nxml:before { content: 'XML'; }\n  /* add a generic configuration mode; LaTeX export needs an additional\n     (add-to-list 'org-latex-listings-langs '(conf \" \")) in .emacs */\n  pre.src-conf:before { content: 'Configuration File'; }\n\n  table { border-collapse:collapse; }\n  caption.t-above { caption-side: top; }\n  caption.t-bottom { caption-side: bottom; }\n  td, th { vertical-align:top;  }\n  th.org-right  { text-align: center;  }\n  th.org-left   { text-align: center;   }\n  th.org-center { text-align: center; }\n  td.org-right  { text-align: right;  }\n  td.org-left   { text-align: left;   }\n  td.org-center { text-align: center; }\n  dt { font-weight: bold; }\n  .footpara { display: inline; }\n  .footdef  { margin-bottom: 1em; }\n  .figure { padding: 1em; }\n  .figure p { text-align: center; }\n  .equation-container {\n    display: table;\n    text-align: center;\n    width: 100%;\n  }\n  .equation {\n    vertical-align: middle;\n  }\n  .equation-label {\n    display: table-cell;\n    text-align: right;\n    vertical-align: middle;\n  }\n  .inlinetask {\n    padding: 10px;\n    border: 2px solid gray;\n    margin: 10px;\n    background: #ffffcc;\n  }\n  #org-div-home-and-up\n   { text-align: right; font-size: 70%; white-space: nowrap; }\n  textarea { overflow-x: auto; }\n  .linenr { font-size: smaller }\n  .code-highlighted { background-color: #ffff00; }\n  .org-info-js_info-navigation { border-style: none; }\n  #org-info-js_console-label\n    { font-size: 10px; font-weight: bold; white-space: nowrap; }\n  .org-info-js_search-highlight\n    { background-color: #ffff00; color: #000000; font-weight: bold; }\n  .org-svg { }\n</style>\n</head>\n<body>\n<div id=\"content\" class=\"content\">\n<h1 class=\"title\">From CSL-JSON</h1>\n<p>\nSee (Dominik Carsten, 2010), Stallman Richard and Doe Jane (1981), Webmaster The (2020) and (1981).\n</p>\n\n<p>\nDominik Carsten (2010). <i>The Org Mode 7 Reference Manual</i>, Network Theory.</p>\n\n<p>\nStallman Richard and Doe Jane (1981). <i>EMACS: The Extensible Editor</i>, Journal of Editors.</p>\n\n<p>\nWebmaster The (2020). <i>A Page</i>.</p>\n</div>\n</body>\n</html>",
+      "visible": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" xml:lang=\"en\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<title>From CSL-JSON</title>\n<meta name=\"generator\" content=\"Org Mode\" />\n<style type=\"text/css\">\n  #content { max-width: 60em; margin: auto; }\n  .title  { text-align: center;\n             margin-bottom: .2em; }\n  .subtitle { text-align: center;\n              font-size: medium;\n              font-weight: bold;\n              margin-top:0; }\n  .todo   { font-family: monospace; color: red; }\n  .done   { font-family: monospace; color: green; }\n  .priority { font-family: monospace; color: orange; }\n  .tag    { background-color: #eee; font-family: monospace;\n            padding: 2px; font-size: 80%; font-weight: normal; }\n  .timestamp { color: #bebebe; }\n  .timestamp-kwd { color: #5f9ea0; }\n  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }\n  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }\n  .org-center { margin-left: auto; margin-right: auto; text-align: center; }\n  .underline { text-decoration: underline; }\n  #postamble p, #preamble p { font-size: 90%; margin: .2em; }\n  p.verse { margin-left: 3%; }\n  pre {\n    border: 1px solid #e6e6e6;\n    border-radius: 3px;\n    background-color: #f2f2f2;\n    padding: 8pt;\n    font-family: monospace;\n    overflow: auto;\n    margin: 1.2em;\n  }\n  pre.src {\n    position: relative;\n    overflow: auto;\n  }\n  pre.src:before {\n    display: none;\n    position: absolute;\n    top: -8px;\n    right: 12px;\n    padding: 3px;\n    color: #555;\n    background-color: #f2f2f299;\n  }\n  pre.src:hover:before { display: inline; margin-top: 14px;}\n  /* Languages per Org manual */\n  pre.src-asymptote:before { content: 'Asymptote'; }\n  pre.src-awk:before { content: 'Awk'; }\n  pre.src-authinfo::before { content: 'Authinfo'; }\n  pre.src-C:before { content: 'C'; }\n  /* pre.src-C++ doesn't work in CSS */\n  pre.src-clojure:before { content: 'Clojure'; }\n  pre.src-css:before { content: 'CSS'; }\n  pre.src-D:before { content: 'D'; }\n  pre.src-ditaa:before { content: 'ditaa'; }\n  pre.src-dot:before { content: 'Graphviz'; }\n  pre.src-calc:before { content: 'Emacs Calc'; }\n  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }\n  pre.src-fortran:before { content: 'Fortran'; }\n  pre.src-gnuplot:before { content: 'gnuplot'; }\n  pre.src-haskell:before { content: 'Haskell'; }\n  pre.src-hledger:before { content: 'hledger'; }\n  pre.src-java:before { content: 'Java'; }\n  pre.src-js:before { content: 'Javascript'; }\n  pre.src-latex:before { content: 'LaTeX'; }\n  pre.src-ledger:before { content: 'Ledger'; }\n  pre.src-lisp:before { content: 'Lisp'; }\n  pre.src-lilypond:before { content: 'Lilypond'; }\n  pre.src-lua:before { content: 'Lua'; }\n  pre.src-matlab:before { content: 'MATLAB'; }\n  pre.src-mscgen:before { content: 'Mscgen'; }\n  pre.src-ocaml:before { content: 'Objective Caml'; }\n  pre.src-octave:before { content: 'Octave'; }\n  pre.src-org:before { content: 'Org mode'; }\n  pre.src-oz:before { content: 'OZ'; }\n  pre.src-plantuml:before { content: 'Plantuml'; }\n  pre.src-processing:before { content: 'Processing.js'; }\n  pre.src-python:before { content: 'Python'; }\n  pre.src-R:before { content: 'R'; }\n  pre.src-ruby:before { content: 'Ruby'; }\n  pre.src-sass:before { content: 'Sass'; }\n  pre.src-scheme:before { content: 'Scheme'; }\n  pre.src-screen:before { content: 'Gnu Screen'; }\n  pre.src-sed:before { content: 'Sed'; }\n  pre.src-sh:before { content: 'shell'; }\n  pre.src-sql:before { content: 'SQL'; }\n  pre.src-sqlite:before { content: 'SQLite'; }\n  /* additional languages in org.el's org-babel-load-languages alist */\n  pre.src-forth:before { content: 'Forth'; }\n  pre.src-io:before { content: 'IO'; }\n  pre.src-J:before { content: 'J'; }\n  pre.src-makefile:before { content: 'Makefile'; }\n  pre.src-maxima:before { content: 'Maxima'; }\n  pre.src-perl:before { content: 'Perl'; }\n  pre.src-picolisp:before { content: 'Pico Lisp'; }\n  pre.src-scala:before { content: 'Scala'; }\n  pre.src-shell:before { content: 'Shell Script'; }\n  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }\n  /* additional language identifiers per \"defun org-babel-execute\"\n       in ob-*.el */\n  pre.src-cpp:before  { content: 'C++'; }\n  pre.src-abc:before  { content: 'ABC'; }\n  pre.src-coq:before  { content: 'Coq'; }\n  pre.src-groovy:before  { content: 'Groovy'; }\n  /* additional language identifiers from org-babel-shell-names in\n     ob-shell.el: ob-shell is the only babel language using a lambda to put\n     the execution function name together. */\n  pre.src-bash:before  { content: 'bash'; }\n  pre.src-csh:before  { content: 'csh'; }\n  pre.src-ash:before  { content: 'ash'; }\n  pre.src-dash:before  { content: 'dash'; }\n  pre.src-ksh:before  { content: 'ksh'; }\n  pre.src-mksh:before  { content: 'mksh'; }\n  pre.src-posh:before  { content: 'posh'; }\n  /* Additional Emacs modes also supported by the LaTeX listings package */\n  pre.src-ada:before { content: 'Ada'; }\n  pre.src-asm:before { content: 'Assembler'; }\n  pre.src-caml:before { content: 'Caml'; }\n  pre.src-delphi:before { content: 'Delphi'; }\n  pre.src-html:before { content: 'HTML'; }\n  pre.src-idl:before { content: 'IDL'; }\n  pre.src-mercury:before { content: 'Mercury'; }\n  pre.src-metapost:before { content: 'MetaPost'; }\n  pre.src-modula-2:before { content: 'Modula-2'; }\n  pre.src-pascal:before { content: 'Pascal'; }\n  pre.src-ps:before { content: 'PostScript'; }\n  pre.src-prolog:before { content: 'Prolog'; }\n  pre.src-simula:before { content: 'Simula'; }\n  pre.src-tcl:before { content: 'tcl'; }\n  pre.src-tex:before { content: 'TeX'; }\n  pre.src-plain-tex:before { content: 'Plain TeX'; }\n  pre.src-verilog:before { content: 'Verilog'; }\n  pre.src-vhdl:before { content: 'VHDL'; }\n  pre.src-xml:before { content: 'XML'; }\n  pre.src-nxml:before { content: 'XML'; }\n  /* add a generic configuration mode; LaTeX export needs an additional\n     (add-to-list 'org-latex-listings-langs '(conf \" \")) in .emacs */\n  pre.src-conf:before { content: 'Configuration File'; }\n\n  table { border-collapse:collapse; }\n  caption.t-above { caption-side: top; }\n  caption.t-bottom { caption-side: bottom; }\n  td, th { vertical-align:top;  }\n  th.org-right  { text-align: center;  }\n  th.org-left   { text-align: center;   }\n  th.org-center { text-align: center; }\n  td.org-right  { text-align: right;  }\n  td.org-left   { text-align: left;   }\n  td.org-center { text-align: center; }\n  dt { font-weight: bold; }\n  .footpara { display: inline; }\n  .footdef  { margin-bottom: 1em; }\n  .figure { padding: 1em; }\n  .figure p { text-align: center; }\n  .equation-container {\n    display: table;\n    text-align: center;\n    width: 100%;\n  }\n  .equation {\n    vertical-align: middle;\n  }\n  .equation-label {\n    display: table-cell;\n    text-align: right;\n    vertical-align: middle;\n  }\n  .inlinetask {\n    padding: 10px;\n    border: 2px solid gray;\n    margin: 10px;\n    background: #ffffcc;\n  }\n  #org-div-home-and-up\n   { text-align: right; font-size: 70%; white-space: nowrap; }\n  textarea { overflow-x: auto; }\n  .linenr { font-size: smaller }\n  .code-highlighted { background-color: #ffff00; }\n  .org-info-js_info-navigation { border-style: none; }\n  #org-info-js_console-label\n    { font-size: 10px; font-weight: bold; white-space: nowrap; }\n  .org-info-js_search-highlight\n    { background-color: #ffff00; color: #000000; font-weight: bold; }\n  .org-svg { }\n</style>\n</head>\n<body>\n<div id=\"content\" class=\"content\">\n<h1 class=\"title\">From CSL-JSON</h1>\n<p>\nSee (Dominik Carsten, 2010), Stallman Richard and Doe Jane (1981), Webmaster The (2020) and (1981).\n</p>\n\n<p>\nDominik Carsten (2010). <i>The Org Mode 7 Reference Manual</i>, Network Theory.</p>\n\n<p>\nStallman Richard and Doe Jane (1981). <i>EMACS: The Extensible Editor</i>, Journal of Editors.</p>\n\n<p>\nWebmaster The (2020). <i>A Page</i>.</p>\n</div>\n</body>\n</html>",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "doc.org": "#+title: From CSL-JSON\n#+options: toc:nil author:nil date:nil\n#+bibliography: refs.json\n\nSee [cite:@dominik10], [cite/t:@stallman;@anon] and [cite/na:@stallman].\n\n#+print_bibliography:\n",
+        "refs.json": "[\n  {\n    \"id\": \"dominik10\",\n    \"type\": \"book\",\n    \"author\": [\n      {\n        \"family\": \"Dominik\",\n        \"given\": \"Carsten\"\n      }\n    ],\n    \"title\": \"The Org Mode 7 Reference Manual\",\n    \"publisher\": \"Network Theory\",\n    \"issued\": {\n      \"date-parts\": [\n        [\n          2010,\n          6\n        ]\n      ]\n    }\n  },\n  {\n    \"id\": \"stallman\",\n    \"type\": \"article-journal\",\n    \"author\": [\n      {\n        \"family\": \"Stallman\",\n        \"given\": \"Richard\"\n      },\n      {\n        \"family\": \"Doe\",\n        \"given\": \"Jane\"\n      }\n    ],\n    \"title\": \"EMACS: The Extensible Editor\",\n    \"container-title\": \"Journal of Editors\",\n    \"journal\": \"Journal of Editors\",\n    \"issued\": {\n      \"raw\": \"Spring 1981\"\n    }\n  },\n  {\n    \"id\": \"anon\",\n    \"type\": \"webpage\",\n    \"editor\": [\n      {\n        \"family\": \"Webmaster\",\n        \"given\": \"The\"\n      }\n    ],\n    \"title\": \"A Page\",\n    \"issued\": {\n      \"literal\": \"2020-02-02\"\n    }\n  }\n]"
+      }
+    },
+    {
+      "name": "csl-json-ascii",
+      "input": {
+        "text": "#+title: From CSL-JSON\n#+options: toc:nil author:nil date:nil\n#+bibliography: refs.json\n\nSee [cite:@dominik10], [cite/t:@stallman;@anon] and [cite/na:@stallman].\n\n#+print_bibliography:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-ascii-export-as-ascii"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "files": {
+          "refs.json": "[\n  {\n    \"id\": \"dominik10\",\n    \"type\": \"book\",\n    \"author\": [\n      {\n        \"family\": \"Dominik\",\n        \"given\": \"Carsten\"\n      }\n    ],\n    \"title\": \"The Org Mode 7 Reference Manual\",\n    \"publisher\": \"Network Theory\",\n    \"issued\": {\n      \"date-parts\": [\n        [\n          2010,\n          6\n        ]\n      ]\n    }\n  },\n  {\n    \"id\": \"stallman\",\n    \"type\": \"article-journal\",\n    \"author\": [\n      {\n        \"family\": \"Stallman\",\n        \"given\": \"Richard\"\n      },\n      {\n        \"family\": \"Doe\",\n        \"given\": \"Jane\"\n      }\n    ],\n    \"title\": \"EMACS: The Extensible Editor\",\n    \"container-title\": \"Journal of Editors\",\n    \"journal\": \"Journal of Editors\",\n    \"issued\": {\n      \"raw\": \"Spring 1981\"\n    }\n  },\n  {\n    \"id\": \"anon\",\n    \"type\": \"webpage\",\n    \"editor\": [\n      {\n        \"family\": \"Webmaster\",\n        \"given\": \"The\"\n      }\n    ],\n    \"title\": \"A Page\",\n    \"issued\": {\n      \"literal\": \"2020-02-02\"\n    }\n  }\n]"
+        },
+        "find": "doc.org",
+        "globals": {
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-ascii-charset": "'ascii"
+        }
+      },
+      "text": "                            _______________\n\n                             FROM CSL-JSON\n                            _______________\n\n\nSee (Dominik Carsten, 2010), Stallman Richard and Doe Jane (1981),\nWebmaster The (2020) and (1981).\n\nDominik Carsten (2010). /The Org Mode 7 Reference Manual/, Network\nTheory.\n\nStallman Richard and Doe Jane (1981). /EMACS: The Extensible Editor/,\nJournal of Editors.\n\nWebmaster The (2020). /A Page/.\n",
+      "visible": "                            _______________\n\n                             FROM CSL-JSON\n                            _______________\n\n\nSee (Dominik Carsten, 2010), Stallman Richard and Doe Jane (1981),\nWebmaster The (2020) and (1981).\n\nDominik Carsten (2010). /The Org Mode 7 Reference Manual/, Network\nTheory.\n\nStallman Richard and Doe Jane (1981). /EMACS: The Extensible Editor/,\nJournal of Editors.\n\nWebmaster The (2020). /A Page/.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "doc.org": "#+title: From CSL-JSON\n#+options: toc:nil author:nil date:nil\n#+bibliography: refs.json\n\nSee [cite:@dominik10], [cite/t:@stallman;@anon] and [cite/na:@stallman].\n\n#+print_bibliography:\n",
+        "refs.json": "[\n  {\n    \"id\": \"dominik10\",\n    \"type\": \"book\",\n    \"author\": [\n      {\n        \"family\": \"Dominik\",\n        \"given\": \"Carsten\"\n      }\n    ],\n    \"title\": \"The Org Mode 7 Reference Manual\",\n    \"publisher\": \"Network Theory\",\n    \"issued\": {\n      \"date-parts\": [\n        [\n          2010,\n          6\n        ]\n      ]\n    }\n  },\n  {\n    \"id\": \"stallman\",\n    \"type\": \"article-journal\",\n    \"author\": [\n      {\n        \"family\": \"Stallman\",\n        \"given\": \"Richard\"\n      },\n      {\n        \"family\": \"Doe\",\n        \"given\": \"Jane\"\n      }\n    ],\n    \"title\": \"EMACS: The Extensible Editor\",\n    \"container-title\": \"Journal of Editors\",\n    \"journal\": \"Journal of Editors\",\n    \"issued\": {\n      \"raw\": \"Spring 1981\"\n    }\n  },\n  {\n    \"id\": \"anon\",\n    \"type\": \"webpage\",\n    \"editor\": [\n      {\n        \"family\": \"Webmaster\",\n        \"given\": \"The\"\n      }\n    ],\n    \"title\": \"A Page\",\n    \"issued\": {\n      \"literal\": \"2020-02-02\"\n    }\n  }\n]"
+      }
+    },
+    {
+      "name": "no-processors-ascii",
+      "input": {
+        "text": "#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nText [cite:@knuth84] and more [cite/t:@org].\n\n#+print_bibliography:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-ascii-export-as-ascii"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "files": {
+          "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+        },
+        "find": "doc.org",
+        "globals": {
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-ascii-charset": "'ascii",
+          "org-cite-export-processors": false
+        }
+      },
+      "text": "Text and more.\n",
+      "visible": "Text and more.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "doc.org": "#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nText [cite:@knuth84] and more [cite/t:@org].\n\n#+print_bibliography:\n",
+        "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+      }
+    },
+    {
+      "name": "processor-per-backend-md",
+      "input": {
+        "text": "#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nText [cite:@knuth84] and more [cite/t:@org].\n\n#+print_bibliography:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-md-export-as-markdown"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "files": {
+          "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+        },
+        "find": "doc.org",
+        "globals": {
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-cite-export-processors": [
+            [
+              "'md",
+              "'basic",
+              "numeric",
+              "numeric"
+            ],
+            [
+              true,
+              "'basic"
+            ]
+          ]
+        }
+      },
+      "text": "Text (1) and more Org Team (2021).\n\n[1] Knuth, Donald E., *The \\TeXbook*, Addison-Wesley, 1984.\n\n[2] Org Team, *The Org Manual*, GNU Project, 2021.\n\n",
+      "visible": "Text (1) and more Org Team (2021).\n\n[1] Knuth, Donald E., *The \\TeXbook*, Addison-Wesley, 1984.\n\n[2] Org Team, *The Org Manual*, GNU Project, 2021.\n\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "doc.org": "#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nText [cite:@knuth84] and more [cite/t:@org].\n\n#+print_bibliography:\n",
+        "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+      }
+    },
+    {
+      "name": "processor-per-backend-ascii",
+      "input": {
+        "text": "#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nText [cite:@knuth84] and more [cite/t:@org].\n\n#+print_bibliography:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-ascii-export-as-ascii"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "files": {
+          "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+        },
+        "find": "doc.org",
+        "globals": {
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-ascii-charset": "'ascii",
+          "org-cite-export-processors": [
+            [
+              "'md",
+              "'basic",
+              "numeric",
+              "numeric"
+            ],
+            [
+              true,
+              "'basic"
+            ]
+          ]
+        }
+      },
+      "text": "Text (Knuth, Donald E., 1984) and more Org Team (2021).\n\nKnuth, Donald E. (1984). /The \\TeXbook/, Addison-Wesley.\n\nOrg Team (2021). /The Org Manual/, GNU Project.\n",
+      "visible": "Text (Knuth, Donald E., 1984) and more Org Team (2021).\n\nKnuth, Donald E. (1984). /The \\TeXbook/, Addison-Wesley.\n\nOrg Team (2021). /The Org Manual/, GNU Project.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "doc.org": "#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nText [cite:@knuth84] and more [cite/t:@org].\n\n#+print_bibliography:\n",
+        "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+      }
+    },
+    {
+      "name": "org-with-processors",
+      "input": {
+        "text": "#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nText [cite:@knuth84] and more [cite/t:@org].\n\n#+print_bibliography:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-org-export-as-org"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "files": {
+          "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+        },
+        "find": "doc.org",
+        "globals": {
+          "org-export-timestamp-file": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-org-with-cite-processors": true
+        }
+      },
+      "text": "#+options: toc:nil author:nil date:nil\n#+title: \n#+bibliography: refs.bib\n\nText (Knuth, Donald E., 1984) and more Org Team (2021).\n\nKnuth, Donald E. (1984). /The \\TeXbook/, Addison-Wesley.\n\nOrg Team (2021). /The Org Manual/, GNU Project.\n",
+      "visible": "#+options: toc:nil author:nil date:nil\n#+title: \n#+bibliography: refs.bib\n\nText (Knuth, Donald E., 1984) and more Org Team (2021).\n\nKnuth, Donald E. (1984). /The \\TeXbook/, Addison-Wesley.\n\nOrg Team (2021). /The Org Manual/, GNU Project.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "doc.org": "#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bib\n\nText [cite:@knuth84] and more [cite/t:@org].\n\n#+print_bibliography:\n",
+        "refs.bib": "@string{pub = \"Free Press\"}\n@comment{Not an entry.}\n@preamble{\"\\newcommand{\\noop}[1]{}\"}\n\n@book{knuth84,\n  author    = {Knuth, Donald E.},\n  title     = {The {\\TeX}book},\n  publisher = {Addison-Wesley},\n  year      = 1984\n}\n\n@article{lamport94,\n  author  = \"Lamport, Leslie and Smith, John\",\n  title   = {{LaTeX}: A Document\n             Preparation System},\n  journal = {Journal of Things},\n  year    = {1994},\n  month   = jan\n}\n\n@book{lamport94b,\n  author    = {Lamport, Leslie and Smith, John},\n  title     = {More Things},\n  publisher = pub,\n  date      = {1994-05-01}\n}\n\n@misc{org,\n  editor = {Org Team},\n  title  = {The Org Manual},\n  institution = {GNU} # { Project},\n  year   = 2021\n}\n"
+      }
+    },
+    {
+      "name": "bibtex-strings-and-types-ascii",
+      "input": {
+        "text": "#+options: toc:nil author:nil date:nil\n#+cite_export: basic numeric numeric\n#+bibliography: refs.bib\n\n[cite:@grob] [cite:@abbrev] [cite:@twice] [cite:@web] [cite:@foo] [cite:@first] [cite:@second] [cite:@hidden]\n\n#+print_bibliography:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-ascii-export-as-ascii"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "files": {
+          "refs.bib": "@string{jan = \"Janvier\"}\n@string{pub = \"First Press\"}\n@string{pub = \"Second Press\"}\n\n@book{grob,\n  author = {Buchberger, Bruno},\n  title = \"Gr\\\"obner bases\",\n  publisher = later,\n  year = 1965\n}\n\n@string{later = \"Later Press\"}\n\n@article{abbrev,\n  author = {Hoare, C. A. R.},\n  title = jan,\n  journal = cacm,\n  year = 1969\n}\n\n@book{twice,\n  author = {Doe, Jane},\n  title = {Twice},\n  publisher = pub,\n  year = 2001\n}\n\n@www{web,\n  author = {Web, Site},\n  title = {Site},\n  year = 2010\n}\n\n@foo{foo,\n  author = {Foo, Bar},\n  title = {Foo},\n  year = 2011\n}\n\n@book{first, author = {One, A}, title = {First}, year = 2012} @book{second, author = {Two, B}, title = {Second}, year = 2013}\n\n@comment{\n@book{hidden,\n  author = {Hid, Den},\n  title = {Hidden},\n  year = 2014\n}\n}\n"
+        },
+        "find": "doc.org",
+        "globals": {
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-ascii-charset": "'ascii"
+        }
+      },
+      "text": "(1) (4) (2) (6) (7) (5) (8) (3)\n\n[1] Buchberger, Bruno, /Gr\\\"obner bases/, Later Press, 1965.\n\n[2] Doe, Jane, /Twice/, First Press, 2001.\n\n[3] Hid, Den, /Hidden/, 2014.\n\n[4] Hoare, C. A. R., /January/, Communications of the ACM, 1969.\n\n[5] One, A, /First/, 2012.\n",
+      "visible": "(1) (4) (2) (6) (7) (5) (8) (3)\n\n[1] Buchberger, Bruno, /Gr\\\"obner bases/, Later Press, 1965.\n\n[2] Doe, Jane, /Twice/, First Press, 2001.\n\n[3] Hid, Den, /Hidden/, 2014.\n\n[4] Hoare, C. A. R., /January/, Communications of the ACM, 1969.\n\n[5] One, A, /First/, 2012.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "doc.org": "#+options: toc:nil author:nil date:nil\n#+cite_export: basic numeric numeric\n#+bibliography: refs.bib\n\n[cite:@grob] [cite:@abbrev] [cite:@twice] [cite:@web] [cite:@foo] [cite:@first] [cite:@second] [cite:@hidden]\n\n#+print_bibliography:\n",
+        "refs.bib": "@string{jan = \"Janvier\"}\n@string{pub = \"First Press\"}\n@string{pub = \"Second Press\"}\n\n@book{grob,\n  author = {Buchberger, Bruno},\n  title = \"Gr\\\"obner bases\",\n  publisher = later,\n  year = 1965\n}\n\n@string{later = \"Later Press\"}\n\n@article{abbrev,\n  author = {Hoare, C. A. R.},\n  title = jan,\n  journal = cacm,\n  year = 1969\n}\n\n@book{twice,\n  author = {Doe, Jane},\n  title = {Twice},\n  publisher = pub,\n  year = 2001\n}\n\n@www{web,\n  author = {Web, Site},\n  title = {Site},\n  year = 2010\n}\n\n@foo{foo,\n  author = {Foo, Bar},\n  title = {Foo},\n  year = 2011\n}\n\n@book{first, author = {One, A}, title = {First}, year = 2012} @book{second, author = {Two, B}, title = {Second}, year = 2013}\n\n@comment{\n@book{hidden,\n  author = {Hid, Den},\n  title = {Hidden},\n  year = 2014\n}\n}\n"
+      }
+    },
+    {
+      "name": "bibtex-dialect-ascii",
+      "input": {
+        "text": "#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bibtex\n\n[cite:@online] [cite:@book]\n\n#+print_bibliography:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-ascii-export-as-ascii"
+        ],
+        "platform": null,
+        "today": "2026-11-27",
+        "files": {
+          "refs.bibtex": "@online{online,\n  author = {On, Line},\n  title = {Online},\n  year = {2015}\n}\n\n@book{book,\n  author = {Bo, Ok},\n  title = {Book},\n  year = {2016}\n}\n"
+        },
+        "find": "doc.org",
+        "globals": {
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-ascii-charset": "'ascii"
+        }
+      },
+      "text": "(??, ????) (Bo, Ok, 2016)\n\nBo, Ok (2016). /Book/.\n",
+      "visible": "(??, ????) (Bo, Ok, 2016)\n\nBo, Ok (2016). /Book/.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "doc.org": "#+options: toc:nil author:nil date:nil\n#+bibliography: refs.bibtex\n\n[cite:@online] [cite:@book]\n\n#+print_bibliography:\n",
+        "refs.bibtex": "@online{online,\n  author = {On, Line},\n  title = {Online},\n  year = {2015}\n}\n\n@book{book,\n  author = {Bo, Ok},\n  title = {Book},\n  year = {2016}\n}\n"
+      }
+    }
+  ]
+}

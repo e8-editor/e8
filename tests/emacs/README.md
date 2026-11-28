@@ -29,6 +29,8 @@ These tests check that E8 behaves like GNU Emacs by running the same keys on the
 
    `E8_ORACLE_ONLY=filling` records only the case files whose names have it.
 
+   record.el clears oc-basic's bibliography caches between cases, as Org fails exporting citations a second time in one session with the text or note style ("No location found to insert node"). The reset does not cover every such failure: a bibliography entry with no author, cited in one case, can still break a later case's export in the same session. No `org-cite.json` case is affected; a new citation case that fails only when recorded with the others is likely this.
+
    Cases you are only trying, as a review does, go in a file whose name starts `zz-`, as `zz-review-dates.json`: a run without `E8_ORACLE_ONLY` leaves it out, so a `make check` running meanwhile is not failed by it, and git ignores it. Record and compare it with `E8_ORACLE_ONLY=zz-review-dates`, and delete it and its golden when done.
 
 3. Run `cargo test -p e8-script --test emacs`. If E8 differs and the fix is not part of the current work, add the case to `known-gaps.txt` with a reason.
