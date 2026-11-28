@@ -1,0 +1,3380 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "default-scalar-output",
+      "input": {
+        "text": "#+begin_src sh\necho hello\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh\necho hello\n#+end_src\n\n#+RESULTS:\n: hello\n",
+      "visible": "#+begin_src sh\necho hello\n#+end_src\n\n#+RESULTS:\n: hello\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "default-output-read-as-table",
+      "input": {
+        "text": "#+begin_src sh\nseq 3\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh\nseq 3\n#+end_src\n\n#+RESULTS:\n| 1 |\n| 2 |\n| 3 |\n",
+      "visible": "#+begin_src sh\nseq 3\n#+end_src\n\n#+RESULTS:\n| 1 |\n| 2 |\n| 3 |\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "default-tab-separated-table",
+      "input": {
+        "text": "#+begin_src sh\nprintf 'a\\tb\\n1\\t2.0\\n'\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh\nprintf 'a\\tb\\n1\\t2.0\\n'\n#+end_src\n\n#+RESULTS:\n| a |   b |\n| 1 | 2.0 |\n",
+      "visible": "#+begin_src sh\nprintf 'a\\tb\\n1\\t2.0\\n'\n#+end_src\n\n#+RESULTS:\n| a |   b |\n| 1 | 2.0 |\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "results-output",
+      "input": {
+        "text": "#+begin_src sh :results output\nseq 3\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results output\nseq 3\n#+end_src\n\n#+RESULTS:\n: 1\n: 2\n: 3\n",
+      "visible": "#+begin_src sh :results output\nseq 3\n#+end_src\n\n#+RESULTS:\n: 1\n: 2\n: 3\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "results-value-exit-code",
+      "input": {
+        "text": "#+begin_src sh :results value\nfalse\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results value\nfalse\n#+end_src\n\n#+RESULTS:\n: 1\n",
+      "visible": "#+begin_src sh :results value\nfalse\n#+end_src\n\n#+RESULTS:\n: 1\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "results-value-after-exit",
+      "input": {
+        "text": "#+begin_src sh :results value\nexit 3\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results value\nexit 3\n#+end_src\n\n#+RESULTS:\n",
+      "visible": "#+begin_src sh :results value\nexit 3\n#+end_src\n\n#+RESULTS:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "results-table",
+      "input": {
+        "text": "#+begin_src sh :results table\nprintf 'a b\\nc d\\n'\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results table\nprintf 'a b\\nc d\\n'\n#+end_src\n\n#+RESULTS:\n| a | b |\n| c | d |\n",
+      "visible": "#+begin_src sh :results table\nprintf 'a b\\nc d\\n'\n#+end_src\n\n#+RESULTS:\n| a | b |\n| c | d |\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "results-list",
+      "input": {
+        "text": "#+begin_src sh :results list\nprintf 'one\\ntwo\\n'\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results list\nprintf 'one\\ntwo\\n'\n#+end_src\n\n#+RESULTS:\n- one\n- two\n",
+      "visible": "#+begin_src sh :results list\nprintf 'one\\ntwo\\n'\n#+end_src\n\n#+RESULTS:\n- one\n- two\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "results-scalar",
+      "input": {
+        "text": "#+begin_src sh :results scalar\nseq 2\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results scalar\nseq 2\n#+end_src\n\n#+RESULTS:\n: 1\n: 2\n",
+      "visible": "#+begin_src sh :results scalar\nseq 2\n#+end_src\n\n#+RESULTS:\n: 1\n: 2\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "results-verbatim",
+      "input": {
+        "text": "#+begin_src sh :results verbatim\nprintf 'x\\n'\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results verbatim\nprintf 'x\\n'\n#+end_src\n\n#+RESULTS:\n: x\n",
+      "visible": "#+begin_src sh :results verbatim\nprintf 'x\\n'\n#+end_src\n\n#+RESULTS:\n: x\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "results-raw-table",
+      "input": {
+        "text": "#+begin_src sh :results raw\nprintf '| a | b |\\n'\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results raw\nprintf '| a | b |\\n'\n#+end_src\n\n#+RESULTS:\n| a | b |\n",
+      "visible": "#+begin_src sh :results raw\nprintf '| a | b |\\n'\n#+end_src\n\n#+RESULTS:\n| a | b |\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "results-raw-heading",
+      "input": {
+        "text": "#+begin_src sh :results raw output\necho '* Not a heading'\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results raw output\necho '* Not a heading'\n#+end_src\n\n#+RESULTS:\n* Not a heading\n",
+      "visible": "#+begin_src sh :results raw output\necho '* Not a heading'\n#+end_src\n\n#+RESULTS:\n* Not a heading\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "results-drawer",
+      "input": {
+        "text": "#+begin_src sh :results drawer\necho drawn\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results drawer\necho drawn\n#+end_src\n\n#+RESULTS:\n:results:\ndrawn\n:end:\n",
+      "visible": "#+begin_src sh :results drawer\necho drawn\n#+end_src\n\n#+RESULTS:\n:results:\ndrawn\n:end:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "results-html",
+      "input": {
+        "text": "#+begin_src sh :results html output\necho '<b>x</b>'\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results html output\necho '<b>x</b>'\n#+end_src\n\n#+RESULTS:\n#+begin_export html\n<b>x</b>\n#+end_export\n",
+      "visible": "#+begin_src sh :results html output\necho '<b>x</b>'\n#+end_src\n\n#+RESULTS:\n#+begin_export html\n<b>x</b>\n#+end_export\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "results-code",
+      "input": {
+        "text": "#+begin_src sh :results code output\necho 'echo hi'\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results code output\necho 'echo hi'\n#+end_src\n\n#+RESULTS:\n#+begin_src sh\necho hi\n#+end_src\n",
+      "visible": "#+begin_src sh :results code output\necho 'echo hi'\n#+end_src\n\n#+RESULTS:\n#+begin_src sh\necho hi\n#+end_src\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "results-org",
+      "input": {
+        "text": "#+begin_src sh :results org output\necho '- item'\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results org output\necho '- item'\n#+end_src\n\n#+RESULTS:\n#+begin_src org\n- item\n#+end_src\n",
+      "visible": "#+begin_src sh :results org output\necho '- item'\n#+end_src\n\n#+RESULTS:\n#+begin_src org\n- item\n#+end_src\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "wrap-example",
+      "input": {
+        "text": "#+begin_src sh :results output :wrap example\necho wrapped\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results output :wrap example\necho wrapped\n#+end_src\n\n#+RESULTS:\n#+begin_example\nwrapped\n#+end_example\n",
+      "visible": "#+begin_src sh :results output :wrap example\necho wrapped\n#+end_src\n\n#+RESULTS:\n#+begin_example\nwrapped\n#+end_example\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "wrap-quote",
+      "input": {
+        "text": "#+begin_src sh :results output :wrap quote\necho quoted\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results output :wrap quote\necho quoted\n#+end_src\n\n#+RESULTS:\n#+begin_quote\nquoted\n#+end_quote\n",
+      "visible": "#+begin_src sh :results output :wrap quote\necho quoted\n#+end_src\n\n#+RESULTS:\n#+begin_quote\nquoted\n#+end_quote\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "results-silent",
+      "input": {
+        "text": "#+begin_src sh :results output silent\necho quiet\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results output silent\necho quiet\n#+end_src\n",
+      "visible": "#+begin_src sh :results output silent\necho quiet\n#+end_src\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "\""
+    },
+    {
+      "name": "results-none",
+      "input": {
+        "text": "#+begin_src sh :results output none\necho nothing\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results output none\necho nothing\n#+end_src\n",
+      "visible": "#+begin_src sh :results output none\necho nothing\n#+end_src\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "results-discard",
+      "input": {
+        "text": "#+begin_src sh :results discard\necho gone\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results discard\necho gone\n#+end_src\n\n#+RESULTS:\n",
+      "visible": "#+begin_src sh :results discard\necho gone\n#+end_src\n\n#+RESULTS:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "results-append",
+      "input": {
+        "text": "#+begin_src sh :results output append\necho again\n#+end_src\n\n#+RESULTS:\n: before\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results output append\necho again\n#+end_src\n\n#+RESULTS:\n: before\n: again\n",
+      "visible": "#+begin_src sh :results output append\necho again\n#+end_src\n\n#+RESULTS:\n: before\n: again\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "results-prepend",
+      "input": {
+        "text": "#+begin_src sh :results output prepend\necho first\n#+end_src\n\n#+RESULTS:\n: before\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results output prepend\necho first\n#+end_src\n\n#+RESULTS:\n: first\n: before\n",
+      "visible": "#+begin_src sh :results output prepend\necho first\n#+end_src\n\n#+RESULTS:\n: first\n: before\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "results-replace",
+      "input": {
+        "text": "#+begin_src sh :results output\necho new\n#+end_src\n\n#+RESULTS:\n: old\n: lines\n\nAfter.\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results output\necho new\n#+end_src\n\n#+RESULTS:\n: new\n\nAfter.\n",
+      "visible": "#+begin_src sh :results output\necho new\n#+end_src\n\n#+RESULTS:\n: new\n\nAfter.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "long-output-example-block",
+      "input": {
+        "text": "#+begin_src sh :results output\nseq 12\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results output\nseq 12\n#+end_src\n\n#+RESULTS:\n#+begin_example\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n#+end_example\n",
+      "visible": "#+begin_src sh :results output\nseq 12\n#+end_src\n\n#+RESULTS:\n#+begin_example\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n#+end_example\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "example-escapes-headings",
+      "input": {
+        "text": "#+begin_src sh :results output\nseq 9; echo '* star'; echo '#+begin'\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results output\nseq 9; echo '* star'; echo '#+begin'\n#+end_src\n\n#+RESULTS:\n#+begin_example\n1\n2\n3\n4\n5\n6\n7\n8\n9\n,* star\n,#+begin\n#+end_example\n",
+      "visible": "#+begin_src sh :results output\nseq 9; echo '* star'; echo '#+begin'\n#+end_src\n\n#+RESULTS:\n#+begin_example\n1\n2\n3\n4\n5\n6\n7\n8\n9\n,* star\n,#+begin\n#+end_example\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "stderr-left-out",
+      "input": {
+        "text": "#+begin_src sh :results output\necho out; echo err >&2\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results output\necho out; echo err >&2\n#+end_src\n\n#+RESULTS:\n: out\n",
+      "visible": "#+begin_src sh :results output\necho out; echo err >&2\n#+end_src\n\n#+RESULTS:\n: out\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "output-defaults-to-value",
+      "input": {
+        "text": "#+begin_src sh\necho hello\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false,
+          "org-babel-shell-results-defaults-to-output": false
+        }
+      },
+      "text": "#+begin_src sh\necho hello\n#+end_src\n\n#+RESULTS:\n: 0\n",
+      "visible": "#+begin_src sh\necho hello\n#+end_src\n\n#+RESULTS:\n: 0\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "named-block-results",
+      "input": {
+        "text": "#+name: hello\n#+begin_src sh :results output\necho named\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+name: hello\n#+begin_src sh :results output\necho named\n#+end_src\n\n#+RESULTS: hello\n: named\n",
+      "visible": "#+name: hello\n#+begin_src sh :results output\necho named\n#+end_src\n\n#+RESULTS: hello\n: named\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "indented-in-item",
+      "input": {
+        "text": "- item\n  #+begin_src sh :results output\n  printf 'a\\nb\\n'\n  #+end_src\n",
+        "point": 9,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "- item\n  #+begin_src sh :results output\n  printf 'a\\nb\\n'\n  #+end_src\n\n  #+RESULTS:\n  : a\n  : b\n",
+      "visible": "- item\n  #+begin_src sh :results output\n  printf 'a\\nb\\n'\n  #+end_src\n\n  #+RESULTS:\n  : a\n  : b\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "property-header-args",
+      "input": {
+        "text": "#+PROPERTY: header-args:sh :results output\n\n#+begin_src sh\nseq 2\n#+end_src\n",
+        "point": 44,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+PROPERTY: header-args:sh :results output\n\n#+begin_src sh\nseq 2\n#+end_src\n\n#+RESULTS:\n: 1\n: 2\n",
+      "visible": "#+PROPERTY: header-args:sh :results output\n\n#+begin_src sh\nseq 2\n#+end_src\n\n#+RESULTS:\n: 1\n: 2\n",
+      "point": 44,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "eval-no",
+      "input": {
+        "text": "#+begin_src sh :eval no\necho never\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :eval no\necho never\n#+end_src\n",
+      "visible": "#+begin_src sh :eval no\necho never\n#+end_src\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Evaluation of this sh code block is disabled."
+    },
+    {
+      "name": "bash-block",
+      "input": {
+        "text": "#+begin_src bash :results output\necho \"$BASH_VERSION\" | cut -c1 | tr -d '\\n' | wc -c | tr -d ' '\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src bash :results output\necho \"$BASH_VERSION\" | cut -c1 | tr -d '\\n' | wc -c | tr -d ' '\n#+end_src\n\n#+RESULTS:\n: 1\n",
+      "visible": "#+begin_src bash :results output\necho \"$BASH_VERSION\" | cut -c1 | tr -d '\\n' | wc -c | tr -d ' '\n#+end_src\n\n#+RESULTS:\n: 1\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "shell-block",
+      "input": {
+        "text": "#+begin_src shell :results output\necho from shell\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false,
+          "shell-file-name": "sh"
+        }
+      },
+      "text": "#+begin_src shell :results output\necho from shell\n#+end_src\n\n#+RESULTS:\n: from shell\n",
+      "visible": "#+begin_src shell :results output\necho from shell\n#+end_src\n\n#+RESULTS:\n: from shell\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "point-inside-block",
+      "input": {
+        "text": "#+begin_src sh :results output\necho inside\n#+end_src\n",
+        "point": 31,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results output\necho inside\n#+end_src\n\n#+RESULTS:\n: inside\n",
+      "visible": "#+begin_src sh :results output\necho inside\n#+end_src\n\n#+RESULTS:\n: inside\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "var-table-tab-separated",
+      "input": {
+        "text": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :var t=tbl :var n=5 :results output\necho \"$t\"\necho $n\n#+end_src\n",
+        "point": 33,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :var t=tbl :var n=5 :results output\necho \"$t\"\necho $n\n#+end_src\n\n#+RESULTS:\n: x\t1\n: y\t2\n: 5\n",
+      "visible": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :var t=tbl :var n=5 :results output\necho \"$t\"\necho $n\n#+end_src\n\n#+RESULTS:\n: x\t1\n: y\t2\n: 5\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "var-several-in-one",
+      "input": {
+        "text": "#+begin_src sh :var a=1 b=\"two words\" :results output\necho \"$a/$b\"\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :var a=1 b=\"two words\" :results output\necho \"$a/$b\"\n#+end_src\n\n#+RESULTS:\n: 1/two words\n",
+      "visible": "#+begin_src sh :var a=1 b=\"two words\" :results output\necho \"$a/$b\"\n#+end_src\n\n#+RESULTS:\n: 1/two words\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "var-string-quoted",
+      "input": {
+        "text": "#+begin_src sh :var s=\"it's\" :results output\necho \"$s\"\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :var s=\"it's\" :results output\necho \"$s\"\n#+end_src\n\n#+RESULTS:\n: it's\n",
+      "visible": "#+begin_src sh :var s=\"it's\" :results output\necho \"$s\"\n#+end_src\n\n#+RESULTS:\n: it's\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "var-list",
+      "input": {
+        "text": "#+name: lst\n- one\n- [ ] two\n  continued\n  - sub\n- three\n\n#+begin_src sh :var l=lst :results output\necho \"$l\"\n#+end_src\n",
+        "point": 57,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+name: lst\n- one\n- [ ] two\n  continued\n  - sub\n- three\n\n#+begin_src sh :var l=lst :results output\necho \"$l\"\n#+end_src\n\n#+RESULTS:\n: one\n: [ ] two\n: continued\n: three\n",
+      "visible": "#+name: lst\n- one\n- [ ] two\n  continued\n  - sub\n- three\n\n#+begin_src sh :var l=lst :results output\necho \"$l\"\n#+end_src\n\n#+RESULTS:\n: one\n: [ ] two\n: continued\n: three\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "var-table-colnames-dropped",
+      "input": {
+        "text": "#+name: tbl2\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n\n#+begin_src sh :var t=tbl2 :results output\necho \"$t\"\n#+end_src\n",
+        "point": 54,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+name: tbl2\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n\n#+begin_src sh :var t=tbl2 :results output\necho \"$t\"\n#+end_src\n\n#+RESULTS:\n: 1\t2\n: 3\t4\n",
+      "visible": "#+name: tbl2\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n\n#+begin_src sh :var t=tbl2 :results output\necho \"$t\"\n#+end_src\n\n#+RESULTS:\n: 1\t2\n: 3\t4\n",
+      "point": 54,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "var-table-hlines-yes",
+      "input": {
+        "text": "#+name: tbl2\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n\n#+begin_src sh :var t=tbl2 :hlines yes :colnames no :results output\necho \"$t\"\n#+end_src\n",
+        "point": 54,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+name: tbl2\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n\n#+begin_src sh :var t=tbl2 :hlines yes :colnames no :results output\necho \"$t\"\n#+end_src\n\n#+RESULTS:\n: a\tb\n: hline\n: 1\t2\n: 3\t4\n",
+      "visible": "#+name: tbl2\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n\n#+begin_src sh :var t=tbl2 :hlines yes :colnames no :results output\necho \"$t\"\n#+end_src\n\n#+RESULTS:\n: a\tb\n: hline\n: 1\t2\n: 3\t4\n",
+      "point": 54,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "var-table-colnames-no",
+      "input": {
+        "text": "#+name: tbl2\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n\n#+begin_src sh :var t=tbl2 :colnames no :results output\necho \"$t\"\n#+end_src\n",
+        "point": 54,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+name: tbl2\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n\n#+begin_src sh :var t=tbl2 :colnames no :results output\necho \"$t\"\n#+end_src\n\n#+RESULTS:\n: a\tb\n: 1\t2\n: 3\t4\n",
+      "visible": "#+name: tbl2\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n\n#+begin_src sh :var t=tbl2 :colnames no :results output\necho \"$t\"\n#+end_src\n\n#+RESULTS:\n: a\tb\n: 1\t2\n: 3\t4\n",
+      "point": 54,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "var-table-colnames-yes",
+      "input": {
+        "text": "#+name: tbl2\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n\n#+begin_src sh :var t=tbl2 :colnames yes\necho \"$t\"\n#+end_src\n",
+        "point": 54,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+name: tbl2\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n\n#+begin_src sh :var t=tbl2 :colnames yes\necho \"$t\"\n#+end_src\n\n#+RESULTS:\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n",
+      "visible": "#+name: tbl2\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n\n#+begin_src sh :var t=tbl2 :colnames yes\necho \"$t\"\n#+end_src\n\n#+RESULTS:\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n",
+      "point": 54,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "var-table-separator",
+      "input": {
+        "text": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :var t=tbl :separator , :results output\necho \"$t\"\n#+end_src\n",
+        "point": 33,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :var t=tbl :separator , :results output\necho \"$t\"\n#+end_src\n\n#+RESULTS:\n: x,1\n: y,2\n",
+      "visible": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :var t=tbl :separator , :results output\necho \"$t\"\n#+end_src\n\n#+RESULTS:\n: x,1\n: y,2\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "var-index-cell",
+      "input": {
+        "text": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :var x=tbl[1,0] :results output\necho \"$x\"\n#+end_src\n",
+        "point": 33,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :var x=tbl[1,0] :results output\necho \"$x\"\n#+end_src\n\n#+RESULTS:\n: y\n",
+      "visible": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :var x=tbl[1,0] :results output\necho \"$x\"\n#+end_src\n\n#+RESULTS:\n: y\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "var-index-column",
+      "input": {
+        "text": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :var x=tbl[,1] :results output\necho \"$x\"\n#+end_src\n",
+        "point": 33,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :var x=tbl[,1] :results output\necho \"$x\"\n#+end_src\n\n#+RESULTS:\n: 1\n: 2\n",
+      "visible": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :var x=tbl[,1] :results output\necho \"$x\"\n#+end_src\n\n#+RESULTS:\n: 1\n: 2\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "var-quoted-list",
+      "input": {
+        "text": "#+begin_src sh :var x='(1 2 3) :results output\necho \"$x\"\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :var x='(1 2 3) :results output\necho \"$x\"\n#+end_src\n\n#+RESULTS:\n: 1\n: 2\n: 3\n",
+      "visible": "#+begin_src sh :var x='(1 2 3) :results output\necho \"$x\"\n#+end_src\n\n#+RESULTS:\n: 1\n: 2\n: 3\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "var-bash-array",
+      "input": {
+        "text": "#+name: lst\n- one\n- [ ] two\n  continued\n  - sub\n- three\n\n#+begin_src bash :var l=lst :results output\necho \"${l[2]}\"\n#+end_src\n",
+        "point": 57,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+name: lst\n- one\n- [ ] two\n  continued\n  - sub\n- three\n\n#+begin_src bash :var l=lst :results output\necho \"${l[2]}\"\n#+end_src\n\n#+RESULTS:\n: three\n",
+      "visible": "#+name: lst\n- one\n- [ ] two\n  continued\n  - sub\n- three\n\n#+begin_src bash :var l=lst :results output\necho \"${l[2]}\"\n#+end_src\n\n#+RESULTS:\n: three\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "var-bash-assoc",
+      "input": {
+        "text": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src bash :var t=tbl :results output\necho \"${t[y]}\"\n#+end_src\n",
+        "point": 33,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src bash :var t=tbl :results output\necho \"${t[y]}\"\n#+end_src\n\n#+RESULTS:\n: 2\n",
+      "visible": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src bash :var t=tbl :results output\necho \"${t[y]}\"\n#+end_src\n\n#+RESULTS:\n: 2\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "var-from-block",
+      "input": {
+        "text": "#+name: two\n#+begin_src sh :results output\necho 2\n#+end_src\n\n#+begin_src sh :var n=two :results output\necho \"n=$n\"\n#+end_src\n",
+        "point": 61,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+name: two\n#+begin_src sh :results output\necho 2\n#+end_src\n\n#+begin_src sh :var n=two :results output\necho \"n=$n\"\n#+end_src\n\n#+RESULTS:\n: n=2\n: \n",
+      "visible": "#+name: two\n#+begin_src sh :results output\necho 2\n#+end_src\n\n#+begin_src sh :var n=two :results output\necho \"n=$n\"\n#+end_src\n\n#+RESULTS:\n: n=2\n: \n",
+      "point": 61,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "var-from-block-with-args",
+      "input": {
+        "text": "#+name: sq\n#+begin_src sh :var x=0\necho $((x * x))\n#+end_src\n\n#+begin_src sh :var n=sq(x=7) :results output\necho \"n=$n\"\n#+end_src\n",
+        "point": 62,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+name: sq\n#+begin_src sh :var x=0\necho $((x * x))\n#+end_src\n\n#+begin_src sh :var n=sq(x=7) :results output\necho \"n=$n\"\n#+end_src\n\n#+RESULTS:\n: n=49\n",
+      "visible": "#+name: sq\n#+begin_src sh :var x=0\necho $((x * x))\n#+end_src\n\n#+begin_src sh :var n=sq(x=7) :results output\necho \"n=$n\"\n#+end_src\n\n#+RESULTS:\n: n=49\n",
+      "point": 62,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "var-from-call",
+      "input": {
+        "text": "#+name: sq\n#+begin_src sh :var x=0\necho $((x * x))\n#+end_src\n\n#+name: c9\n#+CALL: sq(x=3)\n\n#+begin_src sh :var n=c9 :results output\necho \"n=$n\"\n#+end_src\n",
+        "point": 90,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+name: sq\n#+begin_src sh :var x=0\necho $((x * x))\n#+end_src\n\n#+name: c9\n#+CALL: sq(x=3)\n\n#+begin_src sh :var n=c9 :results output\necho \"n=$n\"\n#+end_src\n\n#+RESULTS:\n: n=9\n",
+      "visible": "#+name: sq\n#+begin_src sh :var x=0\necho $((x * x))\n#+end_src\n\n#+name: c9\n#+CALL: sq(x=3)\n\n#+begin_src sh :var n=c9 :results output\necho \"n=$n\"\n#+end_src\n\n#+RESULTS:\n: n=9\n",
+      "point": 90,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "var-from-example",
+      "input": {
+        "text": "#+name: ex\n#+begin_example\n  two\n  lines\n#+end_example\n\n#+begin_src sh :var e=ex :results output\necho \"$e\"\n#+end_src\n",
+        "point": 56,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+name: ex\n#+begin_example\n  two\n  lines\n#+end_example\n\n#+begin_src sh :var e=ex :results output\necho \"$e\"\n#+end_src\n\n#+RESULTS:\n: two\n: lines\n: \n",
+      "visible": "#+name: ex\n#+begin_example\n  two\n  lines\n#+end_example\n\n#+begin_src sh :var e=ex :results output\necho \"$e\"\n#+end_src\n\n#+RESULTS:\n: two\n: lines\n: \n",
+      "point": 56,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "var-from-fixed-width",
+      "input": {
+        "text": "#+name: fw\n: 42\n\n#+begin_src sh :var f=fw :results output\necho \"$f\"\n#+end_src\n",
+        "point": 17,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+name: fw\n: 42\n\n#+begin_src sh :var f=fw :results output\necho \"$f\"\n#+end_src\n\n#+RESULTS:\n: 42\n",
+      "visible": "#+name: fw\n: 42\n\n#+begin_src sh :var f=fw :results output\necho \"$f\"\n#+end_src\n\n#+RESULTS:\n: 42\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "var-table-rownames-kept",
+      "input": {
+        "text": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :var t=tbl :rownames yes\necho \"$t\" | awk '{print $1 * 10}'\n#+end_src\n",
+        "point": 33,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :var t=tbl :rownames yes\necho \"$t\" | awk '{print $1 * 10}'\n#+end_src\n\n#+RESULTS:\n| x | 10 |\n| y | 20 |\n",
+      "visible": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :var t=tbl :rownames yes\necho \"$t\" | awk '{print $1 * 10}'\n#+end_src\n\n#+RESULTS:\n| x | 10 |\n| y | 20 |\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dir",
+      "input": {
+        "text": "#+begin_src sh :dir / :results output\npwd\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :dir / :results output\npwd\n#+end_src\n\n#+RESULTS:\n: /\n",
+      "visible": "#+begin_src sh :dir / :results output\npwd\n#+end_src\n\n#+RESULTS:\n: /\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "var-missing-reference",
+      "input": {
+        "text": "#+begin_src sh :var x=nowhere :results output\necho \"$x\"\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :var x=nowhere :results output\necho \"$x\"\n#+end_src\n",
+      "visible": "#+begin_src sh :var x=nowhere :results output\necho \"$x\"\n#+end_src\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Reference ‘nowhere’ not found in this buffer"
+    },
+    {
+      "name": "stdin-table",
+      "input": {
+        "text": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :stdin tbl :results output\ncat\n#+end_src\n",
+        "point": 33,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :stdin tbl :results output\ncat\n#+end_src\n\n#+RESULTS:\n: x\t1\n: y\t2\n",
+      "visible": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :stdin tbl :results output\ncat\n#+end_src\n\n#+RESULTS:\n: x\t1\n: y\t2\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "cmdline",
+      "input": {
+        "text": "#+begin_src sh :cmdline a b :results output\necho \"$@\"\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :cmdline a b :results output\necho \"$@\"\n#+end_src\n\n#+RESULTS:\n: a b\n",
+      "visible": "#+begin_src sh :cmdline a b :results output\necho \"$@\"\n#+end_src\n\n#+RESULTS:\n: a b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "cmdline-and-stdin",
+      "input": {
+        "text": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :stdin tbl :cmdline -n :results output\ncat \"$1\"\n#+end_src\n",
+        "point": 33,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :stdin tbl :cmdline -n :results output\ncat \"$1\"\n#+end_src\n\n#+RESULTS:\n:      1\tx\t1\n:      2\ty\t2\n",
+      "visible": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :stdin tbl :cmdline -n :results output\ncat \"$1\"\n#+end_src\n\n#+RESULTS:\n:      1\tx\t1\n:      2\ty\t2\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "shebang",
+      "input": {
+        "text": "#+begin_src sh :results output :shebang \"#!/bin/sh\"\necho shebang\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results output :shebang \"#!/bin/sh\"\necho shebang\n#+end_src\n\n#+RESULTS:\n: shebang\n",
+      "visible": "#+begin_src sh :results output :shebang \"#!/bin/sh\"\necho shebang\n#+end_src\n\n#+RESULTS:\n: shebang\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "shebang-padline-no",
+      "input": {
+        "text": "#+begin_src sh :results output :shebang \"#!/bin/sh\" :padline no\necho $0 | sed 's/.*sh-script-.*/script/'\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results output :shebang \"#!/bin/sh\" :padline no\necho $0 | sed 's/.*sh-script-.*/script/'\n#+end_src\n\n#+RESULTS:\n: script\n",
+      "visible": "#+begin_src sh :results output :shebang \"#!/bin/sh\" :padline no\necho $0 | sed 's/.*sh-script-.*/script/'\n#+end_src\n\n#+RESULTS:\n: script\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "prologue-epilogue",
+      "input": {
+        "text": "#+begin_src sh :prologue \"echo pro\" :epilogue \"echo epi\" :results output\necho body\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :prologue \"echo pro\" :epilogue \"echo epi\" :results output\necho body\n#+end_src\n\n#+RESULTS:\n: pro\n: body\n: epi\n",
+      "visible": "#+begin_src sh :prologue \"echo pro\" :epilogue \"echo epi\" :results output\necho body\n#+end_src\n\n#+RESULTS:\n: pro\n: body\n: epi\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "call-line",
+      "input": {
+        "text": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\n#+CALL: greet(who=\"there\")\n",
+        "point": 88,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\n#+CALL: greet(who=\"there\")\n\n#+RESULTS:\n: hi there\n",
+      "visible": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\n#+CALL: greet(who=\"there\")\n\n#+RESULTS:\n: hi there\n",
+      "point": 88,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "call-line-named",
+      "input": {
+        "text": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\n#+name: c1\n#+CALL: greet(who=\"named\")\n",
+        "point": 99,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\n#+name: c1\n#+CALL: greet(who=\"named\")\n\n#+RESULTS: c1\n: hi named\n",
+      "visible": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\n#+name: c1\n#+CALL: greet(who=\"named\")\n\n#+RESULTS: c1\n: hi named\n",
+      "point": 99,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "call-line-on-name",
+      "input": {
+        "text": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\n#+name: c1\n#+CALL: greet(who=\"named\")\n",
+        "point": 88,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\n#+name: c1\n#+CALL: greet(who=\"named\")\n\n#+RESULTS: c1\n: hi named\n",
+      "visible": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\n#+name: c1\n#+CALL: greet(who=\"named\")\n\n#+RESULTS: c1\n: hi named\n",
+      "point": 88,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "call-line-positional",
+      "input": {
+        "text": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\n#+CALL: greet(\"positional\")\n",
+        "point": 88,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\n#+CALL: greet(\"positional\")\n\n#+RESULTS:\n: hi positional\n",
+      "visible": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\n#+CALL: greet(\"positional\")\n\n#+RESULTS:\n: hi positional\n",
+      "point": 88,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "call-line-headers",
+      "input": {
+        "text": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\n#+CALL: greet[:results output](who=\"inside\") :results output\n",
+        "point": 88,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\n#+CALL: greet[:results output](who=\"inside\") :results output\n\n#+RESULTS:\n: hi inside\n",
+      "visible": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\n#+CALL: greet[:results output](who=\"inside\") :results output\n\n#+RESULTS:\n: hi inside\n",
+      "point": 88,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "call-line-replaces",
+      "input": {
+        "text": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\n#+CALL: greet()\n\n#+RESULTS:\n: stale\n",
+        "point": 88,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\n#+CALL: greet()\n\n#+RESULTS:\n: hi world\n",
+      "visible": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\n#+CALL: greet()\n\n#+RESULTS:\n: hi world\n",
+      "point": 88,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "call-line-unknown",
+      "input": {
+        "text": "#+CALL: nosuch()\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+CALL: nosuch()\n",
+      "visible": "#+CALL: nosuch()\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "call-line-to-call",
+      "input": {
+        "text": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\n#+name: c2\n#+CALL: greet(who=\"deep\")\n\n#+CALL: c2()\n",
+        "point": 126,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\n#+name: c2\n#+CALL: greet(who=\"deep\")\n\n#+CALL: c2()\n\n#+RESULTS:\n: hi deep\n",
+      "visible": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\n#+name: c2\n#+CALL: greet(who=\"deep\")\n\n#+CALL: c2()\n\n#+RESULTS:\n: hi deep\n",
+      "point": 126,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inline-src",
+      "input": {
+        "text": "Inline src_sh{echo inline} here.\n",
+        "point": 7,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "Inline src_sh{echo inline} {{{results(=inline=)}}} here.\n",
+      "visible": "Inline src_sh{echo inline} {{{results(=inline=)}}} here.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inline-src-replaces",
+      "input": {
+        "text": "Again src_sh{echo one} {{{results(=old=)}}} there.\n",
+        "point": 6,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "Again src_sh{echo one} {{{results(=one=)}}} there.\n",
+      "visible": "Again src_sh{echo one} {{{results(=one=)}}} there.\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inline-src-value",
+      "input": {
+        "text": "Value src_sh[:results value]{true} done.\n",
+        "point": 6,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "Value src_sh[:results value]{true} {{{results(=0=)}}} done.\n",
+      "visible": "Value src_sh[:results value]{true} {{{results(=0=)}}} done.\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inline-src-list-error",
+      "input": {
+        "text": "List src_sh{seq 3} done.\n",
+        "point": 5,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "List src_sh{seq 3} done.\n",
+      "visible": "List src_sh{seq 3} done.\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Inline error: list result cannot be used"
+    },
+    {
+      "name": "inline-src-raw",
+      "input": {
+        "text": "Raw src_sh[:results raw output]{printf '*b*'} done.\n",
+        "point": 4,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "Raw src_sh[:results raw output]{printf '*b*'} *b* done.\n",
+      "visible": "Raw src_sh[:results raw output]{printf '*b*'} *b* done.\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inline-src-nothing",
+      "input": {
+        "text": "Nothing src_sh{true} done.\n",
+        "point": 8,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "Nothing src_sh{true}  done.\n",
+      "visible": "Nothing src_sh{true}  done.\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inline-src-in-heading",
+      "input": {
+        "text": "* Head src_sh{echo h}\n",
+        "point": 7,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "* Head src_sh{echo h} {{{results(=h=)}}}\n",
+      "visible": "* Head src_sh{echo h} {{{results(=h=)}}}\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inline-call",
+      "input": {
+        "text": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\nCall call_greet(who=\"x\") here.\n",
+        "point": 93,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\nCall call_greet(who=\"x\") {{{results(=hi x=)}}} here.\n",
+      "visible": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\nCall call_greet(who=\"x\") {{{results(=hi x=)}}} here.\n",
+      "point": 93,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inline-call-headers",
+      "input": {
+        "text": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\nCall call_greet[:results output](who=\"y\")[:results raw] here.\n",
+        "point": 93,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\nCall call_greet[:results output](who=\"y\")[:results raw] hi y\n here.\n",
+      "visible": "#+name: greet\n#+begin_src sh :var who=\"world\" :results output\necho \"hi $who\"\n#+end_src\n\nCall call_greet[:results output](who=\"y\")[:results raw] hi y\n here.\n",
+      "point": 93,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "export-ascii-inline-and-calls",
+      "input": {
+        "text": "#+OPTIONS: toc:nil author:nil title:nil timestamp:nil\n* Shell\nInline src_sh{echo inline} and src_sh[:exports code]{echo code} and call_greet(who=\"x\") here.\n\n#+name: greet\n#+begin_src sh :var who=\"world\" :results output :exports both\necho \"hi $who\"\n#+end_src\n\n#+CALL: greet(who=\"there\")\n\n#+CALL: greet[:results output]() :exports none\n\n#+begin_src sh :exports results\nseq 2\n#+end_src\n\n#+name: noexp\n#+begin_src sh :exports none\necho never\n#+end_src\n\nValue src_sh[:results value]{true} done.\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-ascii-export-as-ascii"
+        ],
+        "platform": null,
+        "today": "2026-11-27 10:00",
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-ascii-charset": "'ascii"
+        }
+      },
+      "text": "1 Shell\n=======\n\n  Inline `inline' and `echo code' and `hi x' here.\n\n  ,----\n  | echo \"hi $who\"\n  `----\n\n  ,----\n  | hi world\n  `----\n\n\n  ,----\n  | hi there\n  `----\n\n\n   1 \n   2 \n\n  Value `0' done.\n",
+      "visible": "1 Shell\n=======\n\n  Inline `inline' and `echo code' and `hi x' here.\n\n  ,----\n  | echo \"hi $who\"\n  `----\n\n  ,----\n  | hi world\n  `----\n\n\n  ,----\n  | hi there\n  `----\n\n\n   1 \n   2 \n\n  Value `0' done.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "export-org-inline-and-calls",
+      "input": {
+        "text": "#+OPTIONS: toc:nil author:nil title:nil timestamp:nil\n* Shell\nInline src_sh{echo inline} and src_sh[:exports code]{echo code} and call_greet(who=\"x\") here.\n\n#+name: greet\n#+begin_src sh :var who=\"world\" :results output :exports both\necho \"hi $who\"\n#+end_src\n\n#+CALL: greet(who=\"there\")\n\n#+CALL: greet[:results output]() :exports none\n\n#+begin_src sh :exports results\nseq 2\n#+end_src\n\n#+name: noexp\n#+begin_src sh :exports none\necho never\n#+end_src\n\nValue src_sh[:results value]{true} done.\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-org-export-as-org"
+        ],
+        "platform": null,
+        "today": "2026-11-27 10:00",
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-ascii-charset": "'ascii"
+        }
+      },
+      "text": "#+options: toc:nil author:nil title:nil timestamp:nil\n* Shell\nInline =inline= and src_sh[:exports code]{echo code} and =hi x= here.\n\n#+name: greet\n#+begin_src sh :var who=\"world\" :results output :exports both\n  echo \"hi $who\"\n#+end_src\n\n#+results: greet\n: hi world\n\n\n#+results: \n: hi there\n\n\n#+results: \n| 1 |\n| 2 |\n\nValue =0= done.\n",
+      "visible": "#+options: toc:nil author:nil title:nil timestamp:nil\n* Shell\nInline =inline= and src_sh[:exports code]{echo code} and =hi x= here.\n\n#+name: greet\n#+begin_src sh :var who=\"world\" :results output :exports both\n  echo \"hi $who\"\n#+end_src\n\n#+results: greet\n: hi world\n\n\n#+results: \n: hi there\n\n\n#+results: \n| 1 |\n| 2 |\n\nValue =0= done.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "export-call-to-unexported-block",
+      "input": {
+        "text": "#+OPTIONS: toc:nil author:nil title:nil timestamp:nil\n#+name: hidden\n#+begin_src sh :var n=1 :exports none\necho \"n is $n\"\n#+end_src\n\n#+CALL: hidden(n=4)\n\nText call_hidden(n=5) too.\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-org-export-as-org"
+        ],
+        "platform": null,
+        "today": "2026-11-27 10:00",
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-ascii-charset": "'ascii"
+        }
+      },
+      "text": "#+options: toc:nil author:nil title:nil timestamp:nil\n#+results: \n: n is 4\n\n\nText =n is 5= too.\n",
+      "visible": "#+options: toc:nil author:nil title:nil timestamp:nil\n#+results: \n: n is 4\n\n\nText =n is 5= too.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "export-inline-both-and-none",
+      "input": {
+        "text": "#+OPTIONS: toc:nil author:nil title:nil timestamp:nil\nBoth src_sh[:exports both]{echo b} and none src_sh[:exports none]{echo n} end.\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-org-export-as-org"
+        ],
+        "platform": null,
+        "today": "2026-11-27 10:00",
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-ascii-charset": "'ascii"
+        }
+      },
+      "text": "#+options: toc:nil author:nil title:nil timestamp:nil\nBoth src_sh[:exports both]{echo b} =b= and none end.\n",
+      "visible": "#+options: toc:nil author:nil title:nil timestamp:nil\nBoth src_sh[:exports both]{echo b} =b= and none end.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "export-archived-not-run",
+      "input": {
+        "text": "#+OPTIONS: toc:nil author:nil title:nil timestamp:nil arch:t\n* Kept\nsrc_sh{echo kept}\n* Old :ARCHIVE:\nsrc_sh{echo old}\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-org-export-as-org"
+        ],
+        "platform": null,
+        "today": "2026-11-27 10:00",
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-ascii-charset": "'ascii"
+        }
+      },
+      "text": "#+options: toc:nil author:nil title:nil timestamp:nil arch:t\n* Kept\n=kept=\n* Old                                                               :ARCHIVE:\nsrc_sh{echo old}\n",
+      "visible": "#+options: toc:nil author:nil title:nil timestamp:nil arch:t\n* Kept\n=kept=\n* Old                                                               :ARCHIVE:\nsrc_sh{echo old}\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "export-block-var-table",
+      "input": {
+        "text": "#+OPTIONS: toc:nil author:nil title:nil timestamp:nil\n#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :var t=tbl :exports results\necho \"$t\" | cut -f2\n#+end_src\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-ascii-export-as-ascii"
+        ],
+        "platform": null,
+        "today": "2026-11-27 10:00",
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-ascii-charset": "'ascii"
+        }
+      },
+      "text": " x  1 \n y  2 \n\n 1 \n 2 \n",
+      "visible": " x  1 \n y  2 \n\n 1 \n 2 \n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "export-switches-once",
+      "input": {
+        "text": "#+OPTIONS: toc:nil author:nil title:nil timestamp:nil\n#+begin_src sh -n :var x=1 :exports code\necho $x\n#+end_src\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-org-export-as-org"
+        ],
+        "platform": null,
+        "today": "2026-11-27 10:00",
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-ascii-charset": "'ascii"
+        }
+      },
+      "text": "#+options: toc:nil author:nil title:nil timestamp:nil\n#+begin_src sh -n :var x=1 :exports code\n  echo $x\n#+end_src\n",
+      "visible": "#+options: toc:nil author:nil title:nil timestamp:nil\n#+begin_src sh -n :var x=1 :exports code\n  echo $x\n#+end_src\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "export-switches-k-r-i",
+      "input": {
+        "text": "#+OPTIONS: toc:nil author:nil title:nil timestamp:nil\n#+begin_src sh -i -k -r :results output :exports code\n  echo x\n#+end_src\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-org-export-as-org"
+        ],
+        "platform": null,
+        "today": "2026-11-27 10:00",
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-ascii-charset": "'ascii"
+        }
+      },
+      "text": "#+options: toc:nil author:nil title:nil timestamp:nil\n#+begin_src sh -i -k -r :results output :exports code\n  echo x\n#+end_src\n",
+      "visible": "#+options: toc:nil author:nil title:nil timestamp:nil\n#+begin_src sh -i -k -r :results output :exports code\n  echo x\n#+end_src\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "export-numbered-from-five",
+      "input": {
+        "text": "#+OPTIONS: toc:nil author:nil title:nil timestamp:nil\n#+begin_src sh -n 5 :exports code\necho a\necho b\n#+end_src\n\n#+begin_src sh +n :exports code\necho c\n#+end_src\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-ascii-export-as-ascii"
+        ],
+        "platform": null,
+        "today": "2026-11-27 10:00",
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-ascii-charset": "'ascii"
+        }
+      },
+      "text": ",----\n| 5  echo a\n| 6  echo b\n`----\n\n,----\n| 7  echo c\n`----\n",
+      "visible": ",----\n| 5  echo a\n| 6  echo b\n`----\n\n,----\n| 7  echo c\n`----\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "coderef-removed",
+      "input": {
+        "text": "#+begin_src sh :results output\necho a (ref:one)\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results output\necho a (ref:one)\n#+end_src\n\n#+RESULTS:\n: a\n",
+      "visible": "#+begin_src sh :results output\necho a (ref:one)\n#+end_src\n\n#+RESULTS:\n: a\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "coderef-label-format",
+      "input": {
+        "text": "#+begin_src sh -l \"[%s]\" :results output\necho a [x]\necho b\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh -l \"[%s]\" :results output\necho a [x]\necho b\n#+end_src\n\n#+RESULTS:\n: a\n: b\n",
+      "visible": "#+begin_src sh -l \"[%s]\" :results output\necho a [x]\necho b\n#+end_src\n\n#+RESULTS:\n: a\n: b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "export-coderef-label-format",
+      "input": {
+        "text": "#+OPTIONS: toc:nil author:nil title:nil timestamp:nil\n#+begin_src sh -l \"[%s]\" :exports results :results output\necho a [x]\n#+end_src\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-ascii-export-as-ascii"
+        ],
+        "platform": null,
+        "today": "2026-11-27 10:00",
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-ascii-charset": "'ascii"
+        }
+      },
+      "text": ",----\n| a\n`----\n",
+      "visible": ",----\n| a\n`----\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "session-two-vars",
+      "input": {
+        "text": "#+begin_src sh :session zzv :var a=1 b=2 :results output\necho \"$a$b\"\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :session zzv :var a=1 b=2 :results output\necho \"$a$b\"\n#+end_src\n\n#+RESULTS:\n: 12\n",
+      "visible": "#+begin_src sh :session zzv :var a=1 b=2 :results output\necho \"$a$b\"\n#+end_src\n\n#+RESULTS:\n: 12\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "session-value-after-lines",
+      "input": {
+        "text": "#+begin_src sh :session zzv2 :results value\necho hi\nfalse\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :session zzv2 :results value\necho hi\nfalse\n#+end_src\n\n#+RESULTS:\n: 1\n",
+      "visible": "#+begin_src sh :session zzv2 :results value\necho hi\nfalse\n#+end_src\n\n#+RESULTS:\n: 1\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "export-noweb-yes",
+      "input": {
+        "text": "#+OPTIONS: toc:nil author:nil title:nil timestamp:nil\n#+name: helper\n#+begin_src sh :exports none\necho helped\n#+end_src\n\n#+begin_src sh :noweb yes :exports both :results output\n<<helper>>\n#+end_src\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-ascii-export-as-ascii"
+        ],
+        "platform": null,
+        "today": "2026-11-27 10:00",
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-ascii-charset": "'ascii"
+        }
+      },
+      "text": ",----\n| echo helped\n`----\n\n,----\n| helped\n`----\n",
+      "visible": ",----\n| echo helped\n`----\n\n,----\n| helped\n`----\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "export-noweb-strip-export",
+      "input": {
+        "text": "#+OPTIONS: toc:nil author:nil title:nil timestamp:nil\n#+name: helper\n#+begin_src sh :exports none\necho helped\n#+end_src\n\n#+begin_src sh :noweb strip-export :exports code\n<<helper>>\necho after\n#+end_src\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-ascii-export-as-ascii"
+        ],
+        "platform": null,
+        "today": "2026-11-27 10:00",
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-ascii-charset": "'ascii"
+        }
+      },
+      "text": ",----\n| \n| echo after\n`----\n",
+      "visible": ",----\n| \n| echo after\n`----\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "export-noweb-inline",
+      "input": {
+        "text": "#+OPTIONS: toc:nil author:nil title:nil timestamp:nil\n#+name: helper\n#+begin_src sh :exports none\necho helped\n#+end_src\n\nInline src_sh[:noweb yes :exports both]{<<helper>>} here.\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-ascii-export-as-ascii"
+        ],
+        "platform": null,
+        "today": "2026-11-27 10:00",
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-ascii-charset": "'ascii"
+        }
+      },
+      "text": "Inline `echo helped' `helped' here.\n",
+      "visible": "Inline `echo helped' `helped' here.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "header-line-wins-over-begin-line",
+      "input": {
+        "text": "#+header: :results value\n#+begin_src sh :results output\necho hi\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+header: :results value\n#+begin_src sh :results output\necho hi\n#+end_src\n\n#+RESULTS:\n: 0\n",
+      "visible": "#+header: :results value\n#+begin_src sh :results output\necho hi\n#+end_src\n\n#+RESULTS:\n: 0\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "results-list-twice",
+      "input": {
+        "text": "#+begin_src sh :results list\nprintf 'one\\ntwo\\n'\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results list\nprintf 'one\\ntwo\\n'\n#+end_src\n\n#+RESULTS:\n- one\n- two\n",
+      "visible": "#+begin_src sh :results list\nprintf 'one\\ntwo\\n'\n#+end_src\n\n#+RESULTS:\n- one\n- two\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "results-list-twice-in-item",
+      "input": {
+        "text": "- item\n  #+begin_src sh :results list\n  printf 'one\\ntwo\\n'\n  #+end_src\n",
+        "point": 9,
+        "keys": "C-c C-c C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "- item\n  #+begin_src sh :results list\n  printf 'one\\ntwo\\n'\n  #+end_src\n\n  #+RESULTS:\n  - one\n  - two\n",
+      "visible": "- item\n  #+begin_src sh :results list\n  printf 'one\\ntwo\\n'\n  #+end_src\n\n  #+RESULTS:\n  - one\n  - two\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "results-raw-list-twice",
+      "input": {
+        "text": "#+begin_src sh :results raw output\nprintf -- '- a\\n- b\\n'\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results raw output\nprintf -- '- a\\n- b\\n'\n#+end_src\n\n#+RESULTS:\n- a\n- b\n",
+      "visible": "#+begin_src sh :results raw output\nprintf -- '- a\\n- b\\n'\n#+end_src\n\n#+RESULTS:\n- a\n- b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "results-file-twice",
+      "input": {
+        "text": "#+begin_src sh :results file\nprintf out.txt\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results file\nprintf out.txt\n#+end_src\n\n#+RESULTS:\n[[file:out.txt]]\n",
+      "visible": "#+begin_src sh :results file\nprintf out.txt\n#+end_src\n\n#+RESULTS:\nfile:out.txt\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "results-file-desc",
+      "input": {
+        "text": "#+begin_src sh :results file :file-desc Out\nprintf out.txt\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results file :file-desc Out\nprintf out.txt\n#+end_src\n\n#+RESULTS:\n[[file:out.txt][Out]]\n",
+      "visible": "#+begin_src sh :results file :file-desc Out\nprintf out.txt\n#+end_src\n\n#+RESULTS:\nOut\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "blank-line-after-block",
+      "input": {
+        "text": "#+begin_src sh :results output\necho blank\n#+end_src\n\n\nText.\n",
+        "point": 52,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :results output\necho blank\n#+end_src\n\n#+RESULTS:\n: blank\n\n\nText.\n",
+      "visible": "#+begin_src sh :results output\necho blank\n#+end_src\n\n#+RESULTS:\n: blank\n\n\nText.\n",
+      "point": 52,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "var-vector",
+      "input": {
+        "text": "#+begin_src sh :var x=[1 2] :results output\necho \"$x\"\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+begin_src sh :var x=[1 2] :results output\necho \"$x\"\n#+end_src\n\n#+RESULTS:\n: [1 2]\n",
+      "visible": "#+begin_src sh :var x=[1 2] :results output\necho \"$x\"\n#+end_src\n\n#+RESULTS:\n: [1 2]\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "var-index-before-start",
+      "input": {
+        "text": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :var x=tbl[-5,1] :results output\necho \"$x\"\n#+end_src\n",
+        "point": 33,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :var x=tbl[-5,1] :results output\necho \"$x\"\n#+end_src\n\n#+RESULTS:\n: 1\n",
+      "visible": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :var x=tbl[-5,1] :results output\necho \"$x\"\n#+end_src\n\n#+RESULTS:\n: 1\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "heading-header-args-replace-property",
+      "input": {
+        "text": "#+PROPERTY: header-args :results output\n* H\n:PROPERTIES:\n:header-args: :var n=4\n:END:\n#+begin_src sh\nseq $n\n#+end_src\n",
+        "point": 86,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+PROPERTY: header-args :results output\n* H\n:PROPERTIES:\n:header-args: :var n=4\n:END:\n#+begin_src sh\nseq $n\n#+end_src\n\n#+RESULTS:\n| 1 |\n| 2 |\n| 3 |\n| 4 |\n",
+      "visible": "#+PROPERTY: header-args :results output\n* H\n:PROPERTIES:\n:header-args: :var n=4\n:END:\n#+begin_src sh\nseq $n\n#+end_src\n\n#+RESULTS:\n| 1 |\n| 2 |\n| 3 |\n| 4 |\n",
+      "point": 86,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "heading-header-args-plus",
+      "input": {
+        "text": "#+PROPERTY: header-args :results output\n* H\n:PROPERTIES:\n:header-args+: :var n=3\n:END:\n#+begin_src sh\nseq $n\n#+end_src\n",
+        "point": 87,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false
+        }
+      },
+      "text": "#+PROPERTY: header-args :results output\n* H\n:PROPERTIES:\n:header-args+: :var n=3\n:END:\n#+begin_src sh\nseq $n\n#+end_src\n\n#+RESULTS:\n: 1\n: 2\n: 3\n",
+      "visible": "#+PROPERTY: header-args :results output\n* H\n:PROPERTIES:\n:header-args+: :var n=3\n:END:\n#+begin_src sh\nseq $n\n#+end_src\n\n#+RESULTS:\n: 1\n: 2\n: 3\n",
+      "point": 87,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "export-call-none-removes-results",
+      "input": {
+        "text": "#+OPTIONS: toc:nil author:nil title:nil timestamp:nil\n#+name: greet\n#+begin_src sh :var who=\"w\" :results output :exports none\necho \"hi $who\"\n#+end_src\n\n#+CALL: greet() :exports none\n\n#+RESULTS:\n: old\n\nText.\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-org-export-as-org"
+        ],
+        "platform": null,
+        "today": "2026-11-27 10:00",
+        "globals": {
+          "org-babel-load-languages": [
+            [
+              "'shell",
+              true
+            ]
+          ],
+          "org-confirm-babel-evaluate": false,
+          "org-export-copy-to-kill-ring": false,
+          "user-full-name": "E. Xample",
+          "user-mail-address": "e@example.com",
+          "org-ascii-charset": "'ascii"
+        }
+      },
+      "text": "#+options: toc:nil author:nil title:nil timestamp:nil\nText.\n",
+      "visible": "#+options: toc:nil author:nil title:nil timestamp:nil\nText.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

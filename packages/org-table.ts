@@ -176,7 +176,7 @@ function tableToLisp(line = lineAt()): Row[] {
 }
 
 /** A table line's fields, without the blanks around them, or "hline" for a rule, as org-table-to-lisp reads a line. */
-function parseRow(text: string): Row {
+export function parseRow(text: string): Row {
   let i = (/^[ \t]*/.exec(text)?.[0].length ?? 0) + 1;
   if (text[i] === "-") return "hline";
   const fields: string[] = [];

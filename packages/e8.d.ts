@@ -6011,7 +6011,7 @@ declare global {
        */
       "org-auto-fill-function": [];
       /**
-       * Run the source block point is in, if it is in one.
+       * Run the source block or call point is in, if it is in one.
        *
        * Defined in packages/ob-core.ts.
        */
@@ -6030,6 +6030,26 @@ declare global {
        * Defined in packages/ob-tangle.ts.
        */
       "org-babel-load-file": [file: string];
+      /**
+       * Run the #+CALL: line or inline call point is on, if it is on one.
+       *
+       * Defined in packages/ob-core.ts.
+       */
+      "org-babel-lob-execute-maybe": [];
+      /**
+       * Add the named source blocks of FILE to the Library of Babel, for #+CALL: lines and references in any file.
+       *
+       * @param file file name
+       *
+       * Defined in packages/ob-core.ts.
+       */
+      "org-babel-lob-ingest": [file: string];
+      /**
+       * Define the functions that run the blocks of each shell org-babel-shell-names lists.
+       *
+       * Defined in packages/ob-shell.ts.
+       */
+      "org-babel-shell-initialize": [];
       /**
        * Write the source blocks whose :tangle header argument names a file into their files. With C-u, only the block at point; with C-u C-u, the blocks that tangle to the same file as it.
        *
@@ -11915,6 +11935,12 @@ declare global {
        */
       "comint-history-isearch": Value;
       /**
+       * A function of the input that says whether it goes into the input history; nil keeps all but blank input, as comint-nonblank-p.
+       *
+       * Defined in packages/comint.ts.
+       */
+      "comint-input-filter": Value;
+      /**
        * A regexp for entries of the history file to leave out.
        *
        * Defined in packages/comint.ts.
@@ -15643,11 +15669,95 @@ declare global {
        */
       "org-archive-tag": Value;
       /**
+       * How many seconds to wait for a session's prompt at a time.
+       *
+       * Defined in packages/ob-shell.ts.
+       */
+      "org-babel-comint-fallback-regexp-threshold": Value;
+      /**
        * The header arguments every source block has unless it says otherwise: pairs of an argument and its value.
        *
        * Defined in packages/ob-core.ts.
        */
       "org-babel-default-header-args": Value;
+      /**
+       * The header arguments ash blocks have unless they say otherwise.
+       *
+       * Defined in packages/ob-shell.ts.
+       */
+      "org-babel-default-header-args:ash": Value;
+      /**
+       * The header arguments bash blocks have unless they say otherwise.
+       *
+       * Defined in packages/ob-shell.ts.
+       */
+      "org-babel-default-header-args:bash": Value;
+      /**
+       * The header arguments csh blocks have unless they say otherwise.
+       *
+       * Defined in packages/ob-shell.ts.
+       */
+      "org-babel-default-header-args:csh": Value;
+      /**
+       * The header arguments dash blocks have unless they say otherwise.
+       *
+       * Defined in packages/ob-shell.ts.
+       */
+      "org-babel-default-header-args:dash": Value;
+      /**
+       * The header arguments fish blocks have unless they say otherwise.
+       *
+       * Defined in packages/ob-shell.ts.
+       */
+      "org-babel-default-header-args:fish": Value;
+      /**
+       * The header arguments ksh blocks have unless they say otherwise.
+       *
+       * Defined in packages/ob-shell.ts.
+       */
+      "org-babel-default-header-args:ksh": Value;
+      /**
+       * The header arguments mksh blocks have unless they say otherwise.
+       *
+       * Defined in packages/ob-shell.ts.
+       */
+      "org-babel-default-header-args:mksh": Value;
+      /**
+       * The header arguments posh blocks have unless they say otherwise.
+       *
+       * Defined in packages/ob-shell.ts.
+       */
+      "org-babel-default-header-args:posh": Value;
+      /**
+       * The header arguments sh blocks have unless they say otherwise.
+       *
+       * Defined in packages/ob-shell.ts.
+       */
+      "org-babel-default-header-args:sh": Value;
+      /**
+       * The header arguments shell blocks have unless they say otherwise.
+       *
+       * Defined in packages/ob-shell.ts.
+       */
+      "org-babel-default-header-args:shell": Value;
+      /**
+       * The header arguments zsh blocks have unless they say otherwise.
+       *
+       * Defined in packages/ob-shell.ts.
+       */
+      "org-babel-default-header-args:zsh": Value;
+      /**
+       * The header arguments a #+CALL: line or inline call takes over those of the block it calls.
+       *
+       * Defined in packages/ob-core.ts.
+       */
+      "org-babel-default-lob-header-args": Value;
+      /**
+       * The buffer a block's error output is shown in.
+       *
+       * Defined in packages/ob-core.ts.
+       */
+      "org-babel-error-buffer-name": Value;
       /**
        * Results of this many lines or more go in an example block, fewer each after a colon.
        *
@@ -15685,6 +15795,42 @@ declare global {
        */
       "org-babel-noweb-wrap-start": Value;
       /**
+       * The command that says, in a session, that a block has finished.
+       *
+       * Defined in packages/ob-shell.ts.
+       */
+      "org-babel-sh-eoe-indicator": Value;
+      /**
+       * What org-babel-sh-eoe-indicator prints.
+       *
+       * Defined in packages/ob-shell.ts.
+       */
+      "org-babel-sh-eoe-output": Value;
+      /**
+       * The prompt a session's shell is given, to tell its output from its prompts.
+       *
+       * Defined in packages/ob-shell.ts.
+       */
+      "org-babel-sh-prompt": Value;
+      /**
+       * The shells whose blocks run, each in itself. Call org-babel-shell-initialize after changing it.
+       *
+       * Defined in packages/ob-shell.ts.
+       */
+      "org-babel-shell-names": Value;
+      /**
+       * Whether a shell block with no :results gives what it prints, as :results output would, rather than its exit code.
+       *
+       * Defined in packages/ob-shell.ts.
+       */
+      "org-babel-shell-results-defaults-to-output": Value;
+      /**
+       * For each shell, the command that sets its prompt, %s standing for the prompt; t is any other shell's.
+       *
+       * Defined in packages/ob-shell.ts.
+       */
+      "org-babel-shell-set-prompt-commands": Value;
+      /**
        * The comment before a tangled block's code: %link, %source-name, %file and %start-line are filled in.
        *
        * Defined in packages/ob-core.ts.
@@ -15714,6 +15860,12 @@ declare global {
        * Defined in packages/ob-core.ts.
        */
       "org-babel-tangle-use-relative-file-links": Value;
+      /**
+       * Whether blocks run to resolve references put their results in the buffer too.
+       *
+       * Defined in packages/ob-core.ts.
+       */
+      "org-babel-update-intermediate": Value;
       /**
        * Whether new headings and list items get a blank line before them: [["heading", v], ["plain-list-item", v]], each v true, nil or "auto" to do as the ones around do.
        *
@@ -22549,6 +22701,14 @@ declare global {
      * or gone; its name is not one.
      */
     function processp(value: unknown): value is Process;
+    /**
+     * Ask, while an agent acts, the user's approval of an effect outside
+     * the editor's buffers, as "run in the shell of *shell*: make", as
+     * starting a program asks it: an error until the user allows it, and
+     * nothing for the user's own commands. For code that sends a program
+     * input that runs, as a Babel session's code.
+     */
+    function checkPermission(effect: string): void;
     /** Write to a process's input, encoded in its coding, as process-send-string. */
     function processSendString(process: ProcessLike, text: string): void;
     /** Make a process see the end of its input, as process-send-eof: C-d on a terminal, else its input closed. */
