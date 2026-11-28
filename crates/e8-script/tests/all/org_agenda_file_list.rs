@@ -53,3 +53,22 @@ fn a_list_in_the_variable_is_set_there() {
     ed.press("C-c [").unwrap();
     assert_eq!(ed.variable("org-agenda-files").map(|v| matches!(v, Value::List(l) if l.len() == 1)), Some(true));
 }
+
+/// A file listed twice, written two ways, is written back once, the first
+/// way, as Org's assoc finds it: Emacs writes "b.org\n./a.org\n".
+#[test]
+fn a_duplicated_entry_keeps_its_first_spelling() {
+    let mut ed = Editor::new();
+    let _s = Scripting::new(&mut ed).unwrap();
+    let dir = tempfile::tempdir().unwrap();
+    let path = |name: &str| dir.path().join(name).to_str().unwrap().to_string();
+    for name in ["a.org", "b.org"] {
+        std::fs::write(path(name), "* X\n").unwrap();
+    }
+    std::fs::write(path("agenda-list"), "./a.org\na.org\nb.org\n").unwrap();
+    ed.set_variable("org-directory", Value::Str(path("")));
+    ed.set_variable("org-agenda-files", Value::Str(path("agenda-list")));
+    ed.call("find-file", vec![Arg::Str(path("b.org"))]).unwrap();
+    ed.press("C-c [").unwrap();
+    assert_eq!(std::fs::read_to_string(path("agenda-list")).unwrap(), "b.org\n./a.org\n");
+}

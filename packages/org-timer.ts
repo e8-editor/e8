@@ -86,7 +86,8 @@ export function timerStart(offset: e8.Value = null): void {
   if (!truthy(offset)) e8.setVariable("org-timer-start-time", e8.currentTime());
   else {
     if (typeof offset === "number") delta = offset;
-    else if (typeof offset === "string") delta = hmsToSecs(offset);
+    // Not M--, a symbol in Emacs, which asks.
+    else if (typeof offset === "string" && offset !== "-") delta = hmsToSecs(offset);
     else {
       const def = inRegexp(String(e8.variable("org-timer-re"))) ?? "0:00:00";
       let s = e8.readString(`Restart timer with offset [${def}]: `);
@@ -227,8 +228,16 @@ export function timerItem(arg: e8.Value = null): void {
     const prevs = prevsAlist(struct);
     const s = `${orgTimer(restart, true)}:: `;
     struct = insertItemStruct(pos, struct, prevs, false, s);
+    const newLine = lineAt();
+    const lines = struct.map((item) => lineAt(item.pos));
+    const before = lines.map((l) => itemParts(l)?.bullet);
     writeStruct(struct, parentsAlist(struct));
-    const parts = itemParts(lineAt());
+    // Org's looking-at here fails, point being inside a line, and leaves the
+    // match data of the last bullet org-list-write-struct replaced, the
+    // topmost it changed, or else the new item's: point goes to the end of
+    // that item's bullet and tag, as Org's goto-char (match-end 0) does.
+    const changed = lines.find((l, i) => l !== newLine && itemParts(l)?.bullet !== before[i]);
+    const parts = itemParts(changed !== undefined && changed < newLine ? changed : newLine);
     if (parts) e8.gotoChar(parts.matchEnd);
     return;
   }
@@ -358,7 +367,7 @@ export function setTimer(opt: e8.Value = null): void {
         ? String(effort)
         : Array.isArray(opt)
           ? defaultTimer
-          : typeof opt === "string"
+          : typeof opt === "string" && opt !== "-"
             ? opt
             : e8.readString("How much time left? (minutes or h:mm:ss) ", defaultTimer === "0" ? {} : { initial: defaultTimer });
   if (/^[0-9]+$/.test(minutes)) minutes += ":00";

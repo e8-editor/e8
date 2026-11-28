@@ -79,3 +79,69 @@ fn outside_org_mode_it_refuses() {
     let err = ed.call("org-num-mode", vec![]).unwrap_err();
     assert_eq!(err.to_string(), "Cannot activate headline numbering outside Org mode");
 }
+
+/// A format function's string without a face at its start gets the
+/// heading's face over all of it, its other properties kept, as Org's
+/// org-add-props puts it: Emacs gives `#("<1> " 0 1 (face org-level-1
+/// help-echo "h") 1 4 (help-echo "h" face org-level-1))`.
+#[test]
+fn a_formats_other_properties_are_kept() {
+    let (mut ed, s) = org("* A\n");
+    s.eval_typescript(
+        &mut ed,
+        "test.ts",
+        r#"e8.setVariable("org-num-format-function", (n: number[]) => e8.concat(e8.propertize("<", { "help-echo": "h" }), e8.propertize(`${n[0]}> `, { face: "bold", "help-echo": "h" })));"#.to_string(),
+    )
+    .unwrap();
+    ed.call("org-num-mode", vec![]).unwrap();
+    let props = s
+        .eval_expression(
+            &mut ed,
+            r#"(() => { const v = e8.overlayGet(e8.overlaysIn(e8.pointMin(), e8.pointMax()).find((o) => e8.overlayGet(o, "org-num") !== undefined)!, "after-string") as e8.PropertizedString;
+                 return [0, 1, 2, 3].map((i) => { const p = Object.assign({}, ...v.properties.filter(([a, b]) => a <= i && i < b).map(([, , q]) => q)); return `${String(p.face)}/${String(p["help-echo"])}`; }).join(" "); })()"#,
+        )
+        .unwrap();
+    assert_eq!(props, r#""org-level-1/h org-level-1/h org-level-1/h org-level-1/h""#);
+}
+
+/// Numbering thousands of headings and changing one stays quick, as Org's
+/// work is a walk of the overlays per change, and an overlay's number is
+/// put again only where it changes. Emacs took 17 ms to number 4000
+/// headings and 2 ms per demotion on the reviewer's machine. Demoting the
+/// first heading renumbers every other, as in Org, which puts each number
+/// again; so what the numbering adds is measured against putting every
+/// after-string once, and the demotions without it, which calibrates for a
+/// loaded machine and QuickJS.
+#[test]
+fn many_headings_are_numbered_quickly() {
+    let text: String = (0..4000).map(|i| format!("* H{i}\n** Sub{i}\n")).collect();
+    let (mut ed, s) = org(&text);
+    let demote = |ed: &mut Editor| {
+        let started = std::time::Instant::now();
+        for _ in 0..5 {
+            ed.press("M-< M-<right> M-<left>").unwrap();
+        }
+        started.elapsed() / 10
+    };
+    let plain = demote(&mut ed);
+    let started = std::time::Instant::now();
+    ed.call("org-num-mode", vec![]).unwrap();
+    let enable = started.elapsed();
+    let numbered = demote(&mut ed);
+    let started = std::time::Instant::now();
+    s.eval_expression(&mut ed, r#"(() => { for (const o of e8.overlaysIn(e8.pointMin(), e8.pointMax())) e8.overlayPut(o, "after-string", e8.overlayGet(o, "after-string")!); })()"#).unwrap();
+    let put_all = started.elapsed();
+    eprintln!("enabling: {enable:?}; each demotion or promotion: {numbered:?}, {plain:?} without numbers; putting every number: {put_all:?}");
+    let budget = if std::env::var("CI").is_ok() { 3 } else { 1 };
+    assert!(enable < put_all * 8 + std::time::Duration::from_millis(500 * budget), "enabling took {enable:?}");
+    // QuickJS runs the walk itself slower, where putting the numbers is the editor's work.
+    let engine = if cfg!(feature = "quickjs") { 2 } else { 1 };
+    assert!(numbered < plain * 2 + put_all * 3 * engine + std::time::Duration::from_millis(50 * budget), "each demotion took {numbered:?}");
+    // Typing in a body renumbers nothing, so it costs about what it does without numbers.
+    let started = std::time::Instant::now();
+    ed.press("M-< C-n C-e x").unwrap();
+    let typing = started.elapsed();
+    assert!(typing < put_all + std::time::Duration::from_millis(50 * budget), "typing took {typing:?}");
+    let last = s.eval_expression(&mut ed, r#"String(e8.overlayGet(e8.overlaysIn(e8.pointMin(), e8.pointMax()).filter((o) => e8.overlayGet(o, "org-num") !== undefined).sort((a, b) => e8.overlayStart(b)! - e8.overlayStart(a)!)[0], "after-string"))"#).unwrap();
+    assert_eq!(last, r#""4000.1 ""#);
+}

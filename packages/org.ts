@@ -10613,7 +10613,9 @@ function readAgendaFileList(): [string, string][] {
 function storeNewAgendaFileList(list: string[]): void {
   const file = e8.variable("org-agenda-files");
   if (typeof file === "string") {
-    const pairs = new Map(readAgendaFileList());
+    // The first way an entry is written, as assoc finds it.
+    const pairs = new Map<string, string>();
+    for (const [expanded, written] of readAgendaFileList()) if (!pairs.has(expanded)) pairs.set(expanded, written);
     for (let b = e8.getFileBuffer(e8.expandFileName(file)); b !== undefined; b = e8.getFileBuffer(e8.expandFileName(file))) e8.call("kill-buffer", String(b.name));
     e8.writeRegion(`${list.map((f) => pairs.get(f) ?? f).join("\n")}\n`, null, file, { quiet: true });
   } else e8.setVariable("org-agenda-files", list);

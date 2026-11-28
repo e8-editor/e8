@@ -13,7 +13,7 @@
 // Free Software Foundation, either version 3 of the License, or (at your
 // option) any later version.
 
-import { headings, headingIndex, parseHeading, propertyInheritP, reducedLevel, entryGetInherited } from "org";
+import { parseHeading, propertyInheritP, reducedLevel, entryGetInherited } from "org";
 import { entryGet } from "org-list";
 import { lineAt } from "org-macs";
 import { PerBuffer, truthy } from "subr";
@@ -51,6 +51,15 @@ interface NumState {
   missingOverlay: number | undefined;
   /** Whether an overlay became invalid since the last update, as org-num--invalid-flag. */
   invalidFlag: boolean;
+  /**
+   * Each overlay's level, skip value and face, as its properties hold them,
+   * kept here too so an update walks them without asking the editor, and
+   * what its after-string was made from, its numbering and format
+   * function, so an update leaves those that have not changed.
+   */
+  info: Map<number, { level: number; skip: boolean; face: e8.Value; shownFor?: number[] | null; fn?: e8.Value }>;
+  /** The overlays marked invalid, as their org-num property says. */
+  invalid: Set<number>;
 }
 
 const states = new PerBuffer<NumState>();
@@ -58,7 +67,7 @@ const states = new PerBuffer<NumState>();
 function state(): NumState {
   let s = states.get(e8.currentBuffer());
   if (s === undefined) {
-    s = { overlays: [], skipLevel: undefined, numbering: undefined, missingOverlay: undefined, invalidFlag: false };
+    s = { overlays: [], skipLevel: undefined, numbering: undefined, missingOverlay: undefined, invalidFlag: false, info: new Map(), invalid: new Set() };
     states.set(e8.currentBuffer(), s);
   }
   return s;
@@ -72,13 +81,15 @@ function headlineRegexp(): string {
 }
 
 /** Whether overlay O is still valid, as org-num--valid-overlay-p. */
-const validOverlayP = (o: number): boolean => e8.overlayGet(o, "org-num") !== e8.intern("invalid");
+const validOverlayP = (s: NumState, o: number): boolean => !s.invalid.has(o);
 
 /** Marks overlay O invalid, as org-num--invalidate-overlay. */
 function invalidateOverlay(o: number): void {
   // An edit's hooks after it can reach an overlay the update deleted, which keeps no properties in E8.
   if (e8.overlayStart(o) !== undefined) e8.overlayPut(o, "org-num", e8.intern("invalid"));
-  state().invalidFlag = true;
+  const s = state();
+  s.invalid.add(o);
+  s.invalidFlag = true;
 }
 
 /** Removes every numbering overlay, as org-num--clear. */
@@ -86,51 +97,115 @@ function clear(): void {
   const s = state();
   for (const o of s.overlays) e8.deleteOverlay(o);
   s.overlays = [];
+  s.info = new Map();
+  s.invalid = new Set();
+}
+
+/** What making and refreshing numbers reads of the options, read once for each pass over the headings. */
+interface Ctx {
+  fn: e8.Value;
+  /** Whether the format is org-num-default-format, called here rather than through funcall. */
+  defaultFn: boolean;
+  numFace: e8.Value;
+  cycle: boolean;
+  nFaces: number;
+  /** Whether any skip option is on, as without one no heading is skipped. */
+  skips: boolean;
+}
+
+function context(): Ctx {
+  const fn = e8.variable("org-num-format-function") ?? null;
+  const tags = e8.variable("org-num-skip-tags");
+  return {
+    fn,
+    defaultFn: (typeof fn === "string" ? fn : typeof fn === "symbol" ? e8.symbolName(fn) : undefined) === "org-num-default-format",
+    numFace: e8.variable("org-num-face") ?? null,
+    cycle: truthy(e8.variable("org-cycle-level-faces") ?? true),
+    nFaces: Math.max(1, Math.min(8, Number(e8.variable("org-n-level-faces") ?? 8) || 8)),
+    skips:
+      truthy(e8.variable("org-num-skip-footnotes")) ||
+      truthy(e8.variable("org-num-skip-commented")) ||
+      truthy(e8.variable("org-num-skip-unnumbered")) ||
+      (Array.isArray(tags) && tags.length > 0),
+  };
 }
 
 /** The face of a heading of LEVEL, as org-num--make-overlay works it out from org-level-faces. */
-function levelFaceOf(level: number): string {
-  const n = Math.max(1, Math.min(8, Number(e8.variable("org-n-level-faces") ?? 8) || 8));
-  return `org-level-${truthy(e8.variable("org-cycle-level-faces") ?? true) ? ((level - 1) % n) + 1 : Math.min(level, n)}`;
+function levelFaceOf(level: number, ctx: Ctx): string {
+  return `org-level-${ctx.cycle ? ((level - 1) % ctx.nFaces) + 1 : Math.min(level, ctx.nFaces)}`;
 }
 
-/** An overlay numbering the heading at point, as org-num--make-overlay. */
-function makeOverlay(numbering: number[] | undefined, level: number, skip: boolean): number {
-  const bol = e8.lineStart(lineAt());
-  let stars = bol;
-  while (e8.bufferText(stars, stars + 1) === "*") stars++;
-  const o = e8.makeOverlay(bol, stars + 1);
-  const hook = (ov: number): void => invalidateOverlay(ov);
-  e8.overlayPut(o, "org-num", true);
-  e8.overlayPut(o, "skip", skip);
-  e8.overlayPut(o, "level", level);
-  const face = e8.variable("org-num-face");
-  e8.overlayPut(o, "numbering-face", truthy(face) ? (face as e8.Value) : levelFaceOf(level));
-  e8.overlayPut(o, "modification-hooks", [hook]);
-  e8.overlayPut(o, "insert-in-front-hooks", [hook]);
-  refreshDisplay(o, numbering);
+/** An overlay's hook, the same for all of them, which marks it invalid. */
+const invalidateHook = (ov: number): void => invalidateOverlay(ov);
+
+/** An overlay numbering the heading from BOL, its stars and the space after them up to END, as org-num--make-overlay. */
+function makeOverlay(bol: number, end: number, numbering: number[] | undefined, level: number, skip: boolean, ctx: Ctx): number {
+  const face = truthy(ctx.numFace) ? ctx.numFace : levelFaceOf(level, ctx);
+  const o = e8.makeOverlay(bol, end, {
+    "org-num": true,
+    skip,
+    level,
+    "numbering-face": face,
+    "modification-hooks": [invalidateHook],
+    "insert-in-front-hooks": [invalidateHook],
+    "after-string": displayFor(numbering, face, ctx),
+  });
+  state().info.set(o, { level, skip, face, shownFor: numbering ?? null, fn: ctx.fn });
   return o;
 }
 
-/** Sets OVERLAY's after-string for NUMBERING, or none, as org-num--refresh-display. */
-function refreshDisplay(overlay: number, numbering: number[] | undefined): void {
-  let display: e8.Value = null;
-  if (numbering !== undefined) {
-    const fn = e8.variable("org-num-format-function");
-    display = (truthy(fn) ? e8.funcall(fn as any, [...numbering].reverse()) : null) ?? null;
-  }
+/** Whether two numberings are the same, none being null. */
+function sameNumbering(a: number[] | null | undefined, b: number[] | null): boolean {
+  if (a === undefined) return false;
+  if (a === null || b === null) return a === b;
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+  return true;
+}
+
+/** The after-string for NUMBERING in FACE, as org-num--refresh-display makes it: nil for none. */
+function displayFor(numbering: number[] | undefined, face: e8.Value, ctx: Ctx): e8.Value {
+  if (numbering === undefined) return null;
+  const numbers = [...numbering].reverse();
+  let display: e8.Value = ctx.defaultFn ? defaultFormat(numbers) : truthy(ctx.fn) ? (e8.funcall(ctx.fn as any, numbers) ?? null) : null;
   if (display instanceof e8.PropertizedString) {
-    if (!display.properties.some(([from, , props]) => from === 0 && props.face !== undefined))
-      display = e8.concat(e8.propertize(display.string, { face: e8.overlayGet(overlay, "numbering-face") ?? null }));
+    if (!display.properties.some(([from, to, props]) => from <= 0 && 0 < to && props.face !== undefined && props.face !== null)) display = withFace(display, face);
   } else if (typeof display === "string") {
-    display = e8.propertize(display, { face: e8.overlayGet(overlay, "numbering-face") ?? null });
+    display = new e8.PropertizedString(display, [[0, ctx.defaultFn ? display.length : Array.from(display).length, { face }]]);
   }
-  e8.overlayPut(overlay, "after-string", display);
+  return display;
+}
+
+/** Sets OVERLAY's after-string for NUMBERING, or none, as org-num--refresh-display, unless it shows that already. */
+function refreshDisplay(overlay: number, numbering: number[] | undefined, ctx: Ctx): void {
+
+  const info = state().info.get(overlay);
+  if (info !== undefined && info.fn === ctx.fn && sameNumbering(info.shownFor, numbering ?? null)) return;
+  const face = info?.face ?? e8.overlayGet(overlay, "numbering-face") ?? null;
+  if (info !== undefined) {
+    info.shownFor = numbering ?? null;
+    info.fn = ctx.fn;
+  }
+  e8.overlayPut(overlay, "after-string", displayFor(numbering, face, ctx));
+}
+
+/** TEXT with FACE over all of it, its other properties kept, as org-add-props puts a face. */
+function withFace(text: e8.PropertizedString, face: e8.Value): e8.PropertizedString {
+  const n = Array.from(text.string).length;
+  const cuts = [...new Set([0, n, ...text.properties.flatMap(([a, b]) => [a, b])])].filter((x) => x >= 0 && x <= n).sort((a, b) => a - b);
+  const runs: [number, number, Record<string, e8.Value>][] = [];
+  for (let i = 0; i + 1 < cuts.length; i++) {
+    const [a, b] = [cuts[i], cuts[i + 1]];
+    const props: Record<string, e8.Value> = {};
+    for (const [x, y, p] of text.properties) if (x <= a && b <= y) Object.assign(props, p);
+    props.face = face;
+    runs.push([a, b, props]);
+  }
+  return new e8.PropertizedString(text.string, runs);
 }
 
 /** Whether the heading at point is to be left unnumbered, as org-num--skip-value. */
-function skipValue(): boolean {
-  const line = lineAt();
+function skipValue(line = lineAt()): boolean {
   const h = parseHeading(line);
   const title = h?.title;
   const tags = h?.tags ?? [];
@@ -158,31 +233,42 @@ function currentNumbering(level: number, skip: boolean): number[] | undefined {
   s.skipLevel = undefined;
   const numbering = s.numbering;
   const last = numbering?.length ?? 0;
-  if (numbering === undefined) s.numbering = [1, ...new Array(level - 1).fill(0)];
-  else if (level === last) s.numbering = [numbering[0] + 1, ...numbering.slice(1)];
-  else if (level < last) {
-    const suffix = numbering.slice(last - level);
-    s.numbering = [suffix[0] + 1, ...suffix.slice(1)];
-  } else s.numbering = [1, ...new Array(level - last - 1).fill(0), ...numbering];
+  let next: number[];
+  if (numbering === undefined) {
+    next = new Array(level).fill(0);
+    next[0] = 1;
+  } else if (level === last) {
+    next = numbering.slice();
+    next[0]++;
+  } else if (level < last) {
+    next = numbering.slice(last - level);
+    next[0]++;
+  } else {
+    next = new Array(level - last).fill(0).concat(numbering);
+    next[0] = 1;
+  }
+  s.numbering = next;
   return s.numbering;
 }
 
 /** Numbers the headings after START up to END, the buffer's ends for undefined, returning the overlays made, newest first, as org-num--number-region. */
 function numberRegion(start: number | undefined, end: number | undefined): number[] {
-  return e8.saveExcursion(() => {
-    e8.gotoChar(start ?? 0);
-    // Not the heading at START.
-    if (start !== undefined) e8.gotoChar(e8.lineEnd(lineAt()));
-    const regexp = headlineRegexp();
-    const made: number[] = [];
-    while (e8.reSearchForward(regexp, { bound: end, noerror: true }) !== undefined) {
-      const level = reducedLevel((e8.matchEnd(0) ?? 0) - (e8.matchBeginning(0) ?? 0) - 1);
-      const skip = skipValue();
-      const numbering = currentNumbering(level, skip);
-      made.unshift(makeOverlay(numbering, level, skip));
-    }
-    return made;
-  });
+  const ctx = context();
+  // Each heading line after START's up to END, its stars and the space after them within END, as re-search-forward finds them.
+  const from = start === undefined ? 0 : e8.lineEnd(lineAt(start));
+  const regexp = headlineRegexp().slice(1);
+  const made: number[] = [];
+  for (const [line, bol, text] of e8.matchingLines(regexp, end === undefined ? { start: from } : { start: from, end })) {
+    if (bol < from && start !== undefined) continue;
+    const stars = /^\*+/.exec(text)![0].length;
+    if (end !== undefined && bol + stars + 1 > end) break;
+    const level = reducedLevel(stars);
+    const skip = ctx.skips && skipValue(line);
+    const numbering = currentNumbering(level, skip);
+    made.push(makeOverlay(bol, bol + stars + 1, numbering, level, skip, ctx));
+  }
+  // Newest first, as the Lisp pushes them.
+  return made.reverse();
 }
 
 /** Updates the buffer's numbering, making overlays again where they became invalid or are missing, as org-num--update. */
@@ -190,40 +276,49 @@ function update(): void {
   const s = state();
   s.skipLevel = undefined;
   s.numbering = undefined;
-  // Newest first, as the Lisp pushes them.
-  let fresh: number[] = [];
+  // In order, where the Lisp pushes them newest first and reverses them at the end.
+  const fresh: number[] = [];
   const pending = s.overlays;
-  while (pending.length > 0) {
-    const overlay = pending.shift()!;
-    if (validOverlayP(overlay)) {
+  const lastStart = (): number | undefined => (fresh.length > 0 ? e8.overlayStart(fresh[fresh.length - 1]) : undefined);
+  /** Adds the overlays numberRegion made, newest first, in order. */
+  const add = (made: number[]): void => {
+    for (let k = made.length - 1; k >= 0; k--) fresh.push(made[k]);
+  };
+  const drop = (o: number): void => {
+    e8.deleteOverlay(o);
+    s.info.delete(o);
+    s.invalid.delete(o);
+  };
+  const ctx = context();
+  let i = 0;
+  while (i < pending.length) {
+    const overlay = pending[i++];
+    if (validOverlayP(s, overlay)) {
       const next = e8.overlayStart(overlay) ?? 0;
-      const last = fresh.length > 0 ? e8.overlayStart(fresh[0]) : undefined;
+      const last = lastStart();
       if (s.missingOverlay === undefined) {
         // Nothing missing.
       } else if (s.missingOverlay > next) {
         // Further on.
       } else if (last === undefined || s.missingOverlay > last) {
         s.missingOverlay = undefined;
-        fresh = [...numberRegion(last, next), ...fresh];
+        add(numberRegion(last, next));
       } else s.missingOverlay = undefined;
-      const numbering = currentNumbering(Number(e8.overlayGet(overlay, "level")), truthy(e8.overlayGet(overlay, "skip")));
-      refreshDisplay(overlay, numbering);
-      fresh.unshift(overlay);
+      const info = s.info.get(overlay);
+      const numbering = currentNumbering(info?.level ?? Number(e8.overlayGet(overlay, "level")), info?.skip ?? truthy(e8.overlayGet(overlay, "skip")));
+      refreshDisplay(overlay, numbering, ctx);
+      fresh.push(overlay);
     } else {
       // The headings between the last valid overlay and the next are numbered again.
-      e8.deleteOverlay(overlay);
-      while (pending.length > 0 && !validOverlayP(pending[0])) e8.deleteOverlay(pending.shift()!);
-      const last = fresh.length > 0 ? e8.overlayStart(fresh[0]) : undefined;
-      const next = pending.length > 0 ? e8.overlayStart(pending[0]) : undefined;
-      fresh = [...numberRegion(last, next), ...fresh];
+      drop(overlay);
+      while (i < pending.length && !validOverlayP(s, pending[i])) drop(pending[i++]);
+      const next = i < pending.length ? e8.overlayStart(pending[i]) : undefined;
+      add(numberRegion(lastStart(), next));
     }
   }
-  if (s.missingOverlay !== undefined) {
-    const last = fresh.length > 0 ? e8.overlayStart(fresh[0]) : undefined;
-    fresh = [...numberRegion(last, undefined), ...fresh];
-  }
+  if (s.missingOverlay !== undefined) add(numberRegion(lastStart(), undefined));
   s.invalidFlag = false;
-  s.overlays = fresh.reverse();
+  s.overlays = fresh;
 }
 
 /** The value of the org-num property at POS and the overlay it is on, as get-char-property-and-overlay. */
@@ -244,10 +339,9 @@ function verify(beg: number, end: number): void {
     e8.gotoChar(beg);
     const regexp = headlineRegexp();
     e8.saveExcursion(() => {
-      const all = headings();
-      const i = headingIndex(all, lineAt());
-      if (i === undefined) return;
-      e8.gotoChar(all[i].start);
+      // Back to the heading, as org-back-to-heading, searching the text rather than asking the heading index, which would be made again on every change.
+      e8.gotoChar(e8.lineStart(lineAt()));
+      if (!e8.lookingAt("\\*+ ") && e8.reSearchBackward("^\\*+ ", { noerror: true }) === undefined) return;
       if (!e8.lookingAt(regexp)) return;
       const [value, o] = numProperty(e8.point());
       if (value === undefined) s.missingOverlay = e8.point();

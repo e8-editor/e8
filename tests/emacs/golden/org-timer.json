@@ -623,6 +623,140 @@
       "modified": false,
       "error": null,
       "message": "No timer set"
+    },
+    {
+      "name": "org-timer-start-with-m-minus-asks",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "M-- C-c C-x 0 C-c C-x .",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "0:10:00"
+        ]
+      },
+      "text": "0:10:00 ",
+      "visible": "0:10:00 ",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-timer-set-timer-with-m-minus-asks",
+      "input": {
+        "text": "* Task\n",
+        "point": 0,
+        "keys": "M-- C-c C-x ; C-c C-x _",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "5"
+        ],
+        "message": true
+      },
+      "text": "* Task\n",
+      "visible": "* Task\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Timer stopped"
+    },
+    {
+      "name": "org-timer-item-after-a-counter",
+      "input": {
+        "text": "1. [@3] 0:00:05 :: first\n",
+        "point": 0,
+        "keys": "C-e M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "3. [@3] 0:00:05 :: xfirst\n4. 0:00:00 :: \n",
+      "visible": "3. [@3] 0:00:05 :: xfirst\n4. 0:00:00 :: \n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-timer-item-renumbers-the-first",
+      "input": {
+        "text": "3. 0:00:05 :: first\n",
+        "point": 0,
+        "keys": "C-e C-c C-x - x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "1. 0:00:05 :: xfirst\n2. 0:00:00 :: \n",
+      "visible": "1. 0:00:05 :: xfirst\n2. 0:00:00 :: \n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-timer-item-in-the-middle-of-a-numbered-list",
+      "input": {
+        "text": "1. 0:00:05 :: a\n2. 0:00:09 :: b\n",
+        "point": 0,
+        "keys": "C-e C-c C-x - x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "1. 0:00:05 :: a\n2. 0:00:00 :: x\n3. 0:00:09 :: b\n",
+      "visible": "1. 0:00:05 :: a\n2. 0:00:00 :: x\n3. 0:00:09 :: b\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-timer-item-in-a-nested-list",
+      "input": {
+        "text": "- x\n  1. 0:00:05 :: a\n",
+        "point": 0,
+        "keys": "C-n C-e C-c C-x - x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- x\n  1. 0:00:05 :: a\n  2. 0:00:00 :: x\n",
+      "visible": "- x\n  1. 0:00:05 :: a\n  2. 0:00:00 :: x\n",
+      "point": 39,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }
