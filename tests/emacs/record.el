@@ -26,7 +26,8 @@
 ;; point), `completions' (true to record the text of *Completions* if a
 ;; window shows it), `displayed' (true to record the buffer as it is
 ;; drawn: the text with overlays' display strings in place and invisible
-;; text left out, as column view draws it), and
+;; text left out, as column view draws it, and their before- and
+;; after-strings, as org-num's numbers), and
 ;; `platform' (an Emacs `system-type' such as
 ;; "darwin", for cases that only hold on one platform).
 ;; Cases with files record what the directory holds afterwards.
@@ -500,6 +501,14 @@ its `globals' bound for the case, before the modes start."
       (setq org-cite-basic--bibliography-cache nil
             org-cite-basic--file-id-cache nil)
       (clrhash org-cite-basic--completion-cache))
+    ;; Nor a running or paused timer, relative or countdown, nor its
+    ;; display, as org-timer-stop leaves them, without its message.
+    (when (featurep 'org-timer)
+      (when (timerp org-timer-countdown-timer) (cancel-timer org-timer-countdown-timer))
+      (setq org-timer-start-time nil
+            org-timer-pause-time nil
+            org-timer-countdown-timer nil)
+      (org-timer-set-mode-line 'off))
     ;; Nor a date an agenda's capture left as the default, as
     ;; org-capture-use-agenda-date sets it for good.
     ;; Nor the message a repeating entry left for the next stored note to
@@ -846,16 +855,33 @@ The whole buffer, even if the case left it narrowed."
 (defun e8-oracle--displayed ()
   "The buffer as it is drawn: the text with each overlay's display string
 in place of what it covers and the invisible text left out.  Not the
-header line, which column view sets only from a post-command hook."
+header line, which column view sets only from a post-command hook.
+Overlays' after-strings show where they end and their before-strings
+where they start, as org-num's numbers do."
   (let ((out nil) (p (point-min)))
     (while (< p (point-max))
+      (push (e8-oracle--overlay-strings p) out)
       (let ((ov (seq-find (lambda (o) (and (stringp (overlay-get o 'display)) (= (overlay-start o) p)))
                           (overlays-at p t))))
         (cond (ov (push (substring-no-properties (overlay-get ov 'display)) out)
                   (setq p (max (overlay-end ov) (1+ p))))
               ((invisible-p p) (setq p (1+ p)))
               (t (push (string (char-after p)) out) (setq p (1+ p))))))
+    (push (e8-oracle--overlay-strings (point-max)) out)
     (apply #'concat (nreverse out))))
+
+(defun e8-oracle--overlay-strings (p)
+  "The after-strings of the overlays ending at P, then the before-strings
+of those starting there, the overlays taken by where they start."
+  (let ((overlays (sort (overlays-in (max (point-min) (1- p)) (min (point-max) (1+ p)))
+                        (lambda (a b) (< (overlay-start a) (overlay-start b))))))
+    (concat
+     (mapconcat (lambda (o) (if (and (= (overlay-end o) p) (stringp (overlay-get o 'after-string)))
+                                (substring-no-properties (overlay-get o 'after-string)) ""))
+                overlays "")
+     (mapconcat (lambda (o) (if (and (= (overlay-start o) p) (stringp (overlay-get o 'before-string)))
+                                (substring-no-properties (overlay-get o 'before-string)) ""))
+                overlays ""))))
 
 (defun e8-oracle--windows ()
   "The frame's windows in cyclic order: buffer, point and total size."

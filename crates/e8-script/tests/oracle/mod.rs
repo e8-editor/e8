@@ -688,12 +688,14 @@ pub fn run(case: &Case) -> State {
 
 /// The window's buffer as it is drawn, as record.el's e8-oracle--displayed
 /// reads it: the text with each overlay's display string in place of what
-/// it covers and the invisible text left out.
+/// it covers and the invisible text left out, and overlays' after-strings
+/// where they end and before-strings where they start.
 fn displayed(ed: &e8_core::Editor) -> String {
     let b = ed.window_buffer();
     let mut out = String::new();
     let mut p = 0;
     while p < b.len() {
+        out.push_str(&overlay_strings(b, p));
         let shown = b.overlays_at(p).into_iter().find(|o| o.start == p && o.props.get("display").and_then(|d| d.as_str()).is_some());
         if let Some(o) = shown {
             out.push_str(o.props.get("display").and_then(|d| d.as_str()).unwrap_or_default());
@@ -705,7 +707,20 @@ fn displayed(ed: &e8_core::Editor) -> String {
             p += 1;
         }
     }
+    out.push_str(&overlay_strings(b, b.len()));
     out
+}
+
+/// The after-strings of the overlays ending at `p`, then the
+/// before-strings of those starting there, as record.el's
+/// e8-oracle--overlay-strings gives them.
+fn overlay_strings(b: &e8_core::Buffer, p: usize) -> String {
+    let mut overlays = b.overlays_in(p.saturating_sub(1), (p + 1).min(b.len()));
+    overlays.sort_by_key(|o| o.start);
+    let string = |o: &e8_core::Overlay, name: &str| o.props.get(name).and_then(|v| v.as_str()).unwrap_or_default().to_string();
+    let after: String = overlays.iter().filter(|o| o.end == p).map(|o| string(o, "after-string")).collect();
+    let before: String = overlays.iter().filter(|o| o.start == p).map(|o| string(o, "before-string")).collect();
+    after + &before
 }
 
 /// The fields where E8 differs from Emacs, one per line.

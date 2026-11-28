@@ -223,6 +223,8 @@ const PACKAGES: &[(&str, &str)] = &[
     ("packages/org-datetree.ts", include_str!("../../../packages/org-datetree.ts")),
     ("packages/org-agenda.ts", include_str!("../../../packages/org-agenda.ts")),
     ("packages/org-clock.ts", include_str!("../../../packages/org-clock.ts")),
+    ("packages/org-timer.ts", include_str!("../../../packages/org-timer.ts")),
+    ("packages/org-num.ts", include_str!("../../../packages/org-num.ts")),
     ("packages/org-capture.ts", include_str!("../../../packages/org-capture.ts")),
     ("packages/org-colview.ts", include_str!("../../../packages/org-colview.ts")),
     ("packages/org-archive.ts", include_str!("../../../packages/org-archive.ts")),

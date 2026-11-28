@@ -1,0 +1,234 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "org-remove-file-removes-the-current-file",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-c ]",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "agenda_files": true,
+        "files": {
+          "a.org": "* A\n"
+        },
+        "find": "a.org",
+        "message": true
+      },
+      "text": "* A\n",
+      "visible": "* A\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.org": "* A\n"
+      },
+      "message": "Removed from Org Agenda list: DIR/a.org"
+    },
+    {
+      "name": "org-remove-file-twice",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-c ] C-c ]",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "agenda_files": true,
+        "files": {
+          "a.org": "* A\n"
+        },
+        "find": "a.org",
+        "message": true
+      },
+      "text": "* A\n",
+      "visible": "* A\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.org": "* A\n"
+      },
+      "message": "File was not in list: DIR/a.org (not removed)"
+    },
+    {
+      "name": "org-agenda-file-to-front-moves-it",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-c [",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "agenda_files": true,
+        "files": {
+          "a.org": "* A\n"
+        },
+        "find": "a.org",
+        "message": true
+      },
+      "text": "* A\n",
+      "visible": "* A\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.org": "* A\n"
+      },
+      "message": "File moved to front of agenda file list"
+    },
+    {
+      "name": "org-agenda-file-to-front-adds-it-back",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-c ] C-c [",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "agenda_files": true,
+        "files": {
+          "a.org": "* A\n"
+        },
+        "find": "a.org",
+        "message": true
+      },
+      "text": "* A\n",
+      "visible": "* A\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.org": "* A\n"
+      },
+      "message": "File added to front of agenda file list"
+    },
+    {
+      "name": "org-agenda-file-to-front-to-the-end",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-c ] C-u C-c [",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "agenda_files": true,
+        "files": {
+          "a.org": "* A\n"
+        },
+        "find": "a.org",
+        "message": true
+      },
+      "text": "* A\n",
+      "visible": "* A\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.org": "* A\n"
+      },
+      "message": "File added to end of agenda file list"
+    },
+    {
+      "name": "org-agenda-file-to-front-then-remove",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-c ] C-c [ C-c ]",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "agenda_files": true,
+        "files": {
+          "a.org": "* A\n"
+        },
+        "find": "a.org",
+        "message": true
+      },
+      "text": "* A\n",
+      "visible": "* A\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.org": "* A\n"
+      },
+      "message": "Removed from Org Agenda list: DIR/a.org"
+    },
+    {
+      "name": "org-remove-file-without-a-file",
+      "input": {
+        "text": "* A\n",
+        "point": 0,
+        "keys": "C-c ]",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n",
+      "visible": "* A\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Current buffer does not visit a file"
+    },
+    {
+      "name": "org-agenda-file-to-front-without-a-file",
+      "input": {
+        "text": "* A\n",
+        "point": 0,
+        "keys": "C-c [",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n",
+      "visible": "* A\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Please save the current buffer to a file"
+    }
+  ]
+}
