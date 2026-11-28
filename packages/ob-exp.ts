@@ -11,8 +11,11 @@ import {
   blockAtPoint,
   callAt,
   executeSrcBlock,
+  expandNowebReferences,
   inlineInfo,
-  inlineObjects,
+  inlineObjectAt,
+  nowebP,
+  nowebWrap,
   inlineResultAt,
   resultEnd,
   resultsLine,
@@ -48,27 +51,16 @@ export function escapeCode(s: string): string {
   return s.replace(/^([ \t]*)(,*)(\*|,|#\+)/gm, (m, ind: string, commas: string, what: string) => (what === "," ? m : `${ind}${commas},${what}`));
 }
 
-/** A block's switches, as -n or -l "(ref:%s)" before its header arguments, and its header arguments after them. */
-function switchesAndParameters(line: string): [string, string] {
-  const m = /^[ \t]*#\+begin_src[ \t]+\S+[ \t]*(.*)$/i.exec(line);
-  if (!m) return ["", ""];
-  const out: string[] = [];
-  const re = /\s*([-+][A-Za-z](?:\s+"[^"]*")?)/y;
-  let rest = m[1];
-  let s: RegExpExecArray | null;
-  re.lastIndex = 0;
-  while ((s = re.exec(rest))) out.push(s[1]);
-  rest = rest.slice(re.lastIndex);
-  return [out.join(" "), rest.trim()];
-}
-
 /** A block's code as exported, as org-babel-exp-code: from the inline template for an inline block, its code then not escaped. */
 function expCode(block: Block, switches: string, parameters: string | undefined, isInline: boolean): string {
+  // Its noweb references taken out with :noweb strip-export, or expanded as :noweb allows when exporting.
+  const noweb = block.params.get(":noweb");
+  const body = noweb === "strip-export" ? block.body.replace(new RegExp(nowebWrap(), "g"), "") : nowebP(block.params, ":export") ? expandNowebReferences(block) : block.body;
   const params: [string, string][] = [...block.params].map(([k, v]) => [k.replace(/^:/, ""), JSON.stringify(v)]);
   const flags = block.params.get(":flags");
   return fillTemplate(String(e8.variable(isInline ? "org-babel-exp-inline-code-template" : "org-babel-exp-code-template")), [
     ["lang", block.language],
-    ["body", isInline ? block.body : escapeCode(block.body)],
+    ["body", isInline ? body : escapeCode(body)],
     ["switches", switches ? ` ${switches}` : ""],
     ["flags", flags !== undefined ? ` ${flags}` : ""],
     ["header-args", parameters ? ` ${parameters}` : ""],
@@ -113,10 +105,13 @@ function silently(block: Block): void {
   if (session !== undefined && session !== "none") expResults(block, true);
 }
 
-/** Removes a call's results, as org-babel-remove-result. */
+/** Removes a call's results, and the blank lines before them, as org-babel-remove-result. */
 function removeResult(block: Block): void {
   const r = resultLines(block);
-  if (r) deleteLines(r[0], r[1]);
+  if (!r) return;
+  let from = r[0];
+  while (from > 0 && /^[ \t]*$/.test(e8.lineText(from - 1))) from--;
+  deleteLines(from, r[1]);
 }
 
 /** Removes an inline block's or call's results, and the blanks before them, as org-babel-remove-inline-result. */
@@ -128,7 +123,7 @@ function removeInlineResult(block: Block): void {
 /** A source block for the export, as org-babel-exp-src-block and the part of org-babel-exp-process-buffer for blocks. */
 function exportSrcBlock(block: Block): void {
   const exports = String(block.params.get(":exports") || "code");
-  const [switches, parameters] = switchesAndParameters(e8.lineText(block.line));
+  const [switches, parameters] = [block.switches ?? "", block.parameters ?? ""];
   const ind = /^[ \t]*/.exec(e8.lineText(block.line))![0];
   if (exports === "results" || exports === "both") {
     e8.gotoChar(e8.lineStart(block.line));
@@ -287,8 +282,8 @@ export function processBuffer(): void {
             exportCall(block, found.value ?? "");
           } else {
             const type = found.type as "inline-src-block" | "inline-babel-call";
-            const o = inlineObjects(line, type).find((x) => x.begin === pos);
-            if (o === undefined) continue;
+            const o = inlineObjectAt(pos, type);
+            if (o === undefined || o.begin !== pos) continue;
             const block = inlineInfo(o, line);
             if (block === undefined) e8.userError(`Unknown Babel reference: ${String(property("call", o.node))}`);
             exportInline(block, found.parameters);

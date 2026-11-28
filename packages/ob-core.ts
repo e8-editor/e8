@@ -11,7 +11,7 @@ import { fileRelativeName } from "files";
 import { storeLink } from "ol";
 import { endOfMetaData, entryGet } from "org-list";
 import { headings, keywordLines, parseHeading } from "org";
-import { AFFILIATED as ANY_AFFILIATED, macroEscapeArguments, parseBuffer, parseSecondaryString, removeIndentation, restriction } from "org-element";
+import { AFFILIATED as ANY_AFFILIATED, elementAt, endBeforeBlank, macroEscapeArguments, objectAt, parseBuffer, removeIndentation } from "org-element";
 import {
   type Datum,
   begin as astBegin,
@@ -174,6 +174,8 @@ export function parseHeaderArgumentList(text: string | undefined): Alist {
     const value = m ? readHeaderValue(chomp(m[2])) : "";
     if (key !== ":var") {
       out.push([key, value]);
+      // Lisp, which Org evaluates here and E8 does not: noted, so running the block is refused.
+      if (/^[(`]/.test(value)) out.push([LISP, value]);
       return;
     }
     // As org-babel-join-splits-near-ch joins "a=" and "1".
@@ -188,6 +190,9 @@ export function parseHeaderArgumentList(text: string | undefined): Alist {
   });
   return out;
 }
+
+/** Where header arguments note a value written as Lisp, which running the block refuses. */
+export const LISP = ":e8-lisp";
 
 /** Header arguments as a line writes them, merged, as org-babel-parse-header-arguments and org-babel-merge-params give them. */
 export function parseHeaderArguments(text: string): Params {
@@ -258,28 +263,50 @@ export function mergeParams(...all: (Params | Alist)[]): Params {
 
 const merge = mergeParams;
 
-/** The header arguments #+PROPERTY: lines give the buffer: for all languages, or with `language` for that one. */
-function bufferHeaderArgs(language?: string): Params {
-  let out: Params = new Map();
+/** The values #+PROPERTY: lines give header-args, or header-args:LANGUAGE: the last plain one, then those with a + after it. */
+function bufferHeaderArgValues(language?: string): string[] {
+  let out: string[] = [];
   for (const [, , text] of keywordLines()) {
     const m = /^#\+PROPERTY:[ \t]+header-args(?::(\S+?))?(\+)?[ \t]+(.*)$/i.exec(text);
-    if (m && m[1] === language) out = merge(out, parseHeaderArguments(m[3]));
+    if (!m || m[1] !== language) continue;
+    if (m[2]) out.push(m[3]);
+    else out = [m[3]];
   }
   return out;
 }
 
-/** A heading's header-args property: for all languages, or with `language` for that one. */
-function headingHeaderArgs(line: number, language?: string): Params {
-  let out: Params = new Map();
+/** A heading's own header-args, or header-args:LANGUAGE, property: its plain value, if any, and those with a + after it. */
+function headingHeaderArgValues(line: number, language?: string): { plain?: string; plus: string[] } {
+  const out: { plain?: string; plus: string[] } = { plus: [] };
   let k = line + 1;
   // Past the planning line, if any, to the drawer.
   if (/^[ \t]*(?:SCHEDULED|DEADLINE|CLOSED):/.test(e8.lineText(k))) k++;
   if (!/^[ \t]*:PROPERTIES:[ \t]*$/i.test(e8.lineText(k))) return out;
   for (k++; k < e8.lineCount() && !/^[ \t]*:END:[ \t]*$/i.test(e8.lineText(k)); k++) {
     const m = /^[ \t]*:header-args(?::(\S+?))?(\+)?:[ \t]*(.*)$/i.exec(e8.lineText(k));
-    if (m && m[1] === language) out = merge(out, parseHeaderArguments(m[3]));
+    if (!m || m[1] !== language) continue;
+    if (m[2]) out.plus.push(m[3]);
+    else out.plain = m[3];
   }
   return out;
+}
+
+/**
+ * The header-args property, or header-args:LANGUAGE, a place under
+ * ANCESTORS inherits, as org-entry-get with inheritance reads it: the
+ * nearest heading's that has it, with what headings and lines with a +
+ * add, the #+PROPERTY: lines' only when no heading above has it.
+ */
+function inheritedHeaderArgs(ancestors: { line: number }[], language?: string): Params {
+  const parts: string[] = [];
+  let stopped = false;
+  for (let i = ancestors.length - 1; i >= 0 && !stopped; i--) {
+    const { plain, plus } = headingHeaderArgValues(ancestors[i].line, language);
+    parts.unshift(...(plain !== undefined ? [plain] : []), ...plus);
+    stopped = plain !== undefined;
+  }
+  if (!stopped) parts.unshift(...bufferHeaderArgValues(language));
+  return parseHeaderArguments(parts.join(" "));
 }
 
 /**
@@ -287,14 +314,8 @@ function headingHeaderArgs(line: number, language?: string): Params {
  * #+PROPERTY: lines give a block of LANGUAGE there, as
  * org-babel-params-from-properties: for all languages, then for that one.
  */
-function propertyParams(line: number, language: string): Params[] {
-  const ancestors = ancestorsOf(headings(), line);
-  return [
-    bufferHeaderArgs(),
-    ...ancestors.map((a) => headingHeaderArgs(a.line)),
-    bufferHeaderArgs(language),
-    ...ancestors.map((a) => headingHeaderArgs(a.line, language)),
-  ];
+function propertyParams(line: number, language: string, ancestors: { line: number }[] = ancestorsOf(headings(), line)): Params[] {
+  return [inheritedHeaderArgs(ancestors), inheritedHeaderArgs(ancestors, language)];
 }
 
 /** What is run: a source block, a #+CALL: line, or an inline source block or call in a paragraph, as Org's executor types. */
@@ -322,11 +343,26 @@ export interface Block {
   /** An inline one's place: where it starts, and where it ends before the blanks after it. */
   begin?: number;
   objectEnd?: number;
+  /** A block's switches and header arguments as its #+begin_src line writes them. */
+  switches?: string;
+  parameters?: string;
+  /** How its code references are written, as org-src-coderef-format gives it: -l's format, or org-coderef-label-format. */
+  coderef?: string;
 }
 
 const inline = (b: Block): boolean => b.type === "inline-src-block" || b.type === "inline-babel-call";
 
 const BEGIN = /^[ \t]*#\+begin_src(?:[ \t]+(\S+)(.*))?$/i;
+
+/**
+ * A #+begin_src line's switches and header arguments, as org-element's
+ * parser splits them: only -l "FORMAT", -i, -k, -r and -n or +n with a
+ * number are switches, the rest is the header arguments.
+ */
+export function srcLineParts(text: string): { switches: string; parameters: string } {
+  const m = /^[ \t]*#\+BEGIN_SRC(?: +(\S+))?((?: +(?:-(?:l ".+"|[ikr])|[-+]n(?: *[0-9]+)?))+)?(.*)[ \t]*$/i.exec(text);
+  return { switches: (m?.[2] ?? "").trim(), parameters: (m?.[3] ?? "").trim() };
+}
 const END = /^[ \t]*#\+end_src[ \t]*$/i;
 const AFFILIATED = /^[ \t]*#\+(?:headers?|name):[ \t]*(.*)$/i;
 
@@ -387,22 +423,15 @@ function blockAt(line: number, end: number, ancestors: Ancestor[], defaults: Par
   const langDefaults = pairs(e8.variable(`org-babel-default-header-args:${language}`));
   // As org-babel-params-from-properties: the header-args properties,
   // inherited, then the language's, each the buffer's then the headings'.
-  const params = merge(
-    defaults,
-    langDefaults,
-    bufferHeaderArgs(),
-    ...ancestors.map((a) => headingHeaderArgs(a.line)),
-    bufferHeaderArgs(language),
-    ...ancestors.map((a) => headingHeaderArgs(a.line, language)),
-    ...headers,
-    parseHeaderArgumentList(m[2] ?? ""),
-  );
+  const { switches, parameters } = srcLineParts(e8.lineText(line));
+  // The block's own line's arguments, then its #+header: lines', which win, as org-babel-get-src-block-info merges them.
+  const params = merge(defaults, langDefaults, ...propertyParams(line, language, ancestors), parseHeaderArgumentList(parameters), ...headers);
   const lines: string[] = [];
   for (let k = line + 1; k < end; k++) lines.push(e8.lineText(k));
-  // The switches before the header arguments, -i among them, as org-src-preserve-indentation-p reads it.
-  const switches = /^[^:]*/.exec(m[2] ?? "")![0];
+  // As org-src-preserve-indentation-p reads the -i switch.
   const preserveIndent = truthy(e8.variable("org-src-preserve-indentation")) || /(?:^|[ \t])-i(?:[ \t]|$)/.test(switches);
-  return { line, end, first, language, name: name || undefined, params, body: blockBody(lines, preserveIndent), preserveIndent };
+  const labelFmt = /-l +"([^"\n]+)"/.exec(switches)?.[1];
+  return { line, end, first, language, name: name || undefined, params, body: blockBody(lines, preserveIndent), preserveIndent, switches, parameters, coderef: labelFmt ?? String(e8.variable("org-coderef-label-format") ?? "(ref:%s)") };
 }
 
 const defaultParams = (): Params => merge(pairs(e8.variable("org-babel-default-header-args")));
@@ -438,7 +467,14 @@ export function collectBlocks(targetFile?: string): Block[] {
  * #+end_src, as org-babel-get-src-block-info finds it, or undefined.
  */
 export function blockAtPoint(): Block | undefined {
-  const here = e8.lineOf(e8.point());
+  let here = e8.lineOf(e8.point());
+  // On the blank lines after a block, which Org counts part of it.
+  if (/^[ \t]*$/.test(e8.lineText(here))) {
+    let k = here;
+    while (k > 0 && /^[ \t]*$/.test(e8.lineText(k))) k--;
+    if (k < here && END.test(e8.lineText(k))) here = k;
+    else return undefined;
+  }
   // Down past the block's #+name: and #+header: lines, to its #+begin_src.
   let begin = here;
   while (begin < e8.lineCount() && AFFILIATED.test(e8.lineText(begin))) begin++;
@@ -498,9 +534,29 @@ const tableText = (rows: unknown[]): string =>
  * as the {{{results(...)}}} macro holds it. Each line of a block's ends
  * in a newline; `table` says whether to align it as a table.
  */
+/**
+ * A result that names a file as a link to it, as org-babel-result-to-file
+ * makes one: relative to the Org file when the block ran in another
+ * directory, with :file-desc's description, or the name itself for
+ * :file-desc with no value.
+ */
+function resultToFile(result: string, params: Params): string {
+  let path = result;
+  const own = e8.bufferFileName();
+  const dir = own !== undefined ? e8.fileNameDirectory(own) : undefined;
+  if (own !== undefined && dir && e8.expandFileName(String(e8.variable("default-directory") ?? "")) !== e8.expandFileName(dir)) {
+    const full = e8.expandFileName(result);
+    const type = e8.variable("org-link-file-path-type") ?? "adaptive";
+    path = (typeof type === "symbol" ? Symbol.keyFor(type) : String(type)) === "adaptive" ? fileRelativeName(full, dir) : full;
+  }
+  const desc = params.has(":file-desc") ? params.get(":file-desc") || result : undefined;
+  return `[[file:${path}]${desc !== undefined ? `[${desc}]` : ""}]`;
+}
+
 function resultText(value: unknown, rp: string[], params: Params, isInline: boolean, lang: string): { text: string; table: boolean } {
   let result: unknown = value;
-  if (Array.isArray(result) && result.length === 0) result = null;
+  if (typeof result === "string" && rp.includes("file")) result = resultToFile(result, params);
+  else if (Array.isArray(result) && result.length === 0) result = null;
   else if (!nil(result) && typeof result !== "string" && !Array.isArray(result)) result = typeof result === "number" ? String(result) : cell(result);
   if (nil(result)) result = null;
   if (typeof result === "string" && !isInline && result.trim() !== "" && !result.endsWith("\n")) result += "\n";
@@ -581,29 +637,24 @@ export function resultsLine(block: Block): number | undefined {
 
 const HEADING = /^\*+[ \t]/;
 
+/** The elements a result can be, as org-babel-result-end knows them. */
+const RESULT_TYPES = ["drawer", "example-block", "export-block", "fixed-width", "special-block", "src-block", "item", "plain-list", "table", "latex-environment"];
+
 /**
  * The line after the result under a #+RESULTS: line, as org-babel-result-end
- * finds it: its fixed-width lines, table, block or drawer. A block or drawer
- * that does not close before the next heading is no result, so nothing is
- * taken.
+ * finds it: nothing on a blank line, a link's line, or the element there
+ * that a result can be, a block, a drawer, fixed-width lines, a list or a
+ * table, to its end before the blank lines after it. Anything else is no
+ * result, so nothing is taken.
  */
 export function resultEnd(line: number): number {
-  let k = line + 1;
-  const text = (n: number) => (n < e8.lineCount() ? e8.lineText(n) : "");
-  const begin = /^[ \t]*#\+begin_(\S+)/i.exec(text(k));
-  const drawer = /^[ \t]*:([\w-]+):[ \t]*$/.exec(text(k));
-  /** The line after the first from `k` that `close` matches, before a heading, or nothing. */
-  const closing = (close: RegExp): number => {
-    for (let n = k + 1; n < e8.lineCount() && !HEADING.test(text(n)); n++) if (close.test(text(n))) return n + 1;
-    return line + 1;
-  };
-  if (begin) return closing(new RegExp(`^[ \\t]*#\\+end_${begin[1].replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}[ \\t]*$`, "i"));
-  if (drawer && drawer[1].toUpperCase() !== "END") return closing(/^[ \t]*:END:[ \t]*$/i);
-  if (/^[ \t]*\|/.test(text(k))) {
-    while (k < e8.lineCount() && /^[ \t]*(?:\||#\+TBLFM:)/i.test(text(k))) k++;
-    return k;
-  }
-  while (k < e8.lineCount() && /^[ \t]*:(?: |$)/.test(text(k))) k++;
+  const k = line + 1;
+  if (k >= e8.lineCount()) return k;
+  const text = e8.lineText(k);
+  if (/^[ \t]*$/.test(text)) return k;
+  if (/^[ \t]*\[\[(?:[^\][\\]|\\.)+\](?:\[[^\n]*?\])?\][ \t]*$/.test(text)) return k + 1;
+  const e = elementAt(e8.lineStart(k));
+  if (e !== undefined && RESULT_TYPES.includes(e.type)) return lineAt(endBeforeBlank(e)) + 1;
   return k;
 }
 
@@ -675,13 +726,18 @@ function insertResult(block: Block, result: unknown, rp: string[]): void {
  * undefined.
  */
 export function inlineResultAt(objectEnd: number): [number, number] | undefined {
-  const limit = Math.min(e8.pointMax(), objectEnd + 100000);
-  const after = e8.bufferSubstringNoProperties(objectEnd, limit);
-  const m = /^([ \t]*(?:\n[ \t]*)?)\{\{\{results\(([\s\S]*?)\)\}\}\}/.exec(after);
-  // Not past a blank line, which ends the paragraph.
-  if (!m || /\n[ \t]*\n/.test(m[1])) return undefined;
-  const start = objectEnd + [...m[1]].length;
-  return [start, start + [...m[0]].length - [...m[1]].length];
+  // Past blanks, but not a blank line, which ends the paragraph.
+  let p = objectEnd;
+  let newlines = 0;
+  for (; p < e8.pointMax(); p++) {
+    const c = e8.bufferText(p, p + 1);
+    if (c === "\n") newlines++;
+    else if (c !== " " && c !== "\t") break;
+  }
+  if (newlines > 1 || p >= e8.pointMax()) return undefined;
+  const o = objectAt(p);
+  if (typeOf(o) !== "macro" || astProperty("key", o) !== "results") return undefined;
+  return [p, astEnd(o)! - astPostBlank(o)];
 }
 
 /**
@@ -759,15 +815,27 @@ function confirmEvaluate(block: Block): boolean {
  * org-babel-execute-src-block does, after asking as
  * org-confirm-babel-evaluate says. Returns the value.
  */
+/** CODE without its code references, written as FMT says, and the blanks before them, as org-src-coderef-regexp finds them. */
+export function removeCoderefs(code: string, fmt: string): string {
+  const label = "([-a-zA-Z0-9_][-a-zA-Z0-9_ ]*)";
+  const re = new RegExp(`([ \\t]*(${fmt.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").split("%s").join(label)})[ \\t]*)$`, "gm");
+  return code.replace(re, "");
+}
+
 export function executeSrcBlock(given = blockAtPoint(), extra?: Params | Alist): unknown {
   if (given === undefined) e8.userError("Not in a source block");
   // Header arguments given by the caller merged in, as PARAMS.
   const block = extra === undefined ? given : { ...given, params: merge(given.params, extra) };
+  // Lisp in its header arguments, which Org evaluates as it reads them, refused before anything runs.
+  const lisp = block.params.get(LISP);
+  if (lisp !== undefined) e8.userError(`${lisp} is Lisp, which E8 does not evaluate`);
   if (!checkEvaluate(block)) return undefined;
   // Its variables resolved, which may run other blocks, before it is confirmed, as org-babel-process-params.
   const processed = processParams(block.params);
   // Its noweb references expanded, as :noweb allows when evaluating, the confirmation seeing them.
-  const expanded = nowebP(block.params, ":eval") ? { ...block, body: expandNowebReferences(block) } : block;
+  const nowebbed = nowebP(block.params, ":eval") ? expandNowebReferences(block) : block.body;
+  // Its code references taken out, as org-babel--expand-body does.
+  const expanded = { ...block, body: block.coderef !== undefined ? removeCoderefs(nowebbed, block.coderef) : nowebbed };
   if (!confirmEvaluate(expanded)) return undefined;
   const fn = `org-babel-execute:${block.language}`;
   if (!e8.fboundp(fn)) e8.signal("error", `No org-babel-execute function for ${block.language}!`);
@@ -993,7 +1061,12 @@ export function stringToNumber(s: string): number | string | undefined {
 /** Lisp data as written, read without evaluating, as data a quote or a vector gives; other Lisp is an error, as E8 evaluates none. */
 function lispData(text: string): e8.Value {
   const t = text.trim();
-  if (t.startsWith("'") || t.startsWith("[")) {
+  // A vector is itself, which Babel's values, lists and atoms, can only hold as it prints: "[1 2]".
+  if (t.startsWith("[")) {
+    const [datum] = e8.readFromString(t);
+    return `[${(Array.isArray(datum) ? datum : []).map((x) => e8.prin1ToString(x)).join(" ")}]`;
+  }
+  if (t.startsWith("'")) {
     let [datum] = e8.readFromString(t);
     if (Array.isArray(datum) && datum.length === 2 && typeof datum[0] === "symbol" && Symbol.keyFor(datum[0] as symbol) === "quote") datum = datum[1];
     return plain(datum);
@@ -1095,7 +1168,8 @@ export function refParse(assignment: string): [string, e8.Value] {
   const name = m[1].trim();
   const ref = assignment.slice(m[0].length).trim();
   const out = babelRead(ref);
-  if (out !== ref) return [name, out];
+  // Lisp data is its value even when it reads as its own text, as a vector does.
+  if (out !== ref || /^[('`[]/.test(ref)) return [name, out];
   if (ref.startsWith('"') && ref.endsWith('"') && ref.length > 1) return [name, e8.readFromString(ref)[0]];
   return [name, refResolve(ref)];
 }
@@ -1200,7 +1274,20 @@ function readElement(el: any): e8.Value | undefined {
  * the Library of Babel; FILE:NAME looks in that file. An index in
  * brackets after it picks rows and columns, as tbl[1,2:3].
  */
+let refDepth = 0;
+
 export function refResolve(ref0: string): e8.Value {
+  // A reference that comes back to itself, as Lisp's recursion runs out.
+  if (refDepth > 40) e8.signal("excessive-lisp-nesting", "Lisp nesting exceeds ‘max-lisp-eval-depth’");
+  refDepth++;
+  try {
+    return refResolve_(ref0);
+  } finally {
+    refDepth--;
+  }
+}
+
+function refResolve_(ref0: string): e8.Value {
   let ref = ref0;
   let index: string | undefined;
   let contents = false;
@@ -1276,13 +1363,15 @@ export function indexList(index: string, lis: e8.Value[]): e8.Value {
   const remainder = index.slice(m[0].length);
   const wrap = (n: number) => (n < 0 ? lis.length + n : n);
   const open = (ls: e8.Value[]): e8.Value => (ls.length === 1 ? ls[0] : ls);
+  // As Lisp's nth: an index before the start is the first.
+  const nth = (n: number): e8.Value => lis[Math.max(n, 0)] ?? null;
   const range = /([-0-9]+):([-0-9]+)|\*/.exec(portion);
   let picked: e8.Value[];
   if (portion.length === 0 || range) {
     const [from, to] = portion.length > 0 && range![1] !== undefined ? [wrap(parseInt(range![1], 10) || 0), wrap(parseInt(range![2], 10) || 0)] : [0, lis.length - 1];
     picked = [];
-    for (let n = from; n <= to; n++) picked.push(lis[n] ?? null);
-  } else picked = [lis[wrap(parseInt(portion, 10) || 0)] ?? null];
+    for (let n = from; n <= to; n++) picked.push(nth(n));
+  } else picked = [nth(wrap(parseInt(portion, 10) || 0))];
   return open(picked.map((sub) => (Array.isArray(sub) ? indexList(remainder, sub as e8.Value[]) : sub)));
 }
 
@@ -1400,7 +1489,7 @@ function lobGetInfo(parts: CallParts, place: Pick<Block, "line" | "end" | "first
     parts.args ? splitArgs(parts.args).map((r): [string, string] => [":var", r]) : [],
     parseHeaderArgumentList(parts.end),
   );
-  return { ...place, language: src.language, body: src.body, params, name: parts.name || undefined, preserveIndent: src.preserveIndent };
+  return { ...place, language: src.language, body: src.body, params, name: parts.name || undefined, preserveIndent: src.preserveIndent, coderef: src.coderef };
 }
 
 /** The #+CALL: line point is on, or on the keywords above, as the block it runs, or undefined. */
@@ -1412,43 +1501,21 @@ export function callAtPoint(): Block | undefined {
 
 // --- Inline source blocks and calls ------------------------------------------
 
-/** Lines inside blocks whose text holds no objects, as a source or example block's. */
-function inVerbatimBlock(line: number): boolean {
-  for (let k = line - 1; k >= 0; k--) {
-    const t = e8.lineText(k);
-    const end = /^[ \t]*#\+end_(\S+)/i.exec(t);
-    if (end) return false;
-    const begin = /^[ \t]*#\+begin_(src|example|export|comment)\b/i.exec(t);
-    if (begin) {
-      for (let j = line; j < e8.lineCount(); j++) if (new RegExp(`^[ \\t]*#\\+end_${begin[1]}\\b`, "i").test(e8.lineText(j))) return true;
-      return false;
-    }
-    if (/^\*+[ \t]/.test(t)) return false;
-  }
-  return false;
-}
+/** An inline source block or call, as org-element-context finds it, with where it starts and ends before the blanks after it. */
+export type InlineObject = { node: any; begin: number; end: number };
 
-/** The inline objects of TYPE on LINE, as org-element parses them, with their places. */
-export function inlineObjects(line: number, type: "inline-src-block" | "inline-babel-call"): { node: any; begin: number; end: number }[] {
-  const text = e8.lineText(line);
-  if (!text.includes(type === "inline-src-block" ? "src_" : "call_")) return [];
-  if (/^[ \t]*(?:#|:(?: |$))/.test(text) || inVerbatimBlock(line)) return [];
-  const start = e8.lineStart(line);
-  // A heading's title, past its stars.
-  const out: { node: any; begin: number; end: number }[] = [];
-  const walk = (data: Datum[]) => {
-    for (const d of data) {
-      if (typeof d === "string") continue;
-      if (typeOf(d) === type) out.push({ node: d, begin: start + astBegin(d)!, end: start + astEnd(d)! - astPostBlank(d) });
-      else walk(astContents(d));
-    }
-  };
-  walk(parseSecondaryString(text, restriction("paragraph")));
-  return out;
+/** The inline source block or call at POS, of TYPE if given, as org-element-context finds it, or undefined. */
+export function inlineObjectAt(pos: number, type?: "inline-src-block" | "inline-babel-call"): InlineObject | undefined {
+  for (let n: any = objectAt(pos); n !== undefined; n = n.parent) {
+    const t = typeOf(n);
+    if ((t === "inline-src-block" || t === "inline-babel-call") && (type === undefined || t === type))
+      return { node: n, begin: astBegin(n)!, end: astEnd(n)! - astPostBlank(n) };
+  }
+  return undefined;
 }
 
 /** An inline source block or call described as a block, as org-babel-get-src-block-info and org-babel-lob-get-info describe one. */
-export function inlineInfo(o: { node: any; begin: number; end: number }, line: number): Block | undefined {
+export function inlineInfo(o: InlineObject, line: number): Block | undefined {
   const node = o.node;
   if (typeOf(node) === "inline-babel-call")
     return lobGetInfo(
@@ -1480,9 +1547,10 @@ export function inlineInfo(o: { node: any; begin: number; end: number }, line: n
 /** The inline source block or call of TYPE point is on, as the block it runs, or undefined. */
 export function inlineAtPoint(type: "inline-src-block" | "inline-babel-call"): Block | undefined {
   const pos = e8.point();
-  const line = e8.lineOf(pos);
-  const o = inlineObjects(line, type).find((x) => x.begin <= pos && pos <= x.end);
-  return o === undefined ? undefined : inlineInfo(o, line);
+  // Only where the line could hold one, so C-c C-c elsewhere stays quick.
+  if (!e8.lineText(e8.lineOf(pos)).includes(type === "inline-src-block" ? "src_" : "call_")) return undefined;
+  const o = inlineObjectAt(pos, type);
+  return o === undefined ? undefined : inlineInfo(o, e8.lineOf(o.begin));
 }
 
 // --- Errors, as ob-eval.el ---------------------------------------------------
@@ -1794,7 +1862,8 @@ function expandNowebReferences_(block: Block): string {
   const noweb_prefix = prefixParam === undefined || (prefixParam !== "no" && prefixParam !== "nil");
   const re = new RegExp(`(.*?)(${nowebWrap()})`, "g");
   let blocks: Block[] | undefined;
-  const all = () => (blocks ??= nowebBlocks());
+  // While exporting, the document as it was, as ob-exp gives Org the reference buffer.
+  const all = () => (blocks ??= referenceBuffer !== undefined ? inReferenceBuffer(nowebBlocks) : nowebBlocks());
   const expandBody = (b: Block, linkBlock: Block): string => {
     const body = nowebP(b.params, ":eval") ? expandNowebReferences(b) : b.body;
     if (!comment) return body;
@@ -1818,7 +1887,7 @@ function expandNowebReferences_(block: Block): string {
       const value = executeSrcBlock({ ...named, params: new Map([...named.params, [":results", results ? `${results} none` : "none"]]) });
       expansion = typeof value === "string" ? value : e8.prin1ToString((value ?? null) as e8.Value);
     } else {
-      const head = headlineBody(id);
+      const head = referenceBuffer !== undefined ? inReferenceBuffer(() => headlineBody(id)) : headlineBody(id);
       const named = head === undefined ? all().find((b) => b.name !== undefined && b.name.toLowerCase() === id.toLowerCase()) : undefined;
       if (head !== undefined) expansion = head;
       else if (named) expansion = expandBody(named, named);

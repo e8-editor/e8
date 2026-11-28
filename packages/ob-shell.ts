@@ -222,37 +222,47 @@ const promptRegexp = (): RegExp => new RegExp(`^${quote(String(e8.variable("org-
 
 /**
  * Sends what is after BUFFER's process mark to its shell, as
- * comint-send-input, and gives where the input ends, which output, put
- * after it, leaves where it is.
+ * comint-send-input, and waits until what the shell writes back shows the
+ * session's prompt, after what AFTER matches if given, as
+ * org-babel-comint-wait-for-output and org-babel-comint-with-output wait:
+ * as long as the code runs, as Org waits; C-g stops it. What the shell
+ * wrote, collected from comint-output-filter-functions as it came.
  */
-function send(buffer: string): number {
-  return e8.withCurrentBuffer(buffer, () => {
-    sendInput(false, true);
-    return e8.processMark(e8.getBufferProcess(buffer)!) ?? e8.pointMax();
-  });
+function sendAndWait(buffer: string, after?: RegExp): string {
+  let output = "";
+  const collect = (text: e8.Value) => {
+    output += String(text);
+  };
+  const process = e8.getBufferProcess(buffer);
+  e8.withCurrentBuffer(buffer, () => e8.addHook("comint-output-filter-functions", collect, { local: true }));
+  try {
+    e8.withCurrentBuffer(buffer, () =>
+      // Kept out of the shell's input history, as ob-comint binds comint-input-filter.
+      e8.letBind({ "comint-input-filter": "org-babel-comint--no-history" }, () => {
+        e8.gotoChar(e8.pointMax());
+        sendInput(false, true);
+      }),
+    );
+    for (;;) {
+      const m = after === undefined ? { index: 0, 0: "" } : after.exec(output);
+      if (m !== null && promptRegexp().test(output.slice(m.index + m[0].length))) return output;
+      if (process === undefined || !e8.processLiveP(process)) e8.signal("error", `Buffer ${buffer} does not exist or has no process`);
+      e8.acceptProcessOutput(process, 0.1);
+    }
+  } finally {
+    if (e8.bufferLiveP(e8.getBuffer(buffer))) e8.withCurrentBuffer(buffer, () => e8.removeHook("comint-output-filter-functions", collect, { local: true }));
+  }
 }
 
+e8.defun("org-babel-comint--no-history", () => false);
+
 /**
- * Waits until BUFFER shows the session's prompt after FROM, and after what
- * AFTER matches if given, as org-babel-comint-wait-for-output and
- * org-babel-comint-with-output wait.
+ * Asks, while an agent acts, the user's approval of running CODE in
+ * SESSION's shell, as starting a program asks it: an error until it is
+ * given, before anything is typed there.
  */
-function waitForOutput(buffer: string, from: number, after?: RegExp): void {
-  const process = e8.getBufferProcess(buffer);
-  const limit = Number(e8.variable("org-babel-comint-fallback-regexp-threshold") ?? 5) * 12;
-  const deadline = Date.now() + limit * 1000;
-  for (;;) {
-    const done = e8.withCurrentBuffer(buffer, () => {
-      const text = e8.bufferSubstringNoProperties(Math.min(from, e8.pointMax()), e8.pointMax());
-      if (after === undefined) return promptRegexp().test(text);
-      const m = after.exec(text);
-      return m !== null && promptRegexp().test(text.slice(m.index + m[0].length));
-    });
-    if (done) return;
-    if (process === undefined || !e8.processLiveP(process)) e8.signal("error", `Buffer ${buffer} does not exist or has no process`);
-    if (Date.now() > deadline) e8.signal("error", `No prompt from the shell in ${buffer}`);
-    e8.acceptProcessOutput(process, 0.1);
-  }
+function approve(session: string, code: string): void {
+  e8.checkPermission(`run in the shell of ${session}: ${code.trim()}`);
 }
 
 /** Types CMD into BUFFER's shell and waits for its prompt, as org-babel-comint-input-command. */
@@ -263,7 +273,7 @@ function inputCommand(buffer: string, cmd: string): void {
       e8.insert(cmd);
     }),
   );
-  waitForOutput(buffer, send(buffer));
+  sendAndWait(buffer);
 }
 
 /**
@@ -278,9 +288,10 @@ function initiateSession(session: string | undefined): string | undefined {
   // Its first prompt waited for, as shell-prompt-pattern finds one, so what is typed comes after it.
   const process = e8.getBufferProcess(session);
   const deadline = Date.now() + Number(e8.variable("org-babel-comint-fallback-regexp-threshold") ?? 5) * 1000;
-  while (process !== undefined && e8.processLiveP(process) && Date.now() < deadline) {
+  // A prompt of another shape is taken after a while, once the shell has written something.
+  while (process !== undefined && e8.processLiveP(process)) {
     const text = e8.withCurrentBuffer(session, () => e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax()));
-    if (/^[^#$%>\n]*[#$%>] *$/m.test(text)) break;
+    if (/^[^#$%>\n]*[#$%>] *$/m.test(text) || (Date.now() > deadline && text !== "")) break;
     e8.acceptProcessOutput(process, 0.1);
   }
   const shell = String(e8.variable("shell-file-name") ?? "").replace(/.*\//, "");
@@ -303,39 +314,38 @@ function initiateSession(session: string | undefined): string | undefined {
  * and the output to that, the echoed code and the prompts left out.
  */
 function sessionEvaluate(session: string, body: string): string {
-  let output = "";
-  const collect = (text: e8.Value) => {
-    output += String(text);
-  };
+  approve(session, body);
   const process = e8.getBufferProcess(session)!;
   let dangling = "";
-  e8.withCurrentBuffer(session, () => {
-    e8.addHook("comint-output-filter-functions", collect, { local: true });
+  e8.withCurrentBuffer(session, () =>
     e8.saveExcursion(() => {
       const mark = e8.processMark(process) ?? e8.pointMax();
       dangling = e8.bufferSubstringNoProperties(mark, e8.pointMax());
       e8.deleteRegion(mark, e8.pointMax());
       e8.gotoChar(mark);
       e8.insert(`${body.trim()}\n${String(e8.variable("org-babel-sh-eoe-indicator"))}`);
-    });
-  });
-  const eoe = String(e8.variable("org-babel-sh-eoe-output"));
+    }),
+  );
+  let output: string;
   try {
-    waitForOutput(session, send(session), new RegExp(quote(eoe)));
+    output = sendAndWait(session, new RegExp(quote(String(e8.variable("org-babel-sh-eoe-output")))));
   } finally {
-    e8.withCurrentBuffer(session, () => {
-      e8.removeHook("comint-output-filter-functions", collect, { local: true });
+    e8.withCurrentBuffer(session, () =>
       e8.saveExcursion(() => {
         e8.gotoChar(e8.processMark(process) ?? e8.pointMax());
         e8.insert(dangling);
-      });
-    });
+      }),
+    );
   }
   // The echoed code left out, as org-babel-comint--echo-filter.
   const echoed = new RegExp(quote(body.trim()).replace(/\n/g, "[\\r\\n]+")).exec(output);
   if (echoed) output = output.slice(echoed.index + echoed[0].length);
-  // Split at the prompts, as org-babel-comint--prompt-filter.
-  const parts = output.split(new RegExp(`${promptRegexp().source}[ \\t]*`, "m")).filter((p) => p !== "");
+  // Split at the prompts, as org-babel-comint--prompt-filter: again while
+  // one is left, as a prompt can follow another on the line it ends.
+  const separator = "org-babel-comint--prompt-filter-separator\n";
+  const prompt = new RegExp(`(?:${quote(separator)})?(?:${promptRegexp().source})[ \\t]*`, "gm");
+  while (promptRegexp().test(output)) output = output.replace(prompt, separator);
+  const parts = output.split(separator).filter((p) => p !== "");
   // The eoe indicator's output left out, each part trimmed, as ob-shell has them.
   return parts
     .slice(0, -1)
@@ -348,7 +358,9 @@ function sessionEvaluate(session: string, body: string): string {
 export function prepSession(session: string, params: e8.Value): string | undefined {
   const buffer = initiateSession(session);
   if (buffer === undefined) return undefined;
-  for (const line of variableAssignments(params)) inputCommand(buffer, line);
+  const lines = variableAssignments(params);
+  if (lines.length) approve(buffer, lines.join("\n"));
+  for (const line of lines) inputCommand(buffer, line);
   return buffer;
 }
 

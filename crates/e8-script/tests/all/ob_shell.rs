@@ -83,6 +83,76 @@ fn an_agent_needs_approval_to_run_a_shell_block() {
 }
 
 #[test]
+fn an_agent_needs_approval_to_type_code_into_a_running_session() {
+    let (mut ed, _s) = org(
+        "#+begin_src sh :session zzp :results output\necho first\n#+end_src\n\n#+begin_src sh :session zzp :results output\necho second\n#+end_src\n",
+    );
+    ed.press("C-c C-c").unwrap();
+    assert!(text(&ed).contains("#+RESULTS:\n: first\n"));
+    let shell = buffer_text(&ed, "zzp");
+    // The shell runs already; the second block would only type into it.
+    ed.set_agent_acting(true);
+    let at = text(&ed).rfind("#+begin_src").unwrap();
+    let chars = text(&ed)[..at].chars().count();
+    ed.window_buffer_mut().set_point(chars);
+    let _ = ed.press("C-c C-c");
+    assert!(ed.permission_requested());
+    assert!(!text(&ed).contains("second\n#+end_src\n\n#+RESULTS:"));
+    assert_eq!(buffer_text(&ed, "zzp"), shell, "nothing was typed into the shell");
+}
+
+#[test]
+fn session_code_stays_out_of_the_shell_s_history() {
+    let (mut ed, _s) = org("#+begin_src sh :session zzh :results output\necho remembered\n#+end_src\n");
+    ed.press("C-c C-c").unwrap();
+    assert!(text(&ed).contains(": remembered\n"));
+    let before = buffer_text(&ed, "zzh");
+    ed.call("switch-to-buffer", vec![Arg::Str("zzh".into())]).unwrap();
+    ed.press("M->").unwrap();
+    let _ = ed.press("M-p");
+    assert_eq!(buffer_text(&ed, "zzh"), before, "M-p finds no input of Babel's");
+}
+
+#[test]
+fn a_session_waits_for_code_that_runs_longer_than_a_script_may() {
+    // Org waits as long as the code runs; a script's own time limit is a minute.
+    let (mut ed, _s) = org("#+begin_src sh :session zzs :results output\nsleep 70; echo woke\n#+end_src\n");
+    ed.press("C-c C-c").unwrap();
+    assert_eq!(text(&ed), "#+begin_src sh :session zzs :results output\nsleep 70; echo woke\n#+end_src\n\n#+RESULTS:\n: woke\n");
+}
+
+#[test]
+fn lisp_in_header_arguments_is_refused_before_anything_runs() {
+    // Org evaluates these as Lisp; E8 has none (ADR 0116), so the block does not run.
+    let dir = tempfile::tempdir().unwrap();
+    let made = dir.path().join("made");
+    let text0 = format!(
+        "#+begin_src sh :dir (concat \"{}\" \"/made\") :mkdirp yes :results output\npwd\n#+end_src\n",
+        dir.path().display()
+    );
+    let (mut ed, _s) = org(&text0);
+    let _ = ed.press("C-c C-c");
+    assert!(ed.echo().is_some_and(|e| e.ends_with("is Lisp, which E8 does not evaluate")), "{:?}", ed.echo());
+    assert_eq!(text(&ed), text0);
+    assert!(!made.exists());
+    let text1 = "#+begin_src sh :results (concat \"val\" \"ue\")\necho hi\n#+end_src\n";
+    ed.window_buffer_mut().set_text(text1);
+    ed.window_buffer_mut().set_point(0);
+    let _ = ed.press("C-c C-c");
+    assert_eq!(ed.echo(), Some("(concat \"val\" \"ue\") is Lisp, which E8 does not evaluate"));
+    assert_eq!(text(&ed), text1);
+}
+
+#[test]
+fn a_reference_that_comes_back_to_itself_is_an_error() {
+    let text0 = "#+name: a\n#+begin_src sh :var x=b\necho $x\n#+end_src\n\n#+name: b\n#+begin_src sh :var y=a\necho $y\n#+end_src\n";
+    let (mut ed, _s) = org(text0);
+    let _ = ed.press("C-c C-c");
+    assert!(ed.echo().is_some_and(|e| e.contains("max-lisp-eval-depth")), "{:?}", ed.echo());
+    assert_eq!(text(&ed), text0);
+}
+
+#[test]
 fn ingested_blocks_run_from_calls_in_any_buffer() {
     let dir = tempfile::tempdir().unwrap();
     let lib = dir.path().join("lib.org");

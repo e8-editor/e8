@@ -11821,6 +11821,12 @@ declare global {
        */
       "comint-history-isearch": Value;
       /**
+       * A function of the input that says whether it goes into the input history; nil keeps all but blank input, as comint-nonblank-p.
+       *
+       * Defined in packages/comint.ts.
+       */
+      "comint-input-filter": Value;
+      /**
        * A regexp for entries of the history file to leave out.
        *
        * Defined in packages/comint.ts.
@@ -22429,6 +22435,14 @@ declare global {
      * or gone; its name is not one.
      */
     function processp(value: unknown): value is Process;
+    /**
+     * Ask, while an agent acts, the user's approval of an effect outside
+     * the editor's buffers, as "run in the shell of *shell*: make", as
+     * starting a program asks it: an error until the user allows it, and
+     * nothing for the user's own commands. For code that sends a program
+     * input that runs, as a Babel session's code.
+     */
+    function checkPermission(effect: string): void;
     /** Write to a process's input, encoded in its coding, as process-send-string. */
     function processSendString(process: ProcessLike, text: string): void;
     /** Make a process see the end of its input, as process-send-eof: C-d on a terminal, else its input closed. */

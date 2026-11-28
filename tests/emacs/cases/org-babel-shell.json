@@ -1598,5 +1598,483 @@
    "org-ascii-export-as-ascii"
   ],
   "today": "2026-11-27 10:00"
+ },
+ {
+  "name": "export-switches-once",
+  "text": "#+OPTIONS: toc:nil author:nil title:nil timestamp:nil\n#+begin_src sh -n :var x=1 :exports code\necho $x\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false,
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com",
+   "org-ascii-charset": "'ascii"
+  },
+  "call": [
+   "org-org-export-as-org"
+  ],
+  "today": "2026-11-27 10:00"
+ },
+ {
+  "name": "export-switches-k-r-i",
+  "text": "#+OPTIONS: toc:nil author:nil title:nil timestamp:nil\n#+begin_src sh -i -k -r :results output :exports code\n  echo x\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false,
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com",
+   "org-ascii-charset": "'ascii"
+  },
+  "call": [
+   "org-org-export-as-org"
+  ],
+  "today": "2026-11-27 10:00"
+ },
+ {
+  "name": "export-numbered-from-five",
+  "text": "#+OPTIONS: toc:nil author:nil title:nil timestamp:nil\n#+begin_src sh -n 5 :exports code\necho a\necho b\n#+end_src\n\n#+begin_src sh +n :exports code\necho c\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false,
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com",
+   "org-ascii-charset": "'ascii"
+  },
+  "call": [
+   "org-ascii-export-as-ascii"
+  ],
+  "today": "2026-11-27 10:00"
+ },
+ {
+  "name": "coderef-removed",
+  "text": "#+begin_src sh :results output\necho a (ref:one)\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "coderef-label-format",
+  "text": "#+begin_src sh -l \"[%s]\" :results output\necho a [x]\necho b\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "export-coderef-label-format",
+  "text": "#+OPTIONS: toc:nil author:nil title:nil timestamp:nil\n#+begin_src sh -l \"[%s]\" :exports results :results output\necho a [x]\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false,
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com",
+   "org-ascii-charset": "'ascii"
+  },
+  "call": [
+   "org-ascii-export-as-ascii"
+  ],
+  "today": "2026-11-27 10:00"
+ },
+ {
+  "name": "session-two-vars",
+  "text": "#+begin_src sh :session zzv :var a=1 b=2 :results output\necho \"$a$b\"\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "session-value-after-lines",
+  "text": "#+begin_src sh :session zzv2 :results value\necho hi\nfalse\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "export-noweb-yes",
+  "text": "#+OPTIONS: toc:nil author:nil title:nil timestamp:nil\n#+name: helper\n#+begin_src sh :exports none\necho helped\n#+end_src\n\n#+begin_src sh :noweb yes :exports both :results output\n<<helper>>\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false,
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com",
+   "org-ascii-charset": "'ascii"
+  },
+  "call": [
+   "org-ascii-export-as-ascii"
+  ],
+  "today": "2026-11-27 10:00"
+ },
+ {
+  "name": "export-noweb-strip-export",
+  "text": "#+OPTIONS: toc:nil author:nil title:nil timestamp:nil\n#+name: helper\n#+begin_src sh :exports none\necho helped\n#+end_src\n\n#+begin_src sh :noweb strip-export :exports code\n<<helper>>\necho after\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false,
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com",
+   "org-ascii-charset": "'ascii"
+  },
+  "call": [
+   "org-ascii-export-as-ascii"
+  ],
+  "today": "2026-11-27 10:00"
+ },
+ {
+  "name": "export-noweb-inline",
+  "text": "#+OPTIONS: toc:nil author:nil title:nil timestamp:nil\n#+name: helper\n#+begin_src sh :exports none\necho helped\n#+end_src\n\nInline src_sh[:noweb yes :exports both]{<<helper>>} here.\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false,
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com",
+   "org-ascii-charset": "'ascii"
+  },
+  "call": [
+   "org-ascii-export-as-ascii"
+  ],
+  "today": "2026-11-27 10:00"
+ },
+ {
+  "name": "header-line-wins-over-begin-line",
+  "text": "#+header: :results value\n#+begin_src sh :results output\necho hi\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "results-list-twice",
+  "text": "#+begin_src sh :results list\nprintf 'one\\ntwo\\n'\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "results-list-twice-in-item",
+  "text": "- item\n  #+begin_src sh :results list\n  printf 'one\\ntwo\\n'\n  #+end_src\n",
+  "point": 9,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "results-raw-list-twice",
+  "text": "#+begin_src sh :results raw output\nprintf -- '- a\\n- b\\n'\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "results-file-twice",
+  "text": "#+begin_src sh :results file\nprintf out.txt\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "results-file-desc",
+  "text": "#+begin_src sh :results file :file-desc Out\nprintf out.txt\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "blank-line-after-block",
+  "text": "#+begin_src sh :results output\necho blank\n#+end_src\n\n\nText.\n",
+  "point": 52,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "var-vector",
+  "text": "#+begin_src sh :var x=[1 2] :results output\necho \"$x\"\n#+end_src\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "var-index-before-start",
+  "text": "#+name: tbl\n| x | 1 |\n| y | 2 |\n\n#+begin_src sh :var x=tbl[-5,1] :results output\necho \"$x\"\n#+end_src\n",
+  "point": 33,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "heading-header-args-replace-property",
+  "text": "#+PROPERTY: header-args :results output\n* H\n:PROPERTIES:\n:header-args: :var n=4\n:END:\n#+begin_src sh\nseq $n\n#+end_src\n",
+  "point": 86,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "heading-header-args-plus",
+  "text": "#+PROPERTY: header-args :results output\n* H\n:PROPERTIES:\n:header-args+: :var n=3\n:END:\n#+begin_src sh\nseq $n\n#+end_src\n",
+  "point": 87,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "C-c C-c",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false
+  }
+ },
+ {
+  "name": "export-call-none-removes-results",
+  "text": "#+OPTIONS: toc:nil author:nil title:nil timestamp:nil\n#+name: greet\n#+begin_src sh :var who=\"w\" :results output :exports none\necho \"hi $who\"\n#+end_src\n\n#+CALL: greet() :exports none\n\n#+RESULTS:\n: old\n\nText.\n",
+  "point": 0,
+  "modes": [
+   "org-mode"
+  ],
+  "keys": "",
+  "globals": {
+   "org-babel-load-languages": [
+    [
+     "'shell",
+     true
+    ]
+   ],
+   "org-confirm-babel-evaluate": false,
+   "org-export-copy-to-kill-ring": false,
+   "user-full-name": "E. Xample",
+   "user-mail-address": "e@example.com",
+   "org-ascii-charset": "'ascii"
+  },
+  "call": [
+   "org-org-export-as-org"
+  ],
+  "today": "2026-11-27 10:00"
  }
 ]

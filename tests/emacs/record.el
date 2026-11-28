@@ -526,10 +526,12 @@ its `globals' bound for the case, before the modes start."
       (setq org-stored-links nil org-link--insert-history nil))
     ;; A fresh set of buffers, as E8 starts each case with: only the
     ;; ones Emacs needs, whose names start with a space, and its own.
-    (dolist (b (buffer-list))
-      (unless (or (string-prefix-p " " (buffer-name b))
-                  (member (buffer-name b) '("*scratch*" "*Messages*")))
-        (kill-buffer b)))
+    ;; A shell an earlier case left running, as a Babel session, goes without asking.
+    (let ((kill-buffer-query-functions nil))
+      (dolist (b (buffer-list))
+        (unless (or (string-prefix-p " " (buffer-name b))
+                    (member (buffer-name b) '("*scratch*" "*Messages*")))
+          (kill-buffer b))))
     ;; In the same order whatever earlier cases did, as E8 lists them:
     ;; the case's buffer, then *Messages*, then *scratch*.
     (bury-buffer "*Messages*")
